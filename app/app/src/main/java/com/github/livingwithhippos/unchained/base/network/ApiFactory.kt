@@ -9,8 +9,9 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 
 object ApiFactory {
+    //todo: check if client id is correct, or a personal one is needed beside the first auth
 
-    //Creating Auth Interceptor to add api_key query in front of all the requests.
+    //Creating Auth Interceptor to add client_id query in front of all the requests.
     private val authInterceptor = Interceptor { chain ->
         val newUrl = chain.request().url
             .newBuilder()
