@@ -33,7 +33,7 @@ class AuthenticationFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_authentication, container)
+        val view = inflater.inflate(R.layout.fragment_authentication, container, false)
         val sceneRoot: ViewGroup = view.findViewById(R.id.scene_root)
         val loadingScene: Scene = Scene.getSceneForLayout(
             sceneRoot,
