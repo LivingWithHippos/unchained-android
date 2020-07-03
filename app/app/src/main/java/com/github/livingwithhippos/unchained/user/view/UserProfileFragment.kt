@@ -4,11 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.databinding.FragmentUserProfileBinding
 import com.github.livingwithhippos.unchained.user.viewmodel.UserProfileViewModel
 
@@ -31,7 +29,7 @@ class UserProfileFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val userBinding = FragmentUserProfileBinding.inflate(inflater,container,false)
+        val userBinding = FragmentUserProfileBinding.inflate(inflater, container, false)
 
         viewModel.fetchUserInfo()
 

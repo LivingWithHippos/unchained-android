@@ -1,7 +1,6 @@
 package com.github.livingwithhippos.unchained.base.network
 
 import com.github.livingwithhippos.unchained.authentication.model.AuthenticationApi
-import com.github.livingwithhippos.unchained.user.model.UserApi
 import com.github.livingwithhippos.unchained.utilities.BASE_AUTH_URL
 import com.github.livingwithhippos.unchained.utilities.OPEN_SOURCE_CLIENT_ID
 import okhttp3.Interceptor

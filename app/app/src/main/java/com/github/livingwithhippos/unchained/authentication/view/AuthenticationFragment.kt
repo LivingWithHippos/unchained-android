@@ -33,16 +33,21 @@ class AuthenticationFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view =inflater.inflate(R.layout.fragment_authentication,container)
+        val view = inflater.inflate(R.layout.fragment_authentication, container)
         val sceneRoot: ViewGroup = view.findViewById(R.id.scene_root)
-        val loadingScene: Scene = Scene.getSceneForLayout(sceneRoot, R.layout.scene_authentication_loading, requireContext())
-        val fetchedAuthLinkScene: Scene = Scene.getSceneForLayout(sceneRoot, R.layout.scene_authentication_link, requireContext())
+        val loadingScene: Scene = Scene.getSceneForLayout(
+            sceneRoot,
+            R.layout.scene_authentication_loading,
+            requireContext()
+        )
+        val fetchedAuthLinkScene: Scene =
+            Scene.getSceneForLayout(sceneRoot, R.layout.scene_authentication_link, requireContext())
 
 
         viewModel.fetchAuthenticationInfo()
 
         viewModel.authLiveData.observe(viewLifecycleOwner, Observer {
-            val authBinding = SceneAuthenticationLinkBinding.inflate(inflater,container,false)
+            val authBinding = SceneAuthenticationLinkBinding.inflate(inflater, container, false)
 
             authBinding.auth = it
 

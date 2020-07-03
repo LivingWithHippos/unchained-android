@@ -10,6 +10,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+
 //todo: add loading of saved state
 class UserProfileViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
 

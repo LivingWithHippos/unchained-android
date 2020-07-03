@@ -2,7 +2,7 @@ package com.github.livingwithhippos.unchained.authentication.model
 
 import com.github.livingwithhippos.unchained.base.model.BaseRepository
 
-class AuthenticationRepository (private val api: AuthenticationApi) : BaseRepository() {
+class AuthenticationRepository(private val api: AuthenticationApi) : BaseRepository() {
 
     suspend fun getVerificationCode(): Authentication? {
 
