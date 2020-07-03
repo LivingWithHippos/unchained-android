@@ -26,7 +26,7 @@ object ApiFactory {
     }
 
     //OkhttpClient for building http request url
-    private val debridClient = OkHttpClient().newBuilder()
+    private val debridClient: OkHttpClient = OkHttpClient().newBuilder()
         .addInterceptor(authInterceptor)
         .build()
 
