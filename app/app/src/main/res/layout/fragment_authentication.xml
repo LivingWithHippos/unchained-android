@@ -1,26 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <data>
 
-        <variable
-            name="auth"
-            type="com.github.livingwithhippos.unchained.authentication.model.Authentication" />
-    </data>
-
-    <FrameLayout
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scene_root"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".authentication.view.AuthenticationFragment">
+    android:layout_height="match_parent">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
-
+    <include layout="@layout/scene_authentication_loading" />
 </FrameLayout>
 
-</layout>
+

@@ -1,17 +1,19 @@
 package com.github.livingwithhippos.unchained.authentication.view
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.transition.Scene
+import androidx.transition.Transition
+import androidx.transition.TransitionInflater
+import androidx.transition.TransitionManager
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.authentication.viewmodel.AuthenticationViewModel
-import com.github.livingwithhippos.unchained.databinding.FragmentAuthenticationBinding
-import com.github.livingwithhippos.unchained.databinding.FragmentUserProfileBinding
-import com.github.livingwithhippos.unchained.user.viewmodel.UserProfileViewModel
+import com.github.livingwithhippos.unchained.databinding.SceneAuthenticationLinkBinding
 
 
 /**
@@ -31,15 +33,28 @@ class AuthenticationFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val authBinding = FragmentAuthenticationBinding.inflate(inflater,container,false)
+        val view =inflater.inflate(R.layout.fragment_authentication,container)
+        val sceneRoot: ViewGroup = view.findViewById(R.id.scene_root)
+        val loadingScene: Scene = Scene.getSceneForLayout(sceneRoot, R.layout.scene_authentication_loading, requireContext())
+        val fetchedAuthLinkScene: Scene = Scene.getSceneForLayout(sceneRoot, R.layout.scene_authentication_link, requireContext())
+
 
         viewModel.fetchAuthenticationInfo()
 
         viewModel.authLiveData.observe(viewLifecycleOwner, Observer {
+            val authBinding = SceneAuthenticationLinkBinding.inflate(inflater,container,false)
+
             authBinding.auth = it
+
+            val fadeTransition: Transition =
+                TransitionInflater.from(requireContext())
+                    .inflateTransition(R.transition.fade_transition)
+
+            TransitionManager.go(fetchedAuthLinkScene, fadeTransition)
+
         })
 
-        return authBinding.root
+        return view
     }
 
     companion object {
