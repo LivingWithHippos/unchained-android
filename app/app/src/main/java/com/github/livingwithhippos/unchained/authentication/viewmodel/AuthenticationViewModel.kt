@@ -23,6 +23,7 @@ class AuthenticationViewModel(savedStateHandle: SavedStateHandle) : ViewModel() 
 
     val authLiveData = MutableLiveData<Authentication?>()
 
+    //todo: here we should check if we already have credentials and if they work, nad pass those
     //todo: rename this first part of the auth flow as verificationInfo etc.?
     fun fetchAuthenticationInfo() {
         scope.launch {
