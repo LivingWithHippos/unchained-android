@@ -1,0 +1,11 @@
+{
+  "id": 1,
+  "username": "string",
+  "email": "string",
+  "points": 1,
+  "locale": "string",
+  "avatar": "string",
+  "type": "string",
+  "premium": 1,
+  "expiration": "string"
+}
