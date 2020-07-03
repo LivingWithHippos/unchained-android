@@ -1,0 +1,7 @@
+{
+  "device_code": "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
+  "user_code": "ABCDEF0123456",
+  "interval": 5,
+  "expires_in": 1800,
+  "verification_url": "https:\/\/real-debrid.com\/device"
+}
