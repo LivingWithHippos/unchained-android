@@ -1,12 +1,13 @@
-package com.github.livingwithhippos.unchained.user
+package com.github.livingwithhippos.unchained.user.view
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.github.livingwithhippos.unchained.R
+import com.github.livingwithhippos.unchained.user.viewmodel.UserProfileViewModel
 
 /**
  * A simple [Fragment] subclass.
@@ -39,7 +40,8 @@ class UserProfileFragment : Fragment() {
          */
         @JvmStatic
         fun newInstance() =
-            UserProfileFragment().apply {
-            }
+            UserProfileFragment()
+                .apply {
+                }
     }
 }
