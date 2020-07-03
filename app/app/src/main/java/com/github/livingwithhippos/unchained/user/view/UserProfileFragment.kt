@@ -35,7 +35,7 @@ class UserProfileFragment : Fragment() {
 
         viewModel.fetchUserInfo()
 
-        viewModel.userLiveData.observe(this, Observer {
+        viewModel.userLiveData.observe(viewLifecycleOwner, Observer {
 
             if (it != null)
                 userBinding.user = it
