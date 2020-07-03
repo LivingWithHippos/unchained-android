@@ -22,7 +22,7 @@ class UserProfileViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
             ApiFactory.userApi
         )
 
-    val userLiveData = MutableLiveData<User>()
+    private val userLiveData = MutableLiveData<User>()
 
     fun fetchUserInfo() {
         scope.launch {
