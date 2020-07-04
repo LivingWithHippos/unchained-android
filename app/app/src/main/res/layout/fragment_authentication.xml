@@ -69,11 +69,36 @@
             android:text="@string/copy_code"
             android:visibility="@{auth.userCode == null ? View.GONE : View.VISIBLE}"
             android:onClick="@{() -> listener.onCopyClick(auth.userCode)}"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/tvOrVisit"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvCode" />
+
+        <TextView
+            android:id="@+id/tvOrVisit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/or_visit"
+            android:visibility="@{auth.directVerificationUrl == null ? View.GONE : View.VISIBLE}"
+            app:layout_constraintBottom_toTopOf="@+id/tvDirectLink"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/bCopy" />
+
+        <TextView
+            android:id="@+id/tvDirectLink"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{auth.directVerificationUrl}"
+            android:visibility="@{auth.directVerificationUrl == null ? View.GONE : View.VISIBLE}"
+            android:autoLink="web"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvOrVisit" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

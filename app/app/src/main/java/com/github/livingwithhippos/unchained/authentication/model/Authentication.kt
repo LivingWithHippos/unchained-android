@@ -18,7 +18,9 @@ data class Authentication(
     @Json(name = "expires_in")
     val expiresIn: Int,
     @Json(name = "verification_url")
-    val verificationUrl: String
+    val verificationUrl: String,
+    @Json(name = "direct_verification_url")
+    val directVerificationUrl: String
 )
 
 interface AuthenticationApi {
@@ -27,5 +29,11 @@ interface AuthenticationApi {
     suspend fun getAuthentication(
         @Query("client_id") id: String = OPEN_SOURCE_CLIENT_ID,
         @Query("new_credentials") newCredentials: String = "yes"
+    ): Response<Authentication>
+
+    @GET("device/code")
+    suspend fun getSecrets(
+        @Query("client_id") id: String = OPEN_SOURCE_CLIENT_ID,
+        @Query("code") code: String = "yes"
     ): Response<Authentication>
 }

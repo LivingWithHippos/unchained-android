@@ -8,4 +8,5 @@
     <string name="insert_code">And Insert Code</string>
     <string name="copy_code">Copy Code</string>
     <string name="code_copied">Code Copied To Clipboard</string>
+    <string name="or_visit">Or directly visit</string>
 </resources>
