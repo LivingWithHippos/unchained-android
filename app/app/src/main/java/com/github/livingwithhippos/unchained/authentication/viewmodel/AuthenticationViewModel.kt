@@ -32,14 +32,16 @@ class AuthenticationViewModel(savedStateHandle: SavedStateHandle) : ViewModel() 
     }
 
     fun fetchSecrets(deviceCode: String) {
-        //todo: add wait and run every 5 seconds
         val waitTime = 5000L
+        //todo: manage calls reaching limit time in the ui
+        var calls = 0
         scope.launch {
             var secretData = repository.getSecrets(deviceCode)
             secretLiveData.postValue(secretData)
-            while (secretData?.clientId == null) {
+            while (secretData?.clientId == null && calls < 60) {
                 delay(waitTime)
                 secretData = repository.getSecrets(deviceCode)
+                calls++
             }
             secretLiveData.postValue(secretData)
         }
