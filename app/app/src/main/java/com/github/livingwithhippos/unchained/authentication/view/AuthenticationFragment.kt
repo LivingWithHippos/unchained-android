@@ -13,6 +13,7 @@ import androidx.transition.TransitionInflater
 import androidx.transition.TransitionManager
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.authentication.viewmodel.AuthenticationViewModel
+import com.github.livingwithhippos.unchained.databinding.FragmentAuthenticationBinding
 import com.github.livingwithhippos.unchained.databinding.SceneAuthenticationLinkBinding
 
 
@@ -33,47 +34,21 @@ class AuthenticationFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_authentication, container, false)
-        val sceneRoot: ViewGroup = view.findViewById(R.id.scene_root)
-        val loadingScene: Scene = Scene.getSceneForLayout(
-            sceneRoot,
-            R.layout.scene_authentication_loading,
-            requireContext()
-        )
-        val fetchedAuthLinkScene: Scene =
-            Scene.getSceneForLayout(sceneRoot, R.layout.scene_authentication_link, requireContext())
+
+        val authBinding = FragmentAuthenticationBinding.inflate(inflater, container, false)
 
         //todo: add loading gif
+
         viewModel.fetchAuthenticationInfo()
 
         viewModel.authLiveData.observe(viewLifecycleOwner, Observer {
             if (it != null) {
 
-            val authBinding = SceneAuthenticationLinkBinding.inflate(inflater, container, false)
-            //fixme: data not showing even when different from null
-            authBinding.auth = it
-            val fadeTransition: Transition =
-                TransitionInflater.from(requireContext())
-                    .inflateTransition(R.transition.fade_transition)
-
-            TransitionManager.go(fetchedAuthLinkScene, fadeTransition)
+                //fixme: data not showing even when different from null
+                authBinding.auth = it
             }
         })
 
-        return view
-    }
-
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment.
-         *
-         * @return A new instance of fragment AuthenticationFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance() =
-            AuthenticationFragment().apply {
-            }
+        return authBinding.root
     }
 }
