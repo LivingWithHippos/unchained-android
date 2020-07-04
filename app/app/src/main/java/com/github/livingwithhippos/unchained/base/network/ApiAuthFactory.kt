@@ -38,7 +38,7 @@ object ApiAuthFactory {
         .build()
 
 
-    val authApi: AuthenticationApi = ApiFactory.retrofit().create(
+    val authApi: AuthenticationApi = retrofit().create(
         AuthenticationApi::class.java
     )
 }
