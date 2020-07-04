@@ -47,16 +47,16 @@ class AuthenticationFragment : Fragment() {
         viewModel.fetchAuthenticationInfo()
 
         viewModel.authLiveData.observe(viewLifecycleOwner, Observer {
+            if (it != null) {
+
             val authBinding = SceneAuthenticationLinkBinding.inflate(inflater, container, false)
-
             authBinding.auth = it
-
             val fadeTransition: Transition =
                 TransitionInflater.from(requireContext())
                     .inflateTransition(R.transition.fade_transition)
 
             TransitionManager.go(fetchedAuthLinkScene, fadeTransition)
-
+            }
         })
 
         return view
