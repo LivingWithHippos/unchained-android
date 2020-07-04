@@ -4,6 +4,7 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -49,9 +50,19 @@ class AuthenticationFragment : Fragment(), ButtonListener {
     private fun observeAuthentication(binding: FragmentAuthenticationBinding) {
         viewModel.authLiveData.observe(viewLifecycleOwner, Observer {
             if (it != null) {
-
                 binding.auth = it
-                
+                observeSecrets(it.deviceCode)
+            }
+        })
+    }
+
+    private fun observeSecrets(deviceCode: String){
+
+        // start checking for user confirmation
+        viewModel.fetchSecrets(deviceCode)
+        viewModel.secretLiveData.observe(viewLifecycleOwner, Observer {
+            if (it?.clientId != null) {
+                Log.d("VALUE FOUND", "GOT SECRETS")
             }
         })
     }
@@ -61,6 +72,6 @@ class AuthenticationFragment : Fragment(), ButtonListener {
         val clip: ClipData = ClipData.newPlainText("real-debrid authorization code", value)
         // Set the clipboard's primary clip.
         clipboard.setPrimaryClip(clip)
-        Toast.makeText(requireContext(), getString(R.string.code_copied), Toast.LENGTH_SHORT).show()
+        Toast.makeText(requireContext(),getString(R.string.code_copied),Toast.LENGTH_SHORT).show()
     }
 }

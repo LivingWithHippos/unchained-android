@@ -7,10 +7,7 @@ import com.github.livingwithhippos.unchained.authentication.model.Authentication
 import com.github.livingwithhippos.unchained.authentication.model.AuthenticationRepository
 import com.github.livingwithhippos.unchained.authentication.model.Secrets
 import com.github.livingwithhippos.unchained.base.network.ApiAuthFactory
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 class AuthenticationViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
 
@@ -25,7 +22,7 @@ class AuthenticationViewModel(savedStateHandle: SavedStateHandle) : ViewModel() 
     val authLiveData = MutableLiveData<Authentication?>()
     val secretLiveData = MutableLiveData<Secrets?>()
 
-    //todo: here we should check if we already have credentials and if they work, nad pass those
+    //todo: here we should check if we already have credentials and if they work, and pass those
     //todo: rename this first part of the auth flow as verificationInfo etc.?
     fun fetchAuthenticationInfo() {
         scope.launch {
@@ -36,8 +33,14 @@ class AuthenticationViewModel(savedStateHandle: SavedStateHandle) : ViewModel() 
 
     fun fetchSecrets(deviceCode: String) {
         //todo: add wait and run every 5 seconds
+        val waitTime = 5000L
         scope.launch {
-            val secretData = repository.getSecrets(deviceCode)
+            var secretData = repository.getSecrets(deviceCode)
+            secretLiveData.postValue(secretData)
+            while (secretData?.clientId == null) {
+                delay(waitTime)
+                secretData = repository.getSecrets(deviceCode)
+            }
             secretLiveData.postValue(secretData)
         }
 
