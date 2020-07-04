@@ -5,6 +5,8 @@
 
     <data>
 
+        <import type="android.view.View"/>
+
         <variable
             name="auth"
             type="com.github.livingwithhippos.unchained.authentication.model.Authentication" />
@@ -54,11 +56,23 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@{auth.userCode}"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/bCopy"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvInsert" />
+
+        <Button
+            android:id="@+id/bCopy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/copy_code"
+            android:visibility="@{auth.userCode == null ? View.GONE : View.VISIBLE}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvCode" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

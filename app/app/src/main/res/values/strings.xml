@@ -6,4 +6,5 @@
     <string name="please_go">Please go on</string>
     <string name="link">Link</string>
     <string name="insert_code">And Insert Code</string>
+    <string name="copy_code">Copy Code</string>
 </resources>
