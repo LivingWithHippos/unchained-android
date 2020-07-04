@@ -43,13 +43,14 @@ class AuthenticationFragment : Fragment() {
         val fetchedAuthLinkScene: Scene =
             Scene.getSceneForLayout(sceneRoot, R.layout.scene_authentication_link, requireContext())
 
-
+        //todo: add loading gif
         viewModel.fetchAuthenticationInfo()
 
         viewModel.authLiveData.observe(viewLifecycleOwner, Observer {
             if (it != null) {
 
             val authBinding = SceneAuthenticationLinkBinding.inflate(inflater, container, false)
+            //fixme: data not showing even when different from null
             authBinding.auth = it
             val fadeTransition: Transition =
                 TransitionInflater.from(requireContext())
