@@ -37,7 +37,7 @@ data class Secrets(
 @JsonClass(generateAdapter = true)
 data class Token(
     @Json(name = "access_token")
-    val clientId: String,
+    val accessToken: String,
     @Json(name = "expires_in")
     val expiresIn: String,
     @Json(name = "token_type")
