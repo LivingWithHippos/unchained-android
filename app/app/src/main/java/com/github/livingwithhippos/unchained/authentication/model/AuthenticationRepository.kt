@@ -25,4 +25,15 @@ class AuthenticationRepository(private val api: AuthenticationApi) : BaseReposit
         return authResponse;
 
     }
+
+    suspend fun getToken(clientSecret: String, deviceCode: String): Token? {
+
+        val authResponse = safeApiCall(
+            call = { api.getToken(clientSecret = clientSecret, deviceCode = deviceCode) },
+            errorMessage = "Error Fetching Token"
+        )
+
+        return authResponse;
+
+    }
 }

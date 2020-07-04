@@ -1,10 +1,13 @@
 package com.github.livingwithhippos.unchained.authentication.model
 
 import com.github.livingwithhippos.unchained.utilities.OPEN_SOURCE_CLIENT_ID
+import com.github.livingwithhippos.unchained.utilities.OPEN_SOURCE_GRANT_TYPE
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import retrofit2.Response
+import retrofit2.http.Field
 import retrofit2.http.GET
+import retrofit2.http.POST
 import retrofit2.http.Query
 
 @JsonClass(generateAdapter = true)
@@ -31,6 +34,18 @@ data class Secrets(
     val clientSecret: String
 )
 
+@JsonClass(generateAdapter = true)
+data class Token(
+    @Json(name = "access_token")
+    val clientId: String,
+    @Json(name = "expires_in")
+    val expiresIn: String,
+    @Json(name = "token_type")
+    val tokenType: String,
+    @Json(name = "refresh_token")
+    val refreshToken: String
+)
+
 interface AuthenticationApi {
 
     @GET("device/code")
@@ -44,4 +59,12 @@ interface AuthenticationApi {
         @Query("client_id") id: String = OPEN_SOURCE_CLIENT_ID,
         @Query("code") deviceCode: String
     ): Response<Secrets>
+
+    @POST("token")
+    suspend fun getToken(
+        @Field("client_id") clientId: String= OPEN_SOURCE_CLIENT_ID,
+        @Field("client_secret") clientSecret: String,
+        @Field("code") deviceCode: String,
+        @Field("grant_type") grantType: String = OPEN_SOURCE_GRANT_TYPE
+    ): Response<Token>
 }
