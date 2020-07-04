@@ -23,6 +23,14 @@ data class Authentication(
     val directVerificationUrl: String
 )
 
+@JsonClass(generateAdapter = true)
+data class Secrets(
+    @Json(name = "client_id")
+    val clientId: String,
+    @Json(name = "client_secret")
+    val clientSecret: String
+)
+
 interface AuthenticationApi {
 
     @GET("device/code")
@@ -31,9 +39,9 @@ interface AuthenticationApi {
         @Query("new_credentials") newCredentials: String = "yes"
     ): Response<Authentication>
 
-    @GET("device/code")
+    @GET("/device/credentials")
     suspend fun getSecrets(
         @Query("client_id") id: String = OPEN_SOURCE_CLIENT_ID,
-        @Query("code") code: String = "yes"
-    ): Response<Authentication>
+        @Query("code") deviceCode: String
+    ): Response<Secrets>
 }

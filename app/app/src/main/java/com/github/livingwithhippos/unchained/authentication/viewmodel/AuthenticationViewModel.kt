@@ -5,6 +5,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.github.livingwithhippos.unchained.authentication.model.Authentication
 import com.github.livingwithhippos.unchained.authentication.model.AuthenticationRepository
+import com.github.livingwithhippos.unchained.authentication.model.Secrets
 import com.github.livingwithhippos.unchained.base.network.ApiAuthFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -22,6 +23,7 @@ class AuthenticationViewModel(savedStateHandle: SavedStateHandle) : ViewModel() 
         )
 
     val authLiveData = MutableLiveData<Authentication?>()
+    val secretLiveData = MutableLiveData<Secrets?>()
 
     //todo: here we should check if we already have credentials and if they work, nad pass those
     //todo: rename this first part of the auth flow as verificationInfo etc.?
@@ -30,6 +32,15 @@ class AuthenticationViewModel(savedStateHandle: SavedStateHandle) : ViewModel() 
             val authData = repository.getVerificationCode()
             authLiveData.postValue(authData)
         }
+    }
+
+    fun fetchSecrets(deviceCode: String) {
+        //todo: add wait and run every 15 seconds
+        scope.launch {
+            val secretData = repository.getSecrets(deviceCode)
+            secretLiveData.postValue(secretData)
+        }
+
     }
 
     fun cancelRequests() = job.cancel()

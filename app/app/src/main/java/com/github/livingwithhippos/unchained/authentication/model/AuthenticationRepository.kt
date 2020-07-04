@@ -14,4 +14,15 @@ class AuthenticationRepository(private val api: AuthenticationApi) : BaseReposit
         return authResponse;
 
     }
+
+    suspend fun getSecrets(code: String): Secrets? {
+
+        val authResponse = safeApiCall(
+            call = { api.getSecrets(deviceCode = code) },
+            errorMessage = "Error Fetching Secrets"
+        )
+
+        return authResponse;
+
+    }
 }
