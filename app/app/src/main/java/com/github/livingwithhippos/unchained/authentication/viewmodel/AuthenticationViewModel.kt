@@ -35,7 +35,7 @@ class AuthenticationViewModel(savedStateHandle: SavedStateHandle) : ViewModel() 
     }
 
     fun fetchSecrets(deviceCode: String) {
-        //todo: add wait and run every 15 seconds
+        //todo: add wait and run every 5 seconds
         scope.launch {
             val secretData = repository.getSecrets(deviceCode)
             secretLiveData.postValue(secretData)
