@@ -27,8 +27,8 @@ class AuthenticationViewModel(savedStateHandle: SavedStateHandle) : ViewModel() 
     //todo: rename this first part of the auth flow as verificationInfo etc.?
     fun fetchAuthenticationInfo() {
         scope.launch {
-            val user = repository.getVerificationCode()
-            authLiveData.postValue(user)
+            val authData = repository.getVerificationCode()
+            authLiveData.postValue(authData)
         }
     }
 
