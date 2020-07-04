@@ -6,7 +6,7 @@
     <data>
 
         <import type="android.view.View"/>
-
+        <variable name="listener" type="com.github.livingwithhippos.unchained.authentication.view.ButtonListener" />
         <variable
             name="auth"
             type="com.github.livingwithhippos.unchained.authentication.model.Authentication" />
@@ -68,6 +68,7 @@
             android:layout_height="wrap_content"
             android:text="@string/copy_code"
             android:visibility="@{auth.userCode == null ? View.GONE : View.VISIBLE}"
+            android:onClick="@{() -> listener.onCopyClick(auth.userCode)}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"

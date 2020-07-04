@@ -7,4 +7,5 @@
     <string name="link">Link</string>
     <string name="insert_code">And Insert Code</string>
     <string name="copy_code">Copy Code</string>
+    <string name="code_copied">Code Copied To Clipboard</string>
 </resources>
