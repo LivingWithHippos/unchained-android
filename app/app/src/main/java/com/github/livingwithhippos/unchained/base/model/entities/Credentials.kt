@@ -7,8 +7,8 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "credentials")
 class Credentials(
     @PrimaryKey
-    @ColumnInfo(name = "username")
-    val username: String,
+    @ColumnInfo(name = "device_code")
+    val deviceCode: String,
     @ColumnInfo(name = "client_id")
     val clientId: String?,
     @ColumnInfo(name = "client_secret")
