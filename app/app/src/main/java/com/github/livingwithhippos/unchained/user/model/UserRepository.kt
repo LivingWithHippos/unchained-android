@@ -1,6 +1,6 @@
 package com.github.livingwithhippos.unchained.user.model
 
-import com.github.livingwithhippos.unchained.base.model.repository.BaseRepository
+import com.github.livingwithhippos.unchained.base.model.repositories.BaseRepository
 
 
 class UserRepository(private val api: UserApi) : BaseRepository() {
