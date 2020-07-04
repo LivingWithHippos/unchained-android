@@ -40,16 +40,20 @@ class AuthenticationFragment : Fragment(), ButtonListener {
         authBinding.listener = this
 
         viewModel.fetchAuthenticationInfo()
+        observeAuthentication(authBinding)
 
+
+        return authBinding.root
+    }
+
+    private fun observeAuthentication(binding: FragmentAuthenticationBinding) {
         viewModel.authLiveData.observe(viewLifecycleOwner, Observer {
             if (it != null) {
 
-                //fixme: data not showing even when different from null
-                authBinding.auth = it
+                binding.auth = it
+                
             }
         })
-
-        return authBinding.root
     }
 
     override fun onCopyClick(value: String) {
@@ -57,6 +61,6 @@ class AuthenticationFragment : Fragment(), ButtonListener {
         val clip: ClipData = ClipData.newPlainText("real-debrid authorization code", value)
         // Set the clipboard's primary clip.
         clipboard.setPrimaryClip(clip)
-        Toast.makeText(requireContext(),getString(R.string.code_copied),Toast.LENGTH_SHORT).show()
+        Toast.makeText(requireContext(), getString(R.string.code_copied), Toast.LENGTH_SHORT).show()
     }
 }
