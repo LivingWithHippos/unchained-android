@@ -25,10 +25,6 @@ data class User(
     val expiration: String
 )
 
-data class UserResponse(
-    val result: User
-)
-
 interface UserApi {
     @GET("user")
     suspend fun getUser(): Response<User>

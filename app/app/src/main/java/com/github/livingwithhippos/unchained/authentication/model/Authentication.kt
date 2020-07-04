@@ -20,10 +20,6 @@ data class Authentication(
     val verificationUrl: String
 )
 
-data class AuthenticationResponse(
-    val result: Authentication
-)
-
 interface AuthenticationApi {
 
     @GET("/device/code")
