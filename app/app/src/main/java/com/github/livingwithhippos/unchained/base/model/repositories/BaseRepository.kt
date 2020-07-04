@@ -1,4 +1,4 @@
-package com.github.livingwithhippos.unchained.base.model.repository
+package com.github.livingwithhippos.unchained.base.model.repositories
 
 import android.util.Log
 import com.github.livingwithhippos.unchained.base.network.NetworkResponse
