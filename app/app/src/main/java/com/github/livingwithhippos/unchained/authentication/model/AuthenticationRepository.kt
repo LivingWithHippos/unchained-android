@@ -1,6 +1,6 @@
 package com.github.livingwithhippos.unchained.authentication.model
 
-import com.github.livingwithhippos.unchained.base.model.BaseRepository
+import com.github.livingwithhippos.unchained.base.model.repository.BaseRepository
 
 class AuthenticationRepository(private val api: AuthenticationApi) : BaseRepository() {
 
