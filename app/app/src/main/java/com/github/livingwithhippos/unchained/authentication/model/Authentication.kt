@@ -23,7 +23,7 @@ data class Authentication(
 
 interface AuthenticationApi {
 
-    @GET("/device/code")
+    @GET("device/code")
     suspend fun getAuthentication(
         @Query("client_id") id: String = OPEN_SOURCE_CLIENT_ID,
         @Query("new_credentials") newCredentials: String = "yes"
