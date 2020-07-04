@@ -57,9 +57,9 @@ class AuthenticationFragment : Fragment(), ButtonListener {
         return authBinding.root
     }
 
-    override fun onCopyClick(value: String) {
+    override fun onCopyClick(code: String) {
         val clipboard = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        val clip: ClipData = ClipData.newPlainText("real-debrid authorization code", value)
+        val clip: ClipData = ClipData.newPlainText("real-debrid authorization code", code)
         // Set the clipboard's primary clip.
         clipboard.setPrimaryClip(clip)
         Toast.makeText(requireContext(),getString(R.string.code_copied),Toast.LENGTH_SHORT).show()
