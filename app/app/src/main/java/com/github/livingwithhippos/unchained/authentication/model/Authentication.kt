@@ -39,7 +39,7 @@ interface AuthenticationApi {
         @Query("new_credentials") newCredentials: String = "yes"
     ): Response<Authentication>
 
-    @GET("/device/credentials")
+    @GET("device/credentials")
     suspend fun getSecrets(
         @Query("client_id") id: String = OPEN_SOURCE_CLIENT_ID,
         @Query("code") deviceCode: String
