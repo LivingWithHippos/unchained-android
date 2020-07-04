@@ -48,6 +48,7 @@ dependencies {
     def material_version = '1.1.0'
     def retrofit_version = '2.9.0'
     def moshi_version = '1.9.3'
+    def okhttp_version = '4.7.2'
 
 
     implementation fileTree(dir: "libs", include: ["*.jar"])
@@ -67,7 +68,9 @@ dependencies {
     implementation "com.squareup.retrofit2:converter-moshi:$retrofit_version"
 
     //okhttp
-    implementation "com.squareup.okhttp3:okhttp:4.7.2"
+    implementation "com.squareup.okhttp3:okhttp:$okhttp_version"
+    //okhttp logging
+    implementation "com.squareup.okhttp3:logging-interceptor:$okhttp_version"
 
     // navigation
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
