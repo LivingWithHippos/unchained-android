@@ -88,7 +88,7 @@
                     android:id="@+id/flPremiumBackground"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="#345">
+                    android:background="@{user.premium > 0 ? @color/premium_gold : @color/free_red}">
 
                     <TextView
                         android:id="@+id/tvPremium"
