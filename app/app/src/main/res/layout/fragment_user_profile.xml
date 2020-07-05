@@ -94,7 +94,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:text="@{user.premium}"
+                        android:text="@{String.valueOf(user.premium)}"
                         android:textSize="20sp" />
                 </FrameLayout>
 
@@ -128,7 +128,7 @@
                     app:layout_constraintBottom_toBottomOf="@id/pointsBar"
                     app:layout_constraintStart_toStartOf="@id/pointsBar"
                     app:layout_constraintEnd_toEndOf="@id/pointsBar"
-                    android:text="@{user.points}"
+                    android:text="@{String.valueOf(user.points)}"
                     />
 
 
