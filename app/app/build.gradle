@@ -60,6 +60,7 @@ dependencies {
     def okhttp_version = '4.7.2'
     def lifecycle_version = "2.2.0"
     def arch_version = "2.1.0"
+    def hilt_viewmodel_version ="1.0.0-alpha01"
 
 
     implementation fileTree(dir: "libs", include: ["*.jar"])
@@ -118,6 +119,9 @@ dependencies {
     //hilt
     implementation "com.google.dagger:hilt-android:$rootProject.hilt_version"
     kapt "com.google.dagger:hilt-android-compiler:$rootProject.hilt_version"
+    implementation "androidx.hilt:hilt-lifecycle-viewmodel:$hilt_viewmodel_version"
+    kapt "androidx.hilt:hilt-compiler:$hilt_viewmodel_version"
+
 
     testImplementation 'junit:junit:4.13'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
