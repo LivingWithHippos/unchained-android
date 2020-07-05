@@ -13,6 +13,7 @@ import com.github.livingwithhippos.unchained.base.model.repositories.Credentials
 import com.github.livingwithhippos.unchained.base.network.ApiAuthFactory
 import kotlinx.coroutines.*
 
+//todo: add state saving and loading
 class AuthenticationViewModel(application: Application) : ViewModel() {
 
     private val job = Job()
