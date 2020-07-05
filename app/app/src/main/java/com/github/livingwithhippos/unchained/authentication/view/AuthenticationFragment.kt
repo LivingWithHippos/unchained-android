@@ -73,6 +73,7 @@ class AuthenticationFragment : Fragment(), ButtonListener {
         viewModel.fetchToken(deviceCode, clientSecret)
         viewModel.tokenLiveData.observe(viewLifecycleOwner, Observer {
             if (it?.accessToken != null) {
+                //todo: navigate to main fragment
                 Log.d("VALUE FOUND", "GOT TOKEN")
             }
         })
