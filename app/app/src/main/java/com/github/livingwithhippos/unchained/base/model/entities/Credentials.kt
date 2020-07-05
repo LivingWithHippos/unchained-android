@@ -12,5 +12,9 @@ class Credentials(
     @ColumnInfo(name = "client_id")
     val clientId: String?,
     @ColumnInfo(name = "client_secret")
-    val clientSecret: String?
+    val clientSecret: String?,
+    @ColumnInfo(name = "access_token")
+    val accessToken: String?,
+    @ColumnInfo(name = "refresh_token")
+    val refreshToken: String?
 )

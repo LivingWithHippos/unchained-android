@@ -14,5 +14,8 @@ class CredentialsRepository(private val credentialsDao: CredentialsDao) {
     suspend fun updateSecrets(username: String, clientId: String, clientSecret: String) =
         credentialsDao.updateSecrets(username, clientId, clientSecret)
 
+    suspend fun updateToken(deviceCode: String, accessToken: String, refreshToken: String) =
+        credentialsDao.updateToken(deviceCode, accessToken, refreshToken)
+
     suspend fun insert(credentials: Credentials) = credentialsDao.insert(credentials)
 }

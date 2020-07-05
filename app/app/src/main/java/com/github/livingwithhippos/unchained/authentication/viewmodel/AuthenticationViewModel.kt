@@ -2,7 +2,6 @@ package com.github.livingwithhippos.unchained.authentication.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.github.livingwithhippos.unchained.authentication.model.Authentication
 import com.github.livingwithhippos.unchained.authentication.model.AuthenticationRepository
@@ -42,7 +41,7 @@ class AuthenticationViewModel(application: Application) : ViewModel() {
             val authData = repository.getVerificationCode()
             authLiveData.postValue(authData)
             if (authData?.deviceCode != null)
-                credentialRepository.insert(Credentials(authData.deviceCode,null,null))
+                credentialRepository.insert(Credentials(authData.deviceCode,null,null, null,null))
         }
     }
 
