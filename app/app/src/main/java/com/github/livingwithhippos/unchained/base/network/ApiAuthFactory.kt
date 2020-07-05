@@ -30,7 +30,7 @@ object ApiAuthFactory {
     private val debridClient: OkHttpClient = OkHttpClient().newBuilder()
         .addInterceptor(authInterceptor)
         .build()
-
+    //todo: remove logger when finished
     val logInterceptor : HttpLoggingInterceptor = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY
     }

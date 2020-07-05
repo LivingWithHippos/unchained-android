@@ -5,6 +5,7 @@ import com.github.livingwithhippos.unchained.utilities.BASE_URL
 import com.github.livingwithhippos.unchained.utilities.OPEN_SOURCE_CLIENT_ID
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 
@@ -30,10 +31,18 @@ class ApiFactory(val token: String){
     private val debridClient: OkHttpClient = OkHttpClient().newBuilder()
         .addInterceptor(authInterceptor)
         .build()
+    //todo: remove logger when finished
+    val logInterceptor : HttpLoggingInterceptor = HttpLoggingInterceptor().apply {
+        level = HttpLoggingInterceptor.Level.BODY
+    }
 
+    //OkhttpClient for building http request url
+    private val logClient: OkHttpClient = OkHttpClient().newBuilder()
+        .addInterceptor(logInterceptor)
+        .build()
 
     fun retrofit(): Retrofit = Retrofit.Builder()
-        .client(debridClient)
+        .client(logClient)
         .baseUrl(BASE_URL)
         .addConverterFactory(MoshiConverterFactory.create())
         .build()
