@@ -38,6 +38,7 @@ class ApiFactory(val token: String){
 
     //OkhttpClient for building http request url
     private val logClient: OkHttpClient = OkHttpClient().newBuilder()
+        .addInterceptor(authInterceptor)
         .addInterceptor(logInterceptor)
         .build()
 
