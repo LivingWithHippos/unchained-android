@@ -58,7 +58,6 @@ class AuthenticationFragment : Fragment(), ButtonListener {
     }
 
     private fun observeSecrets(binding: FragmentAuthenticationBinding, deviceCode: String){
-        //fixme: D/BaseRepository: Error Fetching Secrets
         // start checking for user confirmation
         viewModel.fetchSecrets(deviceCode)
         viewModel.secretLiveData.observe(viewLifecycleOwner, Observer {

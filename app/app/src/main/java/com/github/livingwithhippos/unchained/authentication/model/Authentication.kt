@@ -5,10 +5,7 @@ import com.github.livingwithhippos.unchained.utilities.OPEN_SOURCE_GRANT_TYPE
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import retrofit2.Response
-import retrofit2.http.Field
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Query
+import retrofit2.http.*
 
 @JsonClass(generateAdapter = true)
 data class Authentication(
@@ -60,6 +57,8 @@ interface AuthenticationApi {
         @Query("code") deviceCode: String
     ): Response<Secrets>
 
+
+    @FormUrlEncoded
     @POST("token")
     suspend fun getToken(
         @Field("client_id") clientId: String= OPEN_SOURCE_CLIENT_ID,
