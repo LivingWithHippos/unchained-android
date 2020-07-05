@@ -8,18 +8,18 @@ import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 
-object ApiFactory {
+class ApiFactory(val token: String){
     //todo: check if client id is correct, or a personal one is needed beside the first auth
 
     //Creating Auth Interceptor to add client_id query in front of all the requests.
     private val authInterceptor = Interceptor { chain ->
         val newUrl = chain.request().url
             .newBuilder()
-            .addQueryParameter("client_id", OPEN_SOURCE_CLIENT_ID)
             .build()
 
         val newRequest = chain.request()
             .newBuilder()
+            .addHeader("Authorization", "Bearer $token")
             .url(newUrl)
             .build()
 
