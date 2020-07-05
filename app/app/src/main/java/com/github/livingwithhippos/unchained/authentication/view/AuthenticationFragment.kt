@@ -62,7 +62,18 @@ class AuthenticationFragment : Fragment(), ButtonListener {
         viewModel.fetchSecrets(deviceCode)
         viewModel.secretLiveData.observe(viewLifecycleOwner, Observer {
             if (it?.clientId != null) {
-                Log.d("VALUE FOUND", "GOT SECRETS")
+                observeToken(deviceCode, it.clientSecret)
+            }
+        })
+    }
+
+    private fun observeToken(deviceCode: String, clientSecret: String){
+
+        // start checking for user confirmation
+        viewModel.fetchToken(deviceCode, clientSecret)
+        viewModel.tokenLiveData.observe(viewLifecycleOwner, Observer {
+            if (it?.accessToken != null) {
+                Log.d("VALUE FOUND", "GOT TOKEN")
             }
         })
     }

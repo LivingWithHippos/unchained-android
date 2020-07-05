@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.github.livingwithhippos.unchained.authentication.model.Authentication
 import com.github.livingwithhippos.unchained.authentication.model.AuthenticationRepository
 import com.github.livingwithhippos.unchained.authentication.model.Secrets
+import com.github.livingwithhippos.unchained.authentication.model.Token
 import com.github.livingwithhippos.unchained.base.model.database.UnchaindeDB
 import com.github.livingwithhippos.unchained.base.model.entities.Credentials
 import com.github.livingwithhippos.unchained.base.model.repositories.CredentialsRepository
@@ -32,6 +33,7 @@ class AuthenticationViewModel(application: Application) : ViewModel() {
 
     val authLiveData = MutableLiveData<Authentication?>()
     val secretLiveData = MutableLiveData<Secrets?>()
+    val tokenLiveData = MutableLiveData<Token?>()
 
     //todo: here we should check if we already have credentials and if they work, and pass those
     //todo: rename this first part of the auth flow as verificationInfo etc.?
@@ -63,6 +65,13 @@ class AuthenticationViewModel(application: Application) : ViewModel() {
             }
         }
 
+    }
+
+    fun fetchToken(deviceCode: String, clientSecret: String){
+        scope.launch {
+            val tokenData = repository.getToken(deviceCode,clientSecret)
+            tokenLiveData.postValue(tokenData)
+        }
     }
 
     fun cancelRequests() = job.cancel()
