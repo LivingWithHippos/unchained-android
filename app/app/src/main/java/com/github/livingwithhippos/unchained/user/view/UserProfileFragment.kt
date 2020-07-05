@@ -41,8 +41,10 @@ class UserProfileFragment : Fragment() {
 
         viewModel.userLiveData.observe(viewLifecycleOwner, Observer {
 
-            if (it != null)
+            if (it != null) {
                 userBinding.user = it
+            }
+
             //todo: manage null
         })
 
