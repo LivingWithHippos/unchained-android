@@ -99,6 +99,8 @@
             android:layout_height="wrap_content"
             android:autoLink="web"
             android:text="@{auth.directVerificationUrl}"
+            android:ellipsize="middle"
+            android:singleLine="true"
             android:visibility="@{auth.directVerificationUrl == null ? View.GONE : View.VISIBLE}"
             app:layout_constraintBottom_toTopOf="@+id/cbLink"
             app:layout_constraintEnd_toEndOf="parent"
