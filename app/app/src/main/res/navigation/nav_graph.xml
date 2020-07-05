@@ -6,5 +6,17 @@
     <fragment
         android:id="@+id/authenticationFragment"
         android:name="com.github.livingwithhippos.unchained.authentication.view.AuthenticationFragment"
-        android:label="AuthenticationFragment" />
+        android:label="AuthenticationFragment" >
+        <action
+            android:id="@+id/actionAuthenticationToUser"
+            app:destination="@id/userProfileFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/userProfileFragment"
+        android:name="com.github.livingwithhippos.unchained.user.view.UserProfileFragment"
+        android:label="UserProfileFragment" >
+        <argument
+            android:name="token"
+            app:argType="string" />
+    </fragment>
 </navigation>

@@ -20,10 +20,14 @@ class UserProfileViewModel(application: Application) : AndroidViewModel(applicat
     private val job = Job()
     val scope = CoroutineScope(Dispatchers.Default + job)
 
-    private val repository: UserRepository =
-        UserRepository(
-            ApiFactory.userApi
-        )
+    private lateinit var repository: UserRepository
+
+    fun initRepository(token: String) {
+        repository =
+            UserRepository(
+                ApiFactory(token).userApi
+            )
+    }
 
     val userLiveData = MutableLiveData<User?>()
 

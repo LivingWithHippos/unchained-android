@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.authentication.viewmodel.AuthenticationViewModel
 import com.github.livingwithhippos.unchained.databinding.FragmentAuthenticationBinding
@@ -75,8 +76,8 @@ class AuthenticationFragment : Fragment(), ButtonListener {
         viewModel.tokenLiveData.observe(viewLifecycleOwner, Observer {
             if (it?.accessToken != null) {
                 binding.token = it
-                //todo: navigate to main fragment
-                Log.d("VALUE FOUND", "GOT TOKEN")
+                val action = AuthenticationFragmentDirections.actionAuthenticationToUser(it.accessToken)
+                findNavController().navigate(action)
             }
         })
     }
