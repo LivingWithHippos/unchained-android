@@ -1,10 +1,12 @@
 package com.github.livingwithhippos.unchained.base.model.dao
 
+import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.github.livingwithhippos.unchained.base.model.entities.Credentials
 
+@Dao
 interface CredentialsDao {
 
     @Query("SELECT * FROM credentials WHERE device_code = :deviceCode")
