@@ -16,4 +16,6 @@
     <string name="obtained_token">Obtained Token</string>
     <string name="waiting_link">Loading Authorization Link</string>
     <string name="link_loaded">Authorization Link Loaded</string>
+    <string name="premium">Premium</string>
+    <string name="not_premium">Not Premium</string>
 </resources>

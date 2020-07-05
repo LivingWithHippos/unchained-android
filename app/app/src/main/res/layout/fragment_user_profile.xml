@@ -95,7 +95,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:text="@{String.valueOf(user.premium)}"
+                        android:textAllCaps="true"
+                        android:text="@{user.premium > 0 ? @string/premium : @string/not_premium}"
                         android:textSize="20sp" />
                 </FrameLayout>
 
