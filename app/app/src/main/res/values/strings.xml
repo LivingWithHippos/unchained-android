@@ -2,7 +2,7 @@
     <string name="app_name">Unchained</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="loading_auth_link">Loading Authentication...</string>
+    <string name="loading_auth_link">Loading Authentication…</string>
     <string name="please_go">Please go on</string>
     <string name="link">Link</string>
     <string name="insert_code">And Insert Code</string>
