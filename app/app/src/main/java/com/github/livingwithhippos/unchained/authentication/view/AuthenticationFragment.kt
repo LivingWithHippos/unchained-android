@@ -63,15 +63,15 @@ class AuthenticationFragment : Fragment(), ButtonListener {
         viewModel.secretLiveData.observe(viewLifecycleOwner, Observer {
             if (it?.clientId != null) {
                 binding.secrets = it
-                observeToken(binding, deviceCode, it.clientSecret)
+                observeToken(binding, it.clientId, deviceCode, it.clientSecret)
             }
         })
     }
 
-    private fun observeToken(binding: FragmentAuthenticationBinding, deviceCode: String, clientSecret: String){
+    private fun observeToken(binding: FragmentAuthenticationBinding, clientId: String, deviceCode: String, clientSecret: String){
 
         // start checking for user confirmation
-        viewModel.fetchToken(deviceCode, clientSecret)
+        viewModel.fetchToken(clientId, deviceCode, clientSecret)
         viewModel.tokenLiveData.observe(viewLifecycleOwner, Observer {
             if (it?.accessToken != null) {
                 binding.token = it

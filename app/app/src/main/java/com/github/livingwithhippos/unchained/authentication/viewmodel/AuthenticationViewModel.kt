@@ -67,10 +67,10 @@ class AuthenticationViewModel(application: Application) : AndroidViewModel(appli
 
     }
 
-    fun fetchToken(deviceCode: String, clientSecret: String){
+    fun fetchToken(clientId: String, deviceCode: String, clientSecret: String){
         //todo: should we blank unnecessary secrets when we have a working token?
         scope.launch {
-            val tokenData = repository.getToken(deviceCode,clientSecret)
+            val tokenData = repository.getToken(clientId, clientSecret, deviceCode)
             tokenLiveData.postValue(tokenData)
             if (tokenData?.accessToken != null)
                 credentialRepository.updateToken(deviceCode,tokenData.accessToken,tokenData.refreshToken)

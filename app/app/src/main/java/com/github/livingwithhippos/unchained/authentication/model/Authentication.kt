@@ -57,12 +57,10 @@ interface AuthenticationApi {
         @Query("code") deviceCode: String
     ): Response<Secrets>
 
-    //fixme: "error": "wrong_parameter",
-
     @FormUrlEncoded
     @POST("token")
     suspend fun getToken(
-        @Field("client_id") clientId: String= OPEN_SOURCE_CLIENT_ID,
+        @Field("client_id") clientId: String,
         @Field("client_secret") clientSecret: String,
         @Field("code") deviceCode: String,
         @Field("grant_type") grantType: String = OPEN_SOURCE_GRANT_TYPE
