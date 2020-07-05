@@ -1,9 +1,12 @@
 package com.github.livingwithhippos.unchained.user.model
 
 import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 import retrofit2.Response
 import retrofit2.http.GET
+import retrofit2.http.Headers
 
+@JsonClass(generateAdapter = true)
 data class User(
     @Json(name = "id")
     val id: Int,
