@@ -57,6 +57,7 @@ interface AuthenticationApi {
         @Query("code") deviceCode: String
     ): Response<Secrets>
 
+    //fixme: "error": "wrong_parameter",
 
     @FormUrlEncoded
     @POST("token")
