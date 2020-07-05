@@ -22,112 +22,92 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/tvPlease"
+        <LinearLayout
+            android:id="@+id/llLinks"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/please_go"
-            app:layout_constraintBottom_toTopOf="@+id/tvLink"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_chainStyle="packed" />
-
-        <TextView
-            android:id="@+id/tvLink"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:autoLink="web"
-            android:text="@{auth.verificationUrl}"
-            app:layout_constraintBottom_toTopOf="@+id/tvInsert"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvPlease" />
-
-        <TextView
-            android:id="@+id/tvInsert"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/insert_code"
-            app:layout_constraintBottom_toTopOf="@+id/tvCode"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvLink" />
-
-        <TextView
-            android:id="@+id/tvCode"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@{auth.userCode}"
-            app:layout_constraintBottom_toTopOf="@+id/bCopy"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvInsert" />
-
-        <Button
-            android:id="@+id/bCopy"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="@{() -> listener.onCopyClick(auth.userCode)}"
-            android:text="@string/copy_code"
-            android:visibility="@{auth.userCode == null ? View.GONE : View.VISIBLE}"
-            app:layout_constraintBottom_toTopOf="@+id/tvOrVisit"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvCode" />
-
-        <TextView
-            android:id="@+id/tvOrVisit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/or_visit"
-            android:visibility="@{auth.directVerificationUrl == null ? View.GONE : View.VISIBLE}"
-            app:layout_constraintBottom_toTopOf="@+id/tvDirectLink"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/bCopy" />
-
-        <TextView
-            android:id="@+id/tvDirectLink"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:autoLink="web"
-            android:text="@{auth.directVerificationUrl}"
-            android:ellipsize="middle"
-            android:singleLine="true"
-            android:visibility="@{auth.directVerificationUrl == null ? View.GONE : View.VISIBLE}"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:visibility="@{secrets.clientSecret == null ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toTopOf="@+id/cbLink"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvOrVisit" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed">
+
+            <TextView
+                android:id="@+id/tvPlease"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/please_go" />
+
+            <TextView
+                android:id="@+id/tvLink"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:autoLink="web"
+                android:text="@{auth.verificationUrl}" />
+
+            <TextView
+                android:id="@+id/tvInsert"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/insert_code" />
+
+            <TextView
+                android:id="@+id/tvCode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{auth.userCode}" />
+
+            <Button
+                android:id="@+id/bCopy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="@{() -> listener.onCopyClick(auth.userCode)}"
+                android:text="@string/copy_code"
+                android:visibility="@{auth.userCode == null ? View.GONE : View.VISIBLE}" />
+
+            <TextView
+                android:id="@+id/tvOrVisit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/or_visit"
+                android:visibility="@{auth.directVerificationUrl == null ? View.GONE : View.VISIBLE}" />
+
+            <TextView
+                android:id="@+id/tvDirectLink"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:autoLink="web"
+                android:ellipsize="middle"
+                android:singleLine="true"
+                android:text="@{auth.directVerificationUrl}"
+                android:visibility="@{auth.directVerificationUrl == null ? View.GONE : View.VISIBLE}" />
+
+        </LinearLayout>
 
         <CheckBox
             android:id="@+id/cbLink"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{auth.userCode == null ? @string/waiting_link : @string/link_loaded}"
             android:checked="@{auth.userCode == null ? false : true}"
             android:clickable="false"
+            android:text="@{auth.userCode == null ? @string/waiting_link : @string/link_loaded}"
             app:layout_constraintBottom_toTopOf="@+id/cbSecret"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvDirectLink" />
+            app:layout_constraintTop_toBottomOf="@+id/llLinks" />
 
         <CheckBox
             android:id="@+id/cbSecret"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{secrets.clientSecret == null ? @string/waiting_user_auth : @string/obtained_user_auth}"
             android:checked="@{secrets.clientSecret == null ? false : true}"
             android:clickable="false"
+            android:text="@{secrets.clientSecret == null ? @string/waiting_user_auth : @string/obtained_user_auth}"
             app:layout_constraintBottom_toTopOf="@+id/cbToken"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -138,9 +118,9 @@
             android:id="@+id/cbToken"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{token.accessToken == null ? @string/waiting_token : @string/obtained_token}"
             android:checked="@{token.accessToken == null ? false : true}"
             android:clickable="false"
+            android:text="@{token.accessToken == null ? @string/waiting_token : @string/obtained_token}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
