@@ -10,6 +10,12 @@
         <variable
             name="auth"
             type="com.github.livingwithhippos.unchained.authentication.model.Authentication" />
+        <variable
+            name="secrets"
+            type="com.github.livingwithhippos.unchained.authentication.model.Secrets" />
+        <variable
+            name="token"
+            type="com.github.livingwithhippos.unchained.authentication.model.Token" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -32,8 +38,8 @@
             android:id="@+id/tvLink"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{auth.verificationUrl}"
             android:autoLink="web"
+            android:text="@{auth.verificationUrl}"
             app:layout_constraintBottom_toTopOf="@+id/tvInsert"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -66,9 +72,9 @@
             android:id="@+id/bCopy"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:onClick="@{() -> listener.onCopyClick(auth.userCode)}"
             android:text="@string/copy_code"
             android:visibility="@{auth.userCode == null ? View.GONE : View.VISIBLE}"
-            android:onClick="@{() -> listener.onCopyClick(auth.userCode)}"
             app:layout_constraintBottom_toTopOf="@+id/tvOrVisit"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -91,14 +97,53 @@
             android:id="@+id/tvDirectLink"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:autoLink="web"
             android:text="@{auth.directVerificationUrl}"
             android:visibility="@{auth.directVerificationUrl == null ? View.GONE : View.VISIBLE}"
-            android:autoLink="web"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/cbLink"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvOrVisit" />
+
+        <CheckBox
+            android:id="@+id/cbLink"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/waiting_link"
+            android:checked="@{auth.userCode == null ? false : true}"
+            android:clickable="false"
+            app:layout_constraintBottom_toTopOf="@+id/cbSecret"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvDirectLink" />
+
+        <CheckBox
+            android:id="@+id/cbSecret"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/waiting_user_auth"
+            android:checked="@{secrets.clientSecret == null ? false : true}"
+            android:clickable="false"
+            app:layout_constraintBottom_toTopOf="@+id/cbToken"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cbLink" />
+
+        <CheckBox
+            android:id="@+id/cbToken"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/waiting_token"
+            android:checked="@{token.accessToken == null ? false : true}"
+            android:clickable="false"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cbSecret" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

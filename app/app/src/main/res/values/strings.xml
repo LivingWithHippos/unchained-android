@@ -9,4 +9,8 @@
     <string name="copy_code">Copy Code</string>
     <string name="code_copied">Code Copied To Clipboard</string>
     <string name="or_visit">Or directly visit</string>
+    <string name="waiting_user_auth">Waiting User Authorization</string>
+    <string name="waiting_secret">Waiting Secret</string>
+    <string name="waiting_token">Waiting Token</string>
+    <string name="waiting_link">Loading Authorization Link</string>
 </resources>

@@ -52,28 +52,30 @@ class AuthenticationFragment : Fragment(), ButtonListener {
         viewModel.authLiveData.observe(viewLifecycleOwner, Observer {
             if (it != null) {
                 binding.auth = it
-                observeSecrets(it.deviceCode)
+                observeSecrets(binding, it.deviceCode)
             }
         })
     }
 
-    private fun observeSecrets(deviceCode: String){
-
+    private fun observeSecrets(binding: FragmentAuthenticationBinding, deviceCode: String){
+        //fixme: D/BaseRepository: Error Fetching Secrets
         // start checking for user confirmation
         viewModel.fetchSecrets(deviceCode)
         viewModel.secretLiveData.observe(viewLifecycleOwner, Observer {
             if (it?.clientId != null) {
-                observeToken(deviceCode, it.clientSecret)
+                binding.secrets = it
+                observeToken(binding, deviceCode, it.clientSecret)
             }
         })
     }
 
-    private fun observeToken(deviceCode: String, clientSecret: String){
+    private fun observeToken(binding: FragmentAuthenticationBinding, deviceCode: String, clientSecret: String){
 
         // start checking for user confirmation
         viewModel.fetchToken(deviceCode, clientSecret)
         viewModel.tokenLiveData.observe(viewLifecycleOwner, Observer {
             if (it?.accessToken != null) {
+                binding.token = it
                 //todo: navigate to main fragment
                 Log.d("VALUE FOUND", "GOT TOKEN")
             }
