@@ -2,7 +2,6 @@ package com.github.livingwithhippos.unchained.base.network
 
 import com.github.livingwithhippos.unchained.user.model.UserApi
 import com.github.livingwithhippos.unchained.utilities.BASE_URL
-import com.github.livingwithhippos.unchained.utilities.OPEN_SOURCE_CLIENT_ID
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -12,7 +11,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 class ApiFactory(val token: String){
     //todo: check if client id is correct, or a personal one is needed beside the first auth
 
-    //Creating Auth Interceptor to add client_id query in front of all the requests.
+    //Creating Auth Interceptor to add the authentication header
     private val authInterceptor = Interceptor { chain ->
         val newUrl = chain.request().url
             .newBuilder()
