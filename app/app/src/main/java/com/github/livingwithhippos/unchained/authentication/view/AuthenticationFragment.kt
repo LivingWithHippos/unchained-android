@@ -16,6 +16,7 @@ import androidx.navigation.fragment.findNavController
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.authentication.viewmodel.AuthenticationViewModel
 import com.github.livingwithhippos.unchained.databinding.FragmentAuthenticationBinding
+import dagger.hilt.android.AndroidEntryPoint
 
 
 /**
@@ -23,6 +24,7 @@ import com.github.livingwithhippos.unchained.databinding.FragmentAuthenticationB
  * Use the [AuthenticationFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
+@AndroidEntryPoint
 class AuthenticationFragment : Fragment(), ButtonListener {
 
     private lateinit var viewModel: AuthenticationViewModel

@@ -1,12 +1,14 @@
 package com.github.livingwithhippos.unchained.authentication.viewmodel
 
 import android.app.Application
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.github.livingwithhippos.unchained.authentication.model.Authentication
 import com.github.livingwithhippos.unchained.authentication.model.AuthenticationRepository
 import com.github.livingwithhippos.unchained.authentication.model.Secrets
 import com.github.livingwithhippos.unchained.authentication.model.Token
+import com.github.livingwithhippos.unchained.base.model.dao.CredentialsDao
 import com.github.livingwithhippos.unchained.base.model.database.UnchaindeDB
 import com.github.livingwithhippos.unchained.base.model.entities.Credentials
 import com.github.livingwithhippos.unchained.base.model.repositories.CredentialsRepository
@@ -14,7 +16,7 @@ import com.github.livingwithhippos.unchained.base.network.ApiAuthFactory
 import kotlinx.coroutines.*
 
 //todo: add state saving and loading
-class AuthenticationViewModel(application: Application) : AndroidViewModel(application) {
+class AuthenticationViewModel @ViewModelInject constructor(application: Application, private val credentialRepository : CredentialsRepository) : AndroidViewModel(application) {
 
     private val job = Job()
     val scope = CoroutineScope(Dispatchers.Default + job)
@@ -23,13 +25,6 @@ class AuthenticationViewModel(application: Application) : AndroidViewModel(appli
         AuthenticationRepository(
             ApiAuthFactory.authApi
         )
-
-    private val credentialRepository : CredentialsRepository
-
-    init {
-        val credentialsDao = UnchaindeDB.getDatabase(application).credentialsDao()
-        credentialRepository = CredentialsRepository(credentialsDao)
-    }
 
     val authLiveData = MutableLiveData<Authentication?>()
     val secretLiveData = MutableLiveData<Secrets?>()
