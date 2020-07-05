@@ -71,6 +71,8 @@ class AuthenticationViewModel(application: Application) : ViewModel() {
         scope.launch {
             val tokenData = repository.getToken(deviceCode,clientSecret)
             tokenLiveData.postValue(tokenData)
+            if (tokenData?.accessToken != null)
+                credentialRepository.updateToken(deviceCode,tokenData.accessToken,tokenData.refreshToken)
         }
     }
 
