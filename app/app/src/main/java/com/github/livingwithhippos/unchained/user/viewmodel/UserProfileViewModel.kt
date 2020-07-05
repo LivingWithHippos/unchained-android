@@ -1,5 +1,7 @@
 package com.github.livingwithhippos.unchained.user.viewmodel
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -12,7 +14,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 //todo: add loading of saved state
-class UserProfileViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
+class UserProfileViewModel(application: Application) : AndroidViewModel(application) {
 
 
     private val job = Job()

@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import com.github.livingwithhippos.unchained.authentication.viewmodel.AuthenticationViewModel
 import com.github.livingwithhippos.unchained.databinding.FragmentUserProfileBinding
 import com.github.livingwithhippos.unchained.user.viewmodel.UserProfileViewModel
 
@@ -17,11 +19,12 @@ import com.github.livingwithhippos.unchained.user.viewmodel.UserProfileViewModel
  */
 class UserProfileFragment : Fragment() {
 
-    private val viewModel: UserProfileViewModel by viewModels()
+    private lateinit var viewModel: UserProfileViewModel
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        viewModel = ViewModelProvider(this).get(UserProfileViewModel::class.java)
     }
 
     override fun onCreateView(
