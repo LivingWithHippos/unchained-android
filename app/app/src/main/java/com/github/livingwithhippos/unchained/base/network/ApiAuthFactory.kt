@@ -1,5 +1,6 @@
 package com.github.livingwithhippos.unchained.base.network
 
+import com.github.livingwithhippos.unchained.BuildConfig
 import com.github.livingwithhippos.unchained.authentication.model.AuthenticationApi
 import com.github.livingwithhippos.unchained.utilities.BASE_AUTH_URL
 import dagger.Module
@@ -28,15 +29,25 @@ object ApiAuthFactory {
 
     @Provides
     @Singleton
-    fun provideLoggerClient(): OkHttpClient {
-        //todo: remove logger when finished
-        val logInterceptor: HttpLoggingInterceptor = HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BODY
+    fun provideOkHttpClient(): OkHttpClient {
+        //note: alternatively use a different build flavor
+        // https://proandroiddev.com/think-before-using-buildconfig-debug-f2e279da7bad
+        if (BuildConfig.DEBUG) {
+            val logInterceptor: HttpLoggingInterceptor = HttpLoggingInterceptor().apply {
+                level = HttpLoggingInterceptor.Level.BODY
+            }
+
+            return OkHttpClient().newBuilder()
+                .addInterceptor(logInterceptor)
+                .build()
+
+        } else {
+
+            return OkHttpClient()
+                .newBuilder()
+                .build()
         }
 
-        return OkHttpClient().newBuilder()
-            .addInterceptor(logInterceptor)
-            .build()
     }
 
     @Provides
