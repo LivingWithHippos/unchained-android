@@ -8,6 +8,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 
+//todo: move d.i. here
 class ApiFactory(val token: String) {
     //todo: check if client id is correct, or a personal one is needed beside the first auth
 
