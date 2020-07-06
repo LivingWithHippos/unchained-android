@@ -2,7 +2,12 @@ package com.github.livingwithhippos.unchained.base.network
 
 import com.github.livingwithhippos.unchained.BuildConfig
 import com.github.livingwithhippos.unchained.authentication.model.AuthenticationApi
+import com.github.livingwithhippos.unchained.base.di.*
+import com.github.livingwithhippos.unchained.user.model.UserApi
+import com.github.livingwithhippos.unchained.user.model.UserApiHelper
+import com.github.livingwithhippos.unchained.user.model.UserApiHelperImpl
 import com.github.livingwithhippos.unchained.utilities.BASE_AUTH_URL
+import com.github.livingwithhippos.unchained.utilities.BASE_URL
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,18 +24,10 @@ import javax.inject.Singleton
 @Module
 object ApiAuthFactory {
 
-
-    //OkhttpClient for building http request url
-    private val debridClient: OkHttpClient = OkHttpClient().newBuilder()
-        .build()
-
-    @Provides
-    fun provideBaseUrl() = BASE_AUTH_URL
-
     @Provides
     @Singleton
     fun provideOkHttpClient(): OkHttpClient {
-        //note: alternatively use a different build flavor
+        // note: alternatively use a different build flavor
         // https://proandroiddev.com/think-before-using-buildconfig-debug-f2e279da7bad
         if (BuildConfig.DEBUG) {
             val logInterceptor: HttpLoggingInterceptor = HttpLoggingInterceptor().apply {
@@ -52,7 +49,17 @@ object ApiAuthFactory {
 
     @Provides
     @Singleton
-    fun retrofit(okHttpClient: OkHttpClient, BASE_URL: String): Retrofit = Retrofit.Builder()
+    @AuthRetrofit
+    fun authRetrofit(okHttpClient: OkHttpClient): Retrofit = Retrofit.Builder()
+        .client(okHttpClient)
+        .baseUrl(BASE_AUTH_URL)
+        .addConverterFactory(MoshiConverterFactory.create())
+        .build()
+
+    @Provides
+    @Singleton
+    @ApiRetrofit
+    fun apiRetrofit(okHttpClient: OkHttpClient): Retrofit = Retrofit.Builder()
         .client(okHttpClient)
         .baseUrl(BASE_URL)
         .addConverterFactory(MoshiConverterFactory.create())
@@ -60,11 +67,21 @@ object ApiAuthFactory {
 
     @Provides
     @Singleton
-    fun provideAuthenticationApi(retrofit: Retrofit): AuthenticationApi {
+    fun provideAuthenticationApi(@AuthRetrofit retrofit: Retrofit): AuthenticationApi {
         return retrofit.create(AuthenticationApi::class.java)
     }
 
     @Provides
     @Singleton
     fun provideAuthenticationApiHelper(apiHelper: AuthApiHelperImpl): AuthApiHelper = apiHelper
+
+    @Provides
+    @Singleton
+    fun provideUserApi(@ApiRetrofit retrofit: Retrofit): UserApi {
+        return retrofit.create(UserApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideUserApiHelper(apiHelper: UserApiHelperImpl): UserApiHelper = apiHelper
 }
