@@ -3,51 +3,58 @@ package com.github.livingwithhippos.unchained.base.network
 import com.github.livingwithhippos.unchained.authentication.model.AuthenticationApi
 import com.github.livingwithhippos.unchained.utilities.BASE_AUTH_URL
 import com.github.livingwithhippos.unchained.utilities.OPEN_SOURCE_CLIENT_ID
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ApplicationComponent
+import dagger.hilt.android.components.FragmentComponent
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import javax.inject.Singleton
 
+@InstallIn(ApplicationComponent::class)
+@Module
 object ApiAuthFactory {
 
-    //Creating Auth Interceptor to add client_id query in front of all the requests.
-    private val authInterceptor = Interceptor { chain ->
-        val newUrl = chain.request().url
-            .newBuilder()
-            .addQueryParameter("client_id", OPEN_SOURCE_CLIENT_ID)
-            .build()
-
-        val newRequest = chain.request()
-            .newBuilder()
-            .url(newUrl)
-            .build()
-
-        chain.proceed(newRequest)
-    }
 
     //OkhttpClient for building http request url
     private val debridClient: OkHttpClient = OkHttpClient().newBuilder()
-        .addInterceptor(authInterceptor)
         .build()
-    //todo: remove logger when finished
-    val logInterceptor : HttpLoggingInterceptor = HttpLoggingInterceptor().apply {
-        level = HttpLoggingInterceptor.Level.BODY
+
+    @Provides
+    fun provideBaseUrl() = BASE_AUTH_URL
+
+    @Provides
+    @Singleton
+    fun provideLoggerClient(): OkHttpClient {
+        //todo: remove logger when finished
+        val logInterceptor : HttpLoggingInterceptor = HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY
+        }
+
+        return OkHttpClient().newBuilder()
+            .addInterceptor(logInterceptor)
+            .build()
     }
 
-    //OkhttpClient for building http request url
-    private val logClient: OkHttpClient = OkHttpClient().newBuilder()
-        .addInterceptor(logInterceptor)
-        .build()
-
-    fun retrofit(): Retrofit = Retrofit.Builder()
-        .client(logClient)
-        .baseUrl(BASE_AUTH_URL)
+    @Provides
+    @Singleton
+    fun retrofit(okHttpClient: OkHttpClient, BASE_URL: String): Retrofit = Retrofit.Builder()
+        .client(okHttpClient)
+        .baseUrl(BASE_URL)
         .addConverterFactory(MoshiConverterFactory.create())
         .build()
 
+    @Provides
+    @Singleton
+    fun provideAuthenticationApi(retrofit: Retrofit): AuthenticationApi {
+        return retrofit.create(AuthenticationApi::class.java)
+    }
 
-    val authApi: AuthenticationApi = retrofit().create(
-        AuthenticationApi::class.java
-    )
+    @Provides
+    @Singleton
+    fun provideAuthenticationApiHelper(apiHelper: AuthApiHelperImpl): AuthApiHelper = apiHelper
 }
