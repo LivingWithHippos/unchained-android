@@ -8,7 +8,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 
-class ApiFactory(val token: String){
+class ApiFactory(val token: String) {
     //todo: check if client id is correct, or a personal one is needed beside the first auth
 
     //Creating Auth Interceptor to add the authentication header
@@ -30,8 +30,9 @@ class ApiFactory(val token: String){
     private val debridClient: OkHttpClient = OkHttpClient().newBuilder()
         .addInterceptor(authInterceptor)
         .build()
+
     //todo: remove logger when finished
-    val logInterceptor : HttpLoggingInterceptor = HttpLoggingInterceptor().apply {
+    val logInterceptor: HttpLoggingInterceptor = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY
     }
 

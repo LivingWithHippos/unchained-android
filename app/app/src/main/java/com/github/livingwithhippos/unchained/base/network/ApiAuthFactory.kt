@@ -2,13 +2,10 @@ package com.github.livingwithhippos.unchained.base.network
 
 import com.github.livingwithhippos.unchained.authentication.model.AuthenticationApi
 import com.github.livingwithhippos.unchained.utilities.BASE_AUTH_URL
-import com.github.livingwithhippos.unchained.utilities.OPEN_SOURCE_CLIENT_ID
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
-import dagger.hilt.android.components.FragmentComponent
-import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -31,7 +28,7 @@ object ApiAuthFactory {
     @Singleton
     fun provideLoggerClient(): OkHttpClient {
         //todo: remove logger when finished
-        val logInterceptor : HttpLoggingInterceptor = HttpLoggingInterceptor().apply {
+        val logInterceptor: HttpLoggingInterceptor = HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         }
 

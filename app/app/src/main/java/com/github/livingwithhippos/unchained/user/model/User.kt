@@ -3,7 +3,6 @@ package com.github.livingwithhippos.unchained.user.model
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import retrofit2.Response
@@ -30,13 +29,13 @@ data class User(
     val premium: Int,
     @Json(name = "expiration")
     val expiration: String
-){
+) {
 
     companion object {
         @JvmStatic
         @BindingAdapter("profileImage")
         fun loadImage(view: ImageView, profileImage: String?) {
-            if (profileImage!=null)
+            if (profileImage != null)
                 Glide.with(view.context)
                     .load(profileImage)
                     .into(view)

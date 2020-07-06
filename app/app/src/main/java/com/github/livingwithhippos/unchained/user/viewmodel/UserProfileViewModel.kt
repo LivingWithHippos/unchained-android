@@ -3,8 +3,6 @@ package com.github.livingwithhippos.unchained.user.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
 import com.github.livingwithhippos.unchained.base.network.ApiFactory
 import com.github.livingwithhippos.unchained.user.model.User
 import com.github.livingwithhippos.unchained.user.model.UserRepository

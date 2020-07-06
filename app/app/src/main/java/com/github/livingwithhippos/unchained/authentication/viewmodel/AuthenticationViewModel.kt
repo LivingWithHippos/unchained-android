@@ -8,18 +8,15 @@ import com.github.livingwithhippos.unchained.authentication.model.Authentication
 import com.github.livingwithhippos.unchained.authentication.model.AuthenticationRepository
 import com.github.livingwithhippos.unchained.authentication.model.Secrets
 import com.github.livingwithhippos.unchained.authentication.model.Token
-import com.github.livingwithhippos.unchained.base.model.dao.CredentialsDao
-import com.github.livingwithhippos.unchained.base.model.database.UnchaindeDB
 import com.github.livingwithhippos.unchained.base.model.entities.Credentials
 import com.github.livingwithhippos.unchained.base.model.repositories.CredentialsRepository
-import com.github.livingwithhippos.unchained.base.network.ApiAuthFactory
 import kotlinx.coroutines.*
 
 //todo: add state saving and loading
 class AuthenticationViewModel @ViewModelInject constructor(
     application: Application,
     private val authRepository: AuthenticationRepository,
-    private val credentialRepository : CredentialsRepository
+    private val credentialRepository: CredentialsRepository
 ) : AndroidViewModel(application) {
 
     private val job = Job()
@@ -36,7 +33,15 @@ class AuthenticationViewModel @ViewModelInject constructor(
             val authData = authRepository.getVerificationCode()
             authLiveData.postValue(authData)
             if (authData?.deviceCode != null)
-                credentialRepository.insert(Credentials(authData.deviceCode,null,null, null,null))
+                credentialRepository.insert(
+                    Credentials(
+                        authData.deviceCode,
+                        null,
+                        null,
+                        null,
+                        null
+                    )
+                )
         }
     }
 
@@ -53,7 +58,11 @@ class AuthenticationViewModel @ViewModelInject constructor(
             }
             if (secretData != null) {
                 secretLiveData.postValue(secretData)
-                credentialRepository.updateSecrets(deviceCode,secretData.clientId,secretData.clientSecret)
+                credentialRepository.updateSecrets(
+                    deviceCode,
+                    secretData.clientId,
+                    secretData.clientSecret
+                )
             } else {
                 //todo: manage calls reaching limit time in the ui
             }
@@ -61,13 +70,17 @@ class AuthenticationViewModel @ViewModelInject constructor(
 
     }
 
-    fun fetchToken(clientId: String, deviceCode: String, clientSecret: String){
+    fun fetchToken(clientId: String, deviceCode: String, clientSecret: String) {
         //todo: should we blank unnecessary secrets when we have a working token?
         scope.launch {
             val tokenData = authRepository.getToken(clientId, clientSecret, deviceCode)
             tokenLiveData.postValue(tokenData)
             if (tokenData?.accessToken != null)
-                credentialRepository.updateToken(deviceCode,tokenData.accessToken,tokenData.refreshToken)
+                credentialRepository.updateToken(
+                    deviceCode,
+                    tokenData.accessToken,
+                    tokenData.refreshToken
+                )
         }
     }
 

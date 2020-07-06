@@ -4,7 +4,8 @@ import com.github.livingwithhippos.unchained.base.model.repositories.BaseReposit
 import com.github.livingwithhippos.unchained.base.network.AuthApiHelper
 import javax.inject.Inject
 
-class AuthenticationRepository @Inject constructor (private val apiHelper: AuthApiHelper) : BaseRepository() {
+class AuthenticationRepository @Inject constructor(private val apiHelper: AuthApiHelper) :
+    BaseRepository() {
 
     suspend fun getVerificationCode(): Authentication? {
 
@@ -31,7 +32,13 @@ class AuthenticationRepository @Inject constructor (private val apiHelper: AuthA
     suspend fun getToken(clientId: String, clientSecret: String, deviceCode: String): Token? {
 
         val authResponse = safeApiCall(
-            call = { apiHelper.getToken(clientId = clientId, clientSecret = clientSecret, deviceCode = deviceCode) },
+            call = {
+                apiHelper.getToken(
+                    clientId = clientId,
+                    clientSecret = clientSecret,
+                    deviceCode = deviceCode
+                )
+            },
             errorMessage = "Error Fetching Token"
         )
 
