@@ -1,13 +1,15 @@
 package com.github.livingwithhippos.unchained.authentication.model
 
 import com.github.livingwithhippos.unchained.base.model.repositories.BaseRepository
+import com.github.livingwithhippos.unchained.base.network.AuthApiHelper
+import javax.inject.Inject
 
-class AuthenticationRepository(private val api: AuthenticationApi) : BaseRepository() {
+class AuthenticationRepository @Inject constructor (private val apiHelper: AuthApiHelper) : BaseRepository() {
 
     suspend fun getVerificationCode(): Authentication? {
 
         val authResponse = safeApiCall(
-            call = { api.getAuthentication() },
+            call = { apiHelper.getAuthentication() },
             errorMessage = "Error Fetching Authentication Info"
         )
 
@@ -18,7 +20,7 @@ class AuthenticationRepository(private val api: AuthenticationApi) : BaseReposit
     suspend fun getSecrets(code: String): Secrets? {
 
         val authResponse = safeApiCall(
-            call = { api.getSecrets(deviceCode = code) },
+            call = { apiHelper.getSecrets(deviceCode = code) },
             errorMessage = "Error Fetching Secrets"
         )
 
@@ -29,7 +31,7 @@ class AuthenticationRepository(private val api: AuthenticationApi) : BaseReposit
     suspend fun getToken(clientId: String, clientSecret: String, deviceCode: String): Token? {
 
         val authResponse = safeApiCall(
-            call = { api.getToken(clientId = clientId, clientSecret = clientSecret, deviceCode = deviceCode) },
+            call = { apiHelper.getToken(clientId = clientId, clientSecret = clientSecret, deviceCode = deviceCode) },
             errorMessage = "Error Fetching Token"
         )
 
