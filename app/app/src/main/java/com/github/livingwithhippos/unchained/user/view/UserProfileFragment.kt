@@ -5,27 +5,28 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import com.github.livingwithhippos.unchained.databinding.FragmentUserProfileBinding
 import com.github.livingwithhippos.unchained.user.viewmodel.UserProfileViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * A simple [Fragment] subclass.
  * Use the [UserProfileFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
+@AndroidEntryPoint
 class UserProfileFragment : Fragment() {
 
-    private lateinit var viewModel: UserProfileViewModel
+    private val viewModel: UserProfileViewModel by viewModels()
 
     val args: UserProfileFragmentArgs by navArgs()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(UserProfileViewModel::class.java)
-        viewModel.initRepository(args.token)
+        viewModel.saveToken(args.token)
     }
 
     override fun onCreateView(

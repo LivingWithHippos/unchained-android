@@ -1,30 +1,41 @@
 package com.github.livingwithhippos.unchained.user.viewmodel
 
+import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.github.livingwithhippos.unchained.user.model.User
 import com.github.livingwithhippos.unchained.user.model.UserRepository
+import com.github.livingwithhippos.unchained.utilities.KEY_TOKEN
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import java.lang.IllegalArgumentException
 
-//todo: add loading of saved state
 class UserProfileViewModel @ViewModelInject constructor(
+    @Assisted private val savedStateHandle: SavedStateHandle,
     private val userRepository: UserRepository
 ) : ViewModel() {
-
 
     private val job = Job()
     val scope = CoroutineScope(Dispatchers.Default + job)
 
 
+    fun saveToken (token: String) {
+        savedStateHandle.set(KEY_TOKEN,token)
+    }
+
     val userLiveData = MutableLiveData<User?>()
 
     fun fetchUserInfo() {
+        val token = savedStateHandle.get<String>(KEY_TOKEN)
+        if (token.isNullOrEmpty())
+            throw IllegalArgumentException("Loaded token was null or empty: $token")
         scope.launch {
-            val user = userRepository.getUserInfo()
+            //todo: try and move the token to the okhttp interceptor
+            val user = userRepository.getUserInfo("Bearer $token")
             userLiveData.postValue(user)
         }
     }
