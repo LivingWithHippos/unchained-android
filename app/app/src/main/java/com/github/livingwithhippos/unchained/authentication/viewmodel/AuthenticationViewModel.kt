@@ -16,15 +16,14 @@ import com.github.livingwithhippos.unchained.base.network.ApiAuthFactory
 import kotlinx.coroutines.*
 
 //todo: add state saving and loading
-class AuthenticationViewModel @ViewModelInject constructor(application: Application, private val credentialRepository : CredentialsRepository) : AndroidViewModel(application) {
+class AuthenticationViewModel @ViewModelInject constructor(
+    application: Application,
+    private val authRepository: AuthenticationRepository,
+    private val credentialRepository : CredentialsRepository
+) : AndroidViewModel(application) {
 
     private val job = Job()
     val scope = CoroutineScope(Dispatchers.Default + job)
-
-    private val repository: AuthenticationRepository =
-        AuthenticationRepository(
-            ApiAuthFactory.authApi
-        )
 
     val authLiveData = MutableLiveData<Authentication?>()
     val secretLiveData = MutableLiveData<Secrets?>()
@@ -34,7 +33,7 @@ class AuthenticationViewModel @ViewModelInject constructor(application: Applicat
     //todo: rename this first part of the auth flow as verificationInfo etc.?
     fun fetchAuthenticationInfo() {
         scope.launch {
-            val authData = repository.getVerificationCode()
+            val authData = authRepository.getVerificationCode()
             authLiveData.postValue(authData)
             if (authData?.deviceCode != null)
                 credentialRepository.insert(Credentials(authData.deviceCode,null,null, null,null))
@@ -45,11 +44,11 @@ class AuthenticationViewModel @ViewModelInject constructor(application: Applicat
         val waitTime = 5000L
         var calls = 0
         scope.launch {
-            var secretData = repository.getSecrets(deviceCode)
+            var secretData = authRepository.getSecrets(deviceCode)
             secretLiveData.postValue(secretData)
             while (secretData?.clientId == null && calls < 60) {
                 delay(waitTime)
-                secretData = repository.getSecrets(deviceCode)
+                secretData = authRepository.getSecrets(deviceCode)
                 calls++
             }
             if (secretData != null) {
@@ -65,7 +64,7 @@ class AuthenticationViewModel @ViewModelInject constructor(application: Applicat
     fun fetchToken(clientId: String, deviceCode: String, clientSecret: String){
         //todo: should we blank unnecessary secrets when we have a working token?
         scope.launch {
-            val tokenData = repository.getToken(clientId, clientSecret, deviceCode)
+            val tokenData = authRepository.getToken(clientId, clientSecret, deviceCode)
             tokenLiveData.postValue(tokenData)
             if (tokenData?.accessToken != null)
                 credentialRepository.updateToken(deviceCode,tokenData.accessToken,tokenData.refreshToken)
