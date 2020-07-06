@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.github.livingwithhippos.unchained.authentication.model.Authentication
 import com.github.livingwithhippos.unchained.authentication.model.AuthenticationRepository
 import com.github.livingwithhippos.unchained.authentication.model.Secrets
@@ -14,10 +15,9 @@ import kotlinx.coroutines.*
 
 //todo: add state saving and loading
 class AuthenticationViewModel @ViewModelInject constructor(
-    application: Application,
     private val authRepository: AuthenticationRepository,
     private val credentialRepository: CredentialsRepository
-) : AndroidViewModel(application) {
+) : ViewModel() {
 
     private val job = Job()
     val scope = CoroutineScope(Dispatchers.Default + job)
