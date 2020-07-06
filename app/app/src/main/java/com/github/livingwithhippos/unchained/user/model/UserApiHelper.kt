@@ -4,5 +4,5 @@ import retrofit2.Response
 
 interface UserApiHelper {
 
-    suspend fun getUser(): Response<User>
+    suspend fun getUser(token: String): Response<User>
 }

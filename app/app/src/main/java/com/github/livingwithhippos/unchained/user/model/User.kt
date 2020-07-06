@@ -7,6 +7,7 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import retrofit2.Response
 import retrofit2.http.GET
+import retrofit2.http.Header
 
 
 @JsonClass(generateAdapter = true)
@@ -45,5 +46,5 @@ data class User(
 
 interface UserApi {
     @GET("user")
-    suspend fun getUser(): Response<User>
+    suspend fun getUser(@Header("Authorization") token: String): Response<User>
 }

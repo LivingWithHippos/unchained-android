@@ -6,10 +6,10 @@ import javax.inject.Inject
 
 class UserRepository @Inject constructor(private val userApiHelper: UserApiHelper) : BaseRepository() {
 
-    suspend fun getUserInfo(): User? {
+    suspend fun getUserInfo(token: String): User? {
 
         val userResponse = safeApiCall(
-            call = { userApiHelper.getUser() },
+            call = { userApiHelper.getUser(token) },
             errorMessage = "Error Fetching User Info"
         )
 
