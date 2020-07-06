@@ -26,8 +26,8 @@
             android:id="@+id/llLinks"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             android:gravity="center_horizontal"
+            android:orientation="vertical"
             android:visibility="@{secrets.clientSecret == null ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toTopOf="@+id/cbLink"
             app:layout_constraintEnd_toEndOf="parent"
@@ -109,9 +109,7 @@
             android:clickable="false"
             android:text="@{secrets.clientSecret == null ? @string/waiting_user_auth : @string/obtained_user_auth}"
             app:layout_constraintBottom_toTopOf="@+id/cbToken"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/cbLink"
             app:layout_constraintTop_toBottomOf="@+id/cbLink" />
 
         <CheckBox
@@ -122,9 +120,7 @@
             android:clickable="false"
             android:text="@{token.accessToken == null ? @string/waiting_token : @string/obtained_token}"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/cbSecret"
             app:layout_constraintTop_toBottomOf="@+id/cbSecret" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
