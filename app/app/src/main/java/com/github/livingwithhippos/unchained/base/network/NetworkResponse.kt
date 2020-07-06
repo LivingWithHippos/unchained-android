@@ -5,7 +5,7 @@ package com.github.livingwithhippos.unchained.base.network
  * T and U will be used as return types
  */
 
-
+//todo: add loading class
 sealed class NetworkResponse<out T : Any> {
     data class Success<out T : Any>(val data: T) : NetworkResponse<T>()
     data class Error(val exception: Exception) : NetworkResponse<Nothing>()
