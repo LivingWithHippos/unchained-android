@@ -1,9 +1,6 @@
 package com.github.livingwithhippos.unchained.base.model.dao
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import com.github.livingwithhippos.unchained.base.model.entities.Credentials
 
 @Dao
@@ -23,6 +20,9 @@ interface CredentialsDao {
 
     @Query("UPDATE credentials SET access_token = :accessToken AND refresh_token = :refreshToken WHERE device_code = :deviceCode")
     suspend fun updateToken(deviceCode: String, accessToken: String, refreshToken: String)
+
+    @Update
+    suspend fun updateCredentials(credentials: Credentials)
 
     @Query("DELETE FROM credentials")
     suspend fun deleteAll()
