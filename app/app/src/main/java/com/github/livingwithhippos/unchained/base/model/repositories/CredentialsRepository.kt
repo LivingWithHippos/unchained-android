@@ -12,12 +12,6 @@ class CredentialsRepository @Inject constructor(private val credentialsDao: Cred
 
     suspend fun getCredentials(deviceCode: String) = credentialsDao.getCredentials(deviceCode)
 
-    suspend fun updateSecrets(deviceCode: String, clientId: String, clientSecret: String) =
-        credentialsDao.updateSecrets(deviceCode, clientId, clientSecret)
-
-    suspend fun updateToken(deviceCode: String, accessToken: String, refreshToken: String) =
-        credentialsDao.updateToken(deviceCode, accessToken, refreshToken)
-
     suspend fun updateCredentials(credentials: Credentials) =
         credentialsDao.updateCredentials(credentials)
 
