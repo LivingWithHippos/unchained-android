@@ -20,7 +20,7 @@ object DatabaseModule {
         return Room.databaseBuilder(
             appContext,
             UnchaindeDB::class.java,
-            "unachained_db"
+            "unchained_db"
         ).build()
     }
 
