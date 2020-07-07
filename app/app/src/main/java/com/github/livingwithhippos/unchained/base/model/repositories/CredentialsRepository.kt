@@ -10,10 +10,10 @@ class CredentialsRepository @Inject constructor(private val credentialsDao: Cred
 
     suspend fun getAllCredentials() = credentialsDao.getAllCredentials()
 
-    suspend fun getCredentials(username: String) = credentialsDao.getCredentials(username)
+    suspend fun getCredentials(deviceCode: String) = credentialsDao.getCredentials(deviceCode)
 
-    suspend fun updateSecrets(username: String, clientId: String, clientSecret: String) =
-        credentialsDao.updateSecrets(username, clientId, clientSecret)
+    suspend fun updateSecrets(deviceCode: String, clientId: String, clientSecret: String) =
+        credentialsDao.updateSecrets(deviceCode, clientId, clientSecret)
 
     suspend fun updateToken(deviceCode: String, accessToken: String, refreshToken: String) =
         credentialsDao.updateToken(deviceCode, accessToken, refreshToken)
