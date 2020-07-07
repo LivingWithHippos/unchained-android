@@ -1,6 +1,6 @@
 jobs:
   build:
-    working_directory: ~/code
+    working_directory: ~/app
     docker:
       - image: circleci/android:api-29
     environment:
