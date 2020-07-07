@@ -57,6 +57,9 @@ interface AuthenticationApi {
         @Query("code") deviceCode: String
     ): Response<Secrets>
 
+    /**
+     * This is also used to refresh the token.
+     */
     @FormUrlEncoded
     @POST("token")
     suspend fun getToken(

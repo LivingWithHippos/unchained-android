@@ -15,9 +15,11 @@ interface CredentialsDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(credentials: Credentials)
 
+    // bug: not working, use updateCredentials
     @Query("UPDATE credentials SET client_id = :clientId AND client_secret = :clientSecret WHERE device_code = :deviceCode")
     suspend fun updateSecrets(deviceCode: String, clientId: String, clientSecret: String)
 
+    // bug: not working, use updateCredentials
     @Query("UPDATE credentials SET access_token = :accessToken AND refresh_token = :refreshToken WHERE device_code = :deviceCode")
     suspend fun updateToken(deviceCode: String, accessToken: String, refreshToken: String)
 
