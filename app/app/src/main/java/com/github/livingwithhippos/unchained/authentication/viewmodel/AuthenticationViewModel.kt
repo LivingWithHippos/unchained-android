@@ -56,12 +56,16 @@ class AuthenticationViewModel @ViewModelInject constructor(
                 secretData = authRepository.getSecrets(deviceCode)
                 calls++
             }
-            if (secretData != null) {
+            if (secretData?.clientId != null) {
                 secretLiveData.postValue(secretData)
-                credentialRepository.updateSecrets(
-                    deviceCode,
-                    secretData.clientId,
-                    secretData.clientSecret
+                credentialRepository.updateCredentials(
+                    Credentials(
+                        deviceCode = deviceCode,
+                        clientId = secretData.clientId,
+                        clientSecret = secretData.clientSecret,
+                        accessToken = null,
+                        refreshToken = null
+                    )
                 )
             } else {
                 //todo: manage calls reaching limit time in the ui
@@ -75,12 +79,18 @@ class AuthenticationViewModel @ViewModelInject constructor(
         scope.launch {
             val tokenData = authRepository.getToken(clientId, clientSecret, deviceCode)
             tokenLiveData.postValue(tokenData)
-            if (tokenData?.accessToken != null)
-                credentialRepository.updateToken(
-                    deviceCode,
-                    tokenData.accessToken,
-                    tokenData.refreshToken
+            if (tokenData?.accessToken != null) {
+                credentialRepository.updateCredentials(
+                    Credentials(
+                        deviceCode = deviceCode,
+                        clientId = clientId,
+                        clientSecret = clientSecret,
+                        accessToken = tokenData.accessToken,
+                        refreshToken = tokenData.refreshToken
+
+                    )
                 )
+            }
         }
     }
 
