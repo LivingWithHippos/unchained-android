@@ -83,3 +83,6 @@ lint/generated/
 lint/outputs/
 lint/tmp/
 # lint/reports/
+
+app/.idea/sqlandroid.xml
+app/AndroidSqlEditorDatabases/
