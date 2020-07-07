@@ -1,9 +1,24 @@
+plugins {
+    id("com.diffplug.gradle.spotless") version "$spotless_version"
+}
+
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: "androidx.navigation.safeargs.kotlin"
 apply plugin: 'dagger.hilt.android.plugin'
+
+subprojects {
+    apply plugin: 'com.diffplug.gradle.spotless'
+    spotless {
+        kotlin {
+            target "**/*.kt"
+            ktlint()
+            licenseHeaderFile project.rootProject.file('spotless/copyright.kt')
+        }
+    }
+}
 
 android {
     compileSdkVersion 30

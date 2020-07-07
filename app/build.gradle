@@ -27,6 +27,10 @@ allprojects {
     }
 }
 
+ext {
+    ext.spotless_version = '4.5.1'
+}
+
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
