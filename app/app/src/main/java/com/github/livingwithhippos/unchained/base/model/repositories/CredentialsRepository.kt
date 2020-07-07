@@ -18,5 +18,8 @@ class CredentialsRepository @Inject constructor(private val credentialsDao: Cred
     suspend fun updateToken(deviceCode: String, accessToken: String, refreshToken: String) =
         credentialsDao.updateToken(deviceCode, accessToken, refreshToken)
 
+    suspend fun updateCredentials(credentials: Credentials) =
+        credentialsDao.updateCredentials(credentials)
+
     suspend fun insert(credentials: Credentials) = credentialsDao.insert(credentials)
 }
