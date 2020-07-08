@@ -18,17 +18,4 @@ class MainActivity : AppCompatActivity() {
         val viewModel: MainActivityViewModel by viewModels()
 
     }
-
-    // note: we could just load all the credentials once here and then check them
-    // no need to interrogate again the database for the partial ones
-    private fun checkCredentialsStatus(viewModel: MainActivityViewModel) {
-        viewModel.fetchFirstWorkingCredentials()
-        viewModel.workingCredentialsLiveData.observe(this, Observer {
-            if (it != null) {
-                //todo: load complete user fragment
-            } else {
-                // check partial records
-            }
-        })
-    }
 }
