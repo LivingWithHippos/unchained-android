@@ -17,10 +17,10 @@ class MainActivity : AppCompatActivity() {
 
         val viewModel: MainActivityViewModel by viewModels()
 
-        // check our credentials and decide to navigate to the user fragment or the authentication one.
-        checkCredentialsStatus(viewModel)
     }
 
+    // note: we could just load all the credentials once here and then check them
+    // no need to interrogate again the database for the partial ones
     private fun checkCredentialsStatus(viewModel: MainActivityViewModel) {
         viewModel.fetchFirstWorkingCredentials()
         viewModel.workingCredentialsLiveData.observe(this, Observer {
@@ -28,18 +28,6 @@ class MainActivity : AppCompatActivity() {
                 //todo: load complete user fragment
             } else {
                 // check partial records
-                checkPartialCredentials(viewModel)
-            }
-        })
-    }
-
-    private fun checkPartialCredentials(viewModel: MainActivityViewModel) {
-        viewModel.fetchPartialCredentials()
-        viewModel.partialCredentialsLiveData.observe(this, Observer {
-            if (it.isNullOrEmpty()){
-                // todo: load authentication fragment
-            } else {
-                // todo: load authentication fragment with partial data
             }
         })
     }
