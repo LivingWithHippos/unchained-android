@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -36,15 +37,18 @@ class StartFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_start, container, false)
     }
 
-    // note: we could just load all the credentials once here and then check them
-    // no need to interrogate again the database for the partial ones
     private fun checkCredentialsStatus(viewModel: MainActivityViewModel) {
         viewModel.fetchFirstWorkingCredentials()
         viewModel.workingCredentialsLiveData.observe(this, Observer {
-            if (it != null) {
-                //todo: load complete user fragment
-            } else {
-                // check partial records
+            // navigate to user fragment
+            if (it?.accessToken != null) {
+                val action = StartFragmentDirections.actionStartFragmentToUserProfileFragment(it.accessToken)
+                findNavController().navigate(action)
+            }
+            // no complete credentials: navigate to authentication fragment
+            else {
+                val action = StartFragmentDirections.actionStartFragmentToAuthenticationFragment()
+                findNavController().navigate(action)
             }
         })
     }
