@@ -28,10 +28,12 @@ class MainActivityViewModel @ViewModelInject constructor(
 
     fun fetchFirstWorkingCredentials() {
         scope.launch {
-            val credentials = credentialRepository.getCompleteCredentials()
+            val completeCredentials = credentialRepository
+                .getAllCredentials()
+                .filter { it.accessToken != null && it.clientId!= null && it.clientSecret!= null && it.deviceCode.isNotBlank() && it.refreshToken!= null }
             var workingCredentials: Credentials? = null
-            if (credentials.isNotEmpty()) {
-                for (cred in credentials) {
+            if (completeCredentials.isNotEmpty()) {
+                for (cred in completeCredentials) {
                     if(checkCredentials(cred)) {
                         workingCredentials = cred
                         break
