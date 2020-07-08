@@ -35,7 +35,7 @@ class UserProfileViewModel @ViewModelInject constructor(
             throw IllegalArgumentException("Loaded token was null or empty: $token")
         scope.launch {
             //todo: try and move the token to the okhttp interceptor
-            val user = userRepository.getUserInfo("Bearer $token")
+            val user = userRepository.getUserInfo(token)
             userLiveData.postValue(user)
         }
     }

@@ -9,7 +9,7 @@ class UserRepository @Inject constructor(private val userApiHelper: UserApiHelpe
     suspend fun getUserInfo(token: String): User? {
 
         val userResponse = safeApiCall(
-            call = { userApiHelper.getUser(token) },
+            call = { userApiHelper.getUser("Bearer $token") },
             errorMessage = "Error Fetching User Info"
         )
 
