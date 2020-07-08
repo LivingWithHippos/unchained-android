@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/user"
+        android:enabled="true"
+        android:icon="@drawable/icon_crown"
+        android:title="@string/user" />
+    <item
+        android:id="@+id/download_new"
+        android:enabled="true"
+        android:icon="@drawable/icon_arrows"
+        android:title="@string/new_download" />
+</menu>
