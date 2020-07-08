@@ -25,7 +25,6 @@ class MainActivityViewModel @ViewModelInject constructor(
     val scope = CoroutineScope(Dispatchers.Default + job)
 
     val workingCredentialsLiveData = MutableLiveData<Credentials?>()
-    val partialCredentialsLiveData = MutableLiveData<List<Credentials>>()
 
     fun fetchFirstWorkingCredentials() {
         scope.launch {
@@ -41,20 +40,6 @@ class MainActivityViewModel @ViewModelInject constructor(
             }
             // passes null if no working credentials, otherwise pass the first working one
             workingCredentialsLiveData.postValue(workingCredentials)
-        }
-    }
-
-     fun fetchPartialCredentials() {
-        scope.launch {
-            val partials = credentialRepository.getAllCredentials().filter {
-                !it.deviceCode.isBlank() && (
-                        it.clientId.isNullOrBlank()
-                                || it.clientSecret.isNullOrBlank()
-                                || it.accessToken.isNullOrBlank()
-                                || it.refreshToken.isNullOrBlank()
-                        )
-            }
-            partialCredentialsLiveData.postValue(partials)
         }
     }
 
