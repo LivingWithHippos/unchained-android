@@ -1,5 +1,6 @@
 package com.github.livingwithhippos.unchained.base.model.dao
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.github.livingwithhippos.unchained.base.model.entities.Credentials
 
@@ -8,6 +9,10 @@ interface CredentialsDao {
 
     @Query("SELECT * FROM credentials WHERE device_code = :deviceCode")
     suspend fun getCredentials(deviceCode: String): Credentials?
+
+    // this is supposing only correct values get saved
+    @Query("SELECT * FROM credentials WHERE client_id IS NOT NULL AND client_secret IS NOT NULL AND access_token IS NOT NULL AND refresh_token IS NOT NULL")
+    suspend fun getCompleteCredentials(): List<Credentials>
 
     @Query("SELECT * from credentials")
     suspend fun getAllCredentials(): List<Credentials>
