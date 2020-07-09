@@ -1,10 +1,10 @@
 package com.github.livingwithhippos.unchained.start.view
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -42,7 +42,8 @@ class StartFragment : Fragment() {
         viewModel.workingCredentialsLiveData.observe(this, Observer {
             // navigate to user fragment
             if (it?.accessToken != null) {
-                val action = StartFragmentDirections.actionStartFragmentToUserProfileFragment(it.accessToken)
+                val action =
+                    StartFragmentDirections.actionStartFragmentToUserProfileFragment(it.accessToken)
                 findNavController().navigate(action)
             }
             // no complete credentials: navigate to authentication fragment

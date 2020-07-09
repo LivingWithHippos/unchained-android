@@ -2,7 +2,8 @@ package com.github.livingwithhippos.unchained.base.network
 
 import com.github.livingwithhippos.unchained.BuildConfig
 import com.github.livingwithhippos.unchained.authentication.model.AuthenticationApi
-import com.github.livingwithhippos.unchained.base.di.*
+import com.github.livingwithhippos.unchained.base.di.ApiRetrofit
+import com.github.livingwithhippos.unchained.base.di.AuthRetrofit
 import com.github.livingwithhippos.unchained.user.model.UserApi
 import com.github.livingwithhippos.unchained.user.model.UserApiHelper
 import com.github.livingwithhippos.unchained.user.model.UserApiHelperImpl

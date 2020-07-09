@@ -1,6 +1,5 @@
 package com.github.livingwithhippos.unchained.base.model.dao
 
-import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.github.livingwithhippos.unchained.base.model.entities.Credentials
 

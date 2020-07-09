@@ -12,7 +12,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import java.lang.IllegalArgumentException
 
 class UserProfileViewModel @ViewModelInject constructor(
     @Assisted private val savedStateHandle: SavedStateHandle,
@@ -23,8 +22,8 @@ class UserProfileViewModel @ViewModelInject constructor(
     val scope = CoroutineScope(Dispatchers.Default + job)
 
 
-    fun saveToken (token: String) {
-        savedStateHandle.set(KEY_TOKEN,token)
+    fun saveToken(token: String) {
+        savedStateHandle.set(KEY_TOKEN, token)
     }
 
     val userLiveData = MutableLiveData<User?>()

@@ -45,5 +45,5 @@ val errorMap = mapOf(
     31 to "Action already done",
     32 to "Image resolution error",
     33 to "Torrent already active"
-    )
+)
 

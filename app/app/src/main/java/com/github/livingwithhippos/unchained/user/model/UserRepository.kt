@@ -4,7 +4,8 @@ import com.github.livingwithhippos.unchained.base.model.repositories.BaseReposit
 import javax.inject.Inject
 
 
-class UserRepository @Inject constructor(private val userApiHelper: UserApiHelper) : BaseRepository() {
+class UserRepository @Inject constructor(private val userApiHelper: UserApiHelper) :
+    BaseRepository() {
 
     suspend fun getUserInfo(token: String): User? {
 
