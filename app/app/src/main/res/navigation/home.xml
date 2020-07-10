@@ -2,8 +2,8 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/navigation"
-    app:startDestination="@id/startFragment">
+    android:id="@+id/home"
+    app:startDestination="@id/authenticationFragment">
 
     <fragment
         android:id="@+id/authenticationFragment"
@@ -24,8 +24,7 @@
     <fragment
         android:id="@+id/startFragment"
         android:name="com.github.livingwithhippos.unchained.start.view.StartFragment"
-        android:label="fragment_start"
-        tools:layout="@layout/fragment_start" >
+        android:label="fragment_start">
         <action
             android:id="@+id/action_startFragment_to_authenticationFragment"
             app:destination="@id/authenticationFragment" />
