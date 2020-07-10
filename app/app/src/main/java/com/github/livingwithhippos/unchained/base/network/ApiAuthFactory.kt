@@ -2,8 +2,11 @@ package com.github.livingwithhippos.unchained.base.network
 
 import com.github.livingwithhippos.unchained.BuildConfig
 import com.github.livingwithhippos.unchained.authentication.model.AuthenticationApi
+import com.github.livingwithhippos.unchained.authentication.model.UnrestrictApiHelper
+import com.github.livingwithhippos.unchained.authentication.model.UnrestrictApiHelperImpl
 import com.github.livingwithhippos.unchained.base.di.ApiRetrofit
 import com.github.livingwithhippos.unchained.base.di.AuthRetrofit
+import com.github.livingwithhippos.unchained.newdownload.model.UnrestrictApi
 import com.github.livingwithhippos.unchained.user.model.UserApi
 import com.github.livingwithhippos.unchained.user.model.UserApiHelper
 import com.github.livingwithhippos.unchained.user.model.UserApiHelperImpl
@@ -66,6 +69,7 @@ object ApiAuthFactory {
         .addConverterFactory(MoshiConverterFactory.create())
         .build()
 
+    // authentication api injection
     @Provides
     @Singleton
     fun provideAuthenticationApi(@AuthRetrofit retrofit: Retrofit): AuthenticationApi {
@@ -76,6 +80,7 @@ object ApiAuthFactory {
     @Singleton
     fun provideAuthenticationApiHelper(apiHelper: AuthApiHelperImpl): AuthApiHelper = apiHelper
 
+    // user api injection
     @Provides
     @Singleton
     fun provideUserApi(@ApiRetrofit retrofit: Retrofit): UserApi {
@@ -85,4 +90,16 @@ object ApiAuthFactory {
     @Provides
     @Singleton
     fun provideUserApiHelper(apiHelper: UserApiHelperImpl): UserApiHelper = apiHelper
+
+    // unrestrict api injection
+    @Provides
+    @Singleton
+    fun provideUnrestrictApi(@ApiRetrofit retrofit: Retrofit): UnrestrictApi {
+        return retrofit.create(UnrestrictApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideUnrestrictApiHelper(apiHelper: UnrestrictApiHelperImpl): UnrestrictApiHelper =
+        apiHelper
 }
