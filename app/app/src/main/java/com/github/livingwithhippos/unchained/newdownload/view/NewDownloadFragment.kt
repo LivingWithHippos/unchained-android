@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import com.github.livingwithhippos.unchained.R
+import com.github.livingwithhippos.unchained.newdownload.viewmodel.NewDownloadViewModel
 
 class NewDownloadFragment : Fragment() {
 

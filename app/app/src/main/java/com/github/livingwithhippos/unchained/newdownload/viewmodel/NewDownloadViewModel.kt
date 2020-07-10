@@ -1,4 +1,4 @@
-package com.github.livingwithhippos.unchained.newdownload.view
+package com.github.livingwithhippos.unchained.newdownload.viewmodel
 
 import androidx.lifecycle.ViewModel
 
