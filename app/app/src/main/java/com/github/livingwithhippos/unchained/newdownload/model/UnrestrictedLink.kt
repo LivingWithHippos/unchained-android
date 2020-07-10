@@ -1,10 +1,12 @@
 package com.github.livingwithhippos.unchained.newdownload.model
 
-import com.github.livingwithhippos.unchained.user.model.User
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import retrofit2.Response
-import retrofit2.http.*
+import retrofit2.http.Field
+import retrofit2.http.FormUrlEncoded
+import retrofit2.http.Header
+import retrofit2.http.POST
 
 /*
 {
@@ -56,11 +58,11 @@ interface UnrestrictApi {
     suspend fun getUnrestrictedLink(
         @Header("Authorization") token: String,
         // The original hoster link
-        @Field("link ") link : String,
+        @Field("link ") link: String,
         // Password to unlock the file access hoster side
-        @Field("link ") password : String? = null,
+        @Field("link ") password: String? = null,
         // 0 or 1, use Remote traffic, dedicated servers and account sharing protections lifted
-        @Field("remote ") remote : Int? = null
+        @Field("remote ") remote: Int? = null
     ): Response<UnrestrictedLink>
 
 }
