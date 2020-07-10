@@ -45,12 +45,12 @@ class MainActivityViewModel @ViewModelInject constructor(
     }
 
     private suspend fun checkCredentials(credentials: Credentials): Boolean {
-        var user: User? = null
-        if (credentials.accessToken != null)
-            user = userRepository.getUserInfo(credentials.accessToken)
+        if (credentials.accessToken != null) {
+            val user = userRepository.getUserInfo(credentials.accessToken)
+            return user != null
+        }
         else
             throw IllegalArgumentException("Credentials parameter has null access token")
         // todo: needs to check if it's a network error or if token has expired etc.
-        return user != null
     }
 }
