@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/new_download"
-    app:startDestination="@id/newDownloadFragment">
+    app:startDestination="@id/newDownloadFragment"
+    tools:ignore="UnusedNavigation">
 
     <fragment
         android:id="@+id/newDownloadFragment"
