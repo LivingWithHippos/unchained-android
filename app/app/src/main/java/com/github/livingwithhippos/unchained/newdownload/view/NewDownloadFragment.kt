@@ -20,9 +20,4 @@ class NewDownloadFragment : Fragment() {
         return inflater.inflate(R.layout.new_download_fragment, container, false)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        // TODO: Use the ViewModel
-    }
-
 }
