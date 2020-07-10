@@ -30,19 +30,7 @@ data class User(
     val premium: Int,
     @Json(name = "expiration")
     val expiration: String
-) {
-
-    companion object {
-        @JvmStatic
-        @BindingAdapter("profileImage")
-        fun loadImage(view: ImageView, profileImage: String?) {
-            if (profileImage != null)
-                Glide.with(view.context)
-                    .load(profileImage)
-                    .into(view)
-        }
-    }
-}
+)
 
 interface UserApi {
     @GET("user")
