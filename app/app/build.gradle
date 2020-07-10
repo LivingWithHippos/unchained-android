@@ -63,6 +63,7 @@ android {
 }
 
 dependencies {
+
     //todo: move versions to external variables
 
     def nav_version = "2.3.0"
@@ -101,7 +102,6 @@ dependencies {
     // navigation
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
-    implementation "androidx.navigation:navigation-ui:$nav_version"
 
     // room
     implementation "androidx.room:room-runtime:$room_version"
@@ -117,9 +117,6 @@ dependencies {
 
     // ViewModel
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
-
-    // Extension
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
 
     // LiveData
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
