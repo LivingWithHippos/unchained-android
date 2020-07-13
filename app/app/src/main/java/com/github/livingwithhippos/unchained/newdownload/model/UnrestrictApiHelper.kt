@@ -1,4 +1,4 @@
-package com.github.livingwithhippos.unchained.authentication.model
+package com.github.livingwithhippos.unchained.newdownload.model
 
 import com.github.livingwithhippos.unchained.newdownload.model.UnrestrictedLink
 import retrofit2.Response
