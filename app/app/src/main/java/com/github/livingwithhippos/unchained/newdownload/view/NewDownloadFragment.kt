@@ -1,11 +1,10 @@
 package com.github.livingwithhippos.unchained.newdownload.view
 
 import android.os.Bundle
+import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.URLUtil
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -38,7 +37,7 @@ class NewDownloadFragment : Fragment() {
         // add the unrestrict button listener
         downloadBinding.bUnrestrict.setOnClickListener {
             val link: String = downloadBinding.etLink.text.toString()
-            if (URLUtil.isValidUrl(link)) {
+            if (Patterns.WEB_URL.matcher(link).matches()) {
 
                 var password: String? = downloadBinding.etPassword.text.toString()
                 // we don't pass the password if it is blank.
