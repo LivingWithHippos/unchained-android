@@ -1,5 +1,7 @@
 package com.github.livingwithhippos.unchained.newdownload.model
 
+import android.os.Parcel
+import android.os.Parcelable
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import retrofit2.Response
@@ -45,7 +47,48 @@ data class UnrestrictedLink(
     val download: String,
     @Json(name = "streamable")
     val streamable: Int
-)
+) : Parcelable {
+    constructor(parcel: Parcel) : this(
+        parcel.readString()!!,
+        parcel.readString()!!,
+        parcel.readString()!!,
+        parcel.readInt(),
+        parcel.readString()!!,
+        parcel.readString()!!,
+        parcel.readInt(),
+        parcel.readInt(),
+        parcel.readString()!!,
+        parcel.readInt()
+    ) {
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(id)
+        parcel.writeString(filename)
+        parcel.writeString(mimeType)
+        parcel.writeInt(filesize)
+        parcel.writeString(link)
+        parcel.writeString(host)
+        parcel.writeInt(chunks)
+        parcel.writeInt(crc)
+        parcel.writeString(download)
+        parcel.writeInt(streamable)
+    }
+
+    override fun describeContents(): Int {
+        return crc
+    }
+
+    companion object CREATOR : Parcelable.Creator<UnrestrictedLink> {
+        override fun createFromParcel(parcel: Parcel): UnrestrictedLink {
+            return UnrestrictedLink(parcel)
+        }
+
+        override fun newArray(size: Int): Array<UnrestrictedLink?> {
+            return arrayOfNulls(size)
+        }
+    }
+}
 
 interface UnrestrictApi {
 
