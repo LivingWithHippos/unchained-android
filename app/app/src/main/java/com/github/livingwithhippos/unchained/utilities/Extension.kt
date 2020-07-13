@@ -17,6 +17,6 @@ fun ImageView.loadImage(profileImage: String?) {
 
 @BindingAdapter("adapter")
 fun AutoCompleteTextView.setAdapter(contents: List<String>) {
-    val adapter = ArrayAdapter<String>(this.context, R.layout.dropdown_remote_item, contents)
+    val adapter = ArrayAdapter<String>(this.context, R.layout.dropdown_plain_item, contents)
     this.setAdapter(adapter)
 }
