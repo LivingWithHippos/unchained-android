@@ -34,15 +34,67 @@
                 android:layout_height="match_parent">
 
                 <TextView
-                    android:id="@+id/textView"
+                    android:id="@+id/tvName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:textSize="25sp"
                     android:text="@{details.filename}"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/ivHosterPic"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:src="@drawable/icon_squares"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvName"
+                    app:imageURL="@{details.hostIcon}" />
+
+                <!-- todo: show decimal for file size-->
+                <TextView
+                    android:id="@+id/tvSize"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{String.valueOf(details.filesize / 1024 / 1024) + ` MB`}"
+                    app:layout_constraintStart_toEndOf="@id/ivHosterPic"
+                    app:layout_constraintTop_toTopOf="@id/ivHosterPic"
+                    app:layout_constraintBottom_toBottomOf="@id/ivHosterPic"/>
+
+                <TextView
+                    android:id="@+id/tvDownloadLink"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@{details.download}"
+                    android:autoLink="web"
+                    android:ellipsize="middle"
+                    android:singleLine="true"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/bCopy"
+                    app:layout_constraintTop_toBottomOf="@id/ivHosterPic"/>
+
+                <Button
+                    android:id="@+id/bCopy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/copy"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/tvDownloadLink"
+                    app:layout_constraintBottom_toBottomOf="@id/tvDownloadLink"/>
+
+                <Button
+                    android:id="@+id/bOpen"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/open_link"
+                    app:layout_constraintTop_toBottomOf="@id/bCopy"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
+
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>
     </androidx.constraintlayout.widget.ConstraintLayout>
