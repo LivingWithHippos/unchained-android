@@ -39,6 +39,8 @@ data class UnrestrictedLink(
     val link: String,
     @Json(name = "host")
     val host: String,
+    @Json(name = "host_icon")
+    val hostIcon: String,
     @Json(name = "chunks")
     val chunks: Int,
     @Json(name = "crc")
@@ -55,6 +57,7 @@ data class UnrestrictedLink(
         parcel.readInt(),
         parcel.readString()!!,
         parcel.readString()!!,
+        parcel.readString()!!,
         parcel.readInt(),
         parcel.readInt(),
         parcel.readString()!!,
@@ -69,6 +72,7 @@ data class UnrestrictedLink(
         parcel.writeInt(filesize)
         parcel.writeString(link)
         parcel.writeString(host)
+        parcel.writeString(hostIcon)
         parcel.writeInt(chunks)
         parcel.writeInt(crc)
         parcel.writeString(download)
