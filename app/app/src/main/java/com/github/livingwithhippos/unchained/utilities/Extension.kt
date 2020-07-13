@@ -3,6 +3,9 @@ package com.github.livingwithhippos.unchained.utilities
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.util.Patterns
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.ImageView
@@ -37,4 +40,16 @@ fun Fragment.copyToClipboard(label: String, text: String) {
     val clip: ClipData = ClipData.newPlainText(label, text)
     // Set the clipboard's primary clip.
     clipboard.setPrimaryClip(clip)
+}
+
+fun Fragment.openExternalWebPage(url: String, showErrorToast: Boolean = true): Boolean {
+    if (Patterns.WEB_URL.matcher(url).matches()) {
+        val webIntent: Intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        startActivity(webIntent)
+        return true
+    } else
+        if (showErrorToast)
+            showToast(R.string.invalid_url)
+
+    return false
 }

@@ -16,6 +16,7 @@ import com.github.livingwithhippos.unchained.downloaddetails.viewmodel.DownloadD
 import com.github.livingwithhippos.unchained.newdownload.viewmodel.NewDownloadViewModel
 import com.github.livingwithhippos.unchained.user.view.UserProfileFragmentArgs
 import com.github.livingwithhippos.unchained.utilities.copyToClipboard
+import com.github.livingwithhippos.unchained.utilities.openExternalWebPage
 import com.github.livingwithhippos.unchained.utilities.showToast
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -44,9 +45,7 @@ class DownloadDetailsFragment : Fragment(), DownloadDetailsListener {
     }
 
     override fun onOpenClick(url: String) {
-        // not checking if it's a url or not since it's not manually entered
-        val webIntent: Intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-        startActivity(webIntent)
+        openExternalWebPage(url)
     }
 }
 
