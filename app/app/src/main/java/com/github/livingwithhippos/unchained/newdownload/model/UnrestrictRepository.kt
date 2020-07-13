@@ -15,10 +15,10 @@ class UnrestrictRepository @Inject constructor(private val unrestrictApiHelper: 
         val linkResponse = safeApiCall(
             call = {
                 unrestrictApiHelper.getUnrestrictedLink(
-                    "Bearer $token",
-                    link,
-                    password,
-                    remote
+                    token = "Bearer $token",
+                    link = link,
+                    password = password,
+                    remote = remote
                 )
             },
             errorMessage = "Error Fetching Unrestricted Link Info"
