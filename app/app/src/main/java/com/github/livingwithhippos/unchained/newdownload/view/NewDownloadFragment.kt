@@ -22,7 +22,8 @@ class NewDownloadFragment : Fragment() {
     ): View? {
         val downloadBinding = NewDownloadFragmentBinding.inflate(inflater, container, false)
 
-        downloadBinding.list = listOf(getString(R.string.yes),getString(R.string.no))
+        // see AutoCompleteTextView.setAdapter(contents: List<String>) in [Extension.kt]
+        downloadBinding.list = listOf(getString(R.string.no), getString(R.string.yes))
         return downloadBinding.root
     }
 
