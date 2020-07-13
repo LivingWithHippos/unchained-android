@@ -15,6 +15,8 @@ import androidx.navigation.fragment.findNavController
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.authentication.viewmodel.AuthenticationViewModel
 import com.github.livingwithhippos.unchained.databinding.FragmentAuthenticationBinding
+import com.github.livingwithhippos.unchained.utilities.copyToClipboard
+import com.github.livingwithhippos.unchained.utilities.showToast
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -89,10 +91,7 @@ class AuthenticationFragment : Fragment(), ButtonListener {
     }
 
     override fun onCopyClick(value: String) {
-        val clipboard = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        val clip: ClipData = ClipData.newPlainText("real-debrid authorization code", value)
-        // Set the clipboard's primary clip.
-        clipboard.setPrimaryClip(clip)
-        Toast.makeText(requireContext(), getString(R.string.code_copied), Toast.LENGTH_SHORT).show()
+        copyToClipboard("real-debrid authorization code", value)
+        showToast(R.string.code_copied)
     }
 }
