@@ -90,8 +90,8 @@ class AuthenticationFragment : Fragment(), ButtonListener {
         })
     }
 
-    override fun onCopyClick(value: String) {
-        copyToClipboard("real-debrid authorization code", value)
+    override fun onCopyClick(text: String) {
+        copyToClipboard("real-debrid authorization code", text)
         showToast(R.string.code_copied)
     }
 }
