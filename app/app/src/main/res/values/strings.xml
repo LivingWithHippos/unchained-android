@@ -24,4 +24,5 @@
     <string name="password_optional">Password [Optional]</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="unrestrict">Unrestrict</string>
 </resources>

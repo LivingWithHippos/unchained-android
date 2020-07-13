@@ -48,11 +48,11 @@
             android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:hint="@string/hint_remote"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/etPassword"
+            app:layout_constraintBottom_toTopOf="@+id/bUnrestrict"
             app:layout_constraintVertical_chainStyle="packed">
 
             <!-- use android:text="@{list[0]}" to set the default value -->
@@ -67,6 +67,18 @@
                 tools:ignore="Deprecated" />
 
         </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:id="@+id/bUnrestrict"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/unrestrict"
+            android:layout_marginTop="30dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/dropdownRemote"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
