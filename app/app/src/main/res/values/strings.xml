@@ -20,4 +20,8 @@
     <string name="not_premium">Not Premium</string>
     <string name="user">User</string>
     <string name="new_download">New Download</string>
+    <string name="hint_remote">Remote Traffic</string>
+    <string name="password_optional">Password [Optional]</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 </resources>

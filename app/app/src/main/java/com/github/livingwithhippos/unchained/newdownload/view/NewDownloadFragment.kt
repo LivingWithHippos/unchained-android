@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.github.livingwithhippos.unchained.R
+import com.github.livingwithhippos.unchained.databinding.NewDownloadFragmentBinding
 import com.github.livingwithhippos.unchained.newdownload.viewmodel.NewDownloadViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -19,7 +20,10 @@ class NewDownloadFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.new_download_fragment, container, false)
+        val downloadBinding = NewDownloadFragmentBinding.inflate(inflater, container, false)
+
+        downloadBinding.list = listOf(getString(R.string.yes),getString(R.string.no))
+        return downloadBinding.root
     }
 
 }

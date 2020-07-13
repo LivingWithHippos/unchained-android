@@ -1,8 +1,11 @@
 package com.github.livingwithhippos.unchained.utilities
 
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
+import com.github.livingwithhippos.unchained.R
 
 @BindingAdapter("profileImage")
 fun ImageView.loadImage(profileImage: String?) {
@@ -10,4 +13,10 @@ fun ImageView.loadImage(profileImage: String?) {
         Glide.with(this.context)
             .load(profileImage)
             .into(this)
+}
+
+@BindingAdapter("adapter")
+fun AutoCompleteTextView.setAdapter(contents: List<String>) {
+    val adapter = ArrayAdapter<String>(this.context, R.layout.dropdown_remote_item, contents)
+    this.setAdapter(adapter)
 }
