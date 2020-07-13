@@ -29,4 +29,5 @@
     <string name="loading">Loading</string>
     <string name="copy">Copy</string>
     <string name="open_link">Open Link</string>
+    <string name="copy_link">Copy Link</string>
 </resources>

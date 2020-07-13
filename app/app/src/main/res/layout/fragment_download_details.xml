@@ -26,20 +26,21 @@
             android:layout_marginTop="20dp"
             android:checkable="false"
             android:clickable="false"
-            android:focusable="true"
-            android:padding="10dp">
+            android:focusable="true">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:padding="10dp">
 
                 <TextView
                     android:id="@+id/tvName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:textSize="25sp"
+                    android:gravity="center_horizontal"
                     android:text="@{details.filename}"
+                    android:textSize="25sp"
+                    android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
@@ -50,9 +51,9 @@
                     android:layout_width="15dp"
                     android:layout_height="15dp"
                     android:src="@drawable/icon_squares"
+                    app:imageURL="@{details.hostIcon}"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tvName"
-                    app:imageURL="@{details.hostIcon}" />
+                    app:layout_constraintTop_toBottomOf="@id/tvName" />
 
                 <!-- todo: show decimal for file size-->
                 <TextView
@@ -60,40 +61,42 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@{String.valueOf(details.filesize / 1024 / 1024) + ` MB`}"
+                    app:layout_constraintBottom_toBottomOf="@id/ivHosterPic"
                     app:layout_constraintStart_toEndOf="@id/ivHosterPic"
-                    app:layout_constraintTop_toTopOf="@id/ivHosterPic"
-                    app:layout_constraintBottom_toBottomOf="@id/ivHosterPic"/>
+                    app:layout_constraintTop_toTopOf="@id/ivHosterPic" />
 
                 <TextView
                     android:id="@+id/tvDownloadLink"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginStart="10dp"
+                    android:background="#fff"
                     android:text="@{details.download}"
-                    android:autoLink="web"
-                    android:ellipsize="middle"
-                    android:singleLine="true"
-                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/bCopy"
-                    app:layout_constraintTop_toBottomOf="@id/ivHosterPic"/>
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/ivHosterPic" />
 
                 <Button
                     android:id="@+id/bCopy"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/copy"
+                    android:text="@string/copy_link"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/tvDownloadLink"
-                    app:layout_constraintBottom_toBottomOf="@id/tvDownloadLink"/>
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/bOpen"
+                    app:layout_constraintTop_toBottomOf="@id/tvDownloadLink" />
 
                 <Button
                     android:id="@+id/bOpen"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/open_link"
-                    app:layout_constraintTop_toBottomOf="@id/bCopy"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/bCopy"
+                    app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"/>
+                    app:layout_constraintTop_toBottomOf="@id/tvDownloadLink" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>
