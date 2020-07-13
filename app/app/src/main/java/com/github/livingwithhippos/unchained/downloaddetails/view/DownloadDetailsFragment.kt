@@ -6,9 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.navArgs
 import com.github.livingwithhippos.unchained.R
+import com.github.livingwithhippos.unchained.databinding.FragmentDownloadDetailsBinding
+import com.github.livingwithhippos.unchained.databinding.NewDownloadFragmentBinding
 import com.github.livingwithhippos.unchained.downloaddetails.viewmodel.DownloadDetailsViewModel
 import com.github.livingwithhippos.unchained.newdownload.viewmodel.NewDownloadViewModel
+import com.github.livingwithhippos.unchained.user.view.UserProfileFragmentArgs
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -16,11 +20,16 @@ class DownloadDetailsFragment : Fragment() {
 
     private val viewModel: DownloadDetailsViewModel by viewModels()
 
+    val args: DownloadDetailsFragmentArgs by navArgs()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_download_details, container, false)
+        val detailsBinding = FragmentDownloadDetailsBinding.inflate(inflater, container, false)
+
+        detailsBinding.details = args.details
+
+        return detailsBinding.root
     }
 }
