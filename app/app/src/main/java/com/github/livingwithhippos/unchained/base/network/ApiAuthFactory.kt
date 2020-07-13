@@ -6,6 +6,9 @@ import com.github.livingwithhippos.unchained.newdownload.model.UnrestrictApiHelp
 import com.github.livingwithhippos.unchained.newdownload.model.UnrestrictApiHelperImpl
 import com.github.livingwithhippos.unchained.base.di.ApiRetrofit
 import com.github.livingwithhippos.unchained.base.di.AuthRetrofit
+import com.github.livingwithhippos.unchained.downloaddetails.model.StreamingApi
+import com.github.livingwithhippos.unchained.downloaddetails.model.StreamingApiHelper
+import com.github.livingwithhippos.unchained.downloaddetails.model.StreamingApiHelperImpl
 import com.github.livingwithhippos.unchained.newdownload.model.UnrestrictApi
 import com.github.livingwithhippos.unchained.user.model.UserApi
 import com.github.livingwithhippos.unchained.user.model.UserApiHelper
@@ -101,5 +104,17 @@ object ApiAuthFactory {
     @Provides
     @Singleton
     fun provideUnrestrictApiHelper(apiHelper: UnrestrictApiHelperImpl): UnrestrictApiHelper =
+        apiHelper
+
+    // streaming api injection
+    @Provides
+    @Singleton
+    fun provideStreamingApi(@ApiRetrofit retrofit: Retrofit): StreamingApi {
+        return retrofit.create(StreamingApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideStreamingApiHelper(apiHelper: StreamingApiHelperImpl): StreamingApiHelper =
         apiHelper
 }
