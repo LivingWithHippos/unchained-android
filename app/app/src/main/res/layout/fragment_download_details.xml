@@ -8,6 +8,10 @@
         <variable
             name="details"
             type="com.github.livingwithhippos.unchained.newdownload.model.UnrestrictedLink" />
+
+        <variable
+            name="listener"
+            type="com.github.livingwithhippos.unchained.downloaddetails.view.DownloadDetailsListener" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -82,6 +86,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/copy_link"
+                    android:onClick="@{() -> listener.onCopyClick(details.download)}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toEndOf="@+id/bOpen"
@@ -92,6 +97,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/open_link"
+                    android:onClick="@{() -> listener.onOpenClick(details.download)}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/bCopy"
                     app:layout_constraintHorizontal_bias="0.5"
