@@ -1,7 +1,36 @@
 package com.github.livingwithhippos.unchained.newdownload.viewmodel
 
+import androidx.hilt.Assisted
+import androidx.hilt.lifecycle.ViewModelInject
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import com.github.livingwithhippos.unchained.newdownload.model.UnrestrictRepository
+import com.github.livingwithhippos.unchained.newdownload.model.UnrestrictedLink
+import com.github.livingwithhippos.unchained.utilities.KEY_TOKEN
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
-class NewDownloadViewModel : ViewModel() {
-    // TODO: Implement the ViewModel
+class NewDownloadViewModel @ViewModelInject constructor(
+    @Assisted private val savedStateHandle: SavedStateHandle,
+    private val unrestrictRepository: UnrestrictRepository
+) : ViewModel() {
+
+    private val job = Job()
+    val scope = CoroutineScope(Dispatchers.Default + job)
+
+    val linkLiveData = MutableLiveData<UnrestrictedLink?>()
+
+    fun fetchUnrestrictedLink(link: String, password: String?, remote: Int? = null) {
+        //todo: add this to fragment's argument
+        val token = savedStateHandle.get<String>(KEY_TOKEN)
+        if (token.isNullOrEmpty())
+            throw IllegalArgumentException("Loaded token was null or empty: $token")
+        scope.launch {
+            val unrestrictedData = unrestrictRepository.getUnrestrictedLink(token, link, password, remote)
+            linkLiveData.postValue(unrestrictedData)
+        }
+    }
 }
