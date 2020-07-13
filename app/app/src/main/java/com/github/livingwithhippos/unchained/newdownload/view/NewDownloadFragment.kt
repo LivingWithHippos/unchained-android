@@ -39,6 +39,8 @@ class NewDownloadFragment : Fragment() {
             val link: String = downloadBinding.etLink.text.toString()
             if (Patterns.WEB_URL.matcher(link).matches()) {
 
+                downloadBinding.bUnrestrict.isEnabled = false
+
                 var password: String? = downloadBinding.etPassword.text.toString()
                 // we don't pass the password if it is blank.
                 // N.B. it won't work if your password is made up of spaces but then again you deserve it
