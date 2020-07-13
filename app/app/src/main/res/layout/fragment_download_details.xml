@@ -5,6 +5,8 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="details"
             type="com.github.livingwithhippos.unchained.newdownload.model.UnrestrictedLink" />
@@ -21,7 +23,7 @@
         tools:context=".downloaddetails.view.DownloadDetailsFragment">
 
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cvUserDetails"
+            android:id="@+id/cvDownloadDetails"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -106,5 +108,41 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>
+
+
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cvStreaming"
+        android:visibility="@{details.streamable == 1 ? View.VISIBLE : View.GONE}"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cvDownloadDetails">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <FrameLayout
+            android:id="@+id/flStreamingBackground"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            android:background="@color/streaming_background">
+
+            <TextView
+                android:id="@+id/tvStreamingTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/streaming"
+                android:textAllCaps="true"
+                android:textSize="20sp" />
+        </FrameLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

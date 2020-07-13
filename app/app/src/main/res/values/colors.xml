@@ -7,4 +7,5 @@
     <!-- https://www.colourlovers.com/palette/56122/Sweet_Lolly -->
     <color name="premium_gold">#FABE28</color>
     <color name="free_red">#FF003C</color>
+    <color name="streaming_background">#00C176</color>
 </resources>

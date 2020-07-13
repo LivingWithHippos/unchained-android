@@ -31,4 +31,5 @@
     <string name="open_link">Open Link</string>
     <string name="copy_link">Copy Link</string>
     <string name="link_copied">Link Copied</string>
+    <string name="streaming">Streaming</string>
 </resources>
