@@ -32,19 +32,19 @@ data class UnrestrictedLink(
     @Json(name = "mimeType")
     val mimeType: String,
     @Json(name = "filesize")
-    val filesize: String,
+    val filesize: Int,
     @Json(name = "link")
     val link: String,
     @Json(name = "host")
     val host: String,
     @Json(name = "chunks")
-    val chunks: String,
+    val chunks: Int,
     @Json(name = "crc")
-    val crc: String,
+    val crc: Int,
     @Json(name = "download")
     val download: String,
     @Json(name = "streamable")
-    val streamable: String
+    val streamable: Int
 )
 
 interface UnrestrictApi {
