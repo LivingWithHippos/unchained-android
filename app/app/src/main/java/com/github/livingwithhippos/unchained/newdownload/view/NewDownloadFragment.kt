@@ -8,10 +8,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.databinding.NewDownloadFragmentBinding
 import com.github.livingwithhippos.unchained.newdownload.viewmodel.NewDownloadViewModel
-import com.github.livingwithhippos.unchained.utilities.REMOTE_TRAFFIC_OFF
 import com.github.livingwithhippos.unchained.utilities.REMOTE_TRAFFIC_ON
 import com.github.livingwithhippos.unchained.utilities.showToast
 import dagger.hilt.android.AndroidEntryPoint
@@ -33,6 +33,11 @@ class NewDownloadFragment : Fragment() {
 
         viewModel.linkLiveData.observe(viewLifecycleOwner, Observer {
             //todo: navigate to download details fragment
+            if (it != null) {
+                val action =
+                    NewDownloadFragmentDirections.actionUnrestrictDownloadToDetailsFragment(it)
+                findNavController().navigate(action)
+            }
         })
         // add the unrestrict button listener
         downloadBinding.bUnrestrict.setOnClickListener {
