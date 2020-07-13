@@ -57,14 +57,14 @@
 
             <!-- use android:text="@{list[0]}" to set the default value -->
             <AutoCompleteTextView
-                android:id="@+id/filled_exposed_dropdown"
+                android:id="@+id/dropdownItems"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:editable="false"
                 android:inputType="none"
                 android:text="@{list[0]}"
                 adapter="@{list}"
-                tools:ignore="Deprecated" />
+                tools:ignore="Deprecated,LabelFor" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
