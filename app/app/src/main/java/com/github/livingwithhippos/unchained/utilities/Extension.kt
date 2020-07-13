@@ -9,11 +9,11 @@ import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.github.livingwithhippos.unchained.R
 
-@BindingAdapter("profileImage")
-fun ImageView.loadImage(profileImage: String?) {
-    if (profileImage != null)
+@BindingAdapter("imageURL")
+fun ImageView.loadImage(imageURL: String?) {
+    if (imageURL != null)
         Glide.with(this.context)
-            .load(profileImage)
+            .load(imageURL)
             .into(this)
 }
 

@@ -39,7 +39,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:profileImage="@{user.avatar}" />
+                    app:imageURL="@{user.avatar}" />
 
                 <TextView
                     android:id="@+id/tvName"
