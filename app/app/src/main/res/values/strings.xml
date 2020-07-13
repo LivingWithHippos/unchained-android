@@ -32,4 +32,11 @@
     <string name="streaming">Streaming</string>
     <string name="megabytes_short">MB</string>
     <string name="file_size_format">%1$d MB</string>
+    <string name="load_streams">Load Streaming Links</string>
+    <string name="apple">Apple</string>
+    <string name="dash">Dash</string>
+    <string name="liveMP4">Live MP4</string>
+    <string name="h264_webm">H264 WebM</string>
+    <string name="quality">Quality</string>
+    <string name="links">Links</string>
 </resources>

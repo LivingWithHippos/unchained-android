@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.databinding.FragmentDownloadDetailsBinding
@@ -36,6 +37,13 @@ class DownloadDetailsFragment : Fragment(), DownloadDetailsListener {
         detailsBinding.details = args.details
         detailsBinding.listener = this
 
+        //todo: change other livedata observation like this or in their own method
+        viewModel.streamLiveData.observe(viewLifecycleOwner, Observer {
+            if (it != null) {
+                detailsBinding.stream = it
+            }
+        })
+
         return detailsBinding.root
     }
 
@@ -47,9 +55,14 @@ class DownloadDetailsFragment : Fragment(), DownloadDetailsListener {
     override fun onOpenClick(url: String) {
         openExternalWebPage(url)
     }
+
+    override fun onLoadStreamsClick(id: String) {
+        viewModel.fetchStreamingInfo(id)
+    }
 }
 
 interface DownloadDetailsListener {
     fun onCopyClick(text: String)
     fun onOpenClick(url: String)
+    fun onLoadStreamsClick(id: String)
 }

@@ -12,6 +12,10 @@
             type="com.github.livingwithhippos.unchained.newdownload.model.UnrestrictedLink" />
 
         <variable
+            name="stream"
+            type="com.github.livingwithhippos.unchained.downloaddetails.model.Stream" />
+
+        <variable
             name="listener"
             type="com.github.livingwithhippos.unchained.downloaddetails.view.DownloadDetailsListener" />
     </data>
@@ -121,28 +125,161 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/cvDownloadDetails">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <FrameLayout
-            android:id="@+id/flStreamingBackground"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            android:background="@color/streaming_background">
+            android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/tvStreamingTitle"
+            <FrameLayout
+                android:id="@+id/flStreamingBackground"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/streaming_background"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/tvStreamingTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="@string/streaming"
+                    android:textAllCaps="true"
+                    android:textSize="25sp" />
+            </FrameLayout>
+
+            <Button
+                android:id="@+id/bLoadStreams"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:text="@string/streaming"
-                android:textAllCaps="true"
-                android:textSize="20sp" />
-        </FrameLayout>
+                android:onClick="@{() -> listener.onLoadStreamsClick(details.id)}"
+                android:text="@string/load_streams"
+                android:visibility="@{stream == null ? View.VISIBLE : View.GONE}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/flStreamingBackground" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <LinearLayout
+                android:id="@+id/llStreamQuality"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="5dp"
+                android:orientation="vertical"
+                android:visibility="@{stream != null ? View.VISIBLE : View.GONE}"
+                app:layout_constraintEnd_toStartOf="@+id/llStreamLinks"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/flStreamingBackground">
+
+                <TextView
+                    android:id="@+id/tvStreamsQuality"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:background="@drawable/table_border"
+                    android:text="@string/quality"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:id="@+id/tvAppleTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="@string/apple" />
+
+                <TextView
+                    android:id="@+id/tvDashTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="@string/dash" />
+
+                <TextView
+                    android:id="@+id/tvMp4Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="@string/liveMP4" />
+
+                <TextView
+                    android:id="@+id/tvH264Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="@string/h264_webm" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/llStreamLinks"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:layout_marginTop="5dp"
+                android:orientation="vertical"
+                android:visibility="@{stream != null ? View.VISIBLE : View.GONE}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/llStreamQuality"
+                app:layout_constraintTop_toBottomOf="@id/flStreamingBackground">
+
+                <TextView
+                    android:id="@+id/tvLinks"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:background="@drawable/table_border"
+                    android:text="@string/links"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvAppleLink"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="@{stream.apple.link}"
+                    android:autoLink="web"
+                    android:ellipsize="middle"
+                    android:singleLine="true"
+                    android:visibility="@{stream.apple == null ? View.INVISIBLE : View.VISIBLE}" />
+
+                <TextView
+                    android:id="@+id/tvDashLink"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="@{stream.dash.link}"
+                    android:autoLink="web"
+                    android:ellipsize="middle"
+                    android:singleLine="true"
+                    android:visibility="@{stream.dash == null ? View.INVISIBLE : View.VISIBLE}" />
+
+                <TextView
+                    android:id="@+id/tvMp4Link"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="@{stream.liveMP4.link}"
+                    android:autoLink="web"
+                    android:ellipsize="middle"
+                    android:singleLine="true"
+                    android:visibility="@{stream.liveMP4 == null ? View.INVISIBLE : View.VISIBLE}" />
+
+                <TextView
+                    android:id="@+id/tvH264Link"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="@{stream.h264WebM.link}"
+                    android:autoLink="web"
+                    android:ellipsize="middle"
+                    android:singleLine="true"
+                    android:visibility="@{stream.h264WebM == null ? View.INVISIBLE : View.VISIBLE}" />
+
+            </LinearLayout>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
