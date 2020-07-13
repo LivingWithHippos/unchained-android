@@ -36,4 +36,7 @@ interface CredentialsDao {
 
     @Query("DELETE FROM credentials WHERE device_code = :deviceCode")
     suspend fun delete(deviceCode: String)
+
+    @Query("DELETE FROM credentials WHERE access_token IS NULL OR access_token LIKE ''")
+    suspend fun deleteIncompleteCredentials()
 }

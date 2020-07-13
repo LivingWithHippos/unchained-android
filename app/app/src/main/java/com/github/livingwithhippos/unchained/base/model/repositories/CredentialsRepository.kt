@@ -18,4 +18,7 @@ class CredentialsRepository @Inject constructor(private val credentialsDao: Cred
         credentialsDao.updateCredentials(credentials)
 
     suspend fun insert(credentials: Credentials) = credentialsDao.insert(credentials)
+
+    suspend fun deleteIncompleteCredentials()  = credentialsDao.deleteIncompleteCredentials()
+
 }
