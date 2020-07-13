@@ -78,7 +78,10 @@ class AuthenticationViewModel @ViewModelInject constructor(
             val tokenData = authRepository.getToken(clientId, clientSecret, deviceCode)
             tokenLiveData.postValue(tokenData)
             if (tokenData?.accessToken != null) {
-                credentialRepository.updateCredentials(
+                // i need only a set of credentials in my application
+                //todo: check this when adding private api token
+                credentialRepository.deleteAllCredentials()
+                credentialRepository.insert(
                     Credentials(
                         deviceCode = deviceCode,
                         clientId = clientId,
