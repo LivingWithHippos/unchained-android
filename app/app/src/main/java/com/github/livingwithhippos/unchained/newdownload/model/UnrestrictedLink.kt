@@ -58,9 +58,9 @@ interface UnrestrictApi {
     suspend fun getUnrestrictedLink(
         @Header("Authorization") token: String,
         // The original hoster link
-        @Field("link ") link: String,
+        @Field("link") link: String,
         // Password to unlock the file access hoster side
-        @Field("link ") password: String? = null,
+        @Field("password") password: String? = null,
         // 0 or 1, use Remote traffic, dedicated servers and account sharing protections lifted
         @Field("remote ") remote: Int? = null
     ): Response<UnrestrictedLink>
