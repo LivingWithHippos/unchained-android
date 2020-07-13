@@ -10,6 +10,9 @@ const val BASE_AUTH_URL = "https://api.real-debrid.com/oauth/v2/"
 
 const val KEY_TOKEN: String = "TOKEN_KEY"
 
+const val REMOTE_TRAFFIC_OFF: Int = 0
+const val REMOTE_TRAFFIC_ON: Int = 1
+
 val errorMap = mapOf(
     -1 to "Internal error",
     1 to "Missing parameter",
