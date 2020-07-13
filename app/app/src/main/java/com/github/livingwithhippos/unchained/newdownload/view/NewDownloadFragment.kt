@@ -28,6 +28,10 @@ class NewDownloadFragment : Fragment() {
         // see AutoCompleteTextView.setAdapter(contents: List<String>) in [Extension.kt]
         // the first value is used as default, see AutoCompleteTextView's android:text="@{list[0]}" in the layout
         downloadBinding.list = listOf(getString(R.string.no), getString(R.string.yes))
+
+        viewModel.linkLiveData.observe(viewLifecycleOwner, Observer {
+            //todo: navigate to download details fragment
+        })
         // add the unrestrict button listener
         downloadBinding.bUnrestrict.setOnClickListener {
             //todo: check acceptable values and convert them (check blank and not url etc.)
