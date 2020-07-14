@@ -26,6 +26,7 @@
             app:layout_constraintVertical_chainStyle="packed"
             app:endIconMode="clear_text"
             android:importantForAutofill="no"
+            app:startIconDrawable="@drawable/icon_link"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox" >
 
             <com.google.android.material.textfield.TextInputEditText
