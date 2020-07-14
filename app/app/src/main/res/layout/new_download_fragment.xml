@@ -13,12 +13,10 @@
         android:layout_height="match_parent"
         tools:context=".newdownload.view.NewDownloadFragment">
 
-        <EditText
-            android:id="@+id/etLink"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tfLink"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textPersonName"
             android:hint="@string/link"
             app:layout_constraintBottom_toTopOf="@+id/etPassword"
             app:layout_constraintEnd_toEndOf="parent"
@@ -26,7 +24,17 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_chainStyle="packed"
-            android:importantForAutofill="no" />
+            app:endIconMode="clear_text"
+            android:importantForAutofill="no"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox" >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tiLink"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                />
+
+        </com.google.android.material.textfield.TextInputLayout>
 
         <EditText
             android:id="@+id/etPassword"
@@ -39,7 +47,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/etLink"
+            app:layout_constraintTop_toBottomOf="@+id/tfLink"
             android:importantForAutofill="no" />
 
         <com.google.android.material.textfield.TextInputLayout
