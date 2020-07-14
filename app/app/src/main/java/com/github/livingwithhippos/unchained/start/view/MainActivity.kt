@@ -4,7 +4,9 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import androidx.navigation.NavController
+import androidx.navigation.ui.setupActionBarWithNavController
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewModel
 import com.github.livingwithhippos.unchained.utilities.setupWithNavController
@@ -49,7 +51,17 @@ class MainActivity : AppCompatActivity() {
             intent = intent
         )
 
+        // Whenever the selected controller changes, setup the action bar.
+        controller.observe(this, Observer { navController ->
+            setupActionBarWithNavController(navController)
+        })
+
         currentNavController = controller
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        val bool = currentNavController?.value?.navigateUp()
+        return bool ?: false
     }
 
 }
