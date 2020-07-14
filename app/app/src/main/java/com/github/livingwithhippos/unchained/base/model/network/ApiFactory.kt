@@ -29,7 +29,7 @@ import javax.inject.Singleton
 // the other one (ApiFactory)
 @InstallIn(ApplicationComponent::class)
 @Module
-object ApiAuthFactory {
+object ApiFactory {
 
     @Provides
     @Singleton
