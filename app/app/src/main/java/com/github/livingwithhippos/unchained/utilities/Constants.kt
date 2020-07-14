@@ -10,6 +10,8 @@ const val BASE_AUTH_URL = "https://api.real-debrid.com/oauth/v2/"
 
 const val KEY_TOKEN: String = "TOKEN_KEY"
 
+const val PRIVATE_TOKEN: String = "private_token"
+
 const val REMOTE_TRAFFIC_OFF: Int = 0
 const val REMOTE_TRAFFIC_ON: Int = 1
 
