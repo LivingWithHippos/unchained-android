@@ -39,4 +39,8 @@
     <string name="h264_webm">H264 WebM</string>
     <string name="quality">Quality</string>
     <string name="links">Links</string>
+    <string name="add_private_token_message">You can also use your private API token from https://real-debrid.com/apitoken which will allow you to use streaming.</string>
+    <string name="add_private_token">Add Private Token</string>
+    <string name="private_token">Private Token</string>
+    <string name="invalid_token">Please check the token value</string>
 </resources>

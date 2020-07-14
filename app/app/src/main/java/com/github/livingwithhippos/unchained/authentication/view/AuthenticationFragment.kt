@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -90,8 +91,33 @@ class AuthenticationFragment : Fragment(), ButtonListener {
         copyToClipboard("real-debrid authorization code", text)
         showToast(R.string.code_copied)
     }
+
+    override fun onInsertTokenClick(etToken: EditText) {
+        val token = etToken.text.toString().trim()
+        // mine is 52 characters
+        if (token.length < 50)
+            showToast(R.string.invalid_token)
+        else {
+            // pass the value to be checked and eventually saved
+            viewModel.checkAndSaveToken(token)
+            // check if we were able to load the user with the custom token
+            viewModel.userLiveData.observe(viewLifecycleOwner, Observer {
+                // wrong token or connectivity issues
+                if (it == null)
+                    showToast(R.string.invalid_token)
+                else {
+                    // go to user screen
+                    // todo: the user call will be repeated, avoid if possible (shared viewmodel?)
+                    val action =
+                        AuthenticationFragmentDirections.actionAuthenticationToUser(token)
+                    findNavController().navigate(action)
+                }
+            })
+        }
+    }
 }
 
 interface ButtonListener {
     fun onCopyClick(text: String)
+    fun onInsertTokenClick(etToken: EditText)
 }

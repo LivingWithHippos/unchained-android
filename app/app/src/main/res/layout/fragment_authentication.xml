@@ -124,9 +124,45 @@
             android:checked="@{token.accessToken == null ? false : true}"
             android:clickable="false"
             android:text="@{token.accessToken == null ? @string/waiting_token : @string/obtained_token}"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/tvUsePrivateToken"
             app:layout_constraintStart_toStartOf="@+id/cbSecret"
             app:layout_constraintTop_toBottomOf="@+id/cbSecret" />
+
+
+        <TextView
+            android:id="@+id/tvUsePrivateToken"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/add_private_token_message"
+            android:autoLink="web"
+            app:layout_constraintTop_toBottomOf="@id/cbToken"
+            app:layout_constraintBottom_toTopOf="@id/etLink"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"  />
+
+        <EditText
+            android:id="@+id/etLink"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="@string/private_token"
+            android:importantForAutofill="no"
+            android:inputType="textPersonName"
+            app:layout_constraintTop_toBottomOf="@id/tvUsePrivateToken"
+            app:layout_constraintBottom_toTopOf="@id/bInsertPrivate"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+        <Button
+            android:id="@+id/bInsertPrivate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/etLink"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:onClick="@{() -> listener.onInsertTokenClick(etLink)}"
+            android:text="@string/add_private_token" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
