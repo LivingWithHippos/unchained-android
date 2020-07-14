@@ -2,12 +2,16 @@ package com.github.livingwithhippos.unchained.base.model.dao
 
 import androidx.room.*
 import com.github.livingwithhippos.unchained.base.model.entities.Credentials
+import com.github.livingwithhippos.unchained.utilities.PRIVATE_TOKEN
 
 @Dao
 interface CredentialsDao {
 
     @Query("SELECT * FROM credentials WHERE device_code = :deviceCode")
     suspend fun getCredentials(deviceCode: String): Credentials?
+
+    @Query("SELECT credentials.access_token FROM credentials WHERE device_code = :deviceCode")
+    suspend fun getPrivateToken(deviceCode: String = PRIVATE_TOKEN): String?
 
     // this is supposing only correct values get saved
     // fixme: this does not return lines even if we have filled rows. Query works on external editor with downloaded database. Use getCredentials and .filter{ fields != null }
@@ -19,6 +23,13 @@ interface CredentialsDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(credentials: Credentials)
+
+    /**
+     * Insert a private api token in the credentials table.
+     * this way we'll have a single private token since the primary key, device_code, is always $PRIVATE_TOKEN
+     */
+    @Query("INSERT OR REPLACE INTO credentials (access_token, client_id, client_secret, device_code, refresh_token) VALUES (:privateToken,:privateTokenIndicator,:privateTokenIndicator,:privateTokenIndicator,:privateTokenIndicator)")
+    suspend fun insertPrivateToken(privateToken: String, privateTokenIndicator: String = PRIVATE_TOKEN)
 
     // bug: not working, use updateCredentials
     @Query("UPDATE credentials SET client_id = :clientId AND client_secret = :clientSecret WHERE device_code = :deviceCode")
