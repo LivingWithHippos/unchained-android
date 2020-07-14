@@ -7,6 +7,7 @@ import com.github.livingwithhippos.unchained.base.model.entities.Credentials
 import com.github.livingwithhippos.unchained.base.model.repositories.AuthenticationRepository
 import com.github.livingwithhippos.unchained.base.model.repositories.CredentialsRepository
 import com.github.livingwithhippos.unchained.base.model.repositories.UserRepository
+import com.github.livingwithhippos.unchained.utilities.PRIVATE_TOKEN
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -31,12 +32,24 @@ class MainActivityViewModel @ViewModelInject constructor(
                 .filter { it.accessToken != null && it.clientId != null && it.clientSecret != null && it.deviceCode.isNotBlank() && it.refreshToken != null }
             var workingCredentials: Credentials? = null
             if (completeCredentials.isNotEmpty()) {
-                for (cred in completeCredentials) {
-                    if (checkCredentials(cred)) {
-                        workingCredentials = cred
-                        break
-                    }
+                val privateCredentials =
+                    if (completeCredentials.any{ it.deviceCode == PRIVATE_TOKEN })
+                        completeCredentials.first { it.deviceCode == PRIVATE_TOKEN }
+                    else null
+
+                if (privateCredentials != null){
+                    if (checkCredentials(privateCredentials) )
+                        workingCredentials = privateCredentials
                 }
+                // if the private token is not working this also gets triggered
+                //todo: add network check
+                if (workingCredentials == null)
+                    for (cred in completeCredentials) {
+                        if (checkCredentials(cred)) {
+                            workingCredentials = cred
+                            break
+                        }
+                    }
             }
             // passes null if no working credentials, otherwise pass the first working one
             workingCredentialsLiveData.postValue(workingCredentials)
