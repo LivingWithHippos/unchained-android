@@ -3,8 +3,8 @@ package com.github.livingwithhippos.unchained.start.viewmodel
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.github.livingwithhippos.unchained.base.model.repositories.AuthenticationRepository
 import com.github.livingwithhippos.unchained.base.model.entities.Credentials
+import com.github.livingwithhippos.unchained.base.model.repositories.AuthenticationRepository
 import com.github.livingwithhippos.unchained.base.model.repositories.CredentialsRepository
 import com.github.livingwithhippos.unchained.base.model.repositories.UserRepository
 import kotlinx.coroutines.CoroutineScope
@@ -47,8 +47,7 @@ class MainActivityViewModel @ViewModelInject constructor(
         if (credentials.accessToken != null) {
             val user = userRepository.getUserInfo(credentials.accessToken)
             return user != null
-        }
-        else
+        } else
             throw IllegalArgumentException("Credentials parameter has null access token")
         // todo: needs to check if it's a network error or if token has expired etc.
     }

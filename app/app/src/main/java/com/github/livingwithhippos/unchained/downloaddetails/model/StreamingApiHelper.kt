@@ -1,6 +1,5 @@
 package com.github.livingwithhippos.unchained.downloaddetails.model
 
-import com.github.livingwithhippos.unchained.user.model.User
 import retrofit2.Response
 
 interface StreamingApiHelper {

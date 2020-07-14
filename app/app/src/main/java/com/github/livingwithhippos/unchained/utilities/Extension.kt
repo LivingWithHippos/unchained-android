@@ -31,7 +31,7 @@ fun AutoCompleteTextView.setAdapter(contents: List<String>) {
 }
 
 fun Fragment.showToast(stringResource: Int, length: Int = Toast.LENGTH_SHORT) {
-    Toast.makeText(requireContext(),getString(stringResource),length).show()
+    Toast.makeText(requireContext(), getString(stringResource), length).show()
 }
 
 // note: should this be added to Context instead of Fragment?

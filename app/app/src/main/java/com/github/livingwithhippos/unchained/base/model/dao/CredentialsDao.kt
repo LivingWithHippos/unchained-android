@@ -10,7 +10,7 @@ interface CredentialsDao {
     suspend fun getCredentials(deviceCode: String): Credentials?
 
     // this is supposing only correct values get saved
-    // fixme: this does not return lines even if we have filled rows. QUery works on external editor with downloaded database. Use getCredentials and .filter{ fields != null }
+    // fixme: this does not return lines even if we have filled rows. Query works on external editor with downloaded database. Use getCredentials and .filter{ fields != null }
     @Query("SELECT * FROM credentials WHERE client_id IS NOT NULL AND client_secret IS NOT NULL AND access_token IS NOT NULL AND refresh_token IS NOT NULL")
     suspend fun getCompleteCredentials(): List<Credentials>
 

@@ -1,21 +1,16 @@
 package com.github.livingwithhippos.unchained.downloaddetails.view
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.databinding.FragmentDownloadDetailsBinding
-import com.github.livingwithhippos.unchained.databinding.NewDownloadFragmentBinding
 import com.github.livingwithhippos.unchained.downloaddetails.viewmodel.DownloadDetailsViewModel
-import com.github.livingwithhippos.unchained.newdownload.viewmodel.NewDownloadViewModel
-import com.github.livingwithhippos.unchained.user.view.UserProfileFragmentArgs
 import com.github.livingwithhippos.unchained.utilities.copyToClipboard
 import com.github.livingwithhippos.unchained.utilities.openExternalWebPage
 import com.github.livingwithhippos.unchained.utilities.showToast

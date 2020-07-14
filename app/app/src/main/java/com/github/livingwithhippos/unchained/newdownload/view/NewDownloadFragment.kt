@@ -49,7 +49,7 @@ class NewDownloadFragment : Fragment() {
                 var password: String? = downloadBinding.etPassword.text.toString()
                 // we don't pass the password if it is blank.
                 // N.B. it won't work if your password is made up of spaces but then again you deserve it
-                if (password==null || password.isBlank())
+                if (password == null || password.isBlank())
                     password = null
                 val remote: Int? = if (downloadBinding.dropdownItems.text.toString()
                         .equals(getString(R.string.yes), ignoreCase = true)

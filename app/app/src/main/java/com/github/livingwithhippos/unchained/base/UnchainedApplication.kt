@@ -14,7 +14,8 @@ import javax.inject.Inject
 @HiltAndroidApp
 class UnchainedApplication : Application() {
 
-    @Inject lateinit var credentialsRepository: CredentialsRepository
+    @Inject
+    lateinit var credentialsRepository: CredentialsRepository
 
     private val job = Job()
     private val scope = CoroutineScope(Dispatchers.Default + job)

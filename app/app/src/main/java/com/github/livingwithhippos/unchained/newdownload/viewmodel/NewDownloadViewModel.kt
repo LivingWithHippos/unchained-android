@@ -34,8 +34,9 @@ class NewDownloadViewModel @ViewModelInject constructor(
             if (token.isNullOrEmpty())
                 throw IllegalArgumentException("Loaded token was null or empty: $token")
 
-            savedStateHandle.set(KEY_TOKEN,token)
-            val unrestrictedData = unrestrictRepository.getUnrestrictedLink(token, link, password, remote)
+            savedStateHandle.set(KEY_TOKEN, token)
+            val unrestrictedData =
+                unrestrictRepository.getUnrestrictedLink(token, link, password, remote)
             linkLiveData.postValue(unrestrictedData)
         }
     }

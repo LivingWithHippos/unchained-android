@@ -4,7 +4,8 @@ import com.github.livingwithhippos.unchained.downloaddetails.model.Stream
 import com.github.livingwithhippos.unchained.downloaddetails.model.StreamingApiHelper
 import javax.inject.Inject
 
-class StreamingRepository @Inject constructor(private val streamingApiHelper: StreamingApiHelper) : BaseRepository() {
+class StreamingRepository @Inject constructor(private val streamingApiHelper: StreamingApiHelper) :
+    BaseRepository() {
 
     suspend fun getStreams(token: String, id: String): Stream? {
 

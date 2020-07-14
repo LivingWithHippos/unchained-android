@@ -1,14 +1,11 @@
 package com.github.livingwithhippos.unchained.downloaddetails.model
-import com.github.livingwithhippos.unchained.authentication.model.Authentication
-import com.github.livingwithhippos.unchained.utilities.OPEN_SOURCE_CLIENT_ID
-import com.squareup.moshi.JsonClass
 
 import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Path
-import retrofit2.http.Query
 
 @JsonClass(generateAdapter = true)
 data class Stream(
