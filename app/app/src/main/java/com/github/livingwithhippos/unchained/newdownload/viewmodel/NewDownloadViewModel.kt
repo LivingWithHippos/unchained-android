@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.github.livingwithhippos.unchained.base.model.repositories.CredentialsRepository
-import com.github.livingwithhippos.unchained.newdownload.model.UnrestrictRepository
+import com.github.livingwithhippos.unchained.base.model.repositories.UnrestrictRepository
 import com.github.livingwithhippos.unchained.newdownload.model.UnrestrictedLink
 import com.github.livingwithhippos.unchained.utilities.KEY_TOKEN
 import kotlinx.coroutines.CoroutineScope

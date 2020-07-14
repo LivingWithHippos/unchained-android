@@ -7,7 +7,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.github.livingwithhippos.unchained.base.model.repositories.CredentialsRepository
 import com.github.livingwithhippos.unchained.downloaddetails.model.Stream
-import com.github.livingwithhippos.unchained.downloaddetails.model.StreamingRepository
+import com.github.livingwithhippos.unchained.base.model.repositories.StreamingRepository
 import com.github.livingwithhippos.unchained.utilities.KEY_TOKEN
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

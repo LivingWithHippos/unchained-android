@@ -1,6 +1,8 @@
-package com.github.livingwithhippos.unchained.authentication.model
+package com.github.livingwithhippos.unchained.base.model.repositories
 
-import com.github.livingwithhippos.unchained.base.model.repositories.BaseRepository
+import com.github.livingwithhippos.unchained.authentication.model.Authentication
+import com.github.livingwithhippos.unchained.authentication.model.Secrets
+import com.github.livingwithhippos.unchained.authentication.model.Token
 import com.github.livingwithhippos.unchained.base.network.AuthApiHelper
 import javax.inject.Inject
 

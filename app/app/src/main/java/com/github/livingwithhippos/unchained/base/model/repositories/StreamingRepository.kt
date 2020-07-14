@@ -1,6 +1,7 @@
-package com.github.livingwithhippos.unchained.downloaddetails.model
+package com.github.livingwithhippos.unchained.base.model.repositories
 
-import com.github.livingwithhippos.unchained.base.model.repositories.BaseRepository
+import com.github.livingwithhippos.unchained.downloaddetails.model.Stream
+import com.github.livingwithhippos.unchained.downloaddetails.model.StreamingApiHelper
 import javax.inject.Inject
 
 class StreamingRepository @Inject constructor(private val streamingApiHelper: StreamingApiHelper) : BaseRepository() {

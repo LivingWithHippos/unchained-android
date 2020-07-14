@@ -1,6 +1,7 @@
-package com.github.livingwithhippos.unchained.newdownload.model
+package com.github.livingwithhippos.unchained.base.model.repositories
 
-import com.github.livingwithhippos.unchained.base.model.repositories.BaseRepository
+import com.github.livingwithhippos.unchained.newdownload.model.UnrestrictApiHelper
+import com.github.livingwithhippos.unchained.newdownload.model.UnrestrictedLink
 import javax.inject.Inject
 
 class UnrestrictRepository @Inject constructor(private val unrestrictApiHelper: UnrestrictApiHelper) :

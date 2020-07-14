@@ -3,11 +3,10 @@ package com.github.livingwithhippos.unchained.start.viewmodel
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.github.livingwithhippos.unchained.authentication.model.AuthenticationRepository
+import com.github.livingwithhippos.unchained.base.model.repositories.AuthenticationRepository
 import com.github.livingwithhippos.unchained.base.model.entities.Credentials
 import com.github.livingwithhippos.unchained.base.model.repositories.CredentialsRepository
-import com.github.livingwithhippos.unchained.user.model.User
-import com.github.livingwithhippos.unchained.user.model.UserRepository
+import com.github.livingwithhippos.unchained.base.model.repositories.UserRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

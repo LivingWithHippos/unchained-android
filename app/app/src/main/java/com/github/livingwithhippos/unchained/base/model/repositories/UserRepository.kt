@@ -1,6 +1,7 @@
-package com.github.livingwithhippos.unchained.user.model
+package com.github.livingwithhippos.unchained.base.model.repositories
 
-import com.github.livingwithhippos.unchained.base.model.repositories.BaseRepository
+import com.github.livingwithhippos.unchained.user.model.User
+import com.github.livingwithhippos.unchained.user.model.UserApiHelper
 import javax.inject.Inject
 
 

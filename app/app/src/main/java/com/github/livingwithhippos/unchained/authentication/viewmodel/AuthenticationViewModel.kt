@@ -4,7 +4,7 @@ import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.github.livingwithhippos.unchained.authentication.model.Authentication
-import com.github.livingwithhippos.unchained.authentication.model.AuthenticationRepository
+import com.github.livingwithhippos.unchained.base.model.repositories.AuthenticationRepository
 import com.github.livingwithhippos.unchained.authentication.model.Secrets
 import com.github.livingwithhippos.unchained.authentication.model.Token
 import com.github.livingwithhippos.unchained.base.model.entities.Credentials
