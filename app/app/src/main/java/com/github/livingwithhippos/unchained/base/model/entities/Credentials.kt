@@ -16,7 +16,5 @@ class Credentials(
     @ColumnInfo(name = "access_token")
     val accessToken: String?,
     @ColumnInfo(name = "refresh_token")
-    val refreshToken: String?,
-    @ColumnInfo(name = "type")
-    val type: String?
+    val refreshToken: String?
 )
