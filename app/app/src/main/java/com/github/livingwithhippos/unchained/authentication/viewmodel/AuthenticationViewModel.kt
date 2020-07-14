@@ -80,7 +80,7 @@ class AuthenticationViewModel @ViewModelInject constructor(
             if (tokenData?.accessToken != null) {
                 // i need only a set of credentials in my application
                 //todo: check this when adding private api token
-                credentialRepository.deleteAllCredentials()
+                credentialRepository.deleteAllOpenSourceCredentials()
                 credentialRepository.insert(
                     Credentials(
                         deviceCode = deviceCode,

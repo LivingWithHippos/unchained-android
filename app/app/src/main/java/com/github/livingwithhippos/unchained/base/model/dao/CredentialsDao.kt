@@ -39,4 +39,7 @@ interface CredentialsDao {
 
     @Query("DELETE FROM credentials WHERE access_token IS NULL OR access_token LIKE ''")
     suspend fun deleteIncompleteCredentials()
+
+    @Query("DELETE FROM credentials WHERE access_token != :privateTokenIndicator")
+    suspend fun deleteAllOpenSource(privateTokenIndicator: String = PRIVATE_TOKEN)
 }

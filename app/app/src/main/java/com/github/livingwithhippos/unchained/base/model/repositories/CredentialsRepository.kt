@@ -21,6 +21,8 @@ class CredentialsRepository @Inject constructor(private val credentialsDao: Cred
 
     suspend fun deleteAllCredentials() = credentialsDao.deleteAll()
 
+    suspend fun deleteAllOpenSourceCredentials() = credentialsDao.deleteAllOpenSource()
+
     suspend fun deleteIncompleteCredentials() = credentialsDao.deleteIncompleteCredentials()
 
 }
