@@ -43,4 +43,6 @@
     <string name="add_private_token">Add Private Token</string>
     <string name="private_token">Private Token</string>
     <string name="invalid_token">Please check the token value</string>
+    <string name="download_details">Download Details</string>
+    <string name="authenticate">Authenticate</string>
 </resources>

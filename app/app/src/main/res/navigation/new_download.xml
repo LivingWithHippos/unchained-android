@@ -9,7 +9,7 @@
     <fragment
         android:id="@+id/newDownloadFragment"
         android:name="com.github.livingwithhippos.unchained.newdownload.view.NewDownloadFragment"
-        android:label="new_download_fragment"
+        android:label="@string/new_download"
         tools:layout="@layout/new_download_fragment" >
         <action
             android:id="@+id/actionUnrestrictDownloadToDetailsFragment"
@@ -18,7 +18,7 @@
     <fragment
         android:id="@+id/downloadDetailsFragment"
         android:name="com.github.livingwithhippos.unchained.downloaddetails.view.DownloadDetailsFragment"
-        android:label="DownloadDetailsFragment" >
+        android:label="@string/download_details" >
         <argument android:name="details"
             app:argType="com.github.livingwithhippos.unchained.newdownload.model.UnrestrictedLink" />
     </fragment>
