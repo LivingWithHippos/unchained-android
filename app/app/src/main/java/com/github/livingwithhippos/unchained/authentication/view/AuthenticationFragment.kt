@@ -95,3 +95,7 @@ class AuthenticationFragment : Fragment(), ButtonListener {
         showToast(R.string.code_copied)
     }
 }
+
+interface ButtonListener {
+    fun onCopyClick(text: String)
+}
