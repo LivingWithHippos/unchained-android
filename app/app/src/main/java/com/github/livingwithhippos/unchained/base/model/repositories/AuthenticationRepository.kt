@@ -3,7 +3,7 @@ package com.github.livingwithhippos.unchained.base.model.repositories
 import com.github.livingwithhippos.unchained.authentication.model.Authentication
 import com.github.livingwithhippos.unchained.authentication.model.Secrets
 import com.github.livingwithhippos.unchained.authentication.model.Token
-import com.github.livingwithhippos.unchained.base.network.AuthApiHelper
+import com.github.livingwithhippos.unchained.base.model.network.AuthApiHelper
 import javax.inject.Inject
 
 class AuthenticationRepository @Inject constructor(private val apiHelper: AuthApiHelper) :
