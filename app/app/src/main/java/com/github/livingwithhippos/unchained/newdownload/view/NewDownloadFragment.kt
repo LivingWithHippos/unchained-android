@@ -51,9 +51,7 @@ class NewDownloadFragment : Fragment() {
                 // N.B. it won't work if your password is made up of spaces but then again you deserve it
                 if (password == null || password.isBlank())
                     password = null
-                val remote: Int? = if (downloadBinding.dropdownItems.text.toString()
-                        .equals(getString(R.string.yes), ignoreCase = true)
-                ) REMOTE_TRAFFIC_ON else null
+                val remote: Int? = if (downloadBinding.switchRemote.isEnabled) REMOTE_TRAFFIC_ON else null
 
                 viewModel.fetchUnrestrictedLink(
                     link,

@@ -6,13 +6,13 @@
         <import type="java.util.List"/>
         <variable name="list" type="List&lt;String>"/>
     </data>
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/rootLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".newdownload.view.NewDownloadFragment">
 
+        <!-- todo: add paste button for link-->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tfLink"
             android:layout_width="250dp"
@@ -44,38 +44,25 @@
             android:ems="10"
             android:inputType="textPassword"
             android:hint="@string/password_optional"
-            app:layout_constraintBottom_toTopOf="@+id/dropdownRemote"
+            app:layout_constraintBottom_toTopOf="@+id/switchRemote"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tfLink"
             android:importantForAutofill="no" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-            android:id="@+id/dropdownRemote"
-            android:layout_width="250dp"
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/switchRemote"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="@string/hint_remote"
+            android:checked="false"
+            android:text="@string/remote_traffic"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/etPassword"
             app:layout_constraintBottom_toTopOf="@+id/bUnrestrict"
-            app:layout_constraintVertical_chainStyle="packed">
-
-            <!-- use android:text="@{list[0]}" to set the default value -->
-            <AutoCompleteTextView
-                android:id="@+id/dropdownItems"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:editable="false"
-                android:inputType="none"
-                android:text="@{list[0]}"
-                adapter="@{list}"
-                tools:ignore="Deprecated,LabelFor" />
-
-        </com.google.android.material.textfield.TextInputLayout>
+            app:layout_constraintVertical_chainStyle="packed"/>
 
         <Button
             android:id="@+id/bUnrestrict"
@@ -86,7 +73,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/dropdownRemote"
+            app:layout_constraintTop_toBottomOf="@+id/switchRemote"
             app:layout_constraintBottom_toBottomOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
