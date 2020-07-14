@@ -9,12 +9,15 @@ import com.github.livingwithhippos.unchained.authentication.model.Token
 import com.github.livingwithhippos.unchained.base.model.entities.Credentials
 import com.github.livingwithhippos.unchained.base.model.repositories.AuthenticationRepository
 import com.github.livingwithhippos.unchained.base.model.repositories.CredentialsRepository
+import com.github.livingwithhippos.unchained.base.model.repositories.UserRepository
+import com.github.livingwithhippos.unchained.user.model.User
 import kotlinx.coroutines.*
 
 //todo: add state saving and loading
 class AuthenticationViewModel @ViewModelInject constructor(
     private val authRepository: AuthenticationRepository,
-    private val credentialRepository: CredentialsRepository
+    private val credentialRepository: CredentialsRepository,
+    private val userRepository: UserRepository
 ) : ViewModel() {
 
     private val job = Job()
@@ -23,6 +26,7 @@ class AuthenticationViewModel @ViewModelInject constructor(
     val authLiveData = MutableLiveData<Authentication?>()
     val secretLiveData = MutableLiveData<Secrets?>()
     val tokenLiveData = MutableLiveData<Token?>()
+    val userLiveData = MutableLiveData<User?>()
 
     //todo: here we should check if we already have credentials and if they work, and pass those
     //todo: rename this first part of the auth flow as verificationInfo etc.?
@@ -92,6 +96,18 @@ class AuthenticationViewModel @ViewModelInject constructor(
                     )
                 )
             }
+        }
+    }
+
+    fun checkAndSaveToken(token: String) {
+        scope.launch {
+            // try to get personal info
+            val userData = userRepository.getUserInfo(token)
+            // save the token if it's working
+            if (userData != null)
+                credentialRepository.insertPrivateToken(token)
+            // alert the observing fragment of the result
+            userLiveData.postValue(userData)
         }
     }
 
