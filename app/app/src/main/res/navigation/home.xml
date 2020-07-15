@@ -7,8 +7,21 @@
     tools:ignore="UnusedNavigation">
 
     <fragment
+        android:id="@+id/startFragment"
+        android:name="com.github.livingwithhippos.unchained.start.view.StartFragment"
+        tools:layout="@layout/fragment_start"
+        android:label="@string/loading">
+        <action
+            android:id="@+id/action_startFragment_to_authenticationFragment"
+            app:destination="@id/authenticationFragment" />
+        <action
+            android:id="@+id/action_startFragment_to_userProfileFragment"
+            app:destination="@id/userProfileFragment" />
+    </fragment>
+    <fragment
         android:id="@+id/authenticationFragment"
         android:name="com.github.livingwithhippos.unchained.authentication.view.AuthenticationFragment"
+        tools:layout="@layout/fragment_authentication"
         android:label="@string/authenticate" >
         <action
             android:id="@+id/actionAuthenticationToUser"
@@ -17,20 +30,10 @@
     <fragment
         android:id="@+id/userProfileFragment"
         android:name="com.github.livingwithhippos.unchained.user.view.UserProfileFragment"
+        tools:layout="@layout/fragment_user_profile"
         android:label="@string/user" >
         <argument
             android:name="token"
             app:argType="string" />
-    </fragment>
-    <fragment
-        android:id="@+id/startFragment"
-        android:name="com.github.livingwithhippos.unchained.start.view.StartFragment"
-        android:label="@string/loading">
-        <action
-            android:id="@+id/action_startFragment_to_authenticationFragment"
-            app:destination="@id/authenticationFragment" />
-        <action
-            android:id="@+id/action_startFragment_to_userProfileFragment"
-            app:destination="@id/userProfileFragment" />
     </fragment>
 </navigation>
