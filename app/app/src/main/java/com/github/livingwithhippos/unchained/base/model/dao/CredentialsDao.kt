@@ -29,7 +29,10 @@ interface CredentialsDao {
      * this way we'll have a single private token since the primary key, device_code, is always $PRIVATE_TOKEN
      */
     @Query("INSERT OR REPLACE INTO credentials (access_token, client_id, client_secret, device_code, refresh_token) VALUES (:privateToken,:privateTokenIndicator,:privateTokenIndicator,:privateTokenIndicator,:privateTokenIndicator)")
-    suspend fun insertPrivateToken(privateToken: String, privateTokenIndicator: String = PRIVATE_TOKEN)
+    suspend fun insertPrivateToken(
+        privateToken: String,
+        privateTokenIndicator: String = PRIVATE_TOKEN
+    )
 
     // bug: not working, use updateCredentials
     @Query("UPDATE credentials SET client_id = :clientId AND client_secret = :clientSecret WHERE device_code = :deviceCode")

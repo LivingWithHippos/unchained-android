@@ -33,12 +33,12 @@ class MainActivityViewModel @ViewModelInject constructor(
             var workingCredentials: Credentials? = null
             if (completeCredentials.isNotEmpty()) {
                 val privateCredentials =
-                    if (completeCredentials.any{ it.deviceCode == PRIVATE_TOKEN })
+                    if (completeCredentials.any { it.deviceCode == PRIVATE_TOKEN })
                         completeCredentials.first { it.deviceCode == PRIVATE_TOKEN }
                     else null
 
-                if (privateCredentials != null){
-                    if (checkCredentials(privateCredentials) )
+                if (privateCredentials != null) {
+                    if (checkCredentials(privateCredentials))
                         workingCredentials = privateCredentials
                 }
                 // if the private token is not working this also gets triggered
