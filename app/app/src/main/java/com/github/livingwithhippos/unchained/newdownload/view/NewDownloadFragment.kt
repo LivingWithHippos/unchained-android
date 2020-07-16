@@ -27,10 +27,6 @@ class NewDownloadFragment : Fragment() {
     ): View? {
         val downloadBinding = NewDownloadFragmentBinding.inflate(inflater, container, false)
 
-        // see AutoCompleteTextView.setAdapter(contents: List<String>) in [Extension.kt]
-        // the first value is used as default, see AutoCompleteTextView's android:text="@{list[0]}" in the layout
-        downloadBinding.list = listOf(getString(R.string.no), getString(R.string.yes))
-
         viewModel.linkLiveData.observe(viewLifecycleOwner, Observer {
             //todo: navigate to download details fragment
             if (it != null) {
