@@ -19,30 +19,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val viewModel: MainActivityViewModel by viewModels()
-
-        setupBottomNavigationBar()
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return item.onNavDestinationSelected(findNavController(R.id.nav_host_fragment))
-                || super.onOptionsItemSelected(item)
-    }
-
-    private fun setupBottomNavigationBar() {
-        val bar = findViewById<BottomNavigationView>(R.id.bottom_nav)
-        BottomNavigationView.OnNavigationItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.home -> {
-                    // Respond to navigation item 1 click
-                    true
-                }
-                R.id.new_download -> {
-                    // Respond to navigation item 2 click
-                    true
-                }
-                else -> false
-            }
-        }
     }
 
 }
