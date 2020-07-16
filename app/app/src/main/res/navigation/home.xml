@@ -3,32 +3,32 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/home"
-    app:startDestination="@id/startFragment"
+    app:startDestination="@id/start_dest"
     tools:ignore="UnusedNavigation">
 
     <fragment
-        android:id="@+id/startFragment"
+        android:id="@+id/start_dest"
         android:name="com.github.livingwithhippos.unchained.start.view.StartFragment"
         tools:layout="@layout/fragment_start"
         android:label="@string/loading">
         <action
             android:id="@+id/action_startFragment_to_authenticationFragment"
-            app:destination="@id/authenticationFragment" />
+            app:destination="@id/authentication_dest" />
         <action
             android:id="@+id/action_startFragment_to_userProfileFragment"
-            app:destination="@id/userProfileFragment" />
+            app:destination="@id/profile_dest" />
     </fragment>
     <fragment
-        android:id="@+id/authenticationFragment"
+        android:id="@+id/authentication_dest"
         android:name="com.github.livingwithhippos.unchained.authentication.view.AuthenticationFragment"
         tools:layout="@layout/fragment_authentication"
         android:label="@string/authenticate" >
         <action
             android:id="@+id/actionAuthenticationToUser"
-            app:destination="@id/userProfileFragment" />
+            app:destination="@id/profile_dest" />
     </fragment>
     <fragment
-        android:id="@+id/userProfileFragment"
+        android:id="@+id/profile_dest"
         android:name="com.github.livingwithhippos.unchained.user.view.UserProfileFragment"
         tools:layout="@layout/fragment_user_profile"
         android:label="@string/user" >
@@ -37,16 +37,16 @@
             app:argType="string" />
     </fragment>
     <fragment
-        android:id="@+id/newDownloadFragment"
+        android:id="@+id/new_download_dest"
         android:name="com.github.livingwithhippos.unchained.newdownload.view.NewDownloadFragment"
         android:label="@string/new_download"
         tools:layout="@layout/new_download_fragment" >
         <action
             android:id="@+id/actionUnrestrictDownloadToDetailsFragment"
-            app:destination="@id/downloadDetailsFragment" />
+            app:destination="@id/download_details_dest" />
     </fragment>
     <fragment
-        android:id="@+id/downloadDetailsFragment"
+        android:id="@+id/download_details_dest"
         android:name="com.github.livingwithhippos.unchained.downloaddetails.view.DownloadDetailsFragment"
         android:label="@string/download_details" >
         <argument android:name="details"
