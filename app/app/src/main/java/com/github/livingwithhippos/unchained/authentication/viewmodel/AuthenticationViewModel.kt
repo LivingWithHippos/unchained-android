@@ -11,7 +11,11 @@ import com.github.livingwithhippos.unchained.base.model.repositories.Authenticat
 import com.github.livingwithhippos.unchained.base.model.repositories.CredentialsRepository
 import com.github.livingwithhippos.unchained.base.model.repositories.UserRepository
 import com.github.livingwithhippos.unchained.user.model.User
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 //todo: add state saving and loading
 class AuthenticationViewModel @ViewModelInject constructor(
