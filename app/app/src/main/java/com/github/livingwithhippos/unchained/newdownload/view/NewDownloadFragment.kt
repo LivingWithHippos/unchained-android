@@ -28,7 +28,6 @@ class NewDownloadFragment : Fragment() {
         val downloadBinding = NewDownloadFragmentBinding.inflate(inflater, container, false)
 
         viewModel.linkLiveData.observe(viewLifecycleOwner, Observer {
-            //todo: navigate to download details fragment
             if (it != null) {
                 val action =
                     NewDownloadFragmentDirections.actionUnrestrictDownloadToDetailsFragment(it)
