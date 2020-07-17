@@ -2,7 +2,8 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/download_nav_graph">
+    android:id="@+id/download_nav_graph"
+    app:startDestination="@id/new_download_dest">
     <fragment
         android:id="@+id/new_download_dest"
         android:name="com.github.livingwithhippos.unchained.newdownload.view.NewDownloadFragment"
