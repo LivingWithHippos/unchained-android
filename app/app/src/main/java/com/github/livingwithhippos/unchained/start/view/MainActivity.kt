@@ -9,10 +9,9 @@ import androidx.navigation.ui.setupWithNavController
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.databinding.ActivityMainBinding
 import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewModel
-import com.github.livingwithhippos.unchained.utilities.hideSoftInput
+import com.github.livingwithhippos.unchained.utilities.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
-import com.github.livingwithhippos.unchained.utilities.setupWithNavController
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
