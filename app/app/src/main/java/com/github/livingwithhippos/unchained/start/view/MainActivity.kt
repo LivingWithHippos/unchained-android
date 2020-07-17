@@ -69,4 +69,8 @@ class MainActivity : AppCompatActivity() {
 
         }
     }
+
+    override fun onSupportNavigateUp(): Boolean {
+        return currentNavController?.navigateUp() ?: super.onSupportNavigateUp()
+    }
 }
