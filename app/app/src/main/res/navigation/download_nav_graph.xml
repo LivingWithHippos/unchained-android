@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/download_nav_graph">
+    <fragment
+        android:id="@+id/new_download_dest"
+        android:name="com.github.livingwithhippos.unchained.newdownload.view.NewDownloadFragment"
+        android:label="@string/new_download"
+        tools:layout="@layout/new_download_fragment" >
+        <action
+            android:id="@+id/actionUnrestrictDownloadToDetailsFragment"
+            app:destination="@id/download_details_dest" />
+    </fragment>
+    <fragment
+        android:id="@+id/download_details_dest"
+        android:name="com.github.livingwithhippos.unchained.downloaddetails.view.DownloadDetailsFragment"
+        android:label="@string/download_details" >
+        <argument android:name="details"
+            app:argType="com.github.livingwithhippos.unchained.newdownload.model.UnrestrictedLink" />
+    </fragment>
+
+</navigation>
