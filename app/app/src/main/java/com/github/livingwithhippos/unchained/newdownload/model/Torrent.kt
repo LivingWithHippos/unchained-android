@@ -167,7 +167,7 @@ interface TorrentsApi {
     suspend fun selectFiles(
         @Header("Authorization") token: String,
         @Path("id") id: String,
-        @Field("files ") files: String = "all"
+        @Field("files") files: String = "all"
     ): Response<Unit>
 
 }
