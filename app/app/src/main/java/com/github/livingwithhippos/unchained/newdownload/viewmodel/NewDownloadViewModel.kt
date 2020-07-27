@@ -37,8 +37,6 @@ class NewDownloadViewModel @ViewModelInject constructor(
      */
     val linkLiveData = MutableLiveData<Event<UnrestrictedLink?>>()
 
-    val uploadedTorrentLiveData = MutableLiveData<Event<UploadedTorrent?>>()
-
     fun fetchUnrestrictedLink(link: String, password: String?, remote: Int? = null) {
         scope.launch {
             //todo: add this to fragment's argument if possible
@@ -57,7 +55,6 @@ class NewDownloadViewModel @ViewModelInject constructor(
                 Log.e("NewDownloadViewModel", "Error fetching available hosts")
             } else {
                 val uploadedTorrent = torrentsRepository.addTorrent(token, binaryTorrent, availableHosts.first().host)
-                uploadedTorrentLiveData.postValue(Event(uploadedTorrent))
             }
         }
     }

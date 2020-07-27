@@ -75,13 +75,6 @@ class NewDownloadFragment : Fragment(), NewDownloadListener {
 
         }
 
-        viewModel.uploadedTorrentLiveData.observe(viewLifecycleOwner, Observer {
-            it.getContentIfNotHandled()?.let{torrent ->
-                Log.d("NewDownloadFragment", "Got torrent $torrent")
-                // todo: select files to start torrent
-            }
-        })
-
         return downloadBinding.root
     }
 
