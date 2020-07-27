@@ -28,9 +28,9 @@ class NewDownloadFragment : Fragment() {
         val downloadBinding = NewDownloadFragmentBinding.inflate(inflater, container, false)
 
         viewModel.linkLiveData.observe(viewLifecycleOwner, Observer {
-            if (it != null) {
+            it.getContentIfNotHandled()?.let{ linkDetails ->
                 val action =
-                    NewDownloadFragmentDirections.actionUnrestrictDownloadToDetailsFragment(it)
+                    NewDownloadFragmentDirections.actionUnrestrictDownloadToDetailsFragment(linkDetails)
                 findNavController().navigate(action)
             }
         })

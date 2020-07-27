@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import com.github.livingwithhippos.unchained.base.model.repositories.CredentialsRepository
 import com.github.livingwithhippos.unchained.base.model.repositories.UnrestrictRepository
 import com.github.livingwithhippos.unchained.newdownload.model.UnrestrictedLink
+import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.KEY_TOKEN
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -23,7 +24,13 @@ class NewDownloadViewModel @ViewModelInject constructor(
     private val job = Job()
     val scope = CoroutineScope(Dispatchers.Default + job)
 
-    val linkLiveData = MutableLiveData<UnrestrictedLink?>()
+    /**
+     * We can't use a normal MutableLiveData here because while navigating back an event will be fired again
+     * and the [NewDownloadFragment] observer will be called, creating a new [DownloadDetailsFragment]
+     * and navigating there.
+     * See https://medium.com/androiddevelopers/livedata-with-snackbar-navigation-and-other-events-the-singleliveevent-case-ac2622673150 for mode details
+     */
+    val linkLiveData = MutableLiveData<Event<UnrestrictedLink?>>()
 
     fun fetchUnrestrictedLink(link: String, password: String?, remote: Int? = null) {
         scope.launch {
@@ -37,7 +44,7 @@ class NewDownloadViewModel @ViewModelInject constructor(
             savedStateHandle.set(KEY_TOKEN, token)
             val unrestrictedData =
                 unrestrictRepository.getUnrestrictedLink(token, link, password, remote)
-            linkLiveData.postValue(unrestrictedData)
+            linkLiveData.postValue(Event(unrestrictedData))
         }
     }
 }
