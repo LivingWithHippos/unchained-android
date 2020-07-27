@@ -7,6 +7,12 @@ interface TorrentApiHelper {
 
     suspend fun getAvailableHosts(token: String): Response<List<AvailableHost>>
 
+
+    suspend fun getTorrentInfo(
+        token: String,
+        id: String
+    ): Response<List<TorrentItem>>
+
     suspend fun addTorrent(
         token: String,
         binaryTorrent: RequestBody,

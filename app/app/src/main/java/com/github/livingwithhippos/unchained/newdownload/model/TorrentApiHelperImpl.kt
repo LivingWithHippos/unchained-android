@@ -9,6 +9,9 @@ class TorrentApiHelperImpl @Inject constructor(private val torrentsApi: Torrents
     override suspend fun getAvailableHosts(token: String): Response<List<AvailableHost>> =
         torrentsApi.getAvailableHosts(token)
 
+    override suspend fun getTorrentInfo(token: String, id: String): Response<List<TorrentItem>> =
+        torrentsApi.getTorrentInfo(token, id)
+
     override suspend fun addTorrent(
         token: String,
         binaryTorrent: RequestBody,
