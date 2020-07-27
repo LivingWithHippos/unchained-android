@@ -1,6 +1,5 @@
 package com.github.livingwithhippos.unchained.newdownload.view
 
-import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Patterns
@@ -16,7 +15,6 @@ import androidx.navigation.fragment.findNavController
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.databinding.NewDownloadFragmentBinding
 import com.github.livingwithhippos.unchained.newdownload.viewmodel.NewDownloadViewModel
-import com.github.livingwithhippos.unchained.utilities.OPEN_DOCUMENT_REQUEST_CODE
 import com.github.livingwithhippos.unchained.utilities.REMOTE_TRAFFIC_ON
 import com.github.livingwithhippos.unchained.utilities.showToast
 import dagger.hilt.android.AndroidEntryPoint
@@ -70,18 +68,22 @@ class NewDownloadFragment : Fragment(), NewDownloadListener {
         return downloadBinding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-
-    }
-
     private val getTorrent: ActivityResultLauncher<String> = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-        // Handle the returned Uri
+        if (uri != null) {
+            loadTorrent(uri)
+        }
+        else {
+            showToast(R.string.error_loading_torrent)
+        }
     }
 
     override fun onLoadTorrentClick() {
         getTorrent.launch("application/x-bittorrent")
+    }
+
+    private fun loadTorrent(uri: Uri) {
+        // todo: load torrent and call put function from torrents api
+        // https://developer.android.com/training/data-storage/shared/documents-files#open
     }
 }
 
