@@ -45,4 +45,5 @@
     <string name="invalid_token">Please check the token value</string>
     <string name="download_details">Download Details</string>
     <string name="authenticate">Authenticate</string>
+    <string name="load_torrent">Load Torrent</string>
 </resources>

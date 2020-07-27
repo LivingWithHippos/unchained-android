@@ -12,26 +12,25 @@
         <!-- todo: add paste button for link-->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tfLink"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:hint="@string/link"
+            android:importantForAutofill="no"
+            app:endIconMode="clear_text"
             app:layout_constraintBottom_toTopOf="@+id/etPassword"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_chainStyle="packed"
-            app:endIconMode="clear_text"
-            android:importantForAutofill="no"
-            app:startIconDrawable="@drawable/icon_link"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox" >
+            app:startIconDrawable="@drawable/icon_link">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/tiLink"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:singleLine="true"
-                />
+                android:singleLine="true" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -40,14 +39,14 @@
             android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:inputType="textPassword"
             android:hint="@string/password_optional"
+            android:importantForAutofill="no"
+            android:inputType="textPassword"
             app:layout_constraintBottom_toTopOf="@+id/switchRemote"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tfLink"
-            android:importantForAutofill="no" />
+            app:layout_constraintTop_toBottomOf="@+id/tfLink" />
 
         <!-- https://material.io/develop/android/components/switches -->
         <com.google.android.material.switchmaterial.SwitchMaterial
@@ -56,24 +55,38 @@
             android:layout_height="wrap_content"
             android:checked="false"
             android:text="@string/remote_traffic"
+            app:layout_constraintBottom_toTopOf="@+id/bUnrestrict"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/etPassword"
-            app:layout_constraintBottom_toTopOf="@+id/bUnrestrict"
-            app:layout_constraintVertical_chainStyle="packed"/>
+            app:layout_constraintVertical_chainStyle="packed" />
+
+        <Button
+            android:id="@+id/bLoadTorrent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/load_torrent"
+            android:layout_marginEnd="10dp"
+            app:layout_constraintBottom_toBottomOf="@id/bUnrestrict"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/bUnrestrict"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/bUnrestrict" />
 
         <Button
             android:id="@+id/bUnrestrict"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/unrestrict"
             android:layout_marginTop="30dp"
+            android:text="@string/unrestrict"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/switchRemote"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintStart_toEndOf="@+id/bLoadTorrent"
+            app:layout_constraintTop_toBottomOf="@+id/switchRemote" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
