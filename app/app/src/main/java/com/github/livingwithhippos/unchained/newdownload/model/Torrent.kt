@@ -137,6 +137,14 @@ interface TorrentsApi {
         @Query("host") host: String
     ): Response<UploadedTorrent>
 
+    @FormUrlEncoded
+    @POST("torrents/addMagnet")
+    suspend fun addMagnet(
+        @Header("Authorization") token: String,
+        @Field("magnet") magnet: String,
+        @Field("host") host: String
+    ): Response<UploadedTorrent>
+
     /**
      * Select files of a torrent. Required to start a torrent.
      * @param token the authorization token, formed as "Bearer api_token"

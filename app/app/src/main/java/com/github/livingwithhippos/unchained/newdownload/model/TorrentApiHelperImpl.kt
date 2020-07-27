@@ -18,6 +18,12 @@ class TorrentApiHelperImpl @Inject constructor(private val torrentsApi: Torrents
         host: String
     ): Response<UploadedTorrent> = torrentsApi.addTorrent(token, binaryTorrent, host)
 
+    override suspend fun addMagnet(
+        token: String,
+        magnet: String,
+        host: String
+    ): Response<UploadedTorrent> = torrentsApi.addMagnet(token, magnet, host)
+
     override suspend fun getTorrentsList(
         token: String,
         offset: Int?,

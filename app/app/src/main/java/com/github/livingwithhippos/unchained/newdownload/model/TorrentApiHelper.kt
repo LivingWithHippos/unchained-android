@@ -19,6 +19,12 @@ interface TorrentApiHelper {
         host: String
     ): Response<UploadedTorrent>
 
+    suspend fun addMagnet(
+        token: String,
+        magnet: String,
+        host: String
+    ): Response<UploadedTorrent>
+
     suspend fun getTorrentsList(
         token: String,
         offset: Int?,
