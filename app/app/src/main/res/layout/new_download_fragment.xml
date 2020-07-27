@@ -24,7 +24,7 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
-            android:hint="@string/link"
+            android:hint="@string/link_or_magnet"
             android:importantForAutofill="no"
             app:endIconMode="clear_text"
             app:layout_constraintBottom_toTopOf="@+id/etPassword"

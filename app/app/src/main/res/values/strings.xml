@@ -47,4 +47,5 @@
     <string name="authenticate">Authenticate</string>
     <string name="upload_torrent">Upload Torrent</string>
     <string name="error_loading_torrent">No torrent loaded</string>
+    <string name="link_or_magnet">Link or Magnet</string>
 </resources>
