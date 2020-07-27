@@ -25,8 +25,6 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import javax.inject.Singleton
 
-//todo: restrict scope or remove d.i. from here since the one most used after the login will be
-// the other one (ApiFactory)
 @InstallIn(ApplicationComponent::class)
 @Module
 object ApiFactory {
