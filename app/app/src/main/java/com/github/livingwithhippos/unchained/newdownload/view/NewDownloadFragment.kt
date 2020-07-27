@@ -1,6 +1,10 @@
 package com.github.livingwithhippos.unchained.newdownload.view
 
+import android.content.ContentResolver
+import android.content.Intent
 import android.os.Bundle
+import android.os.Environment
+import android.provider.DocumentsContract
 import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
@@ -12,12 +16,13 @@ import androidx.navigation.fragment.findNavController
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.databinding.NewDownloadFragmentBinding
 import com.github.livingwithhippos.unchained.newdownload.viewmodel.NewDownloadViewModel
+import com.github.livingwithhippos.unchained.utilities.OPEN_DOCUMENT_REQUEST_CODE
 import com.github.livingwithhippos.unchained.utilities.REMOTE_TRAFFIC_ON
 import com.github.livingwithhippos.unchained.utilities.showToast
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class NewDownloadFragment : Fragment() {
+class NewDownloadFragment : Fragment(), NewDownloadListener {
 
     private val viewModel: NewDownloadViewModel by viewModels()
 
@@ -26,6 +31,8 @@ class NewDownloadFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val downloadBinding = NewDownloadFragmentBinding.inflate(inflater, container, false)
+
+        downloadBinding.listener = this
 
         viewModel.linkLiveData.observe(viewLifecycleOwner, Observer {
             it.getContentIfNotHandled()?.let{ linkDetails ->
@@ -59,6 +66,19 @@ class NewDownloadFragment : Fragment() {
                 showToast(R.string.invalid_url)
 
         }
+
         return downloadBinding.root
     }
+
+    override fun onLoadTorrentClick() {
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+            type = "application/x-bittorrent"
+            addCategory(Intent.CATEGORY_OPENABLE)
+        }
+        startActivityForResult(intent, OPEN_DOCUMENT_REQUEST_CODE)
+    }
+}
+
+interface NewDownloadListener {
+    fun onLoadTorrentClick()
 }
