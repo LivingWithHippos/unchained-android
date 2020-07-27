@@ -25,5 +25,5 @@ interface TorrentApiHelper {
         token: String,
         id: String,
         files: String
-    )
+    ): Response<Unit>
 }
