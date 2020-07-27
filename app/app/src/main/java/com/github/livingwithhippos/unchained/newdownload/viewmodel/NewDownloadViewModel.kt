@@ -55,6 +55,10 @@ class NewDownloadViewModel @ViewModelInject constructor(
                 Log.e("NewDownloadViewModel", "Error fetching available hosts")
             } else {
                 val uploadedTorrent = torrentsRepository.addTorrent(token, binaryTorrent, availableHosts.first().host)
+                if (uploadedTorrent!= null) {
+                    // todo: add custom selection of files, this queues all the files
+                    torrentsRepository.selectFiles(token, uploadedTorrent.id)
+                }
             }
         }
     }
