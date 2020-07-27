@@ -75,7 +75,7 @@
             android:id="@+id/bLoadTorrent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/load_torrent"
+            android:text="@string/upload_torrent"
             android:layout_marginEnd="10dp"
             android:onClick="@{() -> listener.onLoadTorrentClick()}"
             app:layout_constraintBottom_toBottomOf="@id/bUnrestrict"
