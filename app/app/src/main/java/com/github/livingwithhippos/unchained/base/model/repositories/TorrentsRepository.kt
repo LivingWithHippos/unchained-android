@@ -46,4 +46,23 @@ class TorrentsRepository @Inject constructor(private val torrentApiHelper: Torre
 
         return addTorrentResponse;
     }
+
+    suspend fun selectFiles(
+        token: String,
+        id: String,
+        files: String = "all"
+    ) {
+
+        val selectFilesResponse = safeApiCall(
+            call = {
+                torrentApiHelper.selectFiles(
+                    token = "Bearer $token",
+                    id = id,
+                    files = files
+                )
+            },
+            errorMessage = "Error Selecting Torrent Files"
+        )
+
+    }
 }
