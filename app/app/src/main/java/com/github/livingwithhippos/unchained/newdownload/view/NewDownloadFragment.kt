@@ -1,7 +1,10 @@
 package com.github.livingwithhippos.unchained.newdownload.view
 
+import android.content.ContentResolver
 import android.net.Uri
 import android.os.Bundle
+import android.os.ParcelFileDescriptor
+import android.util.Log
 import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
@@ -18,6 +21,13 @@ import com.github.livingwithhippos.unchained.newdownload.viewmodel.NewDownloadVi
 import com.github.livingwithhippos.unchained.utilities.REMOTE_TRAFFIC_ON
 import com.github.livingwithhippos.unchained.utilities.showToast
 import dagger.hilt.android.AndroidEntryPoint
+import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import java.io.FileDescriptor
+import java.io.FileInputStream
+
 
 @AndroidEntryPoint
 class NewDownloadFragment : Fragment(), NewDownloadListener {
@@ -65,12 +75,20 @@ class NewDownloadFragment : Fragment(), NewDownloadListener {
 
         }
 
+        viewModel.uploadedTorrentLiveData.observe(viewLifecycleOwner, Observer {
+            it.getContentIfNotHandled()?.let{torrent ->
+                Log.d("NewDownloadFragment", "Got torrent $torrent")
+                // todo: select files to start torrent
+            }
+        })
+
         return downloadBinding.root
     }
 
     private val getTorrent: ActivityResultLauncher<String> = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         if (uri != null) {
-            loadTorrent(uri)
+            // todo: check the context instead of using requireContext
+            loadTorrent(requireContext().contentResolver, uri)
         }
         else {
             showToast(R.string.error_loading_torrent)
@@ -81,9 +99,21 @@ class NewDownloadFragment : Fragment(), NewDownloadListener {
         getTorrent.launch("application/x-bittorrent")
     }
 
-    private fun loadTorrent(uri: Uri) {
+    private fun loadTorrent(contentResolver: ContentResolver, uri: Uri) {
         // todo: load torrent and call put function from torrents api
         // https://developer.android.com/training/data-storage/shared/documents-files#open
+        val parcelFileDescriptor: ParcelFileDescriptor? =
+            contentResolver.openFileDescriptor(uri, "r")
+        if (parcelFileDescriptor != null) {
+            val fileDescriptor: FileDescriptor = parcelFileDescriptor.fileDescriptor
+            val fileInputStream = FileInputStream(fileDescriptor)
+            val buffer: ByteArray = fileInputStream.readBytes()
+            fileInputStream.close()
+            viewModel.fetchUploadedTorrent(buffer)
+        } else {
+            Log.e("NewDownloadFragment", "Error getting parcelFileDescriptor -> null")
+        }
+
     }
 }
 
