@@ -2,6 +2,7 @@ package com.github.livingwithhippos.unchained.base.model.repositories
 
 import com.github.livingwithhippos.unchained.newdownload.model.AvailableHost
 import com.github.livingwithhippos.unchained.newdownload.model.TorrentApiHelper
+import com.github.livingwithhippos.unchained.newdownload.model.TorrentItem
 import com.github.livingwithhippos.unchained.newdownload.model.UploadedTorrent
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
@@ -19,6 +20,22 @@ class TorrentsRepository @Inject constructor(private val torrentApiHelper: Torre
         )
 
         return hostResponse;
+    }
+
+    suspend fun getTorrentInfo(
+        token: String,
+        id: String
+    ): List<TorrentItem>? {
+        val torrentResponse: List<TorrentItem>? = safeApiCall(
+            call = { torrentApiHelper.getTorrentInfo(
+                token = "Bearer $token",
+                id = id
+            ) },
+            errorMessage = "Error Retrieving Torrent Info"
+        )
+
+        return torrentResponse;
+
     }
 
     suspend fun addTorrent(
@@ -45,6 +62,28 @@ class TorrentsRepository @Inject constructor(private val torrentApiHelper: Torre
         )
 
         return addTorrentResponse;
+    }
+
+    suspend fun getTorrentsList(
+        token: String,
+        offset: Int? = 0,
+        page: Int? = null,
+        limit: Int? = 5,
+        filter: String?
+    ): List<TorrentItem>? {
+        val torrentsResponse: List<TorrentItem>? = safeApiCall(
+            call = { torrentApiHelper.getTorrentsList(
+                token = "Bearer $token",
+                offset = offset,
+                page = page,
+                limit = limit,
+                filter = filter
+            ) },
+            errorMessage = "Error Retrieving Torrent Info"
+        )
+
+        return torrentsResponse;
+
     }
 
     suspend fun selectFiles(
