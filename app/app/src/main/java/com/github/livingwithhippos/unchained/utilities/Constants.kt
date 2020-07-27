@@ -15,6 +15,8 @@ const val PRIVATE_TOKEN: String = "private_token"
 const val REMOTE_TRAFFIC_OFF: Int = 0
 const val REMOTE_TRAFFIC_ON: Int = 1
 
+const val MAGNET_PATTERN: String = "magnet:\\?xt=urn:btih:[a-zA-Z0-9]{32}"
+
 val errorMap = mapOf(
     -1 to "Internal error",
     1 to "Missing parameter",

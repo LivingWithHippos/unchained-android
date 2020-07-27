@@ -47,6 +47,22 @@ class NewDownloadViewModel @ViewModelInject constructor(
         }
     }
 
+    fun fetchAddedMagnet(magnet: String) {
+        scope.launch {
+            val token = getToken()
+            val availableHosts = torrentsRepository.getAvailableHosts(token)
+            if (availableHosts.isNullOrEmpty()) {
+                Log.e("NewDownloadViewModel", "Error fetching available hosts")
+            } else {
+                val addedMagnet = torrentsRepository.addMagnet(token, magnet, availableHosts.first().host)
+                if (addedMagnet!= null) {
+                    // todo: add custom selection of files, this queues all the files
+                    torrentsRepository.selectFiles(token, addedMagnet.id)
+                }
+            }
+        }
+    }
+
     fun fetchUploadedTorrent(binaryTorrent: ByteArray) {
         scope.launch {
             val token = getToken()

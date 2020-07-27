@@ -18,15 +18,14 @@ import androidx.navigation.fragment.findNavController
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.databinding.NewDownloadFragmentBinding
 import com.github.livingwithhippos.unchained.newdownload.viewmodel.NewDownloadViewModel
+import com.github.livingwithhippos.unchained.utilities.MAGNET_PATTERN
 import com.github.livingwithhippos.unchained.utilities.REMOTE_TRAFFIC_ON
 import com.github.livingwithhippos.unchained.utilities.showToast
 import dagger.hilt.android.AndroidEntryPoint
-import okhttp3.MediaType
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.RequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.FileDescriptor
 import java.io.FileInputStream
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 
 
 @AndroidEntryPoint
@@ -70,8 +69,13 @@ class NewDownloadFragment : Fragment(), NewDownloadListener {
                     remote
                 )
 
-            } else
-                showToast(R.string.invalid_url)
+            } else {
+                val m: Matcher = Pattern.compile(MAGNET_PATTERN).matcher(link)
+                if (m.lookingAt())
+                    viewModel.fetchAddedMagnet(link)
+                else
+                    showToast(R.string.invalid_url)
+            }
 
         }
 
