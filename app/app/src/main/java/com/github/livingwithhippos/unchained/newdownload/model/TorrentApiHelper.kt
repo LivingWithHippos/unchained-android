@@ -12,4 +12,18 @@ interface TorrentApiHelper {
         binaryTorrent: RequestBody,
         host: String
     ): Response<UploadedTorrent>
+
+    suspend fun getTorrentsList(
+        token: String,
+        offset: Int?,
+        page: Int?,
+        limit: Int?,
+        filter: String?
+    ): Response<List<TorrentItem>>
+
+    suspend fun selectFiles(
+        token: String,
+        id: String,
+        files: String
+    )
 }

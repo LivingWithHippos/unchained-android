@@ -14,4 +14,15 @@ class TorrentApiHelperImpl @Inject constructor(private val torrentsApi: Torrents
         binaryTorrent: RequestBody,
         host: String
     ): Response<UploadedTorrent> = torrentsApi.addTorrent(token, binaryTorrent, host)
+
+    override suspend fun getTorrentsList(
+        token: String,
+        offset: Int?,
+        page: Int?,
+        limit: Int?,
+        filter: String?
+    ): Response<List<TorrentItem>> = torrentsApi.getTorrentsList(token, offset, page, limit, filter)
+
+    override suspend fun selectFiles(token: String, id: String, files: String) =
+        torrentsApi.selectFiles(token, id, files)
 }
