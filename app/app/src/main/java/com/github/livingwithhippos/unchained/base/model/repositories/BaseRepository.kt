@@ -15,6 +15,9 @@ open class BaseRepository {
         when (result) {
             is NetworkResponse.Success ->
                 data = result.data
+            // todo: temporary workaround. Add support for empty body success
+            is NetworkResponse.SuccessEmptyBody ->
+                data = result.data
             is NetworkResponse.Error -> {
                 Log.d("BaseRepository", "$errorMessage - Exception : ${result.exception}")
             }
@@ -30,7 +33,14 @@ open class BaseRepository {
         errorMessage: String
     ): NetworkResponse<T> {
         val response = call.invoke()
-        if (response.isSuccessful) return NetworkResponse.Success(response.body()!!)
+        if (response.isSuccessful) {
+            val body = response.body()
+            if (body != null)
+                return NetworkResponse.Success(body)
+            else
+                // todo: temporary workaround. Add support for empty body success
+                return NetworkResponse.SuccessEmptyBody(response.code() as T)
+        }
 
         return NetworkResponse.Error(IOException("Error Occurred while getting api result, error : $errorMessage"))
     }

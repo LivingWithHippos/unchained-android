@@ -8,5 +8,6 @@ package com.github.livingwithhippos.unchained.base.model.network
 //todo: add loading class
 sealed class NetworkResponse<out T : Any> {
     data class Success<out T : Any>(val data: T) : NetworkResponse<T>()
+    data class SuccessEmptyBody<out T : Any>(val data: T) : NetworkResponse<T>()
     data class Error(val exception: Exception) : NetworkResponse<Nothing>()
 }
