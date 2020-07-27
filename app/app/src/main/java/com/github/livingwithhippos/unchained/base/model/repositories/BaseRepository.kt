@@ -17,7 +17,7 @@ open class BaseRepository {
                 data = result.data
             // todo: temporary workaround. Add support for empty body success
             is NetworkResponse.SuccessEmptyBody ->
-                data = result.data
+                Log.d("BaseRepository", "Successful call with empty body : ${result.code}")
             is NetworkResponse.Error -> {
                 Log.d("BaseRepository", "$errorMessage - Exception : ${result.exception}")
             }
@@ -39,7 +39,7 @@ open class BaseRepository {
                 return NetworkResponse.Success(body)
             else
                 // todo: temporary workaround. Add support for empty body success
-                return NetworkResponse.SuccessEmptyBody(response.code() as T)
+                return NetworkResponse.SuccessEmptyBody(response.code())
         }
 
         return NetworkResponse.Error(IOException("Error Occurred while getting api result, error : $errorMessage"))
