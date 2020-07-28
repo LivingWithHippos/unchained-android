@@ -26,8 +26,8 @@ class TorrentDetailsFragment : Fragment() {
         val torrentBinding = FragmentTorrentDetailsBinding.inflate(inflater, container, false)
 
         viewModel.torrentLiveData.observe(viewLifecycleOwner, Observer {
-            if (!it.isNullOrEmpty())
-                torrentBinding.torrent = it.first()
+            if (it != null)
+                torrentBinding.torrent = it
         })
 
         viewModel.fetchTorrentDetails(args.torrentID)

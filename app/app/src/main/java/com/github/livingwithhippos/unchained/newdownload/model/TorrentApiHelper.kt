@@ -11,7 +11,7 @@ interface TorrentApiHelper {
     suspend fun getTorrentInfo(
         token: String,
         id: String
-    ): Response<List<TorrentItem>>
+    ): Response<TorrentItem>
 
     suspend fun addTorrent(
         token: String,

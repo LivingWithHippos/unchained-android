@@ -25,8 +25,8 @@ class TorrentsRepository @Inject constructor(private val torrentApiHelper: Torre
     suspend fun getTorrentInfo(
         token: String,
         id: String
-    ): List<TorrentItem>? {
-        val torrentResponse: List<TorrentItem>? = safeApiCall(
+    ): TorrentItem? {
+        val torrentResponse: TorrentItem? = safeApiCall(
             call = { torrentApiHelper.getTorrentInfo(
                 token = "Bearer $token",
                 id = id

@@ -26,7 +26,7 @@ class TorrentDetailsViewmodel @ViewModelInject constructor(
     val scope = CoroutineScope(Dispatchers.Default + job)
 
 
-    val torrentLiveData = MutableLiveData<List<TorrentItem>?>()
+    val torrentLiveData = MutableLiveData<TorrentItem?>()
 
 
     fun fetchTorrentDetails(torrentID: String) {

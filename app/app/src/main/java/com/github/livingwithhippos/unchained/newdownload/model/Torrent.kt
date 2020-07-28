@@ -127,7 +127,7 @@ interface TorrentsApi {
     suspend fun getTorrentInfo(
         @Header("Authorization") token: String,
         @Path("id") id: String
-    ): Response<List<TorrentItem>>
+    ): Response<TorrentItem>
 
     @PUT("torrents/addTorrent")
     suspend fun addTorrent(
