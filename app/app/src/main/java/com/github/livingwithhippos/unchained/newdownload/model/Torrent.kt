@@ -97,7 +97,7 @@ data class TorrentItem(
     @Json(name = "links")
     val links: List<String>,
     @Json(name = "ended")
-    val ended: String,
+    val ended: String?,
     @Json(name = "speed")
     val speed: String?,
     @Json(name = "seeders")
