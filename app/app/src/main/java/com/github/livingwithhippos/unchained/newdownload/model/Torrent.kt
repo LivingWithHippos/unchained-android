@@ -87,7 +87,7 @@ data class TorrentItem(
     @Json(name = "split")
     val split: Int,
     @Json(name = "progress")
-    val progress: String,
+    val progress: Int,
     @Json(name = "status")
     val status: String,
     @Json(name = "added")
@@ -99,10 +99,9 @@ data class TorrentItem(
     @Json(name = "ended")
     val ended: String,
     @Json(name = "speed")
-    val speed: String,
-
+    val speed: String?,
     @Json(name = "seeders")
-    val seeders: String
+    val seeders: String?
 )
 
 @JsonClass(generateAdapter = true)
