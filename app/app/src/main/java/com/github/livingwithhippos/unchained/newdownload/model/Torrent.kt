@@ -79,9 +79,9 @@ data class TorrentItem(
     @Json(name = "hash")
     val hash: String,
     @Json(name = "bytes")
-    val bytes: Int,
+    val bytes: Long,
     @Json(name = "original_bytes")
-    val originalBytes: Int,
+    val originalBytes: Long,
     @Json(name = "host")
     val host: String,
     @Json(name = "split")
@@ -111,7 +111,7 @@ data class InnerTorrentFile(
     @Json(name = "path")
     val path: String,
     @Json(name = "bytes")
-    val bytes: Int,
+    val bytes: Long,
     @Json(name = "selected")
     val selected: Int
 )
