@@ -36,6 +36,7 @@ class NewDownloadViewModel @ViewModelInject constructor(
      * See https://medium.com/androiddevelopers/livedata-with-snackbar-navigation-and-other-events-the-singleliveevent-case-ac2622673150 for mode details
      */
     val linkLiveData = MutableLiveData<Event<UnrestrictedLink?>>()
+    val torrentLiveData = MutableLiveData<Event<UploadedTorrent?>>()
 
     fun fetchUnrestrictedLink(link: String, password: String?, remote: Int? = null) {
         scope.launch {
@@ -58,6 +59,7 @@ class NewDownloadViewModel @ViewModelInject constructor(
                 if (addedMagnet!= null) {
                     // todo: add custom selection of files, this queues all the files
                     torrentsRepository.selectFiles(token, addedMagnet.id)
+                    torrentLiveData.postValue(Event(addedMagnet))
                 }
             }
         }
@@ -74,6 +76,7 @@ class NewDownloadViewModel @ViewModelInject constructor(
                 if (uploadedTorrent!= null) {
                     // todo: add custom selection of files, this queues all the files
                     torrentsRepository.selectFiles(token, uploadedTorrent.id)
+                    torrentLiveData.postValue(Event(uploadedTorrent))
                 }
             }
         }

@@ -48,6 +48,14 @@ class NewDownloadFragment : Fragment(), NewDownloadListener {
                 findNavController().navigate(action)
             }
         })
+
+        viewModel.torrentLiveData.observe(viewLifecycleOwner, Observer {
+            it.getContentIfNotHandled()?.let{ torrent ->
+                val action =
+                    NewDownloadFragmentDirections.actionNewDownloadDestToTorrentDetailsFragment(torrent.id)
+                findNavController().navigate(action)
+            }
+        })
         // add the unrestrict button listener
         downloadBinding.bUnrestrict.setOnClickListener {
             val link: String = downloadBinding.tiLink.text.toString().trim()
