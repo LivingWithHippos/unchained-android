@@ -5,7 +5,10 @@
 
 
     <data>
-        <import type="android.view.View" />
+
+        <variable
+            name="torrent"
+            type="com.github.livingwithhippos.unchained.newdownload.model.TorrentItem" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
