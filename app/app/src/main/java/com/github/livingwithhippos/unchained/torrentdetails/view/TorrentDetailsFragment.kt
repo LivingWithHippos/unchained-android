@@ -10,7 +10,9 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
 import com.github.livingwithhippos.unchained.databinding.FragmentTorrentDetailsBinding
 import com.github.livingwithhippos.unchained.torrentdetails.viewmodel.TorrentDetailsViewmodel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class TorrentDetailsFragment : Fragment() {
 
     private val viewModel: TorrentDetailsViewmodel by viewModels()
