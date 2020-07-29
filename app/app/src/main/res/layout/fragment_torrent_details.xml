@@ -18,14 +18,75 @@
         tools:context=".torrentdetails.view.TorrentDetailsFragment">
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/tvName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="TextView"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
+            android:layout_margin="20dp"
+            android:text="@{torrent.filename}"
+            android:textColor="#1e1e1e"
+            android:textSize="20sp"
+            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvSize"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{@string/selected_file_size_format(torrent.bytes / 1024 / 1024, torrent.originalBytes / 1024 / 1024)}"
+            app:layout_constraintStart_toStartOf="@id/tvName"
+            app:layout_constraintTop_toBottomOf="@id/tvName" />
+
+        <TextView
+            android:id="@+id/tvStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{@string/torrent_status_format(torrent.status)}"
+            app:layout_constraintStart_toStartOf="@id/tvSize"
+            app:layout_constraintTop_toBottomOf="@id/tvSize" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:indeterminate="false"
+            android:max="100"
+            android:minWidth="100dp"
+            android:minHeight="100dp"
+            android:progress="@{torrent.progress}"
+            android:progressDrawable="@drawable/download_progressbar"
+            app:progressColor="@{@color/streaming_background}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvStatus" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
-</layout>
+</layout><!--
+    {
+    "id": "QBQBZDN2TSK4C",
+    "filename": "ubuntu-20.04-desktop-amd64.iso",
+    "original_filename": "ubuntu-20.04-desktop-amd64.iso",
+    "hash": "9fc20b9e98ea98b4a35e6223041a5ef94ea27809",
+    "bytes": 2715254784,
+    "original_bytes": 2715254784,
+    "host": "real-debrid.com",
+    "split": 2000,
+    "progress": 100,
+    "status": "downloaded",
+    "added": "2020-07-28T12:40:03.000Z",
+    "files": [
+    {
+    "id": 1,
+    "path": "\/ubuntu-20.04-desktop-amd64.iso",
+    "bytes": 2715254784,
+    "selected": 1
+    }
+    ],
+    "links": [
+    "https:\/\/real-debrid.com\/d\/HAEKRFWLC46ZE"
+    ],
+    "ended": "2020-04-23T19:56:28.000Z"
+    }
+ END HTTP (586-byte body) -->
