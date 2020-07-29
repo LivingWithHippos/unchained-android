@@ -4,9 +4,10 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
-import android.graphics.BlendMode
-import android.graphics.BlendModeColorFilter
+import android.graphics.drawable.ClipDrawable
+import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
+import android.graphics.drawable.ScaleDrawable
 import android.net.Uri
 import android.util.Patterns
 import android.widget.ArrayAdapter
@@ -14,7 +15,6 @@ import android.widget.AutoCompleteTextView
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
@@ -35,6 +35,13 @@ fun AutoCompleteTextView.setAdapter(contents: List<String>) {
     this.setAdapter(adapter)
 }
 
+@BindingAdapter("backgroundProgressColor")
+fun ProgressBar.setBackgroundProgressColor(color: Int) {
+    val progressBarLayers = progressDrawable as LayerDrawable
+    val progressDrawable = progressBarLayers.findDrawableByLayerId(android.R.id.background).mutate()
+    progressDrawable.setTint(color)
+}
+
 @BindingAdapter("progressColor")
 fun ProgressBar.setProgressColor(color: Int) {
     val progressBarLayers = progressDrawable as LayerDrawable
@@ -42,13 +49,45 @@ fun ProgressBar.setProgressColor(color: Int) {
     progressDrawable.setTint(color)
 }
 
-@BindingAdapter("progressDrawable")
-fun ProgressBar.setProgressDrawable(drawableId: Int) {
-    val drawable = ContextCompat.getDrawable(context, drawableId)
-    drawable?.let{
-        val progressBarLayers = progressDrawable as LayerDrawable
-        progressBarLayers.setDrawableByLayerId(android.R.id.progress, it)
-    }
+@BindingAdapter("secondaryProgressColor")
+fun ProgressBar.setSecondaryProgressColor(color: Int) {
+    val progressBarLayers = progressDrawable as LayerDrawable
+    val progressDrawable =
+        progressBarLayers.findDrawableByLayerId(android.R.id.secondaryProgress).mutate()
+    progressDrawable.setTint(color)
+}
+
+@BindingAdapter("backgroundProgressDrawable")
+fun ProgressBar.setBackgroundProgressDrawable(drawable: Drawable) {
+    val progressBarLayers = this.progressDrawable as LayerDrawable
+    val oldDrawable = progressBarLayers.findDrawableByLayerId(android.R.id.background)
+    if (oldDrawable is ClipDrawable)
+        oldDrawable.drawable = drawable
+    else
+        if (oldDrawable is ScaleDrawable)
+            oldDrawable.drawable = drawable
+}
+
+@BindingAdapter("primaryProgressDrawable")
+fun ProgressBar.setPrimaryProgressDrawable(drawable: Drawable) {
+    val progressBarLayers = this.progressDrawable as LayerDrawable
+    val oldDrawable = progressBarLayers.findDrawableByLayerId(android.R.id.progress)
+    if (oldDrawable is ClipDrawable)
+        oldDrawable.drawable = drawable
+    else
+        if (oldDrawable is ScaleDrawable)
+            oldDrawable.drawable = drawable
+}
+
+@BindingAdapter("secondaryProgressDrawable")
+fun ProgressBar.setSecondaryProgressDrawable(drawable: Drawable) {
+    val progressBarLayers = this.progressDrawable as LayerDrawable
+    val oldDrawable = progressBarLayers.findDrawableByLayerId(android.R.id.secondaryProgress)
+    if (oldDrawable is ClipDrawable)
+        oldDrawable.drawable = drawable
+    else
+        if (oldDrawable is ScaleDrawable)
+            oldDrawable.drawable = drawable
 }
 
 fun Fragment.showToast(stringResource: Int, length: Int = Toast.LENGTH_SHORT) {
