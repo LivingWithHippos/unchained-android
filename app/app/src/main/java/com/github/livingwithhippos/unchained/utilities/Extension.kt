@@ -4,12 +4,17 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.graphics.BlendMode
+import android.graphics.BlendModeColorFilter
+import android.graphics.drawable.LayerDrawable
 import android.net.Uri
 import android.util.Patterns
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
@@ -28,6 +33,22 @@ fun AutoCompleteTextView.setAdapter(contents: List<String>) {
     // a simple layout is set for the dropdown items
     val adapter = ArrayAdapter<String>(this.context, R.layout.dropdown_plain_item, contents)
     this.setAdapter(adapter)
+}
+
+@BindingAdapter("progressColor")
+fun ProgressBar.setProgressColor(color: Int) {
+    val progressBarLayers = progressDrawable as LayerDrawable
+    val progressDrawable = progressBarLayers.findDrawableByLayerId(android.R.id.progress).mutate()
+    progressDrawable.setTint(color)
+}
+
+@BindingAdapter("progressDrawable")
+fun ProgressBar.setProgressDrawable(drawableId: Int) {
+    val drawable = ContextCompat.getDrawable(context, drawableId)
+    drawable?.let{
+        val progressBarLayers = progressDrawable as LayerDrawable
+        progressBarLayers.setDrawableByLayerId(android.R.id.progress, it)
+    }
 }
 
 fun Fragment.showToast(stringResource: Int, length: Int = Toast.LENGTH_SHORT) {
