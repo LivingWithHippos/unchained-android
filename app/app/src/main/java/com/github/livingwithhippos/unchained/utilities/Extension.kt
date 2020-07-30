@@ -4,13 +4,13 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.graphics.drawable.Animatable
 import android.graphics.drawable.ClipDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.InsetDrawable
 import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.RotateDrawable
 import android.graphics.drawable.ScaleDrawable
-import android.graphics.drawable.TransitionDrawable
 import android.graphics.drawable.VectorDrawable
 import android.net.Uri
 import android.util.Patterns
@@ -30,6 +30,14 @@ fun ImageView.loadImage(imageURL: String?) {
         Glide.with(this.context)
             .load(imageURL)
             .into(this)
+}
+
+@BindingAdapter("startAnimation")
+fun ImageView.startAnimation(start: Boolean) {
+    if (start) {
+        if (drawable is Animatable)
+            (drawable as Animatable).start()
+    }
 }
 
 @BindingAdapter("adapter")
