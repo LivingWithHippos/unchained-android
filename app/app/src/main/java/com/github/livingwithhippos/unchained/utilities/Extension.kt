@@ -37,6 +37,9 @@ fun ImageView.startAnimation(start: Boolean) {
     if (start) {
         if (drawable is Animatable)
             (drawable as Animatable).start()
+    } else {
+        if (drawable is Animatable)
+            (drawable as Animatable).stop()
     }
 }
 
