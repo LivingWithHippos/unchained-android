@@ -34,11 +34,10 @@ fun ImageView.loadImage(imageURL: String?) {
 
 @BindingAdapter("startAnimation")
 fun ImageView.startAnimation(start: Boolean) {
-    if (start) {
-        if (drawable is Animatable)
+    if (drawable is Animatable) {
+        if (start)
             (drawable as Animatable).start()
-    } else {
-        if (drawable is Animatable)
+        else
             (drawable as Animatable).stop()
     }
 }
