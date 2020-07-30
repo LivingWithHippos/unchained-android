@@ -3,12 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-
     <data>
+        <import type="android.view.View" />
+
+        <import type="java.util.List"/>
+
+        <variable
+            name="loadingStatusList" type="List&lt;String>"/>
 
         <variable
             name="torrent"
             type="com.github.livingwithhippos.unchained.newdownload.model.TorrentItem" />
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -19,7 +25,7 @@
 
         <TextView
             android:id="@+id/tvName"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
             android:text="@{torrent.filename}"
@@ -46,8 +52,9 @@
             app:layout_constraintTop_toBottomOf="@id/tvSize" />
 
         <ProgressBar
-            android:id="@+id/progressBar"
+            android:id="@+id/pbDownload"
             style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:visibility="@{loadingStatusList.contains(torrent.status) ? View.GONE : View.VISIBLE}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
@@ -61,6 +68,18 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvStatus" />
+
+        <ImageView
+            android:id="@+id/ivLoading"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:visibility="@{loadingStatusList.contains(torrent.status) ? View.VISIBLE : View.GONE}"
+            app:srcCompat="@drawable/download_progressbar_indeterminate"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvStatus"
+            app:startAnimation="@{loadingStatusList.contains(torrent.status) ? true: false}"
+            tools:ignore="ContentDescription" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout><!--

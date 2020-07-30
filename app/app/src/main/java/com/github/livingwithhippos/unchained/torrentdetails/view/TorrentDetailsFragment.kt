@@ -11,6 +11,11 @@ import androidx.navigation.fragment.navArgs
 import com.github.livingwithhippos.unchained.databinding.FragmentTorrentDetailsBinding
 import com.github.livingwithhippos.unchained.torrentdetails.viewmodel.TorrentDetailsViewmodel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class TorrentDetailsFragment : Fragment() {
@@ -19,18 +24,42 @@ class TorrentDetailsFragment : Fragment() {
 
     val args: TorrentDetailsFragmentArgs by navArgs()
 
+    private val job = Job()
+    val scope = CoroutineScope(Dispatchers.Main + job)
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val torrentBinding = FragmentTorrentDetailsBinding.inflate(inflater, container, false)
 
+        // possible status are magnet_error, magnet_conversion, waiting_files_selection,
+        // queued, downloading, downloaded, error, virus, compressing, uploading, dead
+        val loadingStatusList = listOf<String>("magnet_conversion","waiting_files_selection","queued", "compressing", "uploading")
+        val endedStatusList = listOf<String>("magnet_error","downloaded", "error", "virus", "dead")
+        torrentBinding.loadingStatusList = loadingStatusList
+
         viewModel.torrentLiveData.observe(viewLifecycleOwner, Observer {
-            if (it != null)
+            if (it != null) {
                 torrentBinding.torrent = it
+                if (loadingStatusList.contains(it.status) || it.status == "downloading")
+                    fetchTorrent()
+                if (endedStatusList.contains(it.status)) {
+                    job.cancel()
+                    // also stop the observing?
+                }
+            }
         })
 
         viewModel.fetchTorrentDetails(args.torrentID)
+
         return torrentBinding.root
+    }
+
+    private fun fetchTorrent() {
+        scope.launch {
+            delay(5000)
+            viewModel.fetchTorrentDetails(args.torrentID)
+        }
     }
 }
