@@ -8,7 +8,10 @@ import android.graphics.drawable.ClipDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.InsetDrawable
 import android.graphics.drawable.LayerDrawable
+import android.graphics.drawable.RotateDrawable
 import android.graphics.drawable.ScaleDrawable
+import android.graphics.drawable.TransitionDrawable
+import android.graphics.drawable.VectorDrawable
 import android.net.Uri
 import android.util.Patterns
 import android.widget.ArrayAdapter
@@ -38,60 +41,57 @@ fun AutoCompleteTextView.setAdapter(contents: List<String>) {
 
 @BindingAdapter("backgroundProgressColor")
 fun ProgressBar.setBackgroundProgressColor(color: Int) {
-    val progressBarLayers = progressDrawable as LayerDrawable
-    val progressDrawable = progressBarLayers.findDrawableByLayerId(android.R.id.background).mutate()
-    progressDrawable.setTint(color)
+    tintDrawable(android.R.id.background, color)
 }
 
 @BindingAdapter("progressColor")
 fun ProgressBar.setProgressColor(color: Int) {
-    val progressBarLayers = progressDrawable as LayerDrawable
-    val progressDrawable = progressBarLayers.findDrawableByLayerId(android.R.id.progress).mutate()
-    progressDrawable.setTint(color)
+    tintDrawable(android.R.id.progress, color)
 }
 
 @BindingAdapter("secondaryProgressColor")
 fun ProgressBar.setSecondaryProgressColor(color: Int) {
-    val progressBarLayers = progressDrawable as LayerDrawable
-    val progressDrawable =
-        progressBarLayers.findDrawableByLayerId(android.R.id.secondaryProgress).mutate()
-    progressDrawable.setTint(color)
+    tintDrawable(android.R.id.secondaryProgress, color)
 }
 
 @BindingAdapter("backgroundProgressDrawable")
 fun ProgressBar.setBackgroundProgressDrawable(drawable: Drawable) {
-    val progressBarLayers = this.progressDrawable as LayerDrawable
-    when (val oldDrawable = progressBarLayers.findDrawableByLayerId(android.R.id.background)) {
-        is ClipDrawable -> oldDrawable.drawable = drawable
-        is ScaleDrawable -> oldDrawable.drawable = drawable
-        is InsetDrawable -> oldDrawable.drawable = drawable
-        // ShapeDrawable is a generic shape and does not have drawables
-        // is ShapeDrawable ->
-    }
+    swapLayerDrawable(android.R.id.background, drawable)
 }
 
 @BindingAdapter("primaryProgressDrawable")
 fun ProgressBar.setPrimaryProgressDrawable(drawable: Drawable) {
-    val progressBarLayers = this.progressDrawable as LayerDrawable
-    when (val oldDrawable = progressBarLayers.findDrawableByLayerId(android.R.id.progress)) {
+    swapLayerDrawable(android.R.id.progress, drawable)
+}
+
+@BindingAdapter("secondaryProgressDrawable")
+fun ProgressBar.setSecondaryProgressDrawable(drawable: Drawable) {
+    swapLayerDrawable(android.R.id.secondaryProgress, drawable)
+}
+
+fun ProgressBar.tintDrawable(layerId: Int, color: Int) {
+    val progressDrawable = getDrawableByLayerId(layerId).mutate()
+    progressDrawable.setTint(color)
+}
+
+fun ProgressBar.swapLayerDrawable(layerId: Int, drawable: Drawable) {
+    when (val oldDrawable = getDrawableByLayerId(layerId)) {
         is ClipDrawable -> oldDrawable.drawable = drawable
         is ScaleDrawable -> oldDrawable.drawable = drawable
         is InsetDrawable -> oldDrawable.drawable = drawable
+        is RotateDrawable -> oldDrawable.drawable = drawable
+        is VectorDrawable -> getLayerDrawable().setDrawableByLayerId(layerId, drawable)
         // ShapeDrawable is a generic shape and does not have drawables
         // is ShapeDrawable ->
     }
 }
 
-@BindingAdapter("secondaryProgressDrawable")
-fun ProgressBar.setSecondaryProgressDrawable(drawable: Drawable) {
-    val progressBarLayers = this.progressDrawable as LayerDrawable
-    when (val oldDrawable = progressBarLayers.findDrawableByLayerId(android.R.id.secondaryProgress)) {
-        is ClipDrawable -> oldDrawable.drawable = drawable
-        is ScaleDrawable -> oldDrawable.drawable = drawable
-        is InsetDrawable -> oldDrawable.drawable = drawable
-        // ShapeDrawable is a generic shape and does not have drawables
-        // is ShapeDrawable ->
-    }
+fun ProgressBar.getLayerDrawable(): LayerDrawable {
+    return (if (isIndeterminate) indeterminateDrawable else progressDrawable)  as LayerDrawable
+}
+
+fun ProgressBar.getDrawableByLayerId(id: Int): Drawable {
+    return getLayerDrawable().findDrawableByLayerId(id)
 }
 
 fun Fragment.showToast(stringResource: Int, length: Int = Toast.LENGTH_SHORT) {
