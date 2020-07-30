@@ -35,6 +35,8 @@ class TorrentDetailsViewmodel @ViewModelInject constructor(
             val torrentData =
                 torrentsRepository.getTorrentInfo(token, torrentID)
             torrentLiveData.postValue(torrentData)
+            if (torrentData?.status == "waiting_files_selection")
+                torrentsRepository.selectFiles(token,torrentID)
         }
 
     }
