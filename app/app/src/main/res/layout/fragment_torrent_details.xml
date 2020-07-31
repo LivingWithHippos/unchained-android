@@ -105,10 +105,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:visibility="@{torrent.seeders == null ? View.GONE : View.VISIBLE}"
-                        android:text="@{@string/seeders_format(torrent.seeders), default=`%1$d seeders`}"
-                        app:layout_constraintStart_toStartOf="@id/tvSpeed"
-                        app:layout_constraintTop_toBottomOf="@id/tvSpeed"
-                        app:layout_constraintEnd_toStartOf="@id/flProgress" />
+                        android:text="@{@string/seeders_format(torrent.seeders), default=`%1$d seeders`}" />
 
                 </LinearLayout>
 
