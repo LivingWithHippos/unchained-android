@@ -23,6 +23,7 @@ import com.github.livingwithhippos.unchained.newdownload.viewmodel.NewDownloadVi
 import com.github.livingwithhippos.unchained.torrentdetails.view.TorrentDetailsFragmentArgs
 import com.github.livingwithhippos.unchained.utilities.MAGNET_PATTERN
 import com.github.livingwithhippos.unchained.utilities.REMOTE_TRAFFIC_ON
+import com.github.livingwithhippos.unchained.utilities.runRippleAnimation
 import com.github.livingwithhippos.unchained.utilities.showToast
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.FileDescriptor
@@ -100,8 +101,13 @@ class NewDownloadFragment : Fragment(), NewDownloadListener {
 
         }
 
-        if (!args.links.isNullOrEmpty())
+        // we must make this value null by default because it's the first fragment of the nav graph
+        if (!args.links.isNullOrEmpty()) {
+            //todo: check for multiple files
             downloadBinding.tiLink.setText(args.links!!.first(), TextView.BufferType.EDITABLE)
+            // run the ripple animation on the unrestrict button
+            downloadBinding.bUnrestrict.runRippleAnimation()
+        }
 
         return downloadBinding.root
     }

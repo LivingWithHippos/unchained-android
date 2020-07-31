@@ -9,11 +9,13 @@ import android.graphics.drawable.ClipDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.InsetDrawable
 import android.graphics.drawable.LayerDrawable
+import android.graphics.drawable.RippleDrawable
 import android.graphics.drawable.RotateDrawable
 import android.graphics.drawable.ScaleDrawable
 import android.graphics.drawable.VectorDrawable
 import android.net.Uri
 import android.util.Patterns
+import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.ImageView
@@ -102,6 +104,17 @@ fun ProgressBar.getLayerDrawable(): LayerDrawable {
 
 fun ProgressBar.getDrawableByLayerId(id: Int): Drawable {
     return getLayerDrawable().findDrawableByLayerId(id)
+}
+
+fun View.runRippleAnimation(){
+    if (background is RippleDrawable) {
+        //todo: make this effect last longer
+        background.state = intArrayOf(
+            android.R.attr.state_pressed,
+            android.R.attr.state_enabled
+        )
+
+    }
 }
 
 fun Fragment.showToast(stringResource: Int, length: Int = Toast.LENGTH_SHORT) {
