@@ -84,25 +84,33 @@
                     app:layout_constraintTop_toBottomOf="@id/tvStatus"
                     app:layout_constraintEnd_toStartOf="@id/flProgress" />
 
-                <TextView
-                    android:id="@+id/tvSpeed"
+
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:visibility="@{torrent.speed == null ? View.GONE : View.VISIBLE}"
-                    android:text="@{torrent.speed != null ? @string/speed_format(torrent.speed / 1024): ``, default=`%1$d kb/s`}"
+                    android:orientation="vertical"
                     app:layout_constraintStart_toStartOf="@id/tvSize"
                     app:layout_constraintTop_toBottomOf="@id/tvSize"
-                    app:layout_constraintEnd_toStartOf="@id/flProgress" />
+                    app:layout_constraintEnd_toStartOf="@id/flProgress" >
 
-                <TextView
-                    android:id="@+id/tvSeeders"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:visibility="@{torrent.seeders == null ? View.GONE : View.VISIBLE}"
-                    android:text="@{@string/seeders_format(torrent.seeders), default=`%1$d seeders`}"
-                    app:layout_constraintStart_toStartOf="@id/tvSpeed"
-                    app:layout_constraintTop_toBottomOf="@id/tvSpeed"
-                    app:layout_constraintEnd_toStartOf="@id/flProgress" />
+                    <TextView
+                        android:id="@+id/tvSpeed"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="@{torrent.speed == null ? View.GONE : View.VISIBLE}"
+                        android:text="@{torrent.speed != null ? @string/speed_format(torrent.speed / 1024): ``, default=`%1$d kb/s`}"/>
+
+                    <TextView
+                        android:id="@+id/tvSeeders"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="@{torrent.seeders == null ? View.GONE : View.VISIBLE}"
+                        android:text="@{@string/seeders_format(torrent.seeders), default=`%1$d seeders`}"
+                        app:layout_constraintStart_toStartOf="@id/tvSpeed"
+                        app:layout_constraintTop_toBottomOf="@id/tvSpeed"
+                        app:layout_constraintEnd_toStartOf="@id/flProgress" />
+
+                </LinearLayout>
 
                 <FrameLayout
                     android:id="@+id/flProgress"
@@ -135,6 +143,7 @@
                         tools:ignore="ContentDescription" />
 
                 </FrameLayout>
+
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>
