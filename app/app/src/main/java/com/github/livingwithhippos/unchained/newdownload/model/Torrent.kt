@@ -99,9 +99,9 @@ data class TorrentItem(
     @Json(name = "ended")
     val ended: String?,
     @Json(name = "speed")
-    val speed: String?,
+    val speed: Int?,
     @Json(name = "seeders")
-    val seeders: String?
+    val seeders: Int?
 )
 
 @JsonClass(generateAdapter = true)
