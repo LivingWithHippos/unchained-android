@@ -9,15 +9,18 @@ import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.databinding.NewDownloadFragmentBinding
 import com.github.livingwithhippos.unchained.newdownload.viewmodel.NewDownloadViewModel
+import com.github.livingwithhippos.unchained.torrentdetails.view.TorrentDetailsFragmentArgs
 import com.github.livingwithhippos.unchained.utilities.MAGNET_PATTERN
 import com.github.livingwithhippos.unchained.utilities.REMOTE_TRAFFIC_ON
 import com.github.livingwithhippos.unchained.utilities.showToast
@@ -32,6 +35,8 @@ import java.util.regex.Pattern
 class NewDownloadFragment : Fragment(), NewDownloadListener {
 
     private val viewModel: NewDownloadViewModel by viewModels()
+
+    val args: NewDownloadFragmentArgs by navArgs()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -94,6 +99,9 @@ class NewDownloadFragment : Fragment(), NewDownloadListener {
             }
 
         }
+
+        if (!args.links.isNullOrEmpty())
+            downloadBinding.tiLink.setText(args.links!!.first(), TextView.BufferType.EDITABLE)
 
         return downloadBinding.root
     }

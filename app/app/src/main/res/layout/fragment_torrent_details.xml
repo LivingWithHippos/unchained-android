@@ -23,6 +23,10 @@
             name="torrent"
             type="com.github.livingwithhippos.unchained.newdownload.model.TorrentItem" />
 
+        <variable
+            name="listener"
+            type="com.github.livingwithhippos.unchained.torrentdetails.view.TorrentDetailsListener" />
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -165,6 +169,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
             android:text="@string/download"
+            android:onClick="@{() -> listener.onDownloadClick(torrent.links)}"
             android:visibility="@{torrent.status.equalsIgnoreCase(`downloaded`) ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

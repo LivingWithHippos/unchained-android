@@ -7,8 +7,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.github.livingwithhippos.unchained.R
+import com.github.livingwithhippos.unchained.authentication.view.AuthenticationFragmentDirections
 import com.github.livingwithhippos.unchained.databinding.FragmentTorrentDetailsBinding
 import com.github.livingwithhippos.unchained.torrentdetails.viewmodel.TorrentDetailsViewmodel
 import dagger.hilt.android.AndroidEntryPoint
@@ -19,7 +21,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class TorrentDetailsFragment : Fragment() {
+class TorrentDetailsFragment : Fragment(), TorrentDetailsListener {
 
     private val viewModel: TorrentDetailsViewmodel by viewModels()
 
@@ -62,6 +64,7 @@ class TorrentDetailsFragment : Fragment() {
 
         torrentBinding.loadingStatusList = loadingStatusList
         torrentBinding.statusTranslation = statusTranslation
+        torrentBinding.listener = this
 
         viewModel.torrentLiveData.observe(viewLifecycleOwner, Observer {
             if (it != null) {
@@ -95,4 +98,14 @@ class TorrentDetailsFragment : Fragment() {
             viewModel.fetchTorrentDetails(args.torrentID)
         }
     }
+
+    override fun onDownloadClick(links: List<String>) {
+        val action =
+            TorrentDetailsFragmentDirections.actionTorrentDetailsFragmentToNewDownloadDest(links.toTypedArray())
+        findNavController().navigate(action)
+    }
+}
+
+interface TorrentDetailsListener{
+    fun onDownloadClick(links: List<String>)
 }
