@@ -89,7 +89,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:visibility="@{torrent.speed == null ? View.GONE : View.VISIBLE}"
-                    android:text="@{torrent.speed != null ? @string/speed_format(torrent.speed): ``, default=`%1$d kb/s`}"
+                    android:text="@{torrent.speed != null ? @string/speed_format(torrent.speed / 1024): ``, default=`%1$d kb/s`}"
                     app:layout_constraintStart_toStartOf="@id/tvSize"
                     app:layout_constraintTop_toBottomOf="@id/tvSize"
                     app:layout_constraintEnd_toStartOf="@id/flProgress" />
