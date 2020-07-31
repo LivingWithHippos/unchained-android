@@ -35,6 +35,8 @@
     <string name="file_size_format">%1$d MB</string>
     <string name="selected_file_size_format">%1$d MB / %2$d MB selected</string>
     <string name="torrent_status_format">Status: %1$s</string>
+    <string name="speed_format">%1$s kb/s</string>
+    <string name="seeders_format">%1$s seeders</string>
     <string name="load_streams">Load Streaming Links</string>
     <string name="apple">Apple</string>
     <string name="dash">Dash</string>

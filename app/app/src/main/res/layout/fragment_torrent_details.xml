@@ -84,6 +84,26 @@
                     app:layout_constraintTop_toBottomOf="@id/tvStatus"
                     app:layout_constraintEnd_toStartOf="@id/flProgress" />
 
+                <TextView
+                    android:id="@+id/tvSpeed"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:visibility="@{torrent.speed == null ? View.GONE : View.VISIBLE}"
+                    android:text="@{torrent.speed != null ? @string/speed_format(torrent.speed): ``, default=`%1$d kb/s`}"
+                    app:layout_constraintStart_toStartOf="@id/tvSize"
+                    app:layout_constraintTop_toBottomOf="@id/tvSize"
+                    app:layout_constraintEnd_toStartOf="@id/flProgress" />
+
+                <TextView
+                    android:id="@+id/tvSeeders"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:visibility="@{torrent.seeders == null ? View.GONE : View.VISIBLE}"
+                    android:text="@{@string/seeders_format(torrent.seeders), default=`%1$d seeders`}"
+                    app:layout_constraintStart_toStartOf="@id/tvSpeed"
+                    app:layout_constraintTop_toBottomOf="@id/tvSpeed"
+                    app:layout_constraintEnd_toStartOf="@id/flProgress" />
+
                 <FrameLayout
                     android:id="@+id/flProgress"
                     android:layout_width="wrap_content"
@@ -120,8 +140,41 @@
         </com.google.android.material.card.MaterialCardView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
-
     <!--
+    {
+    "id": "string",
+    "filename": "string",
+    "original_filename": "string", // Original name of the torrent
+    "hash": "string", // SHA1 Hash of the torrent
+    "bytes": int, // Size of selected files only
+    "original_bytes": int, // Total size of the torrent
+    "host": "string", // Host main domain
+    "split": int, // Split size of links
+    "progress": int, // Possible values: 0 to 100
+    "status": "downloaded", // Current status of the torrent: magnet_error, magnet_conversion, waiting_files_selection, queued, downloading, downloaded, error, virus, compressing, uploading, dead
+    "added": "string", // jsonDate
+    "files": [
+    {
+    "id": int,
+    "path": "string", // Path to the file inside the torrent, starting with "/"
+    "bytes": int,
+    "selected": int // 0 or 1
+    },
+    {
+    "id": int,
+    "path": "string", // Path to the file inside the torrent, starting with "/"
+    "bytes": int,
+    "selected": int // 0 or 1
+    }
+    ],
+    "links": [
+    "string" // Host URL
+    ],
+    "ended": "string", // !! Only present when finished, jsonDate
+    "speed": int, // !! Only present in "downloading", "compressing", "uploading" status
+    "seeders": int // !! Only present in "downloading", "magnet_conversion" status
+    }
+
     {
     "id": "QBQBZDN2TSK4C",
     "filename": "ubuntu-20.04-desktop-amd64.iso",
