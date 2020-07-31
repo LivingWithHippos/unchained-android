@@ -34,7 +34,7 @@ data class UnrestrictedLink(
     @Json(name = "mimeType")
     val mimeType: String,
     @Json(name = "filesize")
-    val filesize: Int,
+    val filesize: Long,
     @Json(name = "link")
     val link: String,
     @Json(name = "host")
@@ -54,7 +54,7 @@ data class UnrestrictedLink(
         parcel.readString()!!,
         parcel.readString()!!,
         parcel.readString()!!,
-        parcel.readInt(),
+        parcel.readLong(),
         parcel.readString()!!,
         parcel.readString()!!,
         parcel.readString()!!,
@@ -69,7 +69,7 @@ data class UnrestrictedLink(
         parcel.writeString(id)
         parcel.writeString(filename)
         parcel.writeString(mimeType)
-        parcel.writeInt(filesize)
+        parcel.writeLong(filesize)
         parcel.writeString(link)
         parcel.writeString(host)
         parcel.writeString(hostIcon)
