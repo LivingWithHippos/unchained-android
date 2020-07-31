@@ -66,6 +66,7 @@ class NewDownloadFragment : Fragment(), NewDownloadListener {
             if (Patterns.WEB_URL.matcher(link).matches()) {
 
                 downloadBinding.bUnrestrict.isEnabled = false
+                downloadBinding.bLoadTorrent.isEnabled = false
 
                 var password: String? = downloadBinding.etPassword.text.toString()
                 // we don't pass the password if it is blank.
@@ -83,8 +84,11 @@ class NewDownloadFragment : Fragment(), NewDownloadListener {
 
             } else {
                 val m: Matcher = Pattern.compile(MAGNET_PATTERN).matcher(link)
-                if (m.lookingAt())
+                if (m.lookingAt()) {
+                    downloadBinding.bUnrestrict.isEnabled = false
+                    downloadBinding.bLoadTorrent.isEnabled = false
                     viewModel.fetchAddedMagnet(link)
+                }
                 else
                     showToast(R.string.invalid_url)
             }
