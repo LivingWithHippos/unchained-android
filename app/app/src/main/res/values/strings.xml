@@ -65,4 +65,5 @@
     <string name="compressing">Compressing</string>
     <string name="uploading">Uploading</string>
     <string name="dead">Dead</string>
+    <string name="download">Download</string>
 </resources>
