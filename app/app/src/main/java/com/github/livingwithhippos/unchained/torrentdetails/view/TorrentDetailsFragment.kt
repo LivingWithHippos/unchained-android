@@ -84,8 +84,9 @@ class TorrentDetailsFragment : Fragment() {
     }
 
     private fun fetchTorrent() {
+        val waitingTime = 2000L
         scope.launch {
-            delay(5000)
+            delay(waitingTime)
             viewModel.fetchTorrentDetails(args.torrentID)
         }
     }
