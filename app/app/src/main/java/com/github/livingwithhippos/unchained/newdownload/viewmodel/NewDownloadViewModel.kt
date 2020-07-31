@@ -59,6 +59,7 @@ class NewDownloadViewModel @ViewModelInject constructor(
                 if (addedMagnet!= null) {
                     // todo: add custom selection of files, this queues all the files
                     //todo: add checks for already chosen torrent/magnet (if possible), otherwise we get multiple downloads
+                    //todo: get file info and check if it has already been downloaded before doing a select files
                     torrentsRepository.selectFiles(token, addedMagnet.id)
                     torrentLiveData.postValue(Event(addedMagnet))
                 }

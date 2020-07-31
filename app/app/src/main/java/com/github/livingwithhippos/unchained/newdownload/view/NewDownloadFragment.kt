@@ -116,7 +116,7 @@ class NewDownloadFragment : Fragment(), NewDownloadListener {
             fileInputStream.close()
             viewModel.fetchUploadedTorrent(buffer)
         } else {
-            Log.e("NewDownloadFragment", "Error getting parcelFileDescriptor -> null")
+            Log.e("NewDownloadFragment", "Torrent conversion: Error getting parcelFileDescriptor -> null")
         }
 
     }
