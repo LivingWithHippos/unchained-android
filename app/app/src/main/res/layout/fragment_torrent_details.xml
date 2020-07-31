@@ -8,13 +8,16 @@
         <import type="android.view.View" />
 
         <import type="java.util.List" />
-        <import type="java.util.Map"/>
+
+        <import type="java.util.Map" />
 
         <variable
             name="loadingStatusList"
             type="List&lt;String>" />
 
-        <variable name="statusTranslation" type="Map&lt;String, String>"/>
+        <variable
+            name="statusTranslation"
+            type="Map&lt;String, String>" />
 
         <variable
             name="torrent"
@@ -44,9 +47,9 @@
             android:id="@+id/cvDownloadDetails"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="20dp"
             android:layout_marginTop="20dp"
             app:cardCornerRadius="10dp"
-            android:layout_margin="20dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvName">
@@ -61,51 +64,51 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/status"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"/>
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/tvStatus"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="@{statusTranslation[torrent.status], default=`Torrent Status`}"
-                    android:textStyle="bold"
                     android:textSize="20sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toStartOf="@id/flProgress"
                     app:layout_constraintStart_toStartOf="@id/tvStatusTitle"
-                    app:layout_constraintTop_toBottomOf="@id/tvStatusTitle"
-                    app:layout_constraintEnd_toStartOf="@id/flProgress"/>
+                    app:layout_constraintTop_toBottomOf="@id/tvStatusTitle" />
 
                 <TextView
                     android:id="@+id/tvSize"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="@{@string/file_size_format(torrent.bytes / 1024 / 1024), default=`File Size`}"
+                    app:layout_constraintEnd_toStartOf="@id/flProgress"
                     app:layout_constraintStart_toStartOf="@id/tvStatus"
-                    app:layout_constraintTop_toBottomOf="@id/tvStatus"
-                    app:layout_constraintEnd_toStartOf="@id/flProgress" />
+                    app:layout_constraintTop_toBottomOf="@id/tvStatus" />
 
 
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
+                    app:layout_constraintEnd_toStartOf="@id/flProgress"
                     app:layout_constraintStart_toStartOf="@id/tvSize"
-                    app:layout_constraintTop_toBottomOf="@id/tvSize"
-                    app:layout_constraintEnd_toStartOf="@id/flProgress" >
+                    app:layout_constraintTop_toBottomOf="@id/tvSize">
 
                     <TextView
                         android:id="@+id/tvSpeed"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:visibility="@{torrent.speed == null ? View.GONE : View.VISIBLE}"
-                        android:text="@{torrent.speed != null ? @string/speed_format(torrent.speed / 1024): ``, default=`%1$d kb/s`}"/>
+                        android:text="@{torrent.speed != null ? @string/speed_format(torrent.speed / 1024): ``, default=`%1$d kb/s`}"
+                        android:visibility="@{torrent.speed == null ? View.GONE : View.VISIBLE}" />
 
                     <TextView
                         android:id="@+id/tvSeeders"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:visibility="@{torrent.seeders == null ? View.GONE : View.VISIBLE}"
-                        android:text="@{@string/seeders_format(torrent.seeders), default=`%1$d seeders`}" />
+                        android:text="@{@string/seeders_format(torrent.seeders), default=`%1$d seeders`}"
+                        android:visibility="@{torrent.seeders == null ? View.GONE : View.VISIBLE}" />
 
                 </LinearLayout>
 
@@ -113,9 +116,10 @@
                     android:id="@+id/flProgress"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent">
+                    app:layout_constraintTop_toTopOf="parent">
+
                     <ProgressBar
                         android:id="@+id/pbDownload"
                         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
@@ -123,8 +127,8 @@
                         android:layout_height="wrap_content"
                         android:indeterminate="false"
                         android:max="100"
-                        android:minHeight="87dp"
                         android:minWidth="100dp"
+                        android:minHeight="87dp"
                         android:progress="@{torrent.progress}"
                         android:progressDrawable="@drawable/download_progressbar"
                         android:visibility="@{loadingStatusList.contains(torrent.status) ? View.GONE : View.VISIBLE}"
@@ -147,8 +151,7 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>
     </androidx.constraintlayout.widget.ConstraintLayout>
-</layout>
-    <!--
+</layout><!--
     {
     "id": "string",
     "filename": "string",

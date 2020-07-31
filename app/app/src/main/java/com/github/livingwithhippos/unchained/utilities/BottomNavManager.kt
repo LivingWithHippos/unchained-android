@@ -76,7 +76,8 @@ class BottomNavManager(
 
             // Obtain its id
             val graphId = navHostFragment.navController.graph.id
-            navGraphStartDestinations[graphId] = navHostFragment.navController.graph.startDestination
+            navGraphStartDestinations[graphId] =
+                navHostFragment.navController.graph.startDestination
 
             // Save to the map
             graphIdToTagMap[graphId] = fragmentTag

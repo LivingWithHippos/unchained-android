@@ -42,17 +42,21 @@ class NewDownloadFragment : Fragment(), NewDownloadListener {
         downloadBinding.listener = this
 
         viewModel.linkLiveData.observe(viewLifecycleOwner, Observer {
-            it.getContentIfNotHandled()?.let{ linkDetails ->
+            it.getContentIfNotHandled()?.let { linkDetails ->
                 val action =
-                    NewDownloadFragmentDirections.actionUnrestrictDownloadToDetailsFragment(linkDetails)
+                    NewDownloadFragmentDirections.actionUnrestrictDownloadToDetailsFragment(
+                        linkDetails
+                    )
                 findNavController().navigate(action)
             }
         })
 
         viewModel.torrentLiveData.observe(viewLifecycleOwner, Observer {
-            it.getContentIfNotHandled()?.let{ torrent ->
+            it.getContentIfNotHandled()?.let { torrent ->
                 val action =
-                    NewDownloadFragmentDirections.actionNewDownloadDestToTorrentDetailsFragment(torrent.id)
+                    NewDownloadFragmentDirections.actionNewDownloadDestToTorrentDetailsFragment(
+                        torrent.id
+                    )
                 findNavController().navigate(action)
             }
         })
@@ -90,15 +94,15 @@ class NewDownloadFragment : Fragment(), NewDownloadListener {
         return downloadBinding.root
     }
 
-    private val getTorrent: ActivityResultLauncher<String> = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-        if (uri != null) {
-            // todo: check the context instead of using requireContext
-            loadTorrent(requireContext().contentResolver, uri)
+    private val getTorrent: ActivityResultLauncher<String> =
+        registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+            if (uri != null) {
+                // todo: check the context instead of using requireContext
+                loadTorrent(requireContext().contentResolver, uri)
+            } else {
+                showToast(R.string.error_loading_torrent)
+            }
         }
-        else {
-            showToast(R.string.error_loading_torrent)
-        }
-    }
 
     override fun onLoadTorrentClick() {
         getTorrent.launch("application/x-bittorrent")
@@ -116,7 +120,10 @@ class NewDownloadFragment : Fragment(), NewDownloadListener {
             fileInputStream.close()
             viewModel.fetchUploadedTorrent(buffer)
         } else {
-            Log.e("NewDownloadFragment", "Torrent conversion: Error getting parcelFileDescriptor -> null")
+            Log.e(
+                "NewDownloadFragment",
+                "Torrent conversion: Error getting parcelFileDescriptor -> null"
+            )
         }
 
     }

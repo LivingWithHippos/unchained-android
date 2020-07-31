@@ -36,10 +36,10 @@
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:src="@drawable/android_black"
+                    app:imageURL="@{user.avatar}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:imageURL="@{user.avatar}" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/tvName"

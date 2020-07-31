@@ -27,10 +27,12 @@ class TorrentsRepository @Inject constructor(private val torrentApiHelper: Torre
         id: String
     ): TorrentItem? {
         val torrentResponse: TorrentItem? = safeApiCall(
-            call = { torrentApiHelper.getTorrentInfo(
-                token = "Bearer $token",
-                id = id
-            ) },
+            call = {
+                torrentApiHelper.getTorrentInfo(
+                    token = "Bearer $token",
+                    id = id
+                )
+            },
             errorMessage = "Error Retrieving Torrent Info"
         )
 
@@ -70,11 +72,13 @@ class TorrentsRepository @Inject constructor(private val torrentApiHelper: Torre
         host: String
     ): UploadedTorrent? {
         val torrentResponse = safeApiCall(
-            call = { torrentApiHelper.addMagnet(
-                token = "Bearer $token",
-                magnet = magnet,
-                host = host
-            ) },
+            call = {
+                torrentApiHelper.addMagnet(
+                    token = "Bearer $token",
+                    magnet = magnet,
+                    host = host
+                )
+            },
             errorMessage = "Error Uploading Torrent From Magnet"
         )
 
@@ -90,13 +94,15 @@ class TorrentsRepository @Inject constructor(private val torrentApiHelper: Torre
         filter: String?
     ): List<TorrentItem>? {
         val torrentsResponse: List<TorrentItem>? = safeApiCall(
-            call = { torrentApiHelper.getTorrentsList(
-                token = "Bearer $token",
-                offset = offset,
-                page = page,
-                limit = limit,
-                filter = filter
-            ) },
+            call = {
+                torrentApiHelper.getTorrentsList(
+                    token = "Bearer $token",
+                    offset = offset,
+                    page = page,
+                    limit = limit,
+                    filter = filter
+                )
+            },
             errorMessage = "Error Retrieving Torrent Info"
         )
 

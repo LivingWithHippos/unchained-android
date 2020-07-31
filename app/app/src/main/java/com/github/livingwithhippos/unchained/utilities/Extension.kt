@@ -97,7 +97,7 @@ fun ProgressBar.swapLayerDrawable(layerId: Int, drawable: Drawable) {
 }
 
 fun ProgressBar.getLayerDrawable(): LayerDrawable {
-    return (if (isIndeterminate) indeterminateDrawable else progressDrawable)  as LayerDrawable
+    return (if (isIndeterminate) indeterminateDrawable else progressDrawable) as LayerDrawable
 }
 
 fun ProgressBar.getDrawableByLayerId(id: Int): Drawable {

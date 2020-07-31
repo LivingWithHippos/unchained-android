@@ -133,12 +133,12 @@
             android:id="@+id/tvUsePrivateToken"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/add_private_token_message"
             android:autoLink="web"
-            app:layout_constraintTop_toBottomOf="@id/cbToken"
+            android:text="@string/add_private_token_message"
             app:layout_constraintBottom_toTopOf="@id/etLink"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"  />
+            app:layout_constraintTop_toBottomOf="@id/cbToken" />
 
         <EditText
             android:id="@+id/etLink"
@@ -148,21 +148,21 @@
             android:hint="@string/private_token"
             android:importantForAutofill="no"
             android:inputType="textPersonName"
-            app:layout_constraintTop_toBottomOf="@id/tvUsePrivateToken"
             app:layout_constraintBottom_toTopOf="@id/bInsertPrivate"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvUsePrivateToken" />
 
         <Button
             android:id="@+id/bInsertPrivate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/etLink"
+            android:onClick="@{() -> listener.onInsertTokenClick(etLink)}"
+            android:text="@string/add_private_token"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            android:onClick="@{() -> listener.onInsertTokenClick(etLink)}"
-            android:text="@string/add_private_token" />
+            app:layout_constraintTop_toBottomOf="@id/etLink" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

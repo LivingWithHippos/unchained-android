@@ -17,7 +17,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import okhttp3.RequestBody
 
 class NewDownloadViewModel @ViewModelInject constructor(
     @Assisted private val savedStateHandle: SavedStateHandle,
@@ -55,8 +54,9 @@ class NewDownloadViewModel @ViewModelInject constructor(
             if (availableHosts.isNullOrEmpty()) {
                 Log.e("NewDownloadViewModel", "Error fetching available hosts")
             } else {
-                val addedMagnet = torrentsRepository.addMagnet(token, magnet, availableHosts.first().host)
-                if (addedMagnet!= null) {
+                val addedMagnet =
+                    torrentsRepository.addMagnet(token, magnet, availableHosts.first().host)
+                if (addedMagnet != null) {
                     // todo: add custom selection of files, this queues all the files
                     //todo: add checks for already chosen torrent/magnet (if possible), otherwise we get multiple downloads
                     //todo: get file info and check if it has already been downloaded before doing a select files
@@ -74,8 +74,9 @@ class NewDownloadViewModel @ViewModelInject constructor(
             if (availableHosts.isNullOrEmpty()) {
                 Log.e("NewDownloadViewModel", "Error fetching available hosts")
             } else {
-                val uploadedTorrent = torrentsRepository.addTorrent(token, binaryTorrent, availableHosts.first().host)
-                if (uploadedTorrent!= null) {
+                val uploadedTorrent =
+                    torrentsRepository.addTorrent(token, binaryTorrent, availableHosts.first().host)
+                if (uploadedTorrent != null) {
                     // todo: add custom selection of files, this queues all the files
                     //todo: add checks for already chosen torrent/magnet (if possible), otherwise we get multiple downloads
                     torrentsRepository.selectFiles(token, uploadedTorrent.id)

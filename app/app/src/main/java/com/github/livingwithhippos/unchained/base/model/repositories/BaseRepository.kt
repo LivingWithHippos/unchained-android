@@ -38,7 +38,7 @@ open class BaseRepository {
             if (body != null)
                 return NetworkResponse.Success(body)
             else
-                // todo: temporary workaround. Add support for empty body success
+            // todo: temporary workaround. Add support for empty body success
                 return NetworkResponse.SuccessEmptyBody(response.code())
         }
 

@@ -8,8 +8,6 @@ import androidx.lifecycle.ViewModel
 import com.github.livingwithhippos.unchained.base.model.repositories.CredentialsRepository
 import com.github.livingwithhippos.unchained.base.model.repositories.TorrentsRepository
 import com.github.livingwithhippos.unchained.newdownload.model.TorrentItem
-import com.github.livingwithhippos.unchained.newdownload.model.UnrestrictedLink
-import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.KEY_TOKEN
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -36,7 +34,7 @@ class TorrentDetailsViewmodel @ViewModelInject constructor(
                 torrentsRepository.getTorrentInfo(token, torrentID)
             torrentLiveData.postValue(torrentData)
             if (torrentData?.status == "waiting_files_selection")
-                torrentsRepository.selectFiles(token,torrentID)
+                torrentsRepository.selectFiles(token, torrentID)
         }
 
     }

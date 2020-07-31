@@ -30,8 +30,14 @@ class TorrentDetailsFragment : Fragment() {
 
     // possible status are magnet_error, magnet_conversion, waiting_files_selection,
     // queued, downloading, downloaded, error, virus, compressing, uploading, dead
-    val loadingStatusList = listOf<String>("magnet_conversion","waiting_files_selection","queued", "compressing", "uploading")
-    val endedStatusList = listOf<String>("magnet_error","downloaded", "error", "virus", "dead")
+    val loadingStatusList = listOf<String>(
+        "magnet_conversion",
+        "waiting_files_selection",
+        "queued",
+        "compressing",
+        "uploading"
+    )
+    val endedStatusList = listOf<String>("magnet_error", "downloaded", "error", "virus", "dead")
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,8 +46,7 @@ class TorrentDetailsFragment : Fragment() {
         val torrentBinding = FragmentTorrentDetailsBinding.inflate(inflater, container, false)
 
 
-
-        val statusTranslation = mapOf<String,String>(
+        val statusTranslation = mapOf<String, String>(
             "magnet_error" to resources.getString(R.string.magnet_error),
             "magnet_conversion" to resources.getString(R.string.magnet_conversion),
             "waiting_files_selection" to resources.getString(R.string.waiting_files_selection),
