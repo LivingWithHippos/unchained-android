@@ -51,4 +51,16 @@
     <string name="upload_torrent">Upload Torrent</string>
     <string name="error_loading_torrent">No torrent loaded</string>
     <string name="link_or_magnet">Link or Magnet</string>
+    <string name="status">Status</string>
+    <string name="magnet_error">Magnet Error</string>
+    <string name="magnet_conversion">Magnet Conversion</string>
+    <string name="waiting_files_selection">Waiting Files Selection</string>
+    <string name="queued">Queued</string>
+    <string name="downloading">Downloading</string>
+    <string name="downloaded">Downloaded</string>
+    <string name="error">Error</string>
+    <string name="virus">Virus</string>
+    <string name="compressing">Compressing</string>
+    <string name="uploading">Uploading</string>
+    <string name="dead">Dead</string>
 </resources>

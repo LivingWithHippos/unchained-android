@@ -4,12 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <import type="android.view.View" />
 
-        <import type="java.util.List"/>
+        <import type="java.util.List" />
+        <import type="java.util.Map"/>
 
         <variable
-            name="loadingStatusList" type="List&lt;String>"/>
+            name="loadingStatusList"
+            type="List&lt;String>" />
+
+        <variable name="statusTranslation" type="Map&lt;String, String>"/>
 
         <variable
             name="torrent"
@@ -28,61 +33,95 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
-            android:text="@{torrent.filename}"
+            android:text="@{torrent.filename, default=`File Name`}"
             android:textColor="#1e1e1e"
             android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/tvSize"
-            android:layout_width="wrap_content"
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cvDownloadDetails"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@{@string/selected_file_size_format(torrent.bytes / 1024 / 1024, torrent.originalBytes / 1024 / 1024)}"
-            app:layout_constraintStart_toStartOf="@id/tvName"
-            app:layout_constraintTop_toBottomOf="@id/tvName" />
-
-        <TextView
-            android:id="@+id/tvStatus"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@{@string/torrent_status_format(torrent.status)}"
-            app:layout_constraintStart_toStartOf="@id/tvSize"
-            app:layout_constraintTop_toBottomOf="@id/tvSize" />
-
-        <ProgressBar
-            android:id="@+id/pbDownload"
-            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-            android:visibility="@{loadingStatusList.contains(torrent.status) ? View.GONE : View.VISIBLE}"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            app:cardCornerRadius="10dp"
             android:layout_margin="20dp"
-            android:indeterminate="false"
-            android:max="100"
-            android:minWidth="100dp"
-            android:minHeight="100dp"
-            android:progress="@{torrent.progress}"
-            android:progressDrawable="@drawable/download_progressbar"
-            app:progressColor="@{@color/streaming_background}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvStatus" />
+            app:layout_constraintTop_toBottomOf="@id/tvName">
 
-        <ImageView
-            android:id="@+id/ivLoading"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:visibility="@{loadingStatusList.contains(torrent.status) ? View.VISIBLE : View.GONE}"
-            app:srcCompat="@drawable/download_progressbar_indeterminate"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvStatus"
-            app:startAnimation="@{loadingStatusList.contains(torrent.status) ? true: false}"
-            tools:ignore="ContentDescription" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="10dp">
 
+                <TextView
+                    android:id="@+id/tvStatusTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/status"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"/>
+
+                <TextView
+                    android:id="@+id/tvStatus"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@{statusTranslation[torrent.status], default=`Torrent Status`}"
+                    android:textStyle="bold"
+                    android:textSize="20sp"
+                    app:layout_constraintStart_toStartOf="@id/tvStatusTitle"
+                    app:layout_constraintTop_toBottomOf="@id/tvStatusTitle"
+                    app:layout_constraintEnd_toStartOf="@id/flProgress"/>
+
+                <TextView
+                    android:id="@+id/tvSize"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@{@string/file_size_format(torrent.bytes / 1024 / 1024), default=`File Size`}"
+                    app:layout_constraintStart_toStartOf="@id/tvStatus"
+                    app:layout_constraintTop_toBottomOf="@id/tvStatus"
+                    app:layout_constraintEnd_toStartOf="@id/flProgress" />
+
+                <FrameLayout
+                    android:id="@+id/flProgress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent">
+                    <ProgressBar
+                        android:id="@+id/pbDownload"
+                        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:indeterminate="false"
+                        android:max="100"
+                        android:minWidth="100dp"
+                        android:minHeight="100dp"
+                        android:progress="@{torrent.progress}"
+                        android:progressDrawable="@drawable/download_progressbar"
+                        android:visibility="@{loadingStatusList.contains(torrent.status) ? View.GONE : View.VISIBLE}"
+                        app:progressColor="@{@color/streaming_background}" />
+
+                    <ImageView
+                        android:id="@+id/ivLoading"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:visibility="@{loadingStatusList.contains(torrent.status) ? View.VISIBLE : View.GONE}"
+                        app:srcCompat="@drawable/download_progressbar_indeterminate"
+                        app:startAnimation="@{loadingStatusList.contains(torrent.status) ? true: false}"
+                        tools:ignore="ContentDescription" />
+
+                </FrameLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.card.MaterialCardView>
     </androidx.constraintlayout.widget.ConstraintLayout>
-</layout><!--
+</layout>
+
+    <!--
     {
     "id": "QBQBZDN2TSK4C",
     "filename": "ubuntu-20.04-desktop-amd64.iso",
