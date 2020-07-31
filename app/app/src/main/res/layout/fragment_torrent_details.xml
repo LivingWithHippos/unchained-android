@@ -120,6 +120,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
+                    <!-- todo: find out how to scale the progressbar drawable height to match width=100-->
                     <ProgressBar
                         android:id="@+id/pbDownload"
                         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
