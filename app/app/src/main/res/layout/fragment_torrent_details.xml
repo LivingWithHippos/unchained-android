@@ -46,7 +46,7 @@
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cvDownloadDetails"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="150dp"
             android:layout_margin="20dp"
             android:layout_marginTop="20dp"
             app:cardCornerRadius="10dp"
@@ -64,6 +64,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/status"
+                    app:layout_constraintBottom_toTopOf="@+id/tvStatus"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -74,27 +75,33 @@
                     android:text="@{statusTranslation[torrent.status], default=`Torrent Status`}"
                     android:textSize="20sp"
                     android:textStyle="bold"
+                    app:layout_constraintBottom_toTopOf="@+id/tvSize"
                     app:layout_constraintEnd_toStartOf="@id/flProgress"
+                    app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="@id/tvStatusTitle"
-                    app:layout_constraintTop_toBottomOf="@id/tvStatusTitle" />
+                    app:layout_constraintTop_toBottomOf="@+id/tvStatusTitle" />
 
                 <TextView
                     android:id="@+id/tvSize"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="@{@string/file_size_format(torrent.bytes / 1024 / 1024), default=`File Size`}"
+                    app:layout_constraintBottom_toTopOf="@+id/linearLayout"
                     app:layout_constraintEnd_toStartOf="@id/flProgress"
+                    app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="@id/tvStatus"
-                    app:layout_constraintTop_toBottomOf="@id/tvStatus" />
+                    app:layout_constraintTop_toBottomOf="@+id/tvStatus" />
 
 
                 <LinearLayout
+                    android:id="@+id/linearLayout"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     app:layout_constraintEnd_toStartOf="@id/flProgress"
                     app:layout_constraintStart_toStartOf="@id/tvSize"
-                    app:layout_constraintTop_toBottomOf="@id/tvSize">
+                    app:layout_constraintTop_toBottomOf="@id/tvSize"
+                    app:layout_constraintBottom_toBottomOf="parent">
 
                     <TextView
                         android:id="@+id/tvSpeed"
