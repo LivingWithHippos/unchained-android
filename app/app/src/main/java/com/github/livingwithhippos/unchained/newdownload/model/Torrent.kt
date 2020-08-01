@@ -145,7 +145,7 @@ interface TorrentsApi {
     ): Response<UploadedTorrent>
 
     /**
-     * Select files of a torrent. Required to start a torrent.
+     * Get a list of the user's torrents.
      * @param token the authorization token, formed as "Bearer api_token"
      * @param offset Starting offset (must be within 0 and X-Total-Count HTTP header)
      * @param page Page number
