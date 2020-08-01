@@ -32,7 +32,7 @@ class BottomNavManager(
 
     // Graph Id's of the tabs
     private val navGraphIds =
-        listOf(R.navigation.home_nav_graph, R.navigation.download_nav_graph)
+        listOf(R.navigation.home_nav_graph, R.navigation.download_nav_graph,  R.navigation.lists_nav_graph)
 
     // Map of tags
     private val graphIdToTagMap = SparseArray<String>()

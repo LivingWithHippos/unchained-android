@@ -10,4 +10,9 @@
         android:enabled="true"
         android:icon="@drawable/icon_arrows"
         android:title="@string/new_download" />
+    <item
+        android:id="@+id/navigation_lists"
+        android:enabled="true"
+        android:icon="@drawable/icon_lists"
+        android:title="@string/lists" />
 </menu>

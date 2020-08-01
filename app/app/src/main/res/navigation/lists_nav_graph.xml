@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_lists"
+    app:startDestination="@id/downloadListFragment">
+
+    <fragment
+        android:id="@+id/downloadListFragment"
+        android:name="com.github.livingwithhippos.unchained.downloaddetails.view.DownloadListFragment"
+        android:label="fragment_download_list"
+        tools:layout="@layout/fragment_download_list" />
+</navigation>
