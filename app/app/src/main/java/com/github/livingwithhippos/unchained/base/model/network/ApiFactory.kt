@@ -7,6 +7,9 @@ import com.github.livingwithhippos.unchained.base.di.AuthRetrofit
 import com.github.livingwithhippos.unchained.downloaddetails.model.StreamingApi
 import com.github.livingwithhippos.unchained.downloaddetails.model.StreamingApiHelper
 import com.github.livingwithhippos.unchained.downloaddetails.model.StreamingApiHelperImpl
+import com.github.livingwithhippos.unchained.downloadlists.model.DownloadApiHelper
+import com.github.livingwithhippos.unchained.downloadlists.model.DownloadApiHelperImpl
+import com.github.livingwithhippos.unchained.downloadlists.model.DownloadsApi
 import com.github.livingwithhippos.unchained.newdownload.model.TorrentApiHelper
 import com.github.livingwithhippos.unchained.newdownload.model.TorrentApiHelperImpl
 import com.github.livingwithhippos.unchained.newdownload.model.TorrentsApi
@@ -129,5 +132,17 @@ object ApiFactory {
     @Provides
     @Singleton
     fun provideTorrentsApiApiHelper(apiHelper: TorrentApiHelperImpl): TorrentApiHelper =
+        apiHelper
+
+    // download api injection
+    @Provides
+    @Singleton
+    fun provideDownloadsApi(@ApiRetrofit retrofit: Retrofit): DownloadsApi {
+        return retrofit.create(DownloadsApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideDownloadApiApiHelper(apiHelper: DownloadApiHelperImpl): DownloadApiHelper =
         apiHelper
 }
