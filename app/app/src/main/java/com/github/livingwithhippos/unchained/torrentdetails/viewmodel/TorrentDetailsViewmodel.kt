@@ -42,12 +42,13 @@ class TorrentDetailsViewmodel @ViewModelInject constructor(
     //todo: move this to an extension, maybe passing CredentialsRepository and SavedStateHandle
     private suspend fun getToken(): String {
         var token = savedStateHandle.get<String>(KEY_TOKEN)
-        if (token.isNullOrEmpty())
+        if (token.isNullOrEmpty()){
             token = credentialsRepository.getCompleteCredentials().first().accessToken
+            savedStateHandle.set(KEY_TOKEN, token)
+        }
         if (token.isNullOrEmpty())
             throw IllegalArgumentException("Loaded token was null or empty: $token")
 
-        savedStateHandle.set(KEY_TOKEN, token)
         return token
     }
 }
