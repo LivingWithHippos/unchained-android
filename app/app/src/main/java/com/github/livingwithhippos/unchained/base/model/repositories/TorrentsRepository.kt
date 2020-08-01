@@ -91,7 +91,7 @@ class TorrentsRepository @Inject constructor(private val torrentApiHelper: Torre
         offset: Int? = 0,
         page: Int? = null,
         limit: Int? = 5,
-        filter: String?
+        filter: String? = null
     ): List<TorrentItem>? {
         val torrentsResponse: List<TorrentItem>? = safeApiCall(
             call = {
