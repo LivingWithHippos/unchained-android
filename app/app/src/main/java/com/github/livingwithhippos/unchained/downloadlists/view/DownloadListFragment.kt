@@ -1,4 +1,4 @@
-package com.github.livingwithhippos.unchained.downloaddetails.view
+package com.github.livingwithhippos.unchained.downloadlists.view
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
