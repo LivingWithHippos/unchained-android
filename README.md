@@ -43,7 +43,11 @@ Offer me coffee or a beer with [Paypal.](https://www.paypal.com/paypalme/sandnau
 
 Send me a Bitcoin? Aha ha, just kidding.. [unless..?](https://knowyourmeme.com/memes/just-kidding-unless)
 
+### Credits :crown:
 
+Logo and symbols inspired by [minimal logo design set](https://www.rawpixel.com/image/843352/minimal-logo-designs-set)
+ offered by [rawpixel.com](https://www.rawpixel.com)
+ 
 ### Thanks, Mr. Unchained :muscle:
 
 <a href="https://imgbb.com/"><img src="https://i.ibb.co/grzjQsT/Oliva.jpg" width=300 alt="Mr. Unchained" border="0"></a>
