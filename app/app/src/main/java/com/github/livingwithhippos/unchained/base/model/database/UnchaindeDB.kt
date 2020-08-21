@@ -5,7 +5,7 @@ import androidx.room.RoomDatabase
 import com.github.livingwithhippos.unchained.base.model.dao.CredentialsDao
 import com.github.livingwithhippos.unchained.base.model.entities.Credentials
 
-// Annotates class to be a Room Database with a table (entity) of the Word class
+// Annotates class to be a Room Database with a table (entity) of the Credentials class
 @Database(
     entities = [Credentials::class],
     version = 1,

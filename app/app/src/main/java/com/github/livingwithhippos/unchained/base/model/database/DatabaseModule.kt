@@ -25,7 +25,7 @@ object DatabaseModule {
     }
 
     @Provides
-    fun provideLogDao(database: UnchaindeDB): CredentialsDao {
+    fun provideCredentialsDao(database: UnchaindeDB): CredentialsDao {
         return database.credentialsDao()
     }
 }
