@@ -3,16 +3,30 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
+        <variable
+            name="download"
+            type="com.github.livingwithhippos.unchained.downloadlists.model.DownloadItem" />
+    </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/rootLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".downloadlists.view.DownloadListFragment">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/download" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/item_list_download" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
