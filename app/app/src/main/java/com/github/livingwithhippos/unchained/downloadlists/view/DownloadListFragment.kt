@@ -8,8 +8,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.github.livingwithhippos.unchained.databinding.FragmentDownloadListBinding
 import com.github.livingwithhippos.unchained.downloadlists.viewmodel.DownloadListViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
 
+@AndroidEntryPoint
 class DownloadListFragment : Fragment() {
 
     private val viewModel: DownloadListViewModel by viewModels()
