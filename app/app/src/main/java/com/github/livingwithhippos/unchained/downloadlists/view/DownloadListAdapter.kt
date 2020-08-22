@@ -5,7 +5,7 @@ import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.downloadlists.model.DownloadItem
 import com.github.livingwithhippos.unchained.utilities.DataBindingAdapter
 
-class DonlowadListAdapter : DataBindingAdapter<DownloadItem>(DiffCallback()) {
+class DownloadListAdapter : DataBindingAdapter<DownloadItem>(DiffCallback()) {
 
     class DiffCallback : DiffUtil.ItemCallback<DownloadItem>() {
         override fun areItemsTheSame(oldItem: DownloadItem, newItem: DownloadItem): Boolean =
