@@ -153,14 +153,13 @@ interface TorrentsApi {
      * @param filter "active", list active torrents first
      * @return a Response<List<TorrentItem>> a list of torrent items
      */
-    @FormUrlEncoded
-    @POST("torrents")
+    @GET("torrents")
     suspend fun getTorrentsList(
         @Header("Authorization") token: String,
-        @Field("offset") offset: Int? = 0,
-        @Field("page") page: Int? = null,
-        @Field("limit") limit: Int? = 5,
-        @Field("filter ") filter: String?
+        @Query("offset") offset: Int? = 0,
+        @Query("page") page: Int? = 1,
+        @Query("limit") limit: Int? = 5,
+        @Query("filter ") filter: String?
     ): Response<List<TorrentItem>>
 
     /**
