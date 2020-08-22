@@ -4,9 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
+        <import type="java.util.List" />
+
         <variable
-            name="download"
-            type="com.github.livingwithhippos.unchained.downloadlists.model.DownloadItem" />
+            name="downloads"
+            type="List&lt;com.github.livingwithhippos.unchained.downloadlists.model.DownloadItem>" />
+
+        <variable
+            name="torrents"
+            type="List&lt;com.github.livingwithhippos.unchained.newdownload.model.TorrentItem>" />
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
