@@ -23,17 +23,22 @@ class DownloadListFragment : Fragment() {
     ): View? {
         val downloadsBinding = FragmentDownloadListBinding.inflate(inflater, container, false)
 
+        val adapter = DownloadListAdapter()
+        downloadsBinding.rvDownloadList.adapter = adapter
+
         viewModel.downloadLiveData.observe(viewLifecycleOwner, Observer {
             if (it != null) {
-                downloadsBinding.downloads = it
+                adapter.submitList(it)
             }
         })
 
         viewModel.torrentLiveData.observe(viewLifecycleOwner, Observer {
             if (it != null) {
-                downloadsBinding.torrents = it
+                //downloadsBinding.torrents = it
             }
         })
+
+        viewModel.fetchAll()
 
         return downloadsBinding.root
     }

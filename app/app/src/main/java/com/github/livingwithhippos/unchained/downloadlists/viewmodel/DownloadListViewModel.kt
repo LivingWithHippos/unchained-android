@@ -33,10 +33,11 @@ class DownloadListViewModel @ViewModelInject constructor(
         scope.launch {
             val token = getToken()
             //todo: add user settings
-            val torrents = torrentsRepository.getTorrentsList(token)
+            //todo: join these two maybe
             val downloads = downloadRepository.getDownloads(token)
-
             downloadLiveData.postValue(downloads)
+
+            val torrents = torrentsRepository.getTorrentsList(token)
             torrentLiveData.postValue(torrents)
         }
     }
