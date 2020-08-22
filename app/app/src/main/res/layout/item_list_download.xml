@@ -5,7 +5,7 @@
     <data>
         <variable
             name="item"
-            type="com.github.livingwithhippos.unchained.newdownload.model.TorrentItem" />
+            type="com.github.livingwithhippos.unchained.downloadlists.model.DownloadItem" />
     </data>
 
 
