@@ -9,7 +9,7 @@ class DownloadRepository @Inject constructor(private val downloadApiHelper: Down
     suspend fun getDownloads(
         token: String,
         offset: Int = 0,
-        page: Int = 0,
+        page: Int = 1,
         limit: Int = 5
     ): List<DownloadItem>? {
 
