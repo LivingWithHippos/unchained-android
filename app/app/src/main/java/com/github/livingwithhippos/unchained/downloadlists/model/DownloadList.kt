@@ -55,6 +55,8 @@ data class DownloadItem(
     val chunks: Int,
     @Json(name = "download")
     val download: String,
+    @Json(name = "streamable")
+    val streamable: Int?,
     @Json(name = "generated")
     val generated: String,
     @Json(name = "type")
