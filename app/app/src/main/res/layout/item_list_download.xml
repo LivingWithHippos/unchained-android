@@ -7,6 +7,10 @@
         <variable
             name="item"
             type="com.github.livingwithhippos.unchained.downloadlists.model.DownloadItem" />
+
+        <variable
+            name="listener"
+            type="com.github.livingwithhippos.unchained.downloadlists.view.DownloadListListener" />
     </data>
 
 
@@ -24,7 +28,8 @@
             android:focusable="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            android:onClick="@{() -> listener.onClick(item.id)}">
 
 
             <androidx.constraintlayout.widget.ConstraintLayout

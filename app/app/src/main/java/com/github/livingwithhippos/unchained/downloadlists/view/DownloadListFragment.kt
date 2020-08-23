@@ -1,6 +1,7 @@
 package com.github.livingwithhippos.unchained.downloadlists.view
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,7 +14,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 
 @AndroidEntryPoint
-class DownloadListFragment : Fragment() {
+class DownloadListFragment : Fragment(), DownloadListListener {
 
     private val viewModel: DownloadListViewModel by viewModels()
 
@@ -23,7 +24,7 @@ class DownloadListFragment : Fragment() {
     ): View? {
         val downloadsBinding = FragmentDownloadListBinding.inflate(inflater, container, false)
 
-        val adapter = DownloadListAdapter()
+        val adapter = DownloadListAdapter(this)
         downloadsBinding.rvDownloadList.adapter = adapter
 
         viewModel.downloadLiveData.observe(viewLifecycleOwner, Observer {
@@ -41,6 +42,10 @@ class DownloadListFragment : Fragment() {
         viewModel.fetchAll()
 
         return downloadsBinding.root
+    }
+
+    override fun onClick(id: String) {
+        Log.d("DownloadListFragment", "Clicked item with id $id")
     }
 
 }

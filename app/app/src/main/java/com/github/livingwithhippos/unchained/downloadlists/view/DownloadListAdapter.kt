@@ -5,7 +5,7 @@ import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.downloadlists.model.DownloadItem
 import com.github.livingwithhippos.unchained.utilities.DataBindingAdapter
 
-class DownloadListAdapter : DataBindingAdapter<DownloadItem>(DiffCallback()) {
+class DownloadListAdapter(listener: DownloadListListener) : DataBindingAdapter<DownloadItem, DownloadListListener>(DiffCallback(), listener) {
 
     class DiffCallback : DiffUtil.ItemCallback<DownloadItem>() {
         override fun areItemsTheSame(oldItem: DownloadItem, newItem: DownloadItem): Boolean =
@@ -18,4 +18,8 @@ class DownloadListAdapter : DataBindingAdapter<DownloadItem>(DiffCallback()) {
     }
 
     override fun getItemViewType(position: Int) = R.layout.item_list_download
+}
+
+interface DownloadListListener {
+    fun onClick(id: String)
 }
