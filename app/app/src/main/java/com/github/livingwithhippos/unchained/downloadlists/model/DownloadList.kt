@@ -51,14 +51,18 @@ data class DownloadItem(
     val link: String,
     @Json(name = "host")
     val host: String,
+    @Json(name = "host_icon")
+    val hostIcon: String?,
     @Json(name = "chunks")
     val chunks: Int,
+    @Json(name = "crc")
+    val crc: Int?,
     @Json(name = "download")
     val download: String,
     @Json(name = "streamable")
     val streamable: Int?,
     @Json(name = "generated")
-    val generated: String,
+    val generated: String?,
     @Json(name = "type")
     val type: String?
 )
