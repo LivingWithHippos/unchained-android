@@ -1,15 +1,12 @@
 package com.github.livingwithhippos.unchained.downloadlists.model
 import android.os.Parcel
 import android.os.Parcelable
-import com.github.livingwithhippos.unchained.downloaddetails.model.Stream
-import com.github.livingwithhippos.unchained.utilities.md5
 import com.squareup.moshi.JsonClass
 
 import com.squareup.moshi.Json
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Header
-import retrofit2.http.Path
 import retrofit2.http.Query
 
 /*
