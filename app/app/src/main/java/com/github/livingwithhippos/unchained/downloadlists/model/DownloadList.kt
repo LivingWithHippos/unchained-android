@@ -1,5 +1,8 @@
 package com.github.livingwithhippos.unchained.downloadlists.model
+import android.os.Parcel
+import android.os.Parcelable
 import com.github.livingwithhippos.unchained.downloaddetails.model.Stream
+import com.github.livingwithhippos.unchained.utilities.md5
 import com.squareup.moshi.JsonClass
 
 import com.squareup.moshi.Json
@@ -65,7 +68,55 @@ data class DownloadItem(
     val generated: String?,
     @Json(name = "type")
     val type: String?
-)
+): Parcelable {
+    constructor(parcel: Parcel) : this(
+        parcel.readString()!!,
+        parcel.readString()!!,
+        parcel.readString()!!,
+        parcel.readLong(),
+        parcel.readString()!!,
+        parcel.readString()!!,
+        parcel.readString(),
+        parcel.readInt(),
+        parcel.readValue(Int::class.java.classLoader) as? Int,
+        parcel.readString()!!,
+        parcel.readValue(Int::class.java.classLoader) as? Int,
+        parcel.readString(),
+        parcel.readString()
+    ) {
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(id)
+        parcel.writeString(filename)
+        parcel.writeString(mimeType)
+        parcel.writeLong(filesize)
+        parcel.writeString(link)
+        parcel.writeString(host)
+        parcel.writeString(hostIcon)
+        parcel.writeInt(chunks)
+        parcel.writeValue(crc)
+        parcel.writeString(download)
+        parcel.writeValue(streamable)
+        parcel.writeString(generated)
+        parcel.writeString(type)
+    }
+
+    override fun describeContents(): Int {
+        return id.hashCode()
+    }
+
+    companion object CREATOR : Parcelable.Creator<DownloadItem> {
+        override fun createFromParcel(parcel: Parcel): DownloadItem {
+            return DownloadItem(parcel)
+        }
+
+        override fun newArray(size: Int): Array<DownloadItem?> {
+            return arrayOfNulls(size)
+        }
+    }
+
+}
 //todo: check real return format
 //todo: check if page starts from 0 or 1
 
