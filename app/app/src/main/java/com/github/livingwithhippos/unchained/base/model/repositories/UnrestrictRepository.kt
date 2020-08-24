@@ -1,7 +1,7 @@
 package com.github.livingwithhippos.unchained.base.model.repositories
 
+import com.github.livingwithhippos.unchained.downloadlists.model.DownloadItem
 import com.github.livingwithhippos.unchained.newdownload.model.UnrestrictApiHelper
-import com.github.livingwithhippos.unchained.newdownload.model.UnrestrictedLink
 import javax.inject.Inject
 
 class UnrestrictRepository @Inject constructor(private val unrestrictApiHelper: UnrestrictApiHelper) :
@@ -11,7 +11,7 @@ class UnrestrictRepository @Inject constructor(private val unrestrictApiHelper: 
         link: String,
         password: String? = null,
         remote: Int? = null
-    ): UnrestrictedLink? {
+    ): DownloadItem? {
 
         val linkResponse = safeApiCall(
             call = {

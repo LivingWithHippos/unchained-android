@@ -2,6 +2,7 @@ package com.github.livingwithhippos.unchained.newdownload.model
 
 import android.os.Parcel
 import android.os.Parcelable
+import com.github.livingwithhippos.unchained.downloadlists.model.DownloadItem
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import retrofit2.Response
@@ -25,75 +26,6 @@ import retrofit2.http.POST
 }
  */
 
-@JsonClass(generateAdapter = true)
-data class UnrestrictedLink(
-    @Json(name = "id")
-    val id: String,
-    @Json(name = "filename")
-    val filename: String,
-    @Json(name = "mimeType")
-    val mimeType: String,
-    @Json(name = "filesize")
-    val filesize: Long,
-    @Json(name = "link")
-    val link: String,
-    @Json(name = "host")
-    val host: String,
-    @Json(name = "host_icon")
-    val hostIcon: String,
-    @Json(name = "chunks")
-    val chunks: Int,
-    @Json(name = "crc")
-    val crc: Int,
-    @Json(name = "download")
-    val download: String,
-    @Json(name = "streamable")
-    val streamable: Int
-) : Parcelable {
-    constructor(parcel: Parcel) : this(
-        parcel.readString()!!,
-        parcel.readString()!!,
-        parcel.readString()!!,
-        parcel.readLong(),
-        parcel.readString()!!,
-        parcel.readString()!!,
-        parcel.readString()!!,
-        parcel.readInt(),
-        parcel.readInt(),
-        parcel.readString()!!,
-        parcel.readInt()
-    ) {
-    }
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(id)
-        parcel.writeString(filename)
-        parcel.writeString(mimeType)
-        parcel.writeLong(filesize)
-        parcel.writeString(link)
-        parcel.writeString(host)
-        parcel.writeString(hostIcon)
-        parcel.writeInt(chunks)
-        parcel.writeInt(crc)
-        parcel.writeString(download)
-        parcel.writeInt(streamable)
-    }
-
-    override fun describeContents(): Int {
-        return crc
-    }
-
-    companion object CREATOR : Parcelable.Creator<UnrestrictedLink> {
-        override fun createFromParcel(parcel: Parcel): UnrestrictedLink {
-            return UnrestrictedLink(parcel)
-        }
-
-        override fun newArray(size: Int): Array<UnrestrictedLink?> {
-            return arrayOfNulls(size)
-        }
-    }
-}
-
 interface UnrestrictApi {
 
     /**
@@ -110,6 +42,6 @@ interface UnrestrictApi {
         @Field("password") password: String? = null,
         // 0 or 1, use Remote traffic, dedicated servers and account sharing protections lifted
         @Field("remote ") remote: Int? = null
-    ): Response<UnrestrictedLink>
+    ): Response<DownloadItem>
 
 }

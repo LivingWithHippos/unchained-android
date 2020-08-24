@@ -9,7 +9,7 @@ import androidx.lifecycle.ViewModel
 import com.github.livingwithhippos.unchained.base.model.repositories.CredentialsRepository
 import com.github.livingwithhippos.unchained.base.model.repositories.TorrentsRepository
 import com.github.livingwithhippos.unchained.base.model.repositories.UnrestrictRepository
-import com.github.livingwithhippos.unchained.newdownload.model.UnrestrictedLink
+import com.github.livingwithhippos.unchained.downloadlists.model.DownloadItem
 import com.github.livingwithhippos.unchained.newdownload.model.UploadedTorrent
 import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.KEY_TOKEN
@@ -34,7 +34,7 @@ class NewDownloadViewModel @ViewModelInject constructor(
      * and navigating there.
      * See https://medium.com/androiddevelopers/livedata-with-snackbar-navigation-and-other-events-the-singleliveevent-case-ac2622673150 for mode details
      */
-    val linkLiveData = MutableLiveData<Event<UnrestrictedLink?>>()
+    val linkLiveData = MutableLiveData<Event<DownloadItem?>>()
     val torrentLiveData = MutableLiveData<Event<UploadedTorrent?>>()
 
     fun fetchUnrestrictedLink(link: String, password: String?, remote: Int? = null) {

@@ -1,5 +1,6 @@
 package com.github.livingwithhippos.unchained.newdownload.model
 
+import com.github.livingwithhippos.unchained.downloadlists.model.DownloadItem
 import retrofit2.Response
 import javax.inject.Inject
 
@@ -10,7 +11,7 @@ class UnrestrictApiHelperImpl @Inject constructor(private val unrestrictApi: Unr
         link: String,
         password: String?,
         remote: Int?
-    ): Response<UnrestrictedLink> =
+    ): Response<DownloadItem> =
         unrestrictApi.getUnrestrictedLink(token, link, password, remote)
 
 }

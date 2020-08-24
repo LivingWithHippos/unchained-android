@@ -9,7 +9,7 @@
 
         <variable
             name="details"
-            type="com.github.livingwithhippos.unchained.newdownload.model.UnrestrictedLink" />
+            type="com.github.livingwithhippos.unchained.downloadlists.model.DownloadItem" />
 
         <variable
             name="stream"

@@ -1,5 +1,6 @@
 package com.github.livingwithhippos.unchained.newdownload.model
 
+import com.github.livingwithhippos.unchained.downloadlists.model.DownloadItem
 import retrofit2.Response
 
 interface UnrestrictApiHelper {
@@ -9,5 +10,5 @@ interface UnrestrictApiHelper {
         link: String,
         password: String? = null,
         remote: Int? = null
-    ): Response<UnrestrictedLink>
+    ): Response<DownloadItem>
 }
