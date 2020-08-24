@@ -9,5 +9,17 @@
         android:id="@+id/downloadListFragment"
         android:name="com.github.livingwithhippos.unchained.downloadlists.view.DownloadListFragment"
         android:label="fragment_download_list"
-        tools:layout="@layout/fragment_download_list" />
+        tools:layout="@layout/fragment_download_list" >
+        <action
+            android:id="@+id/action_downloadList_to_downloadDetails"
+            app:destination="@id/downloadDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/downloadDetailsFragment"
+        android:name="com.github.livingwithhippos.unchained.downloaddetails.view.DownloadDetailsFragment"
+        android:label="DownloadDetailsFragment" >
+        <argument
+            android:name="details"
+            app:argType="com.github.livingwithhippos.unchained.downloadlists.model.DownloadItem" />
+    </fragment>
 </navigation>

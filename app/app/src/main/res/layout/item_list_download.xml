@@ -13,11 +13,6 @@
             type="com.github.livingwithhippos.unchained.downloadlists.view.DownloadListListener" />
     </data>
 
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cvDownload"
             android:layout_width="300dp"
@@ -29,7 +24,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:onClick="@{() -> listener.onClick(item.id)}">
+            android:onClick="@{() -> listener.onClick(item)}">
 
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -70,5 +65,4 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </com.google.android.material.card.MaterialCardView>
-    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

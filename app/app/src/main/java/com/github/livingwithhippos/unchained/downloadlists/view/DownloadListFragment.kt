@@ -8,8 +8,11 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import com.github.livingwithhippos.unchained.databinding.FragmentDownloadListBinding
+import com.github.livingwithhippos.unchained.downloadlists.model.DownloadItem
 import com.github.livingwithhippos.unchained.downloadlists.viewmodel.DownloadListViewModel
+import com.github.livingwithhippos.unchained.newdownload.view.NewDownloadFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -44,8 +47,10 @@ class DownloadListFragment : Fragment(), DownloadListListener {
         return downloadsBinding.root
     }
 
-    override fun onClick(id: String) {
-        Log.d("DownloadListFragment", "Clicked item with id $id")
+    override fun onClick(item: DownloadItem) {
+
+        val action = DownloadListFragmentDirections.actionDownloadListToDownloadDetails(item)
+        findNavController().navigate(action)
     }
 
 }

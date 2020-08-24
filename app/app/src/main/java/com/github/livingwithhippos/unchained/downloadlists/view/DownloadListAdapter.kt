@@ -21,5 +21,5 @@ class DownloadListAdapter(listener: DownloadListListener) : DataBindingAdapter<D
 }
 
 interface DownloadListListener {
-    fun onClick(id: String)
+    fun onClick(item: DownloadItem)
 }
