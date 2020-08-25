@@ -44,7 +44,7 @@ data class DownloadItem(
     @Json(name = "filename")
     val filename: String,
     @Json(name = "mimeType")
-    val mimeType: String,
+    val mimeType: String?,
     @Json(name = "filesize")
     val filesize: Long,
     @Json(name = "link")
