@@ -45,7 +45,7 @@
                     android:id="@+id/tvName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{user.username}"
+                    android:text="@{user.username, default=`User Name`}"
                     android:textSize="20sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -55,7 +55,7 @@
                     android:id="@+id/tvMail"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{user.email}"
+                    android:text="@{user.email, default=`Email@Address`}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tvName" />
@@ -93,7 +93,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:text="@{user.premium > 0 ? @string/premium : @string/not_premium}"
+                        android:text="@{user.premium > 0 ? @string/premium : @string/not_premium, default=`Premium`}"
                         android:textAllCaps="true"
                         android:textSize="20sp" />
                 </FrameLayout>
@@ -102,7 +102,7 @@
                     android:id="@+id/tvDays"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{user.expiration}"
+                    android:text="@{user.expiration, default=`25-08-2020`}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/flPremiumBackground" />
@@ -114,7 +114,7 @@
                     android:layout_height="25dp"
                     android:layout_margin="10dp"
                     android:max="1000"
-                    android:progress="@{user.points}"
+                    android:progress="@{user.points, default=750}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tvDays" />
@@ -123,7 +123,7 @@
                     android:id="@+id/tvPoints"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{@string/premium_points_format(user.points)}"
+                    android:text="@{@string/premium_points_format(user.points), default=`750/1000`}"
                     app:layout_constraintBottom_toBottomOf="@id/pointsBar"
                     app:layout_constraintEnd_toEndOf="@id/pointsBar"
                     app:layout_constraintStart_toStartOf="@id/pointsBar"
