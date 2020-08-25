@@ -1,6 +1,7 @@
 package com.github.livingwithhippos.unchained.base
 
 import android.app.Application
+import androidx.appcompat.app.AppCompatDelegate
 import com.github.livingwithhippos.unchained.base.model.repositories.CredentialsRepository
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
@@ -13,7 +14,6 @@ import javax.inject.Inject
 
 @HiltAndroidApp
 class UnchainedApplication : Application() {
-
     @Inject
     lateinit var credentialsRepository: CredentialsRepository
 
@@ -26,5 +26,7 @@ class UnchainedApplication : Application() {
         scope.launch {
             credentialsRepository.deleteIncompleteCredentials()
         }
+
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
     }
 }
