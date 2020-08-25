@@ -18,7 +18,7 @@
 <!-- This file has been modified -->
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!--Top level DayNight theme to be used in AndroidManifest.xml-->
-    <style name="Theme.MyApp" parent="Base.Theme.Unchained">
+    <style name="Theme.Unchained" parent="Base.Theme.Unchained">
         <!--Material color attributes (dark theme) -->
         <item name="colorPrimary">@color/purple_200</item>
         <item name="colorPrimaryVariant">@color/purple_600</item>
