@@ -45,8 +45,8 @@
                     android:id="@+id/tvName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textAppearance="?attr/textAppearanceHeadline6"
                     android:text="@{user.username, default=`User Name`}"
-                    android:textSize="20sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/ivProfilePic" />
@@ -55,6 +55,7 @@
                     android:id="@+id/tvMail"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textAppearance="?attr/textAppearanceOverline"
                     android:text="@{user.email, default=`Email@Address`}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -93,15 +94,16 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
+                        android:textAppearance="?attr/textAppearanceHeadline5"
                         android:text="@{user.premium > 0 ? @string/premium : @string/not_premium, default=`Premium`}"
-                        android:textAllCaps="true"
-                        android:textSize="20sp" />
+                        android:textAllCaps="true" />
                 </FrameLayout>
 
                 <TextView
                     android:id="@+id/tvDays"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textAppearance="?attr/textAppearanceOverline"
                     android:text="@{user.expiration, default=`25-08-2020`}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -123,6 +125,7 @@
                     android:id="@+id/tvPoints"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textAppearance="?attr/textAppearanceBody2"
                     android:text="@{@string/premium_points_format(user.points), default=`750/1000`}"
                     app:layout_constraintBottom_toBottomOf="@id/pointsBar"
                     app:layout_constraintEnd_toEndOf="@id/pointsBar"

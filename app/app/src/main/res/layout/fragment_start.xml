@@ -20,6 +20,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
         android:text="@string/loading"
-        android:textSize="20sp" />
+        android:textAppearance="?attr/textAppearanceHeadline6" />
 
 </LinearLayout>
