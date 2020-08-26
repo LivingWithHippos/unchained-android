@@ -5,6 +5,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.Animatable
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ClipDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.InsetDrawable
@@ -21,11 +22,17 @@ import android.widget.AutoCompleteTextView
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.BindingAdapter
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions.bitmapTransform
+import com.bumptech.glide.request.target.CustomViewTarget
+import com.bumptech.glide.request.target.ViewTarget
+import com.bumptech.glide.request.transition.Transition
 import com.github.livingwithhippos.unchained.R
 
+//todo: split extensions in own files (glide/views etc)
 @BindingAdapter("imageURL")
 fun ImageView.loadImage(imageURL: String?) {
     if (imageURL != null)
@@ -42,6 +49,27 @@ fun ImageView.startAnimation(start: Boolean) {
         else
             (drawable as Animatable).stop()
     }
+}
+
+@BindingAdapter("blurredBackground")
+fun ConstraintLayout.blurredBackground(drawable: Drawable) {
+    val layout = this
+    Glide.with(this)
+        .load(drawable)
+        .apply(bitmapTransform(BlurTransformation(context)))
+        .into(object : CustomViewTarget<ConstraintLayout, Drawable>(layout) {
+            override fun onLoadFailed(errorDrawable: Drawable?) {
+                // error handling
+            }
+
+            override fun onResourceCleared(placeholder: Drawable?) {
+                // clear all resources
+            }
+
+            override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
+                layout.background = resource
+            }
+        })
 }
 
 @BindingAdapter("adapter")
