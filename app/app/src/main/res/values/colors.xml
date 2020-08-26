@@ -21,6 +21,21 @@
     <!--color on surface (light)-->
     <color name="black_900">#000000</color>
 
+    <!-- -->
+    <color name="red_01">#f44336</color>
+    <color name="orange_01">#FF5722</color>
+    <color name="orange_02">#f57c00</color>
+    <color name="amber_01">#ff9800</color>
+    <color name="yellow_01">#FFEB3B</color>
+    <color name="green_01">#8bc34a</color>
+    <color name="green_02">#689f38</color>
+    <color name="green_03">#4CAF50</color>
+    <color name="green_04">#388e3c</color>
+    <color name="grey_01">#9e9e9e</color>
+    <color name="grey_02">#757575</color>
+    <color name="grey_03">#616161</color>
+    <color name="grey_04">#616161</color>
+
     <!-- https://www.colourlovers.com/palette/56122/Sweet_Lolly -->
     <color name="premium_gold">#FABE28</color>
     <color name="free_red">#FF003C</color>
