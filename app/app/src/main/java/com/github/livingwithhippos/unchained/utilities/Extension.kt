@@ -5,7 +5,6 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.Animatable
-import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ClipDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.InsetDrawable
@@ -140,13 +139,17 @@ fun ProgressIndicator.setRealProgress(progress: Int) {
 }
 
 fun View.runRippleAnimation(){
+    //todo: test
     if (background is RippleDrawable) {
-        //todo: make this effect last longer
-        background.state = intArrayOf(
-            android.R.attr.state_pressed,
-            android.R.attr.state_enabled
+        postDelayed(
+            Runnable {
+                background.state = intArrayOf(
+                    android.R.attr.state_pressed,
+                    android.R.attr.state_enabled
+                )
+            },
+            300
         )
-
     }
 }
 
