@@ -30,7 +30,7 @@ data class Quality(
  */
 interface StreamingApi {
 
-    @GET(" streaming/transcode/{id}")
+    @GET("streaming/transcode/{id}")
     suspend fun getStreams(
         @Header("Authorization") token: String,
         @Path("id") id: String
