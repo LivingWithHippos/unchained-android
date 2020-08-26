@@ -31,6 +31,7 @@ import com.bumptech.glide.request.target.CustomViewTarget
 import com.bumptech.glide.request.target.ViewTarget
 import com.bumptech.glide.request.transition.Transition
 import com.github.livingwithhippos.unchained.R
+import com.google.android.material.progressindicator.ProgressIndicator
 
 //todo: split extensions in own files (glide/views etc)
 @BindingAdapter("imageURL")
@@ -132,6 +133,12 @@ fun ProgressBar.getLayerDrawable(): LayerDrawable {
 
 fun ProgressBar.getDrawableByLayerId(id: Int): Drawable {
     return getLayerDrawable().findDrawableByLayerId(id)
+}
+
+@BindingAdapter("progressCompat")
+fun ProgressIndicator.setRealProgress(progress: Int) {
+    val animated: Boolean = true
+    this.setProgressCompat(progress, animated)
 }
 
 fun View.runRippleAnimation(){
