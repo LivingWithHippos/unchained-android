@@ -25,10 +25,8 @@ import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.BindingAdapter
 import androidx.fragment.app.Fragment
-import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions.bitmapTransform
 import com.bumptech.glide.request.target.CustomViewTarget
-import com.bumptech.glide.request.target.ViewTarget
 import com.bumptech.glide.request.transition.Transition
 import com.github.livingwithhippos.unchained.R
 import com.google.android.material.progressindicator.ProgressIndicator
@@ -37,7 +35,7 @@ import com.google.android.material.progressindicator.ProgressIndicator
 @BindingAdapter("imageURL")
 fun ImageView.loadImage(imageURL: String?) {
     if (imageURL != null)
-        Glide.with(this.context)
+        GlideApp.with(this.context)
             .load(imageURL)
             .into(this)
 }
@@ -55,7 +53,7 @@ fun ImageView.startAnimation(start: Boolean) {
 @BindingAdapter("blurredBackground")
 fun ConstraintLayout.blurredBackground(drawable: Drawable) {
     val layout = this
-    Glide.with(this)
+    GlideApp.with(this)
         .load(drawable)
         .apply(bitmapTransform(BlurTransformation(context)))
         .into(object : CustomViewTarget<ConstraintLayout, Drawable>(layout) {
