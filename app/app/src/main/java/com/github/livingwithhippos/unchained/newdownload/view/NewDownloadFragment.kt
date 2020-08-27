@@ -23,6 +23,8 @@ import com.github.livingwithhippos.unchained.newdownload.viewmodel.NewDownloadVi
 import com.github.livingwithhippos.unchained.torrentdetails.view.TorrentDetailsFragmentArgs
 import com.github.livingwithhippos.unchained.utilities.MAGNET_PATTERN
 import com.github.livingwithhippos.unchained.utilities.REMOTE_TRAFFIC_ON
+import com.github.livingwithhippos.unchained.utilities.getClipboardText
+import com.github.livingwithhippos.unchained.utilities.isWebUrl
 import com.github.livingwithhippos.unchained.utilities.runRippleAnimation
 import com.github.livingwithhippos.unchained.utilities.showToast
 import dagger.hilt.android.AndroidEntryPoint
@@ -99,6 +101,15 @@ class NewDownloadFragment : Fragment(), NewDownloadListener {
                     showToast(R.string.invalid_url)
             }
 
+        }
+
+        downloadBinding.bPaste.setOnClickListener {
+            val pasteText = getClipboardText()
+
+            if (pasteText.isWebUrl())
+                downloadBinding.tiLink.setText(pasteText, TextView.BufferType.EDITABLE)
+            else
+                showToast(R.string.invalid_url)
         }
 
         // we must make this value null by default because it's the first fragment of the nav graph
