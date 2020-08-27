@@ -1,6 +1,7 @@
 package com.github.livingwithhippos.unchained.utilities
 
 import android.content.ClipData
+import android.content.ClipDescription.MIMETYPE_TEXT_PLAIN
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
@@ -14,6 +15,7 @@ import android.graphics.drawable.RotateDrawable
 import android.graphics.drawable.ScaleDrawable
 import android.graphics.drawable.VectorDrawable
 import android.net.Uri
+import android.util.Log
 import android.util.Patterns
 import android.view.View
 import android.widget.ArrayAdapter
@@ -157,12 +159,26 @@ fun Fragment.showToast(stringResource: Int, length: Int = Toast.LENGTH_SHORT) {
     Toast.makeText(requireContext(), getString(stringResource), length).show()
 }
 
-// note: should this be added to Context instead of Fragment?
+// note: should these be added to Context instead of Fragment?
 fun Fragment.copyToClipboard(label: String, text: String) {
     val clipboard = requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
     val clip: ClipData = ClipData.newPlainText(label, text)
     // Set the clipboard's primary clip.
     clipboard.setPrimaryClip(clip)
+}
+
+fun Fragment.getClipboardText(): String {
+    val clipboard = requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+    var text = ""
+    if (clipboard.hasPrimaryClip() && clipboard.primaryClipDescription?.hasMimeType(
+            MIMETYPE_TEXT_PLAIN
+        ) == true) {
+        val item = clipboard.primaryClip!!.getItemAt(0)
+        text = item.text.toString()
+    } else {
+        Log.d("Fragment.getClipboardText", "Clipboard was empty or did not contain any text mime type.")
+    }
+    return text
 }
 
 fun Fragment.openExternalWebPage(url: String, showErrorToast: Boolean = true): Boolean {
