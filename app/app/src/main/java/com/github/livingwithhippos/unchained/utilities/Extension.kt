@@ -167,7 +167,7 @@ fun Fragment.copyToClipboard(label: String, text: String) {
 
 fun Fragment.openExternalWebPage(url: String, showErrorToast: Boolean = true): Boolean {
     // this pattern accepts everything that is something.tld since there were too many new tlds and Google gave up updating their regex
-    if (Patterns.WEB_URL.matcher(url).matches()) {
+    if (url.isWebUrl()) {
         val webIntent: Intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
         startActivity(webIntent)
         return true
@@ -177,3 +177,6 @@ fun Fragment.openExternalWebPage(url: String, showErrorToast: Boolean = true): B
 
     return false
 }
+
+fun String.isWebUrl(): Boolean =
+    Patterns.WEB_URL.matcher(this).matches()

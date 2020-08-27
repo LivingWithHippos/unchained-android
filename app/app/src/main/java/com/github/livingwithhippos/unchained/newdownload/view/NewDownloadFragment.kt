@@ -69,7 +69,7 @@ class NewDownloadFragment : Fragment(), NewDownloadListener {
         // add the unrestrict button listener
         downloadBinding.bUnrestrict.setOnClickListener {
             val link: String = downloadBinding.tiLink.text.toString().trim()
-            if (Patterns.WEB_URL.matcher(link).matches()) {
+            if (link.isWebUrl()) {
 
                 downloadBinding.bUnrestrict.isEnabled = false
                 downloadBinding.bLoadTorrent.isEnabled = false
