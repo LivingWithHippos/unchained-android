@@ -1,10 +1,12 @@
 package com.github.livingwithhippos.unchained.utilities
 
+import android.app.Activity
 import android.content.ClipData
 import android.content.ClipDescription.MIMETYPE_TEXT_PLAIN
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.ClipDrawable
 import android.graphics.drawable.Drawable
@@ -31,6 +33,7 @@ import com.bumptech.glide.request.target.CustomViewTarget
 import com.bumptech.glide.request.transition.Transition
 import com.github.livingwithhippos.unchained.R
 import com.google.android.material.progressindicator.ProgressIndicator
+import java.util.*
 
 //todo: split extensions in own files (glide/views etc)
 @BindingAdapter("imageURL")
@@ -196,3 +199,23 @@ fun Fragment.openExternalWebPage(url: String, showErrorToast: Boolean = true): B
 
 fun String.isWebUrl(): Boolean =
     Patterns.WEB_URL.matcher(this).matches()
+
+/**
+ * this function can be used to create a new context with a particular locale.
+ * It must be used while overriding Activity.attachBaseContext like this:
+  override fun attachBaseContext(base: Context?) {
+        if (base != null)
+            super.attachBaseContext(getTranslatedContext(base, "en"))
+        else
+            super.attachBaseContext(base)
+    }
+ * it must be applied to all the activities or added to a BaseActivity extended by them
+ */
+fun Activity.getTranslatedContext(context:Context, language: String): Context {
+    val locale: Locale = Locale(language)
+    val configuration: Configuration = Configuration(context.resources.configuration)
+    // check if this is necessary
+    Locale.setDefault(locale)
+    configuration.setLocale(locale)
+    return context.createConfigurationContext(configuration)
+}
