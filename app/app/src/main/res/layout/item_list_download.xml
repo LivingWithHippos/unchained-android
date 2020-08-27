@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
+        <import type="android.view.View" />
 
         <variable
             name="item"
@@ -13,56 +16,79 @@
             type="com.github.livingwithhippos.unchained.downloadlists.view.DownloadListListener" />
     </data>
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cvDownload"
-            android:layout_width="300dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:checkable="false"
-            android:clickable="false"
-            android:focusable="true"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:onClick="@{() -> listener.onClick(item)}">
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cvDownload"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:checkable="false"
+        android:clickable="false"
+        android:focusable="true"
+        android:onClick="@{() -> listener.onClick(item)}"
+        android:padding="10dp"
+        app:cardBackgroundColor="?attr/colorSurface"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="0dp"
+        app:strokeColor="@color/grey_01"
+        app:strokeWidth="0.05dp">
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <TextView
+                android:id="@+id/tvTitle"
+                style="@style/TextAppearance.UnchainedTheme.Overline"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="10dp"
+                android:text="@string/download"
+                android:textAllCaps="true"
+                app:layout_constraintBottom_toTopOf="@+id/tvName"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-                <TextView
-                    android:id="@+id/tvTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
-                    android:text="@string/download"
-                    android:textAllCaps="true"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintBottom_toTopOf="@+id/tvName"
-                    app:layout_constraintTop_toTopOf="parent" />
+            <TextView
+                android:id="@+id/tvName"
+                style="@style/TextAppearance.UnchainedTheme.Headline6"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@{item.filename, default=`File Name`}"
+                android:maxLines="2"
+                android:ellipsize="end"
+                android:layout_marginEnd="5dp"
+                app:layout_constraintBottom_toTopOf="@+id/tvSize"
+                app:layout_constraintStart_toStartOf="@+id/tvTitle"
+                app:layout_constraintEnd_toStartOf="@id/ivStreamable"
+                app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
 
-                <TextView
-                    android:id="@+id/tvName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
-                    android:text="@{item.filename, default=`File Name`}"
-                    app:layout_constraintBottom_toTopOf="@+id/tvSize"
-                    app:layout_constraintStart_toStartOf="@+id/tvTitle"
-                    app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
+            <TextView
+                android:id="@+id/tvSize"
+                style="@style/TextAppearance.AppCompat.Body1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:text="@{@string/file_size_format(item.filesize / 1024 / 1024), default=`20 MB`}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/tvName"
+                app:layout_constraintTop_toBottomOf="@+id/tvName" />
 
-                <TextView
-                    android:id="@+id/tvSize"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
-                    android:text="@{String.valueOf(item.filesize), default=`File Size`}"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="@+id/tvName"
-                    app:layout_constraintTop_toBottomOf="@+id/tvName" />
+            <ImageView
+                android:id="@+id/ivStreamable"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:visibility="@{item.streamable == 1 ? View.VISIBLE : View.INVISIBLE}"
+                app:srcCompat="@drawable/streamable"
+                app:tint="?attr/colorPrimary"
+                android:layout_marginEnd="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:contentDescription="@string/streamable" />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
 
-        </com.google.android.material.card.MaterialCardView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
 </layout>

@@ -12,7 +12,7 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvDownloadList"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:scrollbars="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
