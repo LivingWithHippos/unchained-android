@@ -33,6 +33,8 @@ class DownloadListFragment : Fragment(), DownloadListListener {
         viewModel.downloadLiveData.observe(viewLifecycleOwner, Observer {
             if (it != null) {
                 adapter.submitList(it)
+                // move this outside of the the null check?
+                downloadsBinding.srLayout.isRefreshing = false
             }
         })
 
@@ -43,6 +45,10 @@ class DownloadListFragment : Fragment(), DownloadListListener {
         })
 
         viewModel.fetchAll()
+
+        downloadsBinding.srLayout.setOnRefreshListener {
+            viewModel.fetchAll()
+        }
 
         return downloadsBinding.root
     }
