@@ -103,13 +103,18 @@ class NewDownloadFragment : Fragment(), NewDownloadListener {
 
         }
 
-        downloadBinding.bPaste.setOnClickListener {
+        downloadBinding.bPasteLink.setOnClickListener {
             val pasteText = getClipboardText()
 
             if (pasteText.isWebUrl())
                 downloadBinding.tiLink.setText(pasteText, TextView.BufferType.EDITABLE)
             else
                 showToast(R.string.invalid_url)
+        }
+
+        downloadBinding.bPastePassword.setOnClickListener {
+            val pasteText = getClipboardText()
+            downloadBinding.etPassword.setText(pasteText, TextView.BufferType.EDITABLE)
         }
 
         // we must make this value null by default because it's the first fragment of the nav graph

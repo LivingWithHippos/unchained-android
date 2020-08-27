@@ -44,18 +44,18 @@
 
 
         <Button
-            android:id="@+id/bPaste"
+            android:id="@+id/bPasteLink"
             android:layout_width="35dp"
             android:layout_height="35dp"
             android:background="@drawable/paste"
-            app:layout_constraintEnd_toEndOf="@id/etPassword"
+            app:layout_constraintStart_toEndOf="@id/tfLink"
             app:layout_constraintTop_toTopOf="@id/tfLink"
             app:layout_constraintBottom_toBottomOf="@id/tfLink"
             android:contentDescription="@string/paste" />
 
         <EditText
             android:id="@+id/etPassword"
-            android:layout_width="250dp"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="@string/password_optional"
@@ -66,6 +66,15 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tfLink" />
+
+        <Button
+            android:id="@+id/bPastePassword"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:background="@drawable/paste"
+            app:layout_constraintStart_toEndOf="@id/etPassword"
+            app:layout_constraintBottom_toBottomOf="@id/etPassword"
+            android:contentDescription="@string/paste" />
 
         <!-- https://material.io/develop/android/components/switches -->
         <com.google.android.material.switchmaterial.SwitchMaterial
