@@ -73,4 +73,5 @@
     <string name="buy_premium">Buy Premium</string>
     <string name="paste">Paste</string>
     <string name="streamable">Streamable</string>
+    <string name="open_stream">Open stream</string>
 </resources>

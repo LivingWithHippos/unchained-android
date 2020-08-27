@@ -54,10 +54,15 @@ class DownloadDetailsFragment : Fragment(), DownloadDetailsListener {
     override fun onLoadStreamsClick(id: String) {
         viewModel.fetchStreamingInfo(id)
     }
+
+    override fun onPlayStreamsClick(link: String) {
+        openExternalWebPage(link)
+    }
 }
 
 interface DownloadDetailsListener {
     fun onCopyClick(text: String)
     fun onOpenClick(url: String)
     fun onLoadStreamsClick(id: String)
+    fun onPlayStreamsClick(link: String)
 }
