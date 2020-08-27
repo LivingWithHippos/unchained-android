@@ -143,6 +143,18 @@ object ApiFactory {
 
     @Provides
     @Singleton
-    fun provideDownloadApiApiHelper(apiHelper: DownloadApiHelperImpl): DownloadApiHelper =
+    fun provideDownloadApiHelper(apiHelper: DownloadApiHelperImpl): DownloadApiHelper =
+        apiHelper
+
+    // hosts api injection
+    @Provides
+    @Singleton
+    fun provideHostsApi(@ApiRetrofit retrofit: Retrofit): HostsApi {
+        return retrofit.create(HostsApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideHostsApiHelper(apiHelper: HostsApiHelperImpl): HostsApiHelper =
         apiHelper
 }
