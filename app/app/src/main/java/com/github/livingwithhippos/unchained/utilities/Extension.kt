@@ -205,13 +205,13 @@ fun String.isWebUrl(): Boolean =
  * It must be used while overriding Activity.attachBaseContext like this:
   override fun attachBaseContext(base: Context?) {
         if (base != null)
-            super.attachBaseContext(getTranslatedContext(base, "en"))
+            super.attachBaseContext(getNewLocaleContext(base, "en"))
         else
-            super.attachBaseContext(base)
+            super.attachBaseContext(null)
     }
  * it must be applied to all the activities or added to a BaseActivity extended by them
  */
-fun Activity.getTranslatedContext(context:Context, language: String): Context {
+fun Activity.getUpdatedLocaleContext(context:Context, language: String): Context {
     val locale: Locale = Locale(language)
     val configuration: Configuration = Configuration(context.resources.configuration)
     // check if this is necessary
