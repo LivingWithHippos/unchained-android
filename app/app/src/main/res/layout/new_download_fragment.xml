@@ -22,15 +22,13 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tfLink"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="250dp"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:hint="@string/link_or_magnet"
             android:importantForAutofill="no"
             app:endIconMode="clear_text"
             app:layout_constraintBottom_toTopOf="@+id/etPassword"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@id/etPassword"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_chainStyle="packed"
             app:startIconDrawable="@drawable/icon_link">
@@ -42,6 +40,18 @@
                 android:singleLine="true" />
 
         </com.google.android.material.textfield.TextInputLayout>
+
+
+
+        <Button
+            android:id="@+id/bPaste"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:background="@drawable/paste"
+            app:layout_constraintEnd_toEndOf="@id/etPassword"
+            app:layout_constraintTop_toTopOf="@id/tfLink"
+            app:layout_constraintBottom_toBottomOf="@id/tfLink"
+            android:contentDescription="@string/paste" />
 
         <EditText
             android:id="@+id/etPassword"
