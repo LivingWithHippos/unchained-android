@@ -191,17 +191,6 @@
                         android:visibility="@{loadingStatusList.contains(torrent.status) ? View.GONE : View.VISIBLE}"
                         app:progressColor="@{@color/streaming_background}" />
 
-                    <ImageView
-                        android:id="@+id/ivLoading"
-                        android:layout_width="90dp"
-                        android:layout_height="90dp"
-                        android:minWidth="90dp"
-                        android:scaleType="fitCenter"
-                        android:visibility="@{loadingStatusList.contains(torrent.status) ? View.VISIBLE : View.GONE}"
-                        app:srcCompat="@drawable/download_progressbar_indeterminate"
-                        app:startAnimation="@{loadingStatusList.contains(torrent.status) ? true: false}"
-                        tools:ignore="ContentDescription" />
-
                 </FrameLayout>
 
 
