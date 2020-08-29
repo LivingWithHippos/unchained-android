@@ -83,15 +83,14 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:padding="20dp">
 
                 <TextView
                     android:id="@+id/tvStatus"
                     style="@style/TextAppearance.UnchainedTheme.Overline"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="10dp"
                     android:text="@string/status"
                     android:textAllCaps="true"
                     app:layout_constraintStart_toStartOf="parent"
@@ -124,7 +123,7 @@
                     android:id="@+id/pointsBar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
+                    android:layout_marginTop="20dp"
                     app:indicatorWidth="25dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tvPremiumDays"
