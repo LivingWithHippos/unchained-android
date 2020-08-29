@@ -51,15 +51,16 @@
             app:layout_constraintStart_toStartOf="@id/tvName"
             app:layout_constraintTop_toBottomOf="@id/tvName" />
 
-        <!-- todo: show decimal for file size-->
         <TextView
             android:id="@+id/tvSize"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{@string/file_size_format(details.filesize / 1024 / 1024), default=`123 MB`}"
+            android:text="123 MB"
+            fileSize="@{details.filesize}"
             app:layout_constraintBottom_toBottomOf="@id/ivHosterPic"
             app:layout_constraintStart_toEndOf="@id/ivHosterPic"
-            app:layout_constraintTop_toTopOf="@id/ivHosterPic" />
+            app:layout_constraintTop_toTopOf="@id/ivHosterPic"
+            tools:ignore="HardcodedText" />
 
         <TextView
             android:id="@+id/tvDownloadLink"
