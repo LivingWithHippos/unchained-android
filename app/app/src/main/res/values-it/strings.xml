@@ -73,4 +73,5 @@
     <string name="upload_torrent_description">Carica un file .torrent dalla memoria del telefono</string>
     <string name="details">Dettagli</string>
     <string name="file_id_format">ID: %1$s</string>
+    <string name="file_type_format">Tipo: %1$s</string>
 </resources>

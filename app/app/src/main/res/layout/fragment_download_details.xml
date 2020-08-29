@@ -118,10 +118,12 @@
                     android:id="@+id/tvType"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{details.mimeType, default=`Type: application/x-rar-compressed`}"
+                    android:layout_marginBottom="10dp"
+                    android:text="@{@string/file_type_format(details.mimeType), default=`Type: application/x-rar-compressed`}"
                     android:visibility="@{details.mimeType == null ? View.GONE : View.VISIBLE}"
                     app:layout_constraintStart_toStartOf="@id/ivHosterPic"
                     app:layout_constraintTop_toBottomOf="@id/ivHosterPic"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     />
 
 
