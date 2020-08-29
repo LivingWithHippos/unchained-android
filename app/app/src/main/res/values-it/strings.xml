@@ -18,7 +18,7 @@
     <string name="premium">Premium</string>
     <string name="not_premium">Gratuito</string>
     <string name="premium_points_format">Punti Premium: %1$d/1000</string>
-    <string name="premium_days_format">Giorni: %1$d</string>
+    <string name="premium_days_format">Giorni rimanenti: %1$d</string>
     <string name="user">Utente</string>
     <string name="new_download">Nuovo Download</string>
     <string name="remote_traffic">Traffico Remoto</string>
