@@ -70,7 +70,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="20dp">
+                android:padding="25dp">
 
                 <TextView
                     android:id="@+id/tvStatusTitle"
@@ -92,17 +92,22 @@
                     app:layout_constraintBottom_toTopOf="@+id/tvSize"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="@id/tvStatusTitle"
+                    app:layout_constraintEnd_toStartOf="@id/loadingCircle"
                     app:layout_constraintTop_toBottomOf="@+id/tvStatusTitle" />
 
                 <TextView
                     android:id="@+id/tvSize"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="@{@string/file_size_format(torrent.bytes / 1024 / 1024), default=`File Size`}"
+                    android:text="File Size"
+                    fileSize="@{torrent.bytes}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintEnd_toStartOf="@id/loadingCircle"
                     app:layout_constraintStart_toStartOf="@id/tvStatus"
-                    app:layout_constraintTop_toBottomOf="@+id/tvStatus" />
+                    app:layout_constraintTop_toBottomOf="@+id/tvStatus"
+                    tools:ignore="HardcodedText" />
+
                 <com.google.android.material.progressindicator.ProgressIndicator
                     android:id="@+id/loadingCircle"
                     style="@style/Widget.MaterialComponents.ProgressIndicator.Circular.Indeterminate"
@@ -165,7 +170,8 @@
                     app:layout_constraintEnd_toStartOf="@id/flProgress"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="@id/tvDownloadOverline"
-                    app:layout_constraintTop_toBottomOf="@+id/tvDownloadOverline" />
+                    app:layout_constraintTop_toBottomOf="@+id/tvDownloadOverline"
+                    tools:ignore="HardcodedText" />
 
 
                     <TextView
@@ -175,6 +181,7 @@
                         android:layout_height="wrap_content"
                         app:layout_constraintStart_toStartOf="@id/tvSpeed"
                         app:layout_constraintTop_toBottomOf="@+id/tvSpeed"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         android:text="@{@string/seeders_format(torrent.seeders), default=`%1$d seeders`}"
                         android:visibility="@{torrent.seeders == null ? View.GONE : View.VISIBLE}" />
 
@@ -196,8 +203,8 @@
                         android:layout_height="wrap_content"
                         android:indeterminate="false"
                         android:max="100"
-                        android:minWidth="90dp"
-                        android:minHeight="78dp"
+                        android:minWidth="70dp"
+                        android:minHeight="60dp"
                         android:progress="@{torrent.progress}"
                         android:progressDrawable="@drawable/download_progressbar"
                         android:visibility="@{loadingStatusList.contains(torrent.status) ? View.GONE : View.VISIBLE}"
