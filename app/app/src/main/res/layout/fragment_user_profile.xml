@@ -103,15 +103,13 @@
                     app:layout_constraintStart_toStartOf="@id/tvStatus"
                     app:layout_constraintTop_toBottomOf="@id/tvStatus" />
 
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chipDays"
+                <TextView
+                    android:id="@+id/tvPremiumDays"
+                    style="@style/TextAppearance.AppCompat.Body1"
                     android:layout_width="wrap_content"
-                    android:layout_height="35dp"
-                    android:text="@{@string/premium_days_format(user.premium/60/60/24), default=`Days: 23`}"
-                    android:textAlignment="center"
-                    android:textAppearance="@style/TextAppearance.UnchainedTheme.Caption"
-                    android:textColor="@color/white_50"
-                    app:chipBackgroundColor="@{user.premium > 5 ? @color/green_03 : @color/red_01, default=@color/green_03 }"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@{@string/premium_days_format(user.premium/60/60/24), default=`Remaining days: 23`}"
                     app:layout_constraintStart_toStartOf="@id/tvPremium"
                     app:layout_constraintTop_toBottomOf="@id/tvPremium" />
 
@@ -122,7 +120,7 @@
                     android:layout_margin="10dp"
                     app:indicatorWidth="25dp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/chipDays"
+                    app:layout_constraintTop_toBottomOf="@id/tvPremiumDays"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:indicatorCornerRadius="20dp"
                     style="@style/Widget.MaterialComponents.ProgressIndicator.Linear.Determinate"
