@@ -27,6 +27,7 @@ import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.ImageView
 import android.widget.ProgressBar
+import android.widget.TextView
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.BindingAdapter
@@ -146,6 +147,20 @@ fun ProgressIndicator.setRealProgress(progress: Int) {
     this.setProgressCompat(progress, animated)
 }
 
+/**
+ * This function format the download speed from bytes/s to kb/s and MB/s and assign it to the [TextView]
+ * @param speed - the speed in bytes/s.
+ */
+@BindingAdapter("downloadSpeed")
+fun TextView.setDownloadSpeed(speed: Int) {
+    this.text = when (speed.toString().length) {
+        in 0..3 -> this.context.getString(R.string.speed_format_b, speed)
+        in 4..6 -> this.context.getString(R.string.speed_format_kb, speed.toFloat()/1000)
+        in 7..15 -> this.context.getString(R.string.speed_format_mb, speed.toFloat()/1000000)
+        else -> this.context.getString(R.string.speed_error)
+    }
+}
+
 fun View.runRippleAnimation(){
     //todo: test
     if (background is RippleDrawable) {
@@ -233,4 +248,3 @@ fun stringToDate(rdDate: String): String {
     val localDate: DateFormat = SimpleDateFormat.getDateTimeInstance()
     return localDate.format(date)
 }
-

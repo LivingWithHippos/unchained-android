@@ -36,7 +36,9 @@
     <string name="file_size_format" translatable="false">%1$d MB</string>
     <string name="selected_file_size_format">%1$d MB / %2$d MB selected</string>
     <string name="torrent_status_format">Status: %1$s</string>
-    <string name="speed_format" translatable="false">%1$d kb/s</string>
+    <string name="speed_format_b" translatable="false">%1$d b/s</string>
+    <string name="speed_format_kb" translatable="false">%1$.1f kb/s</string>
+    <string name="speed_format_mb" translatable="false">%1$.1f mb/s</string>
     <string name="seeders_format">%1$d seeders</string>
     <string name="load_streams">Load Streaming Links</string>
     <string name="apple" translatable="false">Apple</string>
@@ -74,4 +76,5 @@
     <string name="paste">Paste</string>
     <string name="streamable">Streamable</string>
     <string name="open_stream">Open stream</string>
+    <string name="speed_error">Error getting download speed</string>
 </resources>
