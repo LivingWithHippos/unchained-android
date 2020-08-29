@@ -81,24 +81,25 @@
 
                 <TextView
                     android:id="@+id/tvStatus"
+                    style="@style/TextAppearance.UnchainedTheme.Overline"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
                     android:layout_marginTop="10dp"
                     android:text="@string/status"
                     android:textAllCaps="true"
-                    android:textAppearance="?attr/textAppearanceOverline"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/tvPremium"
+                    style="@style/TextAppearance.UnchainedTheme.Headline5"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text="@{user.premium > 0 ? @string/premium : @string/not_premium, default=`Premium`}"
+                    android:textColor="@{user.premium > 0 ? @color/green_03 : @color/red_01, default=@color/green_03 }"
                     android:textAllCaps="true"
-                    android:textAppearance="?attr/textAppearanceHeadline5"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="@id/tvStatus"
                     app:layout_constraintTop_toBottomOf="@id/tvStatus" />
