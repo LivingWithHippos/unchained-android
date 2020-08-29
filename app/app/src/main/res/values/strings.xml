@@ -83,4 +83,6 @@
     <string name="streamable">Streamable</string>
     <string name="open_stream">Open stream</string>
     <string name="upload_torrent_description">Upload a .torrent file from your local memory</string>
+    <string name="details" translatable="false">Details</string>
+    <string name="file_id_format">ID: %1$s</string>
 </resources>
