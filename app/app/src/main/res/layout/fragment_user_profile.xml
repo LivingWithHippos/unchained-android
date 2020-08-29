@@ -88,7 +88,6 @@
                     android:text="@string/status"
                     android:textAllCaps="true"
                     android:textAppearance="?attr/textAppearanceOverline"
-                    android:textColor="@color/grey_02"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
