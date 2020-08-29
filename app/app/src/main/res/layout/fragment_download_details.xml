@@ -36,7 +36,7 @@
             android:layout_marginEnd="20dp"
             android:ellipsize="end"
             android:maxLines="3"
-            android:text="@{details.filename, default=`File Name bji uih phui uih hui huil huil huil h uilh uil hoasd fhlaisdhfa asdfiluh asdilufhal`}"
+            android:text="@{details.filename, default=`File Name`}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
