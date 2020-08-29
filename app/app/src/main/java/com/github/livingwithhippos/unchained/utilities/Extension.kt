@@ -171,6 +171,7 @@ fun TextView.setFileSize(size: Long) {
         size < 1023 -> this.context.getString(R.string.file_size_format_b, size)
         size < 1048575 -> this.context.getString(R.string.file_size_format_kb, size.toFloat()/1024)
         size < 1073741823 -> this.context.getString(R.string.file_size_format_mb, size.toFloat()/ 1024/ 1024)
+        // ~9 TB, for now it's more probable that a wrong value is being passed if it's over this value
         size < 9999999999999 -> this.context.getString(R.string.file_size_format_gb, size.toFloat()/ 1024/ 1024/ 1024)
         else -> this.context.getString(R.string.size_error)
     }
