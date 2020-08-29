@@ -82,4 +82,5 @@
     <string name="paste">Paste</string>
     <string name="streamable">Streamable</string>
     <string name="open_stream">Open stream</string>
+    <string name="upload_torrent_description">Upload a .torrent file from your local memory</string>
 </resources>
