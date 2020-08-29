@@ -20,6 +20,12 @@
             type="com.github.livingwithhippos.unchained.downloaddetails.view.DownloadDetailsListener" />
     </data>
 
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/rootLayout"
         android:layout_width="match_parent"
@@ -149,19 +155,14 @@
             app:layout_constraintEnd_toEndOf="@id/cvDetails"
             app:layout_constraintBottom_toBottomOf="@id/bOpen" />
 
-        <androidx.core.widget.NestedScrollView
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/bOpen">
-
             <LinearLayout
                 android:id="@+id/llStreaming"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/bOpen">
 
                 <Button
                     android:id="@+id/bLoadStreams"
@@ -405,7 +406,7 @@
                 </com.google.android.material.card.MaterialCardView>
 
             </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
