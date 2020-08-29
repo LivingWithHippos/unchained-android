@@ -12,10 +12,20 @@
             type="com.github.livingwithhippos.unchained.newdownload.view.NewDownloadListener" />
     </data>
 
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <!-- todo: nested scroll if the screen is smaller than the inner view
+        and the inner view has cventer_vertical has an issue with scrolling upward.
+        Either pin to top, remove scrolling or hope for the best-->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/rootLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
         tools:context=".newdownload.view.NewDownloadFragment">
 
         <!-- todo: add paste button for link-->
@@ -168,4 +178,5 @@
             app:layout_constraintTop_toBottomOf="@+id/tvUploadTorrent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
 </layout>
