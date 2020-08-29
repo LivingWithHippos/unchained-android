@@ -74,4 +74,5 @@
     <string name="details">Dettagli</string>
     <string name="file_id_format">ID: %1$s</string>
     <string name="file_type_format">Tipo: %1$s</string>
+    <string name="rd_settings_link_description">"Gestisci le tue impostazioni e converti i punti in premium alla pagina https://real-debrid.com/account "</string>
 </resources>
