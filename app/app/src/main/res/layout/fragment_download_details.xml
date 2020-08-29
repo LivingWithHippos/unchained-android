@@ -49,7 +49,8 @@
             android:src="@drawable/icon_squares"
             app:imageURL="@{details.hostIcon}"
             app:layout_constraintStart_toStartOf="@id/tvName"
-            app:layout_constraintTop_toBottomOf="@id/tvName" />
+            app:layout_constraintTop_toBottomOf="@id/tvName"
+            tools:ignore="ContentDescription" />
 
         <TextView
             android:id="@+id/tvSize"
@@ -118,7 +119,7 @@
                 android:layout_gravity="center_horizontal"
                 android:onClick="@{() -> listener.onLoadStreamsClick(details.id)}"
                 android:text="@string/load_streams"
-                android:visibility="@{details.streamable == 1 &amp;&amp; stream == null ? View.VISIBLE : View.GONE, default=gone}" />
+                android:visibility="@{details.streamable == 1 &amp;&amp; stream == null ? View.VISIBLE : View.GONE, default=visible}" />
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cvApple"
