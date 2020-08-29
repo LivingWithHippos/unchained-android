@@ -37,23 +37,32 @@
 
         <TextView
             android:id="@+id/tvName"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
             android:text="@{torrent.filename, default=`File Name`}"
             android:textColor="#1e1e1e"
             android:textSize="20sp"
             android:textStyle="bold"
+            android:maxLines="3"
+            android:ellipsize="end"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cvDownloadDetails"
-            android:layout_width="match_parent"
-            android:layout_height="150dp"
+            android:id="@+id/cvTorrentDetails"
+            android:layout_width="350dp"
+            android:layout_height="wrap_content"
             android:layout_margin="20dp"
-            android:layout_marginTop="20dp"
+            android:checkable="false"
+            android:clickable="false"
+            android:focusable="true"
+            app:cardElevation="0dp"
             app:cardCornerRadius="10dp"
+            app:strokeColor="@color/grey_01"
+            app:strokeWidth="0.05dp"
+            app:cardBackgroundColor="?attr/colorSurface"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvName">
@@ -61,10 +70,11 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="10dp">
+                android:padding="20dp">
 
                 <TextView
                     android:id="@+id/tvStatusTitle"
+                    style="@style/TextAppearance.UnchainedTheme.Overline"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/status"
@@ -74,13 +84,12 @@
 
                 <TextView
                     android:id="@+id/tvStatus"
+                    style="@style/TextAppearance.UnchainedTheme.Headline6"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="@{statusTranslation[torrent.status], default=`Torrent Status`}"
-                    android:textSize="20sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toTopOf="@+id/tvSize"
-                    app:layout_constraintEnd_toStartOf="@id/flProgress"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="@id/tvStatusTitle"
                     app:layout_constraintTop_toBottomOf="@+id/tvStatusTitle" />
@@ -90,43 +99,78 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="@{@string/file_size_format(torrent.bytes / 1024 / 1024), default=`File Size`}"
-                    app:layout_constraintBottom_toTopOf="@+id/linearLayout"
-                    app:layout_constraintEnd_toStartOf="@id/flProgress"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="@id/tvStatus"
                     app:layout_constraintTop_toBottomOf="@+id/tvStatus" />
 
 
-                <LinearLayout
-                    android:id="@+id/linearLayout"
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cvDownloadDetails"
+            android:layout_width="350dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:checkable="false"
+            android:clickable="false"
+            android:focusable="true"
+            app:cardElevation="0dp"
+            app:cardCornerRadius="10dp"
+            app:strokeColor="@color/grey_01"
+            app:strokeWidth="0.05dp"
+            android:visibility="@{torrent.status.equalsIgnoreCase(`downloading`) ? View.VISIBLE : View.GONE}"
+            app:cardBackgroundColor="?attr/colorSurface"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/cvTorrentDetails">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="20dp">
+
+                <TextView
+                    android:id="@+id/tvDownloadOverline"
+                    style="@style/TextAppearance.UnchainedTheme.Overline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/download"
+                    app:layout_constraintBottom_toTopOf="@+id/tvSpeed"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tvSpeed"
+                    style="@style/TextAppearance.UnchainedTheme.Headline6"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
+                    android:text="@{torrent.speed != null ? @string/speed_format(torrent.speed / 1024): ``, default=`%1$d kb/s`}"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toTopOf="@+id/tvSeeders"
                     app:layout_constraintEnd_toStartOf="@id/flProgress"
-                    app:layout_constraintStart_toStartOf="@id/tvSize"
-                    app:layout_constraintTop_toBottomOf="@id/tvSize"
-                    app:layout_constraintBottom_toBottomOf="parent">
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="@id/tvDownloadOverline"
+                    app:layout_constraintTop_toBottomOf="@+id/tvDownloadOverline" />
 
-                    <TextView
-                        android:id="@+id/tvSpeed"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@{torrent.speed != null ? @string/speed_format(torrent.speed / 1024): ``, default=`%1$d kb/s`}"
-                        android:visibility="@{torrent.speed == null ? View.GONE : View.VISIBLE}" />
 
                     <TextView
                         android:id="@+id/tvSeeders"
+                        style="@style/TextAppearance.AppCompat.Body1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        app:layout_constraintStart_toStartOf="@id/tvSpeed"
+                        app:layout_constraintTop_toBottomOf="@+id/tvSpeed"
                         android:text="@{@string/seeders_format(torrent.seeders), default=`%1$d seeders`}"
                         android:visibility="@{torrent.seeders == null ? View.GONE : View.VISIBLE}" />
 
-                </LinearLayout>
 
                 <FrameLayout
                     android:id="@+id/flProgress"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
@@ -139,8 +183,8 @@
                         android:layout_height="wrap_content"
                         android:indeterminate="false"
                         android:max="100"
-                        android:minWidth="100dp"
-                        android:minHeight="87dp"
+                        android:minWidth="90dp"
+                        android:minHeight="78dp"
                         android:progress="@{torrent.progress}"
                         android:progressDrawable="@drawable/download_progressbar"
                         android:visibility="@{loadingStatusList.contains(torrent.status) ? View.GONE : View.VISIBLE}"
@@ -148,9 +192,9 @@
 
                     <ImageView
                         android:id="@+id/ivLoading"
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:minWidth="100dp"
+                        android:layout_width="90dp"
+                        android:layout_height="90dp"
+                        android:minWidth="90dp"
                         android:scaleType="fitCenter"
                         android:visibility="@{loadingStatusList.contains(torrent.status) ? View.VISIBLE : View.GONE}"
                         app:srcCompat="@drawable/download_progressbar_indeterminate"
