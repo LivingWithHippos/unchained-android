@@ -10,6 +10,12 @@
             type="com.github.livingwithhippos.unchained.user.model.User" />
     </data>
 
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/rootLayout"
         android:layout_width="match_parent"
@@ -183,4 +189,5 @@
             app:layout_constraintStart_toStartOf="@id/cvPremium"
             app:layout_constraintTop_toBottomOf="@id/tvDescription"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
 </layout>
