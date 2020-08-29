@@ -69,4 +69,5 @@
     <string name="streamable">Streammabile</string>
     <string name="open_stream">Apri Stream</string>
     <string name="speed_error">Errore nel recuperare la velocità</string>
+    <string name="size_error">Errore nel recupero dimensione file</string>
 </resources>
