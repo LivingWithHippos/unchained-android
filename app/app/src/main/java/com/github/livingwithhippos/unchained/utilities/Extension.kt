@@ -1,5 +1,6 @@
 package com.github.livingwithhippos.unchained.utilities
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ClipData
 import android.content.ClipDescription.MIMETYPE_TEXT_PLAIN
@@ -16,6 +17,8 @@ import android.graphics.drawable.RippleDrawable
 import android.graphics.drawable.RotateDrawable
 import android.graphics.drawable.ScaleDrawable
 import android.graphics.drawable.VectorDrawable
+import android.icu.text.DateFormat
+import android.icu.text.SimpleDateFormat
 import android.net.Uri
 import android.util.Log
 import android.util.Patterns
@@ -179,7 +182,10 @@ fun Fragment.getClipboardText(): String {
         val item = clipboard.primaryClip!!.getItemAt(0)
         text = item.text.toString()
     } else {
-        Log.d("Fragment.getClipboardText", "Clipboard was empty or did not contain any text mime type.")
+        Log.d(
+            "Fragment.getClipboardText",
+            "Clipboard was empty or did not contain any text mime type."
+        )
     }
     return text
 }
@@ -211,7 +217,7 @@ fun String.isWebUrl(): Boolean =
     }
  * it must be applied to all the activities or added to a BaseActivity extended by them
  */
-fun Activity.getUpdatedLocaleContext(context:Context, language: String): Context {
+fun Activity.getUpdatedLocaleContext(context: Context, language: String): Context {
     val locale: Locale = Locale(language)
     val configuration: Configuration = Configuration(context.resources.configuration)
     // check if this is necessary
@@ -219,3 +225,12 @@ fun Activity.getUpdatedLocaleContext(context:Context, language: String): Context
     configuration.setLocale(locale)
     return context.createConfigurationContext(configuration)
 }
+
+@SuppressLint("SimpleDateFormat")
+fun stringToDate(rdDate: String): String {
+    val originalDate: DateFormat = SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss")
+    val date: Date = originalDate.parse(rdDate)
+    val localDate: DateFormat = SimpleDateFormat.getDateTimeInstance()
+    return localDate.format(date)
+}
+
