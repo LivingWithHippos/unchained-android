@@ -84,7 +84,7 @@
                 android:visibility="@{item.streamable == 1 ? View.VISIBLE : View.INVISIBLE}"
                 app:srcCompat="@drawable/streamable"
                 app:tint="?attr/colorPrimary"
-                android:layout_marginEnd="10dp"
+                android:layout_marginEnd="20dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"

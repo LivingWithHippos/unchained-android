@@ -43,11 +43,11 @@
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cvDetails"
-            android:layout_width="300dp"
+            android:layout_width="350dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
             android:layout_marginTop="20dp"
             android:checkable="false"
             android:clickable="false"
@@ -85,7 +85,7 @@
                     style="@style/TextAppearance.UnchainedTheme.Headline6"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="@{@string/file_id_format(details.id), default=`id: 78841`}"
+                    android:text="@{@string/file_id_format(details.id), default=`ID: 78841`}"
                     android:singleLine="true"
                     android:ellipsize="end"
                     app:layout_constraintStart_toStartOf="@id/tvDetails"
@@ -125,9 +125,6 @@
                     app:layout_constraintTop_toBottomOf="@id/ivHosterPic"
                     app:layout_constraintBottom_toBottomOf="parent"
                     />
-
-
-
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>
