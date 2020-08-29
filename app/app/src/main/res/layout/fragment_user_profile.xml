@@ -108,7 +108,7 @@
                     android:id="@+id/chipDays"
                     android:layout_width="wrap_content"
                     android:layout_height="35dp"
-                    android:text="@{@string/premium_days_format(user.premium/3600), default=`Days: 23`}"
+                    android:text="@{@string/premium_days_format(user.premium/60/60/24), default=`Days: 23`}"
                     android:textAlignment="center"
                     android:textAppearance="@style/TextAppearance.UnchainedTheme.Caption"
                     android:textColor="@color/white_50"
