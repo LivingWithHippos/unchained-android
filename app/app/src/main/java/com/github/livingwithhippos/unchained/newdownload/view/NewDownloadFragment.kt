@@ -76,7 +76,7 @@ class NewDownloadFragment : Fragment(), NewDownloadListener {
                 downloadBinding.bUnrestrict.isEnabled = false
                 downloadBinding.bLoadTorrent.isEnabled = false
 
-                var password: String? = downloadBinding.etPassword.text.toString()
+                var password: String? = downloadBinding.tePassword.text.toString()
                 // we don't pass the password if it is blank.
                 // N.B. it won't work if your password is made up of spaces but then again you deserve it
                 if (password.isNullOrBlank())
@@ -114,7 +114,7 @@ class NewDownloadFragment : Fragment(), NewDownloadListener {
 
         downloadBinding.bPastePassword.setOnClickListener {
             val pasteText = getClipboardText()
-            downloadBinding.etPassword.setText(pasteText, TextView.BufferType.EDITABLE)
+            downloadBinding.tePassword.setText(pasteText, TextView.BufferType.EDITABLE)
         }
 
         // we must make this value null by default because it's the first fragment of the nav graph

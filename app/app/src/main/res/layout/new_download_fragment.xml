@@ -22,13 +22,13 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tfLink"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="200dp"
+            android:layout_width="230dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
             android:hint="@string/link_or_magnet"
             android:importantForAutofill="no"
             app:endIconMode="clear_text"
-            app:layout_constraintBottom_toTopOf="@+id/etPassword"
+            app:layout_constraintBottom_toTopOf="@+id/tiPassword"
             app:layout_constraintEnd_toStartOf="@+id/bPasteLink"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintHorizontal_chainStyle="packed"
@@ -59,15 +59,14 @@
             app:layout_constraintStart_toEndOf="@+id/tfLink"
             app:layout_constraintTop_toTopOf="@id/tfLink" />
 
-        <EditText
-            android:id="@+id/etPassword"
-            android:layout_width="200dp"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tiPassword"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
+            android:layout_width="230dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
-            android:ems="10"
+            app:endIconMode="password_toggle"
             android:hint="@string/password_optional"
-            android:importantForAutofill="no"
-            android:inputType="textPassword"
             app:layout_constraintBottom_toTopOf="@+id/switchRemote"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/bPastePassword"
@@ -75,7 +74,15 @@
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tfLink"
-            app:layout_constraintVertical_chainStyle="packed" />
+            app:layout_constraintVertical_chainStyle="packed">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tePassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword" />
+
+        </com.google.android.material.textfield.TextInputLayout>
 
         <Button
             android:id="@+id/bPastePassword"
@@ -85,10 +92,10 @@
             android:layout_marginBottom="5dp"
             android:background="@drawable/paste"
             android:contentDescription="@string/paste"
-            app:layout_constraintBottom_toBottomOf="@id/etPassword"
+            app:layout_constraintBottom_toBottomOf="@id/tiPassword"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/etPassword" />
+            app:layout_constraintStart_toEndOf="@+id/tiPassword" />
 
         <!-- https://material.io/develop/android/components/switches -->
         <com.google.android.material.switchmaterial.SwitchMaterial
@@ -102,7 +109,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/etPassword" />
+            app:layout_constraintTop_toBottomOf="@+id/tiPassword" />
 
         <Button
             android:id="@+id/bUnrestrict"
@@ -135,9 +142,9 @@
             style="@style/TextAppearance.UnchainedTheme.Caption"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
+            android:layout_marginBottom="10dp"
             android:text="@string/upload_torrent_description"
             app:layout_constraintBottom_toTopOf="@id/bLoadTorrent"
             app:layout_constraintEnd_toEndOf="parent"
