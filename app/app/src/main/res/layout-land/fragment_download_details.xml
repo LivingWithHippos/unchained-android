@@ -89,7 +89,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/tvDownloadLink"
+                    android:id="@+id/tvDownloadId"
                     style="@style/TextAppearance.UnchainedTheme.Headline6"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -107,8 +107,8 @@
                     android:layout_height="15dp"
                     android:src="@drawable/icon_squares"
                     app:imageURL="@{details.hostIcon}"
-                    app:layout_constraintStart_toStartOf="@id/tvDownloadLink"
-                    app:layout_constraintTop_toBottomOf="@id/tvDownloadLink"
+                    app:layout_constraintStart_toStartOf="@id/tvDownloadId"
+                    app:layout_constraintTop_toBottomOf="@id/tvDownloadId"
                     tools:ignore="ContentDescription" />
 
                 <TextView

@@ -71,7 +71,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="10dp">
+                android:padding="20dp">
 
 
                 <TextView
@@ -79,21 +79,20 @@
                     style="@style/TextAppearance.UnchainedTheme.Overline"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="10dp"
                     android:text="@string/details"
                     android:textAllCaps="true"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/tvDownloadLink"
+                    android:id="@+id/tvDownloadId"
                     style="@style/TextAppearance.UnchainedTheme.Headline6"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="@{@string/file_id_format(details.id), default=`ID: 78841`}"
                     android:singleLine="true"
                     android:ellipsize="end"
+                    android:layout_marginBottom="5dp"
                     app:layout_constraintStart_toStartOf="@id/tvDetails"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tvDetails"
@@ -105,26 +104,29 @@
                     android:layout_height="15dp"
                     android:src="@drawable/icon_squares"
                     app:imageURL="@{details.hostIcon}"
-                    app:layout_constraintStart_toStartOf="@id/tvDownloadLink"
-                    app:layout_constraintTop_toBottomOf="@id/tvDownloadLink"
+                    app:layout_constraintStart_toStartOf="@id/tvDownloadId"
+                    app:layout_constraintTop_toTopOf="@id/tvSize"
+                    app:layout_constraintBottom_toBottomOf="@id/tvSize"
                     tools:ignore="ContentDescription" />
 
                 <TextView
                     android:id="@+id/tvSize"
+                    style="@style/TextAppearance.UnchainedTheme.Body2"
                     fileSize="@{details.filesize}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
                     android:text="123 MB"
-                    app:layout_constraintBottom_toBottomOf="@id/ivHosterPic"
+                    app:layout_constraintBottom_toTopOf="@id/tvType"
                     app:layout_constraintStart_toEndOf="@id/ivHosterPic"
-                    app:layout_constraintTop_toTopOf="@id/ivHosterPic"
+                    app:layout_constraintTop_toBottomOf="@id/tvDownloadId"
                     tools:ignore="HardcodedText" />
 
                 <TextView
                     android:id="@+id/tvType"
+                    style="@style/TextAppearance.UnchainedTheme.Body2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
                     android:text="@{@string/file_type_format(details.mimeType), default=`Type: application/x-rar-compressed`}"
                     android:visibility="@{details.mimeType == null ? View.GONE : View.VISIBLE}"
                     app:layout_constraintStart_toStartOf="@id/ivHosterPic"
