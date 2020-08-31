@@ -38,6 +38,11 @@ import retrofit2.http.Query
 */
 
 @JsonClass(generateAdapter = true)
+data class DownloadList(
+    val downloads: List<DownloadItem>
+)
+
+@JsonClass(generateAdapter = true)
 data class DownloadItem(
     @Json(name = "id")
     val id: String,
@@ -133,6 +138,14 @@ interface DownloadsApi {
         @Header("Authorization") token: String,
         @Query("offset") offset: Int,
         @Query("page") page: Int,
-        @Query("limit") limit: Int = 50
+        @Query("limit") limit: Int = 10
     ): Response<List<DownloadItem>>
+
+    @GET(" downloads")
+    suspend fun getDownloadsList(
+        @Header("Authorization") token: String,
+        @Query("offset") offset: Int,
+        @Query("page") page: Int,
+        @Query("limit") limit: Int = 10
+    ): Response<DownloadList>
 }
