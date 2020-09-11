@@ -8,12 +8,14 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.github.livingwithhippos.unchained.databinding.FragmentDownloadListBinding
 import com.github.livingwithhippos.unchained.downloadlists.model.DownloadItem
 import com.github.livingwithhippos.unchained.downloadlists.viewmodel.DownloadListViewModel
 import com.github.livingwithhippos.unchained.newdownload.view.NewDownloadFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint
@@ -27,28 +29,19 @@ class DownloadListFragment : Fragment(), DownloadListListener {
     ): View? {
         val downloadsBinding = FragmentDownloadListBinding.inflate(inflater, container, false)
 
-        val adapter = DownloadListAdapter(this)
+        val adapter = DownloadListPagingAdapter(this)
         downloadsBinding.rvDownloadList.adapter = adapter
 
-        viewModel.downloadLiveData.observe(viewLifecycleOwner, Observer {
-            if (it != null) {
-                adapter.submitList(it)
-                // move this outside of the the null check?
+        downloadsBinding.srLayout.setOnRefreshListener {
+            viewModel.reloadData()
+        }
+
+        viewModel.listData.observe(viewLifecycleOwner, Observer {
+            lifecycleScope.launch {
+                adapter.submitData(it)
                 downloadsBinding.srLayout.isRefreshing = false
             }
         })
-
-        viewModel.torrentLiveData.observe(viewLifecycleOwner, Observer {
-            if (it != null) {
-                //downloadsBinding.torrents = it
-            }
-        })
-
-        viewModel.fetchAll()
-
-        downloadsBinding.srLayout.setOnRefreshListener {
-            viewModel.fetchAll()
-        }
 
         return downloadsBinding.root
     }

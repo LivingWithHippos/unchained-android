@@ -2,13 +2,21 @@ package com.github.livingwithhippos.unchained.downloadlists.viewmodel
 
 import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import androidx.paging.liveData
 import com.github.livingwithhippos.unchained.base.model.repositories.CredentialsRepository
 import com.github.livingwithhippos.unchained.base.model.repositories.DownloadRepository
 import com.github.livingwithhippos.unchained.base.model.repositories.TorrentsRepository
 import com.github.livingwithhippos.unchained.downloadlists.model.DownloadItem
+import com.github.livingwithhippos.unchained.downloadlists.model.DownloadPagingSource
 import com.github.livingwithhippos.unchained.newdownload.model.TorrentItem
 import com.github.livingwithhippos.unchained.utilities.KEY_TOKEN
 import kotlinx.coroutines.CoroutineScope
@@ -18,9 +26,9 @@ import kotlinx.coroutines.launch
 
 class DownloadListViewModel @ViewModelInject constructor(
     @Assisted private val savedStateHandle: SavedStateHandle,
-    private val credentialsRepository: CredentialsRepository,
     private val downloadRepository: DownloadRepository,
-    private val torrentsRepository: TorrentsRepository
+    private val torrentsRepository: TorrentsRepository,
+    private val downloadPagingSource: DownloadPagingSource
 ) : ViewModel() {
 
     private val job = Job()
@@ -29,29 +37,11 @@ class DownloadListViewModel @ViewModelInject constructor(
     val downloadLiveData = MutableLiveData<List<DownloadItem>?>()
     val torrentLiveData = MutableLiveData<List<TorrentItem>?>()
 
-    fun fetchAll() {
-        scope.launch {
-            val token = getToken()
-            //todo: add user settings
-            //todo: join these two maybe
-            val downloads = downloadRepository.getDownloads(token)
-            downloadLiveData.postValue(downloads)
+    val listData: LiveData<PagingData<DownloadItem>> = Pager(PagingConfig(pageSize = 10)) {
+        downloadPagingSource
+    }.liveData.cachedIn(viewModelScope)
 
-            val torrents = torrentsRepository.getTorrentsList(token)
-            torrentLiveData.postValue(torrents)
-        }
-    }
-
-
-    private suspend fun getToken(): String {
-        var token = savedStateHandle.get<String>(KEY_TOKEN)
-        if (token.isNullOrEmpty()){
-            token = credentialsRepository.getCompleteCredentials().first().accessToken
-            savedStateHandle.set(KEY_TOKEN, token)
-        }
-        if (token.isNullOrEmpty())
-            throw IllegalArgumentException("Loaded token was null or empty: $token")
-
-        return token
+    fun reloadData() {
+        downloadPagingSource.invalidate()
     }
 }
