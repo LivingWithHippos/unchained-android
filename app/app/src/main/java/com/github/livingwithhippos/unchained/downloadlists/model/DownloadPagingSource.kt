@@ -1,8 +1,11 @@
 package com.github.livingwithhippos.unchained.downloadlists.model
 
 import androidx.paging.PagingSource
+import com.github.livingwithhippos.unchained.base.model.repositories.CredentialsRepository
+import com.github.livingwithhippos.unchained.base.model.repositories.DownloadRepository
 import retrofit2.HttpException
 import java.io.IOException
+import javax.inject.Inject
 
 private const val DOWNLOAD_STARTING_PAGE_INDEX = 1
 private const val DOWNLOAD_OFFSET= 0
