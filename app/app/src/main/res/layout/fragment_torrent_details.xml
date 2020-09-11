@@ -35,19 +35,20 @@
         android:layout_height="match_parent"
         tools:context=".torrentdetails.view.TorrentDetailsFragment">
 
+
         <TextView
             android:id="@+id/tvName"
+            style="@style/TextAppearance.UnchainedTheme.Headline5"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
-            android:text="@{torrent.filename, default=`File Name`}"
-            android:textColor="#1e1e1e"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:maxLines="3"
             android:ellipsize="end"
-            app:layout_constraintStart_toStartOf="parent"
+            android:maxLines="3"
+            android:text="@{torrent.filename, default=`File Name`}"
+            app:layout_constraintBottom_toTopOf="@id/cvTorrentDetails"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.google.android.material.card.MaterialCardView
