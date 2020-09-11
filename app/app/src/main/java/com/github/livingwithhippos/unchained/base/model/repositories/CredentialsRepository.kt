@@ -28,4 +28,6 @@ class CredentialsRepository @Inject constructor(private val credentialsDao: Cred
 
     suspend fun deleteIncompleteCredentials() = credentialsDao.deleteIncompleteCredentials()
 
+    suspend fun getToken(): String = credentialsDao.getCompleteCredentials().first().accessToken ?:""
+
 }
