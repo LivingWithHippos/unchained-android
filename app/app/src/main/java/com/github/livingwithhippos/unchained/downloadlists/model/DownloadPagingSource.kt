@@ -11,7 +11,7 @@ private const val DOWNLOAD_STARTING_PAGE_INDEX = 1
 private const val DOWNLOAD_OFFSET= 0
 
 
-class DownloadPagingSource @Inject constructor(
+class DownloadPagingSource (
     private val downloadRepository: DownloadRepository,
     private val credentialsRepository: CredentialsRepository
 ) : PagingSource<Int, DownloadItem>() {
@@ -36,4 +36,6 @@ class DownloadPagingSource @Inject constructor(
             return LoadResult.Error(exception)
         }
     }
+
+
 }

@@ -27,21 +27,14 @@ import kotlinx.coroutines.launch
 class DownloadListViewModel @ViewModelInject constructor(
     @Assisted private val savedStateHandle: SavedStateHandle,
     private val downloadRepository: DownloadRepository,
-    private val torrentsRepository: TorrentsRepository,
-    private val downloadPagingSource: DownloadPagingSource
+    private val credentialsRepository: CredentialsRepository
 ) : ViewModel() {
 
     private val job = Job()
     private val scope = CoroutineScope(Dispatchers.Default + job)
 
-    val downloadLiveData = MutableLiveData<List<DownloadItem>?>()
-    val torrentLiveData = MutableLiveData<List<TorrentItem>?>()
-
     val listData: LiveData<PagingData<DownloadItem>> = Pager(PagingConfig(pageSize = 10)) {
-        downloadPagingSource
+        DownloadPagingSource(downloadRepository,credentialsRepository)
     }.liveData.cachedIn(viewModelScope)
 
-    fun reloadData() {
-        downloadPagingSource.invalidate()
-    }
 }

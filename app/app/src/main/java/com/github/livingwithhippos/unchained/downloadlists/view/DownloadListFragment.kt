@@ -33,7 +33,7 @@ class DownloadListFragment : Fragment(), DownloadListListener {
         downloadsBinding.rvDownloadList.adapter = adapter
 
         downloadsBinding.srLayout.setOnRefreshListener {
-            viewModel.reloadData()
+            adapter.refresh()
         }
 
         viewModel.listData.observe(viewLifecycleOwner, Observer {
