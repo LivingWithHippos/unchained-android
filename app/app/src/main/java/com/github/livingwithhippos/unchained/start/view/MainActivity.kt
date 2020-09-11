@@ -30,6 +30,16 @@ class MainActivity : AppCompatActivity() {
         if (savedInstanceState == null) {
             setupNavigationManager()
         }
+
+        binding.topAppBar.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.settings -> {
+                    println("menu")
+                    true
+                }
+                else -> false
+            }
+        }
     }
 
     private fun setupNavigationManager() {
