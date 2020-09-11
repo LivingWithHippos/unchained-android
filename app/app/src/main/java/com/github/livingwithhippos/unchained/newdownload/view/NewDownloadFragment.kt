@@ -106,7 +106,7 @@ class NewDownloadFragment : Fragment(), NewDownloadListener {
         downloadBinding.bPasteLink.setOnClickListener {
             val pasteText = getClipboardText()
 
-            if (pasteText.isWebUrl())
+            if (pasteText.isWebUrl() || pasteText.isMagnet())
                 downloadBinding.tiLink.setText(pasteText, TextView.BufferType.EDITABLE)
             else
                 showToast(R.string.invalid_url)
