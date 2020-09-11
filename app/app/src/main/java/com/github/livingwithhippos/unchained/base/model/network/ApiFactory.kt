@@ -21,6 +21,8 @@ import com.github.livingwithhippos.unchained.user.model.UserApiHelper
 import com.github.livingwithhippos.unchained.user.model.UserApiHelperImpl
 import com.github.livingwithhippos.unchained.utilities.BASE_AUTH_URL
 import com.github.livingwithhippos.unchained.utilities.BASE_URL
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -70,11 +72,17 @@ object ApiFactory {
     @Provides
     @Singleton
     @ApiRetrofit
-    fun apiRetrofit(okHttpClient: OkHttpClient): Retrofit = Retrofit.Builder()
-        .client(okHttpClient)
-        .baseUrl(BASE_URL)
-        .addConverterFactory(MoshiConverterFactory.create())
-        .build()
+    fun apiRetrofit(okHttpClient: OkHttpClient): Retrofit {
+        val moshi = Moshi.Builder()
+            .add(KotlinJsonAdapterFactory())
+            .build()
+
+        return Retrofit.Builder()
+            .client(okHttpClient)
+            .baseUrl(BASE_URL)
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .build()
+    }
 
     // authentication api injection
     @Provides
