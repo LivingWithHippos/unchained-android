@@ -24,6 +24,7 @@ import com.github.livingwithhippos.unchained.torrentdetails.view.TorrentDetailsF
 import com.github.livingwithhippos.unchained.utilities.MAGNET_PATTERN
 import com.github.livingwithhippos.unchained.utilities.REMOTE_TRAFFIC_ON
 import com.github.livingwithhippos.unchained.utilities.getClipboardText
+import com.github.livingwithhippos.unchained.utilities.isMagnet
 import com.github.livingwithhippos.unchained.utilities.isWebUrl
 import com.github.livingwithhippos.unchained.utilities.runRippleAnimation
 import com.github.livingwithhippos.unchained.utilities.showToast
@@ -91,8 +92,7 @@ class NewDownloadFragment : Fragment(), NewDownloadListener {
                 )
 
             } else {
-                val m: Matcher = Pattern.compile(MAGNET_PATTERN).matcher(link)
-                if (m.lookingAt()) {
+                if (link.isMagnet()) {
                     downloadBinding.bUnrestrict.isEnabled = false
                     downloadBinding.bLoadTorrent.isEnabled = false
                     viewModel.fetchAddedMagnet(link)

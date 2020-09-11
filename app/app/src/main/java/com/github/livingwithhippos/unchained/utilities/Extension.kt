@@ -38,6 +38,8 @@ import com.bumptech.glide.request.transition.Transition
 import com.github.livingwithhippos.unchained.R
 import com.google.android.material.progressindicator.ProgressIndicator
 import java.util.*
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 
 //todo: split extensions in own files (glide/views etc)
 @BindingAdapter("imageURL")
@@ -236,6 +238,11 @@ fun Fragment.openExternalWebPage(url: String, showErrorToast: Boolean = true): B
 
 fun String.isWebUrl(): Boolean =
     Patterns.WEB_URL.matcher(this).matches()
+
+fun String.isMagnet(): Boolean {
+    val m: Matcher = Pattern.compile(MAGNET_PATTERN).matcher(this)
+    return m.lookingAt()
+}
 
 /**
  * this function can be used to create a new context with a particular locale.
