@@ -9,7 +9,7 @@ class DownloadApiHelperImpl @Inject constructor(private val downloadsApi: Downlo
 
     override suspend fun getDownloads(
         token: String,
-        offset: Int,
+        offset: Int?,
         page: Int,
         limit: Int
     ): Response<List<DownloadItem>> =

@@ -8,9 +8,9 @@ class DownloadRepository @Inject constructor(private val downloadApiHelper: Down
     BaseRepository() {
     suspend fun getDownloads(
         token: String,
-        offset: Int = 0,
+        offset: Int?,
         page: Int = 1,
-        limit: Int = 5
+        limit: Int = 10
     ): List<DownloadItem> {
 
         val downloadResponse = safeApiCall(

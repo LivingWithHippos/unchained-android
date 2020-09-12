@@ -8,7 +8,6 @@ import java.io.IOException
 import javax.inject.Inject
 
 private const val DOWNLOAD_STARTING_PAGE_INDEX = 1
-private const val DOWNLOAD_OFFSET= 0
 
 
 class DownloadPagingSource (
@@ -23,7 +22,7 @@ class DownloadPagingSource (
             throw IllegalArgumentException("Error loading token: $token")
 
         return try {
-            val response = downloadRepository.getDownloads(token, DOWNLOAD_OFFSET, page, params.loadSize)
+            val response = downloadRepository.getDownloads(token, null, page, params.loadSize)
 
             LoadResult.Page(
                 data = response,

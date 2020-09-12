@@ -132,7 +132,7 @@ interface DownloadsApi {
     @GET(" downloads")
     suspend fun getDownloads(
         @Header("Authorization") token: String,
-        @Query("offset") offset: Int,
+        @Query("offset") offset: Int?,
         @Query("page") page: Int,
         @Query("limit") limit: Int = 10
     ): Response<List<DownloadItem>>

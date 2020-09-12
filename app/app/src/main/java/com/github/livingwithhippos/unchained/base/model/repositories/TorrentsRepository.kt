@@ -90,7 +90,7 @@ class TorrentsRepository @Inject constructor(private val torrentApiHelper: Torre
         token: String,
         offset: Int? = 0,
         page: Int? = null,
-        limit: Int? = 5,
+        limit: Int? = 10,
         filter: String? = null
     ): List<TorrentItem>? {
         val torrentsResponse: List<TorrentItem>? = safeApiCall(
