@@ -37,7 +37,6 @@ class AuthenticationViewModel @ViewModelInject constructor(
     fun fetchAuthenticationInfo() {
         scope.launch {
             val authData = authRepository.getVerificationCode()
-            authLiveData.postValue(authData)
             if (authData?.deviceCode != null)
                 credentialRepository.insert(
                     Credentials(
@@ -48,6 +47,7 @@ class AuthenticationViewModel @ViewModelInject constructor(
                         null
                     )
                 )
+            authLiveData.postValue(authData)
         }
     }
 
