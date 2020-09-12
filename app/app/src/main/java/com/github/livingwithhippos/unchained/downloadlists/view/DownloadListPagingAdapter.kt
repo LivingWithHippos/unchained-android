@@ -18,3 +18,7 @@ class DownloadListPagingAdapter(listener: DownloadListListener) : DataBindingPag
 
     override fun getItemViewType(position: Int) = R.layout.item_list_download
 }
+
+interface DownloadListListener {
+    fun onClick(item: DownloadItem)
+}
