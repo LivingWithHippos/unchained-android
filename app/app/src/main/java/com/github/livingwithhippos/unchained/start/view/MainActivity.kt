@@ -1,5 +1,6 @@
 package com.github.livingwithhippos.unchained.start.view
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -7,6 +8,8 @@ import androidx.navigation.NavController
 import androidx.navigation.ui.setupWithNavController
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.databinding.ActivityMainBinding
+import com.github.livingwithhippos.unchained.settings.SettingsActivity
+import com.github.livingwithhippos.unchained.settings.SettingsFragment
 import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewModel
 import com.github.livingwithhippos.unchained.utilities.BottomNavManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -34,12 +37,17 @@ class MainActivity : AppCompatActivity() {
         binding.topAppBar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.settings -> {
-                    println("menu")
+                    openSettings()
                     true
                 }
                 else -> false
             }
         }
+    }
+
+    private fun openSettings() {
+        val intent = Intent(this, SettingsActivity::class.java)
+        startActivity(intent)
     }
 
     private fun setupNavigationManager() {

@@ -4,7 +4,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    
+
     <application
         android:name=".base.UnchainedApplication"
         android:allowBackup="true"
@@ -13,6 +13,7 @@
         android:roundIcon="@mipmap/icon_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Unchained">
+        <activity android:name=".settings.SettingsActivity" />
         <activity android:name=".start.view.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -20,6 +21,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
