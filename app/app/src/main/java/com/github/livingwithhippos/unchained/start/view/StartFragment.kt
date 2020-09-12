@@ -40,12 +40,15 @@ class StartFragment : UnchainedFragment() {
         viewModel.workingCredentialsLiveData.observe(this, Observer {
             // navigate to user fragment
             if (it?.accessToken != null) {
+                activityViewModel.setAuthenticated()
                 val action =
                     StartFragmentDirections.actionStartFragmentToUserProfileFragment(it.accessToken)
                 findNavController().navigate(action)
             }
             // no complete credentials: navigate to authentication fragment
             else {
+                //todo: check if null could be because of missing network connectivity
+                activityViewModel.setUnauthenticated()
                 val action = StartFragmentDirections.actionStartFragmentToAuthenticationFragment()
                 findNavController().navigate(action)
             }

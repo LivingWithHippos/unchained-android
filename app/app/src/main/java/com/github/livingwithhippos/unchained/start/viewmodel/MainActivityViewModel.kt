@@ -71,4 +71,11 @@ class MainActivityViewModel @ViewModelInject constructor(
         // todo: needs to check if it's a network error or if token has expired etc.
     }
 
+    fun setAuthenticated() {
+        authenticationState.postValue(AuthenticationState.AUTHENTICATED)
+    }
+
+    fun setUnauthenticated() {
+        authenticationState.postValue(AuthenticationState.UNAUTHENTICATED)
+    }
 }

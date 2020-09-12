@@ -11,6 +11,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.authentication.viewmodel.AuthenticationViewModel
+import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.databinding.FragmentAuthenticationBinding
 import com.github.livingwithhippos.unchained.utilities.copyToClipboard
 import com.github.livingwithhippos.unchained.utilities.showToast
@@ -23,7 +24,7 @@ import dagger.hilt.android.AndroidEntryPoint
  * create an instance of this fragment.
  */
 @AndroidEntryPoint
-class AuthenticationFragment : Fragment(), ButtonListener {
+class AuthenticationFragment : UnchainedFragment(), ButtonListener {
 
     private val viewModel: AuthenticationViewModel by viewModels()
 
@@ -39,7 +40,6 @@ class AuthenticationFragment : Fragment(), ButtonListener {
 
         viewModel.fetchAuthenticationInfo()
         observeAuthentication(authBinding)
-
 
         return authBinding.root
     }
@@ -102,6 +102,7 @@ class AuthenticationFragment : Fragment(), ButtonListener {
                 if (it == null)
                     showToast(R.string.invalid_token)
                 else {
+                    activityViewModel.setAuthenticated()
                     // go to user screen
                     // todo: the user call will be repeated, avoid if possible (shared viewmodel?)
                     val action =
