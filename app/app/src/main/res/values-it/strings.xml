@@ -14,7 +14,7 @@
     <string name="waiting_token">In attesa del codice</string>
     <string name="obtained_token">Gettone ottenuto</string>
     <string name="waiting_link">Caricamento link di autorizzazione</string>
-    <string name="link_loaded">Link di autoprizzazione caricato</string>
+    <string name="link_loaded">Link di autorizzazione caricato</string>
     <string name="premium">Premium</string>
     <string name="not_premium">Gratuito</string>
     <string name="premium_points_format">Punti Premium: %1$d/1000</string>
