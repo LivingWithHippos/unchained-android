@@ -13,17 +13,23 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-//todo: evaluate if this ViewModel could be used as a shared one with the fragments
+//todo: evaluate if this ViewModel could be used as a shared one between the fragments
 class MainActivityViewModel @ViewModelInject constructor(
     private val authRepository: AuthenticationRepository,
     private val credentialRepository: CredentialsRepository,
     private val userRepository: UserRepository
 ) : ViewModel() {
 
+    enum class AuthenticationState {
+        AUTHENTICATED, UNAUTHENTICATED, BAD_TOKEN, ACCOUNT_LOCKED
+    }
+
     private val job = Job()
     val scope = CoroutineScope(Dispatchers.Default + job)
 
     val workingCredentialsLiveData = MutableLiveData<Credentials?>()
+
+    val authenticationState = MutableLiveData<AuthenticationState> ()
 
     fun fetchFirstWorkingCredentials() {
         scope.launch {
@@ -64,4 +70,5 @@ class MainActivityViewModel @ViewModelInject constructor(
             throw IllegalArgumentException("Credentials parameter has null access token")
         // todo: needs to check if it's a network error or if token has expired etc.
     }
+
 }
