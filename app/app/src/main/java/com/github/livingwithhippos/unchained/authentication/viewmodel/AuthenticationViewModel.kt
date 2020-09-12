@@ -58,6 +58,7 @@ class AuthenticationViewModel @ViewModelInject constructor(
             var secretData = authRepository.getSecrets(deviceCode)
             secretLiveData.postValue(secretData)
             while (secretData?.clientId == null && calls < 60) {
+                //todo: stop calling if authenticated via private token
                 delay(waitTime)
                 secretData = authRepository.getSecrets(deviceCode)
                 calls++
