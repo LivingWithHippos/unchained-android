@@ -30,10 +30,7 @@ class DownloadListViewModel @ViewModelInject constructor(
     private val credentialsRepository: CredentialsRepository
 ) : ViewModel() {
 
-    private val job = Job()
-    private val scope = CoroutineScope(Dispatchers.Default + job)
-
-    val listData: LiveData<PagingData<DownloadItem>> = Pager(PagingConfig(pageSize = 10)) {
+    val listData: LiveData<PagingData<DownloadItem>> = Pager(PagingConfig(pageSize = 30)) {
         DownloadPagingSource(downloadRepository,credentialsRepository)
     }.liveData.cachedIn(viewModelScope)
 
