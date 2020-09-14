@@ -57,13 +57,6 @@ class UserProfileFragment : Fragment() {
             // or the premium page, add to settings fragment
             openExternalWebPage(REFERRAL_LINK)
         }
-
-        userBinding.bPremium.setOnClickListener {
-            //todo: ask user and either load the referral link
-            // or the premium page, add to settings fragment
-            openExternalWebPage(REFERRAL_LINK)
-        }
-
         return userBinding.root
     }
 
