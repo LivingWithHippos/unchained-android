@@ -41,6 +41,7 @@
     <string name="links">Links</string>
     <string name="add_private_token_message">Puoi anche usare il tuo codice API privato da https://real-debrid.com/apitoken che ti permetterà lo streaming.</string>
     <string name="add_private_token">Aggiungi codice privato</string>
+    <string name="save">Salva</string>
     <string name="private_token">"Codice privato "</string>
     <string name="invalid_token">Per favore controlla il codice</string>
     <string name="download_details">Dettagli Download</string>
