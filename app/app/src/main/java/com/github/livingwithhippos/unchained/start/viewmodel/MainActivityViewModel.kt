@@ -76,6 +76,7 @@ class MainActivityViewModel @ViewModelInject constructor(
     }
 
     fun setUnauthenticated() {
+        //todo: delete active credentials?
         authenticationState.postValue(AuthenticationState.UNAUTHENTICATED)
     }
 }
