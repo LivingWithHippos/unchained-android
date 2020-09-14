@@ -18,4 +18,8 @@ interface AuthApiHelper {
         clientSecret: String,
         deviceCode: String
     ): Response<Token>
+
+    suspend fun disableToken(
+        token: String
+    ): Response<Any>
 }

@@ -4,6 +4,7 @@ import com.github.livingwithhippos.unchained.authentication.model.Authentication
 import com.github.livingwithhippos.unchained.authentication.model.Secrets
 import com.github.livingwithhippos.unchained.authentication.model.Token
 import com.github.livingwithhippos.unchained.base.model.network.AuthApiHelper
+import com.github.livingwithhippos.unchained.base.model.network.Host
 import javax.inject.Inject
 
 class AuthenticationRepository @Inject constructor(private val apiHelper: AuthApiHelper) :
@@ -42,6 +43,17 @@ class AuthenticationRepository @Inject constructor(private val apiHelper: AuthAp
                 )
             },
             errorMessage = "Error Fetching Token"
+        )
+
+        return authResponse;
+
+    }
+
+    suspend fun disableToken(token: String): Any? {
+
+        val authResponse = safeApiCall(
+            call = { apiHelper.disableToken("Bearer $token") },
+            errorMessage = "Error disabling token"
         )
 
         return authResponse;
