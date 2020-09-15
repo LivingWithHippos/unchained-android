@@ -56,6 +56,8 @@ class DownloadListFragment : UnchainedFragment(), DownloadListListener {
             } else {
                 // remove observer if present
                 viewModel.listData.removeObserver(downloadObserver)
+                // [MainActivity] will observe this value and go back to home with the login page
+                activityViewModel.setUnauthenticated()
             }
         })
 
