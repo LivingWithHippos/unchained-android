@@ -7,6 +7,7 @@ import com.github.livingwithhippos.unchained.base.model.entities.Credentials
 import com.github.livingwithhippos.unchained.base.model.repositories.AuthenticationRepository
 import com.github.livingwithhippos.unchained.base.model.repositories.CredentialsRepository
 import com.github.livingwithhippos.unchained.base.model.repositories.UserRepository
+import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.PRIVATE_TOKEN
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -29,7 +30,7 @@ class MainActivityViewModel @ViewModelInject constructor(
 
     val workingCredentialsLiveData = MutableLiveData<Credentials?>()
 
-    val authenticationState = MutableLiveData<AuthenticationState> ()
+    val authenticationState = MutableLiveData<Event<AuthenticationState>> ()
 
     fun fetchFirstWorkingCredentials() {
         scope.launch {
@@ -72,12 +73,12 @@ class MainActivityViewModel @ViewModelInject constructor(
     }
 
     fun setAuthenticated() {
-        authenticationState.postValue(AuthenticationState.AUTHENTICATED)
+        authenticationState.postValue(Event(AuthenticationState.AUTHENTICATED))
     }
 
     fun setUnauthenticated() {
         //todo: delete active credentials?
-        authenticationState.postValue(AuthenticationState.UNAUTHENTICATED)
+        authenticationState.postValue(Event(AuthenticationState.UNAUTHENTICATED))
     }
 
     fun logout() {

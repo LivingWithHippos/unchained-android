@@ -46,7 +46,7 @@ class MainActivity : AppCompatActivity() {
 
         val viewModel: MainActivityViewModel by viewModels()
         viewModel.authenticationState.observe(this, Observer { state ->
-            when (state) {
+            when (state.getContentIfNotHandled()) {
                 // go to login fragment
                 UNAUTHENTICATED -> {
                     openAuthentication()

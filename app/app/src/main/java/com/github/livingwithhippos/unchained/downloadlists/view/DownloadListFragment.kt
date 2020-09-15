@@ -49,7 +49,7 @@ class DownloadListFragment : UnchainedFragment(), DownloadListListener {
 
         // checks the authentication state. Needed to avoid automatic API calls before the authentication process is finished
         activityViewModel.authenticationState.observe(viewLifecycleOwner, Observer {
-            if (it == MainActivityViewModel.AuthenticationState.AUTHENTICATED) {
+            if (it.peekContent() == MainActivityViewModel.AuthenticationState.AUTHENTICATED) {
                 // register observer if not already registered
                 if (!viewModel.listData.hasActiveObservers())
                     viewModel.listData.observe(viewLifecycleOwner, downloadObserver)
