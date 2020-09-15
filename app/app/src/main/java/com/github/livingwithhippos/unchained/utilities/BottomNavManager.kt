@@ -59,8 +59,6 @@ class BottomNavManager(
         // create a NavHostFragment for each NavGraph ID
         createNavHostFragmentsForGraphs()
 
-        // When a navigation item is selected
-        bottomNavigationView.setupItemClickListener()
     }
 
     private fun createNavHostFragmentsForGraphs() {
@@ -91,6 +89,15 @@ class BottomNavManager(
                 showNavHostFragment(navHostFragment, false)
             }
         }
+    }
+
+    fun startListening() {
+        // When a navigation item is selected
+        bottomNavigationView.setupItemClickListener()
+    }
+
+    fun stopListening() {
+        bottomNavigationView.removeItemClickListener()
     }
 
     private fun BottomNavigationView.setupItemClickListener() {
@@ -132,6 +139,10 @@ class BottomNavManager(
                 true
             }
         }
+    }
+
+    private fun BottomNavigationView.removeItemClickListener() {
+        menu.forEach { item -> item.setOnMenuItemClickListener(null) }
     }
 
     // select particular bottom navigation item

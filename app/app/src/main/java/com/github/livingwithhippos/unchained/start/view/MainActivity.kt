@@ -50,17 +50,22 @@ class MainActivity : AppCompatActivity() {
                 // go to login fragment
                 UNAUTHENTICATED -> {
                     openAuthentication()
+                    bottomNavManager?.stopListening()
                 }
                 // go to login fragment and show an error message
                 BAD_TOKEN-> {
                     openAuthentication()
+                    bottomNavManager?.stopListening()
                 }
                 // go to login fragment and show another error message
                 ACCOUNT_LOCKED -> {
                     openAuthentication()
+                    bottomNavManager?.stopListening()
                 }
                 // do nothing
-                AUTHENTICATED -> {}
+                AUTHENTICATED -> {
+                    bottomNavManager?.startListening()
+                }
                 else -> throw IllegalStateException("Unknown credentials state: $state")
             }
         })
@@ -73,6 +78,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun openAuthentication() {
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_nav_view)
+        // note: the [BottomNavManager] also has a selectItem() method but this should work for every bottom menu
         if (bottomNav.selectedItemId != R.id.navigation_home) {
             bottomNav.selectedItemId = R.id.navigation_home
         }
