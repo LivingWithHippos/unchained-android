@@ -187,6 +187,16 @@
             android:layout_marginTop="10dp"
             app:layout_constraintStart_toStartOf="@id/cvPremium"
             app:layout_constraintTop_toBottomOf="@id/tvDescription"/>
+
+
+        <Button
+            android:id="@+id/bLogout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/logout"
+            android:backgroundTint="?attr/colorSecondary"
+            app:layout_constraintBottom_toBottomOf="@id/bPremium"
+            app:layout_constraintEnd_toEndOf="@id/cvPremium"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 </layout>

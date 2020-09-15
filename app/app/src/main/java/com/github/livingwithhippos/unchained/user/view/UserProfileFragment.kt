@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.databinding.FragmentUserProfileBinding
@@ -58,12 +59,18 @@ class UserProfileFragment : UnchainedFragment() {
             when (it) {
                 // back to authentication fragment
                 MainActivityViewModel.AuthenticationState.UNAUTHENTICATED -> {
-
+                    val action = UserProfileFragmentDirections.actionUserToAuthentication()
+                    findNavController().navigate(action)
                 }
                 //do nothing for now, add other states later
                 else -> {}
             }
         })
+
+        userBinding.bLogout.setOnClickListener {
+            activityViewModel.logout()
+        }
+
         return userBinding.root
     }
 }

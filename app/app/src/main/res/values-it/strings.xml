@@ -112,4 +112,5 @@
     <string name="action_already_done">Azione già eseguita</string>
     <string name="image_resolution_error">Errore risoluzione immagine</string>
     <string name="torrent_already_active">Torrent già attivo</string>
+    <string name="logout">Logout</string>
 </resources>
