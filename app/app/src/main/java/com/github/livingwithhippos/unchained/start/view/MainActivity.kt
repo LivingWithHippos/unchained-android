@@ -46,25 +46,25 @@ class MainActivity : AppCompatActivity() {
 
         val viewModel: MainActivityViewModel by viewModels()
         viewModel.authenticationState.observe(this, Observer { state ->
-            when (state.getContentIfNotHandled()) {
+            when (state.peekContent()) {
                 // go to login fragment
                 UNAUTHENTICATED -> {
                     openAuthentication()
-                    bottomNavManager?.stopListening()
+                    bottomNavManager?.disableMenuItems(listOf(R.id.navigation_home))
                 }
                 // go to login fragment and show an error message
                 BAD_TOKEN-> {
                     openAuthentication()
-                    bottomNavManager?.stopListening()
+                    bottomNavManager?.disableMenuItems(listOf(R.id.navigation_home))
                 }
                 // go to login fragment and show another error message
                 ACCOUNT_LOCKED -> {
                     openAuthentication()
-                    bottomNavManager?.stopListening()
+                    bottomNavManager?.disableMenuItems(listOf(R.id.navigation_home))
                 }
                 // do nothing
                 AUTHENTICATED -> {
-                    bottomNavManager?.startListening()
+                    bottomNavManager?.enableMenuItems()
                 }
                 else -> throw IllegalStateException("Unknown credentials state: $state")
             }

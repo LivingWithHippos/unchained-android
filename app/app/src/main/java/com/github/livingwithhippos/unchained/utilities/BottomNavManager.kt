@@ -59,6 +59,8 @@ class BottomNavManager(
         // create a NavHostFragment for each NavGraph ID
         createNavHostFragmentsForGraphs()
 
+        // When a navigation item is selected
+        bottomNavigationView.setupItemClickListener()
     }
 
     private fun createNavHostFragmentsForGraphs() {
@@ -91,13 +93,12 @@ class BottomNavManager(
         }
     }
 
-    fun startListening() {
-        // When a navigation item is selected
-        bottomNavigationView.setupItemClickListener()
+    fun disableMenuItems(exceptions: List<Int>= emptyList()) {
+        bottomNavigationView.disableItems(exceptions)
     }
 
-    fun stopListening() {
-        bottomNavigationView.removeItemClickListener()
+    fun enableMenuItems(exceptions: List<Int> = emptyList()) {
+        bottomNavigationView.enableItems(exceptions)
     }
 
     private fun BottomNavigationView.setupItemClickListener() {
@@ -141,8 +142,18 @@ class BottomNavManager(
         }
     }
 
-    private fun BottomNavigationView.removeItemClickListener() {
-        menu.forEach { item -> item.setOnMenuItemClickListener(null) }
+    private fun BottomNavigationView.disableItems(exceptions: List<Int>) {
+        menu.forEach { item ->
+            if (!exceptions.contains(item.itemId))
+                item.isEnabled = false
+        }
+    }
+
+    private fun BottomNavigationView.enableItems(exceptions: List<Int>) {
+        menu.forEach { item ->
+            if (!exceptions.contains(item.itemId))
+                item.isEnabled = true
+        }
     }
 
     // select particular bottom navigation item
