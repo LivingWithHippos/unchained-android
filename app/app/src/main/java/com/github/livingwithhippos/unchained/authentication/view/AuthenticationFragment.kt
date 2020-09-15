@@ -46,9 +46,9 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
 
     private fun observeAuthentication(binding: FragmentAuthenticationBinding) {
         viewModel.authLiveData.observe(viewLifecycleOwner, Observer {
-            if (it != null) {
-                binding.auth = it
-                observeSecrets(binding, it.deviceCode)
+            it.getContentIfNotHandled()?.let { auth ->
+                binding.auth = auth
+                observeSecrets(binding, auth.deviceCode)
             }
         })
     }
@@ -57,9 +57,9 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
         // start checking for user confirmation
         viewModel.fetchSecrets(deviceCode)
         viewModel.secretLiveData.observe(viewLifecycleOwner, Observer {
-            if (it?.clientId != null) {
-                binding.secrets = it
-                observeToken(binding, it.clientId, deviceCode, it.clientSecret)
+            it.getContentIfNotHandled()?.let { secrets ->
+                binding.secrets = secrets
+                observeToken(binding, secrets.clientId, deviceCode, secrets.clientSecret)
             }
         })
     }
@@ -74,11 +74,11 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
         // start checking for user confirmation
         viewModel.fetchToken(clientId, deviceCode, clientSecret)
         viewModel.tokenLiveData.observe(viewLifecycleOwner, Observer {
-            if (it?.accessToken != null) {
+            it.getContentIfNotHandled()?.let { token ->
                 activityViewModel.setAuthenticated()
-                binding.token = it
+                binding.token = token
                 val action =
-                    AuthenticationFragmentDirections.actionAuthenticationToUser(it.accessToken)
+                    AuthenticationFragmentDirections.actionAuthenticationToUser(token.accessToken)
                 findNavController().navigate(action)
             }
         })

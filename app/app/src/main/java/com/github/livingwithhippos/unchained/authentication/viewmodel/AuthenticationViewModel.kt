@@ -11,6 +11,7 @@ import com.github.livingwithhippos.unchained.base.model.repositories.Authenticat
 import com.github.livingwithhippos.unchained.base.model.repositories.CredentialsRepository
 import com.github.livingwithhippos.unchained.base.model.repositories.UserRepository
 import com.github.livingwithhippos.unchained.user.model.User
+import com.github.livingwithhippos.unchained.utilities.Event
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -27,10 +28,10 @@ class AuthenticationViewModel @ViewModelInject constructor(
     private val job = Job()
     val scope = CoroutineScope(Dispatchers.Default + job)
 
-    val authLiveData = MutableLiveData<Authentication?>()
-    val secretLiveData = MutableLiveData<Secrets?>()
-    val tokenLiveData = MutableLiveData<Token?>()
-    val userLiveData = MutableLiveData<User?>()
+    val authLiveData = MutableLiveData<Event<Authentication?>>()
+    val secretLiveData = MutableLiveData<Event<Secrets?>>()
+    val tokenLiveData = MutableLiveData<Event<Token?>>()
+    val userLiveData = MutableLiveData<Event<User?>>()
 
     //todo: here we should check if we already have credentials and if they work, and pass those
     //todo: rename this first part of the auth flow as verificationInfo etc.?
@@ -47,7 +48,7 @@ class AuthenticationViewModel @ViewModelInject constructor(
                         null
                     )
                 )
-            authLiveData.postValue(authData)
+            authLiveData.postValue(Event(authData))
         }
     }
 
@@ -56,7 +57,7 @@ class AuthenticationViewModel @ViewModelInject constructor(
         var calls = 0
         scope.launch {
             var secretData = authRepository.getSecrets(deviceCode)
-            secretLiveData.postValue(secretData)
+            secretLiveData.postValue(Event(secretData))
             while (secretData?.clientId == null && calls < 60) {
                 //todo: stop calling if authenticated via private token
                 delay(waitTime)
@@ -64,7 +65,7 @@ class AuthenticationViewModel @ViewModelInject constructor(
                 calls++
             }
             if (secretData?.clientId != null) {
-                secretLiveData.postValue(secretData)
+                secretLiveData.postValue(Event(secretData))
                 credentialRepository.updateCredentials(
                     Credentials(
                         deviceCode = deviceCode,
@@ -85,7 +86,7 @@ class AuthenticationViewModel @ViewModelInject constructor(
         //todo: should we blank unnecessary secrets when we have a working token?
         scope.launch {
             val tokenData = authRepository.getToken(clientId, clientSecret, deviceCode)
-            tokenLiveData.postValue(tokenData)
+            tokenLiveData.postValue(Event(tokenData))
             if (tokenData?.accessToken != null) {
                 // i need only a set of credentials in my application
                 //todo: check this when adding private api token
@@ -112,7 +113,7 @@ class AuthenticationViewModel @ViewModelInject constructor(
             if (userData != null)
                 credentialRepository.insertPrivateToken(token)
             // alert the observing fragment of the result
-            userLiveData.postValue(userData)
+            userLiveData.postValue(Event(userData))
         }
     }
 
