@@ -75,6 +75,7 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
         viewModel.fetchToken(clientId, deviceCode, clientSecret)
         viewModel.tokenLiveData.observe(viewLifecycleOwner, Observer {
             if (it?.accessToken != null) {
+                activityViewModel.setAuthenticated()
                 binding.token = it
                 val action =
                     AuthenticationFragmentDirections.actionAuthenticationToUser(it.accessToken)
