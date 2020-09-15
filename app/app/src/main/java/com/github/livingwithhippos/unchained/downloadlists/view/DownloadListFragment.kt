@@ -57,7 +57,8 @@ class DownloadListFragment : UnchainedFragment(), DownloadListListener {
                 // remove observer if present
                 viewModel.listData.removeObserver(downloadObserver)
                 // [MainActivity] will observe this value and go back to home with the login page
-                activityViewModel.setUnauthenticated()
+                // fixme: using this crashes if I click on the list menu voice while unauthenticated
+                // activityViewModel.setUnauthenticated()
             }
         })
 
