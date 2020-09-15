@@ -79,4 +79,11 @@ class MainActivityViewModel @ViewModelInject constructor(
         //todo: delete active credentials?
         authenticationState.postValue(AuthenticationState.UNAUTHENTICATED)
     }
+
+    fun logout() {
+        scope.launch {
+            credentialRepository.deleteAllCredentials()
+            setUnauthenticated()
+        }
+    }
 }
