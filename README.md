@@ -54,7 +54,7 @@ Offer me coffee or a beer with [Paypal.](https://www.paypal.com/paypalme/sandnau
 
 Send a tip with [Brave.](https://brave.com/liv466)
 
-Send me a Bitcoin? Aha ha, just kidding.. [unless..?](bitcoin:32XF4QYSnkHfQ8h37dTxrjd56vPn26v22f)
+Send me a Bitcoin? Aha ha, just kidding.. <a href="bitcoin:32XF4QYSnkHfQ8h37dTxrjd56vPn26v22f">unless..?</a>
 
 ### Credits :crown:
 
