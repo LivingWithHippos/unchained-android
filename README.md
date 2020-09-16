@@ -52,7 +52,9 @@ You can use [my referral link](http://real-debrid.com/?id=78841) to get Real Deb
 
 Offer me coffee or a beer with [Paypal.](https://www.paypal.com/paypalme/sandnaut)
 
-Send me a Bitcoin? Aha ha, just kidding.. [unless..?](https://knowyourmeme.com/memes/just-kidding-unless)
+Send a tip with [Brave.](https://brave.com/liv466)
+
+Send me a Bitcoin? Aha ha, just kidding.. [unless..?](bitcoin:32XF4QYSnkHfQ8h37dTxrjd56vPn26v22f)
 
 ### Credits :crown:
 
