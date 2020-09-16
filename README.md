@@ -27,6 +27,17 @@ You can take a look at the project [here](https://github.com/LivingWithHippos/un
 
 ### Screenshots :iphone:
 
+| Home  | New Download | Download Details |
+| ------------- | ------------- | ------------- |
+| <img width="300" src="/extra_assets/screenshots/home.jpg?raw=true" alt="User Screen"> | <img width="300" src="/extra_assets/screenshots/new_download.png?raw=true" alt="New Download Screen">  | <img width="300" src="/extra_assets/screenshots/download_details.png?raw=true" alt="Download Details Screen">  |
+
+
+| Torrent Download  | Download List |
+| ------------- | ------------- |
+| <img width="300" src="/extra_assets/screenshots/torrent.png?raw=true" alt="Torrent Download Screen"> | <img width="300" src="/extra_assets/screenshots/download_list.png?raw=true" alt="Download List Screen">  |
+
+
+
 ### Developing and Contributing :writing_hand:
 
 At the moment, the app is under heavy development under Android Studio stable. PRs are welcome.
