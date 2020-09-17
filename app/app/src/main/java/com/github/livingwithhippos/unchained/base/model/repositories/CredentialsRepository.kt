@@ -2,6 +2,7 @@ package com.github.livingwithhippos.unchained.base.model.repositories
 
 import com.github.livingwithhippos.unchained.base.model.dao.CredentialsDao
 import com.github.livingwithhippos.unchained.base.model.entities.Credentials
+import com.github.livingwithhippos.unchained.utilities.PRIVATE_TOKEN
 import javax.inject.Inject
 
 // Declares the DAO as a private property in the constructor. Pass in the DAO
@@ -30,7 +31,13 @@ class CredentialsRepository @Inject constructor(private val credentialsDao: Cred
 
     suspend fun getToken(): String {
         val credentials = credentialsDao.getCompleteCredentials()
-        return if (credentials.isNotEmpty()) credentials.first().accessToken ?: "" else ""
+        return credentials
+                // return private token first
+                .firstOrNull { it.refreshToken == PRIVATE_TOKEN }?.accessToken
+                // open source token second
+                ?: credentials.firstOrNull()?.accessToken
+                // empty string last
+                ?: ""
     }
 
 }
