@@ -13,6 +13,7 @@ import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.authentication.viewmodel.AuthenticationViewModel
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.databinding.FragmentAuthenticationBinding
+import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewModel
 import com.github.livingwithhippos.unchained.utilities.copyToClipboard
 import com.github.livingwithhippos.unchained.utilities.showToast
 import dagger.hilt.android.AndroidEntryPoint
@@ -104,8 +105,8 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
                     showToast(R.string.invalid_token)
                 else {
                     activityViewModel.setAuthenticated()
+                    viewModel.setAuthState(MainActivityViewModel.AuthenticationState.AUTHENTICATED)
                     // go to user screen
-                    // todo: the user call will be repeated, avoid if possible (shared viewmodel?)
                     val action =
                         AuthenticationFragmentDirections.actionAuthenticationToUser(token)
                     findNavController().navigate(action)

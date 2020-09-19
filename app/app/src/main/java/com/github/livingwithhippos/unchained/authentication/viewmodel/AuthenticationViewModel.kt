@@ -1,7 +1,9 @@
 package com.github.livingwithhippos.unchained.authentication.viewmodel
 
+import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.github.livingwithhippos.unchained.authentication.model.Authentication
 import com.github.livingwithhippos.unchained.authentication.model.Secrets
@@ -10,6 +12,7 @@ import com.github.livingwithhippos.unchained.base.model.entities.Credentials
 import com.github.livingwithhippos.unchained.base.model.repositories.AuthenticationRepository
 import com.github.livingwithhippos.unchained.base.model.repositories.CredentialsRepository
 import com.github.livingwithhippos.unchained.base.model.repositories.UserRepository
+import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewModel
 import com.github.livingwithhippos.unchained.user.model.User
 import com.github.livingwithhippos.unchained.utilities.Event
 import kotlinx.coroutines.CoroutineScope
@@ -20,9 +23,10 @@ import kotlinx.coroutines.launch
 
 //todo: add state saving and loading
 class AuthenticationViewModel @ViewModelInject constructor(
-    private val authRepository: AuthenticationRepository,
-    private val credentialRepository: CredentialsRepository,
-    private val userRepository: UserRepository
+        @Assisted private val savedStateHandle: SavedStateHandle,
+        private val authRepository: AuthenticationRepository,
+        private val credentialRepository: CredentialsRepository,
+        private val userRepository: UserRepository
 ) : ViewModel() {
 
     private val job = Job()
@@ -58,7 +62,7 @@ class AuthenticationViewModel @ViewModelInject constructor(
         scope.launch {
             var secretData = authRepository.getSecrets(deviceCode)
             secretLiveData.postValue(Event(secretData))
-            while (secretData?.clientId == null && calls < 60) {
+            while (secretData?.clientId == null && calls < 60 && getAuthState()!= MainActivityViewModel.AuthenticationState.AUTHENTICATED) {
                 //todo: stop calling if authenticated via private token
                 delay(waitTime)
                 secretData = authRepository.getSecrets(deviceCode)
@@ -76,7 +80,7 @@ class AuthenticationViewModel @ViewModelInject constructor(
                     )
                 )
             } else {
-                //todo: manage calls reaching limit time in the ui
+                //todo: manage calls reaching limit time in the ui or ignore if authenticated through the private token
             }
         }
 
@@ -117,5 +121,18 @@ class AuthenticationViewModel @ViewModelInject constructor(
         }
     }
 
+    fun setAuthState(state: MainActivityViewModel.AuthenticationState) {
+        savedStateHandle.set(AUTH_STATE,state)
+    }
+
+    private fun getAuthState(): MainActivityViewModel.AuthenticationState? {
+        // this value is only checked against AUTHENTICATED
+        return savedStateHandle.get(AUTH_STATE)
+    }
+
     fun cancelRequests() = job.cancel()
+
+    companion object {
+        const val AUTH_STATE="auth_state"
+    }
 }
