@@ -21,6 +21,7 @@ class MainActivityViewModel @ViewModelInject constructor(
     private val userRepository: UserRepository
 ) : ViewModel() {
 
+    //todo: move out of this class
     enum class AuthenticationState {
         AUTHENTICATED, UNAUTHENTICATED, BAD_TOKEN, ACCOUNT_LOCKED
     }
