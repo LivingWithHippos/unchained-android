@@ -30,14 +30,15 @@ class CredentialsRepository @Inject constructor(private val credentialsDao: Cred
     suspend fun deleteIncompleteCredentials() = credentialsDao.deleteIncompleteCredentials()
 
     suspend fun getToken(): String {
-        val credentials = credentialsDao.getCompleteCredentials()
-        return credentials
-                // return private token first
-                .firstOrNull { it.refreshToken == PRIVATE_TOKEN }?.accessToken
-                // open source token second
-                ?: credentials.firstOrNull()?.accessToken
-                // empty string last
-                ?: ""
+        return getFirstCredentials()?.accessToken ?: ""
     }
 
+    suspend fun getFirstCredentials(): Credentials? {
+        val credentials = credentialsDao.getCompleteCredentials()
+        return credentials
+                // return private credentials first
+                .firstOrNull { it.refreshToken == PRIVATE_TOKEN }
+                // open source credentials second
+                ?: credentials.firstOrNull()
+    }
 }
