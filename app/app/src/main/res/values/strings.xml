@@ -127,4 +127,5 @@
     <string name="image_resolution_error">Image resolution error</string>
     <string name="torrent_already_active">Torrent already active</string>
     <string name="logout">Logout</string>
+    <string name="account_page">Account Page</string>
 </resources>
