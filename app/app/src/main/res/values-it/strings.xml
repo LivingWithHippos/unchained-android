@@ -74,7 +74,7 @@
     <string name="details">Dettagli</string>
     <string name="file_id_format">ID: %1$s</string>
     <string name="file_type_format">Tipo: %1$s</string>
-    <string name="rd_settings_link_description">"Gestisci le tue impostazioni e converti i punti in premium alla pagina https://real-debrid.com/account "</string>
+    <string name="rd_settings_link_description">Gestisci le tue impostazioni, premium e converti i punti nella pagina account.</string>
     <string name="settings">Impostazioni</string>
     <string name="content_description_settings">Impostazioni della applicazione</string>
     <string name="error_unrestricting_download">Errore durante lo sblocco del download</string>
