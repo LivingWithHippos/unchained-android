@@ -31,7 +31,7 @@ class DownloadListViewModel @ViewModelInject constructor(
 ) : ViewModel() {
 
     // note: this value (pageSize) is triplicated when the first call is made. Yes it does, no I don't know why.
-    val listData: LiveData<PagingData<DownloadItem>> = Pager(PagingConfig(pageSize = 10)) {
+    val downloadsLiveData: LiveData<PagingData<DownloadItem>> = Pager(PagingConfig(pageSize = 10)) {
         DownloadPagingSource(downloadRepository, credentialsRepository)
     }.liveData.cachedIn(viewModelScope)
 

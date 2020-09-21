@@ -7,12 +7,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
 import androidx.paging.PagingData
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.databinding.TablayoutListBinding
 import com.github.livingwithhippos.unchained.downloadlists.model.DownloadItem
-import com.github.livingwithhippos.unchained.downloadlists.view.DownloadListFragmentDirections
 import com.github.livingwithhippos.unchained.downloadlists.view.DownloadListListener
 import com.github.livingwithhippos.unchained.downloadlists.view.DownloadListPagingAdapter
 import com.github.livingwithhippos.unchained.downloadlists.viewmodel.DownloadListViewModel
@@ -73,11 +71,11 @@ class ListsTabFragment: UnchainedFragment(), DownloadListListener {
         activityViewModel.authenticationState.observe(viewLifecycleOwner, Observer {
             if (it.peekContent() == MainActivityViewModel.AuthenticationState.AUTHENTICATED) {
                 // register observer if not already registered
-                if (!viewModel.listData.hasActiveObservers())
-                    viewModel.listData.observe(viewLifecycleOwner, downloadObserver)
+                if (!viewModel.downloadsLiveData.hasActiveObservers())
+                    viewModel.downloadsLiveData.observe(viewLifecycleOwner, downloadObserver)
             } else {
                 // remove observer if present
-                viewModel.listData.removeObserver(downloadObserver)
+                viewModel.downloadsLiveData.removeObserver(downloadObserver)
             }
         })
 
