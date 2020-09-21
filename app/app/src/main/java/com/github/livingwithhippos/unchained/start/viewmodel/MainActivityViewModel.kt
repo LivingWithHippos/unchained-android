@@ -101,7 +101,7 @@ class MainActivityViewModel @ViewModelInject constructor(
 
     suspend fun isTokenPrivate(): Boolean {
             val credentials = credentialRepository.getFirstCredentials()
-            return credentials?.refreshToken == PRIVATE_TOKEN ?: false
+            return credentials?.refreshToken == PRIVATE_TOKEN
     }
 
     suspend fun deleteIncompleteCredentials() = credentialRepository.deleteIncompleteCredentials()

@@ -66,7 +66,6 @@ class MainActivity : AppCompatActivity() {
                 AUTHENTICATED -> {
                     bottomNavManager?.enableMenuItems()
                 }
-                else -> throw IllegalStateException("Unknown credentials state: $state")
             }
         })
     }

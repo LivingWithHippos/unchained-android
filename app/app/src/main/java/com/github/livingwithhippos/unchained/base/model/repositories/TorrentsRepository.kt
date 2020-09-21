@@ -116,7 +116,8 @@ class TorrentsRepository @Inject constructor(private val torrentApiHelper: Torre
         files: String = "all"
     ) {
 
-        val selectFilesResponse = safeApiCall(
+        //this call has no return type
+        safeApiCall(
             call = {
                 torrentApiHelper.selectFiles(
                     token = "Bearer $token",
