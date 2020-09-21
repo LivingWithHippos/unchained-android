@@ -17,6 +17,7 @@ import com.github.livingwithhippos.unchained.base.model.repositories.DownloadRep
 import com.github.livingwithhippos.unchained.base.model.repositories.TorrentsRepository
 import com.github.livingwithhippos.unchained.downloadlists.model.DownloadItem
 import com.github.livingwithhippos.unchained.downloadlists.model.DownloadPagingSource
+import com.github.livingwithhippos.unchained.lists.model.TorrentPagingSource
 import com.github.livingwithhippos.unchained.newdownload.model.TorrentItem
 import com.github.livingwithhippos.unchained.utilities.KEY_TOKEN
 import kotlinx.coroutines.CoroutineScope
@@ -27,12 +28,17 @@ import kotlinx.coroutines.launch
 class DownloadListViewModel @ViewModelInject constructor(
     @Assisted private val savedStateHandle: SavedStateHandle,
     private val downloadRepository: DownloadRepository,
+    private val torrentsRepository: TorrentsRepository,
     private val credentialsRepository: CredentialsRepository
 ) : ViewModel() {
 
     // note: this value (pageSize) is triplicated when the first call is made. Yes it does, no I don't know why.
     val downloadsLiveData: LiveData<PagingData<DownloadItem>> = Pager(PagingConfig(pageSize = 10)) {
         DownloadPagingSource(downloadRepository, credentialsRepository)
+    }.liveData.cachedIn(viewModelScope)
+
+    val torrentsLiveData: LiveData<PagingData<TorrentItem>> = Pager(PagingConfig(pageSize = 10)) {
+        TorrentPagingSource(torrentsRepository, credentialsRepository)
     }.liveData.cachedIn(viewModelScope)
 
 }
