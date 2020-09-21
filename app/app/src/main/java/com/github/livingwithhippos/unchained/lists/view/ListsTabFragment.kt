@@ -10,7 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.paging.PagingData
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
-import com.github.livingwithhippos.unchained.databinding.TablayoutListBinding
+import com.github.livingwithhippos.unchained.databinding.FragmentTabListsBinding
 import com.github.livingwithhippos.unchained.downloadlists.model.DownloadItem
 import com.github.livingwithhippos.unchained.downloadlists.view.DownloadListListener
 import com.github.livingwithhippos.unchained.downloadlists.view.DownloadListPagingAdapter
@@ -32,7 +32,7 @@ class ListsTabFragment: UnchainedFragment(), DownloadListListener, TorrentListLi
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        val listBinding = TablayoutListBinding.inflate(inflater, container, false)
+        val listBinding = FragmentTabListsBinding.inflate(inflater, container, false)
 
         val downloadAdapter = DownloadListPagingAdapter(this)
         val torrentAdapter = TorrentListPagingAdapter(this)
