@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation_lists"
-    app:startDestination="@id/downloadListFragment">
+    app:startDestination="@id/listsTabFragment2">
 
     <fragment
         android:id="@+id/downloadListFragment"
@@ -22,4 +22,8 @@
             android:name="details"
             app:argType="com.github.livingwithhippos.unchained.downloadlists.model.DownloadItem" />
     </fragment>
+    <fragment
+        android:id="@+id/listsTabFragment2"
+        android:name="com.github.livingwithhippos.unchained.lists.view.ListsTabFragment"
+        android:label="ListsTabFragment" />
 </navigation>
