@@ -8,6 +8,7 @@ import android.widget.EditText
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.authentication.viewmodel.AuthenticationViewModel
@@ -17,6 +18,7 @@ import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewMod
 import com.github.livingwithhippos.unchained.utilities.copyToClipboard
 import com.github.livingwithhippos.unchained.utilities.showToast
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 
 /**
@@ -105,6 +107,8 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
                     showToast(R.string.invalid_token)
                 else {
                     activityViewModel.setAuthenticated()
+                    //delete incomplete credentials if the user has started the process before inputting a private api key
+                    lifecycleScope.launch { activityViewModel.deleteIncompleteCredentials() }
                     viewModel.setAuthState(MainActivityViewModel.AuthenticationState.AUTHENTICATED)
                     // go to user screen
                     val action =

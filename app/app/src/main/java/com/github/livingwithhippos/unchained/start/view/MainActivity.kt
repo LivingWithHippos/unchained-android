@@ -52,10 +52,10 @@ class MainActivity : AppCompatActivity() {
                     openAuthentication()
                     bottomNavManager?.disableMenuItems(listOf(R.id.navigation_home))
                 }
-                // go to login fragment and show an error message
+                // refresh the token.
+                // todo: if it keeps on being bad (hehe) delete the credentials and start the authentication from zero
                 BAD_TOKEN-> {
-                    openAuthentication()
-                    bottomNavManager?.disableMenuItems(listOf(R.id.navigation_home))
+                    viewModel.refreshToken()
                 }
                 // go to login fragment and show another error message
                 ACCOUNT_LOCKED -> {
