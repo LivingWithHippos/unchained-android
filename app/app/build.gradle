@@ -73,7 +73,7 @@ dependencies {
     implementation "androidx.constraintlayout:constraintlayout:$constraintlayout_version"
     implementation "androidx.fragment:fragment-ktx:$fragment_version"
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:$swipe_version"
-    implementation "androidx.preference:preference:$preferences_version"
+    implementation "androidx.preference:preference-ktx:$preferences_version"
 
     implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 
@@ -134,7 +134,7 @@ dependencies {
     kapt "androidx.hilt:hilt-compiler:$hilt_viewmodel_version"
 
     // paging
-    implementation "androidx.paging:paging-runtime:$paging_version"
+    implementation "androidx.paging:paging-runtime-ktx:$paging_version"
 
 }
 
