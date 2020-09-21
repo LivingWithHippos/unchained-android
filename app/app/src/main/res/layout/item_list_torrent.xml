@@ -1,15 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
         <variable
             name="item"
             type="com.github.livingwithhippos.unchained.newdownload.model.TorrentItem" />
+
+        <variable
+            name="listener"
+            type="com.github.livingwithhippos.unchained.lists.model.TorrentListListener" />
+
+        <import type="android.view.View" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="wrap_content"
+    <FrameLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <com.google.android.material.card.MaterialCardView
@@ -20,20 +27,75 @@
             android:checkable="false"
             android:clickable="false"
             android:focusable="true"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:onClick="@{() -> listener.onClick(item)}"
+            android:layout_gravity="center_horizontal"
+            app:cardBackgroundColor="?attr/colorSurface"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="0dp"
+            app:strokeColor="@color/grey_01"
+            app:strokeWidth="0.05dp">
 
-            <TextView
-                android:id="@+id/tvName"
-                android:layout_width="wrap_content"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:text="@string/torrent"
-                android:textAllCaps="true"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:padding="15dp">
+
+                <TextView
+                    android:id="@+id/tvTitle"
+                    style="@style/TextAppearance.UnchainedTheme.Overline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/torrent"
+                    android:textAllCaps="true"
+                    app:layout_constraintBottom_toTopOf="@+id/tvName"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tvName"
+                    style="@style/TextAppearance.UnchainedTheme.Body1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@{item.filename, default=`File Name`}"
+                    android:maxLines="3"
+                    android:ellipsize="middle"
+                    android:layout_marginEnd="5dp"
+                    app:layout_constraintBottom_toTopOf="@+id/tvSize"
+                    app:layout_constraintStart_toStartOf="@+id/tvTitle"
+                    app:layout_constraintEnd_toStartOf="@id/downloadBar"
+                    app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
+
+                <TextView
+                    android:id="@+id/tvSize"
+                    style="@style/TextAppearance.UnchainedTheme.Caption"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    fileSize="@{item.bytes}"
+                    android:text="20 MB"
+                    android:textColor="?attr/colorPrimary"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/tvName"
+                    app:layout_constraintTop_toBottomOf="@+id/tvName"
+                    tools:ignore="HardcodedText" />
+
+
+                <com.google.android.material.progressindicator.ProgressIndicator
+                    android:id="@+id/downloadBar"
+                    style="@style/Widget.MaterialComponents.ProgressIndicator.Circular.Determinate"
+                    android:visibility="@{item.progress >=0 ? View.VISIBLE : View.GONE, default=visible}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    app:indicatorCornerRadius="20dp"
+                    app:indicatorColor="?attr/colorPrimary"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    progressCompat="@{item.progress}"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </com.google.android.material.card.MaterialCardView>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </FrameLayout>
 </layout>
