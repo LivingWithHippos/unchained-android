@@ -22,6 +22,7 @@ class MainActivityViewModel @ViewModelInject constructor(
 ) : ViewModel() {
 
     //todo: move out of this class
+    //todo: separate AUTHENTICATED in AUTHENTICATED_PRIVATE and AUTHENTICATED_OPEN to make it easier to inform the user of unavailable app api
     enum class AuthenticationState {
         AUTHENTICATED, UNAUTHENTICATED, BAD_TOKEN, ACCOUNT_LOCKED
     }
@@ -40,10 +41,7 @@ class MainActivityViewModel @ViewModelInject constructor(
                     .filter { it.accessToken != null && it.clientId != null && it.clientSecret != null && it.deviceCode.isNotBlank() && it.refreshToken != null }
             var workingCredentials: Credentials? = null
             if (completeCredentials.isNotEmpty()) {
-                val privateCredentials =
-                        if (completeCredentials.any { it.deviceCode == PRIVATE_TOKEN })
-                            completeCredentials.first { it.deviceCode == PRIVATE_TOKEN }
-                        else null
+                val privateCredentials = completeCredentials.firstOrNull { it.deviceCode == PRIVATE_TOKEN }
 
                 if (privateCredentials != null) {
                     if (checkCredentials(privateCredentials))
@@ -99,6 +97,11 @@ class MainActivityViewModel @ViewModelInject constructor(
 
             }
         }
+    }
+
+    suspend fun isTokenPrivate(): Boolean {
+            val credentials = credentialRepository.getFirstCredentials()
+            return credentials?.refreshToken == PRIVATE_TOKEN ?: false
     }
 
     suspend fun deleteIncompleteCredentials() = credentialRepository.deleteIncompleteCredentials()

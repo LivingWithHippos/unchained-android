@@ -128,4 +128,6 @@
     <string name="torrent_already_active">Torrent already active</string>
     <string name="logout">Logout</string>
     <string name="account_page">Account Page</string>
+    <string name="login_type_open">Logged in with the open token. Some functionalities such as streaming are unavailable.</string>
+    <string name="login_type_private">Logged in with private token. All functionalities are available.</string>
 </resources>

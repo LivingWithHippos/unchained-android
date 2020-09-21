@@ -114,4 +114,6 @@
     <string name="torrent_already_active">Torrent già attivo</string>
     <string name="logout">Logout</string>
     <string name="account_page">Pagina  account</string>
+    <string name="login_type_open">Autorizzato senza codice privato. Alcune funzionalità come lo streaming non saranno disponibili.</string>
+    <string name="login_type_private">Autorizzato con codice privato. Tutte le funzionalità sono disponibili.</string>
 </resources>
