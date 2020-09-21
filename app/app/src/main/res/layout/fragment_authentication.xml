@@ -85,10 +85,12 @@
                 android:id="@+id/tvDirectLink"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
                 android:autoLink="web"
                 android:ellipsize="middle"
                 android:singleLine="true"
-                android:text="@{auth.directVerificationUrl}"
+                android:text="@{auth.directVerificationUrl, default=`https://real-debrid.com/authorize?client_id=X245A4XAIBGVM&amp;device_id=ABCDEFGHIJKLMNOPQ`}"
                 android:visibility="@{auth.directVerificationUrl == null ? View.GONE : View.VISIBLE}" />
 
         </LinearLayout>
@@ -131,8 +133,10 @@
 
         <TextView
             android:id="@+id/tvUsePrivateToken"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
             android:autoLink="web"
             android:text="@string/add_private_token_message"
             app:layout_constraintBottom_toTopOf="@id/etLink"
