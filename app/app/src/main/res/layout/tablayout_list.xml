@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto" >
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -26,6 +27,21 @@
             android:tag="tab_torrents"
             />
     </com.google.android.material.tabs.TabLayout>
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/srLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent" >
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvDownloadList"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scrollbars="vertical"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/item_list_download" />
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 </LinearLayout>
 
