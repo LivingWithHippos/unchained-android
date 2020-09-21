@@ -79,6 +79,8 @@ open class BaseRepository {
             // todo: temporary workaround. Add support for empty body success
                 return NetworkResponse.SuccessEmptyBody(response.code())
         } else {
+            //todo: implement error handling as JSON APIError class
+            /*
             if (response.code() in 400..599) {
                 val moshi = Moshi.Builder().build()
                 val adapter: JsonAdapter<APIError> =
@@ -87,7 +89,7 @@ open class BaseRepository {
                 val apiError = adapter.fromJson(response.errorBody().toString())
                 if (apiError!=null)
                     throw APIException(apiError)
-            }
+            }*/
 
         }
 
