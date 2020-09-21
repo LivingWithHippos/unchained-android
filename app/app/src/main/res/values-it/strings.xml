@@ -117,4 +117,6 @@
     <string name="login_type_open">Autorizzato senza codice privato. Alcune funzionalità come lo streaming non saranno disponibili.</string>
     <string name="login_type_private">Autorizzato con codice privato. Tutte le funzionalità sono disponibili.</string>
     <string name="api_needs_private_token">Questa funzionalità richiede il codice API privato</string>
+    <string name="torrents">Torrents</string>
+    <string name="downloads">Downloads</string>
 </resources>
