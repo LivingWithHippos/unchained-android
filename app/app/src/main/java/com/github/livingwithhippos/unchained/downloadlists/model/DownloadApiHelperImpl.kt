@@ -1,10 +1,9 @@
 package com.github.livingwithhippos.unchained.downloadlists.model
 
-import com.github.livingwithhippos.unchained.base.model.repositories.BaseRepository
 import retrofit2.Response
 import javax.inject.Inject
 
-class DownloadApiHelperImpl @Inject constructor(private val downloadsApi: DownloadsApi) : BaseRepository(),
+class DownloadApiHelperImpl @Inject constructor(private val downloadsApi: DownloadsApi) :
     DownloadApiHelper {
 
     override suspend fun getDownloads(
