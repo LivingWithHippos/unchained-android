@@ -88,6 +88,19 @@ class MainActivityViewModel @ViewModelInject constructor(
             setUnauthenticated()
         }
     }
+
+    fun invalidateOpenSourceToken() {
+        scope.launch {
+            credentialRepository.getFirstCredentials()?.let {
+                if (it.refreshToken != null && it.refreshToken != PRIVATE_TOKEN) {
+                    //setUnauthenticated()
+                    authRepository.disableToken(it.accessToken!!)
+                }
+
+            }
+        }
+    }
+
     suspend fun deleteIncompleteCredentials() = credentialRepository.deleteIncompleteCredentials()
 
     fun refreshToken() {
