@@ -16,7 +16,7 @@ class TorrentListPagingAdapter (listener: TorrentListListener) : DataBindingPagi
         }
     }
 
-    override fun getItemViewType(position: Int) = R.layout.item_list_download
+    override fun getItemViewType(position: Int) = R.layout.item_list_torrent
 }
 
 interface TorrentListListener {

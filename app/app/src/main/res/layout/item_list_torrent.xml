@@ -4,6 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <import type="android.view.View" />
+
         <variable
             name="item"
             type="com.github.livingwithhippos.unchained.newdownload.model.TorrentItem" />
@@ -12,7 +14,6 @@
             name="listener"
             type="com.github.livingwithhippos.unchained.lists.model.TorrentListListener" />
 
-        <import type="android.view.View" />
     </data>
 
     <FrameLayout
@@ -40,12 +41,13 @@
                 android:layout_height="wrap_content"
                 android:padding="15dp">
 
+                <!-- todo: add status translation (see TorrentDetailsFragment) -->
                 <TextView
                     android:id="@+id/tvTitle"
                     style="@style/TextAppearance.UnchainedTheme.Overline"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/torrent"
+                    android:text="@{item.status, default=`downloaded`}"
                     android:textAllCaps="true"
                     app:layout_constraintBottom_toTopOf="@+id/tvName"
                     app:layout_constraintStart_toStartOf="parent"
