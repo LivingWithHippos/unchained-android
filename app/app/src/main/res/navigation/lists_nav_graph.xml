@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation_lists"
-    app:startDestination="@id/listsTabFragment2">
+    app:startDestination="@id/listsTabFragment">
 
     <fragment
         android:id="@+id/downloadListFragment"
@@ -14,6 +14,7 @@
             android:id="@+id/action_downloadList_to_downloadDetails"
             app:destination="@id/downloadDetailsFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/downloadDetailsFragment"
         android:name="com.github.livingwithhippos.unchained.downloaddetails.view.DownloadDetailsFragment"
@@ -22,8 +23,14 @@
             android:name="details"
             app:argType="com.github.livingwithhippos.unchained.downloadlists.model.DownloadItem" />
     </fragment>
+
     <fragment
-        android:id="@+id/listsTabFragment2"
+        android:id="@+id/listsTabFragment"
         android:name="com.github.livingwithhippos.unchained.lists.view.ListsTabFragment"
-        android:label="ListsTabFragment" />
+        android:label="ListsTabFragment"
+        tools:layout="@layout/fragment_tab_lists" >
+        <action
+            android:id="@+id/action_listsTab_to_downloadDetails"
+            app:destination="@id/downloadDetailsFragment" />
+    </fragment>
 </navigation>

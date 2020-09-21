@@ -7,11 +7,13 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.paging.PagingData
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.databinding.FragmentTabListsBinding
 import com.github.livingwithhippos.unchained.downloadlists.model.DownloadItem
+import com.github.livingwithhippos.unchained.downloadlists.view.DownloadListFragmentDirections
 import com.github.livingwithhippos.unchained.downloadlists.view.DownloadListListener
 import com.github.livingwithhippos.unchained.downloadlists.view.DownloadListPagingAdapter
 import com.github.livingwithhippos.unchained.downloadlists.viewmodel.DownloadListViewModel
@@ -125,6 +127,8 @@ class ListsTabFragment: UnchainedFragment(), DownloadListListener, TorrentListLi
     }
 
     override fun onClick(item: DownloadItem) {
+        val action = ListsTabFragmentDirections.actionListsTabToDownloadDetails(item)
+        findNavController().navigate(action)
     }
 
     override fun onClick(item: TorrentItem) {
