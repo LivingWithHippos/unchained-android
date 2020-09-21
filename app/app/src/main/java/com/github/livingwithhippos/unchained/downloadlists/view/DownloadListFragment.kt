@@ -35,6 +35,7 @@ class DownloadListFragment : UnchainedFragment(), DownloadListListener {
         val adapter = DownloadListPagingAdapter(this)
         downloadsBinding.rvDownloadList.adapter = adapter
 
+        //todo: add scroll to top when a new item is added
         downloadsBinding.srLayout.setOnRefreshListener {
             adapter.refresh()
         }

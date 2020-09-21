@@ -76,7 +76,6 @@ interface AuthenticationApi {
 
     /**
      * Disable the current access token
-     * todo: test with private api key
      */
     @GET("disable_access_token")
     suspend fun disableToken(
