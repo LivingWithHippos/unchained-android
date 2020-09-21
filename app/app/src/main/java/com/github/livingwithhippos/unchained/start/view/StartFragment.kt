@@ -9,6 +9,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.github.livingwithhippos.unchained.R
+import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -17,16 +18,13 @@ import dagger.hilt.android.AndroidEntryPoint
  * A simple [Fragment] subclass.
  */
 @AndroidEntryPoint
-class StartFragment : Fragment() {
-
-    // ViewModel shared with main activity and eventually other fragments
-    private val viewModel: MainActivityViewModel by activityViewModels()
+class StartFragment : UnchainedFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         // check our credentials and decide to navigate to the user fragment or the authentication one.
-        checkCredentialsStatus(viewModel)
+        checkCredentialsStatus(activityViewModel)
     }
 
     override fun onCreateView(
@@ -42,12 +40,15 @@ class StartFragment : Fragment() {
         viewModel.workingCredentialsLiveData.observe(this, Observer {
             // navigate to user fragment
             if (it?.accessToken != null) {
+                activityViewModel.setAuthenticated()
                 val action =
                     StartFragmentDirections.actionStartFragmentToUserProfileFragment(it.accessToken)
                 findNavController().navigate(action)
             }
             // no complete credentials: navigate to authentication fragment
             else {
+                //todo: check if null could be because of missing network connectivity
+                activityViewModel.setUnauthenticated()
                 val action = StartFragmentDirections.actionStartFragmentToAuthenticationFragment()
                 findNavController().navigate(action)
             }

@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.ui.setupWithNavController
 import com.github.livingwithhippos.unchained.R
@@ -11,6 +12,7 @@ import com.github.livingwithhippos.unchained.databinding.ActivityMainBinding
 import com.github.livingwithhippos.unchained.settings.SettingsActivity
 import com.github.livingwithhippos.unchained.settings.SettingsFragment
 import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewModel
+import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewModel.AuthenticationState.*
 import com.github.livingwithhippos.unchained.utilities.BottomNavManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
@@ -28,8 +30,6 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val viewModel: MainActivityViewModel by viewModels()
-
         if (savedInstanceState == null) {
             setupNavigationManager()
         }
@@ -43,11 +43,45 @@ class MainActivity : AppCompatActivity() {
                 else -> false
             }
         }
+
+        val viewModel: MainActivityViewModel by viewModels()
+        viewModel.authenticationState.observe(this, Observer { state ->
+            when (state.peekContent()) {
+                // go to login fragment
+                UNAUTHENTICATED -> {
+                    openAuthentication()
+                    bottomNavManager?.disableMenuItems(listOf(R.id.navigation_home))
+                }
+                // refresh the token.
+                // todo: if it keeps on being bad (hehe) delete the credentials and start the authentication from zero
+                BAD_TOKEN-> {
+                    viewModel.refreshToken()
+                }
+                // go to login fragment and show another error message
+                ACCOUNT_LOCKED -> {
+                    openAuthentication()
+                    bottomNavManager?.disableMenuItems(listOf(R.id.navigation_home))
+                }
+                // do nothing
+                AUTHENTICATED -> {
+                    bottomNavManager?.enableMenuItems()
+                }
+                else -> throw IllegalStateException("Unknown credentials state: $state")
+            }
+        })
     }
 
     private fun openSettings() {
         val intent = Intent(this, SettingsActivity::class.java)
         startActivity(intent)
+    }
+
+    private fun openAuthentication() {
+        val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_nav_view)
+        // note: the [BottomNavManager] also has a selectItem() method but this should work for every bottom menu
+        if (bottomNav.selectedItemId != R.id.navigation_home) {
+            bottomNav.selectedItemId = R.id.navigation_home
+        }
     }
 
     private fun setupNavigationManager() {

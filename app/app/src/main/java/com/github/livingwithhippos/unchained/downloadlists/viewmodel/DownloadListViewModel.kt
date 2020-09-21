@@ -30,11 +30,9 @@ class DownloadListViewModel @ViewModelInject constructor(
     private val credentialsRepository: CredentialsRepository
 ) : ViewModel() {
 
-    private val job = Job()
-    private val scope = CoroutineScope(Dispatchers.Default + job)
-
+    // note: this value (pageSize) is triplicated when the first call is made. Yes it does, no I don't know why.
     val listData: LiveData<PagingData<DownloadItem>> = Pager(PagingConfig(pageSize = 10)) {
-        DownloadPagingSource(downloadRepository,credentialsRepository)
+        DownloadPagingSource(downloadRepository, credentialsRepository)
     }.liveData.cachedIn(viewModelScope)
 
 }

@@ -8,6 +8,7 @@ import retrofit2.Response
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.Query
 
@@ -72,4 +73,12 @@ interface AuthenticationApi {
         @Field("code") deviceCode: String,
         @Field("grant_type") grantType: String = OPEN_SOURCE_GRANT_TYPE
     ): Response<Token>
+
+    /**
+     * Disable the current access token
+     */
+    @GET("disable_access_token")
+    suspend fun disableToken(
+        @Header("Authorization") token: String
+    ): Response<Any>
 }

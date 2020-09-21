@@ -249,7 +249,7 @@ fun String.isMagnet(): Boolean {
  * It must be used while overriding Activity.attachBaseContext like this:
   override fun attachBaseContext(base: Context?) {
         if (base != null)
-            super.attachBaseContext(getNewLocaleContext(base, "en"))
+            super.attachBaseContext(getUpdatedLocaleContext(base, "en"))
         else
             super.attachBaseContext(null)
     }

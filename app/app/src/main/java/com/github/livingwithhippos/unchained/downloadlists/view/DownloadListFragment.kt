@@ -10,16 +10,19 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.paging.PagingData
+import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.databinding.FragmentDownloadListBinding
 import com.github.livingwithhippos.unchained.downloadlists.model.DownloadItem
 import com.github.livingwithhippos.unchained.downloadlists.viewmodel.DownloadListViewModel
 import com.github.livingwithhippos.unchained.newdownload.view.NewDownloadFragmentDirections
+import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint
-class DownloadListFragment : Fragment(), DownloadListListener {
+class DownloadListFragment : UnchainedFragment(), DownloadListListener {
 
     private val viewModel: DownloadListViewModel by viewModels()
 
@@ -32,14 +35,31 @@ class DownloadListFragment : Fragment(), DownloadListListener {
         val adapter = DownloadListPagingAdapter(this)
         downloadsBinding.rvDownloadList.adapter = adapter
 
+        //todo: add scroll to top when a new item is added
         downloadsBinding.srLayout.setOnRefreshListener {
             adapter.refresh()
         }
 
-        viewModel.listData.observe(viewLifecycleOwner, Observer {
+        // observer created to easily add and remove it. Pass the retrieved download list to the adapter and removes the loading icon from the swipe layout
+        val downloadObserver = Observer<PagingData<DownloadItem>> {
             lifecycleScope.launch {
                 adapter.submitData(it)
                 downloadsBinding.srLayout.isRefreshing = false
+            }
+        }
+
+        // checks the authentication state. Needed to avoid automatic API calls before the authentication process is finished
+        activityViewModel.authenticationState.observe(viewLifecycleOwner, Observer {
+            if (it.peekContent() == MainActivityViewModel.AuthenticationState.AUTHENTICATED) {
+                // register observer if not already registered
+                if (!viewModel.listData.hasActiveObservers())
+                    viewModel.listData.observe(viewLifecycleOwner, downloadObserver)
+            } else {
+                // remove observer if present
+                viewModel.listData.removeObserver(downloadObserver)
+                // [MainActivity] will observe this value and go back to home with the login page
+                // fixme: using this crashes if I click on the list menu voice while unauthenticated
+                // activityViewModel.setUnauthenticated()
             }
         })
 

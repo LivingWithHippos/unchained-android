@@ -13,7 +13,7 @@ class UnrestrictRepository @Inject constructor(private val unrestrictApiHelper: 
         remote: Int? = null
     ): DownloadItem? {
 
-        val linkResponse = safeApiCall(
+        val linkResponse = unsafeApiCall(
             call = {
                 unrestrictApiHelper.getUnrestrictedLink(
                     token = "Bearer $token",

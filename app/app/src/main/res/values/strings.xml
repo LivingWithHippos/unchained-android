@@ -27,6 +27,7 @@
     <string name="unrestrict">Unrestrict</string>
     <string name="invalid_url">Invalid URL</string>
     <string name="loading">Loading</string>
+    <!-- todo: override? -->
     <string name="copy">Copy</string>
     <string name="open_link">Open Link</string>
     <string name="copy_link">Copy Link</string>
@@ -55,6 +56,7 @@
     <string name="links">Links</string>
     <string name="add_private_token_message">You can also use your private API token from https://real-debrid.com/apitoken which will allow you to use streaming.</string>
     <string name="add_private_token">Add Private Token</string>
+    <string name="save">Save</string>
     <string name="private_token">Private Token</string>
     <string name="invalid_token">Please check the token value</string>
     <string name="download_details">Download Details</string>
@@ -86,7 +88,44 @@
     <string name="details" translatable="false">Details</string>
     <string name="file_id_format">ID: %1$s</string>
     <string name="file_type_format">Type: %1$s</string>
-    <string name="rd_settings_link_description">Manage your user settings and convert your points to premium at https://real-debrid.com/account</string>
+    <string name="rd_settings_link_description">Manage your user settings, premium state and convert points from your account page.</string>
     <string name="settings">Settings</string>
     <string name="content_description_settings">Settings for the application</string>
+    <string name="error_unrestricting_download">Error while unrestricting the download</string>
+    <string name="internal_error">Internal error</string>
+    <string name="bad_parameter_value">Bad parameter value</string>
+    <string name="missing_parameter">Missing parameter</string>
+    <string name="unknown_method">Unknown method</string>
+    <string name="method_not_allowed">Method not allowed</string>
+    <string name="slow_down">Slow down</string>
+    <string name="resource_unreachable">Resource unreachable</string>
+    <string name="resource_not_found">Resource not found</string>
+    <string name="bad_token">Bad token</string>
+    <string name="permission_denied">Permission denied</string>
+    <string name="tfa_needed">Two-Factor authentication needed</string>
+    <string name="tfa_pending">Two-Factor authentication pending</string>
+    <string name="invalid_login">Invalid login</string>
+    <string name="invalid_password">Invalid password</string>
+    <string name="account_locked">Account locked</string>
+    <string name="account_not_activated">Account not activated</string>
+    <string name="unsupported_hoster">Unsupported hoster</string>
+    <string name="hoster_in_maintenance">Hoster in maintenance</string>
+    <string name="hoster_limit_reached">Hoster limit reached</string>
+    <string name="hoster_temporarily_unavailable">Hoster temporarily unavailable</string>
+    <string name="hoster_not_available_for_free_users">Hoster not available for free users</string>
+    <string name="too_many_active_downloads">Too many active downloads</string>
+    <string name="ip_Address_not_allowed">IP Address not allowed</string>
+    <string name="traffic_exhausted">Traffic exhausted</string>
+    <string name="file_unavailable">File unavailable</string>
+    <string name="service_unavailable">Service unavailable</string>
+    <string name="upload_too_big">Upload too big</string>
+    <string name="upload_error">Upload error</string>
+    <string name="file_not_allowed">File not allowed</string>
+    <string name="torrent_too_big">Torrent too big</string>
+    <string name="torrent_file_invalid">Torrent file invalid</string>
+    <string name="action_already_done">Action already done</string>
+    <string name="image_resolution_error">Image resolution error</string>
+    <string name="torrent_already_active">Torrent already active</string>
+    <string name="logout">Logout</string>
+    <string name="account_page">Account Page</string>
 </resources>

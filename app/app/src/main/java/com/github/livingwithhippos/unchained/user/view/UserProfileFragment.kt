@@ -7,8 +7,11 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.databinding.FragmentUserProfileBinding
+import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewModel
 import com.github.livingwithhippos.unchained.user.viewmodel.UserProfileViewModel
 import com.github.livingwithhippos.unchained.utilities.openExternalWebPage
 import dagger.hilt.android.AndroidEntryPoint
@@ -18,12 +21,10 @@ const val REFERRAL_LINK = "http://real-debrid.com/?id=78841"
 const val PREMIUM_LINK = "https://real-debrid.com/premium"
 
 /**
- * A simple [Fragment] subclass.
- * Use the [UserProfileFragment.newInstance] factory method to
- * create an instance of this fragment.
+ * A simple [UnchainedFragment] subclass.
  */
 @AndroidEntryPoint
-class UserProfileFragment : Fragment() {
+class UserProfileFragment : UnchainedFragment() {
 
     private val viewModel: UserProfileViewModel by viewModels()
 
@@ -44,12 +45,8 @@ class UserProfileFragment : Fragment() {
         viewModel.fetchUserInfo()
 
         viewModel.userLiveData.observe(viewLifecycleOwner, Observer {
-
-            if (it != null) {
+            if (it != null)
                 userBinding.user = it
-            }
-
-            //todo: manage null
         })
 
         userBinding.bPremium.setOnClickListener {
@@ -58,26 +55,28 @@ class UserProfileFragment : Fragment() {
             openExternalWebPage(REFERRAL_LINK)
         }
 
-        userBinding.bPremium.setOnClickListener {
-            //todo: ask user and either load the referral link
-            // or the premium page, add to settings fragment
-            openExternalWebPage(REFERRAL_LINK)
+        activityViewModel.authenticationState.observe(viewLifecycleOwner, Observer {
+            // todo: getContentIfNotHandled() works only if none of the other observers has called it already
+            // it's possible to use peek with findNavController().currentDestination to avoid launching the navigate(action) twice (it crsahes)
+            // val destination = findNavController().currentDestination
+            // val destinationId = findNavController().currentDestination?.id
+            when (it.peekContent()) {
+                // back to authentication fragment
+                MainActivityViewModel.AuthenticationState.UNAUTHENTICATED -> {
+                    //todo: empty backstack
+                    val action = UserProfileFragmentDirections.actionUserToAuthentication()
+                    findNavController().navigate(action)
+                }
+                //do nothing for now, add other states later
+                else -> {
+                }
+            }
+        })
+
+        userBinding.bLogout.setOnClickListener {
+            activityViewModel.logout()
         }
 
         return userBinding.root
-    }
-
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment.
-         *
-         * @return A new instance of fragment UserProfile.
-         */
-        @JvmStatic
-        fun newInstance() =
-            UserProfileFragment()
-                .apply {
-                }
     }
 }

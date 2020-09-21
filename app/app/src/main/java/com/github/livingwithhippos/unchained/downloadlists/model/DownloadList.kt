@@ -134,6 +134,6 @@ interface DownloadsApi {
         @Header("Authorization") token: String,
         @Query("offset") offset: Int?,
         @Query("page") page: Int,
-        @Query("limit") limit: Int = 10
+        @Query("limit") limit: Int = 30
     ): Response<List<DownloadItem>>
 }

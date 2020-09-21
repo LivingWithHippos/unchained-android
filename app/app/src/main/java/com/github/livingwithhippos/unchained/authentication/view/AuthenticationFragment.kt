@@ -8,13 +8,17 @@ import android.widget.EditText
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.authentication.viewmodel.AuthenticationViewModel
+import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.databinding.FragmentAuthenticationBinding
+import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewModel
 import com.github.livingwithhippos.unchained.utilities.copyToClipboard
 import com.github.livingwithhippos.unchained.utilities.showToast
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 
 /**
@@ -23,13 +27,9 @@ import dagger.hilt.android.AndroidEntryPoint
  * create an instance of this fragment.
  */
 @AndroidEntryPoint
-class AuthenticationFragment : Fragment(), ButtonListener {
+class AuthenticationFragment : UnchainedFragment(), ButtonListener {
 
     private val viewModel: AuthenticationViewModel by viewModels()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,15 +44,14 @@ class AuthenticationFragment : Fragment(), ButtonListener {
         viewModel.fetchAuthenticationInfo()
         observeAuthentication(authBinding)
 
-
         return authBinding.root
     }
 
     private fun observeAuthentication(binding: FragmentAuthenticationBinding) {
         viewModel.authLiveData.observe(viewLifecycleOwner, Observer {
-            if (it != null) {
-                binding.auth = it
-                observeSecrets(binding, it.deviceCode)
+            it.getContentIfNotHandled()?.let { auth ->
+                binding.auth = auth
+                observeSecrets(binding, auth.deviceCode)
             }
         })
     }
@@ -61,9 +60,9 @@ class AuthenticationFragment : Fragment(), ButtonListener {
         // start checking for user confirmation
         viewModel.fetchSecrets(deviceCode)
         viewModel.secretLiveData.observe(viewLifecycleOwner, Observer {
-            if (it?.clientId != null) {
-                binding.secrets = it
-                observeToken(binding, it.clientId, deviceCode, it.clientSecret)
+            it.getContentIfNotHandled()?.let { secrets ->
+                binding.secrets = secrets
+                observeToken(binding, secrets.clientId, deviceCode, secrets.clientSecret)
             }
         })
     }
@@ -78,10 +77,11 @@ class AuthenticationFragment : Fragment(), ButtonListener {
         // start checking for user confirmation
         viewModel.fetchToken(clientId, deviceCode, clientSecret)
         viewModel.tokenLiveData.observe(viewLifecycleOwner, Observer {
-            if (it?.accessToken != null) {
-                binding.token = it
+            it.getContentIfNotHandled()?.let { token ->
+                activityViewModel.setAuthenticated()
+                binding.token = token
                 val action =
-                    AuthenticationFragmentDirections.actionAuthenticationToUser(it.accessToken)
+                    AuthenticationFragmentDirections.actionAuthenticationToUser(token.accessToken)
                 findNavController().navigate(action)
             }
         })
@@ -106,8 +106,11 @@ class AuthenticationFragment : Fragment(), ButtonListener {
                 if (it == null)
                     showToast(R.string.invalid_token)
                 else {
+                    activityViewModel.setAuthenticated()
+                    //delete incomplete credentials if the user has started the process before inputting a private api key
+                    lifecycleScope.launch { activityViewModel.deleteIncompleteCredentials() }
+                    viewModel.setAuthState(MainActivityViewModel.AuthenticationState.AUTHENTICATED)
                     // go to user screen
-                    // todo: the user call will be repeated, avoid if possible (shared viewmodel?)
                     val action =
                         AuthenticationFragmentDirections.actionAuthenticationToUser(token)
                     findNavController().navigate(action)

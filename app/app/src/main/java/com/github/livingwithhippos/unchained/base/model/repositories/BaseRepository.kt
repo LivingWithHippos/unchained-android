@@ -1,13 +1,36 @@
 package com.github.livingwithhippos.unchained.base.model.repositories
 
 import android.util.Log
+import com.github.livingwithhippos.unchained.base.model.network.APIError
+import com.github.livingwithhippos.unchained.base.model.network.APIException
 import com.github.livingwithhippos.unchained.base.model.network.NetworkResponse
+import com.squareup.moshi.JsonAdapter
+import com.squareup.moshi.Moshi
 import retrofit2.Response
 import java.io.IOException
 
+
 open class BaseRepository {
 
-    suspend fun <T : Any> safeApiCall(call: suspend () -> Response<T>, errorMessage: String): T? {
+    suspend fun <T : Any> unsafeApiCall(call: suspend () -> Response<T>, errorMessage: String): T? {
+
+        val result: NetworkResponse<T> = unsafeApiResult(call, errorMessage)
+        var data: T? = null
+
+        when (result) {
+            is NetworkResponse.Success ->
+                data = result.data
+            is NetworkResponse.SuccessEmptyBody ->
+                Log.d("BaseRepository", "Successful call with empty body : ${result.code}")
+            is NetworkResponse.Error -> {
+                Log.d("BaseRepository", errorMessage)
+            }
+        }
+
+        return data
+    }
+
+     suspend fun <T : Any> safeApiCall(call: suspend () -> Response<T>, errorMessage: String): T? {
 
         val result: NetworkResponse<T> = safeApiResult(call, errorMessage)
         var data: T? = null
@@ -19,13 +42,11 @@ open class BaseRepository {
             is NetworkResponse.SuccessEmptyBody ->
                 Log.d("BaseRepository", "Successful call with empty body : ${result.code}")
             is NetworkResponse.Error -> {
-                Log.d("BaseRepository", "$errorMessage - Exception : ${result.exception}")
+                Log.d("BaseRepository", errorMessage)
             }
         }
 
-
         return data
-
     }
 
     private suspend fun <T : Any> safeApiResult(
@@ -40,6 +61,34 @@ open class BaseRepository {
             else
             // todo: temporary workaround. Add support for empty body success
                 return NetworkResponse.SuccessEmptyBody(response.code())
+        }
+
+        return NetworkResponse.Error(IOException("Error Occurred while getting api result, error : $errorMessage"))
+    }
+
+    private suspend fun <T : Any> unsafeApiResult(
+        call: suspend () -> Response<T>,
+        errorMessage: String
+    ): NetworkResponse<T> {
+        val response = call.invoke()
+        if (response.isSuccessful) {
+            val body = response.body()
+            if (body != null)
+                return NetworkResponse.Success(body)
+            else
+            // todo: temporary workaround. Add support for empty body success
+                return NetworkResponse.SuccessEmptyBody(response.code())
+        } else {
+            if (response.code() in 400..599) {
+                val moshi = Moshi.Builder().build()
+                val adapter: JsonAdapter<APIError> =
+                    moshi.adapter(APIError::class.java)
+                // todo: wrap with withContext(Dispatchers.IO)?
+                val apiError = adapter.fromJson(response.errorBody().toString())
+                if (apiError!=null)
+                    throw APIException(apiError)
+            }
+
         }
 
         return NetworkResponse.Error(IOException("Error Occurred while getting api result, error : $errorMessage"))

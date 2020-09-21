@@ -37,7 +37,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="10dp">
+            android:padding="15dp">
 
             <TextView
                 android:id="@+id/tvTitle"
@@ -52,12 +52,12 @@
 
             <TextView
                 android:id="@+id/tvName"
-                style="@style/TextAppearance.UnchainedTheme.Headline6"
+                style="@style/TextAppearance.UnchainedTheme.Body1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="@{item.filename, default=`File Name`}"
-                android:maxLines="2"
-                android:ellipsize="end"
+                android:maxLines="3"
+                android:ellipsize="middle"
                 android:layout_marginEnd="5dp"
                 app:layout_constraintBottom_toTopOf="@+id/tvSize"
                 app:layout_constraintStart_toStartOf="@+id/tvTitle"
@@ -66,11 +66,12 @@
 
             <TextView
                 android:id="@+id/tvSize"
-                style="@style/TextAppearance.AppCompat.Body1"
+                style="@style/TextAppearance.UnchainedTheme.Caption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 fileSize="@{item.filesize}"
                 android:text="20 MB"
+                android:textColor="?attr/colorPrimary"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/tvName"
                 app:layout_constraintTop_toBottomOf="@+id/tvName"
