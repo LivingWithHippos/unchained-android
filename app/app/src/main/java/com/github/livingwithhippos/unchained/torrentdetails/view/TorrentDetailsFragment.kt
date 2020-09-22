@@ -14,7 +14,8 @@ import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.databinding.FragmentTorrentDetailsBinding
 import com.github.livingwithhippos.unchained.torrentdetails.viewmodel.TorrentDetailsViewmodel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.*
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class TorrentDetailsFragment : Fragment(), TorrentDetailsListener {

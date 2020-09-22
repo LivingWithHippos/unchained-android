@@ -16,7 +16,8 @@ import com.github.livingwithhippos.unchained.base.model.repositories.UserReposit
 import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewModel
 import com.github.livingwithhippos.unchained.user.model.User
 import com.github.livingwithhippos.unchained.utilities.Event
-import kotlinx.coroutines.*
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 //todo: add state saving and loading
 class AuthenticationViewModel @ViewModelInject constructor(

@@ -20,7 +20,12 @@ import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.databinding.NewDownloadFragmentBinding
 import com.github.livingwithhippos.unchained.newdownload.viewmodel.NewDownloadViewModel
-import com.github.livingwithhippos.unchained.utilities.*
+import com.github.livingwithhippos.unchained.utilities.REMOTE_TRAFFIC_ON
+import com.github.livingwithhippos.unchained.utilities.getClipboardText
+import com.github.livingwithhippos.unchained.utilities.isMagnet
+import com.github.livingwithhippos.unchained.utilities.isWebUrl
+import com.github.livingwithhippos.unchained.utilities.runRippleAnimation
+import com.github.livingwithhippos.unchained.utilities.showToast
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.FileDescriptor
 import java.io.FileInputStream

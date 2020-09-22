@@ -11,7 +11,6 @@ import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.databinding.ActivityMainBinding
 import com.github.livingwithhippos.unchained.settings.SettingsActivity
 import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewModel
-import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewModel.AuthenticationState.*
 import com.github.livingwithhippos.unchained.utilities.BottomNavManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
@@ -47,22 +46,22 @@ class MainActivity : AppCompatActivity() {
         viewModel.authenticationState.observe(this, Observer { state ->
             when (state.peekContent()) {
                 // go to login fragment
-                UNAUTHENTICATED -> {
+                MainActivityViewModel.AuthenticationState.UNAUTHENTICATED -> {
                     openAuthentication()
                     bottomNavManager?.disableMenuItems(listOf(R.id.navigation_home))
                 }
                 // refresh the token.
                 // todo: if it keeps on being bad (hehe) delete the credentials and start the authentication from zero
-                BAD_TOKEN -> {
+                MainActivityViewModel.AuthenticationState.BAD_TOKEN -> {
                     viewModel.refreshToken()
                 }
                 // go to login fragment and show another error message
-                ACCOUNT_LOCKED -> {
+                MainActivityViewModel.AuthenticationState.ACCOUNT_LOCKED -> {
                     openAuthentication()
                     bottomNavManager?.disableMenuItems(listOf(R.id.navigation_home))
                 }
                 // do nothing
-                AUTHENTICATED -> {
+                MainActivityViewModel.AuthenticationState.AUTHENTICATED -> {
                     bottomNavManager?.enableMenuItems()
                 }
             }
