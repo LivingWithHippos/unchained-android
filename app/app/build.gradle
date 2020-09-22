@@ -5,7 +5,30 @@ apply plugin: 'kotlin-kapt'
 apply plugin: "androidx.navigation.safeargs.kotlin"
 apply plugin: 'dagger.hilt.android.plugin'
 
+
+def keyPropertiesFile = rootProject.file("signingkey.properties")
+def keyProperties = new Properties()
+if (keyPropertiesFile.exists()) {
+    keyProperties.load(new FileInputStream(keyPropertiesFile))
+}
+
 android {
+
+    signingConfigs {
+        release {
+            storeFile file(keyProperties['storeFile'])
+            storePassword keyProperties['storePassword']
+            keyAlias keyProperties['releaseKeyAlias']
+            keyPassword keyProperties['releaseKeyPassword']
+        }
+        debug {
+            storeFile file(keyProperties['storeFile'])
+            storePassword keyProperties['storePassword']
+            keyAlias keyProperties['debugKeyAlias']
+            keyPassword keyProperties['debugKeyPassword']
+        }
+    }
+
     compileSdkVersion 30
     buildToolsVersion "30.0.1"
 
@@ -42,9 +65,12 @@ android {
         debug {
             versionNameSuffix "-dev"
             applicationIdSuffix ".debug"
+            signingConfig signingConfigs.debug
         }
 
         release {
+
+            signingConfig signingConfigs.release
 
             // Enables code shrinking, obfuscation, and optimization for only
             // your project's release build type.
