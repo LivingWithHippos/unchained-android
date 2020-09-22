@@ -134,4 +134,5 @@
     <string name="torrents">Torrents</string>
     <string name="downloads">Downloads</string>
     <string name="torrent_not_downloaded">Torrent not ready yet</string>
+    <string name="version_name" translatable="false">demeter</string>
 </resources>
