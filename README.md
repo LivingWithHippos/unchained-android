@@ -20,6 +20,7 @@ You can take a look at the project [here](https://github.com/LivingWithHippos/un
 - [x] login with a temporary open-source token (it has some API limitation)
 - [x] login with permanent [private API key](https://real-debrid.com/apitoken)
 - [x] user info
+- [x] dark mode
 - [x] unrestrict links
 - [x] magnets support
 - [x] torrent support
