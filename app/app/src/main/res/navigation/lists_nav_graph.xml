@@ -23,5 +23,14 @@
         <action
             android:id="@+id/action_listsTab_to_downloadDetails"
             app:destination="@id/downloadDetailsFragment" />
+        <action
+            android:id="@+id/action_listsTab_to_torrentDetails"
+            app:destination="@id/torrentDetailsFragment" />
     </fragment>
+
+    <fragment
+        android:id="@+id/torrentDetailsFragment"
+        android:name="com.github.livingwithhippos.unchained.torrentdetails.view.TorrentDetailsFragment"
+        tools:layout="@layout/fragment_torrent_details"
+        android:label="TorrentDetailsFragment" />
 </navigation>

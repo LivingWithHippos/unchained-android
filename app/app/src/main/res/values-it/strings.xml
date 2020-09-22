@@ -119,4 +119,5 @@
     <string name="api_needs_private_token">Questa funzionalità richiede il codice API privato</string>
     <string name="torrents">Torrents</string>
     <string name="downloads">Downloads</string>
+    <string name="torrent_not_downloaded">Torrent non ancora scaricato</string>
 </resources>
