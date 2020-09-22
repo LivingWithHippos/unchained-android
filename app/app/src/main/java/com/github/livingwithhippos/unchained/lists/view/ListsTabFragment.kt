@@ -10,6 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.PagingData
 import androidx.recyclerview.widget.LinearSmoothScroller
+import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.SmoothScroller
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
@@ -20,6 +21,7 @@ import com.github.livingwithhippos.unchained.lists.model.TorrentListPagingAdapte
 import com.github.livingwithhippos.unchained.lists.viewmodel.DownloadListViewModel
 import com.github.livingwithhippos.unchained.newdownload.model.TorrentItem
 import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewModel
+import com.github.livingwithhippos.unchained.utilities.scrollToPosition
 import com.github.livingwithhippos.unchained.utilities.showToast
 import com.google.android.material.tabs.TabLayout
 import dagger.hilt.android.AndroidEntryPoint
@@ -30,7 +32,6 @@ import kotlinx.coroutines.launch
 class ListsTabFragment: UnchainedFragment(), DownloadListListener, TorrentListListener {
 
     private val viewModel: DownloadListViewModel by viewModels()
-    private var scrollToTop = false
 
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
@@ -60,16 +61,15 @@ class ListsTabFragment: UnchainedFragment(), DownloadListListener, TorrentListLi
         val downloadObserver = Observer<PagingData<DownloadItem>> {
             lifecycleScope.launch {
                 downloadAdapter.submitData(it)
-                listBinding.srLayout.isRefreshing = false
-                listBinding.rvDownloadList.layoutManager?.let {
-                    if (scrollToTop) {
-                        scrollToTop = false
-                        // this delay is needed to activate the scrolling, otherwise it won't work. Even 150L was not enough.
-                        delay(200)
-                        it.startSmoothScroll(getSmoothScroller())
-                        //todo: add ripple animation on item at position 0 if possible, see [runRippleAnimation]
-                    }
+                if (listBinding.srLayout.isRefreshing) {
+                    listBinding.srLayout.isRefreshing = false
+
+                    // this delay is needed to activate the scrolling, otherwise it won't work. Even 150L was not enough.
+                    delay(200)
+                    listBinding.rvDownloadList.layoutManager?.scrollToPosition(requireContext())
+                    //todo: add ripple animation on item at position 0 if possible, see [runRippleAnimation]
                 }
+
             }
         }
 
@@ -77,8 +77,6 @@ class ListsTabFragment: UnchainedFragment(), DownloadListListener, TorrentListLi
             lifecycleScope.launch {
                 torrentAdapter.submitData(it)
                 listBinding.srLayout.isRefreshing = false
-                val layoutManager =  listBinding.rvTorrentList.layoutManager
-                listBinding.rvTorrentList.layoutManager?.smoothScrollToPosition(listBinding.rvDownloadList, null, 0)
             }
         }
 
@@ -149,22 +147,12 @@ class ListsTabFragment: UnchainedFragment(), DownloadListListener, TorrentListLi
                 listBinding.tabs.getTabAt(TAB_DOWNLOADS)?.select()
                 // simulate list refresh
                 listBinding.srLayout.isRefreshing = true
-                // inform to scroll to top on next data
-                scrollToTop = true
                 // refresh items, when returned they'll stop the animation
                 downloadAdapter.refresh()
             }
         })
 
         return listBinding.root
-    }
-
-    private fun getSmoothScroller(position: Int = 0): SmoothScroller {
-        return object : LinearSmoothScroller(context) {
-            override fun getVerticalSnapPreference(): Int {
-                return SNAP_TO_START
-            }
-        }.apply<LinearSmoothScroller> { targetPosition = position }
     }
 
     override fun onClick(item: DownloadItem) {
