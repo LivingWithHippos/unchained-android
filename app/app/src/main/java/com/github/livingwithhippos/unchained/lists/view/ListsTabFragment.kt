@@ -10,7 +10,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.PagingData
 import androidx.recyclerview.widget.LinearSmoothScroller
-import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.SmoothScroller
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
@@ -21,13 +20,11 @@ import com.github.livingwithhippos.unchained.lists.model.TorrentListPagingAdapte
 import com.github.livingwithhippos.unchained.lists.viewmodel.DownloadListViewModel
 import com.github.livingwithhippos.unchained.newdownload.model.TorrentItem
 import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewModel
-import com.github.livingwithhippos.unchained.utilities.runRippleAnimation
 import com.github.livingwithhippos.unchained.utilities.showToast
 import com.google.android.material.tabs.TabLayout
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import okhttp3.internal.wait
 
 @AndroidEntryPoint
 class ListsTabFragment: UnchainedFragment(), DownloadListListener, TorrentListListener {
@@ -46,14 +43,6 @@ class ListsTabFragment: UnchainedFragment(), DownloadListListener, TorrentListLi
 
         listBinding.rvDownloadList.adapter = downloadAdapter
         listBinding.rvTorrentList.adapter = torrentAdapter
-
-        val smoothScroller: SmoothScroller = object : LinearSmoothScroller(context) {
-            override fun getVerticalSnapPreference(): Int {
-                return SNAP_TO_START
-            }
-        }.apply {
-            targetPosition = 0
-        }
 
         //todo: add scroll to top when a new item is added
         listBinding.srLayout.setOnRefreshListener {
@@ -77,7 +66,7 @@ class ListsTabFragment: UnchainedFragment(), DownloadListListener, TorrentListLi
                         scrollToTop = false
                         // this delay is needed to activate the scrolling, otherwise it won't work. Even 150L was not enough.
                         delay(200)
-                        it.startSmoothScroll(smoothScroller)
+                        it.startSmoothScroll(getSmoothScroller())
                         //todo: add ripple animation on item at position 0 if possible, see [runRippleAnimation]
                     }
                 }
@@ -168,6 +157,14 @@ class ListsTabFragment: UnchainedFragment(), DownloadListListener, TorrentListLi
         })
 
         return listBinding.root
+    }
+
+    private fun getSmoothScroller(position: Int = 0): SmoothScroller {
+        return object : LinearSmoothScroller(context) {
+            override fun getVerticalSnapPreference(): Int {
+                return SNAP_TO_START
+            }
+        }.apply<LinearSmoothScroller> { targetPosition = position }
     }
 
     override fun onClick(item: DownloadItem) {
