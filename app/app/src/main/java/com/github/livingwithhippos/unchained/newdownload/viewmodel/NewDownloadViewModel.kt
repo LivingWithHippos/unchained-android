@@ -6,6 +6,7 @@ import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import com.github.livingwithhippos.unchained.BuildConfig
 import com.github.livingwithhippos.unchained.base.model.network.APIError
 import com.github.livingwithhippos.unchained.base.model.network.APIException
 import com.github.livingwithhippos.unchained.base.model.repositories.CredentialsRepository
@@ -59,7 +60,8 @@ class NewDownloadViewModel @ViewModelInject constructor(
             val token = getToken()
             val availableHosts = torrentsRepository.getAvailableHosts(token)
             if (availableHosts.isNullOrEmpty()) {
-                Log.e("NewDownloadViewModel", "Error fetching available hosts")
+                if (BuildConfig.DEBUG)
+                    Log.e("NewDownloadViewModel", "Error fetching available hosts")
             } else {
                 val addedMagnet =
                     torrentsRepository.addMagnet(token, magnet, availableHosts.first().host)
@@ -81,7 +83,8 @@ class NewDownloadViewModel @ViewModelInject constructor(
             val token = getToken()
             val availableHosts = torrentsRepository.getAvailableHosts(token)
             if (availableHosts.isNullOrEmpty()) {
-                Log.e("NewDownloadViewModel", "Error fetching available hosts")
+                if (BuildConfig.DEBUG)
+                    Log.e("NewDownloadViewModel", "Error fetching available hosts")
             } else {
                 val uploadedTorrent =
                     torrentsRepository.addTorrent(token, binaryTorrent, availableHosts.first().host)

@@ -17,6 +17,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.github.livingwithhippos.unchained.BuildConfig
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.databinding.NewDownloadFragmentBinding
@@ -213,10 +214,11 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
             fileInputStream.close()
             viewModel.fetchUploadedTorrent(buffer)
         } else {
-            Log.e(
-                "NewDownloadFragment",
-                "Torrent conversion: Error getting parcelFileDescriptor -> null"
-            )
+            if (BuildConfig.DEBUG)
+                Log.e(
+                    "NewDownloadFragment",
+                    "Torrent conversion: Error getting parcelFileDescriptor -> null"
+                )
         }
 
     }

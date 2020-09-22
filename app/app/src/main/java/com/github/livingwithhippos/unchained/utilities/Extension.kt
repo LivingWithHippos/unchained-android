@@ -37,6 +37,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.request.RequestOptions.bitmapTransform
 import com.bumptech.glide.request.target.CustomViewTarget
 import com.bumptech.glide.request.transition.Transition
+import com.github.livingwithhippos.unchained.BuildConfig
 import com.github.livingwithhippos.unchained.R
 import com.google.android.material.progressindicator.ProgressIndicator
 import java.util.*
@@ -217,10 +218,11 @@ fun Fragment.getClipboardText(): String {
         val item = clipboard.primaryClip!!.getItemAt(0)
         text = item.text.toString()
     } else {
-        Log.d(
-            "Fragment.getClipboardText",
-            "Clipboard was empty or did not contain any text mime type."
-        )
+        if (BuildConfig.DEBUG)
+            Log.d(
+                "Fragment.getClipboardText",
+                "Clipboard was empty or did not contain any text mime type."
+            )
     }
     return text
 }

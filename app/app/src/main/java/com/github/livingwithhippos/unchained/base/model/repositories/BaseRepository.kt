@@ -1,6 +1,7 @@
 package com.github.livingwithhippos.unchained.base.model.repositories
 
 import android.util.Log
+import com.github.livingwithhippos.unchained.BuildConfig
 import com.github.livingwithhippos.unchained.base.model.network.APIError
 import com.github.livingwithhippos.unchained.base.model.network.APIException
 import com.github.livingwithhippos.unchained.base.model.network.NetworkResponse
@@ -21,10 +22,12 @@ open class BaseRepository {
             is NetworkResponse.Success ->
                 data = result.data
             is NetworkResponse.SuccessEmptyBody ->
-                Log.d("BaseRepository", "Successful call with empty body : ${result.code}")
-            is NetworkResponse.Error -> {
-                Log.d("BaseRepository", errorMessage)
-            }
+                if (BuildConfig.DEBUG)
+                    Log.d("BaseRepository", "Successful call with empty body : ${result.code}")
+            is NetworkResponse.Error ->
+                if (BuildConfig.DEBUG)
+                    Log.d("BaseRepository", errorMessage)
+
         }
 
         return data
@@ -40,10 +43,11 @@ open class BaseRepository {
                 data = result.data
             // todo: temporary workaround. Add support for empty body success
             is NetworkResponse.SuccessEmptyBody ->
-                Log.d("BaseRepository", "Successful call with empty body : ${result.code}")
-            is NetworkResponse.Error -> {
-                Log.d("BaseRepository", errorMessage)
-            }
+                if (BuildConfig.DEBUG)
+                    Log.d("BaseRepository", "Successful call with empty body : ${result.code}")
+            is NetworkResponse.Error ->
+                if (BuildConfig.DEBUG)
+                    Log.d("BaseRepository", errorMessage)
         }
 
         return data
