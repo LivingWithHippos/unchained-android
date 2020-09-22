@@ -63,7 +63,6 @@ class ListsTabFragment: UnchainedFragment(), DownloadListListener, TorrentListLi
                 downloadAdapter.submitData(it)
                 if (listBinding.srLayout.isRefreshing) {
                     listBinding.srLayout.isRefreshing = false
-
                     // this delay is needed to activate the scrolling, otherwise it won't work. Even 150L was not enough.
                     delay(200)
                     listBinding.rvDownloadList.layoutManager?.scrollToPosition(requireContext())
@@ -76,7 +75,12 @@ class ListsTabFragment: UnchainedFragment(), DownloadListListener, TorrentListLi
         val torrentObserver = Observer<PagingData<TorrentItem>> {
             lifecycleScope.launch {
                 torrentAdapter.submitData(it)
-                listBinding.srLayout.isRefreshing = false
+                if (listBinding.srLayout.isRefreshing) {
+                    listBinding.srLayout.isRefreshing = false
+                    // this delay is needed to activate the scrolling, otherwise it won't work. Even 150L was not enough.
+                    delay(200)
+                    listBinding.rvTorrentList.layoutManager?.scrollToPosition(requireContext())
+                }
             }
         }
 
