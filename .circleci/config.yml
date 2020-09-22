@@ -13,6 +13,8 @@ jobs:
 #      - run:
 #         name: Chmod permissions #if permission for Gradlew Dependencies fail, use this.
 #         command: sudo chmod +x ./gradlew
+      - run: echo $ENCODED_KEYSTORE | base64 --decode >> ${HOME}/signing/release.pfk
+      - run: echo 'export KEYSTORE=${HOME}/signing/release.pfk' >> $BASH_ENV
       - run:
           name: Download Dependencies
           command: ./gradlew androidDependencies
