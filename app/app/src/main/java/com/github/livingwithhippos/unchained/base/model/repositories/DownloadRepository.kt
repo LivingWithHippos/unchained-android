@@ -1,6 +1,6 @@
 package com.github.livingwithhippos.unchained.base.model.repositories
 
-import com.github.livingwithhippos.unchained.downloadlists.model.DownloadApiHelper
+import com.github.livingwithhippos.unchained.lists.model.DownloadApiHelper
 import com.github.livingwithhippos.unchained.downloadlists.model.DownloadItem
 import javax.inject.Inject
 

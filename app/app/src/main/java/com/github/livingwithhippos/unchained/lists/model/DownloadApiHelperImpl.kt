@@ -1,10 +1,12 @@
-package com.github.livingwithhippos.unchained.downloadlists.model
+package com.github.livingwithhippos.unchained.lists.model
 
+import com.github.livingwithhippos.unchained.downloadlists.model.DownloadItem
+import com.github.livingwithhippos.unchained.downloadlists.model.DownloadsApi
 import retrofit2.Response
 import javax.inject.Inject
 
 class DownloadApiHelperImpl @Inject constructor(private val downloadsApi: DownloadsApi) :
-    DownloadApiHelper {
+        DownloadApiHelper {
 
     override suspend fun getDownloads(
         token: String,

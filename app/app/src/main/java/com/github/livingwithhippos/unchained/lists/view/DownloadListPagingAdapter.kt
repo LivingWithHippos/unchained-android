@@ -1,4 +1,4 @@
-package com.github.livingwithhippos.unchained.downloadlists.view
+package com.github.livingwithhippos.unchained.lists.view
 import androidx.recyclerview.widget.DiffUtil
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.downloadlists.model.DownloadItem
