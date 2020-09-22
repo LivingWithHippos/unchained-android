@@ -61,8 +61,7 @@ class ListsTabFragment: UnchainedFragment(), DownloadListListener, TorrentListLi
                 if (listBinding.srLayout.isRefreshing) {
                     listBinding.srLayout.isRefreshing = false
                     // this delay is needed to activate the scrolling, otherwise it won't work. Even 150L was not enough.
-                    delay(200)
-                    listBinding.rvDownloadList.layoutManager?.verticalScrollToPosition(requireContext())
+                    listBinding.rvDownloadList.layoutManager?.verticalScrollToPosition(requireContext(), delay = 200)
                     //todo: add ripple animation on item at position 0 if possible, see [runRippleAnimation]
                 }
 
@@ -75,8 +74,7 @@ class ListsTabFragment: UnchainedFragment(), DownloadListListener, TorrentListLi
                 if (listBinding.srLayout.isRefreshing) {
                     listBinding.srLayout.isRefreshing = false
                     // this delay is needed to activate the scrolling, otherwise it won't work. Even 150L was not enough.
-                    delay(200)
-                    listBinding.rvTorrentList.layoutManager?.verticalScrollToPosition(requireContext())
+                    listBinding.rvTorrentList.layoutManager?.verticalScrollToPosition(requireContext(), delay = 200)
                 }
             }
         }

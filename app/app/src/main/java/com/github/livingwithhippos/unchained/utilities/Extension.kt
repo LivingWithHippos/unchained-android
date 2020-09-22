@@ -280,7 +280,7 @@ fun stringToDate(rdDate: String): String {
  * @param position: the position to scroll to
  * @param snapType: how to align the child view with parent view
  */
-fun RecyclerView.LayoutManager.verticalScrollToPosition(context: Context, position: Int = 0, snapType: Int = LinearSmoothScroller.SNAP_TO_START) {
+fun RecyclerView.LayoutManager.verticalScrollToPosition(context: Context, position: Int = 0, delay: Long=0, snapType: Int = LinearSmoothScroller.SNAP_TO_START) {
 
     val smoothScroller = object : LinearSmoothScroller(context) {
         override fun getVerticalSnapPreference(): Int {
@@ -288,5 +288,14 @@ fun RecyclerView.LayoutManager.verticalScrollToPosition(context: Context, positi
         }
     }.apply<LinearSmoothScroller> { targetPosition = position }
 
-    this.startSmoothScroll(smoothScroller)
+    this.getChildAt(position)?.let {
+        it.postDelayed(
+                Runnable {
+                    this.startSmoothScroll(smoothScroller)
+                },
+                delay
+        )
+    }
+
+
 }
