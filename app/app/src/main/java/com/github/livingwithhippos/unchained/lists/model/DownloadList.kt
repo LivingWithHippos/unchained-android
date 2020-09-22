@@ -1,4 +1,4 @@
-package com.github.livingwithhippos.unchained.downloadlists.model
+package com.github.livingwithhippos.unchained.lists.model
 import android.os.Parcel
 import android.os.Parcelable
 import com.squareup.moshi.JsonClass

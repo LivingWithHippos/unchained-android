@@ -9,7 +9,7 @@ import com.github.livingwithhippos.unchained.downloaddetails.model.StreamingApiH
 import com.github.livingwithhippos.unchained.downloaddetails.model.StreamingApiHelperImpl
 import com.github.livingwithhippos.unchained.lists.model.DownloadApiHelper
 import com.github.livingwithhippos.unchained.lists.model.DownloadApiHelperImpl
-import com.github.livingwithhippos.unchained.downloadlists.model.DownloadsApi
+import com.github.livingwithhippos.unchained.lists.model.DownloadsApi
 import com.github.livingwithhippos.unchained.newdownload.model.TorrentApiHelper
 import com.github.livingwithhippos.unchained.newdownload.model.TorrentApiHelperImpl
 import com.github.livingwithhippos.unchained.newdownload.model.TorrentsApi

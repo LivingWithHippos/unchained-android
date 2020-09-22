@@ -1,10 +1,6 @@
 package com.github.livingwithhippos.unchained.newdownload.model
 
-import android.os.Parcel
-import android.os.Parcelable
-import com.github.livingwithhippos.unchained.downloadlists.model.DownloadItem
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
+import com.github.livingwithhippos.unchained.lists.model.DownloadItem
 import retrofit2.Response
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded

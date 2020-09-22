@@ -1,7 +1,5 @@
 package com.github.livingwithhippos.unchained.lists.model
 
-import com.github.livingwithhippos.unchained.downloadlists.model.DownloadItem
-import com.github.livingwithhippos.unchained.downloadlists.model.DownloadsApi
 import retrofit2.Response
 import javax.inject.Inject
 

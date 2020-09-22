@@ -27,7 +27,7 @@
         android:label="@string/download_details"
         tools:layout="@layout/fragment_download_details"  >
         <argument android:name="details"
-            app:argType="com.github.livingwithhippos.unchained.downloadlists.model.DownloadItem" />
+            app:argType="com.github.livingwithhippos.unchained.lists.model.DownloadItem" />
     </fragment>
     <fragment
         android:id="@+id/torrentDetailsFragment"

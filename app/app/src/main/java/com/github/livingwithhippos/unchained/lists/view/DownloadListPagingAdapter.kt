@@ -1,7 +1,7 @@
 package com.github.livingwithhippos.unchained.lists.view
 import androidx.recyclerview.widget.DiffUtil
 import com.github.livingwithhippos.unchained.R
-import com.github.livingwithhippos.unchained.downloadlists.model.DownloadItem
+import com.github.livingwithhippos.unchained.lists.model.DownloadItem
 import com.github.livingwithhippos.unchained.utilities.DataBindingPagingAdapter
 
 class DownloadListPagingAdapter(listener: DownloadListListener) : DataBindingPagingAdapter<DownloadItem, DownloadListListener>(DiffCallback(), listener) {

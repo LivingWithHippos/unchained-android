@@ -1,4 +1,4 @@
-package com.github.livingwithhippos.unchained.downloadlists.viewmodel
+package com.github.livingwithhippos.unchained.lists.viewmodel
 
 import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
@@ -14,7 +14,7 @@ import androidx.paging.liveData
 import com.github.livingwithhippos.unchained.base.model.repositories.CredentialsRepository
 import com.github.livingwithhippos.unchained.base.model.repositories.DownloadRepository
 import com.github.livingwithhippos.unchained.base.model.repositories.TorrentsRepository
-import com.github.livingwithhippos.unchained.downloadlists.model.DownloadItem
+import com.github.livingwithhippos.unchained.lists.model.DownloadItem
 import com.github.livingwithhippos.unchained.lists.model.DownloadPagingSource
 import com.github.livingwithhippos.unchained.lists.model.TorrentPagingSource
 import com.github.livingwithhippos.unchained.newdownload.model.TorrentItem
