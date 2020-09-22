@@ -88,11 +88,12 @@ class TorrentsRepository @Inject constructor(private val torrentApiHelper: Torre
 
     suspend fun getTorrentsList(
         token: String,
-        offset: Int? = 0,
-        page: Int? = null,
+        offset: Int?,
+        page: Int? = 1,
         limit: Int? = 10,
         filter: String? = null
-    ): List<TorrentItem>? {
+    ): List<TorrentItem> {
+
         val torrentsResponse: List<TorrentItem>? = safeApiCall(
             call = {
                 torrentApiHelper.getTorrentsList(
@@ -106,7 +107,7 @@ class TorrentsRepository @Inject constructor(private val torrentApiHelper: Torre
             errorMessage = "Error Retrieving Torrent Info"
         )
 
-        return torrentsResponse;
+        return torrentsResponse ?: emptyList()
 
     }
 

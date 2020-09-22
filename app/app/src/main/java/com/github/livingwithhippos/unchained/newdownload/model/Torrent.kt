@@ -75,13 +75,13 @@ data class TorrentItem(
     @Json(name = "filename")
     val filename: String,
     @Json(name = "original_filename")
-    val originalFilename: String,
+    val originalFilename: String?,
     @Json(name = "hash")
     val hash: String,
     @Json(name = "bytes")
     val bytes: Long,
     @Json(name = "original_bytes")
-    val originalBytes: Long,
+    val originalBytes: Long?,
     @Json(name = "host")
     val host: String,
     @Json(name = "split")
@@ -93,7 +93,7 @@ data class TorrentItem(
     @Json(name = "added")
     val added: String,
     @Json(name = "files")
-    val files: List<InnerTorrentFile>,
+    val files: List<InnerTorrentFile>?,
     @Json(name = "links")
     val links: List<String>,
     @Json(name = "ended")

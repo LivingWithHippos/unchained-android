@@ -32,6 +32,8 @@ import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.BindingAdapter
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearSmoothScroller
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.request.RequestOptions.bitmapTransform
 import com.bumptech.glide.request.target.CustomViewTarget
 import com.bumptech.glide.request.transition.Transition
@@ -179,7 +181,7 @@ fun TextView.setFileSize(size: Long) {
     }
 }
 
-fun View.runRippleAnimation(){
+fun View.runRippleAnimation(delay: Long=300){
     //todo: test
     if (background is RippleDrawable) {
         postDelayed(
@@ -189,7 +191,7 @@ fun View.runRippleAnimation(){
                     android.R.attr.state_enabled
                 )
             },
-            300
+                delay
         )
     }
 }
@@ -270,4 +272,30 @@ fun stringToDate(rdDate: String): String {
     val date: Date = originalDate.parse(rdDate)
     val localDate: DateFormat = SimpleDateFormat.getDateTimeInstance()
     return localDate.format(date)
+}
+
+/**
+ * Smoothly scrolls to an item position in a RecyclerView.
+ * @param context: The Context to create a SmoothScroller
+ * @param position: the position to scroll to
+ * @param snapType: how to align the child view with parent view
+ */
+fun RecyclerView.LayoutManager.verticalScrollToPosition(context: Context, position: Int = 0, delay: Long=0, snapType: Int = LinearSmoothScroller.SNAP_TO_START) {
+
+    val smoothScroller = object : LinearSmoothScroller(context) {
+        override fun getVerticalSnapPreference(): Int {
+            return snapType
+        }
+    }.apply<LinearSmoothScroller> { targetPosition = position }
+
+    this.getChildAt(position)?.let {
+        it.postDelayed(
+                Runnable {
+                    this.startSmoothScroll(smoothScroller)
+                },
+                delay
+        )
+    }
+
+
 }

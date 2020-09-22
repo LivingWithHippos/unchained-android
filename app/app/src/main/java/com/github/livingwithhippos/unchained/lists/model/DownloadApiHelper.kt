@@ -1,4 +1,4 @@
-package com.github.livingwithhippos.unchained.downloadlists.model
+package com.github.livingwithhippos.unchained.lists.model
 
 import retrofit2.Response
 
