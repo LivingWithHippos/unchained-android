@@ -13,7 +13,7 @@ jobs:
 #      - run:
 #         name: Chmod permissions #if permission for Gradlew Dependencies fail, use this.
 #         command: sudo chmod +x ./gradlew
-      - run: cat $ENCODED_KEYSTORE | base64 --decode > ~/unchained-android/app/release.pfk
+      - run: echo $ENCODED_KEYSTORE | base64 --decode > ~/unchained-android/app/release.pfk
       - run: echo 'export KEYSTORE=~/unchained-android/app/release.pfk' >> $BASH_ENV
       - run:
           name: Download Dependencies
