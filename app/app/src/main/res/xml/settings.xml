@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    >
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <SwitchPreferenceCompat
         app:key="notifications"
-        app:title="Enable download notifications (TODO)"/>
+        app:title="Enable download notifications (TODO)" />
 
     <Preference
         app:key="feedback"
-        app:title="Send feedback"
-        app:summary="Report technical issues or suggest new features"/>
+        app:summary="Report technical issues or suggest new features"
+        app:title="Send feedback" />
 
 
 </PreferenceScreen>

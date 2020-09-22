@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
 ~ Copyright (C) 2019 The Android Open Source Project
 ~
 ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,7 +17,7 @@
 <!-- This file has been modified -->
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!--Top level DayNight theme to be used in AndroidManifest.xml-->
-    <style name="Theme.Unchained" parent="Base.Theme.Unchained"/>
+    <style name="Theme.Unchained" parent="Base.Theme.Unchained" />
     <!--Base custom theme which will be shared between both light and dark theme variants-->
     <style name="Base.Theme.Unchained" parent="Base.Theme.MaterialThemeBuilder">
         <!--Material color attributes (light theme) -->
@@ -58,19 +57,31 @@
         <item name="textAppearanceCaption">@style/TextAppearance.UnchainedTheme.Caption</item>
         <item name="textAppearanceOverline">@style/TextAppearance.UnchainedTheme.Overline</item>
         <!--Material shape attributes-->
-        <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.UnchainedTheme.SmallComponent</item>
-        <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.UnchainedTheme.MediumComponent</item>
-        <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.UnchainedTheme.LargeComponent</item>
+        <item name="shapeAppearanceSmallComponent">
+            @style/ShapeAppearance.UnchainedTheme.SmallComponent
+        </item>
+        <item name="shapeAppearanceMediumComponent">
+            @style/ShapeAppearance.UnchainedTheme.MediumComponent
+        </item>
+        <item name="shapeAppearanceLargeComponent">
+            @style/ShapeAppearance.UnchainedTheme.LargeComponent
+        </item>
         <!--Component styles-->
-        <item name="materialAlertDialogTheme">@style/ThemeOverlay.MaterialComponents.Dialog.Alert</item>
+        <item name="materialAlertDialogTheme">@style/ThemeOverlay.MaterialComponents.Dialog.Alert
+        </item>
         <item name="toolbarStyle">@style/Widget.MaterialComponents.Toolbar.PrimarySurface</item>
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
     </style>
+
     <style name="Base.Theme.MaterialThemeBuilder" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="android:statusBarColor" tools:ignore="NewApi">?attr/colorSurface</item>
         <item name="android:windowLightStatusBar" tools:ignore="NewApi">true</item>
-        <item name="android:navigationBarColor" tools:ignore="NewApi">?android:attr/colorBackground</item>
+        <item name="android:navigationBarColor" tools:ignore="NewApi">
+            ?android:attr/colorBackground
+        </item>
         <item name="android:windowLightNavigationBar" tools:ignore="NewApi">true</item>
-        <item name="android:navigationBarDividerColor" tools:ignore="NewApi">?attr/colorControlHighlight</item>
+        <item name="android:navigationBarDividerColor" tools:ignore="NewApi">
+            ?attr/colorControlHighlight
+        </item>
     </style>
 </resources>

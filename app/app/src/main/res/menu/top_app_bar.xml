@@ -3,9 +3,9 @@
 
     <item
         android:id="@+id/settings"
+        android:contentDescription="@string/content_description_settings"
         android:icon="@drawable/settings"
         android:title="@string/settings"
-        android:contentDescription="@string/content_description_settings"
         app:showAsAction="ifRoom" />
 
 </menu>

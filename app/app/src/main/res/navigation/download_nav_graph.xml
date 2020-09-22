@@ -8,7 +8,7 @@
         android:id="@+id/new_download_dest"
         android:name="com.github.livingwithhippos.unchained.newdownload.view.NewDownloadFragment"
         android:label="@string/new_download"
-        tools:layout="@layout/new_download_fragment" >
+        tools:layout="@layout/new_download_fragment">
         <action
             android:id="@+id/actionUnrestrictDownloadToDetailsFragment"
             app:destination="@id/download_details_dest" />
@@ -17,23 +17,24 @@
             app:destination="@id/torrentDetailsFragment" />
         <argument
             android:name="links"
+            android:defaultValue="@null"
             app:argType="string[]"
-            app:nullable="true"
-            android:defaultValue="@null" />
+            app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/download_details_dest"
         android:name="com.github.livingwithhippos.unchained.downloaddetails.view.DownloadDetailsFragment"
         android:label="@string/download_details"
-        tools:layout="@layout/fragment_download_details"  >
-        <argument android:name="details"
+        tools:layout="@layout/fragment_download_details">
+        <argument
+            android:name="details"
             app:argType="com.github.livingwithhippos.unchained.lists.model.DownloadItem" />
     </fragment>
     <fragment
         android:id="@+id/torrentDetailsFragment"
         android:name="com.github.livingwithhippos.unchained.torrentdetails.view.TorrentDetailsFragment"
         android:label="TorrentDetailsFragment"
-        tools:layout="@layout/fragment_torrent_details" >
+        tools:layout="@layout/fragment_torrent_details">
         <argument
             android:name="torrentID"
             app:argType="string" />
