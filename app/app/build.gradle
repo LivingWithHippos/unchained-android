@@ -14,21 +14,6 @@ if (keyPropertiesFile.exists()) {
 
 android {
 
-    signingConfigs {
-        release {
-            storeFile file(keyProperties['storeFile'])
-            storePassword keyProperties['storePassword']
-            keyAlias keyProperties['releaseKeyAlias']
-            keyPassword keyProperties['releaseKeyPassword']
-        }
-        debug {
-            storeFile file(keyProperties['storeFile'])
-            storePassword keyProperties['storePassword']
-            keyAlias keyProperties['debugKeyAlias']
-            keyPassword keyProperties['debugKeyPassword']
-        }
-    }
-
     compileSdkVersion 30
     buildToolsVersion "30.0.1"
 
@@ -60,6 +45,15 @@ android {
         exclude 'META-INF/*.properties'
     }
 
+    signingConfigs {
+        release {
+            storeFile file(keyProperties['releaseStoreFile'])
+            storePassword keyProperties['releaseStorePassword']
+            keyAlias keyProperties['keyAlias']
+            keyPassword keyProperties['releaseStorePassword']
+        }
+    }
+
     buildTypes {
 
         debug {
@@ -71,6 +65,8 @@ android {
         release {
 
             signingConfig signingConfigs.release
+
+            debuggable false
 
             // Enables code shrinking, obfuscation, and optimization for only
             // your project's release build type.
