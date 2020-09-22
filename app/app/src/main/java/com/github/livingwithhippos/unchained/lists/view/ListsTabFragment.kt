@@ -9,9 +9,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.PagingData
-import androidx.recyclerview.widget.LinearSmoothScroller
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.SmoothScroller
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.databinding.FragmentTabListsBinding
@@ -21,7 +18,7 @@ import com.github.livingwithhippos.unchained.lists.model.TorrentListPagingAdapte
 import com.github.livingwithhippos.unchained.lists.viewmodel.DownloadListViewModel
 import com.github.livingwithhippos.unchained.newdownload.model.TorrentItem
 import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewModel
-import com.github.livingwithhippos.unchained.utilities.scrollToPosition
+import com.github.livingwithhippos.unchained.utilities.verticalScrollToPosition
 import com.github.livingwithhippos.unchained.utilities.showToast
 import com.google.android.material.tabs.TabLayout
 import dagger.hilt.android.AndroidEntryPoint
@@ -65,7 +62,7 @@ class ListsTabFragment: UnchainedFragment(), DownloadListListener, TorrentListLi
                     listBinding.srLayout.isRefreshing = false
                     // this delay is needed to activate the scrolling, otherwise it won't work. Even 150L was not enough.
                     delay(200)
-                    listBinding.rvDownloadList.layoutManager?.scrollToPosition(requireContext())
+                    listBinding.rvDownloadList.layoutManager?.verticalScrollToPosition(requireContext())
                     //todo: add ripple animation on item at position 0 if possible, see [runRippleAnimation]
                 }
 
@@ -79,7 +76,7 @@ class ListsTabFragment: UnchainedFragment(), DownloadListListener, TorrentListLi
                     listBinding.srLayout.isRefreshing = false
                     // this delay is needed to activate the scrolling, otherwise it won't work. Even 150L was not enough.
                     delay(200)
-                    listBinding.rvTorrentList.layoutManager?.scrollToPosition(requireContext())
+                    listBinding.rvTorrentList.layoutManager?.verticalScrollToPosition(requireContext())
                 }
             }
         }
