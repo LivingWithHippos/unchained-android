@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.github.livingwithhippos.unchained.R
@@ -21,9 +22,6 @@ class TorrentDetailsFragment : Fragment(), TorrentDetailsListener {
     private val viewModel: TorrentDetailsViewmodel by viewModels()
 
     val args: TorrentDetailsFragmentArgs by navArgs()
-
-    private val job = Job()
-    val scope = CoroutineScope(Dispatchers.Main + job)
 
     // possible status are magnet_error, magnet_conversion, waiting_files_selection,
     // queued, downloading, downloaded, error, virus, compressing, uploading, dead
@@ -74,10 +72,6 @@ class TorrentDetailsFragment : Fragment(), TorrentDetailsListener {
                 torrentBinding.torrent = it
                 if (loadingStatusList.contains(it.status) || it.status == "downloading")
                     fetchTorrent()
-                if (endedStatusList.contains(it.status)) {
-                    job.cancel()
-                    // also stop the observing?
-                }
             }
         })
 
@@ -86,10 +80,10 @@ class TorrentDetailsFragment : Fragment(), TorrentDetailsListener {
         return torrentBinding.root
     }
 
-    private fun fetchTorrent() {
-        val waitingTime = 2000L
-        scope.launch {
-            delay(waitingTime)
+    // fetch the torrent info every 2 seconds
+    private fun fetchTorrent(delay: Long = 2000) {
+        lifecycleScope.launch {
+            delay(delay)
             viewModel.fetchTorrentDetails(args.torrentID)
         }
     }

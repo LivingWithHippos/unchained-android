@@ -3,6 +3,7 @@ package com.github.livingwithhippos.unchained.start.viewmodel
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.github.livingwithhippos.unchained.base.model.entities.Credentials
 import com.github.livingwithhippos.unchained.base.model.repositories.AuthenticationRepository
 import com.github.livingwithhippos.unchained.base.model.repositories.CredentialsRepository
@@ -11,7 +12,6 @@ import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.PRIVATE_TOKEN
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 //todo: evaluate if this ViewModel could be used as a shared one between the fragments
@@ -27,15 +27,12 @@ class MainActivityViewModel @ViewModelInject constructor(
         AUTHENTICATED, UNAUTHENTICATED, BAD_TOKEN, ACCOUNT_LOCKED
     }
 
-    private val job = Job()
-    val scope = CoroutineScope(Dispatchers.Default + job)
-
     val workingCredentialsLiveData = MutableLiveData<Credentials?>()
 
     val authenticationState = MutableLiveData<Event<AuthenticationState>>()
 
     fun fetchFirstWorkingCredentials() {
-        scope.launch {
+        viewModelScope.launch {
             val completeCredentials = credentialRepository
                 .getAllCredentials()
                 .filter { it.accessToken != null && it.clientId != null && it.clientSecret != null && it.deviceCode.isNotBlank() && it.refreshToken != null }
@@ -82,14 +79,14 @@ class MainActivityViewModel @ViewModelInject constructor(
     }
 
     fun logout() {
-        scope.launch {
+        viewModelScope.launch {
             credentialRepository.deleteAllCredentials()
             setUnauthenticated()
         }
     }
 
     fun invalidateOpenSourceToken() {
-        scope.launch {
+        viewModelScope.launch {
             credentialRepository.getFirstCredentials()?.let {
                 if (it.refreshToken != null && it.refreshToken != PRIVATE_TOKEN) {
                     //setUnauthenticated()
@@ -109,7 +106,7 @@ class MainActivityViewModel @ViewModelInject constructor(
 
     fun refreshToken() {
 
-        scope.launch {
+        viewModelScope.launch {
 
             // get the old credentials
             val oldCredentials = credentialRepository.getFirstCredentials()

@@ -5,6 +5,7 @@ import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.github.livingwithhippos.unchained.authentication.model.Authentication
 import com.github.livingwithhippos.unchained.authentication.model.Secrets
 import com.github.livingwithhippos.unchained.authentication.model.Token
@@ -25,9 +26,6 @@ class AuthenticationViewModel @ViewModelInject constructor(
     private val userRepository: UserRepository
 ) : ViewModel() {
 
-    private val job = Job()
-    val scope = CoroutineScope(Dispatchers.Default + job)
-
     val authLiveData = MutableLiveData<Event<Authentication?>>()
     val secretLiveData = MutableLiveData<Event<Secrets?>>()
     val tokenLiveData = MutableLiveData<Event<Token?>>()
@@ -36,7 +34,7 @@ class AuthenticationViewModel @ViewModelInject constructor(
     //todo: here we should check if we already have credentials and if they work, and pass those
     //todo: rename this first part of the auth flow as verificationInfo etc.?
     fun fetchAuthenticationInfo() {
-        scope.launch {
+        viewModelScope.launch {
             val authData = authRepository.getVerificationCode()
             if (authData?.deviceCode != null)
                 credentialRepository.insert(
@@ -55,7 +53,7 @@ class AuthenticationViewModel @ViewModelInject constructor(
     fun fetchSecrets(deviceCode: String) {
         val waitTime = 5000L
         var calls = 0
-        scope.launch {
+        viewModelScope.launch {
             var secretData = authRepository.getSecrets(deviceCode)
             secretLiveData.postValue(Event(secretData))
             while (secretData?.clientId == null && calls < 60 && getAuthState() != MainActivityViewModel.AuthenticationState.AUTHENTICATED) {
@@ -84,7 +82,7 @@ class AuthenticationViewModel @ViewModelInject constructor(
 
     fun fetchToken(clientId: String, deviceCode: String, clientSecret: String) {
         //todo: should we blank unnecessary secrets when we have a working token?
-        scope.launch {
+        viewModelScope.launch {
             val tokenData = authRepository.getToken(clientId, clientSecret, deviceCode)
             tokenLiveData.postValue(Event(tokenData))
             if (tokenData?.accessToken != null) {
@@ -106,7 +104,7 @@ class AuthenticationViewModel @ViewModelInject constructor(
     }
 
     fun checkAndSaveToken(token: String) {
-        scope.launch {
+        viewModelScope.launch {
             // try to get personal info
             val userData = userRepository.getUserInfo(token)
             // save the token if it's working
@@ -125,8 +123,6 @@ class AuthenticationViewModel @ViewModelInject constructor(
         // this value is only checked against AUTHENTICATED
         return savedStateHandle.get(AUTH_STATE)
     }
-
-    fun cancelRequests() = job.cancel()
 
     companion object {
         const val AUTH_STATE = "auth_state"

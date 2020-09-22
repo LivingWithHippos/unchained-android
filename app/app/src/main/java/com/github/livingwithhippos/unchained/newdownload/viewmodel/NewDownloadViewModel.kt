@@ -6,6 +6,7 @@ import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.github.livingwithhippos.unchained.BuildConfig
 import com.github.livingwithhippos.unchained.base.model.network.APIError
 import com.github.livingwithhippos.unchained.base.model.network.APIException
@@ -18,7 +19,6 @@ import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.KEY_TOKEN
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 class NewDownloadViewModel @ViewModelInject constructor(
@@ -27,9 +27,6 @@ class NewDownloadViewModel @ViewModelInject constructor(
     private val unrestrictRepository: UnrestrictRepository,
     private val torrentsRepository: TorrentsRepository
 ) : ViewModel() {
-
-    private val job = Job()
-    val scope = CoroutineScope(Dispatchers.Default + job)
 
     /**
      * We can't use a normal MutableLiveData here because while navigating back an event will be fired again
@@ -42,7 +39,7 @@ class NewDownloadViewModel @ViewModelInject constructor(
     val apiErrorLiveData = MutableLiveData<Event<APIError?>>()
 
     fun fetchUnrestrictedLink(link: String, password: String?, remote: Int? = null) {
-        scope.launch {
+        viewModelScope.launch {
             //todo: add this to fragment's argument if possible
             val token = getToken()
             try {
@@ -56,7 +53,7 @@ class NewDownloadViewModel @ViewModelInject constructor(
     }
 
     fun fetchAddedMagnet(magnet: String) {
-        scope.launch {
+        viewModelScope.launch {
             val token = getToken()
             val availableHosts = torrentsRepository.getAvailableHosts(token)
             if (availableHosts.isNullOrEmpty()) {
@@ -79,7 +76,7 @@ class NewDownloadViewModel @ViewModelInject constructor(
     }
 
     fun fetchUploadedTorrent(binaryTorrent: ByteArray) {
-        scope.launch {
+        viewModelScope.launch {
             val token = getToken()
             val availableHosts = torrentsRepository.getAvailableHosts(token)
             if (availableHosts.isNullOrEmpty()) {
