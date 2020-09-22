@@ -179,7 +179,7 @@ fun TextView.setFileSize(size: Long) {
     }
 }
 
-fun View.runRippleAnimation(){
+fun View.runRippleAnimation(delay: Long=300){
     //todo: test
     if (background is RippleDrawable) {
         postDelayed(
@@ -189,7 +189,7 @@ fun View.runRippleAnimation(){
                     android.R.attr.state_enabled
                 )
             },
-            300
+                delay
         )
     }
 }
