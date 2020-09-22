@@ -8,8 +8,8 @@
     <fragment
         android:id="@+id/downloadDetailsFragment"
         android:name="com.github.livingwithhippos.unchained.downloaddetails.view.DownloadDetailsFragment"
-        android:label="DownloadDetailsFragment"
-        tools:layout="@layout/fragment_download_details">
+        tools:layout="@layout/fragment_download_details"
+        android:label="DownloadDetailsFragment" >
         <argument
             android:name="details"
             app:argType="com.github.livingwithhippos.unchained.lists.model.DownloadItem" />
@@ -19,7 +19,7 @@
         android:id="@+id/listsTabFragment"
         android:name="com.github.livingwithhippos.unchained.lists.view.ListsTabFragment"
         android:label="ListsTabFragment"
-        tools:layout="@layout/fragment_tab_lists">
+        tools:layout="@layout/fragment_tab_lists" >
         <action
             android:id="@+id/action_listsTab_to_downloadDetails"
             app:destination="@id/downloadDetailsFragment" />
@@ -31,6 +31,6 @@
     <fragment
         android:id="@+id/torrentDetailsFragment"
         android:name="com.github.livingwithhippos.unchained.torrentdetails.view.TorrentDetailsFragment"
-        android:label="TorrentDetailsFragment"
-        tools:layout="@layout/fragment_torrent_details" />
+        tools:layout="@layout/fragment_torrent_details"
+        android:label="TorrentDetailsFragment" />
 </navigation>

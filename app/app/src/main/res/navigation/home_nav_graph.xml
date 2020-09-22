@@ -9,8 +9,8 @@
     <fragment
         android:id="@+id/start_dest"
         android:name="com.github.livingwithhippos.unchained.start.view.StartFragment"
-        android:label="@string/loading"
-        tools:layout="@layout/fragment_start">
+        tools:layout="@layout/fragment_start"
+        android:label="@string/loading">
         <action
             android:id="@+id/action_startFragment_to_authenticationFragment"
             app:destination="@id/authentication_dest" />
@@ -21,8 +21,8 @@
     <fragment
         android:id="@+id/authentication_dest"
         android:name="com.github.livingwithhippos.unchained.authentication.view.AuthenticationFragment"
-        android:label="@string/authenticate"
-        tools:layout="@layout/fragment_authentication">
+        tools:layout="@layout/fragment_authentication"
+        android:label="@string/authenticate" >
         <action
             android:id="@+id/actionAuthenticationToUser"
             app:destination="@id/profile_dest" />
@@ -30,8 +30,8 @@
     <fragment
         android:id="@+id/profile_dest"
         android:name="com.github.livingwithhippos.unchained.user.view.UserProfileFragment"
-        android:label="@string/user"
-        tools:layout="@layout/fragment_user_profile">
+        tools:layout="@layout/fragment_user_profile"
+        android:label="@string/user" >
         <argument
             android:name="token"
             app:argType="string" />
