@@ -34,7 +34,7 @@ You can take a look at the project [here](https://github.com/LivingWithHippos/un
 
 | Torrent Download  | Download List |
 | ------------- | ------------- |
-| <img width="300" src="/extra_assets/screenshots/torrent.png?raw=true" alt="Torrent Download Screen"> | <img width="300" src="/extra_assets/screenshots/download_list.png?raw=true" alt="Download List Screen">  |
+| <img width="300" src="/extra_assets/screenshots/torrent.png?raw=true" alt="Torrent Download Screen"> | <img width="300" src="/extra_assets/screenshots/lists.png?raw=true" alt="Download List Screen">  |
 
 
 
