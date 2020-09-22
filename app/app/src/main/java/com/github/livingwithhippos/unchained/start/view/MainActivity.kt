@@ -10,7 +10,6 @@ import androidx.navigation.ui.setupWithNavController
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.databinding.ActivityMainBinding
 import com.github.livingwithhippos.unchained.settings.SettingsActivity
-import com.github.livingwithhippos.unchained.settings.SettingsFragment
 import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewModel
 import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewModel.AuthenticationState.*
 import com.github.livingwithhippos.unchained.utilities.BottomNavManager
@@ -54,7 +53,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 // refresh the token.
                 // todo: if it keeps on being bad (hehe) delete the credentials and start the authentication from zero
-                BAD_TOKEN-> {
+                BAD_TOKEN -> {
                     viewModel.refreshToken()
                 }
                 // go to login fragment and show another error message

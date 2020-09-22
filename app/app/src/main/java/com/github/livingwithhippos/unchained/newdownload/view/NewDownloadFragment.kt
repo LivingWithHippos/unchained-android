@@ -5,14 +5,12 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.ParcelFileDescriptor
 import android.util.Log
-import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -22,19 +20,10 @@ import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.databinding.NewDownloadFragmentBinding
 import com.github.livingwithhippos.unchained.newdownload.viewmodel.NewDownloadViewModel
-import com.github.livingwithhippos.unchained.torrentdetails.view.TorrentDetailsFragmentArgs
-import com.github.livingwithhippos.unchained.utilities.MAGNET_PATTERN
-import com.github.livingwithhippos.unchained.utilities.REMOTE_TRAFFIC_ON
-import com.github.livingwithhippos.unchained.utilities.getClipboardText
-import com.github.livingwithhippos.unchained.utilities.isMagnet
-import com.github.livingwithhippos.unchained.utilities.isWebUrl
-import com.github.livingwithhippos.unchained.utilities.runRippleAnimation
-import com.github.livingwithhippos.unchained.utilities.showToast
+import com.github.livingwithhippos.unchained.utilities.*
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.FileDescriptor
 import java.io.FileInputStream
-import java.util.regex.Matcher
-import java.util.regex.Pattern
 
 
 @AndroidEntryPoint
@@ -156,8 +145,7 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
                     downloadBinding.bUnrestrict.isEnabled = false
                     downloadBinding.bLoadTorrent.isEnabled = false
                     viewModel.fetchAddedMagnet(link)
-                }
-                else
+                } else
                     showToast(R.string.invalid_url)
             }
 

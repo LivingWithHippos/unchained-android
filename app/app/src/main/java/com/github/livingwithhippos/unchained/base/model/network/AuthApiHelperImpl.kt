@@ -22,5 +22,6 @@ class AuthApiHelperImpl @Inject constructor(private val authenticationApi: Authe
         deviceCode: String
     ): Response<Token> = authenticationApi.getToken(clientId, clientSecret, deviceCode)
 
-    override suspend fun disableToken(token: String): Response<Any> = authenticationApi.disableToken(token)
+    override suspend fun disableToken(token: String): Response<Any> =
+        authenticationApi.disableToken(token)
 }

@@ -5,7 +5,6 @@ import com.github.livingwithhippos.unchained.authentication.model.Secrets
 import com.github.livingwithhippos.unchained.authentication.model.Token
 import com.github.livingwithhippos.unchained.base.model.entities.Credentials
 import com.github.livingwithhippos.unchained.base.model.network.AuthApiHelper
-import com.github.livingwithhippos.unchained.base.model.network.Host
 import javax.inject.Inject
 
 class AuthenticationRepository @Inject constructor(private val apiHelper: AuthApiHelper) :
@@ -70,6 +69,9 @@ class AuthenticationRepository @Inject constructor(private val apiHelper: AuthAp
      * @param deviceCode the device code obtained from the /device/code endpoint
      * @return the new Token
      */
-    suspend fun refreshToken(clientId: String, refreshCode: String, deviceCode: String): Token?  = getToken(clientId, refreshCode, deviceCode)
-    suspend fun refreshToken(credentials: Credentials): Token? = refreshToken(credentials.clientId!!, credentials.refreshToken!!, credentials.deviceCode)
+    suspend fun refreshToken(clientId: String, refreshCode: String, deviceCode: String): Token? =
+        getToken(clientId, refreshCode, deviceCode)
+
+    suspend fun refreshToken(credentials: Credentials): Token? =
+        refreshToken(credentials.clientId!!, credentials.refreshToken!!, credentials.deviceCode)
 }

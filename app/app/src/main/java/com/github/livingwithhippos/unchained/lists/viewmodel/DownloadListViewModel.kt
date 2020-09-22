@@ -3,12 +3,7 @@ package com.github.livingwithhippos.unchained.lists.viewmodel
 import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.PagingData
-import androidx.paging.cachedIn
-import androidx.paging.liveData
-import com.github.livingwithhippos.unchained.authentication.model.Authentication
+import androidx.paging.*
 import com.github.livingwithhippos.unchained.base.model.repositories.CredentialsRepository
 import com.github.livingwithhippos.unchained.base.model.repositories.DownloadRepository
 import com.github.livingwithhippos.unchained.base.model.repositories.TorrentsRepository
@@ -40,12 +35,12 @@ class DownloadListViewModel @ViewModelInject constructor(
     val downloadItemLiveData = MutableLiveData<Event<DownloadItem?>>()
 
     fun downloadTorrent(torrent: TorrentItem) {
-            viewModelScope.launch {
-                val token = credentialsRepository.getToken()
-                // todo: manage torrents with multiple links (huge ones?)
-                val item = unrestrictRepository.getUnrestrictedLink(token, torrent.links[0])
-                downloadItemLiveData.postValue(Event(item))
-            }
+        viewModelScope.launch {
+            val token = credentialsRepository.getToken()
+            // todo: manage torrents with multiple links (huge ones?)
+            val item = unrestrictRepository.getUnrestrictedLink(token, torrent.links[0])
+            downloadItemLiveData.postValue(Event(item))
+        }
 
     }
 

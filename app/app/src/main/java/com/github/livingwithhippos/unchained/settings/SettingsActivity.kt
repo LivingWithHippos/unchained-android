@@ -1,7 +1,7 @@
 package com.github.livingwithhippos.unchained.settings
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import com.github.livingwithhippos.unchained.R
 
 class SettingsActivity : AppCompatActivity() {

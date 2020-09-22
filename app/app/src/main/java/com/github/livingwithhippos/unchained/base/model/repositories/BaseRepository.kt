@@ -2,11 +2,7 @@ package com.github.livingwithhippos.unchained.base.model.repositories
 
 import android.util.Log
 import com.github.livingwithhippos.unchained.BuildConfig
-import com.github.livingwithhippos.unchained.base.model.network.APIError
-import com.github.livingwithhippos.unchained.base.model.network.APIException
 import com.github.livingwithhippos.unchained.base.model.network.NetworkResponse
-import com.squareup.moshi.JsonAdapter
-import com.squareup.moshi.Moshi
 import retrofit2.Response
 import java.io.IOException
 
@@ -33,7 +29,7 @@ open class BaseRepository {
         return data
     }
 
-     suspend fun <T : Any> safeApiCall(call: suspend () -> Response<T>, errorMessage: String): T? {
+    suspend fun <T : Any> safeApiCall(call: suspend () -> Response<T>, errorMessage: String): T? {
 
         val result: NetworkResponse<T> = safeApiResult(call, errorMessage)
         var data: T? = null

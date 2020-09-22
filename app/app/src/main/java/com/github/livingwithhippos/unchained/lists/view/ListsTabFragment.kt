@@ -18,15 +18,14 @@ import com.github.livingwithhippos.unchained.lists.model.TorrentListPagingAdapte
 import com.github.livingwithhippos.unchained.lists.viewmodel.DownloadListViewModel
 import com.github.livingwithhippos.unchained.newdownload.model.TorrentItem
 import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewModel
-import com.github.livingwithhippos.unchained.utilities.verticalScrollToPosition
 import com.github.livingwithhippos.unchained.utilities.showToast
+import com.github.livingwithhippos.unchained.utilities.verticalScrollToPosition
 import com.google.android.material.tabs.TabLayout
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class ListsTabFragment: UnchainedFragment(), DownloadListListener, TorrentListListener {
+class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListListener {
 
     private val viewModel: DownloadListViewModel by viewModels()
 
@@ -44,7 +43,7 @@ class ListsTabFragment: UnchainedFragment(), DownloadListListener, TorrentListLi
 
         //todo: add scroll to top when a new item is added
         listBinding.srLayout.setOnRefreshListener {
-            when(listBinding.tabs.selectedTabPosition) {
+            when (listBinding.tabs.selectedTabPosition) {
                 TAB_DOWNLOADS -> {
                     downloadAdapter.refresh()
                 }
@@ -160,7 +159,7 @@ class ListsTabFragment: UnchainedFragment(), DownloadListListener, TorrentListLi
     }
 
     override fun onClick(item: TorrentItem) {
-        if (item.status=="downloaded")
+        if (item.status == "downloaded")
             viewModel.downloadTorrent(item)
         else
             showToast(R.string.torrent_not_downloaded)

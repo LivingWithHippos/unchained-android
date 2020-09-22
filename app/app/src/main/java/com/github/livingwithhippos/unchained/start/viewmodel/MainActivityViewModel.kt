@@ -37,11 +37,12 @@ class MainActivityViewModel @ViewModelInject constructor(
     fun fetchFirstWorkingCredentials() {
         scope.launch {
             val completeCredentials = credentialRepository
-                    .getAllCredentials()
-                    .filter { it.accessToken != null && it.clientId != null && it.clientSecret != null && it.deviceCode.isNotBlank() && it.refreshToken != null }
+                .getAllCredentials()
+                .filter { it.accessToken != null && it.clientId != null && it.clientSecret != null && it.deviceCode.isNotBlank() && it.refreshToken != null }
             var workingCredentials: Credentials? = null
             if (completeCredentials.isNotEmpty()) {
-                val privateCredentials = completeCredentials.firstOrNull { it.deviceCode == PRIVATE_TOKEN }
+                val privateCredentials =
+                    completeCredentials.firstOrNull { it.deviceCode == PRIVATE_TOKEN }
 
                 if (privateCredentials != null) {
                     if (checkCredentials(privateCredentials))
@@ -100,8 +101,8 @@ class MainActivityViewModel @ViewModelInject constructor(
     }
 
     suspend fun isTokenPrivate(): Boolean {
-            val credentials = credentialRepository.getFirstCredentials()
-            return credentials?.refreshToken == PRIVATE_TOKEN
+        val credentials = credentialRepository.getFirstCredentials()
+        return credentials?.refreshToken == PRIVATE_TOKEN
     }
 
     suspend fun deleteIncompleteCredentials() = credentialRepository.deleteIncompleteCredentials()
@@ -113,15 +114,15 @@ class MainActivityViewModel @ViewModelInject constructor(
             // get the old credentials
             val oldCredentials = credentialRepository.getFirstCredentials()
             // check if they are private API token credentials
-            if (oldCredentials != null && oldCredentials.refreshToken!= PRIVATE_TOKEN) {
+            if (oldCredentials != null && oldCredentials.refreshToken != PRIVATE_TOKEN) {
                 // refresh the token
                 authRepository.refreshToken(oldCredentials)?.let {
                     val newCredentials = Credentials(
-                            oldCredentials.deviceCode,
-                            oldCredentials.clientId,
-                            oldCredentials.clientSecret,
-                            it.accessToken,
-                            it.refreshToken
+                        oldCredentials.deviceCode,
+                        oldCredentials.clientId,
+                        oldCredentials.clientSecret,
+                        it.accessToken,
+                        it.refreshToken
                     )
                     // update the credentials
                     credentialRepository.updateCredentials(newCredentials)

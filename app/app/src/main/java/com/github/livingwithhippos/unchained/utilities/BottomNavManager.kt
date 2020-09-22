@@ -21,9 +21,9 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
  */
 
 class BottomNavManager(
-        private val fragmentManager: FragmentManager,
-        private val containerId: Int,
-        private val bottomNavigationView: BottomNavigationView
+    private val fragmentManager: FragmentManager,
+    private val containerId: Int,
+    private val bottomNavigationView: BottomNavigationView
 ) {
 
     companion object {
@@ -32,7 +32,11 @@ class BottomNavManager(
 
     // Graph Id's of the tabs
     private val navGraphIds =
-            listOf(R.navigation.home_nav_graph, R.navigation.download_nav_graph, R.navigation.lists_nav_graph)
+        listOf(
+            R.navigation.home_nav_graph,
+            R.navigation.download_nav_graph,
+            R.navigation.lists_nav_graph
+        )
 
     // Map of tags
     private val graphIdToTagMap = SparseArray<String>()
@@ -70,14 +74,14 @@ class BottomNavManager(
 
             // Find or create the Navigation host fragment
             val navHostFragment = obtainNavHostFragment(
-                    fragmentTag,
-                    navGraphId
+                fragmentTag,
+                navGraphId
             )
 
             // Obtain its id
             val graphId = navHostFragment.navController.graph.id
             navGraphStartDestinations[graphId] =
-                    navHostFragment.navController.graph.startDestination
+                navHostFragment.navController.graph.startDestination
 
             // Save to the map
             graphIdToTagMap[graphId] = fragmentTag
@@ -119,20 +123,20 @@ class BottomNavManager(
                             as NavHostFragment
 
                     fragmentManager.beginTransaction()
-                            .show(selectedFragment)
-                            .setMaxLifecycle(selectedFragment, Lifecycle.State.RESUMED)
-                            .setPrimaryNavigationFragment(selectedFragment)
-                            .apply {
-                                // Detach all other Fragments
-                                graphIdToTagMap.forEach { _, fragmentTag ->
-                                    if (fragmentTag != newlySelectedItemTag) {
-                                        val fragment = fragmentManager.findFragmentByTag(fragmentTag)!!
-                                        hide(fragment)
-                                        setMaxLifecycle(fragment, Lifecycle.State.STARTED)
-                                    }
+                        .show(selectedFragment)
+                        .setMaxLifecycle(selectedFragment, Lifecycle.State.RESUMED)
+                        .setPrimaryNavigationFragment(selectedFragment)
+                        .apply {
+                            // Detach all other Fragments
+                            graphIdToTagMap.forEach { _, fragmentTag ->
+                                if (fragmentTag != newlySelectedItemTag) {
+                                    val fragment = fragmentManager.findFragmentByTag(fragmentTag)!!
+                                    hide(fragment)
+                                    setMaxLifecycle(fragment, Lifecycle.State.STARTED)
                                 }
                             }
-                            .commit()
+                        }
+                        .commit()
 
                     selectedNavController = selectedFragment.navController
                 }
@@ -159,9 +163,9 @@ class BottomNavManager(
     // select particular bottom navigation item
     fun selectItem(itemId: Int) {
         bottomNavigationView.menu.findItem(itemId)
-                ?.let {
-                    bottomNavigationView.menu.performIdentifierAction(itemId, 0)
-                }
+            ?.let {
+                bottomNavigationView.menu.performIdentifierAction(itemId, 0)
+            }
     }
 
     // controls the back press mechanism
@@ -202,25 +206,25 @@ class BottomNavManager(
     }
 
     private fun showNavHostFragment(
-            navHostFragment: NavHostFragment,
-            show: Boolean
+        navHostFragment: NavHostFragment,
+        show: Boolean
     ) {
         fragmentManager.beginTransaction()
-                .apply {
-                    if (show) {
-                        show(navHostFragment)
-                        setMaxLifecycle(navHostFragment, Lifecycle.State.RESUMED)
-                    } else {
-                        hide(navHostFragment)
-                        setMaxLifecycle(navHostFragment, Lifecycle.State.STARTED)
-                    }
+            .apply {
+                if (show) {
+                    show(navHostFragment)
+                    setMaxLifecycle(navHostFragment, Lifecycle.State.RESUMED)
+                } else {
+                    hide(navHostFragment)
+                    setMaxLifecycle(navHostFragment, Lifecycle.State.STARTED)
                 }
-                .commitNow()
+            }
+            .commitNow()
     }
 
     private fun obtainNavHostFragment(
-            fragmentTag: String,
-            navGraphId: Int
+        fragmentTag: String,
+        navGraphId: Int
     ): NavHostFragment {
         // If the Nav Host fragment exists, return it
         val existingFragment = fragmentManager.findFragmentByTag(fragmentTag) as NavHostFragment?
@@ -229,8 +233,8 @@ class BottomNavManager(
         // Otherwise, create it and return it.
         val navHostFragment = NavHostFragment.create(navGraphId)
         fragmentManager.beginTransaction()
-                .add(containerId, navHostFragment, fragmentTag)
-                .commitNow()
+            .add(containerId, navHostFragment, fragmentTag)
+            .commitNow()
         return navHostFragment
     }
 

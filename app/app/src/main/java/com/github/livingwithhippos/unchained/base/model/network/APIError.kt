@@ -12,5 +12,5 @@ data class APIError(
     val errorCode: Int?
 )
 
-class APIException(val apiError: APIError): Exception() {
+class APIException(val apiError: APIError) : Exception() {
 }

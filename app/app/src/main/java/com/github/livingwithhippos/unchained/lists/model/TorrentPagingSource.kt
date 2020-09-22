@@ -10,8 +10,8 @@ import java.io.IOException
 private const val TORRENT_STARTING_PAGE_INDEX = 1
 
 class TorrentPagingSource(
-        private val torrentsRepository: TorrentsRepository,
-        private val credentialsRepository: CredentialsRepository
+    private val torrentsRepository: TorrentsRepository,
+    private val credentialsRepository: CredentialsRepository
 ) : PagingSource<Int, TorrentItem>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, TorrentItem> {
@@ -24,9 +24,9 @@ class TorrentPagingSource(
             val response = torrentsRepository.getTorrentsList(token, null, page, params.loadSize)
 
             LoadResult.Page(
-                    data = response,
-                    prevKey = if (page == TORRENT_STARTING_PAGE_INDEX) null else page - 1,
-                    nextKey = if (response.isEmpty()) null else page + 1
+                data = response,
+                prevKey = if (page == TORRENT_STARTING_PAGE_INDEX) null else page - 1,
+                nextKey = if (response.isEmpty()) null else page + 1
             )
         } catch (exception: IOException) {
             return LoadResult.Error(exception)

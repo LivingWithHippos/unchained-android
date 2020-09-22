@@ -8,27 +8,14 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
-import android.graphics.drawable.Animatable
-import android.graphics.drawable.ClipDrawable
-import android.graphics.drawable.Drawable
-import android.graphics.drawable.InsetDrawable
-import android.graphics.drawable.LayerDrawable
-import android.graphics.drawable.RippleDrawable
-import android.graphics.drawable.RotateDrawable
-import android.graphics.drawable.ScaleDrawable
-import android.graphics.drawable.VectorDrawable
+import android.graphics.drawable.*
 import android.icu.text.DateFormat
 import android.icu.text.SimpleDateFormat
 import android.net.Uri
 import android.util.Log
 import android.util.Patterns
 import android.view.View
-import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.BindingAdapter
 import androidx.fragment.app.Fragment
@@ -160,8 +147,8 @@ fun ProgressIndicator.setRealProgress(progress: Int) {
 fun TextView.setDownloadSpeed(speed: Int) {
     this.text = when (speed.toString().length) {
         in 0..3 -> this.context.getString(R.string.speed_format_b, speed)
-        in 4..6 -> this.context.getString(R.string.speed_format_kb, speed.toFloat()/1000)
-        in 7..15 -> this.context.getString(R.string.speed_format_mb, speed.toFloat()/1000000)
+        in 4..6 -> this.context.getString(R.string.speed_format_kb, speed.toFloat() / 1000)
+        in 7..15 -> this.context.getString(R.string.speed_format_mb, speed.toFloat() / 1000000)
         else -> this.context.getString(R.string.speed_error)
     }
 }
@@ -174,15 +161,24 @@ fun TextView.setDownloadSpeed(speed: Int) {
 fun TextView.setFileSize(size: Long) {
     this.text = when {
         size < 1023 -> this.context.getString(R.string.file_size_format_b, size)
-        size < 1048575 -> this.context.getString(R.string.file_size_format_kb, size.toFloat()/1024)
-        size < 1073741823 -> this.context.getString(R.string.file_size_format_mb, size.toFloat()/ 1024/ 1024)
+        size < 1048575 -> this.context.getString(
+            R.string.file_size_format_kb,
+            size.toFloat() / 1024
+        )
+        size < 1073741823 -> this.context.getString(
+            R.string.file_size_format_mb,
+            size.toFloat() / 1024 / 1024
+        )
         // ~9 TB, for now it's more probable that a wrong value is being passed if it's over this value
-        size < 9999999999999 -> this.context.getString(R.string.file_size_format_gb, size.toFloat()/ 1024/ 1024/ 1024)
+        size < 9999999999999 -> this.context.getString(
+            R.string.file_size_format_gb,
+            size.toFloat() / 1024 / 1024 / 1024
+        )
         else -> this.context.getString(R.string.size_error)
     }
 }
 
-fun View.runRippleAnimation(delay: Long=300){
+fun View.runRippleAnimation(delay: Long = 300) {
     //todo: test
     if (background is RippleDrawable) {
         postDelayed(
@@ -192,7 +188,7 @@ fun View.runRippleAnimation(delay: Long=300){
                     android.R.attr.state_enabled
                 )
             },
-                delay
+            delay
         )
     }
 }
@@ -214,7 +210,8 @@ fun Fragment.getClipboardText(): String {
     var text = ""
     if (clipboard.hasPrimaryClip() && clipboard.primaryClipDescription?.hasMimeType(
             MIMETYPE_TEXT_PLAIN
-        ) == true) {
+        ) == true
+    ) {
         val item = clipboard.primaryClip!!.getItemAt(0)
         text = item.text.toString()
     } else {
@@ -251,12 +248,12 @@ fun String.isMagnet(): Boolean {
 /**
  * this function can be used to create a new context with a particular locale.
  * It must be used while overriding Activity.attachBaseContext like this:
-  override fun attachBaseContext(base: Context?) {
-        if (base != null)
-            super.attachBaseContext(getUpdatedLocaleContext(base, "en"))
-        else
-            super.attachBaseContext(null)
-    }
+override fun attachBaseContext(base: Context?) {
+if (base != null)
+super.attachBaseContext(getUpdatedLocaleContext(base, "en"))
+else
+super.attachBaseContext(null)
+}
  * it must be applied to all the activities or added to a BaseActivity extended by them
  */
 fun Activity.getUpdatedLocaleContext(context: Context, language: String): Context {
@@ -282,7 +279,12 @@ fun stringToDate(rdDate: String): String {
  * @param position: the position to scroll to
  * @param snapType: how to align the child view with parent view
  */
-fun RecyclerView.LayoutManager.verticalScrollToPosition(context: Context, position: Int = 0, delay: Long=0, snapType: Int = LinearSmoothScroller.SNAP_TO_START) {
+fun RecyclerView.LayoutManager.verticalScrollToPosition(
+    context: Context,
+    position: Int = 0,
+    delay: Long = 0,
+    snapType: Int = LinearSmoothScroller.SNAP_TO_START
+) {
 
     val smoothScroller = object : LinearSmoothScroller(context) {
         override fun getVerticalSnapPreference(): Int {
@@ -292,10 +294,10 @@ fun RecyclerView.LayoutManager.verticalScrollToPosition(context: Context, positi
 
     this.getChildAt(position)?.let {
         it.postDelayed(
-                Runnable {
-                    this.startSmoothScroll(smoothScroller)
-                },
-                delay
+            Runnable {
+                this.startSmoothScroll(smoothScroller)
+            },
+            delay
         )
     }
 

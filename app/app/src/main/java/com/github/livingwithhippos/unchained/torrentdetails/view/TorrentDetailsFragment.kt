@@ -10,15 +10,10 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.github.livingwithhippos.unchained.R
-import com.github.livingwithhippos.unchained.authentication.view.AuthenticationFragmentDirections
 import com.github.livingwithhippos.unchained.databinding.FragmentTorrentDetailsBinding
 import com.github.livingwithhippos.unchained.torrentdetails.viewmodel.TorrentDetailsViewmodel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 @AndroidEntryPoint
 class TorrentDetailsFragment : Fragment(), TorrentDetailsListener {
@@ -106,6 +101,6 @@ class TorrentDetailsFragment : Fragment(), TorrentDetailsListener {
     }
 }
 
-interface TorrentDetailsListener{
+interface TorrentDetailsListener {
     fun onDownloadClick(links: List<String>)
 }

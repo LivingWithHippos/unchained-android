@@ -4,7 +4,7 @@ import retrofit2.Response
 import javax.inject.Inject
 
 class DownloadApiHelperImpl @Inject constructor(private val downloadsApi: DownloadsApi) :
-        DownloadApiHelper {
+    DownloadApiHelper {
 
     override suspend fun getDownloads(
         token: String,

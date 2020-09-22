@@ -15,18 +15,14 @@ import com.github.livingwithhippos.unchained.base.model.repositories.UserReposit
 import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewModel
 import com.github.livingwithhippos.unchained.user.model.User
 import com.github.livingwithhippos.unchained.utilities.Event
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 //todo: add state saving and loading
 class AuthenticationViewModel @ViewModelInject constructor(
-        @Assisted private val savedStateHandle: SavedStateHandle,
-        private val authRepository: AuthenticationRepository,
-        private val credentialRepository: CredentialsRepository,
-        private val userRepository: UserRepository
+    @Assisted private val savedStateHandle: SavedStateHandle,
+    private val authRepository: AuthenticationRepository,
+    private val credentialRepository: CredentialsRepository,
+    private val userRepository: UserRepository
 ) : ViewModel() {
 
     private val job = Job()
@@ -62,7 +58,7 @@ class AuthenticationViewModel @ViewModelInject constructor(
         scope.launch {
             var secretData = authRepository.getSecrets(deviceCode)
             secretLiveData.postValue(Event(secretData))
-            while (secretData?.clientId == null && calls < 60 && getAuthState()!= MainActivityViewModel.AuthenticationState.AUTHENTICATED) {
+            while (secretData?.clientId == null && calls < 60 && getAuthState() != MainActivityViewModel.AuthenticationState.AUTHENTICATED) {
                 //todo: stop calling if authenticated via private token
                 delay(waitTime)
                 secretData = authRepository.getSecrets(deviceCode)
@@ -122,7 +118,7 @@ class AuthenticationViewModel @ViewModelInject constructor(
     }
 
     fun setAuthState(state: MainActivityViewModel.AuthenticationState) {
-        savedStateHandle.set(AUTH_STATE,state)
+        savedStateHandle.set(AUTH_STATE, state)
     }
 
     private fun getAuthState(): MainActivityViewModel.AuthenticationState? {
@@ -133,6 +129,6 @@ class AuthenticationViewModel @ViewModelInject constructor(
     fun cancelRequests() = job.cancel()
 
     companion object {
-        const val AUTH_STATE="auth_state"
+        const val AUTH_STATE = "auth_state"
     }
 }

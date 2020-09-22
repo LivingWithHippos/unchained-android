@@ -46,9 +46,9 @@ class NewDownloadViewModel @ViewModelInject constructor(
             //todo: add this to fragment's argument if possible
             val token = getToken()
             try {
-            val unrestrictedData =
-                unrestrictRepository.getUnrestrictedLink(token, link, password, remote)
-            linkLiveData.postValue(Event(unrestrictedData))
+                val unrestrictedData =
+                    unrestrictRepository.getUnrestrictedLink(token, link, password, remote)
+                linkLiveData.postValue(Event(unrestrictedData))
             } catch (e: APIException) {
                 apiErrorLiveData.postValue(Event(e.apiError))
             }

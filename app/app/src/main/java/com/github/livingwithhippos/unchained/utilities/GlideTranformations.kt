@@ -5,12 +5,8 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import android.renderscript.Allocation
-import android.renderscript.Element
-import android.renderscript.RSRuntimeException
-import android.renderscript.RenderScript
+import android.renderscript.*
 import android.renderscript.RenderScript.RSMessageHandler
-import android.renderscript.ScriptIntrinsicBlur
 import androidx.annotation.ColorInt
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool
 import com.bumptech.glide.load.resource.bitmap.BitmapResource
@@ -23,11 +19,17 @@ private const val DEFAULT_ALPHA = 90
 
 class BlurTransformation(private val context: Context) : BitmapTransformation() {
 
-    private val id: String = "com.github.livingwithhippos.unchained.utilities.BlurTransformation:$context"
+    private val id: String =
+        "com.github.livingwithhippos.unchained.utilities.BlurTransformation:$context"
     private val idBytes: ByteArray = id.toByteArray()
 
 
-    override fun transform(pool: BitmapPool, toTransform: Bitmap, outWidth: Int, outHeight: Int): Bitmap? {
+    override fun transform(
+        pool: BitmapPool,
+        toTransform: Bitmap,
+        outWidth: Int,
+        outHeight: Int
+    ): Bitmap? {
         val source: Bitmap = toTransform
         val scaledWidth = (source.width * DEFAULT_DOWN_SAMPLING).toInt()
         val scaledHeight = (source.height * DEFAULT_DOWN_SAMPLING).toInt()
@@ -60,7 +62,12 @@ class BlurTransformation(private val context: Context) : BitmapTransformation() 
     }
 
     @Synchronized
-    fun blurBitmap(context: Context, source: Bitmap?, bitmap: Bitmap, @ColorInt colorOverlay: Int): Bitmap? {
+    fun blurBitmap(
+        context: Context,
+        source: Bitmap?,
+        bitmap: Bitmap,
+        @ColorInt colorOverlay: Int
+    ): Bitmap? {
         if (source == null) return bitmap
         Canvas(bitmap).apply {
             scale(DEFAULT_DOWN_SAMPLING, DEFAULT_DOWN_SAMPLING)

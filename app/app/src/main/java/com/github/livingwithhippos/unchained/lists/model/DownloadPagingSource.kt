@@ -9,7 +9,7 @@ import java.io.IOException
 private const val DOWNLOAD_STARTING_PAGE_INDEX = 1
 
 
-class DownloadPagingSource (
+class DownloadPagingSource(
     private val downloadRepository: DownloadRepository,
     private val credentialsRepository: CredentialsRepository
 ) : PagingSource<Int, DownloadItem>() {
@@ -17,7 +17,7 @@ class DownloadPagingSource (
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, DownloadItem> {
         val page = params.key ?: DOWNLOAD_STARTING_PAGE_INDEX
         val token = credentialsRepository.getToken()
-        if (token.length<5)
+        if (token.length < 5)
             throw IllegalArgumentException("Error loading token: $token")
 
         return try {
