@@ -14,7 +14,9 @@ android {
         minSdkVersion 24
         targetSdkVersion 30
         versionCode 1
-        versionName "1.0"
+        versionName "1.0.0"
+        resConfigs "en", "it"
+
 
         javaCompileOptions {
             annotationProcessorOptions {
@@ -24,10 +26,41 @@ android {
         }
     }
 
+    packagingOptions {
+        // Exclude AndroidX version files
+        exclude 'META-INF/*.version'
+        // Exclude consumer proguard files
+        exclude 'META-INF/proguard/*'
+        // Exclude the Firebase/Fabric/other random properties files
+        exclude '/*.properties'
+        exclude 'fabric/*.properties'
+        exclude 'META-INF/*.properties'
+    }
+
     buildTypes {
+
+        debug {
+            versionNameSuffix "-dev"
+            applicationIdSuffix ".debug"
+        }
+
         release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+
+            // Enables code shrinking, obfuscation, and optimization for only
+            // your project's release build type.
+            minifyEnabled true
+
+            // Enables resource shrinking, which is performed by the
+            // Android Gradle plugin.
+            shrinkResources true
+
+            // Includes the default ProGuard rules files that are packaged with
+            // the Android Gradle plugin. To learn more, go to the section about
+            // R8 configuration files.
+            proguardFiles getDefaultProguardFile(
+                    'proguard-android-optimize.txt'),
+                    'proguard-rules.pro'
+
         }
     }
 
