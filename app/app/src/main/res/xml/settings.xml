@@ -4,8 +4,25 @@
 
     <Preference
         app:key="feedback"
-        app:summary="Report technical issues or suggest new features"
-        app:title="Send feedback" />
+        app:summary="@string/feedback_summary"
+        app:title="@string/feedback_title" />
 
+    <Preference
+        app:key="credits"
+        app:summary="@string/credits_summary"
+        app:title="@string/credits_title" />
+
+    <Preference
+        app:key="license"
+        app:summary="@string/license_gpl"
+        app:title="@string/license_title" />
+
+    <Preference
+        app:key="terms"
+        app:title="@string/terms_title" />
+
+    <Preference
+        app:key="privacy"
+        app:title="@string/privacy_policy_title" />
 
 </PreferenceScreen>

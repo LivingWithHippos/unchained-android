@@ -5,6 +5,7 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.utilities.FEEDBACK_URL
+import com.github.livingwithhippos.unchained.utilities.GPLV3_URL
 import com.github.livingwithhippos.unchained.utilities.openExternalWebPage
 
 
@@ -15,13 +16,36 @@ class SettingsFragment : PreferenceFragmentCompat() {
     }
 
     override fun onPreferenceTreeClick(preference: Preference?): Boolean {
-        return when (preference?.key) {
-            "feedback" -> {
-                openExternalWebPage(FEEDBACK_URL)
-                true
+        when (preference?.key) {
+            "feedback" -> openExternalWebPage(FEEDBACK_URL)
+            "license" -> openExternalWebPage(GPLV3_URL)
+            "credits" -> {
+                openCreditsDialog()
             }
-            else -> super.onPreferenceTreeClick(preference)
+            "terms" -> {
+                openTermsDialog()
+            }
+            "privacy" -> {
+                openPrivacyDialog()
+            }
+            else -> return super.onPreferenceTreeClick(preference)
         }
 
+        return true
+    }
+
+    private fun openCreditsDialog() {
+        val dialog = HtmlDialogFragment(R.string.credits_title, R.string.credits_text)
+        dialog.show(parentFragmentManager, "CreditsDialogFragment")
+    }
+
+    private fun openTermsDialog() {
+        val dialog = HtmlDialogFragment(R.string.terms_title, R.string.terms_text)
+        dialog.show(parentFragmentManager, "TermsDialogFragment")
+    }
+
+    private fun openPrivacyDialog() {
+        val dialog = HtmlDialogFragment(R.string.privacy_policy_title, R.string.privacy_text)
+        dialog.show(parentFragmentManager, "TermsDialogFragment")
     }
 }
