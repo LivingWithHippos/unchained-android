@@ -126,10 +126,19 @@
     <string name="credits_title">Crediti</string>
     <string name="license_title">Licenza</string>
     <string name="terms_title">Termini di utilizzo</string>
-    <string name="privacy_policy_title">Informativa sull privacy</string>
+    <string name="privacy_policy_title">Informativa sulla privacy</string>
     <string name="close">Chiudi</string>
     <string name="credits_text">
-        Tutti questi progetti, risorse o persone hanno contribuito alla creazione di questo progetto:\n
-        Logo e simboli ispirati dal set minimal logo design (https://www.rawpixel.com/image/843352/minimal-logo-designs-set) offerto da rawpixel.com
+        <![CDATA[
+            <body>
+                <p>
+                    Tutti questi progetti, risorse o persone hanno contribuito alla creazione di questo progetto:
+                    <br>
+                    <ul>
+                        <li> Logo e simboli ispirati dal <a href="https://www.rawpixel.com/image/843352/minimal-logo-designs-set" target="_blank" rel="noopener noreferrer">set minimal logo design</a> offerto da rawpixel.com </li>
+                    </ul>
+                </p>
+            </body>
+        ]]>
     </string>
 </resources>

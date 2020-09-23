@@ -35,17 +35,17 @@ class SettingsFragment : PreferenceFragmentCompat() {
     }
 
     private fun openCreditsDialog() {
-        val dialog = SettingsDialogFragment(R.string.credits_title, R.string.credits_text)
+        val dialog = HtmlDialogFragment(R.string.credits_title, R.string.credits_text)
         dialog.show(parentFragmentManager, "CreditsDialogFragment")
     }
 
     private fun openTermsDialog() {
-        val dialog = SettingsDialogFragment(R.string.terms_title, R.string.terms_text)
+        val dialog = HtmlDialogFragment(R.string.terms_title, R.string.terms_text)
         dialog.show(parentFragmentManager, "TermsDialogFragment")
     }
 
     private fun openPrivacyDialog() {
-        val dialog = SettingsDialogFragment(R.string.privacy_policy_title, R.string.privacy_text)
+        val dialog = HtmlDialogFragment(R.string.privacy_policy_title, R.string.privacy_text)
         dialog.show(parentFragmentManager, "TermsDialogFragment")
     }
 }
