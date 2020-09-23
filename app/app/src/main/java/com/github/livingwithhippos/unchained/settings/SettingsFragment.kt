@@ -7,7 +7,6 @@ import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.utilities.FEEDBACK_URL
 import com.github.livingwithhippos.unchained.utilities.GPLV3_URL
 import com.github.livingwithhippos.unchained.utilities.openExternalWebPage
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 
 class SettingsFragment : PreferenceFragmentCompat() {
@@ -36,31 +35,17 @@ class SettingsFragment : PreferenceFragmentCompat() {
     }
 
     private fun openCreditsDialog() {
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle(resources.getString(R.string.credits_title))
-            .setMessage(resources.getString(R.string.credits_text))
-            .setNeutralButton(resources.getString(R.string.close)) { dialog, _ ->
-                dialog.cancel()
-            }
-            .show()
+        val dialog = SettingsDialogFragment(R.string.credits_title, R.string.credits_text)
+        dialog.show(parentFragmentManager, "CreditsDialogFragment")
     }
 
     private fun openTermsDialog() {
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle(resources.getString(R.string.terms_title))
-            .setMessage(resources.getString(R.string.terms_text))
-            .setNeutralButton(resources.getString(R.string.close)) { dialog, _ ->
-                dialog.cancel()
-            }
-            .show()
+        val dialog = SettingsDialogFragment(R.string.terms_title, R.string.terms_text)
+        dialog.show(parentFragmentManager, "TermsDialogFragment")
     }
+
     private fun openPrivacyDialog() {
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle(resources.getString(R.string.privacy_policy_title))
-            .setMessage(resources.getString(R.string.privacy_text))
-            .setNeutralButton(resources.getString(R.string.close)) { dialog, _ ->
-                dialog.cancel()
-            }
-            .show()
+        val dialog = SettingsDialogFragment(R.string.privacy_policy_title, R.string.privacy_text)
+        dialog.show(parentFragmentManager, "TermsDialogFragment")
     }
 }
