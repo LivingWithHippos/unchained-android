@@ -18,6 +18,7 @@ const val REMOTE_TRAFFIC_ON: Int = 1
 const val MAGNET_PATTERN: String = "magnet:\\?xt=urn:btih:[a-zA-Z0-9]{32}"
 
 const val FEEDBACK_URL="https://github.com/LivingWithHippos/unchained-android"
+const val GPLV3_URL="https://www.gnu.org/licenses/gpl-3.0.en.html"
 
 val errorMap = mapOf(
     -1 to "Internal error",

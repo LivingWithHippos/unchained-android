@@ -141,4 +141,5 @@
     <string name="license_title">License</string>
     <string name="license_gpl" translatable="false">GPL-3.0</string>
     <string name="terms_title">Terms of use</string>
+    <string name="license_gplv3">Terms of use</string>
 </resources>
