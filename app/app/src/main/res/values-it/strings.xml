@@ -120,4 +120,10 @@
     <string name="torrents">Torrents</string>
     <string name="downloads">Downloads</string>
     <string name="torrent_not_downloaded">Torrent non ancora scaricato</string>
+    <string name="feedback_summary">Segnala problemi tecnici o suggerisci nuove funzionalità</string>
+    <string name="feedback_title">Invia feedback</string>
+    <string name="credits_summary">Un ringraziamento a tutti</string>
+    <string name="credits_title">Crediti</string>
+    <string name="license_title">Licenza</string>
+    <string name="terms_title">Termini di utilizzo</string>
 </resources>

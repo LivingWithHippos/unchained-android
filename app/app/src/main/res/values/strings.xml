@@ -134,4 +134,11 @@
     <string name="torrents">Torrents</string>
     <string name="downloads">Downloads</string>
     <string name="torrent_not_downloaded">Torrent not ready yet</string>
+    <string name="feedback_summary">Report technical issues or suggest new features</string>
+    <string name="feedback_title">Send feedback</string>
+    <string name="credits_summary">Thanks to everyone who helped</string>
+    <string name="credits_title">Credits</string>
+    <string name="license_title">License</string>
+    <string name="license_gpl" translatable="false">GPL-3.0</string>
+    <string name="terms_title">Terms of use</string>
 </resources>
