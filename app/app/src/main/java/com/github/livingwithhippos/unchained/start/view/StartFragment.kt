@@ -41,7 +41,7 @@ class StartFragment : UnchainedFragment() {
             if (it?.accessToken != null) {
                 activityViewModel.setAuthenticated()
                 val action =
-                    StartFragmentDirections.actionStartFragmentToUserProfileFragment(it.accessToken)
+                    StartFragmentDirections.actionStartFragmentToUserProfileFragment()
                 findNavController().navigate(action)
             }
             // no complete credentials: navigate to authentication fragment

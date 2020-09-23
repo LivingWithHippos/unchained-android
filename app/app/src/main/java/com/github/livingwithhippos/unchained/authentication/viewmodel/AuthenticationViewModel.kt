@@ -19,7 +19,6 @@ import com.github.livingwithhippos.unchained.utilities.Event
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-//todo: add state saving and loading
 class AuthenticationViewModel @ViewModelInject constructor(
     @Assisted private val savedStateHandle: SavedStateHandle,
     private val authRepository: AuthenticationRepository,
@@ -37,43 +36,30 @@ class AuthenticationViewModel @ViewModelInject constructor(
     fun fetchAuthenticationInfo() {
         viewModelScope.launch {
             val authData = authRepository.getVerificationCode()
-            if (authData?.deviceCode != null)
-                credentialRepository.insert(
-                    Credentials(
-                        authData.deviceCode,
-                        null,
-                        null,
-                        null,
-                        null
-                    )
-                )
             authLiveData.postValue(Event(authData))
         }
     }
 
-    fun fetchSecrets(deviceCode: String) {
+    /**
+     * @param deviceCode: the device code assigned calling the authentication endpoint
+     * @param expireIn: the time in seconds before the deviceCode is not valid anymore for the secrets endpoint
+     */
+    fun fetchSecrets(deviceCode: String, expireIn: Int) {
         val waitTime = 5000L
-        var calls = 0
+        // this is just an estimate, keeping track of time would be more precise. As of now this value should be 120
+        var calls = (expireIn*1000/waitTime).toInt()-10
+        // remove 10% of the calls to account for the api calls
+        calls -= calls/10
         viewModelScope.launch {
             var secretData = authRepository.getSecrets(deviceCode)
             secretLiveData.postValue(Event(secretData))
-            while (secretData?.clientId == null && calls < 60 && getAuthState() != MainActivityViewModel.AuthenticationState.AUTHENTICATED) {
-                //todo: stop calling if authenticated via private token
+            while (secretData?.clientId == null && calls-- > 0 && getAuthState() != MainActivityViewModel.AuthenticationState.AUTHENTICATED) {
                 delay(waitTime)
                 secretData = authRepository.getSecrets(deviceCode)
                 calls++
             }
             if (secretData?.clientId != null) {
                 secretLiveData.postValue(Event(secretData))
-                credentialRepository.updateCredentials(
-                    Credentials(
-                        deviceCode = deviceCode,
-                        clientId = secretData.clientId,
-                        clientSecret = secretData.clientSecret,
-                        accessToken = null,
-                        refreshToken = null
-                    )
-                )
             } else {
                 //todo: manage calls reaching limit time in the ui or ignore if authenticated through the private token
             }
@@ -90,29 +76,42 @@ class AuthenticationViewModel @ViewModelInject constructor(
                 // i need only a set of credentials in my application
                 //todo: check this when adding private api token
                 credentialRepository.deleteAllOpenSourceCredentials()
-                credentialRepository.insert(
-                    Credentials(
-                        deviceCode = deviceCode,
-                        clientId = clientId,
-                        clientSecret = clientSecret,
-                        accessToken = tokenData.accessToken,
-                        refreshToken = tokenData.refreshToken
 
-                    )
-                )
             }
         }
     }
 
-    fun checkAndSaveToken(token: String) {
+    fun checkAndSaveToken(privateKey: String? = null, token: Token?= null) {
         viewModelScope.launch {
-            // try to get personal info
-            val userData = userRepository.getUserInfo(token)
-            // save the token if it's working
-            if (userData != null)
-                credentialRepository.insertPrivateToken(token)
+
+            if (privateKey == null && token == null)
+                throw IllegalArgumentException("checkAndSaveToken: passed tokens were both null")
+
+            // try to get user info
+            val user: User? = userRepository.getUserInfo(privateKey ?: token!!.accessToken)
+
+            if (user != null) {
+                if (privateKey != null)
+                    credentialRepository.insertPrivateToken(privateKey)
+                else {
+                    val deviceCode = authLiveData.value?.peekContent()?.deviceCode
+                    val clientId = secretLiveData.value?.peekContent()?.clientId
+                    val clientSecret = secretLiveData.value?.peekContent()?.clientSecret
+                    if (deviceCode!=null && clientId!=null && clientSecret!=null)
+                        credentialRepository.insert(
+                            Credentials(
+                                deviceCode = deviceCode,
+                                clientId = clientId,
+                                clientSecret = clientSecret,
+                                accessToken = token!!.accessToken,
+                                refreshToken = token.refreshToken
+                            )
+                        )
+                }
+            }
+
             // alert the observing fragment of the result
-            userLiveData.postValue(Event(userData))
+            userLiveData.postValue(Event(user))
         }
     }
 

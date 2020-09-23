@@ -32,9 +32,6 @@
         android:name="com.github.livingwithhippos.unchained.user.view.UserProfileFragment"
         tools:layout="@layout/fragment_user_profile"
         android:label="@string/user" >
-        <argument
-            android:name="token"
-            app:argType="string" />
         <action
             android:id="@+id/actionUserToAuthentication"
             app:destination="@id/authentication_dest" />

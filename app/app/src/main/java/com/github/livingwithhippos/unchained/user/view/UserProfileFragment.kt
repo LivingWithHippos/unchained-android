@@ -29,11 +29,8 @@ class UserProfileFragment : UnchainedFragment() {
 
     private val viewModel: UserProfileViewModel by viewModels()
 
-    val args: UserProfileFragmentArgs by navArgs()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel.saveToken(args.token)
     }
 
     override fun onCreateView(
@@ -62,7 +59,7 @@ class UserProfileFragment : UnchainedFragment() {
 
         activityViewModel.authenticationState.observe(viewLifecycleOwner, Observer {
             // todo: getContentIfNotHandled() works only if none of the other observers has called it already
-            // it's possible to use peek with findNavController().currentDestination to avoid launching the navigate(action) twice (it crsahes)
+            // it's possible to use peek with findNavController().currentDestination to avoid launching the navigate(action) twice (it crashes)
             // val destination = findNavController().currentDestination
             // val destinationId = findNavController().currentDestination?.id
             when (it.peekContent()) {
