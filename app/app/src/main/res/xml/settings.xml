@@ -21,4 +21,8 @@
         app:key="terms"
         app:title="@string/terms_title" />
 
+    <Preference
+        app:key="privacy"
+        app:title="@string/privacy_policy_title" />
+
 </PreferenceScreen>

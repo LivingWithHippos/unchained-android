@@ -26,6 +26,9 @@ class SettingsFragment : PreferenceFragmentCompat() {
             "terms" -> {
                 openTermsDialog()
             }
+            "privacy" -> {
+                openPrivacyDialog()
+            }
             else -> return super.onPreferenceTreeClick(preference)
         }
 
@@ -46,6 +49,15 @@ class SettingsFragment : PreferenceFragmentCompat() {
         MaterialAlertDialogBuilder(requireContext())
             .setTitle(resources.getString(R.string.terms_title))
             .setMessage(resources.getString(R.string.terms_text))
+            .setNeutralButton(resources.getString(R.string.close)) { dialog, _ ->
+                dialog.cancel()
+            }
+            .show()
+    }
+    private fun openPrivacyDialog() {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(resources.getString(R.string.privacy_policy_title))
+            .setMessage(resources.getString(R.string.privacy_text))
             .setNeutralButton(resources.getString(R.string.close)) { dialog, _ ->
                 dialog.cancel()
             }
