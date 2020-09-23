@@ -22,6 +22,7 @@ import com.github.livingwithhippos.unchained.utilities.showToast
 import com.github.livingwithhippos.unchained.utilities.verticalScrollToPosition
 import com.google.android.material.tabs.TabLayout
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -60,7 +61,8 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
                 if (listBinding.srLayout.isRefreshing) {
                     listBinding.srLayout.isRefreshing = false
                     // this delay is needed to activate the scrolling, otherwise it won't work. Even 150L was not enough.
-                    listBinding.rvDownloadList.layoutManager?.verticalScrollToPosition(requireContext(), delay = 200)
+                    delay(200)
+                    listBinding.rvDownloadList.layoutManager?.verticalScrollToPosition(requireContext())
                     //todo: add ripple animation on item at position 0 if possible, see [runRippleAnimation]
                 }
 
@@ -72,8 +74,7 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
                 torrentAdapter.submitData(it)
                 if (listBinding.srLayout.isRefreshing) {
                     listBinding.srLayout.isRefreshing = false
-                    // this delay is needed to activate the scrolling, otherwise it won't work. Even 150L was not enough.
-                    listBinding.rvTorrentList.layoutManager?.verticalScrollToPosition(requireContext(), delay = 200)
+                    listBinding.rvTorrentList.layoutManager?.verticalScrollToPosition(requireContext())
                 }
             }
         }
@@ -139,7 +140,6 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
         listBinding.selectedTab = listBinding.tabs.selectedTabPosition
 
         viewModel.downloadItemLiveData.observe(viewLifecycleOwner, {
-            // dwecidi come gestire la trasformazione di un torrent in download, magari usa un dialog? Il refresh dovrebbe riportarmi in cima in csao
             it.getContentIfNotHandled()?.let {
                 // switch to download tab
                 listBinding.tabs.getTabAt(TAB_DOWNLOADS)?.select()

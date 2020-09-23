@@ -296,7 +296,6 @@ fun stringToDate(rdDate: String): String {
 fun RecyclerView.LayoutManager.verticalScrollToPosition(
     context: Context,
     position: Int = 0,
-    delay: Long = 0,
     snapType: Int = LinearSmoothScroller.SNAP_TO_START
 ) {
 
@@ -306,14 +305,5 @@ fun RecyclerView.LayoutManager.verticalScrollToPosition(
         }
     }.apply<LinearSmoothScroller> { targetPosition = position }
 
-    this.getChildAt(position)?.let {
-        it.postDelayed(
-            Runnable {
-                this.startSmoothScroll(smoothScroller)
-            },
-            delay
-        )
-    }
-
-
+    this.startSmoothScroll(smoothScroller)
 }
