@@ -44,14 +44,14 @@ class DownloadListViewModel @ViewModelInject constructor(
         TorrentPagingSource(torrentsRepository, credentialsRepository)
     }.liveData.cachedIn(viewModelScope)
 
-    val downloadItemLiveData = MutableLiveData<Event<DownloadItem?>>()
+    val downloadItemLiveData = MutableLiveData<Event<List<DownloadItem?>>>()
 
     fun downloadTorrent(torrent: TorrentItem) {
         viewModelScope.launch {
             val token = credentialsRepository.getToken()
-            // todo: manage torrents with multiple links (huge ones?)
-            val item = unrestrictRepository.getUnrestrictedLink(token, torrent.links[0])
-            downloadItemLiveData.postValue(Event(item))
+            //val item = unrestrictRepository.getUnrestrictedLink(token, torrent.links[0])
+            val items = unrestrictRepository.getUnrestrictedLinkList(token, torrent.links)
+            downloadItemLiveData.postValue(Event(items))
         }
 
     }

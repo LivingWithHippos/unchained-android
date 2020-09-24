@@ -11,9 +11,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.paging.PagingData
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
-import com.github.livingwithhippos.unchained.databinding.FragmentTabListsBinding
 import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
+import com.github.livingwithhippos.unchained.databinding.FragmentTabListsBinding
 import com.github.livingwithhippos.unchained.lists.viewmodel.DownloadListViewModel
 import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewModel
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
@@ -33,8 +33,8 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
     private val viewModel: DownloadListViewModel by viewModels()
 
     override fun onCreateView(
-            inflater: LayoutInflater, container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         val listBinding = FragmentTabListsBinding.inflate(inflater, container, false)
 
@@ -64,7 +64,9 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
                     listBinding.srLayout.isRefreshing = false
                     // this delay is needed to activate the scrolling, otherwise it won't work. Even 150L was not enough.
                     delay(200)
-                    listBinding.rvDownloadList.layoutManager?.verticalScrollToPosition(requireContext())
+                    listBinding.rvDownloadList.layoutManager?.verticalScrollToPosition(
+                        requireContext()
+                    )
                     //todo: add ripple animation on item at position 0 if possible, see [runRippleAnimation]
                 }
 
@@ -84,7 +86,8 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
         // checks the authentication state. Needed to avoid automatic API calls before the authentication process is finished
         activityViewModel.authenticationState.observe(viewLifecycleOwner, Observer {
             if (it.peekContent() == MainActivityViewModel.AuthenticationState.AUTHENTICATED ||
-                it.peekContent() == MainActivityViewModel.AuthenticationState.AUTHENTICATED_NO_PREMIUM ) {
+                it.peekContent() == MainActivityViewModel.AuthenticationState.AUTHENTICATED_NO_PREMIUM
+            ) {
                 // register observers if not already registered
                 if (!viewModel.downloadsLiveData.hasActiveObservers())
                     viewModel.downloadsLiveData.observe(viewLifecycleOwner, downloadObserver)
@@ -107,15 +110,15 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
                         TAB_DOWNLOADS -> {
                             if (!viewModel.downloadsLiveData.hasActiveObservers())
                                 viewModel.downloadsLiveData.observe(
-                                        viewLifecycleOwner,
-                                        downloadObserver
+                                    viewLifecycleOwner,
+                                    downloadObserver
                                 )
                         }
                         TAB_TORRENTS -> {
                             if (!viewModel.torrentsLiveData.hasActiveObservers())
                                 viewModel.torrentsLiveData.observe(
-                                        viewLifecycleOwner,
-                                        torrentObserver
+                                    viewLifecycleOwner,
+                                    torrentObserver
                                 )
                         }
                     }
@@ -143,13 +146,15 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
         listBinding.selectedTab = listBinding.tabs.selectedTabPosition
 
         viewModel.downloadItemLiveData.observe(viewLifecycleOwner, {
-            it.getContentIfNotHandled()?.let {
-                // switch to download tab
-                listBinding.tabs.getTabAt(TAB_DOWNLOADS)?.select()
-                // simulate list refresh
-                listBinding.srLayout.isRefreshing = true
-                // refresh items, when returned they'll stop the animation
-                downloadAdapter.refresh()
+            it.getContentIfNotHandled()?.let { links ->
+                if (!links.isNullOrEmpty()) {
+                    // switch to download tab
+                    listBinding.tabs.getTabAt(TAB_DOWNLOADS)?.select()
+                    // simulate list refresh
+                    listBinding.srLayout.isRefreshing = true
+                    // refresh items, when returned they'll stop the animation
+                    downloadAdapter.refresh()
+                }
             }
         })
 
@@ -161,20 +166,20 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
         if (authState == MainActivityViewModel.AuthenticationState.AUTHENTICATED) {
             val action = ListsTabFragmentDirections.actionListsTabToDownloadDetails(item)
             findNavController().navigate(action)
-        }
-        else
+        } else
             showToast(R.string.premium_needed)
     }
 
     override fun onClick(item: TorrentItem) {
         val authState = activityViewModel.authenticationState.value?.peekContent()
         if (authState == MainActivityViewModel.AuthenticationState.AUTHENTICATED) {
-            if (item.status == "downloaded")
+            if (item.status == "downloaded") {
+                showToast(R.string.downloading_torrent)
                 viewModel.downloadTorrent(item)
+            }
             else
                 showToast(R.string.torrent_not_downloaded)
-        }
-        else
+        } else
             showToast(R.string.premium_needed)
     }
 
