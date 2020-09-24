@@ -19,6 +19,10 @@ import com.github.livingwithhippos.unchained.utilities.Event
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+/**
+ * A [ViewModel] subclass.
+ * It offers LiveData to be observed during the authentication process and uses the [AuthenticationRepository] to manage its process.
+ */
 class AuthenticationViewModel @ViewModelInject constructor(
     @Assisted private val savedStateHandle: SavedStateHandle,
     private val authRepository: AuthenticationRepository,

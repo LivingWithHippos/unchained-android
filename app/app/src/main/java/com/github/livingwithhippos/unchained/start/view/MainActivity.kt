@@ -15,6 +15,10 @@ import com.github.livingwithhippos.unchained.utilities.BottomNavManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 
+/**
+ * A [AppCompatActivity] subclass.
+ * Shared between all the fragments except for the preferences.
+ */
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 

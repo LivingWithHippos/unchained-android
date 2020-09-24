@@ -11,6 +11,10 @@ import com.github.livingwithhippos.unchained.base.model.repositories.TorrentsRep
 import com.github.livingwithhippos.unchained.newdownload.model.TorrentItem
 import kotlinx.coroutines.launch
 
+/**
+ * a [ViewModel] SUBCLASS.
+ * Retrieves a torrent's details
+ */
 class TorrentDetailsViewmodel @ViewModelInject constructor(
     @Assisted private val savedStateHandle: SavedStateHandle,
     private val credentialsRepository: CredentialsRepository,

@@ -5,6 +5,10 @@ import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.lists.model.DownloadItem
 import com.github.livingwithhippos.unchained.utilities.DataBindingPagingAdapter
 
+/**
+ * A [DataBindingPagingAdapter] subclass.
+ * Displays a list of [DownloadItem].
+ */
 class DownloadListPagingAdapter(listener: DownloadListListener) :
     DataBindingPagingAdapter<DownloadItem, DownloadListListener>(DiffCallback(), listener) {
 

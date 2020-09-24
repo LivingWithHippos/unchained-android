@@ -8,6 +8,9 @@ import androidx.room.Update
 import com.github.livingwithhippos.unchained.base.model.entities.Credentials
 import com.github.livingwithhippos.unchained.utilities.PRIVATE_TOKEN
 
+/**
+ * This Dao manage the queries for the credentials table in the database.
+ */
 @Dao
 interface CredentialsDao {
 

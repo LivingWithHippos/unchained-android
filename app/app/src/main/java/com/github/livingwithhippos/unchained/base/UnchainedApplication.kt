@@ -12,6 +12,10 @@ import javax.inject.Inject
 
 //todo: move under right package
 
+/**
+ * Entry point for the Dagger-Hilt injection.
+ * Deletes incomplete credentials from the db on start
+ */
 @HiltAndroidApp
 class UnchainedApplication : Application() {
     @Inject

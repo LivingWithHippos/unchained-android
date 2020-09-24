@@ -14,7 +14,8 @@ import dagger.hilt.android.AndroidEntryPoint
 
 
 /**
- * A simple [Fragment] subclass.
+ * A simple [UnchainedFragment] subclass.
+ * The starting fragment of the app. It navigates the user to either the authentication process or the profile fragment, depending on the saved credentials status.
  */
 @AndroidEntryPoint
 class StartFragment : UnchainedFragment() {

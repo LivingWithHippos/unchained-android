@@ -25,6 +25,10 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+/**
+ * A simple [UnchainedFragment] subclass.
+ * It is capable of showing a list of both [DownloadItem] and [TorrentItem] switched with a tab layout.
+ */
 @AndroidEntryPoint
 class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListListener {
 

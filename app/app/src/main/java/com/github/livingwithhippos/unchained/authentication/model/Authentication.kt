@@ -12,6 +12,9 @@ import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.Query
 
+/**
+ * This class correspond to the JSON response from the authentication endpoint that starts the authentication process.
+ */
 @JsonClass(generateAdapter = true)
 data class Authentication(
     @Json(name = "device_code")
@@ -28,6 +31,9 @@ data class Authentication(
     val directVerificationUrl: String
 )
 
+/**
+ * This class correspond to the JSON response from the secret endpoint, the second step in the authentication process.
+ */
 @JsonClass(generateAdapter = true)
 data class Secrets(
     @Json(name = "client_id")
@@ -36,6 +42,10 @@ data class Secrets(
     val clientSecret: String
 )
 
+/**
+ * This class correspond to the JSON response from the token endpoint, the third and last step in the authentication process.
+ * It can also be used to refresh an expired token
+ */
 @JsonClass(generateAdapter = true)
 data class Token(
     @Json(name = "access_token")
@@ -48,6 +58,9 @@ data class Token(
     val refreshToken: String
 )
 
+/**
+ * This interface is used by Retrofit to manage all the REST calls to the endpoints needed to authenticate the user
+ */
 interface AuthenticationApi {
 
     @GET("device/code")

@@ -19,6 +19,7 @@ import com.github.livingwithhippos.unchained.BuildConfig
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.databinding.NewDownloadFragmentBinding
+import com.github.livingwithhippos.unchained.lists.model.DownloadItem
 import com.github.livingwithhippos.unchained.newdownload.viewmodel.NewDownloadViewModel
 import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewModel
 import com.github.livingwithhippos.unchained.utilities.REMOTE_TRAFFIC_ON
@@ -31,7 +32,10 @@ import dagger.hilt.android.AndroidEntryPoint
 import java.io.FileDescriptor
 import java.io.FileInputStream
 
-
+/**
+ * A simple [UnchainedFragment] subclass.
+ * Allow the user to create a new download from a link or a torrent file.
+ */
 @AndroidEntryPoint
 class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
 

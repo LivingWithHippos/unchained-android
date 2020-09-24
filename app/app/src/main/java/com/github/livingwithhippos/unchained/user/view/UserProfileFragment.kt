@@ -22,6 +22,7 @@ const val PREMIUM_LINK = "https://real-debrid.com/premium"
 
 /**
  * A simple [UnchainedFragment] subclass.
+ * Shows a user profile details.
  */
 @AndroidEntryPoint
 class UserProfileFragment : UnchainedFragment() {

@@ -9,6 +9,10 @@ import androidx.fragment.app.DialogFragment
 import com.github.livingwithhippos.unchained.R
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
+/**
+ * A [DialogFragment] subclass.
+ * Parse the given text from html and displays it accordingly.
+ */
 class HtmlDialogFragment(private val title: Int, private val message: Int) : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

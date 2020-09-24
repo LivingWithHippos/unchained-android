@@ -10,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.github.livingwithhippos.unchained.BuildConfig
 import com.github.livingwithhippos.unchained.base.model.network.APIError
 import com.github.livingwithhippos.unchained.base.model.network.APIException
+import com.github.livingwithhippos.unchained.base.model.repositories.AuthenticationRepository
 import com.github.livingwithhippos.unchained.base.model.repositories.CredentialsRepository
 import com.github.livingwithhippos.unchained.base.model.repositories.TorrentsRepository
 import com.github.livingwithhippos.unchained.base.model.repositories.UnrestrictRepository
@@ -21,6 +22,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+/**
+ * A [ViewModel] subclass.
+ * It offers LiveData to be observed while creating new downloads
+ */
 class NewDownloadViewModel @ViewModelInject constructor(
     @Assisted private val savedStateHandle: SavedStateHandle,
     private val credentialsRepository: CredentialsRepository,

@@ -6,7 +6,10 @@ import com.github.livingwithhippos.unchained.base.model.network.NetworkResponse
 import retrofit2.Response
 import java.io.IOException
 
-
+/**
+ * Base repository class to be extended by other repositories.
+ * Manages the calls between retrofit and the actual repositories.
+ */
 open class BaseRepository {
 
     suspend fun <T : Any> unsafeApiCall(call: suspend () -> Response<T>, errorMessage: String): T? {

@@ -12,5 +12,8 @@ data class APIError(
     val errorCode: Int?
 )
 
+/**
+ * Manager the response error body from the retrofit calls. WIP.
+ */
 class APIException(val apiError: APIError) : Exception() {
 }

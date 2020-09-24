@@ -4,6 +4,10 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
+/**
+ * The credentials db entity.
+ * It can store either a token obtained with the oauth process or a private api token which will populate all fields but accessToken with PRIVATE_TOKEN
+ */
 @Entity(tableName = "credentials")
 class Credentials(
     @PrimaryKey

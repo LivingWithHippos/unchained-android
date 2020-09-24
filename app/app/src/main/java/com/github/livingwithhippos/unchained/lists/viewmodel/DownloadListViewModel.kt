@@ -12,6 +12,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.liveData
+import com.github.livingwithhippos.unchained.base.model.repositories.AuthenticationRepository
 import com.github.livingwithhippos.unchained.base.model.repositories.CredentialsRepository
 import com.github.livingwithhippos.unchained.base.model.repositories.DownloadRepository
 import com.github.livingwithhippos.unchained.base.model.repositories.TorrentsRepository
@@ -23,6 +24,10 @@ import com.github.livingwithhippos.unchained.newdownload.model.TorrentItem
 import com.github.livingwithhippos.unchained.utilities.Event
 import kotlinx.coroutines.launch
 
+/**
+ * A [ViewModel] subclass.
+ * It offers LiveData to be observed to populate lists with paging support
+ */
 class DownloadListViewModel @ViewModelInject constructor(
     @Assisted private val savedStateHandle: SavedStateHandle,
     private val downloadRepository: DownloadRepository,

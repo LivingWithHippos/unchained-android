@@ -12,12 +12,17 @@ import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.databinding.FragmentDownloadDetailsBinding
 import com.github.livingwithhippos.unchained.downloaddetails.viewmodel.DownloadDetailsViewModel
+import com.github.livingwithhippos.unchained.lists.model.DownloadItem
 import com.github.livingwithhippos.unchained.utilities.extension.copyToClipboard
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+/**
+ * A simple [UnchainedFragment] subclass.
+ * It is capable of showing the details of a [DownloadItem]
+ */
 @AndroidEntryPoint
 class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
 

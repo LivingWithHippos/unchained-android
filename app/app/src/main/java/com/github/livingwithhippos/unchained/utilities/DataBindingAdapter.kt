@@ -9,8 +9,13 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.github.livingwithhippos.unchained.BR
+import com.github.livingwithhippos.unchained.lists.model.DownloadItem
 
 //todo: test implementing class with Nothing as generic value to avoid passing listeners
+/**
+ * A [ListAdapter] subclass.
+ * Allows for a generic list of items with data binding and an optional listener.
+ */
 abstract class DataBindingAdapter<T, U>(
     diffCallback: DiffUtil.ItemCallback<T>,
     val listener: U? = null
@@ -28,6 +33,10 @@ abstract class DataBindingAdapter<T, U>(
         holder.bind(getItem(position), listener)
 }
 
+/**
+ * A [PagingDataAdapter] subclass.
+ * Allows for a generic list of items with data binding and Paging support and an optional listener.
+ */
 abstract class DataBindingPagingAdapter<T : Any, U>(
     diffCallback: DiffUtil.ItemCallback<T>,
     val listener: U? = null

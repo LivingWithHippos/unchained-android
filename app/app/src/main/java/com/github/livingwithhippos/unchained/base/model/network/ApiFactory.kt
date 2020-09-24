@@ -33,6 +33,9 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import javax.inject.Singleton
 
+/**
+ * This object manages the Dagger-Hilt injection for the  OkHttp and Retrofit clients
+ */
 @InstallIn(ApplicationComponent::class)
 @Module
 object ApiFactory {

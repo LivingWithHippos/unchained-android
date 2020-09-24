@@ -116,6 +116,9 @@ data class InnerTorrentFile(
     val selected: Int
 )
 
+/**
+ * This interface is used by Retrofit to manage all the REST calls to the torrents endpoints
+ */
 interface TorrentsApi {
 
     @GET("torrents/availableHosts")

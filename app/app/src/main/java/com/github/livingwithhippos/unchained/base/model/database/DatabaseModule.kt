@@ -10,6 +10,9 @@ import dagger.hilt.android.components.ApplicationComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Singleton
 
+/**
+ * Provides the database injected with Dagger Hilt
+ */
 @InstallIn(ApplicationComponent::class)
 @Module
 object DatabaseModule {
