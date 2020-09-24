@@ -155,15 +155,25 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
     }
 
     override fun onClick(item: DownloadItem) {
-        val action = ListsTabFragmentDirections.actionListsTabToDownloadDetails(item)
-        findNavController().navigate(action)
+        val authState = activityViewModel.authenticationState.value?.peekContent()
+        if (authState == MainActivityViewModel.AuthenticationState.AUTHENTICATED) {
+            val action = ListsTabFragmentDirections.actionListsTabToDownloadDetails(item)
+            findNavController().navigate(action)
+        }
+        else
+            showToast(R.string.premium_needed)
     }
 
     override fun onClick(item: TorrentItem) {
-        if (item.status == "downloaded")
-            viewModel.downloadTorrent(item)
+        val authState = activityViewModel.authenticationState.value?.peekContent()
+        if (authState == MainActivityViewModel.AuthenticationState.AUTHENTICATED) {
+            if (item.status == "downloaded")
+                viewModel.downloadTorrent(item)
+            else
+                showToast(R.string.torrent_not_downloaded)
+        }
         else
-            showToast(R.string.torrent_not_downloaded)
+            showToast(R.string.premium_needed)
     }
 
     companion object {
