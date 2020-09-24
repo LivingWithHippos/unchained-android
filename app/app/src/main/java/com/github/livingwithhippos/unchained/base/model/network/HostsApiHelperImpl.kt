@@ -1,6 +1,7 @@
 package com.github.livingwithhippos.unchained.base.model.network
 
 
+import com.github.livingwithhippos.unchained.data.remote.HostsApiHelper
 import retrofit2.Response
 import javax.inject.Inject
 

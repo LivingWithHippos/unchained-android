@@ -2,7 +2,7 @@ package com.github.livingwithhippos.unchained.base
 
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
-import com.github.livingwithhippos.unchained.base.model.repositories.CredentialsRepository
+import com.github.livingwithhippos.unchained.data.repositoy.CredentialsRepository
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

@@ -1,7 +1,7 @@
-package com.github.livingwithhippos.unchained.base.model.repositories
+package com.github.livingwithhippos.unchained.data.repositoy
 
 import com.github.livingwithhippos.unchained.base.model.network.Host
-import com.github.livingwithhippos.unchained.base.model.network.HostsApiHelper
+import com.github.livingwithhippos.unchained.data.remote.HostsApiHelper
 import javax.inject.Inject
 
 class HostsRepository @Inject constructor(private val hostsApiHelper: HostsApiHelper) :

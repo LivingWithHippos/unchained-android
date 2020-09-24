@@ -5,8 +5,8 @@ import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.livingwithhippos.unchained.base.model.repositories.CredentialsRepository
-import com.github.livingwithhippos.unchained.base.model.repositories.UserRepository
+import com.github.livingwithhippos.unchained.data.repositoy.CredentialsRepository
+import com.github.livingwithhippos.unchained.data.repositoy.UserRepository
 import com.github.livingwithhippos.unchained.user.model.User
 import kotlinx.coroutines.launch
 

@@ -4,6 +4,7 @@ import com.github.livingwithhippos.unchained.authentication.model.Authentication
 import com.github.livingwithhippos.unchained.authentication.model.AuthenticationApi
 import com.github.livingwithhippos.unchained.authentication.model.Secrets
 import com.github.livingwithhippos.unchained.authentication.model.Token
+import com.github.livingwithhippos.unchained.data.remote.AuthApiHelper
 import retrofit2.Response
 import javax.inject.Inject
 

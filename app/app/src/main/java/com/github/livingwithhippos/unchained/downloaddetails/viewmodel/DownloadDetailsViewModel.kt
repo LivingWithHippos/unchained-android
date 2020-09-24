@@ -6,9 +6,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.livingwithhippos.unchained.base.model.repositories.AuthenticationRepository
-import com.github.livingwithhippos.unchained.base.model.repositories.CredentialsRepository
-import com.github.livingwithhippos.unchained.base.model.repositories.StreamingRepository
+import com.github.livingwithhippos.unchained.data.repositoy.CredentialsRepository
+import com.github.livingwithhippos.unchained.data.repositoy.StreamingRepository
 import com.github.livingwithhippos.unchained.downloaddetails.model.Stream
 import com.github.livingwithhippos.unchained.utilities.KEY_TOKEN
 import kotlinx.coroutines.launch

@@ -1,4 +1,4 @@
-package com.github.livingwithhippos.unchained.base.model.network
+package com.github.livingwithhippos.unchained.data.remote
 
 import com.github.livingwithhippos.unchained.authentication.model.Authentication
 import com.github.livingwithhippos.unchained.authentication.model.Secrets

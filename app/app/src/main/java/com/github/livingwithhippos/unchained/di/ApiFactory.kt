@@ -2,10 +2,10 @@ package com.github.livingwithhippos.unchained.di
 
 import com.github.livingwithhippos.unchained.BuildConfig
 import com.github.livingwithhippos.unchained.authentication.model.AuthenticationApi
-import com.github.livingwithhippos.unchained.base.model.network.AuthApiHelper
+import com.github.livingwithhippos.unchained.data.remote.AuthApiHelper
 import com.github.livingwithhippos.unchained.base.model.network.AuthApiHelperImpl
 import com.github.livingwithhippos.unchained.base.model.network.HostsApi
-import com.github.livingwithhippos.unchained.base.model.network.HostsApiHelper
+import com.github.livingwithhippos.unchained.data.remote.HostsApiHelper
 import com.github.livingwithhippos.unchained.base.model.network.HostsApiHelperImpl
 import com.github.livingwithhippos.unchained.downloaddetails.model.StreamingApi
 import com.github.livingwithhippos.unchained.downloaddetails.model.StreamingApiHelper

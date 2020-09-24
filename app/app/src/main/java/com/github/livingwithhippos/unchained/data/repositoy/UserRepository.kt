@@ -1,4 +1,4 @@
-package com.github.livingwithhippos.unchained.base.model.repositories
+package com.github.livingwithhippos.unchained.data.repositoy
 
 import com.github.livingwithhippos.unchained.user.model.User
 import com.github.livingwithhippos.unchained.user.model.UserApiHelper

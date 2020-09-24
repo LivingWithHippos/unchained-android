@@ -1,4 +1,4 @@
-package com.github.livingwithhippos.unchained.base.model.repositories
+package com.github.livingwithhippos.unchained.data.repositoy
 
 import android.util.Log
 import com.github.livingwithhippos.unchained.BuildConfig
