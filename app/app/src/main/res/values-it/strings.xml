@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="loading_auth_link">Caricando procedura di autenticazione...</string>
+    <string name="loading_auth_link">Caricando procedura di autenticazione…</string>
     <string name="please_go">Per favore vai su</string>
     <string name="link">Link</string>
     <string name="insert_code">E inserisci il codice</string>
