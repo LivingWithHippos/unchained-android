@@ -8,12 +8,11 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.databinding.FragmentUserProfileBinding
 import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewModel
 import com.github.livingwithhippos.unchained.user.viewmodel.UserProfileViewModel
-import com.github.livingwithhippos.unchained.utilities.openExternalWebPage
+import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 

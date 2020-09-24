@@ -6,7 +6,7 @@ import androidx.preference.PreferenceFragmentCompat
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.utilities.FEEDBACK_URL
 import com.github.livingwithhippos.unchained.utilities.GPLV3_URL
-import com.github.livingwithhippos.unchained.utilities.openExternalWebPage
+import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 
 
 class SettingsFragment : PreferenceFragmentCompat() {

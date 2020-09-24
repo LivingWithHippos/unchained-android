@@ -1,13 +1,6 @@
-package com.github.livingwithhippos.unchained.utilities
+package com.github.livingwithhippos.unchained.utilities.extension
 
-import android.annotation.SuppressLint
-import android.app.Activity
-import android.content.ClipData
-import android.content.ClipDescription.MIMETYPE_TEXT_PLAIN
-import android.content.ClipboardManager
 import android.content.Context
-import android.content.Intent
-import android.content.res.Configuration
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.ClipDrawable
 import android.graphics.drawable.Drawable
@@ -17,42 +10,18 @@ import android.graphics.drawable.RippleDrawable
 import android.graphics.drawable.RotateDrawable
 import android.graphics.drawable.ScaleDrawable
 import android.graphics.drawable.VectorDrawable
-import android.icu.text.DateFormat
-import android.icu.text.SimpleDateFormat
-import android.net.Uri
-import android.util.Log
-import android.util.Patterns
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
-import android.widget.Toast
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.BindingAdapter
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.request.RequestOptions.bitmapTransform
-import com.bumptech.glide.request.target.CustomViewTarget
-import com.bumptech.glide.request.transition.Transition
-import com.github.livingwithhippos.unchained.BuildConfig
 import com.github.livingwithhippos.unchained.R
 import com.google.android.material.progressindicator.ProgressIndicator
-import java.util.Locale
-import java.util.Date
-import java.util.regex.Matcher
-import java.util.regex.Pattern
 
-//todo: split extensions in own files (glide/views etc)
-@BindingAdapter("imageURL")
-fun ImageView.loadImage(imageURL: String?) {
-    if (imageURL != null)
-        GlideApp.with(this.context)
-            .load(imageURL)
-            .into(this)
-}
 
 @BindingAdapter("startAnimation")
 fun ImageView.startAnimation(start: Boolean) {
@@ -64,26 +33,6 @@ fun ImageView.startAnimation(start: Boolean) {
     }
 }
 
-@BindingAdapter("blurredBackground")
-fun ConstraintLayout.blurredBackground(drawable: Drawable) {
-    val layout = this
-    GlideApp.with(this)
-        .load(drawable)
-        .apply(bitmapTransform(BlurTransformation(context)))
-        .into(object : CustomViewTarget<ConstraintLayout, Drawable>(layout) {
-            override fun onLoadFailed(errorDrawable: Drawable?) {
-                // error handling
-            }
-
-            override fun onResourceCleared(placeholder: Drawable?) {
-                // clear all resources
-            }
-
-            override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
-                layout.background = resource
-            }
-        })
-}
 
 @BindingAdapter("adapter")
 fun AutoCompleteTextView.setAdapter(contents: List<String>) {
@@ -207,85 +156,6 @@ fun View.runRippleAnimation(delay: Long = 300) {
     }
 }
 
-fun Fragment.showToast(stringResource: Int, length: Int = Toast.LENGTH_SHORT) {
-    Toast.makeText(requireContext(), getString(stringResource), length).show()
-}
-
-// note: should these be added to Context instead of Fragment?
-fun Fragment.copyToClipboard(label: String, text: String) {
-    val clipboard = requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-    val clip: ClipData = ClipData.newPlainText(label, text)
-    // Set the clipboard's primary clip.
-    clipboard.setPrimaryClip(clip)
-}
-
-fun Fragment.getClipboardText(): String {
-    val clipboard = requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-    var text = ""
-    if (clipboard.hasPrimaryClip() && clipboard.primaryClipDescription?.hasMimeType(
-            MIMETYPE_TEXT_PLAIN
-        ) == true
-    ) {
-        val item = clipboard.primaryClip!!.getItemAt(0)
-        text = item.text.toString()
-    } else {
-        if (BuildConfig.DEBUG)
-            Log.d(
-                "Fragment.getClipboardText",
-                "Clipboard was empty or did not contain any text mime type."
-            )
-    }
-    return text
-}
-
-fun Fragment.openExternalWebPage(url: String, showErrorToast: Boolean = true): Boolean {
-    // this pattern accepts everything that is something.tld since there were too many new tlds and Google gave up updating their regex
-    if (url.isWebUrl()) {
-        val webIntent: Intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-        startActivity(webIntent)
-        return true
-    } else
-        if (showErrorToast)
-            showToast(R.string.invalid_url)
-
-    return false
-}
-
-fun String.isWebUrl(): Boolean =
-    Patterns.WEB_URL.matcher(this).matches()
-
-fun String.isMagnet(): Boolean {
-    val m: Matcher = Pattern.compile(MAGNET_PATTERN).matcher(this)
-    return m.lookingAt()
-}
-
-/**
- * this function can be used to create a new context with a particular locale.
- * It must be used while overriding Activity.attachBaseContext like this:
-override fun attachBaseContext(base: Context?) {
-if (base != null)
-super.attachBaseContext(getUpdatedLocaleContext(base, "en"))
-else
-super.attachBaseContext(null)
-}
- * it must be applied to all the activities or added to a BaseActivity extended by them
- */
-fun Activity.getUpdatedLocaleContext(context: Context, language: String): Context {
-    val locale: Locale = Locale(language)
-    val configuration: Configuration = Configuration(context.resources.configuration)
-    // check if this is necessary
-    Locale.setDefault(locale)
-    configuration.setLocale(locale)
-    return context.createConfigurationContext(configuration)
-}
-
-@SuppressLint("SimpleDateFormat")
-fun stringToDate(rdDate: String): String {
-    val originalDate: DateFormat = SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss")
-    val date: Date = originalDate.parse(rdDate)
-    val localDate: DateFormat = SimpleDateFormat.getDateTimeInstance()
-    return localDate.format(date)
-}
 
 /**
  * Smoothly scrolls to an item position in a RecyclerView.

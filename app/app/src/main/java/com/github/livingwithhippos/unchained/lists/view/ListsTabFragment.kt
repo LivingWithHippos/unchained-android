@@ -18,8 +18,8 @@ import com.github.livingwithhippos.unchained.lists.model.TorrentListPagingAdapte
 import com.github.livingwithhippos.unchained.lists.viewmodel.DownloadListViewModel
 import com.github.livingwithhippos.unchained.newdownload.model.TorrentItem
 import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewModel
-import com.github.livingwithhippos.unchained.utilities.showToast
-import com.github.livingwithhippos.unchained.utilities.verticalScrollToPosition
+import com.github.livingwithhippos.unchained.utilities.extension.showToast
+import com.github.livingwithhippos.unchained.utilities.extension.verticalScrollToPosition
 import com.google.android.material.tabs.TabLayout
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay

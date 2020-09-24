@@ -12,9 +12,9 @@ import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.databinding.FragmentDownloadDetailsBinding
 import com.github.livingwithhippos.unchained.downloaddetails.viewmodel.DownloadDetailsViewModel
-import com.github.livingwithhippos.unchained.utilities.copyToClipboard
-import com.github.livingwithhippos.unchained.utilities.openExternalWebPage
-import com.github.livingwithhippos.unchained.utilities.showToast
+import com.github.livingwithhippos.unchained.utilities.extension.copyToClipboard
+import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
+import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
