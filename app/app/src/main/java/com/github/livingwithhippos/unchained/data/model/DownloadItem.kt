@@ -61,7 +61,9 @@ data class DownloadItem(
     @Json(name = "generated")
     val generated: String?,
     @Json(name = "type")
-    val type: String?
+    val type: String?,
+    @Json(name = "alternative")
+    val alternative: List<Alternative>?
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString()!!,
@@ -76,7 +78,8 @@ data class DownloadItem(
         parcel.readString()!!,
         parcel.readValue(Int::class.java.classLoader) as? Int,
         parcel.readString(),
-        parcel.readString()
+        parcel.readString(),
+        mutableListOf<Alternative>().also { parcel.readTypedList(it, Alternative.CREATOR) }
     ) {
     }
 
@@ -94,6 +97,7 @@ data class DownloadItem(
         parcel.writeValue(streamable)
         parcel.writeString(generated)
         parcel.writeString(type)
+        parcel.writeTypedList(alternative)
     }
 
     override fun describeContents(): Int {
