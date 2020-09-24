@@ -10,6 +10,10 @@ import com.bumptech.glide.request.transition.Transition
 import com.github.livingwithhippos.unchained.utilities.BlurTransformation
 import com.github.livingwithhippos.unchained.utilities.GlideApp
 
+/**
+ * Load an image from a url into an [ImageView]
+ * @param imageURL: the image url
+ */
 @BindingAdapter("imageURL")
 fun ImageView.loadImage(imageURL: String?) {
     if (imageURL != null)
@@ -18,6 +22,10 @@ fun ImageView.loadImage(imageURL: String?) {
             .into(this)
 }
 
+/**
+ * Blur a [Drawable] and apply it as a [ConstraintLayout]  background
+ * @param drawable: the Drawable to be blurred
+ */
 @BindingAdapter("blurredBackground")
 fun ConstraintLayout.blurredBackground(drawable: Drawable) {
     val layout = this

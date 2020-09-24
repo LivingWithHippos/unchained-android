@@ -15,11 +15,29 @@ import com.github.livingwithhippos.unchained.BuildConfig
 import com.github.livingwithhippos.unchained.R
 import java.util.*
 
+/**
+* Show a toast message
+* @param stringResource: the string resource to be retrieved and shown
+* @param length: the duration of the toast. Defaults to short
+*/
 fun Fragment.showToast(stringResource: Int, length: Int = Toast.LENGTH_SHORT) {
     Toast.makeText(requireContext(), getString(stringResource), length).show()
 }
 
-// note: should these be added to Context instead of Fragment?
+/**
+ * Show a toast message
+ * @param message: the message and shown
+ * @param length: the duration of the toast. Defaults to short
+ */
+fun Fragment.showToast(message: String, length: Int = Toast.LENGTH_SHORT) {
+    Toast.makeText(requireContext(), message, length).show()
+}
+
+/**
+ * Copy some text on the clipboard
+ * @param label: the label of the text copied
+ * @param text: the text to be copied to clipboard
+ */
 fun Fragment.copyToClipboard(label: String, text: String) {
     val clipboard = requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
     val clip: ClipData = ClipData.newPlainText(label, text)
@@ -27,6 +45,10 @@ fun Fragment.copyToClipboard(label: String, text: String) {
     clipboard.setPrimaryClip(clip)
 }
 
+/**
+ * Get the text from the clipboard
+ * @return the text on the clipboard or "" if empty or not text
+ */
 fun Fragment.getClipboardText(): String {
     val clipboard = requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
     var text = ""
@@ -46,6 +68,12 @@ fun Fragment.getClipboardText(): String {
     return text
 }
 
+/**
+ * Open an url from available apps
+ * @param url: the url to be opened
+ * @param showErrorToast: set to true if an error toast should be displayed
+ * @return true if the passed url is correct, false otherwise
+ */
 fun Fragment.openExternalWebPage(url: String, showErrorToast: Boolean = true): Boolean {
     // this pattern accepts everything that is something.tld since there were too many new tlds and Google gave up updating their regex
     if (url.isWebUrl()) {

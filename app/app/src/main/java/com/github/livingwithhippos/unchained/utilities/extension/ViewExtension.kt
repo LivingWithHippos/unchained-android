@@ -22,7 +22,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.livingwithhippos.unchained.R
 import com.google.android.material.progressindicator.ProgressIndicator
 
-
+/**
+ * start an animation from the [ImageView] drawable if possible
+ * @param start: true to start the animation or false to stop it
+ */
 @BindingAdapter("startAnimation")
 fun ImageView.startAnimation(start: Boolean) {
     if (drawable is Animatable) {
@@ -33,7 +36,10 @@ fun ImageView.startAnimation(start: Boolean) {
     }
 }
 
-
+/**
+ * set a simple [AutoCompleteTextView] items adapter
+ * @param contents: the list to be show on the dropdown menu
+ */
 @BindingAdapter("adapter")
 fun AutoCompleteTextView.setAdapter(contents: List<String>) {
     // a simple layout is set for the dropdown items
@@ -41,41 +47,75 @@ fun AutoCompleteTextView.setAdapter(contents: List<String>) {
     this.setAdapter(adapter)
 }
 
+/**
+ * set the background [ProgressBar] color
+ * @param color: the color to be shown
+ */
 @BindingAdapter("backgroundProgressColor")
 fun ProgressBar.setBackgroundProgressColor(color: Int) {
     tintDrawable(android.R.id.background, color)
 }
 
+/**
+ * set the primary [ProgressBar] color
+ * @param color: the color to be shown
+ */
 @BindingAdapter("progressColor")
 fun ProgressBar.setProgressColor(color: Int) {
     tintDrawable(android.R.id.progress, color)
 }
 
+/**
+ * set the secondary [ProgressBar] color
+ * @param color: the color to be shown
+ */
 @BindingAdapter("secondaryProgressColor")
 fun ProgressBar.setSecondaryProgressColor(color: Int) {
     tintDrawable(android.R.id.secondaryProgress, color)
 }
 
+/**
+ * set the background progress drawable for the [ProgressBar]
+ * @param drawable: the drawable for the background
+ */
 @BindingAdapter("backgroundProgressDrawable")
 fun ProgressBar.setBackgroundProgressDrawable(drawable: Drawable) {
     swapLayerDrawable(android.R.id.background, drawable)
 }
 
+/**
+ * set the primary progress drawable for the [ProgressBar]
+ * @param drawable: the drawable
+ */
 @BindingAdapter("primaryProgressDrawable")
 fun ProgressBar.setPrimaryProgressDrawable(drawable: Drawable) {
     swapLayerDrawable(android.R.id.progress, drawable)
 }
 
+/**
+ * set the secondary progress drawable for the [ProgressBar]
+ * @param drawable: the drawable
+ */
 @BindingAdapter("secondaryProgressDrawable")
 fun ProgressBar.setSecondaryProgressDrawable(drawable: Drawable) {
     swapLayerDrawable(android.R.id.secondaryProgress, drawable)
 }
 
+/**
+ * tint the color of a [ProgressBar] layer drawable
+ * @param layerId: the layer to tint
+ * @param color: the color to use
+ */
 fun ProgressBar.tintDrawable(layerId: Int, color: Int) {
     val progressDrawable = getDrawableByLayerId(layerId).mutate()
     progressDrawable.setTint(color)
 }
 
+/**
+ * set a [ProgressBar] certain layer's [Drawable]
+ * @param layerId: the layer to edit
+ * @param drawable: the drawable to apply
+ */
 fun ProgressBar.swapLayerDrawable(layerId: Int, drawable: Drawable) {
     when (val oldDrawable = getDrawableByLayerId(layerId)) {
         is ClipDrawable -> oldDrawable.drawable = drawable
@@ -88,14 +128,27 @@ fun ProgressBar.swapLayerDrawable(layerId: Int, drawable: Drawable) {
     }
 }
 
+/**
+ * get the [ProgressBar] main [LayerDrawable]
+ * @return the progress bar LayerDrawable
+ */
 fun ProgressBar.getLayerDrawable(): LayerDrawable {
     return (if (isIndeterminate) indeterminateDrawable else progressDrawable) as LayerDrawable
 }
 
+/**
+ * get the [ProgressBar] Drawable with a certain id
+ * @param id: the id of the layer
+ * @return the progress bar layer Drawable
+ */
 fun ProgressBar.getDrawableByLayerId(id: Int): Drawable {
     return getLayerDrawable().findDrawableByLayerId(id)
 }
 
+/**
+ * set the [ProgressIndicator] progress value, not available as xml tag
+ * @param progress: the progress to be set
+ */
 @BindingAdapter("progressCompat")
 fun ProgressIndicator.setRealProgress(progress: Int) {
     val animated: Boolean = true
@@ -141,6 +194,10 @@ fun TextView.setFileSize(size: Long) {
     }
 }
 
+/**
+ * Simulate a ripple animation on a [View]
+ * @param delay: the delay after which the animation is started
+ */
 fun View.runRippleAnimation(delay: Long = 300) {
     //todo: test
     if (background is RippleDrawable) {
