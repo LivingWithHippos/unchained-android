@@ -61,7 +61,7 @@ class MainActivity : AppCompatActivity() {
                     bottomNavManager?.disableMenuItems(listOf(R.id.navigation_home))
                 }
                 // do nothing
-                MainActivityViewModel.AuthenticationState.AUTHENTICATED -> {
+                MainActivityViewModel.AuthenticationState.AUTHENTICATED, MainActivityViewModel.AuthenticationState.AUTHENTICATED_NO_PREMIUM -> {
                     bottomNavManager?.enableMenuItems()
                 }
             }

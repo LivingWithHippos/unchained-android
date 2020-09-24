@@ -20,6 +20,7 @@ import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.databinding.NewDownloadFragmentBinding
 import com.github.livingwithhippos.unchained.newdownload.viewmodel.NewDownloadViewModel
+import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewModel
 import com.github.livingwithhippos.unchained.utilities.REMOTE_TRAFFIC_ON
 import com.github.livingwithhippos.unchained.utilities.getClipboardText
 import com.github.livingwithhippos.unchained.utilities.isMagnet
@@ -125,35 +126,40 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
 
         // add the unrestrict button listener
         downloadBinding.bUnrestrict.setOnClickListener {
-            val link: String = downloadBinding.tiLink.text.toString().trim()
-            if (link.isWebUrl()) {
 
-                downloadBinding.bUnrestrict.isEnabled = false
-                downloadBinding.bLoadTorrent.isEnabled = false
+            val authState = activityViewModel.authenticationState.value?.peekContent()
+            if (authState == MainActivityViewModel.AuthenticationState.AUTHENTICATED) {
+                val link: String = downloadBinding.tiLink.text.toString().trim()
+                if (link.isWebUrl()) {
 
-                var password: String? = downloadBinding.tePassword.text.toString()
-                // we don't pass the password if it is blank.
-                // N.B. it won't work if your password is made up of spaces but then again you deserve it
-                if (password.isNullOrBlank())
-                    password = null
-                val remote: Int? =
-                    if (downloadBinding.switchRemote.isEnabled) REMOTE_TRAFFIC_ON else null
-
-                viewModel.fetchUnrestrictedLink(
-                    link,
-                    password,
-                    remote
-                )
-
-            } else {
-                if (link.isMagnet()) {
                     downloadBinding.bUnrestrict.isEnabled = false
                     downloadBinding.bLoadTorrent.isEnabled = false
-                    viewModel.fetchAddedMagnet(link)
-                } else
-                    showToast(R.string.invalid_url)
-            }
 
+                    var password: String? = downloadBinding.tePassword.text.toString()
+                    // we don't pass the password if it is blank.
+                    // N.B. it won't work if your password is made up of spaces but then again you deserve it
+                    if (password.isNullOrBlank())
+                        password = null
+                    val remote: Int? =
+                        if (downloadBinding.switchRemote.isEnabled) REMOTE_TRAFFIC_ON else null
+
+                    viewModel.fetchUnrestrictedLink(
+                        link,
+                        password,
+                        remote
+                    )
+
+                } else {
+                    if (link.isMagnet()) {
+                        downloadBinding.bUnrestrict.isEnabled = false
+                        downloadBinding.bLoadTorrent.isEnabled = false
+                        viewModel.fetchAddedMagnet(link)
+                    } else
+                        showToast(R.string.invalid_url)
+                }
+            }
+            else
+                showToast(R.string.premium_needed)
         }
 
         downloadBinding.bPasteLink.setOnClickListener {
@@ -192,7 +198,11 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
         }
 
     override fun onLoadTorrentClick() {
-        getTorrent.launch("application/x-bittorrent")
+        val authState = activityViewModel.authenticationState.value?.peekContent()
+        if (authState == MainActivityViewModel.AuthenticationState.AUTHENTICATED)
+            getTorrent.launch("application/x-bittorrent")
+        else
+            showToast(R.string.premium_needed)
     }
 
     private fun loadTorrent(contentResolver: ContentResolver, uri: Uri) {

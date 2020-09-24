@@ -81,7 +81,8 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
 
         // checks the authentication state. Needed to avoid automatic API calls before the authentication process is finished
         activityViewModel.authenticationState.observe(viewLifecycleOwner, Observer {
-            if (it.peekContent() == MainActivityViewModel.AuthenticationState.AUTHENTICATED) {
+            if (it.peekContent() == MainActivityViewModel.AuthenticationState.AUTHENTICATED ||
+                it.peekContent() == MainActivityViewModel.AuthenticationState.AUTHENTICATED_NO_PREMIUM ) {
                 // register observers if not already registered
                 if (!viewModel.downloadsLiveData.hasActiveObservers())
                     viewModel.downloadsLiveData.observe(viewLifecycleOwner, downloadObserver)

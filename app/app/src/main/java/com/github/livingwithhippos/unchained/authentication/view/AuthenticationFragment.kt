@@ -71,8 +71,11 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
 
         // a user is retrieved when a working token is used
         viewModel.userLiveData.observe(viewLifecycleOwner, {
-            it.getContentIfNotHandled()?.let {
-                activityViewModel.setAuthenticated()
+            it.getContentIfNotHandled()?.let {user->
+                if (user.premium > 0)
+                    activityViewModel.setAuthenticated()
+                else
+                    activityViewModel.setAuthenticatedNoPremium()
             }
         })
 
@@ -89,6 +92,13 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
                 MainActivityViewModel.AuthenticationState.UNAUTHENTICATED -> viewModel.setAuthState(MainActivityViewModel.AuthenticationState.UNAUTHENTICATED)
                 MainActivityViewModel.AuthenticationState.BAD_TOKEN -> viewModel.setAuthState(MainActivityViewModel.AuthenticationState.BAD_TOKEN)
                 MainActivityViewModel.AuthenticationState.ACCOUNT_LOCKED -> viewModel.setAuthState(MainActivityViewModel.AuthenticationState.ACCOUNT_LOCKED)
+                MainActivityViewModel.AuthenticationState.AUTHENTICATED_NO_PREMIUM -> {
+                    val action =
+                        AuthenticationFragmentDirections.actionAuthenticationToUser()
+                    findNavController().navigate(action)
+                    // these will stop the api calls to the secret endpoint in the viewModel
+                    viewModel.setAuthState(MainActivityViewModel.AuthenticationState.AUTHENTICATED_NO_PREMIUM)
+                }
             }
         })
 

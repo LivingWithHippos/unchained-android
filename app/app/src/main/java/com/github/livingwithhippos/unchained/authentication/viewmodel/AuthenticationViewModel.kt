@@ -47,13 +47,13 @@ class AuthenticationViewModel @ViewModelInject constructor(
     fun fetchSecrets(deviceCode: String, expireIn: Int) {
         val waitTime = 5000L
         // this is just an estimate, keeping track of time would be more precise. As of now this value should be 120
-        var calls = (expireIn*1000/waitTime).toInt()-10
+        var calls = (expireIn * 1000 / waitTime).toInt() - 10
         // remove 10% of the calls to account for the api calls
-        calls -= calls/10
+        calls -= calls / 10
         viewModelScope.launch {
             var secretData = authRepository.getSecrets(deviceCode)
             secretLiveData.postValue(Event(secretData))
-            while (secretData?.clientId == null && calls-- > 0 && getAuthState() != MainActivityViewModel.AuthenticationState.AUTHENTICATED) {
+            while (secretData?.clientId == null && calls-- > 0 && (getAuthState() != MainActivityViewModel.AuthenticationState.AUTHENTICATED || getAuthState() != MainActivityViewModel.AuthenticationState.AUTHENTICATED_NO_PREMIUM)) {
                 delay(waitTime)
                 secretData = authRepository.getSecrets(deviceCode)
                 calls++
@@ -81,7 +81,7 @@ class AuthenticationViewModel @ViewModelInject constructor(
         }
     }
 
-    fun checkAndSaveToken(privateKey: String? = null, token: Token?= null) {
+    fun checkAndSaveToken(privateKey: String? = null, token: Token? = null) {
         viewModelScope.launch {
 
             if (privateKey == null && token == null)
@@ -97,7 +97,7 @@ class AuthenticationViewModel @ViewModelInject constructor(
                     val deviceCode = authLiveData.value?.peekContent()?.deviceCode
                     val clientId = secretLiveData.value?.peekContent()?.clientId
                     val clientSecret = secretLiveData.value?.peekContent()?.clientSecret
-                    if (deviceCode!=null && clientId!=null && clientSecret!=null)
+                    if (deviceCode != null && clientId != null && clientSecret != null)
                         credentialRepository.insert(
                             Credentials(
                                 deviceCode = deviceCode,

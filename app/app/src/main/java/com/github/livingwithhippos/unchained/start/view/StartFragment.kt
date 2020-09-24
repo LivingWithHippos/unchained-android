@@ -23,23 +23,14 @@ class StartFragment : UnchainedFragment() {
         super.onCreate(savedInstanceState)
 
         // check our credentials and decide to navigate to the user fragment or the authentication one.
-        checkCredentialsStatus(activityViewModel)
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_start, container, false)
-    }
-
-    private fun checkCredentialsStatus(viewModel: MainActivityViewModel) {
-        viewModel.fetchFirstWorkingCredentials()
-        viewModel.workingCredentialsLiveData.observe(this, Observer {
+        activityViewModel.userLiveData.observe(this, Observer {
             // navigate to user fragment
-            if (it?.accessToken != null) {
-                activityViewModel.setAuthenticated()
+            if (it != null) {
+                if (it.premium > 0)
+                    activityViewModel.setAuthenticated()
+                else
+                    activityViewModel.setAuthenticatedNoPremium()
+
                 val action =
                     StartFragmentDirections.actionStartFragmentToUserProfileFragment()
                 findNavController().navigate(action)
@@ -52,5 +43,15 @@ class StartFragment : UnchainedFragment() {
                 findNavController().navigate(action)
             }
         })
+
+        activityViewModel.fetchFirstWorkingCredentials()
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_start, container, false)
     }
 }
