@@ -11,9 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.github.livingwithhippos.unchained.R
-import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.databinding.FragmentTorrentDetailsBinding
-import com.github.livingwithhippos.unchained.lists.model.DownloadItem
 import com.github.livingwithhippos.unchained.torrentdetails.viewmodel.TorrentDetailsViewmodel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay

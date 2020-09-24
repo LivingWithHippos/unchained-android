@@ -1,4 +1,4 @@
-package com.github.livingwithhippos.unchained.start.view
+package com.github.livingwithhippos.unchained.base
 
 import android.content.Intent
 import android.os.Bundle

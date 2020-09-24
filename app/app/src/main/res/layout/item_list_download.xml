@@ -9,7 +9,7 @@
 
         <variable
             name="item"
-            type="com.github.livingwithhippos.unchained.lists.model.DownloadItem" />
+            type="com.github.livingwithhippos.unchained.data.model.DownloadItem" />
 
         <variable
             name="listener"

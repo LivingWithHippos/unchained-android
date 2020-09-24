@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.livingwithhippos.unchained.data.repositoy.CredentialsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.UserRepository
-import com.github.livingwithhippos.unchained.user.model.User
+import com.github.livingwithhippos.unchained.data.model.User
 import kotlinx.coroutines.launch
 
 class UserProfileViewModel @ViewModelInject constructor(

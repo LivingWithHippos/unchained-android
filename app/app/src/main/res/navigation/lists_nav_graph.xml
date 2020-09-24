@@ -12,7 +12,7 @@
         android:label="DownloadDetailsFragment" >
         <argument
             android:name="details"
-            app:argType="com.github.livingwithhippos.unchained.lists.model.DownloadItem" />
+            app:argType="com.github.livingwithhippos.unchained.data.model.DownloadItem" />
     </fragment>
 
     <fragment

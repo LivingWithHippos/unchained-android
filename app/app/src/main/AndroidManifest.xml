@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Unchained">
         <activity android:name=".settings.SettingsActivity" />
-        <activity android:name=".start.view.MainActivity">
+        <activity android:name=".base.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

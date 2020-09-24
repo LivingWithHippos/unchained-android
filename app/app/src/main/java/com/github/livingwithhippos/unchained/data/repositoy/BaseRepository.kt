@@ -2,7 +2,7 @@ package com.github.livingwithhippos.unchained.data.repositoy
 
 import android.util.Log
 import com.github.livingwithhippos.unchained.BuildConfig
-import com.github.livingwithhippos.unchained.base.model.network.NetworkResponse
+import com.github.livingwithhippos.unchained.data.model.NetworkResponse
 import retrofit2.Response
 import java.io.IOException
 

@@ -1,11 +1,7 @@
-package com.github.livingwithhippos.unchained.user.model
+package com.github.livingwithhippos.unchained.data.model
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import retrofit2.Response
-import retrofit2.http.GET
-import retrofit2.http.Header
-
 
 @JsonClass(generateAdapter = true)
 data class User(
@@ -28,8 +24,3 @@ data class User(
     @Json(name = "expiration")
     val expiration: String
 )
-
-interface UserApi {
-    @GET("user")
-    suspend fun getUser(@Header("Authorization") token: String): Response<User>
-}

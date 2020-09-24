@@ -21,7 +21,7 @@
 
         <variable
             name="torrent"
-            type="com.github.livingwithhippos.unchained.newdownload.model.TorrentItem" />
+            type="com.github.livingwithhippos.unchained.data.model.TorrentItem" />
 
         <variable
             name="listener"

@@ -12,11 +12,9 @@ import androidx.paging.PagingData
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.databinding.FragmentTabListsBinding
-import com.github.livingwithhippos.unchained.lists.model.DownloadItem
-import com.github.livingwithhippos.unchained.lists.model.TorrentListListener
-import com.github.livingwithhippos.unchained.lists.model.TorrentListPagingAdapter
+import com.github.livingwithhippos.unchained.data.model.DownloadItem
+import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.lists.viewmodel.DownloadListViewModel
-import com.github.livingwithhippos.unchained.newdownload.model.TorrentItem
 import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewModel
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.github.livingwithhippos.unchained.utilities.extension.verticalScrollToPosition

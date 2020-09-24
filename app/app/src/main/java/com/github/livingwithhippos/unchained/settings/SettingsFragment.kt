@@ -1,10 +1,10 @@
 package com.github.livingwithhippos.unchained.settings
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.github.livingwithhippos.unchained.R
+import com.github.livingwithhippos.unchained.base.HtmlDialogFragment
 import com.github.livingwithhippos.unchained.utilities.FEEDBACK_URL
 import com.github.livingwithhippos.unchained.utilities.GPLV3_URL
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage

@@ -1,7 +1,7 @@
 package com.github.livingwithhippos.unchained.data.repositoy
 
-import com.github.livingwithhippos.unchained.downloaddetails.model.Stream
-import com.github.livingwithhippos.unchained.downloaddetails.model.StreamingApiHelper
+import com.github.livingwithhippos.unchained.data.model.Stream
+import com.github.livingwithhippos.unchained.data.remote.StreamingApiHelper
 import javax.inject.Inject
 
 class StreamingRepository @Inject constructor(private val streamingApiHelper: StreamingApiHelper) :

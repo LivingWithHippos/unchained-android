@@ -7,7 +7,7 @@
 
         <variable
             name="user"
-            type="com.github.livingwithhippos.unchained.user.model.User" />
+            type="com.github.livingwithhippos.unchained.data.model.User" />
 
         <variable
             name="privateToken"

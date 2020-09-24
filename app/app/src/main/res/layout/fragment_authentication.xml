@@ -12,15 +12,15 @@
 
         <variable
             name="auth"
-            type="com.github.livingwithhippos.unchained.authentication.model.Authentication" />
+            type="com.github.livingwithhippos.unchained.data.model.Authentication" />
 
         <variable
             name="secrets"
-            type="com.github.livingwithhippos.unchained.authentication.model.Secrets" />
+            type="com.github.livingwithhippos.unchained.data.model.Secrets" />
 
         <variable
             name="token"
-            type="com.github.livingwithhippos.unchained.authentication.model.Token" />
+            type="com.github.livingwithhippos.unchained.data.model.Token" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

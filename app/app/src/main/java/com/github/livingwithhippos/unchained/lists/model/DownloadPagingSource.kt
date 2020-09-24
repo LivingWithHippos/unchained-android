@@ -1,6 +1,7 @@
 package com.github.livingwithhippos.unchained.lists.model
 
 import androidx.paging.PagingSource
+import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.data.repositoy.CredentialsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.DownloadRepository
 import retrofit2.HttpException

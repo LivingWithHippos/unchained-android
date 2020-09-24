@@ -1,7 +1,7 @@
 package com.github.livingwithhippos.unchained.data.repositoy
 
-import com.github.livingwithhippos.unchained.user.model.User
-import com.github.livingwithhippos.unchained.user.model.UserApiHelper
+import com.github.livingwithhippos.unchained.data.model.User
+import com.github.livingwithhippos.unchained.data.remote.UserApiHelper
 import javax.inject.Inject
 
 

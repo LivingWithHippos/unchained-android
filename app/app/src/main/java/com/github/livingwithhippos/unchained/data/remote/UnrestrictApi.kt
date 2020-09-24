@@ -1,6 +1,6 @@
-package com.github.livingwithhippos.unchained.newdownload.model
+package com.github.livingwithhippos.unchained.data.remote
 
-import com.github.livingwithhippos.unchained.lists.model.DownloadItem
+import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import retrofit2.Response
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
@@ -16,7 +16,7 @@ import retrofit2.http.POST
     "link": "string", // Original link
     "host": "string", // Host main domain
     "chunks": int, // Max Chunks allowed
-    "crc": int, // Disable / enable CRC check 
+    "crc": int, // Disable / enable CRC check
     "download": "string", // Generated link
     "streamable": int // Is the file streamable on website
 }

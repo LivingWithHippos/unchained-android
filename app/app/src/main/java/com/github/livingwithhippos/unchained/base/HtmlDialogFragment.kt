@@ -1,4 +1,4 @@
-package com.github.livingwithhippos.unchained.settings
+package com.github.livingwithhippos.unchained.base
 
 import android.app.Dialog
 import android.os.Bundle

@@ -2,7 +2,7 @@ package com.github.livingwithhippos.unchained.lists.view
 
 import androidx.recyclerview.widget.DiffUtil
 import com.github.livingwithhippos.unchained.R
-import com.github.livingwithhippos.unchained.lists.model.DownloadItem
+import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.utilities.DataBindingPagingAdapter
 
 /**

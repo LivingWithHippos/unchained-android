@@ -1,4 +1,4 @@
-package com.github.livingwithhippos.unchained.base.model.network
+package com.github.livingwithhippos.unchained.data.model
 
 /*
  * see https://kotlinlang.org/docs/reference/generics.html#declaration-site-variance for an explanation of the out keyword.

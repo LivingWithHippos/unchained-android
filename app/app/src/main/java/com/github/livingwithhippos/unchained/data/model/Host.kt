@@ -1,10 +1,7 @@
-package com.github.livingwithhippos.unchained.base.model.network
+package com.github.livingwithhippos.unchained.data.model
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import retrofit2.Response
-import retrofit2.http.GET
-import retrofit2.http.Header
 
 //fixme: the key is variable, the same as HostStatus.name, find out how to model that @Json(name = ?)
 @JsonClass(generateAdapter = true)
@@ -40,11 +37,3 @@ data class Competitor(
     @Json(name = "check_time")
     val checkTime: String
 )
-
-interface HostsApi {
-
-    @GET("hosts/status/")
-    suspend fun getStreams(
-        @Header("Authorization") token: String
-    ): Response<Host>
-}

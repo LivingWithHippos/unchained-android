@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.livingwithhippos.unchained.data.repositoy.CredentialsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.TorrentsRepository
-import com.github.livingwithhippos.unchained.newdownload.model.TorrentItem
+import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import kotlinx.coroutines.launch
 
 /**

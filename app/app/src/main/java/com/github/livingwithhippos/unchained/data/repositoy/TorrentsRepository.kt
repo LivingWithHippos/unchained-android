@@ -1,9 +1,9 @@
 package com.github.livingwithhippos.unchained.data.repositoy
 
-import com.github.livingwithhippos.unchained.newdownload.model.AvailableHost
-import com.github.livingwithhippos.unchained.newdownload.model.TorrentApiHelper
-import com.github.livingwithhippos.unchained.newdownload.model.TorrentItem
-import com.github.livingwithhippos.unchained.newdownload.model.UploadedTorrent
+import com.github.livingwithhippos.unchained.data.model.AvailableHost
+import com.github.livingwithhippos.unchained.data.model.TorrentItem
+import com.github.livingwithhippos.unchained.data.model.UploadedTorrent
+import com.github.livingwithhippos.unchained.data.remote.TorrentApiHelper
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody

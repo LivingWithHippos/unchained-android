@@ -1,5 +1,8 @@
-package com.github.livingwithhippos.unchained.newdownload.model
+package com.github.livingwithhippos.unchained.data.remote
 
+import com.github.livingwithhippos.unchained.data.model.AvailableHost
+import com.github.livingwithhippos.unchained.data.model.TorrentItem
+import com.github.livingwithhippos.unchained.data.model.UploadedTorrent
 import okhttp3.RequestBody
 import retrofit2.Response
 

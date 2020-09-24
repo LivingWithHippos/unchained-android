@@ -1,7 +1,7 @@
 package com.github.livingwithhippos.unchained.data.repositoy
 
-import com.github.livingwithhippos.unchained.lists.model.DownloadApiHelper
-import com.github.livingwithhippos.unchained.lists.model.DownloadItem
+import com.github.livingwithhippos.unchained.data.model.DownloadItem
+import com.github.livingwithhippos.unchained.data.remote.DownloadApiHelper
 import javax.inject.Inject
 
 class DownloadRepository @Inject constructor(private val downloadApiHelper: DownloadApiHelper) :

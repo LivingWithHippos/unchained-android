@@ -19,7 +19,6 @@ import com.github.livingwithhippos.unchained.BuildConfig
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.databinding.NewDownloadFragmentBinding
-import com.github.livingwithhippos.unchained.lists.model.DownloadItem
 import com.github.livingwithhippos.unchained.newdownload.viewmodel.NewDownloadViewModel
 import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewModel
 import com.github.livingwithhippos.unchained.utilities.REMOTE_TRAFFIC_ON

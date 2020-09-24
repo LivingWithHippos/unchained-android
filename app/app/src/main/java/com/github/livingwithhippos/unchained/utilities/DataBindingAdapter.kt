@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.github.livingwithhippos.unchained.BR
-import com.github.livingwithhippos.unchained.lists.model.DownloadItem
 
 //todo: test implementing class with Nothing as generic value to avoid passing listeners
 /**

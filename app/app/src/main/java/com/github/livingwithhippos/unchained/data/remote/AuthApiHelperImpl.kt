@@ -1,10 +1,8 @@
-package com.github.livingwithhippos.unchained.base.model.network
+package com.github.livingwithhippos.unchained.data.remote
 
-import com.github.livingwithhippos.unchained.authentication.model.Authentication
-import com.github.livingwithhippos.unchained.authentication.model.AuthenticationApi
-import com.github.livingwithhippos.unchained.authentication.model.Secrets
-import com.github.livingwithhippos.unchained.authentication.model.Token
-import com.github.livingwithhippos.unchained.data.remote.AuthApiHelper
+import com.github.livingwithhippos.unchained.data.model.Authentication
+import com.github.livingwithhippos.unchained.data.model.Secrets
+import com.github.livingwithhippos.unchained.data.model.Token
 import retrofit2.Response
 import javax.inject.Inject
 

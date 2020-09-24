@@ -1,6 +1,6 @@
-package com.github.livingwithhippos.unchained.newdownload.model
+package com.github.livingwithhippos.unchained.data.remote
 
-import com.github.livingwithhippos.unchained.lists.model.DownloadItem
+import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import retrofit2.Response
 import javax.inject.Inject
 

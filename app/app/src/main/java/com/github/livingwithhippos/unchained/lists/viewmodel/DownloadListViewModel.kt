@@ -12,14 +12,14 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.liveData
+import com.github.livingwithhippos.unchained.data.model.DownloadItem
+import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.data.repositoy.CredentialsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.DownloadRepository
 import com.github.livingwithhippos.unchained.data.repositoy.TorrentsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.UnrestrictRepository
-import com.github.livingwithhippos.unchained.lists.model.DownloadItem
 import com.github.livingwithhippos.unchained.lists.model.DownloadPagingSource
 import com.github.livingwithhippos.unchained.lists.model.TorrentPagingSource
-import com.github.livingwithhippos.unchained.newdownload.model.TorrentItem
 import com.github.livingwithhippos.unchained.utilities.Event
 import kotlinx.coroutines.launch
 

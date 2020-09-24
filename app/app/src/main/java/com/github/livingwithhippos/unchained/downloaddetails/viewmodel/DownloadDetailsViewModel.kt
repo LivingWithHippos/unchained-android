@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.livingwithhippos.unchained.data.repositoy.CredentialsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.StreamingRepository
-import com.github.livingwithhippos.unchained.downloaddetails.model.Stream
+import com.github.livingwithhippos.unchained.data.model.Stream
 import com.github.livingwithhippos.unchained.utilities.KEY_TOKEN
 import kotlinx.coroutines.launch
 

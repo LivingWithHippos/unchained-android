@@ -1,5 +1,6 @@
-package com.github.livingwithhippos.unchained.downloaddetails.model
+package com.github.livingwithhippos.unchained.data.remote
 
+import com.github.livingwithhippos.unchained.data.model.Stream
 import retrofit2.Response
 
 interface StreamingApiHelper {

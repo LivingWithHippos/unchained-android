@@ -1,6 +1,6 @@
 package com.github.livingwithhippos.unchained.data.repositoy
 
-import com.github.livingwithhippos.unchained.base.model.network.Host
+import com.github.livingwithhippos.unchained.data.model.Host
 import com.github.livingwithhippos.unchained.data.remote.HostsApiHelper
 import javax.inject.Inject
 

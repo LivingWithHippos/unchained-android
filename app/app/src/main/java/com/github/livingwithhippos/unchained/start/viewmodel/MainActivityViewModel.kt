@@ -9,7 +9,7 @@ import com.github.livingwithhippos.unchained.data.model.Credentials
 import com.github.livingwithhippos.unchained.data.repositoy.AuthenticationRepository
 import com.github.livingwithhippos.unchained.data.repositoy.CredentialsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.UserRepository
-import com.github.livingwithhippos.unchained.user.model.User
+import com.github.livingwithhippos.unchained.data.model.User
 import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.PRIVATE_TOKEN
 import kotlinx.coroutines.launch
