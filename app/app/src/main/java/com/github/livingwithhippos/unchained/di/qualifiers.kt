@@ -1,4 +1,4 @@
-package com.github.livingwithhippos.unchained.base.di
+package com.github.livingwithhippos.unchained.di
 
 import javax.inject.Qualifier
 
