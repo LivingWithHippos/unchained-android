@@ -1,7 +1,7 @@
 package com.github.livingwithhippos.unchained.base.model.repositories
 
-import com.github.livingwithhippos.unchained.base.model.dao.CredentialsDao
-import com.github.livingwithhippos.unchained.base.model.entities.Credentials
+import com.github.livingwithhippos.unchained.data.local.CredentialsDao
+import com.github.livingwithhippos.unchained.data.model.Credentials
 import com.github.livingwithhippos.unchained.utilities.PRIVATE_TOKEN
 import javax.inject.Inject
 

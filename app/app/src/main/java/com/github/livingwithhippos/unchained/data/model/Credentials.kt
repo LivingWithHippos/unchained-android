@@ -1,4 +1,4 @@
-package com.github.livingwithhippos.unchained.base.model.entities
+package com.github.livingwithhippos.unchained.data.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

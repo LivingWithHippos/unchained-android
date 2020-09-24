@@ -2,8 +2,8 @@ package com.github.livingwithhippos.unchained.di
 
 import android.content.Context
 import androidx.room.Room
-import com.github.livingwithhippos.unchained.base.model.dao.CredentialsDao
-import com.github.livingwithhippos.unchained.base.model.database.UnchaindeDB
+import com.github.livingwithhippos.unchained.data.local.CredentialsDao
+import com.github.livingwithhippos.unchained.data.local.UnchaindeDB
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

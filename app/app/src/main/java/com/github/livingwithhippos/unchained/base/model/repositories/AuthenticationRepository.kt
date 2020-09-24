@@ -3,7 +3,7 @@ package com.github.livingwithhippos.unchained.base.model.repositories
 import com.github.livingwithhippos.unchained.authentication.model.Authentication
 import com.github.livingwithhippos.unchained.authentication.model.Secrets
 import com.github.livingwithhippos.unchained.authentication.model.Token
-import com.github.livingwithhippos.unchained.base.model.entities.Credentials
+import com.github.livingwithhippos.unchained.data.model.Credentials
 import com.github.livingwithhippos.unchained.base.model.network.AuthApiHelper
 import javax.inject.Inject
 
