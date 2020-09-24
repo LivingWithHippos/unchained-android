@@ -43,7 +43,7 @@ data class DownloadItem(
     @Json(name = "mimeType")
     val mimeType: String?,
     @Json(name = "filesize")
-    val filesize: Long,
+    val fileSize: Long,
     @Json(name = "link")
     val link: String,
     @Json(name = "host")
@@ -84,7 +84,7 @@ data class DownloadItem(
         parcel.writeString(id)
         parcel.writeString(filename)
         parcel.writeString(mimeType)
-        parcel.writeLong(filesize)
+        parcel.writeLong(fileSize)
         parcel.writeString(link)
         parcel.writeString(host)
         parcel.writeString(hostIcon)
