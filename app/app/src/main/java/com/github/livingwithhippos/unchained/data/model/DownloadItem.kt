@@ -111,3 +111,45 @@ data class DownloadItem(
     }
 
 }
+
+@JsonClass(generateAdapter = true)
+data class Alternative(
+    @Json(name = "id")
+    val id: String,
+    @Json(name = "filename")
+    val filename: String,
+    @Json(name = "download")
+    val download: String,
+    @Json(name = "type")
+    val type: String?
+) : Parcelable {
+    constructor(parcel: Parcel) : this(
+        parcel.readString()!!,
+        parcel.readString()!!,
+        parcel.readString()!!,
+        parcel.readString()
+    ) {
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(id)
+        parcel.writeString(filename)
+        parcel.writeString(download)
+        parcel.writeString(type)
+
+    }
+
+    override fun describeContents(): Int {
+        return id.hashCode()
+    }
+
+    companion object CREATOR : Parcelable.Creator<Alternative> {
+        override fun createFromParcel(parcel: Parcel): Alternative {
+            return Alternative(parcel)
+        }
+
+        override fun newArray(size: Int): Array<Alternative?> {
+            return arrayOfNulls(size)
+        }
+    }
+}
