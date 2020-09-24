@@ -69,7 +69,7 @@
                 style="@style/TextAppearance.UnchainedTheme.Caption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                fileSize="@{item.filesize}"
+                fileSize="@{item.fileSize}"
                 android:text="20 MB"
                 android:textColor="?attr/colorPrimary"
                 app:layout_constraintBottom_toBottomOf="parent"

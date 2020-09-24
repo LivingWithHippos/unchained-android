@@ -113,7 +113,7 @@
 
                     <TextView
                         android:id="@+id/tvSize"
-                        fileSize="@{details.filesize}"
+                        fileSize="@{details.fileSize}"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="123 MB"
@@ -123,7 +123,7 @@
                         tools:ignore="HardcodedText" />
 
                     <TextView
-                        android:id="@+id/tvType"
+                        android:id="@+id/tvMimeType"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="10dp"

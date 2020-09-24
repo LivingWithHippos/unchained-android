@@ -43,7 +43,7 @@ data class DownloadItem(
     @Json(name = "mimeType")
     val mimeType: String?,
     @Json(name = "filesize")
-    val filesize: Long,
+    val fileSize: Long,
     @Json(name = "link")
     val link: String,
     @Json(name = "host")
@@ -61,7 +61,9 @@ data class DownloadItem(
     @Json(name = "generated")
     val generated: String?,
     @Json(name = "type")
-    val type: String?
+    val type: String?,
+    @Json(name = "alternative")
+    val alternative: List<Alternative>?
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString()!!,
@@ -76,7 +78,8 @@ data class DownloadItem(
         parcel.readString()!!,
         parcel.readValue(Int::class.java.classLoader) as? Int,
         parcel.readString(),
-        parcel.readString()
+        parcel.readString(),
+        mutableListOf<Alternative>().also { parcel.readTypedList(it, Alternative.CREATOR) }
     ) {
     }
 
@@ -84,7 +87,7 @@ data class DownloadItem(
         parcel.writeString(id)
         parcel.writeString(filename)
         parcel.writeString(mimeType)
-        parcel.writeLong(filesize)
+        parcel.writeLong(fileSize)
         parcel.writeString(link)
         parcel.writeString(host)
         parcel.writeString(hostIcon)
@@ -94,6 +97,7 @@ data class DownloadItem(
         parcel.writeValue(streamable)
         parcel.writeString(generated)
         parcel.writeString(type)
+        parcel.writeTypedList(alternative)
     }
 
     override fun describeContents(): Int {
@@ -110,4 +114,46 @@ data class DownloadItem(
         }
     }
 
+}
+
+@JsonClass(generateAdapter = true)
+data class Alternative(
+    @Json(name = "id")
+    val id: String,
+    @Json(name = "filename")
+    val filename: String,
+    @Json(name = "download")
+    val download: String,
+    @Json(name = "type")
+    val type: String?
+) : Parcelable {
+    constructor(parcel: Parcel) : this(
+        parcel.readString()!!,
+        parcel.readString()!!,
+        parcel.readString()!!,
+        parcel.readString()
+    ) {
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(id)
+        parcel.writeString(filename)
+        parcel.writeString(download)
+        parcel.writeString(type)
+
+    }
+
+    override fun describeContents(): Int {
+        return id.hashCode()
+    }
+
+    companion object CREATOR : Parcelable.Creator<Alternative> {
+        override fun createFromParcel(parcel: Parcel): Alternative {
+            return Alternative(parcel)
+        }
+
+        override fun newArray(size: Int): Array<Alternative?> {
+            return arrayOfNulls(size)
+        }
+    }
 }

@@ -38,8 +38,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
-            android:ellipsize="end"
-            android:maxLines="3"
             android:text="@{details.filename, default=`File Name`}"
             app:layout_constraintBottom_toTopOf="@id/cvDetails"
             app:layout_constraintEnd_toEndOf="parent"
@@ -112,18 +110,18 @@
                 <TextView
                     android:id="@+id/tvSize"
                     style="@style/TextAppearance.UnchainedTheme.Body2"
-                    fileSize="@{details.filesize}"
+                    fileSize="@{details.fileSize}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
                     android:text="123 MB"
-                    app:layout_constraintBottom_toTopOf="@id/tvType"
+                    app:layout_constraintBottom_toTopOf="@id/tvMimeType"
                     app:layout_constraintStart_toEndOf="@id/ivHosterPic"
                     app:layout_constraintTop_toBottomOf="@id/tvDownloadId"
                     tools:ignore="HardcodedText" />
 
                 <TextView
-                    android:id="@+id/tvType"
+                    android:id="@+id/tvMimeType"
                     style="@style/TextAppearance.UnchainedTheme.Body2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -132,6 +130,18 @@
                     app:layout_constraintStart_toStartOf="@id/ivHosterPic"
                     app:layout_constraintTop_toBottomOf="@id/ivHosterPic"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    />
+
+                <TextView
+                    android:id="@+id/tvType"
+                    style="@style/TextAppearance.UnchainedTheme.Body2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@{`: `+details.type, default=`: 640x640`}"
+                    android:visibility="@{details.type == null ? View.GONE : View.VISIBLE}"
+                    app:layout_constraintStart_toEndOf="@id/tvMimeType"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="@id/tvMimeType"
                     />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
