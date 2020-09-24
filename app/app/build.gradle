@@ -5,6 +5,12 @@ apply plugin: 'kotlin-kapt'
 apply plugin: "androidx.navigation.safeargs.kotlin"
 apply plugin: 'dagger.hilt.android.plugin'
 
+def keyPropertiesFile = rootProject.file("signingkey.properties")
+def keyProperties = new Properties()
+if (keyPropertiesFile.exists()) {
+    keyProperties.load(new FileInputStream(keyPropertiesFile))
+}
+
 android {
 
     compileSdkVersion 30
@@ -39,11 +45,19 @@ android {
     }
 
     signingConfigs {
+        //used by circleci
         release {
             storeFile file(System.getenv("KEYSTORE") ?: "release.pfk")
             storePassword System.getenv("KEYSTORE_PASSWORD")
             keyAlias System.getenv("KEY_ALIAS")
             keyPassword System.getenv("KEY_PASSWORD")
+        }
+        //used with a local file
+        local {
+            storeFile file(keyProperties['releaseStoreFile'])
+            storePassword keyProperties['releaseStorePassword']
+            keyAlias keyProperties['keyAlias']
+            keyPassword keyProperties['releaseStorePassword']
         }
     }
 
