@@ -52,13 +52,17 @@ android {
             keyAlias System.getenv("KEY_ALIAS")
             keyPassword System.getenv("KEY_PASSWORD")
         }
-        //used with a local file
+
+        /**
+         * used with a local file
+         * needs to be commented out otherwise circleci will try to process this, fail to find the storeFile and crash
         local {
             storeFile file(keyProperties['releaseStoreFile'])
             storePassword keyProperties['releaseStorePassword']
             keyAlias keyProperties['keyAlias']
             keyPassword keyProperties['releaseStorePassword']
         }
+         */
     }
 
     buildTypes {
