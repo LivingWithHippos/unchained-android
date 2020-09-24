@@ -357,5 +357,5 @@
     ]]>
     </string>
     <string name="premium_needed">A premium subscription is required to use this</string>
-    <string name="downloading_torrent">Downloading torrent, please wait</string>
+    <string name="downloading_torrent">Preparing torrent, please wait…</string>
 </resources>
