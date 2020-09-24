@@ -174,7 +174,9 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
         val authState = activityViewModel.authenticationState.value?.peekContent()
         if (authState == MainActivityViewModel.AuthenticationState.AUTHENTICATED) {
             if (item.status == "downloaded") {
-                showToast(R.string.downloading_torrent)
+                // if the item has many links to download, show a toast
+                if (item.links.size>2)
+                    showToast(R.string.downloading_torrent)
                 viewModel.downloadTorrent(item)
             }
             else
