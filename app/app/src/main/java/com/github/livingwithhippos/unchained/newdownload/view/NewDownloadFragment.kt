@@ -133,38 +133,38 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
             val authState = activityViewModel.authenticationState.value?.peekContent()
             if (authState == MainActivityViewModel.AuthenticationState.AUTHENTICATED) {
                 val link: String = downloadBinding.tiLink.text.toString().trim()
-                if (link.isWebUrl()) {
+                when {
+                    link.isWebUrl()-> {
+                        downloadBinding.bUnrestrict.isEnabled = false
+                        downloadBinding.bLoadTorrent.isEnabled = false
 
-                    downloadBinding.bUnrestrict.isEnabled = false
-                    downloadBinding.bLoadTorrent.isEnabled = false
+                        var password: String? = downloadBinding.tePassword.text.toString()
+                        // we don't pass the password if it is blank.
+                        // N.B. it won't work if your password is made up of spaces but then again you deserve it
+                        if (password.isNullOrBlank())
+                            password = null
+                        val remote: Int? =
+                            if (downloadBinding.switchRemote.isEnabled) REMOTE_TRAFFIC_ON else null
 
-                    var password: String? = downloadBinding.tePassword.text.toString()
-                    // we don't pass the password if it is blank.
-                    // N.B. it won't work if your password is made up of spaces but then again you deserve it
-                    if (password.isNullOrBlank())
-                        password = null
-                    val remote: Int? =
-                        if (downloadBinding.switchRemote.isEnabled) REMOTE_TRAFFIC_ON else null
-
-                    viewModel.fetchUnrestrictedLink(
-                        link,
-                        password,
-                        remote
-                    )
-
-                } else {
-                    if (link.isMagnet()) {
+                        viewModel.fetchUnrestrictedLink(
+                            link,
+                            password,
+                            remote
+                        )
+                    }
+                    link.isMagnet() -> {
                         downloadBinding.bUnrestrict.isEnabled = false
                         downloadBinding.bLoadTorrent.isEnabled = false
                         viewModel.fetchAddedMagnet(link)
-                    } else {
-                        if (link.isBlank())
-                            showToast(R.string.please_insert_url)
-                        else
-                            showToast(R.string.invalid_url)
-
+                    }
+                    link.isBlank()-> {
+                        showToast(R.string.please_insert_url)
+                    }
+                    else -> {
+                        showToast(R.string.invalid_url)
                     }
                 }
+                
             }
             else
                 showToast(R.string.premium_needed)
