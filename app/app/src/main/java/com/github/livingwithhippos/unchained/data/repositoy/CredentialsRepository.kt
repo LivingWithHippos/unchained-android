@@ -33,6 +33,10 @@ class CredentialsRepository @Inject constructor(private val credentialsDao: Cred
         return getFirstCredentials()?.accessToken ?: ""
     }
 
+    suspend fun getPrivateToken(): String {
+        return getFirstPrivateCredentials()?.accessToken ?: ""
+    }
+
     suspend fun getFirstCredentials(): Credentials? {
         val credentials = credentialsDao.getCompleteCredentials()
         return credentials
@@ -44,5 +48,8 @@ class CredentialsRepository @Inject constructor(private val credentialsDao: Cred
 
     suspend fun getFirstOpenCredentials(): Credentials? = credentialsDao.getCompleteCredentials()
         .firstOrNull { it.refreshToken != null && it.refreshToken != PRIVATE_TOKEN }
+
+    suspend fun getFirstPrivateCredentials(): Credentials? = credentialsDao.getCompleteCredentials()
+        .firstOrNull { it.accessToken != null && it.refreshToken == PRIVATE_TOKEN }
 
 }
