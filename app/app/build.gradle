@@ -67,6 +67,16 @@ android {
 
     buildTypes {
 
+        applicationVariants.all { variant ->
+            variant.outputs.all { output ->
+                outputFileName = applicationId
+                outputFileName += "-v" +
+                        android.defaultConfig.versionName +
+                        ".apk"
+
+            }
+        }
+
         debug {
             versionNameSuffix "-dev"
             applicationIdSuffix ".debug"
