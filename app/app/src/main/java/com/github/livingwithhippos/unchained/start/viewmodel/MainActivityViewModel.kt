@@ -46,7 +46,6 @@ class MainActivityViewModel @ViewModelInject constructor(
                     user = checkCredentials(privateCredentials)
                 }
                 // if the private token is not working this also gets triggered
-                //todo: add network check
                 if (user == null)
                     for (cred in completeCredentials) {
                         user = checkCredentials(cred)
@@ -77,7 +76,6 @@ class MainActivityViewModel @ViewModelInject constructor(
     }
 
     fun setUnauthenticated() {
-        //todo: delete active credentials?
         authenticationState.postValue(Event(AuthenticationState.UNAUTHENTICATED))
     }
 

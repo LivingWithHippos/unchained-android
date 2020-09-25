@@ -24,7 +24,6 @@
             android:layout_height="match_parent"
             tools:context=".newdownload.view.NewDownloadFragment">
 
-            <!-- todo: add paste button for link-->
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/tfLink"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"

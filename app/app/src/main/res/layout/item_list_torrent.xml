@@ -26,7 +26,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:checkable="false"
-            android:clickable="false"
             android:focusable="true"
             android:onClick="@{() -> listener.onClick(item)}"
             android:layout_gravity="center_horizontal"

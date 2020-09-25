@@ -49,6 +49,7 @@ object ApiFactory {
         // note: alternatively use a different build flavor
         // https://proandroiddev.com/think-before-using-buildconfig-debug-f2e279da7bad
         if (BuildConfig.DEBUG) {
+            //todo: if possible, move the authentication token to an OkHttp interceptor
             val logInterceptor: HttpLoggingInterceptor = HttpLoggingInterceptor().apply {
                 level = HttpLoggingInterceptor.Level.BODY
             }

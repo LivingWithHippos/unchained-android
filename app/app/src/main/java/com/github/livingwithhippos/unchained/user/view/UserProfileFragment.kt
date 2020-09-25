@@ -59,14 +59,12 @@ class UserProfileFragment : UnchainedFragment() {
         }
 
         activityViewModel.authenticationState.observe(viewLifecycleOwner, Observer {
-            // todo: getContentIfNotHandled() works only if none of the other observers has called it already
             // it's possible to use peek with findNavController().currentDestination to avoid launching the navigate(action) twice (it crashes)
             // val destination = findNavController().currentDestination
             // val destinationId = findNavController().currentDestination?.id
             when (it.peekContent()) {
                 // back to authentication fragment
                 AuthenticationState.UNAUTHENTICATED -> {
-                    //todo: empty backstack
                     val action = UserProfileFragmentDirections.actionUserToAuthentication()
                     findNavController().navigate(action)
                 }

@@ -20,7 +20,6 @@ class UserProfileViewModel @ViewModelInject constructor(
     fun fetchUserInfo() {
 
         viewModelScope.launch {
-            //todo: try and move the token to the okHttp interceptor
             val token = credentialsRepository.getToken()
 
             val user = userRepository.getUserInfo(token)

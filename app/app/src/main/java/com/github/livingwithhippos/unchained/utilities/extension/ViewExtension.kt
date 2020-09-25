@@ -200,7 +200,7 @@ fun TextView.setFileSize(size: Long) {
  * @param delay: the delay after which the animation is started
  */
 fun View.runRippleAnimation(delay: Long = 300) {
-    //todo: test
+    //todo: test if this works for things beside buttons
     if (background is RippleDrawable) {
         postDelayed(
             Runnable {

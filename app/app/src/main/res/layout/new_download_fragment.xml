@@ -19,7 +19,7 @@
         android:orientation="vertical">
 
         <!-- todo: nested scroll if the screen is smaller than the inner view
-        and the inner view has cventer_vertical has an issue with scrolling upward.
+        and the inner view has center_vertical has an issue with scrolling upward.
         Either pin to top, remove scrolling or hope for the best-->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/rootLayout"
@@ -28,7 +28,6 @@
         android:layout_gravity="center_vertical"
         tools:context=".newdownload.view.NewDownloadFragment">
 
-        <!-- todo: add paste button for link-->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tfLink"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"

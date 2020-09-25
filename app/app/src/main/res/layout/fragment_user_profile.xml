@@ -64,7 +64,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/tvName" />
 
-        <!-- todo: change color if premium or not, maybe middle color if near expiration -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cvPremium"
             android:layout_width="match_parent"
