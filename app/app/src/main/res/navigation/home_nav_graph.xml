@@ -40,6 +40,8 @@
         android:label="@string/user" >
         <action
             android:id="@+id/actionUserToAuthentication"
-            app:destination="@id/authentication_dest" />
+            app:destination="@id/authentication_dest"
+            app:popUpTo="@id/authentication_dest"
+            app:popUpToInclusive="true"/>
     </fragment>
 </navigation>
