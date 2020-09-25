@@ -66,14 +66,6 @@ class TorrentDetailsFragment : Fragment(), TorrentDetailsListener {
 
         viewModel.torrentLiveData.observe(viewLifecycleOwner, Observer {
             if (it != null) {
-                //todo: manage what happens when the torrent is deleted while in this screen
-                /*
-                we get an error from the rest call, add management for those first
-                 {
-                    "error": "unknown_ressource",
-                    "error_code": 7
-                }
-                 */
                 torrentBinding.torrent = it
                 if (loadingStatusList.contains(it.status) || it.status == "downloading")
                     fetchTorrent()

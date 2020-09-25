@@ -36,7 +36,6 @@ class TorrentDetailsViewmodel @ViewModelInject constructor(
 
     }
 
-    //todo: move this to an extension, maybe passing CredentialsRepository and SavedStateHandle
     private suspend fun getToken(): String {
         val token = credentialsRepository.getToken()
         if (token.isBlank() || token.length < 5)

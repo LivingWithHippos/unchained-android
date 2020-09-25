@@ -15,7 +15,7 @@ import com.github.livingwithhippos.unchained.utilities.PRIVATE_TOKEN
 import kotlinx.coroutines.launch
 
 /**
- * a [ViewModel] SUBCLASS.
+ * a [ViewModel] subclass.
  * Shared between the fragments to observe the authentication status and update it.
  */
 class MainActivityViewModel @ViewModelInject constructor(
