@@ -157,8 +157,13 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
                         downloadBinding.bUnrestrict.isEnabled = false
                         downloadBinding.bLoadTorrent.isEnabled = false
                         viewModel.fetchAddedMagnet(link)
-                    } else
-                        showToast(R.string.invalid_url)
+                    } else {
+                        if (link.isBlank())
+                            showToast(R.string.please_insert_url)
+                        else
+                            showToast(R.string.invalid_url)
+
+                    }
                 }
             }
             else

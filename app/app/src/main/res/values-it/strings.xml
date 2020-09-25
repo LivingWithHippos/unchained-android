@@ -143,4 +143,5 @@
     </string>
     <string name="premium_needed">Per utilizzare questa funzionalità è richiesto un account premium</string>
     <string name="downloading_torrent">Torrent in preparazione, attendere…</string>
+    <string name="please_insert_url">Inserisci un magnet o un link</string>
 </resources>

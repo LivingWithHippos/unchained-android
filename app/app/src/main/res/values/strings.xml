@@ -358,4 +358,5 @@
     </string>
     <string name="premium_needed">A premium subscription is required to use this</string>
     <string name="downloading_torrent">Preparing torrent, please wait…</string>
+    <string name="please_insert_url">Please insert a magnet or a link</string>
 </resources>
