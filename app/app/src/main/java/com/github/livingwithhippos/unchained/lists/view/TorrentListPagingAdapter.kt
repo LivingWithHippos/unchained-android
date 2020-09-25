@@ -13,7 +13,12 @@ class TorrentListPagingAdapter(listener: TorrentListListener) :
             oldItem.id == newItem.id
 
         override fun areContentsTheSame(oldItem: TorrentItem, newItem: TorrentItem): Boolean {
-            return oldItem.hash == newItem.hash
+                   //check the torrent id
+            return oldItem.id == newItem.id
+                    //check the torrent progress
+                    && oldItem.progress == oldItem.progress
+                    //check the torrent status
+                    && oldItem.status == oldItem.status
         }
     }
 
