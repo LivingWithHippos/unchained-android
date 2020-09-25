@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.github.livingwithhippos.unchained.R
 import com.google.android.material.progressindicator.ProgressIndicator
+import com.google.android.material.snackbar.Snackbar
 
 /**
  * start an animation from the [ImageView] drawable if possible
@@ -233,4 +234,30 @@ fun RecyclerView.LayoutManager.verticalScrollToPosition(
     }.apply<LinearSmoothScroller> { targetPosition = position }
 
     this.startSmoothScroll(smoothScroller)
+}
+
+/**
+ * Shows a
+ * @param messageResource: the resource ID of the string to be displayed
+ * @param action: an optional function to be executed as action. Supports only the Unit return type.
+ * @param actionText String resource to display for the action
+ * @param anchor: the View where the snackbar will be anchored to
+ * @param length How long to display the message.  Either Snackbar.LENGTH_SHORT,
+ *                Snackbar.LENGTH_LONG, or Snackbar.LENGTH_INDEFINITE. Defaults to LENGTH_SHORT
+ */
+fun View.showSnackbar(
+    messageResource: Int,
+    length: Int = Snackbar.LENGTH_SHORT,
+    action: (() -> Unit)? = null,
+    actionText: Int? = null,
+    anchor: View? = null
+) {
+    Snackbar.make(this, messageResource, length)
+        .also {
+            if (anchor != null)
+                it.anchorView = anchor
+            if (action != null && actionText != null)
+                it.setAction(actionText) { action() }
+        }
+        .show()
 }

@@ -18,7 +18,8 @@ import java.util.*
 /**
 * Show a toast message
 * @param stringResource: the string resource to be retrieved and shown
-* @param length: the duration of the toast. Defaults to short
+ * @param length How long to display the message.  Either {@link #LENGTH_SHORT} or
+ *                 {@link #LENGTH_LONG} Defaults to short
 */
 fun Fragment.showToast(stringResource: Int, length: Int = Toast.LENGTH_SHORT) {
     Toast.makeText(requireContext(), getString(stringResource), length).show()
