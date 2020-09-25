@@ -44,7 +44,6 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
         listBinding.rvDownloadList.adapter = downloadAdapter
         listBinding.rvTorrentList.adapter = torrentAdapter
 
-        //todo: add scroll to top when a new item is added
         listBinding.srLayout.setOnRefreshListener {
             when (listBinding.tabs.selectedTabPosition) {
                 TAB_DOWNLOADS -> {

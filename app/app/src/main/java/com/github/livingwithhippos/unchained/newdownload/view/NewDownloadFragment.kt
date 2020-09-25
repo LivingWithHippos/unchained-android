@@ -121,7 +121,7 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
                     else -> showToast(R.string.error_unrestricting_download)
                 }
                 // re enable buttons to let the user take other actions
-                //todo: this needs to be done also for other errors. maybe throw another error from the viewmodel
+                //todo: this needs to be done also for other errors. maybe throw another error from the ViewModel
                 downloadBinding.bUnrestrict.isEnabled = true
                 downloadBinding.bLoadTorrent.isEnabled = true
             }
@@ -164,7 +164,7 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
                         showToast(R.string.invalid_url)
                     }
                 }
-                
+
             }
             else
                 showToast(R.string.premium_needed)
@@ -185,8 +185,7 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
         }
 
         // we must make this value null by default because it's the first fragment of the nav graph
-        if (!args.links.isNullOrEmpty()) {
-            //todo: check for multiple files
+        if (args.links?.firstOrNull() != null) {
             downloadBinding.tiLink.setText(args.links!!.first(), TextView.BufferType.EDITABLE)
             // run the ripple animation on the unrestrict button
             downloadBinding.bUnrestrict.runRippleAnimation()
@@ -198,7 +197,6 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
     private val getTorrent: ActivityResultLauncher<String> =
         registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
             if (uri != null) {
-                // todo: check the context instead of using requireContext
                 loadTorrent(requireContext().contentResolver, uri)
             } else {
                 showToast(R.string.error_loading_torrent)
@@ -214,7 +212,6 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
     }
 
     private fun loadTorrent(contentResolver: ContentResolver, uri: Uri) {
-        // todo: load torrent and call put function from torrents api
         // https://developer.android.com/training/data-storage/shared/documents-files#open
         val parcelFileDescriptor: ParcelFileDescriptor? =
             contentResolver.openFileDescriptor(uri, "r")

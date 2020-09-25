@@ -10,7 +10,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-//todo: move under right package
 
 /**
  * Entry point for the Dagger-Hilt injection.

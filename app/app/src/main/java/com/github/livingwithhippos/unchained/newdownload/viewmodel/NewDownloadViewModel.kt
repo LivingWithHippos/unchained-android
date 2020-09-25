@@ -42,7 +42,6 @@ class NewDownloadViewModel @ViewModelInject constructor(
 
     fun fetchUnrestrictedLink(link: String, password: String?, remote: Int? = null) {
         viewModelScope.launch {
-            //todo: add this to fragment's argument if possible
             val token = getToken()
             try {
                 val unrestrictedData =
@@ -68,7 +67,7 @@ class NewDownloadViewModel @ViewModelInject constructor(
                     // todo: add custom selection of files, this queues all the files
                     //todo: add checks for already chosen torrent/magnet (if possible), otherwise we get multiple downloads
                     //todo: get file info and check if it has already been downloaded before doing a select files
-                    //todo: for magnets it's not possible to call selectFiles immediately because the file list is still missing, first we have magnet_conversion
+                    // note: for magnets it's not possible to call selectFiles immediately because the file list is still missing, first we have magnet_conversion
                     // maybe calling it in the next fragment when the status is files_selection is right, remove selectFiles from here?
                     torrentsRepository.selectFiles(token, addedMagnet.id)
                     torrentLiveData.postValue(Event(addedMagnet))

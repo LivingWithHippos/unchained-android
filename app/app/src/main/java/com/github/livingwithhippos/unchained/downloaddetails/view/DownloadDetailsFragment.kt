@@ -39,7 +39,6 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         detailsBinding.details = args.details
         detailsBinding.listener = this
 
-        //todo: change other livedata observation like this or in their own method
         viewModel.streamLiveData.observe(viewLifecycleOwner, Observer {
             if (it != null) {
                 detailsBinding.stream = it

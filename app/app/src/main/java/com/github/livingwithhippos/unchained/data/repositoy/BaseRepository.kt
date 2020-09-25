@@ -40,7 +40,6 @@ open class BaseRepository {
         when (result) {
             is NetworkResponse.Success ->
                 data = result.data
-            // todo: temporary workaround. Add support for empty body success
             is NetworkResponse.SuccessEmptyBody ->
                 if (BuildConfig.DEBUG)
                     Log.d("BaseRepository", "Successful call with empty body : ${result.code}")
@@ -62,7 +61,6 @@ open class BaseRepository {
             if (body != null)
                 return NetworkResponse.Success(body)
             else
-            // todo: temporary workaround. Add support for empty body success
                 return NetworkResponse.SuccessEmptyBody(response.code())
         }
 
@@ -79,7 +77,6 @@ open class BaseRepository {
             if (body != null)
                 return NetworkResponse.Success(body)
             else
-            // todo: temporary workaround. Add support for empty body success
                 return NetworkResponse.SuccessEmptyBody(response.code())
         } else {
             //todo: implement error handling as JSON APIError class
