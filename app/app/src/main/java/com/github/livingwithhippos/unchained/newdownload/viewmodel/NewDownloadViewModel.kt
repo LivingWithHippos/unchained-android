@@ -67,9 +67,6 @@ class NewDownloadViewModel @ViewModelInject constructor(
                     // todo: add custom selection of files, this queues all the files
                     //todo: add checks for already chosen torrent/magnet (if possible), otherwise we get multiple downloads
                     //todo: get file info and check if it has already been downloaded before doing a select files
-                    // note: for magnets it's not possible to call selectFiles immediately because the file list is still missing, first we have magnet_conversion
-                    // maybe calling it in the next fragment when the status is files_selection is right, remove selectFiles from here?
-                    torrentsRepository.selectFiles(token, addedMagnet.id)
                     torrentLiveData.postValue(Event(addedMagnet))
                 }
             }
@@ -87,9 +84,7 @@ class NewDownloadViewModel @ViewModelInject constructor(
                 val uploadedTorrent =
                     torrentsRepository.addTorrent(token, binaryTorrent, availableHosts.first().host)
                 if (uploadedTorrent != null) {
-                    // todo: add custom selection of files, this queues all the files
                     //todo: add checks for already chosen torrent/magnet (if possible), otherwise we get multiple downloads
-                    torrentsRepository.selectFiles(token, uploadedTorrent.id)
                     torrentLiveData.postValue(Event(uploadedTorrent))
                 }
             }
