@@ -17,7 +17,6 @@ import kotlinx.coroutines.launch
  * It offers LiveData to observe the calls to the streaming endpoint
  */
 class DownloadDetailsViewModel @ViewModelInject constructor(
-    @Assisted private val savedStateHandle: SavedStateHandle,
     private val credentialsRepository: CredentialsRepository,
     private val streamingRepository: StreamingRepository
 ) : ViewModel() {
@@ -26,14 +25,9 @@ class DownloadDetailsViewModel @ViewModelInject constructor(
 
     fun fetchStreamingInfo(id: String) {
         viewModelScope.launch {
-            //todo: this code is repeating in viewmodels, find a better way
-            var token = savedStateHandle.get<String>(KEY_TOKEN)
-            if (token.isNullOrEmpty())
-                token = credentialsRepository.getCompleteCredentials().first().accessToken
-            if (token.isNullOrEmpty())
-                throw IllegalArgumentException("Loaded token was null or empty: $token")
-
-            savedStateHandle.set(KEY_TOKEN, token)
+            val token = credentialsRepository.getToken()
+            if (token.isBlank())
+                throw IllegalArgumentException("Loaded token was empty: $token")
             val streamingInfo = streamingRepository.getStreams(token, id)
             streamLiveData.postValue(streamingInfo)
         }

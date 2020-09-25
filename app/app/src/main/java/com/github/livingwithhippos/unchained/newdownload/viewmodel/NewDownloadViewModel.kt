@@ -97,13 +97,9 @@ class NewDownloadViewModel @ViewModelInject constructor(
     }
 
     private suspend fun getToken(): String {
-        var token = savedStateHandle.get<String>(KEY_TOKEN)
-        if (token.isNullOrEmpty())
-            token = credentialsRepository.getCompleteCredentials().first().accessToken
-        if (token.isNullOrEmpty())
+        val token = credentialsRepository.getToken()
+        if (token.isBlank())
             throw IllegalArgumentException("Loaded token was null or empty: $token")
-
-        savedStateHandle.set(KEY_TOKEN, token)
         return token
     }
 }
