@@ -64,7 +64,9 @@ class AuthenticationViewModel @ViewModelInject constructor(
             if (secretData?.clientId != null) {
                 secretLiveData.postValue(Event(secretData))
             } else {
-                //todo: manage calls reaching limit time in the ui or ignore if authenticated through the private token
+                // if the authentication link has expired before the user confirmation, request a new one
+                if (calls<=0)
+                    fetchAuthenticationInfo()
             }
         }
 
