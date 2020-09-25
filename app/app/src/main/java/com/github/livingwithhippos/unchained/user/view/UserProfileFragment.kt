@@ -9,6 +9,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
+import com.github.livingwithhippos.unchained.data.model.AuthenticationState
 import com.github.livingwithhippos.unchained.databinding.FragmentUserProfileBinding
 import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewModel
 import com.github.livingwithhippos.unchained.user.viewmodel.UserProfileViewModel
@@ -64,7 +65,7 @@ class UserProfileFragment : UnchainedFragment() {
             // val destinationId = findNavController().currentDestination?.id
             when (it.peekContent()) {
                 // back to authentication fragment
-                MainActivityViewModel.AuthenticationState.UNAUTHENTICATED -> {
+                AuthenticationState.UNAUTHENTICATED -> {
                     //todo: empty backstack
                     val action = UserProfileFragmentDirections.actionUserToAuthentication()
                     findNavController().navigate(action)

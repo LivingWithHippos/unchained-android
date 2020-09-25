@@ -7,6 +7,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.livingwithhippos.unchained.data.model.Authentication
+import com.github.livingwithhippos.unchained.data.model.AuthenticationState
 import com.github.livingwithhippos.unchained.data.model.Secrets
 import com.github.livingwithhippos.unchained.data.model.Token
 import com.github.livingwithhippos.unchained.data.model.Credentials
@@ -56,7 +57,7 @@ class AuthenticationViewModel @ViewModelInject constructor(
         viewModelScope.launch {
             var secretData = authRepository.getSecrets(deviceCode)
             secretLiveData.postValue(Event(secretData))
-            while (secretData?.clientId == null && calls-- > 0 && (getAuthState() != MainActivityViewModel.AuthenticationState.AUTHENTICATED || getAuthState() != MainActivityViewModel.AuthenticationState.AUTHENTICATED_NO_PREMIUM)) {
+            while (secretData?.clientId == null && calls-- > 0 && (getAuthState() != AuthenticationState.AUTHENTICATED || getAuthState() != AuthenticationState.AUTHENTICATED_NO_PREMIUM)) {
                 delay(waitTime)
                 secretData = authRepository.getSecrets(deviceCode)
                 calls++
@@ -118,11 +119,11 @@ class AuthenticationViewModel @ViewModelInject constructor(
         }
     }
 
-    fun setAuthState(state: MainActivityViewModel.AuthenticationState) {
+    fun setAuthState(state: AuthenticationState) {
         savedStateHandle.set(AUTH_STATE, state)
     }
 
-    private fun getAuthState(): MainActivityViewModel.AuthenticationState? {
+    private fun getAuthState(): AuthenticationState? {
         // this value is only checked against AUTHENTICATED
         return savedStateHandle.get(AUTH_STATE)
     }

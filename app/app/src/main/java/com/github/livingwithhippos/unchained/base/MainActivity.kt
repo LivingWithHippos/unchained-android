@@ -8,6 +8,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.ui.setupWithNavController
 import com.github.livingwithhippos.unchained.R
+import com.github.livingwithhippos.unchained.data.model.AuthenticationState
 import com.github.livingwithhippos.unchained.databinding.ActivityMainBinding
 import com.github.livingwithhippos.unchained.settings.SettingsActivity
 import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewModel
@@ -50,22 +51,22 @@ class MainActivity : AppCompatActivity() {
         viewModel.authenticationState.observe(this, Observer { state ->
             when (state.peekContent()) {
                 // go to login fragment
-                MainActivityViewModel.AuthenticationState.UNAUTHENTICATED -> {
+                AuthenticationState.UNAUTHENTICATED -> {
                     openAuthentication()
                     bottomNavManager?.disableMenuItems(listOf(R.id.navigation_home))
                 }
                 // refresh the token.
                 // todo: if it keeps on being bad (hehe) delete the credentials and start the authentication from zero
-                MainActivityViewModel.AuthenticationState.BAD_TOKEN -> {
+                AuthenticationState.BAD_TOKEN -> {
                     viewModel.refreshToken()
                 }
                 // go to login fragment and show another error message
-                MainActivityViewModel.AuthenticationState.ACCOUNT_LOCKED -> {
+                AuthenticationState.ACCOUNT_LOCKED -> {
                     openAuthentication()
                     bottomNavManager?.disableMenuItems(listOf(R.id.navigation_home))
                 }
                 // do nothing
-                MainActivityViewModel.AuthenticationState.AUTHENTICATED, MainActivityViewModel.AuthenticationState.AUTHENTICATED_NO_PREMIUM -> {
+                AuthenticationState.AUTHENTICATED, AuthenticationState.AUTHENTICATED_NO_PREMIUM -> {
                     bottomNavManager?.enableMenuItems()
                 }
             }

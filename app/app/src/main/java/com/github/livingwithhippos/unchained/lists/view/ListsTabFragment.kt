@@ -11,6 +11,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.paging.PagingData
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
+import com.github.livingwithhippos.unchained.data.model.AuthenticationState
 import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.databinding.FragmentTabListsBinding
@@ -84,8 +85,8 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
 
         // checks the authentication state. Needed to avoid automatic API calls before the authentication process is finished
         activityViewModel.authenticationState.observe(viewLifecycleOwner, Observer {
-            if (it.peekContent() == MainActivityViewModel.AuthenticationState.AUTHENTICATED ||
-                it.peekContent() == MainActivityViewModel.AuthenticationState.AUTHENTICATED_NO_PREMIUM
+            if (it.peekContent() == AuthenticationState.AUTHENTICATED ||
+                it.peekContent() == AuthenticationState.AUTHENTICATED_NO_PREMIUM
             ) {
                 // register observers if not already registered
                 if (!viewModel.downloadsLiveData.hasActiveObservers())
@@ -162,7 +163,7 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
 
     override fun onClick(item: DownloadItem) {
         val authState = activityViewModel.authenticationState.value?.peekContent()
-        if (authState == MainActivityViewModel.AuthenticationState.AUTHENTICATED) {
+        if (authState == AuthenticationState.AUTHENTICATED) {
             val action = ListsTabFragmentDirections.actionListsTabToDownloadDetails(item)
             findNavController().navigate(action)
         } else
@@ -171,7 +172,7 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
 
     override fun onClick(item: TorrentItem) {
         val authState = activityViewModel.authenticationState.value?.peekContent()
-        if (authState == MainActivityViewModel.AuthenticationState.AUTHENTICATED) {
+        if (authState == AuthenticationState.AUTHENTICATED) {
             if (item.status == "downloaded") {
                 // if the item has many links to download, show a toast
                 if (item.links.size>2)

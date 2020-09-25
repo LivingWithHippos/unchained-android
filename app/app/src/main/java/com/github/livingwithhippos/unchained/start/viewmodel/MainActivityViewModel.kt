@@ -5,6 +5,7 @@ import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.livingwithhippos.unchained.data.model.AuthenticationState
 import com.github.livingwithhippos.unchained.data.model.Credentials
 import com.github.livingwithhippos.unchained.data.repositoy.AuthenticationRepository
 import com.github.livingwithhippos.unchained.data.repositoy.CredentialsRepository
@@ -23,12 +24,6 @@ class MainActivityViewModel @ViewModelInject constructor(
     private val credentialRepository: CredentialsRepository,
     private val userRepository: UserRepository
 ) : ViewModel() {
-
-    //todo: move out of this class
-    //todo: separate AUTHENTICATED in AUTHENTICATED_PRIVATE and AUTHENTICATED_OPEN to make it easier to inform the user of unavailable app api
-    enum class AuthenticationState {
-        AUTHENTICATED, UNAUTHENTICATED, BAD_TOKEN, ACCOUNT_LOCKED, AUTHENTICATED_NO_PREMIUM
-    }
 
     val authenticationState = MutableLiveData<Event<AuthenticationState>>()
 

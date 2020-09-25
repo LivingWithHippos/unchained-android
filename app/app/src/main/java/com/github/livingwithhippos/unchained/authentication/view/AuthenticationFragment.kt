@@ -11,6 +11,7 @@ import androidx.navigation.fragment.findNavController
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.authentication.viewmodel.AuthenticationViewModel
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
+import com.github.livingwithhippos.unchained.data.model.AuthenticationState
 import com.github.livingwithhippos.unchained.databinding.FragmentAuthenticationBinding
 import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewModel
 import com.github.livingwithhippos.unchained.utilities.extension.copyToClipboard
@@ -80,22 +81,22 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
         // monitor the shared authentication state, if authenticated switch to the user fragment
         activityViewModel.authenticationState.observe(viewLifecycleOwner, {
             when (it.peekContent()) {
-                MainActivityViewModel.AuthenticationState.AUTHENTICATED -> {
+                AuthenticationState.AUTHENTICATED -> {
                     val action =
                         AuthenticationFragmentDirections.actionAuthenticationToUser()
                     findNavController().navigate(action)
                     // these will stop the api calls to the secret endpoint in the viewModel
-                    viewModel.setAuthState(MainActivityViewModel.AuthenticationState.AUTHENTICATED)
+                    viewModel.setAuthState(AuthenticationState.AUTHENTICATED)
                 }
-                MainActivityViewModel.AuthenticationState.UNAUTHENTICATED -> viewModel.setAuthState(MainActivityViewModel.AuthenticationState.UNAUTHENTICATED)
-                MainActivityViewModel.AuthenticationState.BAD_TOKEN -> viewModel.setAuthState(MainActivityViewModel.AuthenticationState.BAD_TOKEN)
-                MainActivityViewModel.AuthenticationState.ACCOUNT_LOCKED -> viewModel.setAuthState(MainActivityViewModel.AuthenticationState.ACCOUNT_LOCKED)
-                MainActivityViewModel.AuthenticationState.AUTHENTICATED_NO_PREMIUM -> {
+                AuthenticationState.UNAUTHENTICATED -> viewModel.setAuthState(AuthenticationState.UNAUTHENTICATED)
+                AuthenticationState.BAD_TOKEN -> viewModel.setAuthState(AuthenticationState.BAD_TOKEN)
+                AuthenticationState.ACCOUNT_LOCKED -> viewModel.setAuthState(AuthenticationState.ACCOUNT_LOCKED)
+                AuthenticationState.AUTHENTICATED_NO_PREMIUM -> {
                     val action =
                         AuthenticationFragmentDirections.actionAuthenticationToUser()
                     findNavController().navigate(action)
                     // these will stop the api calls to the secret endpoint in the viewModel
-                    viewModel.setAuthState(MainActivityViewModel.AuthenticationState.AUTHENTICATED_NO_PREMIUM)
+                    viewModel.setAuthState(AuthenticationState.AUTHENTICATED_NO_PREMIUM)
                 }
             }
         })

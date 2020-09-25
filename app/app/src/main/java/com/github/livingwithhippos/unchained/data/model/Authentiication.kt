@@ -48,3 +48,10 @@ data class Token(
     @Json(name = "refresh_token")
     val refreshToken: String
 )
+
+/**
+ * Enum class that represents the possible authentication states
+ */
+enum class AuthenticationState {
+    AUTHENTICATED, UNAUTHENTICATED, BAD_TOKEN, ACCOUNT_LOCKED, AUTHENTICATED_NO_PREMIUM
+}

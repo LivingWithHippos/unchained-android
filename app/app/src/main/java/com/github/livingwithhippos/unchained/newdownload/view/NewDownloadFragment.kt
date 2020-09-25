@@ -18,6 +18,7 @@ import androidx.navigation.fragment.navArgs
 import com.github.livingwithhippos.unchained.BuildConfig
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
+import com.github.livingwithhippos.unchained.data.model.AuthenticationState
 import com.github.livingwithhippos.unchained.databinding.NewDownloadFragmentBinding
 import com.github.livingwithhippos.unchained.newdownload.viewmodel.NewDownloadViewModel
 import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewModel
@@ -131,7 +132,7 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
         downloadBinding.bUnrestrict.setOnClickListener {
 
             val authState = activityViewModel.authenticationState.value?.peekContent()
-            if (authState == MainActivityViewModel.AuthenticationState.AUTHENTICATED) {
+            if (authState == AuthenticationState.AUTHENTICATED) {
                 val link: String = downloadBinding.tiLink.text.toString().trim()
                 when {
                     link.isWebUrl()-> {
@@ -205,7 +206,7 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
 
     override fun onLoadTorrentClick() {
         val authState = activityViewModel.authenticationState.value?.peekContent()
-        if (authState == MainActivityViewModel.AuthenticationState.AUTHENTICATED)
+        if (authState == AuthenticationState.AUTHENTICATED)
             getTorrent.launch("application/x-bittorrent")
         else
             showToast(R.string.premium_needed)
