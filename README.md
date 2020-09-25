@@ -37,6 +37,13 @@ You can take a look at the project [here](https://github.com/LivingWithHippos/un
 | ------------- | ------------- |
 | <img width="300" src="/extra_assets/screenshots/torrent.png?raw=true" alt="Torrent Download Screen"> | <img width="300" src="/extra_assets/screenshots/lists.png?raw=true" alt="Download List Screen">  |
 
+### Installation :calling:
+
+You have multiple options to install Unchained for Android:
+
+1. Get the [latest published release](https://github.com/LivingWithHippos/unchained-android/releases) from Github
+2. Get the [latest build artifacts](https://app.circleci.com/pipelines/github/LivingWithHippos/unchained-android?branch=master) from CircleCI: expand the desired pipeline item -> select "build" -> select the "artifacts" tab
+3. Get the latest release from the Play Store (TBA)
 
 
 ### Developing and Contributing :writing_hand:
