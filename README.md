@@ -58,7 +58,7 @@ MVVM architectural pattern, Dagger-Hilt for dependency injection, Data Binding f
 
 You can use [my referral link](http://real-debrid.com/?id=78841) to get Real Debrid premium. 
 
-Offer me coffee or a beer with [Paypal.](https://www.paypal.com/paypalme/sandnaut)
+Offer me coffee or a beer with Liberapay <noscript><a href="https://liberapay.com/LivingWithHippos/donate"><img alt="Donate using Liberapay" src="https://liberapay.com/assets/widgets/donate.svg"></a></noscript>
 
 Send a tip with [Brave.](https://brave.com/liv466)
 
