@@ -25,6 +25,10 @@ fun Fragment.showToast(stringResource: Int, length: Int = Toast.LENGTH_SHORT) {
     Toast.makeText(requireContext(), getString(stringResource), length).show()
 }
 
+fun Context.showToast(stringResource: Int, length: Int = Toast.LENGTH_SHORT) {
+    Toast.makeText(this, getString(stringResource), length).show()
+}
+
 /**
  * Show a toast message
  * @param message: the message and shown
