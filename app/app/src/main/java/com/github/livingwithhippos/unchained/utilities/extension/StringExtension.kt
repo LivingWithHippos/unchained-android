@@ -18,7 +18,9 @@ fun String.isWebUrl(): Boolean =
 /**
  * check if a String is a magnet link
  */
-fun String.isMagnet(): Boolean {
+fun String?.isMagnet(): Boolean {
+    if (this == null)
+        return false
     val m: Matcher = Pattern.compile(MAGNET_PATTERN).matcher(this)
     return m.lookingAt()
 }
