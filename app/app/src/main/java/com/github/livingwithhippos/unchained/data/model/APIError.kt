@@ -15,5 +15,4 @@ data class APIError(
 /**
  * Manager the response error body from the retrofit calls. WIP.
  */
-class APIException(val apiError: APIError) : Exception() {
-}
+class APIException(val apiError: APIError) : Exception()

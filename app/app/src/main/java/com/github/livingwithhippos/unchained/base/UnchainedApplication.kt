@@ -30,6 +30,6 @@ class UnchainedApplication : Application() {
             credentialsRepository.deleteIncompleteCredentials()
         }
 
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
     }
 }

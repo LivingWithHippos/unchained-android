@@ -80,7 +80,7 @@ fun Fragment.getClipboardText(): String {
 fun Fragment.openExternalWebPage(url: String, showErrorToast: Boolean = true): Boolean {
     // this pattern accepts everything that is something.tld since there were too many new tlds and Google gave up updating their regex
     if (url.isWebUrl()) {
-        val webIntent: Intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        val webIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
         startActivity(webIntent)
         return true
     } else
@@ -104,8 +104,8 @@ super.attachBaseContext(null)
  * it must be applied to all the activities or added to a BaseActivity extended by them
  */
 fun Activity.getUpdatedLocaleContext(context: Context, language: String): Context {
-    val locale: Locale = Locale(language)
-    val configuration: Configuration = Configuration(context.resources.configuration)
+    val locale = Locale(language)
+    val configuration = Configuration(context.resources.configuration)
     // check if this is necessary
     Locale.setDefault(locale)
     configuration.setLocale(locale)

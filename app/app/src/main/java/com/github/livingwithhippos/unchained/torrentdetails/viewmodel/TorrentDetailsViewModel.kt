@@ -15,8 +15,7 @@ import kotlinx.coroutines.launch
  * a [ViewModel] SUBCLASS.
  * Retrieves a torrent's details
  */
-class TorrentDetailsViewmodel @ViewModelInject constructor(
-    @Assisted private val savedStateHandle: SavedStateHandle,
+class TorrentDetailsViewModel @ViewModelInject constructor(
     private val credentialsRepository: CredentialsRepository,
     private val torrentsRepository: TorrentsRepository
 ) : ViewModel() {

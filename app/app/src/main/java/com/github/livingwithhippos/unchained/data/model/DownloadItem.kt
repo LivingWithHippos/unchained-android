@@ -80,8 +80,7 @@ data class DownloadItem(
         parcel.readString(),
         parcel.readString(),
         mutableListOf<Alternative>().also { parcel.readTypedList(it, Alternative.CREATOR) }
-    ) {
-    }
+    )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(id)
@@ -132,8 +131,7 @@ data class Alternative(
         parcel.readString()!!,
         parcel.readString()!!,
         parcel.readString()
-    ) {
-    }
+    )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(id)

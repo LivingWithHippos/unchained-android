@@ -13,7 +13,6 @@ import com.github.livingwithhippos.unchained.authentication.viewmodel.Authentica
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.data.model.AuthenticationState
 import com.github.livingwithhippos.unchained.databinding.FragmentAuthenticationBinding
-import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewModel
 import com.github.livingwithhippos.unchained.utilities.extension.copyToClipboard
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
@@ -41,7 +40,7 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
         //open source client id observers:
 
         // start checking for the auth link
-        viewModel.authLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.authLiveData.observe(viewLifecycleOwner, {
             it.getContentIfNotHandled()?.let { auth ->
                 authBinding.auth = auth
                 viewModel.fetchSecrets(auth.deviceCode, auth.expiresIn)
@@ -49,7 +48,7 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
         })
 
         // start checking for user confirmation
-        viewModel.secretLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.secretLiveData.observe(viewLifecycleOwner, {
             it.getContentIfNotHandled()?.let { secrets ->
                 authBinding.secrets = secrets
                 viewModel.authLiveData.value?.peekContent()?.deviceCode?.let { device ->
@@ -60,7 +59,7 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
         })
 
         // start checking for the authentication token
-        viewModel.tokenLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.tokenLiveData.observe(viewLifecycleOwner, {
             it.getContentIfNotHandled()?.let { token ->
                 authBinding.token = token
                 // pass the value to be checked and eventually saved

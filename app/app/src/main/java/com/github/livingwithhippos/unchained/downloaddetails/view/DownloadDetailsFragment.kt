@@ -28,7 +28,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
 
     private val viewModel: DownloadDetailsViewModel by viewModels()
 
-    val args: DownloadDetailsFragmentArgs by navArgs()
+    private val args: DownloadDetailsFragmentArgs by navArgs()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,7 +39,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         detailsBinding.details = args.details
         detailsBinding.listener = this
 
-        viewModel.streamLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.streamLiveData.observe(viewLifecycleOwner, {
             if (it != null) {
                 detailsBinding.stream = it
             }

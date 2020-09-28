@@ -6,13 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.databinding.FragmentTorrentDetailsBinding
-import com.github.livingwithhippos.unchained.torrentdetails.viewmodel.TorrentDetailsViewmodel
+import com.github.livingwithhippos.unchained.torrentdetails.viewmodel.TorrentDetailsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -24,9 +23,9 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class TorrentDetailsFragment : Fragment(), TorrentDetailsListener {
 
-    private val viewModel: TorrentDetailsViewmodel by viewModels()
+    private val viewModel: TorrentDetailsViewModel by viewModels()
 
-    val args: TorrentDetailsFragmentArgs by navArgs()
+    private val args: TorrentDetailsFragmentArgs by navArgs()
 
     // possible status are magnet_error, magnet_conversion, waiting_files_selection,
     // queued, downloading, downloaded, error, virus, compressing, uploading, dead
@@ -46,7 +45,7 @@ class TorrentDetailsFragment : Fragment(), TorrentDetailsListener {
         val torrentBinding = FragmentTorrentDetailsBinding.inflate(inflater, container, false)
 
 
-        val statusTranslation = mapOf<String, String>(
+        val statusTranslation = mapOf(
             "magnet_error" to resources.getString(R.string.magnet_error),
             "magnet_conversion" to resources.getString(R.string.magnet_conversion),
             "waiting_files_selection" to resources.getString(R.string.waiting_files_selection),
@@ -64,7 +63,7 @@ class TorrentDetailsFragment : Fragment(), TorrentDetailsListener {
         torrentBinding.statusTranslation = statusTranslation
         torrentBinding.listener = this
 
-        viewModel.torrentLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.torrentLiveData.observe(viewLifecycleOwner, {
             if (it != null) {
                 torrentBinding.torrent = it
                 if (loadingStatusList.contains(it.status) || it.status == "downloading")

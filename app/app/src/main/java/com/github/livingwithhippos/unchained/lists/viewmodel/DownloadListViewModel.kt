@@ -1,10 +1,9 @@
 package com.github.livingwithhippos.unchained.lists.viewmodel
 
-import androidx.hilt.Assisted
+
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
@@ -28,7 +27,6 @@ import kotlinx.coroutines.launch
  * It offers LiveData to be observed to populate lists with paging support
  */
 class DownloadListViewModel @ViewModelInject constructor(
-    @Assisted private val savedStateHandle: SavedStateHandle,
     private val downloadRepository: DownloadRepository,
     private val torrentsRepository: TorrentsRepository,
     private val credentialsRepository: CredentialsRepository,
@@ -49,7 +47,6 @@ class DownloadListViewModel @ViewModelInject constructor(
     fun downloadTorrent(torrent: TorrentItem) {
         viewModelScope.launch {
             val token = credentialsRepository.getToken()
-            //val item = unrestrictRepository.getUnrestrictedLink(token, torrent.links[0])
             val items = unrestrictRepository.getUnrestrictedLinkList(token, torrent.links)
             downloadItemLiveData.postValue(Event(items))
         }

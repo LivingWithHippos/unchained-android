@@ -53,7 +53,7 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
 
     private val viewModel: NewDownloadViewModel by viewModels()
 
-    val args: NewDownloadFragmentArgs by navArgs()
+    private val args: NewDownloadFragmentArgs by navArgs()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -63,7 +63,7 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
 
         downloadBinding.listener = this
 
-        viewModel.linkLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.linkLiveData.observe(viewLifecycleOwner, {
             it.getContentIfNotHandled()?.let { linkDetails ->
                 val action =
                     NewDownloadFragmentDirections.actionUnrestrictDownloadToDetailsFragment(
@@ -73,7 +73,7 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
             }
         })
 
-        viewModel.torrentLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.torrentLiveData.observe(viewLifecycleOwner, {
             it.getContentIfNotHandled()?.let { torrent ->
                 val action =
                     NewDownloadFragmentDirections.actionNewDownloadDestToTorrentDetailsFragment(
@@ -83,7 +83,7 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
             }
         })
 
-        viewModel.apiErrorLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.apiErrorLiveData.observe(viewLifecycleOwner, {
             it.getContentIfNotHandled()?.let { error ->
                 //todo: move this code outside onCreateView
                 when (error.errorCode) {

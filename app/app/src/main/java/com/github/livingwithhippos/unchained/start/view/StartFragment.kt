@@ -4,12 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
-import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -24,7 +21,7 @@ class StartFragment : UnchainedFragment() {
         super.onCreate(savedInstanceState)
 
         // check our credentials and decide to navigate to the user fragment or the authentication one.
-        activityViewModel.userLiveData.observe(this, Observer {
+        activityViewModel.userLiveData.observe(this, {
             // navigate to user fragment
             if (it != null) {
                 if (it.premium > 0)

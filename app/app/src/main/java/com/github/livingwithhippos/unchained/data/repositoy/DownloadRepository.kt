@@ -18,7 +18,7 @@ class DownloadRepository @Inject constructor(private val downloadApiHelper: Down
             errorMessage = "Error Fetching User Info"
         )
 
-        return downloadResponse ?: emptyList<DownloadItem>()
+        return downloadResponse ?: emptyList()
 
     }
 

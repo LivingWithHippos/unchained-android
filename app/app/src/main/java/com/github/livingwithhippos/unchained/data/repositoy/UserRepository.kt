@@ -15,7 +15,7 @@ class UserRepository @Inject constructor(private val userApiHelper: UserApiHelpe
             errorMessage = "Error Fetching User Info"
         )
 
-        return userResponse;
+        return userResponse
 
     }
 

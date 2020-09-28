@@ -19,7 +19,7 @@ class TorrentsRepository @Inject constructor(private val torrentApiHelper: Torre
             errorMessage = "Error Retrieving Available Hosts"
         )
 
-        return hostResponse;
+        return hostResponse
     }
 
     suspend fun getTorrentInfo(
@@ -36,7 +36,7 @@ class TorrentsRepository @Inject constructor(private val torrentApiHelper: Torre
             errorMessage = "Error Retrieving Torrent Info"
         )
 
-        return torrentResponse;
+        return torrentResponse
 
     }
 
@@ -63,7 +63,7 @@ class TorrentsRepository @Inject constructor(private val torrentApiHelper: Torre
             errorMessage = "Error Uploading Torrent"
         )
 
-        return addTorrentResponse;
+        return addTorrentResponse
     }
 
     suspend fun addMagnet(
@@ -82,7 +82,7 @@ class TorrentsRepository @Inject constructor(private val torrentApiHelper: Torre
             errorMessage = "Error Uploading Torrent From Magnet"
         )
 
-        return torrentResponse;
+        return torrentResponse
 
     }
 

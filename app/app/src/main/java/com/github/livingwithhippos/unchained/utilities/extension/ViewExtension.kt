@@ -44,7 +44,7 @@ fun ImageView.startAnimation(start: Boolean) {
 @BindingAdapter("adapter")
 fun AutoCompleteTextView.setAdapter(contents: List<String>) {
     // a simple layout is set for the dropdown items
-    val adapter = ArrayAdapter<String>(this.context, R.layout.dropdown_plain_item, contents)
+    val adapter = ArrayAdapter(this.context, R.layout.dropdown_plain_item, contents)
     this.setAdapter(adapter)
 }
 
@@ -152,7 +152,7 @@ fun ProgressBar.getDrawableByLayerId(id: Int): Drawable {
  */
 @BindingAdapter("progressCompat")
 fun ProgressIndicator.setRealProgress(progress: Int) {
-    val animated: Boolean = true
+    val animated = true
     this.setProgressCompat(progress, animated)
 }
 
@@ -203,7 +203,7 @@ fun View.runRippleAnimation(delay: Long = 300) {
     //todo: test if this works for things beside buttons
     if (background is RippleDrawable) {
         postDelayed(
-            Runnable {
+            {
                 background.state = intArrayOf(
                     android.R.attr.state_pressed,
                     android.R.attr.state_enabled

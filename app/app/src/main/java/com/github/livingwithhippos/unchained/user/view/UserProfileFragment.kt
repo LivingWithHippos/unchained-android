@@ -5,13 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.data.model.AuthenticationState
 import com.github.livingwithhippos.unchained.databinding.FragmentUserProfileBinding
-import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewModel
 import com.github.livingwithhippos.unchained.user.viewmodel.UserProfileViewModel
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import dagger.hilt.android.AndroidEntryPoint
@@ -30,10 +28,6 @@ class UserProfileFragment : UnchainedFragment() {
 
     private val viewModel: UserProfileViewModel by viewModels()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -43,7 +37,7 @@ class UserProfileFragment : UnchainedFragment() {
 
         viewModel.fetchUserInfo()
 
-        viewModel.userLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.userLiveData.observe(viewLifecycleOwner, {
             if (it != null) {
                 userBinding.user = it
                 lifecycleScope.launch {
@@ -58,7 +52,7 @@ class UserProfileFragment : UnchainedFragment() {
             openExternalWebPage(REFERRAL_LINK)
         }
 
-        activityViewModel.authenticationState.observe(viewLifecycleOwner, Observer {
+        activityViewModel.authenticationState.observe(viewLifecycleOwner, {
             // it's possible to use peek with findNavController().currentDestination to avoid launching the navigate(action) twice (it crashes)
             // val destination = findNavController().currentDestination
             // val destinationId = findNavController().currentDestination?.id

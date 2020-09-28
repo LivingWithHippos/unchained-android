@@ -16,7 +16,6 @@ import com.github.livingwithhippos.unchained.data.repositoy.UnrestrictRepository
 import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.data.model.UploadedTorrent
 import com.github.livingwithhippos.unchained.utilities.Event
-import com.github.livingwithhippos.unchained.utilities.KEY_TOKEN
 import kotlinx.coroutines.launch
 
 /**
@@ -24,7 +23,6 @@ import kotlinx.coroutines.launch
  * It offers LiveData to be observed while creating new downloads
  */
 class NewDownloadViewModel @ViewModelInject constructor(
-    @Assisted private val savedStateHandle: SavedStateHandle,
     private val credentialsRepository: CredentialsRepository,
     private val unrestrictRepository: UnrestrictRepository,
     private val torrentsRepository: TorrentsRepository

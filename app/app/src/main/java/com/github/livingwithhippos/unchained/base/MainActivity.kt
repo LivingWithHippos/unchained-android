@@ -66,7 +66,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         // manage the authentication state
-        viewModel.authenticationState.observe(this, Observer { state ->
+        viewModel.authenticationState.observe(this, { state ->
             when (state.peekContent()) {
                 // go to login fragment
                 AuthenticationState.UNAUTHENTICATED -> {
@@ -228,11 +228,6 @@ class MainActivity : AppCompatActivity() {
         super.onRestoreInstanceState(savedInstanceState)
         bottomNavManager?.onRestoreInstanceState(savedInstanceState)
         setupNavigationManager()
-    }
-
-    private fun setupBottomNavMenu(navController: NavController) {
-        val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_nav_view)
-        bottomNav?.setupWithNavController(navController)
     }
 
     override fun onBackPressed() {

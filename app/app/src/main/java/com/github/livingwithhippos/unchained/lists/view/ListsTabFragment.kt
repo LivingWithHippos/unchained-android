@@ -16,7 +16,6 @@ import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.databinding.FragmentTabListsBinding
 import com.github.livingwithhippos.unchained.lists.viewmodel.DownloadListViewModel
-import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewModel
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.github.livingwithhippos.unchained.utilities.extension.verticalScrollToPosition
 import com.google.android.material.tabs.TabLayout
@@ -84,7 +83,7 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
         }
 
         // checks the authentication state. Needed to avoid automatic API calls before the authentication process is finished
-        activityViewModel.authenticationState.observe(viewLifecycleOwner, Observer {
+        activityViewModel.authenticationState.observe(viewLifecycleOwner, {
             if (it.peekContent() == AuthenticationState.AUTHENTICATED ||
                 it.peekContent() == AuthenticationState.AUTHENTICATED_NO_PREMIUM
             ) {
