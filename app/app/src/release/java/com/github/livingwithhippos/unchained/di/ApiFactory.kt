@@ -1,6 +1,5 @@
 package com.github.livingwithhippos.unchained.di
 
-import com.github.livingwithhippos.unchained.BuildConfig
 import com.github.livingwithhippos.unchained.data.remote.AuthApiHelper
 import com.github.livingwithhippos.unchained.data.remote.AuthApiHelperImpl
 import com.github.livingwithhippos.unchained.data.remote.AuthenticationApi
@@ -45,27 +44,9 @@ object ApiFactory {
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(): OkHttpClient {
-        // note: alternatively use a different build flavor
-        // https://proandroiddev.com/think-before-using-buildconfig-debug-f2e279da7bad
-        if (BuildConfig.DEBUG) {
-            //todo: if possible, move the authentication token to an OkHttp interceptor
-            val logInterceptor: HttpLoggingInterceptor = HttpLoggingInterceptor().apply {
-                level = HttpLoggingInterceptor.Level.BODY
-            }
-
-            return OkHttpClient().newBuilder()
-                .addInterceptor(logInterceptor)
-                .build()
-
-        } else {
-
-            return OkHttpClient()
-                .newBuilder()
-                .build()
-        }
-
-    }
+    fun provideOkHttpClient(): OkHttpClient = OkHttpClient()
+        .newBuilder()
+        .build()
 
     @Provides
     @Singleton
