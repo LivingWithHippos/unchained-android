@@ -1,10 +1,13 @@
 package com.github.livingwithhippos.unchained.newdownload.view
 
+import android.app.DownloadManager
 import android.content.ContentResolver
 import android.content.ContentResolver.SCHEME_CONTENT
 import android.content.ContentResolver.SCHEME_FILE
+import android.content.Context
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.os.ParcelFileDescriptor
 import android.util.Log
 import android.view.LayoutInflater
@@ -13,6 +16,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.net.toUri
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -24,6 +28,8 @@ import com.github.livingwithhippos.unchained.data.model.AuthenticationState
 import com.github.livingwithhippos.unchained.databinding.NewDownloadFragmentBinding
 import com.github.livingwithhippos.unchained.newdownload.viewmodel.NewDownloadViewModel
 import com.github.livingwithhippos.unchained.utilities.REMOTE_TRAFFIC_ON
+import com.github.livingwithhippos.unchained.utilities.SCHEME_HTTP
+import com.github.livingwithhippos.unchained.utilities.SCHEME_HTTPS
 import com.github.livingwithhippos.unchained.utilities.SCHEME_MAGNET
 import com.github.livingwithhippos.unchained.utilities.extension.getClipboardText
 import com.github.livingwithhippos.unchained.utilities.extension.isMagnet
@@ -31,8 +37,12 @@ import com.github.livingwithhippos.unchained.utilities.extension.isWebUrl
 import com.github.livingwithhippos.unchained.utilities.extension.runRippleAnimation
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
+import java.io.File
 import java.io.FileDescriptor
 import java.io.FileInputStream
+import java.nio.file.Path
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 
 /**
  * A simple [UnchainedFragment] subclass.
@@ -75,6 +85,7 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
 
         viewModel.apiErrorLiveData.observe(viewLifecycleOwner, Observer {
             it.getContentIfNotHandled()?.let { error ->
+                //todo: move this code outside onCreateView
                 when (error.errorCode) {
                     -1 -> showToast(R.string.internal_error)
                     1 -> showToast(R.string.missing_parameter)
@@ -196,11 +207,14 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
 
         activityViewModel.externalLinkLiveData.observe(viewLifecycleOwner, {
             it.getContentIfNotHandled()?.let { link ->
-                when (link.scheme)  {
+                when (link.scheme) {
                     SCHEME_MAGNET -> {
                         showToast(R.string.loading_magnet_link)
                         // set as text input text
-                        downloadBinding.tiLink.setText(link.toString(), TextView.BufferType.EDITABLE)
+                        downloadBinding.tiLink.setText(
+                            link.toString(),
+                            TextView.BufferType.EDITABLE
+                        )
                         // simulate button click
                         downloadBinding.bUnrestrict.performClick()
                     }
@@ -208,7 +222,18 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
                         showToast(R.string.loading_torrent_file)
                         loadTorrent(requireContext().contentResolver, link)
                     }
+                    SCHEME_HTTP, SCHEME_HTTPS -> {
+                        showToast(R.string.loading_torrent_file)
+                        downloadTorrent(link)
+                    }
                 }
+            }
+        })
+
+        activityViewModel.downloadedTorrentLiveData.observe(viewLifecycleOwner, {
+            it.getContentIfNotHandled()?.let { fileName ->
+                val torrentFile = File(requireContext().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS),fileName)
+                loadTorrent(requireContext().contentResolver, torrentFile.toUri())
             }
         })
 
@@ -248,6 +273,22 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
                     "NewDownloadFragment",
                     "Torrent conversion: Error getting parcelFileDescriptor -> null"
                 )
+        }
+
+    }
+
+    private fun downloadTorrent(uri: Uri) {
+        val nameRegex= "/([^/]+.torrent)\$"
+        val m: Matcher = Pattern.compile(nameRegex).matcher(uri.toString())
+        val torrentName = if(m.find())m.group(1) else null
+        if (!torrentName.isNullOrBlank() && context!=null) {
+            val manager = requireContext().getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+            val request: DownloadManager.Request = DownloadManager.Request(uri)
+                .setTitle(getString(R.string.unchained_torrent_download))
+                .setDescription(getString(R.string.temporary_torrent_download))
+                .setDestinationInExternalFilesDir(requireContext(), Environment.DIRECTORY_DOWNLOADS,torrentName)
+            val downloadID = manager.enqueue(request)
+            activityViewModel.setDownload(downloadID, torrentName)
         }
 
     }

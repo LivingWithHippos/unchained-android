@@ -2,8 +2,10 @@ package com.github.livingwithhippos.unchained.start.viewmodel
 
 import android.annotation.SuppressLint
 import android.net.Uri
+import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.livingwithhippos.unchained.data.model.AuthenticationState
@@ -14,7 +16,6 @@ import com.github.livingwithhippos.unchained.data.repositoy.UserRepository
 import com.github.livingwithhippos.unchained.data.model.User
 import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.PRIVATE_TOKEN
-import com.github.livingwithhippos.unchained.utilities.extension.zipLiveData
 import kotlinx.coroutines.launch
 
 /**
@@ -22,6 +23,7 @@ import kotlinx.coroutines.launch
  * Shared between the fragments to observe the authentication status and update it.
  */
 class MainActivityViewModel @ViewModelInject constructor(
+    @Assisted private val savedStateHandle: SavedStateHandle,
     private val authRepository: AuthenticationRepository,
     private val credentialRepository: CredentialsRepository,
     private val userRepository: UserRepository
@@ -32,6 +34,8 @@ class MainActivityViewModel @ViewModelInject constructor(
     val userLiveData = MutableLiveData<User?>()
 
     val externalLinkLiveData = MutableLiveData<Event<Uri?>>()
+
+    val downloadedTorrentLiveData = MutableLiveData<Event<String?>>()
 
     // fixme: this is here because userLiveData.postValue(user) is throwing an unsafe error
     //  but auto-correcting it changes the value of val authenticationState = MutableLiveData<Event<AuthenticationState>>() to a nullable one
@@ -135,6 +139,25 @@ class MainActivityViewModel @ViewModelInject constructor(
 
     fun addLink(uri: Uri) {
         externalLinkLiveData.postValue(Event(uri))
+    }
+
+    fun setDownload(downloadID: Long, filePath: String) {
+        savedStateHandle.set(KEY_TORRENT_DOWNLOAD_ID, downloadID)
+        savedStateHandle.set(KEY_TORRENT_PATH, filePath)
+    }
+
+    fun checkDownload(downloadID: Long) {
+        val id = savedStateHandle.get<Long>(KEY_TORRENT_DOWNLOAD_ID)
+        if (id == downloadID) {
+            val fileName = savedStateHandle.get<String>(KEY_TORRENT_PATH)
+            if (fileName != null)
+                downloadedTorrentLiveData.postValue(Event(fileName))
+        }
+    }
+
+    companion object {
+        const val KEY_TORRENT_DOWNLOAD_ID = "torrent_download_id_key"
+        const val KEY_TORRENT_PATH = "torrent_path_key"
     }
 
 }

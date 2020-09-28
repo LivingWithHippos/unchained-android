@@ -5,6 +5,7 @@ import android.icu.text.DateFormat
 import android.icu.text.SimpleDateFormat
 import android.util.Patterns
 import com.github.livingwithhippos.unchained.utilities.MAGNET_PATTERN
+import com.github.livingwithhippos.unchained.utilities.TORRENT_PATTERN
 import java.util.*
 import java.util.regex.Matcher
 import java.util.regex.Pattern
@@ -23,6 +24,16 @@ fun String?.isMagnet(): Boolean {
         return false
     val m: Matcher = Pattern.compile(MAGNET_PATTERN).matcher(this)
     return m.lookingAt()
+}
+
+/**
+ * check if a String is a torrent link
+ */
+fun String?.isTorrent(): Boolean {
+    if (this == null)
+        return false
+    val m: Matcher = Pattern.compile(TORRENT_PATTERN).matcher(this)
+    return m.matches()
 }
 
 /**

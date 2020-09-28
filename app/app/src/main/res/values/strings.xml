@@ -362,4 +362,6 @@
     <string name="please_login">Please log in your account</string>
     <string name="loading_magnet_link">Loading magnet link…</string>
     <string name="loading_torrent_file">Loading torrent file…</string>
+    <string name="unchained_torrent_download">Unchained Torrent Download</string>
+    <string name="temporary_torrent_download">Temporary download of a torrent file</string>
 </resources>
