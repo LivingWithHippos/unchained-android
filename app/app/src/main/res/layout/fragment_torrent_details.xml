@@ -53,7 +53,8 @@
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cvTorrentDetails"
-            android:layout_width="350dp"
+            android:layout_width="0dp"
+            app:layout_constraintWidth_max="400dp"
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
             android:checkable="false"
@@ -128,7 +129,8 @@
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cvDownloadDetails"
-            android:layout_width="350dp"
+            android:layout_width="0dp"
+            app:layout_constraintWidth_max="400dp"
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
             android:checkable="false"

@@ -16,9 +16,14 @@ const val REMOTE_TRAFFIC_OFF: Int = 0
 const val REMOTE_TRAFFIC_ON: Int = 1
 
 const val MAGNET_PATTERN: String = "magnet:\\?xt=urn:btih:[a-zA-Z0-9]{32}"
+const val TORRENT_PATTERN: String = "https?://[^\\s]{7,}.torrent"
 
 const val FEEDBACK_URL="https://github.com/LivingWithHippos/unchained-android"
 const val GPLV3_URL="https://www.gnu.org/licenses/gpl-3.0.en.html"
+
+const val SCHEME_MAGNET="magnet"
+const val SCHEME_HTTP="http"
+const val SCHEME_HTTPS="https"
 
 val errorMap = mapOf(
     -1 to "Internal error",

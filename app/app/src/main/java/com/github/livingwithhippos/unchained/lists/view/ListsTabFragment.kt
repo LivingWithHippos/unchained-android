@@ -167,7 +167,7 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
             val action = ListsTabFragmentDirections.actionListsTabToDownloadDetails(item)
             findNavController().navigate(action)
         } else
-            showToast(R.string.premium_needed)
+            context?.showToast(R.string.premium_needed)
     }
 
     override fun onClick(item: TorrentItem) {
@@ -176,13 +176,13 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
             if (item.status == "downloaded") {
                 // if the item has many links to download, show a toast
                 if (item.links.size>2)
-                    showToast(R.string.downloading_torrent)
+                    context?.showToast(R.string.downloading_torrent)
                 viewModel.downloadTorrent(item)
             }
             else
-                showToast(R.string.torrent_not_downloaded)
+                context?.showToast(R.string.torrent_not_downloaded)
         } else
-            showToast(R.string.premium_needed)
+            context?.showToast(R.string.premium_needed)
     }
 
     companion object {
