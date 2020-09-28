@@ -1,8 +1,13 @@
 package com.github.livingwithhippos.unchained.newdownload.view
 
+import android.app.DownloadManager
 import android.content.ContentResolver
+import android.content.ContentResolver.SCHEME_CONTENT
+import android.content.ContentResolver.SCHEME_FILE
+import android.content.Context
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.os.ParcelFileDescriptor
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,6 +16,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.net.toUri
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -21,16 +27,22 @@ import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.data.model.AuthenticationState
 import com.github.livingwithhippos.unchained.databinding.NewDownloadFragmentBinding
 import com.github.livingwithhippos.unchained.newdownload.viewmodel.NewDownloadViewModel
-import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewModel
 import com.github.livingwithhippos.unchained.utilities.REMOTE_TRAFFIC_ON
+import com.github.livingwithhippos.unchained.utilities.SCHEME_HTTP
+import com.github.livingwithhippos.unchained.utilities.SCHEME_HTTPS
+import com.github.livingwithhippos.unchained.utilities.SCHEME_MAGNET
 import com.github.livingwithhippos.unchained.utilities.extension.getClipboardText
 import com.github.livingwithhippos.unchained.utilities.extension.isMagnet
 import com.github.livingwithhippos.unchained.utilities.extension.isWebUrl
 import com.github.livingwithhippos.unchained.utilities.extension.runRippleAnimation
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
+import java.io.File
 import java.io.FileDescriptor
 import java.io.FileInputStream
+import java.nio.file.Path
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 
 /**
  * A simple [UnchainedFragment] subclass.
@@ -73,53 +85,54 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
 
         viewModel.apiErrorLiveData.observe(viewLifecycleOwner, Observer {
             it.getContentIfNotHandled()?.let { error ->
+                //todo: move this code outside onCreateView
                 when (error.errorCode) {
-                    -1 -> showToast(R.string.internal_error)
-                    1 -> showToast(R.string.missing_parameter)
-                    2 -> showToast(R.string.bad_parameter_value)
-                    3 -> showToast(R.string.unknown_method)
-                    4 -> showToast(R.string.method_not_allowed)
+                    -1 -> context?.showToast(R.string.internal_error)
+                    1 -> context?.showToast(R.string.missing_parameter)
+                    2 -> context?.showToast(R.string.bad_parameter_value)
+                    3 -> context?.showToast(R.string.unknown_method)
+                    4 -> context?.showToast(R.string.method_not_allowed)
                     // what is this error for?
-                    5 -> showToast(R.string.slow_down)
-                    6 -> showToast(R.string.resource_unreachable)
-                    7 -> showToast(R.string.resource_not_found)
+                    5 -> context?.showToast(R.string.slow_down)
+                    6 -> context?.showToast(R.string.resource_unreachable)
+                    7 -> context?.showToast(R.string.resource_not_found)
                     //todo: check these
                     8 -> {
-                        showToast(R.string.bad_token)
+                        context?.showToast(R.string.bad_token)
                         activityViewModel.setUnauthenticated()
                     }
-                    9 -> showToast(R.string.permission_denied)
-                    10 -> showToast(R.string.tfa_needed)
-                    11 -> showToast(R.string.tfa_pending)
+                    9 -> context?.showToast(R.string.permission_denied)
+                    10 -> context?.showToast(R.string.tfa_needed)
+                    11 -> context?.showToast(R.string.tfa_pending)
                     12 -> {
-                        showToast(R.string.invalid_login)
+                        context?.showToast(R.string.invalid_login)
                         activityViewModel.setUnauthenticated()
                     }
-                    13 -> showToast(R.string.invalid_password)
+                    13 -> context?.showToast(R.string.invalid_password)
                     14 -> {
-                        showToast(R.string.account_locked)
+                        context?.showToast(R.string.account_locked)
                         activityViewModel.setUnauthenticated()
                     }
-                    15 -> showToast(R.string.account_not_activated)
-                    16 -> showToast(R.string.unsupported_hoster)
-                    17 -> showToast(R.string.hoster_in_maintenance)
-                    18 -> showToast(R.string.hoster_limit_reached)
-                    19 -> showToast(R.string.hoster_temporarily_unavailable)
-                    20 -> showToast(R.string.hoster_not_available_for_free_users)
-                    21 -> showToast(R.string.too_many_active_downloads)
-                    22 -> showToast(R.string.ip_Address_not_allowed)
-                    23 -> showToast(R.string.traffic_exhausted)
-                    24 -> showToast(R.string.file_unavailable)
-                    25 -> showToast(R.string.service_unavailable)
-                    26 -> showToast(R.string.upload_too_big)
-                    27 -> showToast(R.string.upload_error)
-                    28 -> showToast(R.string.file_not_allowed)
-                    29 -> showToast(R.string.torrent_too_big)
-                    30 -> showToast(R.string.torrent_file_invalid)
-                    31 -> showToast(R.string.action_already_done)
-                    32 -> showToast(R.string.image_resolution_error)
-                    33 -> showToast(R.string.torrent_already_active)
-                    else -> showToast(R.string.error_unrestricting_download)
+                    15 -> context?.showToast(R.string.account_not_activated)
+                    16 -> context?.showToast(R.string.unsupported_hoster)
+                    17 -> context?.showToast(R.string.hoster_in_maintenance)
+                    18 -> context?.showToast(R.string.hoster_limit_reached)
+                    19 -> context?.showToast(R.string.hoster_temporarily_unavailable)
+                    20 -> context?.showToast(R.string.hoster_not_available_for_free_users)
+                    21 -> context?.showToast(R.string.too_many_active_downloads)
+                    22 -> context?.showToast(R.string.ip_Address_not_allowed)
+                    23 -> context?.showToast(R.string.traffic_exhausted)
+                    24 -> context?.showToast(R.string.file_unavailable)
+                    25 -> context?.showToast(R.string.service_unavailable)
+                    26 -> context?.showToast(R.string.upload_too_big)
+                    27 -> context?.showToast(R.string.upload_error)
+                    28 -> context?.showToast(R.string.file_not_allowed)
+                    29 -> context?.showToast(R.string.torrent_too_big)
+                    30 -> context?.showToast(R.string.torrent_file_invalid)
+                    31 -> context?.showToast(R.string.action_already_done)
+                    32 -> context?.showToast(R.string.image_resolution_error)
+                    33 -> context?.showToast(R.string.torrent_already_active)
+                    else -> context?.showToast(R.string.error_unrestricting_download)
                 }
                 // re enable buttons to let the user take other actions
                 //todo: this needs to be done also for other errors. maybe throw another error from the ViewModel
@@ -159,16 +172,16 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
                         viewModel.fetchAddedMagnet(link)
                     }
                     link.isBlank()-> {
-                        showToast(R.string.please_insert_url)
+                        context?.showToast(R.string.please_insert_url)
                     }
                     else -> {
-                        showToast(R.string.invalid_url)
+                        context?.showToast(R.string.invalid_url)
                     }
                 }
 
             }
             else
-                showToast(R.string.premium_needed)
+                context?.showToast(R.string.premium_needed)
         }
 
         downloadBinding.bPasteLink.setOnClickListener {
@@ -177,7 +190,7 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
             if (pasteText.isWebUrl() || pasteText.isMagnet())
                 downloadBinding.tiLink.setText(pasteText, TextView.BufferType.EDITABLE)
             else
-                showToast(R.string.invalid_url)
+                context?.showToast(R.string.invalid_url)
         }
 
         downloadBinding.bPastePassword.setOnClickListener {
@@ -192,6 +205,38 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
             downloadBinding.bUnrestrict.runRippleAnimation()
         }
 
+        activityViewModel.externalLinkLiveData.observe(viewLifecycleOwner, {
+            it.getContentIfNotHandled()?.let { link ->
+                when (link.scheme) {
+                    SCHEME_MAGNET -> {
+                        context?.showToast(R.string.loading_magnet_link)
+                        // set as text input text
+                        downloadBinding.tiLink.setText(
+                            link.toString(),
+                            TextView.BufferType.EDITABLE
+                        )
+                        // simulate button click
+                        downloadBinding.bUnrestrict.performClick()
+                    }
+                    SCHEME_CONTENT, SCHEME_FILE -> {
+                        context?.showToast(R.string.loading_torrent_file)
+                        loadTorrent(requireContext().contentResolver, link)
+                    }
+                    SCHEME_HTTP, SCHEME_HTTPS -> {
+                        context?.showToast(R.string.loading_torrent_file)
+                        downloadTorrent(link)
+                    }
+                }
+            }
+        })
+
+        activityViewModel.downloadedTorrentLiveData.observe(viewLifecycleOwner, {
+            it.getContentIfNotHandled()?.let { fileName ->
+                val torrentFile = File(requireContext().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS),fileName)
+                loadTorrent(requireContext().contentResolver, torrentFile.toUri())
+            }
+        })
+
         return downloadBinding.root
     }
 
@@ -200,7 +245,7 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
             if (uri != null) {
                 loadTorrent(requireContext().contentResolver, uri)
             } else {
-                showToast(R.string.error_loading_torrent)
+                context?.showToast(R.string.error_loading_torrent)
             }
         }
 
@@ -209,7 +254,7 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
         if (authState == AuthenticationState.AUTHENTICATED)
             getTorrent.launch("application/x-bittorrent")
         else
-            showToast(R.string.premium_needed)
+            context?.showToast(R.string.premium_needed)
     }
 
     private fun loadTorrent(contentResolver: ContentResolver, uri: Uri) {
@@ -228,6 +273,22 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
                     "NewDownloadFragment",
                     "Torrent conversion: Error getting parcelFileDescriptor -> null"
                 )
+        }
+
+    }
+
+    private fun downloadTorrent(uri: Uri) {
+        val nameRegex= "/([^/]+.torrent)\$"
+        val m: Matcher = Pattern.compile(nameRegex).matcher(uri.toString())
+        val torrentName = if(m.find())m.group(1) else null
+        if (!torrentName.isNullOrBlank() && context!=null) {
+            val manager = requireContext().getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+            val request: DownloadManager.Request = DownloadManager.Request(uri)
+                .setTitle(getString(R.string.unchained_torrent_download))
+                .setDescription(getString(R.string.temporary_torrent_download))
+                .setDestinationInExternalFilesDir(requireContext(), Environment.DIRECTORY_DOWNLOADS,torrentName)
+            val downloadID = manager.enqueue(request)
+            activityViewModel.setDownload(downloadID, torrentName)
         }
 
     }

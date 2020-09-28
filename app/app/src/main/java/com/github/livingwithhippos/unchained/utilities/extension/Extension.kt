@@ -11,9 +11,13 @@ import android.net.Uri
 import android.util.Log
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.Observer
 import com.github.livingwithhippos.unchained.BuildConfig
 import com.github.livingwithhippos.unchained.R
-import java.util.*
+import java.util.Locale
 
 /**
 * Show a toast message
@@ -21,17 +25,15 @@ import java.util.*
  * @param length How long to display the message.  Either {@link #LENGTH_SHORT} or
  *                 {@link #LENGTH_LONG} Defaults to short
 */
-fun Fragment.showToast(stringResource: Int, length: Int = Toast.LENGTH_SHORT) {
-    Toast.makeText(requireContext(), getString(stringResource), length).show()
-}
+fun Context.showToast(stringResource: Int, length: Int = Toast.LENGTH_SHORT) = this.showToast(getString(stringResource, length))
 
 /**
  * Show a toast message
  * @param message: the message and shown
  * @param length: the duration of the toast. Defaults to short
  */
-fun Fragment.showToast(message: String, length: Int = Toast.LENGTH_SHORT) {
-    Toast.makeText(requireContext(), message, length).show()
+fun Context.showToast(message: String, length: Int = Toast.LENGTH_SHORT) {
+    Toast.makeText(this, message, length).show()
 }
 
 /**
@@ -83,7 +85,8 @@ fun Fragment.openExternalWebPage(url: String, showErrorToast: Boolean = true): B
         return true
     } else
         if (showErrorToast)
-            showToast(R.string.invalid_url)
+            context?.showToast(R.string.invalid_url)
+
 
     return false
 }
@@ -107,4 +110,50 @@ fun Activity.getUpdatedLocaleContext(context: Context, language: String): Contex
     Locale.setDefault(locale)
     configuration.setLocale(locale)
     return context.createConfigurationContext(configuration)
+}
+
+fun <T, K, R> LiveData<T>.combineWith(
+    liveData: LiveData<K>,
+    block: (T?, K?) -> R
+): LiveData<R> {
+    val result = MediatorLiveData<R>()
+    result.addSource(this) {
+        result.value = block(this.value, liveData.value)
+    }
+    result.addSource(liveData) {
+        result.value = block(this.value, liveData.value)
+    }
+    return result
+}
+
+fun <T, K> zipLiveData(t: LiveData<T>, k: LiveData<K>): LiveData<Pair<T, K>> {
+    return MediatorLiveData<Pair<T, K>>().apply {
+        var lastT: T? = null
+        var lastK: K? = null
+
+        fun update() {
+            val localLastT = lastT
+            val localLastK = lastK
+            if (localLastT != null && localLastK != null)
+                this.value = Pair(localLastT, localLastK)
+        }
+
+        addSource(t) {
+            lastT = it
+            update()
+        }
+        addSource(k) {
+            lastK = it
+            update()
+        }
+    }
+}
+
+fun <T> LiveData<T>.observeOnce(lifecycleOwner: LifecycleOwner, observer: Observer<T>) {
+    observe(lifecycleOwner, object : Observer<T> {
+        override fun onChanged(t: T?) {
+            observer.onChanged(t)
+            removeObserver(this)
+        }
+    })
 }

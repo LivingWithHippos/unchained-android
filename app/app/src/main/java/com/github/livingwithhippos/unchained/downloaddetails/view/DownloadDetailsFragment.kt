@@ -50,7 +50,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
 
     override fun onCopyClick(text: String) {
         copyToClipboard("Real-Debrid Download Link", text)
-        showToast(R.string.link_copied)
+        context?.showToast(R.string.link_copied)
     }
 
     override fun onOpenClick(url: String) {
@@ -62,7 +62,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
             if (activityViewModel.isTokenPrivate()) {
                 viewModel.fetchStreamingInfo(id)
             } else
-                showToast(R.string.api_needs_private_token)
+                context?.showToast(R.string.api_needs_private_token)
 
         }
     }
