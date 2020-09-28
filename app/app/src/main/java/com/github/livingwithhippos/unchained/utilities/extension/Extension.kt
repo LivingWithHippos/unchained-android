@@ -25,23 +25,15 @@ import java.util.Locale
  * @param length How long to display the message.  Either {@link #LENGTH_SHORT} or
  *                 {@link #LENGTH_LONG} Defaults to short
 */
-fun Fragment.showToast(stringResource: Int, length: Int = Toast.LENGTH_SHORT) {
-    Toast.makeText(requireContext(), getString(stringResource), length).show()
-}
-
 fun Context.showToast(stringResource: Int, length: Int = Toast.LENGTH_SHORT) = this.showToast(getString(stringResource, length))
-
-fun Context.showToast(message: String, length: Int = Toast.LENGTH_SHORT) {
-    Toast.makeText(this, message, length).show()
-}
 
 /**
  * Show a toast message
  * @param message: the message and shown
  * @param length: the duration of the toast. Defaults to short
  */
-fun Fragment.showToast(message: String, length: Int = Toast.LENGTH_SHORT) {
-    Toast.makeText(requireContext(), message, length).show()
+fun Context.showToast(message: String, length: Int = Toast.LENGTH_SHORT) {
+    Toast.makeText(this, message, length).show()
 }
 
 /**
@@ -93,7 +85,8 @@ fun Fragment.openExternalWebPage(url: String, showErrorToast: Boolean = true): B
         return true
     } else
         if (showErrorToast)
-            showToast(R.string.invalid_url)
+            context?.showToast(R.string.invalid_url)
+
 
     return false
 }

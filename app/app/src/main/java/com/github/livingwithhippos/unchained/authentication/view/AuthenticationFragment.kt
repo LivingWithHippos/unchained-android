@@ -109,7 +109,7 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
 
     override fun onCopyClick(text: String) {
         copyToClipboard("real-debrid authorization code", text)
-        showToast(R.string.code_copied)
+        context?.showToast(R.string.code_copied)
     }
 
     override fun onInsertTokenClick(etToken: EditText) {
@@ -117,7 +117,7 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
         val token = etToken.text.toString().trim()
         // mine is 52 characters
         if (token.length < 40)
-            showToast(R.string.invalid_token)
+            context?.showToast(R.string.invalid_token)
         else
         // pass the value to be checked and eventually saved
             viewModel.checkAndSaveToken(privateKey = token)
