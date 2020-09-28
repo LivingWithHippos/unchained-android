@@ -13,6 +13,7 @@ import com.github.livingwithhippos.unchained.data.repositoy.UserRepository
 import com.github.livingwithhippos.unchained.data.model.User
 import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.PRIVATE_TOKEN
+import com.github.livingwithhippos.unchained.utilities.extension.zipLiveData
 import kotlinx.coroutines.launch
 
 /**
@@ -28,6 +29,8 @@ class MainActivityViewModel @ViewModelInject constructor(
     val authenticationState = MutableLiveData<Event<AuthenticationState>>()
 
     val userLiveData = MutableLiveData<User?>()
+
+    val externalMagnetLiveData = MutableLiveData<Event<String?>>()
 
     // fixme: this is here because userLiveData.postValue(user) is throwing an unsafe error
     //  but auto-correcting it changes the value of val authenticationState = MutableLiveData<Event<AuthenticationState>>() to a nullable one
@@ -127,6 +130,10 @@ class MainActivityViewModel @ViewModelInject constructor(
                 }
             }
         }
+    }
+
+    fun addMagnet(magnet: String) {
+        externalMagnetLiveData.postValue(Event(magnet))
     }
 
 }

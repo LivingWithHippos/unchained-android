@@ -192,6 +192,15 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
             downloadBinding.bUnrestrict.runRippleAnimation()
         }
 
+        activityViewModel.externalMagnetLiveData.observe(viewLifecycleOwner, {
+            it.getContentIfNotHandled()?.let { magnet ->
+                // set as text input text
+                downloadBinding.tiLink.setText(magnet, TextView.BufferType.EDITABLE)
+                // simulate button click
+                downloadBinding.bUnrestrict.performClick()
+            }
+        })
+
         return downloadBinding.root
     }
 
