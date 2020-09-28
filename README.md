@@ -4,7 +4,9 @@
 
 # Unchained for Android
 
-[![License](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)    [![Kotlin Version](https://img.shields.io/badge/kotlin-1.3.72-blue)](http://kotlinlang.org/) [![Android Studio](https://img.shields.io/badge/Android%20Studio-4.0.1%2B-brightgreen)](https://developer.android.com/studio)    [![API](https://img.shields.io/badge/API-24%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=24)    [![CircleCI](https://circleci.com/gh/LivingWithHippos/Keter-Escape/tree/master.svg?style=shield)](https://circleci.com/gh/LivingWithHippos/unchained-android/tree/master)
+[![License](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)    [![Kotlin Version](https://img.shields.io/badge/kotlin-1.3.72-blue)](http://kotlinlang.org/) [![Android Studio](https://img.shields.io/badge/Android%20Studio-4.0.1%2B-brightgreen)](https://developer.android.com/studio)    [![API](https://img.shields.io/badge/API-24%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=24)    [![CircleCI](https://circleci.com/gh/LivingWithHippos/Keter-Escape/tree/master.svg?style=shield)](https://circleci.com/gh/LivingWithHippos/unchained-android/tree/master)    [![Play Store](https://img.shields.io/badge/play%20store-v1.0.0--beta--2-brightgreen)](https://play.google.com/store/apps/details?id=com.github.livingwithhippos.unchained)
+
+
 
 App to interact with [Real Debrid](https://real-debrid.com/) APIs.
 
@@ -43,7 +45,7 @@ You have multiple options to install Unchained for Android:
 
 1. Get the [latest published release](https://github.com/LivingWithHippos/unchained-android/releases) from Github
 2. Get the [latest build artifacts](https://app.circleci.com/pipelines/github/LivingWithHippos/unchained-android?branch=master) from CircleCI: expand the desired pipeline item -> select "build" -> select the "artifacts" tab
-3. Get the latest release from the Play Store (TBA)
+3. Get the [Play Store release](https://play.google.com/store/apps/details?id=com.github.livingwithhippos.unchained)
 
 
 ### Developing and Contributing :writing_hand:
