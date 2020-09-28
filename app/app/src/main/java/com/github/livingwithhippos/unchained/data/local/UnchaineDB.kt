@@ -12,7 +12,7 @@ import com.github.livingwithhippos.unchained.data.model.Credentials
     version = 1,
     exportSchema = false
 )
-public abstract class UnchaindeDB : RoomDatabase() {
+abstract class UnchaineDB : RoomDatabase() {
 
     abstract fun credentialsDao(): CredentialsDao
 
