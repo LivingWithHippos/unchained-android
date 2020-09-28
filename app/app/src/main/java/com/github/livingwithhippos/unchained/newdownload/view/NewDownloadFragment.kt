@@ -1,6 +1,8 @@
 package com.github.livingwithhippos.unchained.newdownload.view
 
 import android.content.ContentResolver
+import android.content.ContentResolver.SCHEME_CONTENT
+import android.content.ContentResolver.SCHEME_FILE
 import android.net.Uri
 import android.os.Bundle
 import android.os.ParcelFileDescriptor
@@ -21,8 +23,8 @@ import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.data.model.AuthenticationState
 import com.github.livingwithhippos.unchained.databinding.NewDownloadFragmentBinding
 import com.github.livingwithhippos.unchained.newdownload.viewmodel.NewDownloadViewModel
-import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewModel
 import com.github.livingwithhippos.unchained.utilities.REMOTE_TRAFFIC_ON
+import com.github.livingwithhippos.unchained.utilities.SCHEME_MAGNET
 import com.github.livingwithhippos.unchained.utilities.extension.getClipboardText
 import com.github.livingwithhippos.unchained.utilities.extension.isMagnet
 import com.github.livingwithhippos.unchained.utilities.extension.isWebUrl
@@ -192,12 +194,21 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
             downloadBinding.bUnrestrict.runRippleAnimation()
         }
 
-        activityViewModel.externalMagnetLiveData.observe(viewLifecycleOwner, {
-            it.getContentIfNotHandled()?.let { magnet ->
-                // set as text input text
-                downloadBinding.tiLink.setText(magnet, TextView.BufferType.EDITABLE)
-                // simulate button click
-                downloadBinding.bUnrestrict.performClick()
+        activityViewModel.externalLinkLiveData.observe(viewLifecycleOwner, {
+            it.getContentIfNotHandled()?.let { link ->
+                when (link.scheme)  {
+                    SCHEME_MAGNET -> {
+                        showToast(R.string.loading_magnet_link)
+                        // set as text input text
+                        downloadBinding.tiLink.setText(link.toString(), TextView.BufferType.EDITABLE)
+                        // simulate button click
+                        downloadBinding.bUnrestrict.performClick()
+                    }
+                    SCHEME_CONTENT, SCHEME_FILE -> {
+                        showToast(R.string.loading_torrent_file)
+                        loadTorrent(requireContext().contentResolver, link)
+                    }
+                }
             }
         })
 

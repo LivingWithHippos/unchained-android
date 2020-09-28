@@ -1,6 +1,7 @@
 package com.github.livingwithhippos.unchained.start.viewmodel
 
 import android.annotation.SuppressLint
+import android.net.Uri
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -30,7 +31,7 @@ class MainActivityViewModel @ViewModelInject constructor(
 
     val userLiveData = MutableLiveData<User?>()
 
-    val externalMagnetLiveData = MutableLiveData<Event<String?>>()
+    val externalLinkLiveData = MutableLiveData<Event<Uri?>>()
 
     // fixme: this is here because userLiveData.postValue(user) is throwing an unsafe error
     //  but auto-correcting it changes the value of val authenticationState = MutableLiveData<Event<AuthenticationState>>() to a nullable one
@@ -132,8 +133,8 @@ class MainActivityViewModel @ViewModelInject constructor(
         }
     }
 
-    fun addMagnet(magnet: String) {
-        externalMagnetLiveData.postValue(Event(magnet))
+    fun addLink(uri: Uri) {
+        externalLinkLiveData.postValue(Event(uri))
     }
 
 }

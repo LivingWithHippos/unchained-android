@@ -1,9 +1,12 @@
 package com.github.livingwithhippos.unchained.base
 
 
+import android.content.ContentResolver.SCHEME_CONTENT
+import android.content.ContentResolver.SCHEME_FILE
 import com.github.livingwithhippos.unchained.utilities.extension.observeOnce
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -16,7 +19,9 @@ import com.github.livingwithhippos.unchained.databinding.ActivityMainBinding
 import com.github.livingwithhippos.unchained.settings.SettingsActivity
 import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewModel
 import com.github.livingwithhippos.unchained.utilities.BottomNavManager
-import com.github.livingwithhippos.unchained.utilities.extension.isMagnet
+import com.github.livingwithhippos.unchained.utilities.SCHEME_HTTP
+import com.github.livingwithhippos.unchained.utilities.SCHEME_HTTPS
+import com.github.livingwithhippos.unchained.utilities.SCHEME_MAGNET
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
@@ -89,27 +94,33 @@ class MainActivity : AppCompatActivity() {
             // clicks on magnets arrive here
             val data = it.data
             // check uri content
-            if (data!=null && data.toString().isMagnet()) {
-                // check auth state before loading them
-                viewModel.authenticationState.observeOnce(this, { auth ->
-                    when (auth.peekContent()) {
-                        AuthenticationState.AUTHENTICATED -> processMagnetIntent(data.toString())
-                        AuthenticationState.AUTHENTICATED_NO_PREMIUM -> baseContext.showToast(R.string.premium_needed_torrent)
-                        else -> showToast(R.string.please_login)
-                    }
-                })
+            if (data!=null) {
 
+                when (data.scheme) {
+                    //clicked on a torrent file or a magnet link
+                    SCHEME_MAGNET, SCHEME_CONTENT, SCHEME_FILE -> {
+                        // check auth state before loading it
+                        viewModel.authenticationState.observeOnce(this, { auth ->
+                            when (auth.peekContent()) {
+                                AuthenticationState.AUTHENTICATED -> processLinkIntent(data)
+                                AuthenticationState.AUTHENTICATED_NO_PREMIUM -> baseContext.showToast(R.string.premium_needed_torrent)
+                                else -> showToast(R.string.please_login)
+                            }
+                        })
+                    }
+                    SCHEME_HTTP, SCHEME_HTTPS -> {}
+                }
             }
         }
     }
 
-    private fun processMagnetIntent(magnet: String) {
+    private fun processLinkIntent(uri: Uri) {
         // simulate click on new download tab
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_nav_view)
         if (bottomNav.selectedItemId != R.id.navigation_download) {
             bottomNav.selectedItemId = R.id.navigation_download
         }
-        viewModel.addMagnet(magnet)
+        viewModel.addLink(uri)
     }
 
     private fun openSettings() {
