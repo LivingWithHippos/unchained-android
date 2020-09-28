@@ -26,7 +26,7 @@
         <!--colorSecondary colors are most often used as accents on components, such as FABs and -->
         <!--selection controls.-->
         <item name="colorPrimary">@color/purple_500</item>
-        <item name="colorPrimaryVariant">@color/purple_100</item>
+        <item name="colorPrimaryVariant">@color/purple_700</item>
         <item name="colorSecondary">@color/green_200</item>
         <item name="colorSecondaryVariant">@color/green_500</item>
         <!--colorBackground appears behind scrollable content and is used for the default window-->
