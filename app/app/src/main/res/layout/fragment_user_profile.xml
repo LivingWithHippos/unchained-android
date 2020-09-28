@@ -29,7 +29,6 @@
             android:id="@+id/tvName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
             android:layout_marginTop="30dp"
             android:layout_marginEnd="20dp"
             android:ellipsize="end"
@@ -37,7 +36,7 @@
             android:text="@{user.username, default=`User Name`}"
             android:textAppearance="?attr/textAppearanceHeadline5"
             app:layout_constraintEnd_toStartOf="@id/ivProfilePic"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@id/cvPremium"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
@@ -57,16 +56,16 @@
             android:id="@+id/ivProfilePic"
             android:layout_width="70dp"
             android:layout_height="70dp"
-            android:layout_marginEnd="30dp"
             android:contentDescription="@string/user_avatar"
             android:src="@drawable/android_black"
             app:imageURL="@{user.avatar}"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/cvPremium"
             app:layout_constraintTop_toTopOf="@id/tvName" />
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cvPremium"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
+            app:layout_constraintWidth_max="500dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:layout_marginTop="20dp"
@@ -159,15 +158,13 @@
             style="@style/TextAppearance.UnchainedTheme.Body2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="20dp"
-            android:layout_marginStart="20dp"
             android:layout_marginTop="10dp"
             android:autoLink="web"
             android:textAlignment="center"
             android:text="@{privateToken == true ? @string/login_type_private : @string/login_type_open, default=@string/login_type_private }"
             app:layout_constraintBottom_toTopOf="@+id/divider"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/cvPremium"
+            app:layout_constraintEnd_toEndOf="@id/cvPremium"
             app:layout_constraintTop_toBottomOf="@id/cvPremium" />
 
         <View
@@ -176,7 +173,7 @@
             android:layout_width="300dp"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
             app:layout_constraintTop_toBottomOf="@+id/tvLoginDescription"
             app:layout_constraintBottom_toTopOf="@+id/tvDescription"
             app:layout_constraintEnd_toEndOf="parent"
@@ -189,15 +186,13 @@
             style="@style/TextAppearance.UnchainedTheme.Body2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="20dp"
-            android:layout_marginStart="20dp"
             android:layout_marginTop="10dp"
             android:autoLink="web"
             android:textAlignment="center"
             android:text="@string/rd_settings_link_description"
             app:layout_constraintBottom_toTopOf="@+id/bPremium"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/cvPremium"
+            app:layout_constraintEnd_toEndOf="@id/cvPremium"
             app:layout_constraintTop_toBottomOf="@id/divider" />
 
         <Button
