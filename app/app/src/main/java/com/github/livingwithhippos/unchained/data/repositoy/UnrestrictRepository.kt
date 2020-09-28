@@ -37,7 +37,7 @@ class UnrestrictRepository @Inject constructor(private val unrestrictApiHelper: 
     ): List<DownloadItem?> {
         val unrestrictedLinks = mutableListOf<DownloadItem?>()
         linksList.forEach {
-            unrestrictedLinks.add(getUnrestrictedLink(token,it,password,remote))
+            unrestrictedLinks.add(getUnrestrictedLink(token, it, password, remote))
             // just to be on the safe side...
             delay(100)
         }

@@ -6,7 +6,7 @@ import com.github.livingwithhippos.unchained.data.model.Credentials
 
 /**
  * Annotates class to be a Room Database with a table (entity) of the Credentials class
-  */
+ */
 @Database(
     entities = [Credentials::class],
     version = 1,

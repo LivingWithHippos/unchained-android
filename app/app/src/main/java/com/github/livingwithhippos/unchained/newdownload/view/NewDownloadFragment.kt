@@ -18,7 +18,6 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.net.toUri
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.github.livingwithhippos.unchained.BuildConfig
@@ -40,7 +39,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
 import java.io.FileDescriptor
 import java.io.FileInputStream
-import java.nio.file.Path
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
@@ -148,7 +146,7 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
             if (authState == AuthenticationState.AUTHENTICATED) {
                 val link: String = downloadBinding.tiLink.text.toString().trim()
                 when {
-                    link.isWebUrl()-> {
+                    link.isWebUrl() -> {
                         downloadBinding.bUnrestrict.isEnabled = false
                         downloadBinding.bLoadTorrent.isEnabled = false
 
@@ -171,7 +169,7 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
                         downloadBinding.bLoadTorrent.isEnabled = false
                         viewModel.fetchAddedMagnet(link)
                     }
-                    link.isBlank()-> {
+                    link.isBlank() -> {
                         context?.showToast(R.string.please_insert_url)
                     }
                     else -> {
@@ -179,8 +177,7 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
                     }
                 }
 
-            }
-            else
+            } else
                 context?.showToast(R.string.premium_needed)
         }
 
@@ -232,7 +229,10 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
 
         activityViewModel.downloadedTorrentLiveData.observe(viewLifecycleOwner, {
             it.getContentIfNotHandled()?.let { fileName ->
-                val torrentFile = File(requireContext().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS),fileName)
+                val torrentFile = File(
+                    requireContext().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS),
+                    fileName
+                )
                 loadTorrent(requireContext().contentResolver, torrentFile.toUri())
             }
         })
@@ -278,15 +278,20 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
     }
 
     private fun downloadTorrent(uri: Uri) {
-        val nameRegex= "/([^/]+.torrent)\$"
+        val nameRegex = "/([^/]+.torrent)\$"
         val m: Matcher = Pattern.compile(nameRegex).matcher(uri.toString())
-        val torrentName = if(m.find())m.group(1) else null
-        if (!torrentName.isNullOrBlank() && context!=null) {
-            val manager = requireContext().getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+        val torrentName = if (m.find()) m.group(1) else null
+        if (!torrentName.isNullOrBlank() && context != null) {
+            val manager =
+                requireContext().getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
             val request: DownloadManager.Request = DownloadManager.Request(uri)
                 .setTitle(getString(R.string.unchained_torrent_download))
                 .setDescription(getString(R.string.temporary_torrent_download))
-                .setDestinationInExternalFilesDir(requireContext(), Environment.DIRECTORY_DOWNLOADS,torrentName)
+                .setDestinationInExternalFilesDir(
+                    requireContext(),
+                    Environment.DIRECTORY_DOWNLOADS,
+                    torrentName
+                )
             val downloadID = manager.enqueue(request)
             activityViewModel.setDownload(downloadID, torrentName)
         }

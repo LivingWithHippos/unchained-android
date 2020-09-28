@@ -1,14 +1,12 @@
 package com.github.livingwithhippos.unchained.torrentdetails.viewmodel
 
-import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.data.repositoy.CredentialsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.TorrentsRepository
-import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import kotlinx.coroutines.launch
 
 /**

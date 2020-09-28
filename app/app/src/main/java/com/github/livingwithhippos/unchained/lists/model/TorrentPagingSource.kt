@@ -1,9 +1,9 @@
 package com.github.livingwithhippos.unchained.lists.model
 
 import androidx.paging.PagingSource
+import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.data.repositoy.CredentialsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.TorrentsRepository
-import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import retrofit2.HttpException
 import java.io.IOException
 

@@ -17,15 +17,16 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Observer
 import com.github.livingwithhippos.unchained.BuildConfig
 import com.github.livingwithhippos.unchained.R
-import java.util.Locale
+import java.util.*
 
 /**
-* Show a toast message
-* @param stringResource: the string resource to be retrieved and shown
+ * Show a toast message
+ * @param stringResource: the string resource to be retrieved and shown
  * @param length How long to display the message.  Either {@link #LENGTH_SHORT} or
  *                 {@link #LENGTH_LONG} Defaults to short
-*/
-fun Context.showToast(stringResource: Int, length: Int = Toast.LENGTH_SHORT) = this.showToast(getString(stringResource, length))
+ */
+fun Context.showToast(stringResource: Int, length: Int = Toast.LENGTH_SHORT) =
+    this.showToast(getString(stringResource, length))
 
 /**
  * Show a toast message

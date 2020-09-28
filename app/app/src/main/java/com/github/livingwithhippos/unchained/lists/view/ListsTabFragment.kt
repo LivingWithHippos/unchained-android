@@ -174,11 +174,10 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
         if (authState == AuthenticationState.AUTHENTICATED) {
             if (item.status == "downloaded") {
                 // if the item has many links to download, show a toast
-                if (item.links.size>2)
+                if (item.links.size > 2)
                     context?.showToast(R.string.downloading_torrent)
                 viewModel.downloadTorrent(item)
-            }
-            else
+            } else
                 context?.showToast(R.string.torrent_not_downloaded)
         } else
             context?.showToast(R.string.premium_needed)

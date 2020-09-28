@@ -12,9 +12,6 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
-import androidx.navigation.NavController
-import androidx.navigation.ui.setupWithNavController
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.model.AuthenticationState
 import com.github.livingwithhippos.unchained.databinding.ActivityMainBinding
@@ -94,7 +91,10 @@ class MainActivity : AppCompatActivity() {
         getIntentData()
 
         // observe for torrents downloaded
-        registerReceiver(getDownloadCompleteReceiver(), IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
+        registerReceiver(
+            getDownloadCompleteReceiver(),
+            IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
+        )
     }
 
     private fun getDownloadCompleteReceiver(): BroadcastReceiver {

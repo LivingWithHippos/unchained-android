@@ -1,20 +1,18 @@
 package com.github.livingwithhippos.unchained.newdownload.viewmodel
 
 import android.util.Log
-import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.livingwithhippos.unchained.BuildConfig
 import com.github.livingwithhippos.unchained.data.model.APIError
 import com.github.livingwithhippos.unchained.data.model.APIException
+import com.github.livingwithhippos.unchained.data.model.DownloadItem
+import com.github.livingwithhippos.unchained.data.model.UploadedTorrent
 import com.github.livingwithhippos.unchained.data.repositoy.CredentialsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.TorrentsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.UnrestrictRepository
-import com.github.livingwithhippos.unchained.data.model.DownloadItem
-import com.github.livingwithhippos.unchained.data.model.UploadedTorrent
 import com.github.livingwithhippos.unchained.utilities.Event
 import kotlinx.coroutines.launch
 

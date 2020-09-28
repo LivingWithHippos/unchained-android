@@ -1,7 +1,6 @@
 package com.github.livingwithhippos.unchained.data.remote
 
 import com.github.livingwithhippos.unchained.data.model.Stream
-import com.github.livingwithhippos.unchained.data.remote.StreamingApiHelper
 import retrofit2.Response
 import javax.inject.Inject
 

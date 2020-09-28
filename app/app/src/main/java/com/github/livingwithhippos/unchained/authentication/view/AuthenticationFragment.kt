@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.authentication.viewmodel.AuthenticationViewModel
@@ -69,7 +68,7 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
 
         // a user is retrieved when a working token is used
         viewModel.userLiveData.observe(viewLifecycleOwner, {
-            it.getContentIfNotHandled()?.let {user->
+            it.getContentIfNotHandled()?.let { user ->
                 if (user.premium > 0)
                     activityViewModel.setAuthenticated()
                 else
