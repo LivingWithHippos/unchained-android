@@ -44,6 +44,14 @@ class MainActivity : UnchainedActivity() {
 
     val viewModel: MainActivityViewModel by viewModels()
 
+    val downloadReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                intent?.let {
+                    viewModel.checkDownload(it.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1))
+                }
+            }
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -95,19 +103,9 @@ class MainActivity : UnchainedActivity() {
 
         // observe for torrents downloaded
         registerReceiver(
-            getDownloadCompleteReceiver(),
+            downloadReceiver,
             IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
         )
-    }
-
-    private fun getDownloadCompleteReceiver(): BroadcastReceiver {
-        return object : BroadcastReceiver() {
-            override fun onReceive(context: Context?, intent: Intent?) {
-                intent?.let {
-                    viewModel.checkDownload(it.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1))
-                }
-            }
-        }
     }
 
     private fun getIntentData() {
@@ -184,9 +182,7 @@ class MainActivity : UnchainedActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        //todo: test if this works (probably not)
-        // narrator: it did not
-        unregisterReceiver(getDownloadCompleteReceiver())
+        unregisterReceiver(downloadReceiver)
     }
 
     private fun processLinkIntent(uri: Uri) {
