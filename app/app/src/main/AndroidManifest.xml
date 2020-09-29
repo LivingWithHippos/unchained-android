@@ -8,6 +8,7 @@
     <application
         android:name=".base.UnchainedApplication"
         android:allowBackup="true"
+        android:fullBackupContent="@xml/unchained_backup"
         android:icon="@mipmap/icon_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/icon_launcher_round"
