@@ -8,6 +8,7 @@ import android.content.ContentResolver.SCHEME_FILE
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
 import androidx.activity.viewModels
@@ -16,6 +17,7 @@ import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.model.AuthenticationState
 import com.github.livingwithhippos.unchained.databinding.ActivityMainBinding
 import com.github.livingwithhippos.unchained.settings.SettingsActivity
+import com.github.livingwithhippos.unchained.settings.SettingsFragment.Companion.KEY_THEME
 import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewModel
 import com.github.livingwithhippos.unchained.utilities.BottomNavManager
 import com.github.livingwithhippos.unchained.utilities.SCHEME_HTTP
@@ -27,6 +29,7 @@ import com.github.livingwithhippos.unchained.utilities.extension.observeOnce
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 
 /**
@@ -42,11 +45,19 @@ class MainActivity : AppCompatActivity() {
 
     val viewModel: MainActivityViewModel by viewModels()
 
+    @Inject
+    lateinit var preferences: SharedPreferences
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        when (preferences.getInt(KEY_THEME, 0)) {
+            // this theme is the original one
+            0 -> setTheme(R.style.Theme_Unchained)
+        }
 
         if (savedInstanceState == null) {
             setupNavigationManager()

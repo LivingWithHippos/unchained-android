@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
+
+    <DropDownPreference
+        android:key="current_theme"
+        android:title="@string/title_theme_preference"
+        android:entries="@array/themes"
+        android:entryValues="@array/theme_values"
+        android:defaultValue="@string/original"
+        app:useSimpleSummaryProvider="true"/>
+
+    <PreferenceCategory
+        android:title="@string/title_various">
 
     <Preference
         app:key="feedback"
@@ -24,5 +36,7 @@
     <Preference
         app:key="privacy"
         app:title="@string/privacy_policy_title" />
+
+    </PreferenceCategory>
 
 </PreferenceScreen>

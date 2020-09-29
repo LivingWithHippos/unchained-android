@@ -3,4 +3,10 @@
     <array name="preloaded_fonts" translatable="false">
         <item>@font/roboto_light</item>
     </array>
+    <string-array name="themes" >
+        <item>@string/original</item>
+    </string-array>
+    <string-array name="theme_values">
+        <item>0</item>
+    </string-array>
 </resources>

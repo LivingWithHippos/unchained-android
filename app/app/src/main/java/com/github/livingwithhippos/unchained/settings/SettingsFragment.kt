@@ -1,19 +1,24 @@
 package com.github.livingwithhippos.unchained.settings
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.HtmlDialogFragment
+import com.github.livingwithhippos.unchained.data.repositoy.CredentialsRepository
 import com.github.livingwithhippos.unchained.utilities.FEEDBACK_URL
 import com.github.livingwithhippos.unchained.utilities.GPLV3_URL
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
+import javax.inject.Inject
 
 /**
  * A simple [PreferenceFragmentCompat] subclass.
  * Manages the interactions with the items in the preferences menu
  */
 class SettingsFragment : PreferenceFragmentCompat() {
+    @Inject
+    lateinit var preferences: SharedPreferences
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.settings, rootKey)
@@ -51,5 +56,13 @@ class SettingsFragment : PreferenceFragmentCompat() {
     private fun openPrivacyDialog() {
         val dialog = HtmlDialogFragment(R.string.privacy_policy_title, R.string.privacy_text)
         dialog.show(parentFragmentManager, "TermsDialogFragment")
+    }
+
+    companion object {
+        const val KEY_DAY_NIGHT = "day_night"
+        const val KEY_THEME = "current_theme"
+        const val KEY_THEME_AUTO = 0
+        const val KEY_THEME_NIGHT = 1
+        const val KEY_THEME_DAY = 2
     }
 }

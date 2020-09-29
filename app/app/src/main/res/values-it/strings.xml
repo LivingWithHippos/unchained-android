@@ -151,4 +151,10 @@
     <string name="unchained_torrent_download">Unchained Scaricamento Torrent</string>
     <string name="temporary_torrent_download">Scaricamento temporaneo di un file torrent</string>
     <string name="error_loading_dialog">Errore nel caricamento della finestra, si prega di riaprirla.</string>
+    <string name="title_theme_preference">Tema</string>
+    <string name="automatic">Automatico</string>
+    <string name="night">Notte</string>
+    <string name="day">Giorno</string>
+    <string name="title_various">Varie</string>
+    <string name="original">Originale</string>
 </resources>
