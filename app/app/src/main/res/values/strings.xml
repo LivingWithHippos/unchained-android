@@ -373,4 +373,6 @@
     <string name="original">Original</string>
     <string name="night_theme">Night mode</string>
     <string name="title_aspect">Aspect</string>
+    <string name="delete">Delete</string>
+    <string name="torrent_deleted">Torrent deleted.</string>
 </resources>
