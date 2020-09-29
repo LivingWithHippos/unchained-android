@@ -4,11 +4,15 @@ import com.github.livingwithhippos.unchained.data.model.AvailableHost
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.data.model.UploadedTorrent
 import okhttp3.RequestBody
+import okhttp3.ResponseBody
+import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
+import retrofit2.http.HTTP
 import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.PUT
@@ -77,5 +81,16 @@ interface TorrentsApi {
         @Path("id") id: String,
         @Field("files") files: String = "all"
     ): Response<Unit>
+
+    /**
+     * Delete a torrent.
+     * @param token the authorization token, formed as "Bearer api_token"
+     * @param id the torrent ID, returned by addTorrent or getTorrentsList
+     */
+    @DELETE("torrents/delete/{id}")
+    fun deleteTorrent(
+        @Header("Authorization") token: String,
+        @Path("id") id: String,
+    ): Call<ResponseBody>
 
 }

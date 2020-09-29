@@ -1,5 +1,7 @@
 package com.github.livingwithhippos.unchained.data.repositoy
 
+import android.util.Log
+import com.github.livingwithhippos.unchained.BuildConfig
 import com.github.livingwithhippos.unchained.data.model.AvailableHost
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.data.model.UploadedTorrent
@@ -7,6 +9,10 @@ import com.github.livingwithhippos.unchained.data.remote.TorrentApiHelper
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.ResponseBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import javax.inject.Inject
 
 
@@ -117,6 +123,8 @@ class TorrentsRepository @Inject constructor(private val torrentApiHelper: Torre
         files: String = "all"
     ) {
 
+        if (BuildConfig.DEBUG)
+            Log.d("TorrentsRepository", "Selecting files for torrent: $id")
         //this call has no return type
         safeApiCall(
             call = {
@@ -129,5 +137,36 @@ class TorrentsRepository @Inject constructor(private val torrentApiHelper: Torre
             errorMessage = "Error Selecting Torrent Files"
         )
 
+    }
+
+    suspend fun deleteTorrent(token: String, id: String): Int? {
+
+        val responseCode = safeEmptyApiCall(
+            call = {
+                torrentApiHelper.deleteTorrent(
+                    token = "Bearer $token",
+                    id = id
+                )
+            },
+            errorMessage = "Error Selecting Torrent Files"
+        )
+
+        return responseCode
+    }
+
+    suspend fun deleteTorrentBackup(token: String, id: String): Int? {
+        var responseCode = -1
+        torrentApiHelper.deleteTorrent(
+            token = "Bearer $token",
+            id = id,
+        ).enqueue(object : Callback<ResponseBody> {
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                responseCode = response.code()
+            }
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+            }
+        })
+
+        return responseCode
     }
 }
