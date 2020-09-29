@@ -36,8 +36,7 @@ import javax.inject.Inject
  * A [AppCompatActivity] subclass.
  * Shared between all the fragments except for the preferences.
  */
-@AndroidEntryPoint
-class MainActivity : AppCompatActivity() {
+class MainActivity : UnchainedActivity() {
 
     private var bottomNavManager: BottomNavManager? = null
 
@@ -45,19 +44,12 @@ class MainActivity : AppCompatActivity() {
 
     val viewModel: MainActivityViewModel by viewModels()
 
-    @Inject
-    lateinit var preferences: SharedPreferences
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        when (preferences.getInt(KEY_THEME, 0)) {
-            // this theme is the original one
-            0 -> setTheme(R.style.Theme_Unchained)
-        }
 
         if (savedInstanceState == null) {
             setupNavigationManager()
@@ -193,6 +185,7 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         //todo: test if this works (probably not)
+        // narrator: it did not
         unregisterReceiver(getDownloadCompleteReceiver())
     }
 

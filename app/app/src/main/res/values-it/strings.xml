@@ -157,4 +157,6 @@
     <string name="day">Giorno</string>
     <string name="title_various">Varie</string>
     <string name="original">Originale</string>
+    <string name="night_theme">Modalità notte</string>
+    <string name="title_aspect">Aspetto</string>
 </resources>

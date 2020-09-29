@@ -371,4 +371,6 @@
     <string name="day">Day</string>
     <string name="title_various">Various</string>
     <string name="original">Original</string>
+    <string name="night_theme">Night mode</string>
+    <string name="title_aspect">Aspect</string>
 </resources>

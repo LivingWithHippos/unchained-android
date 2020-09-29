@@ -59,7 +59,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
     }
 
     companion object {
-        const val KEY_DAY_NIGHT = "day_night"
+        // these must match the ones used in [xml/settings.xml]
+        const val KEY_DAY_NIGHT = "day_night_theme"
         const val KEY_THEME = "current_theme"
         const val KEY_THEME_AUTO = 0
         const val KEY_THEME_NIGHT = 1

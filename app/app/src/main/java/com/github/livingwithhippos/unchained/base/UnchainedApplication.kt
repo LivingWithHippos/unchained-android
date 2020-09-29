@@ -2,7 +2,9 @@ package com.github.livingwithhippos.unchained.base
 
 import android.app.Application
 import android.content.SharedPreferences
+import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
+import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.repositoy.CredentialsRepository
 import com.github.livingwithhippos.unchained.settings.SettingsFragment
 import dagger.hilt.android.HiltAndroidApp
@@ -22,10 +24,8 @@ class UnchainedApplication : Application() {
     @Inject
     lateinit var credentialsRepository: CredentialsRepository
 
-    /**
     @Inject
     lateinit var preferences: SharedPreferences
-     */
 
     private val job = Job()
     private val scope = CoroutineScope(Dispatchers.Default + job)
@@ -37,15 +37,12 @@ class UnchainedApplication : Application() {
             credentialsRepository.deleteIncompleteCredentials()
         }
 
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
-
-        /**
-        // enable or disable night mode according with preference
-        when (preferences.getInt(SettingsFragment.KEY_DAY_NIGHT, 0)) {
-            0 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
-            1 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            2 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        val nightModeArray = resources.getStringArray(R.array.night_mode_values)
+        // enable or disable night mode according with the preferences
+        when (preferences.getString(SettingsFragment.KEY_DAY_NIGHT, "auto")) {
+            nightModeArray[0] -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+            nightModeArray[1] -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            nightModeArray[2] -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         }
-         */
     }
 }
