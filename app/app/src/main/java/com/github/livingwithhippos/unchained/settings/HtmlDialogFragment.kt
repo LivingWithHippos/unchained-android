@@ -1,4 +1,4 @@
-package com.github.livingwithhippos.unchained.base
+package com.github.livingwithhippos.unchained.settings
 
 import android.app.Dialog
 import android.os.Bundle
@@ -8,7 +8,6 @@ import androidx.core.text.HtmlCompat.FROM_HTML_MODE_COMPACT
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
 import com.github.livingwithhippos.unchained.R
-import com.github.livingwithhippos.unchained.settings.HtmlDialogViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 
