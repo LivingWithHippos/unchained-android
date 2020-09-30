@@ -1,36 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:gravity="center_horizontal"
-    android:layout_marginBottom="10dp">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <data>
+    </data>
 
-    <Button
-        android:id="@+id/bOpen"
-        android:layout_width="wrap_content"
-        android:minWidth="150dp"
+    <LinearLayout
+        android:id="@+id/rooLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="@string/open" />
+        android:layout_marginBottom="10dp"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
 
-    <Button
-        android:id="@+id/bDownload"
-        android:layout_width="wrap_content"
-        android:minWidth="150dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:text="@string/download" />
+        <Button
+            android:id="@+id/bOpen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:minWidth="150dp"
+            android:text="@string/open" />
 
-    <Button
-        android:id="@+id/bDelete"
-        android:layout_width="wrap_content"
-        android:minWidth="150dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:backgroundTint="?attr/colorSecondary"
-        android:textColor="?attr/colorOnSecondary"
-        android:text="@string/delete" />
-</LinearLayout>
+        <Button
+            android:id="@+id/bDownload"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:minWidth="150dp"
+            android:text="@string/download" />
+
+        <Button
+            android:id="@+id/bDelete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:backgroundTint="?attr/colorSecondary"
+            android:minWidth="150dp"
+            android:text="@string/delete"
+            android:textColor="?attr/colorOnSecondary" />
+    </LinearLayout>
+
+</layout>

@@ -2,11 +2,10 @@ package com.github.livingwithhippos.unchained.lists.view
 
 import android.app.Dialog
 import android.os.Bundle
-import android.widget.TextView
-import androidx.core.text.HtmlCompat
 import androidx.fragment.app.DialogFragment
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
+import com.github.livingwithhippos.unchained.databinding.DialogTorrentItemBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class TorrentContextualDialogFragment : DialogFragment {
@@ -30,11 +29,11 @@ class TorrentContextualDialogFragment : DialogFragment {
             // Get the layout inflater
             val inflater = it.layoutInflater
 
-            val view = inflater.inflate(R.layout.dialog_torrent_item, null)
+            val binding = DialogTorrentItemBinding.inflate(inflater)
 
             val title = item?.filename ?: ""
 
-            builder.setView(view)
+            builder.setView(binding.root)
                 .setTitle(title)
                 .setNeutralButton(resources.getString(R.string.close)) { dialog, _ ->
                     dialog.cancel()
