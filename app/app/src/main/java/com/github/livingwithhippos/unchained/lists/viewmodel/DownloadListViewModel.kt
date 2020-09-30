@@ -49,6 +49,7 @@ class DownloadListViewModel @ViewModelInject constructor(
     val downloadItemLiveData = MutableLiveData<Event<List<DownloadItem?>>>()
 
     val deletedTorrentLiveData = MutableLiveData<Event<Int?>>()
+    val deletedDownloadLiveData = MutableLiveData<Event<Int?>>()
 
     fun downloadTorrent(torrent: TorrentItem) {
         viewModelScope.launch {
@@ -71,6 +72,17 @@ class DownloadListViewModel @ViewModelInject constructor(
             val token = credentialsRepository.getToken()
             val deleted = torrentsRepository.deleteTorrent(token, id)
             deletedTorrentLiveData.postValue(Event(deleted))
+        }
+    }
+
+    fun deleteDownload(id: String) {
+        viewModelScope.launch {
+            val token = credentialsRepository.getToken()
+            val deleted = downloadRepository.deleteTorrent(token, id)
+            if (deleted == null)
+                deletedDownloadLiveData.postValue(Event(-1))
+            else
+                deletedDownloadLiveData.postValue(Event(1))
         }
     }
 

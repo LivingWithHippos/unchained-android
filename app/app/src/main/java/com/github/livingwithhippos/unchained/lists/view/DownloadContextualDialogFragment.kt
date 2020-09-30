@@ -15,13 +15,11 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 class DownloadContextualDialogFragment: DialogFragment {
 
     private var item: DownloadItem? = null
-    private var listener: DownloadDialogListener? = null
 
     val viewModel: TorrentDialogViewModel by viewModels()
 
-    constructor(item: DownloadItem, listener: DownloadDialogListener) : super() {
+    constructor(item: DownloadItem) : super() {
         this.item = item
-        this.listener = listener
     }
 
     constructor() : super()
@@ -40,19 +38,15 @@ class DownloadContextualDialogFragment: DialogFragment {
 
             binding.bDelete.setOnClickListener {
                 item?.let { download ->
-                    listener?.let {mListener ->
-                        mListener.onDeleteDownloadClick(download.id)
-                        dismiss()
-                    }
+                    setFragmentResult("downloadActionKey", bundleOf("deletedDownloadKey" to download.id))
+                    dismiss()
                 }
             }
 
             binding.bOpen.setOnClickListener {
                 item?.let { download ->
-                    listener?.let {mListener ->
-                        mListener.onOpenDownloadClick(download.id)
-                        dismiss()
-                    }
+                    setFragmentResult("downloadActionKey", bundleOf("openedDownloadItem" to download))
+                    dismiss()
                 }
             }
 
@@ -67,9 +61,4 @@ class DownloadContextualDialogFragment: DialogFragment {
             builder.create()
         } ?: throw IllegalStateException("Activity cannot be null")
     }
-}
-
-interface DownloadDialogListener {
-    fun onDeleteDownloadClick(id: String)
-    fun onOpenDownloadClick(id: String)
 }

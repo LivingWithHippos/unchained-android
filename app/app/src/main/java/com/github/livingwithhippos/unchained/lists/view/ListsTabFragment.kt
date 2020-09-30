@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
@@ -34,6 +35,7 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
         UPDATE_TORRENT, UPDATE_DOWNLOAD, READY
     }
 
+    //todo: rename viewModel to ListTabViewModel
     private val viewModel: DownloadListViewModel by viewModels()
 
     override fun onCreateView(
@@ -184,6 +186,23 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
             }
         })
 
+
+        setFragmentResultListener("downloadActionKey") { key, bundle ->
+            bundle.getString("deletedDownloadKey")?.let{
+                viewModel.deleteDownload(it)
+            }
+            bundle.getParcelable<DownloadItem>("openedDownloadItem")?.let{
+                onClick(it)
+            }
+        }
+
+        viewModel.deletedDownloadLiveData.observe(viewLifecycleOwner, {
+            it.getContentIfNotHandled().let {
+                context?.showToast(R.string.download_removed)
+                downloadAdapter.refresh()
+            }
+        })
+
         listBinding.tabs.getTabAt(viewModel.getSelectedTab())?.select()
 
         return listBinding.root
@@ -196,6 +215,11 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
             findNavController().navigate(action)
         } else
             context?.showToast(R.string.premium_needed)
+    }
+
+    override fun onLongClick(item: DownloadItem) {
+        val dialog = DownloadContextualDialogFragment(item)
+        dialog.show(parentFragmentManager, "DownloadContextualDialogFragment")
     }
 
     override fun onClick(item: TorrentItem) {
