@@ -1,6 +1,7 @@
 package com.github.livingwithhippos.unchained.data.remote
 
 import com.github.livingwithhippos.unchained.data.model.DownloadItem
+import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Response
@@ -38,5 +39,5 @@ interface DownloadsApi {
     suspend fun deleteDownload(
         @Header("Authorization") token: String,
         @Path("id") id: String,
-    ): Call<ResponseBody>
+    ): Response<Unit>
 }

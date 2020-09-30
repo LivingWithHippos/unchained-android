@@ -2,6 +2,9 @@ package com.github.livingwithhippos.unchained.downloaddetails.view
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
@@ -29,6 +32,28 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
 
     private val args: DownloadDetailsFragmentArgs by navArgs()
 
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.download_details_bar, menu)
+        super.onCreateOptionsMenu(menu,inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.delete -> {
+                // the delete operation is observed from the viewModel
+                viewModel.deleteDownload(args.details.id)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -41,6 +66,15 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         viewModel.streamLiveData.observe(viewLifecycleOwner, {
             if (it != null) {
                 detailsBinding.stream = it
+            }
+        })
+
+        viewModel.deletedDownloadLiveData.observe(viewLifecycleOwner, {
+            it.getContentIfNotHandled().let {
+                // todo: check returned value (it)
+                activity?.baseContext?.showToast(R.string.download_removed)
+                // if deleted go back
+                activity?.onBackPressed()
             }
         })
 
