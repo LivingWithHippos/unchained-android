@@ -111,6 +111,7 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
 
                     when (it.position) {
                         TAB_DOWNLOADS -> {
+                            viewModel.setSelectedTab(TAB_DOWNLOADS)
                             if (!viewModel.downloadsLiveData.hasActiveObservers())
                                 viewModel.downloadsLiveData.observe(
                                     viewLifecycleOwner,
@@ -118,6 +119,7 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
                                 )
                         }
                         TAB_TORRENTS -> {
+                            viewModel.setSelectedTab(TAB_TORRENTS)
                             if (!viewModel.torrentsLiveData.hasActiveObservers())
                                 viewModel.torrentsLiveData.observe(
                                     viewLifecycleOwner,
@@ -145,8 +147,6 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
                 }
             }
         })
-
-        listBinding.selectedTab = listBinding.tabs.selectedTabPosition
 
         viewModel.downloadItemLiveData.observe(viewLifecycleOwner, {
             it.getContentIfNotHandled()?.let { links ->
@@ -183,6 +183,8 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
                 else -> {}
             }
         })
+
+        listBinding.tabs.getTabAt(viewModel.getSelectedTab())?.select()
 
         return listBinding.root
     }
@@ -233,8 +235,8 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
     }
 
     companion object {
-        private const val TAB_DOWNLOADS = 0
-        private const val TAB_TORRENTS = 1
+        const val TAB_DOWNLOADS = 0
+        const val TAB_TORRENTS = 1
     }
 
 }

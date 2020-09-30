@@ -1,9 +1,11 @@
 package com.github.livingwithhippos.unchained.lists.viewmodel
 
 
+import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
@@ -19,6 +21,7 @@ import com.github.livingwithhippos.unchained.data.repositoy.TorrentsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.UnrestrictRepository
 import com.github.livingwithhippos.unchained.lists.model.DownloadPagingSource
 import com.github.livingwithhippos.unchained.lists.model.TorrentPagingSource
+import com.github.livingwithhippos.unchained.lists.view.ListsTabFragment.Companion.TAB_DOWNLOADS
 import com.github.livingwithhippos.unchained.utilities.Event
 import kotlinx.coroutines.launch
 
@@ -27,6 +30,7 @@ import kotlinx.coroutines.launch
  * It offers LiveData to be observed to populate lists with paging support
  */
 class DownloadListViewModel @ViewModelInject constructor(
+    @Assisted private val savedStateHandle: SavedStateHandle,
     private val downloadRepository: DownloadRepository,
     private val torrentsRepository: TorrentsRepository,
     private val credentialsRepository: CredentialsRepository,
@@ -68,6 +72,18 @@ class DownloadListViewModel @ViewModelInject constructor(
             val deleted = torrentsRepository.deleteTorrent(token, id)
             deletedTorrentLiveData.postValue(Event(deleted))
         }
+    }
+
+    fun setSelectedTab(tabID: Int) {
+        savedStateHandle.set(KEY_SELECTED_TAB,tabID)
+    }
+
+    fun getSelectedTab(): Int {
+        return savedStateHandle.get(KEY_SELECTED_TAB) ?: TAB_DOWNLOADS
+    }
+
+    companion object {
+        const val KEY_SELECTED_TAB = "selected_tab_key"
     }
 
 }
