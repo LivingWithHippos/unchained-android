@@ -1,9 +1,13 @@
 package com.github.livingwithhippos.unchained.data.remote
 
 import com.github.livingwithhippos.unchained.data.model.DownloadItem
+import okhttp3.ResponseBody
+import retrofit2.Call
 import retrofit2.Response
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface DownloadsApi {
@@ -24,4 +28,15 @@ interface DownloadsApi {
         @Query("page") page: Int,
         @Query("limit") limit: Int = 30
     ): Response<List<DownloadItem>>
+
+    /**
+     * Delete a download.
+     * @param token the authorization token, formed as "Bearer api_token"
+     * @param id the download ID, returned by getDownloads
+     */
+    @DELETE("downloads/delete/{id}")
+    suspend fun deleteDownload(
+        @Header("Authorization") token: String,
+        @Path("id") id: String,
+    ): Call<ResponseBody>
 }
