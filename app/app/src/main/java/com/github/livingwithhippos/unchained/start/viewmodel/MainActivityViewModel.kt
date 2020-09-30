@@ -158,6 +158,7 @@ class MainActivityViewModel @ViewModelInject constructor(
         }
     }
 
+    //todo: move this stuff to a shared navigationViewModel
     fun setListState(state: ListsTabFragment.ListState) {
         listStateLiveData.postValue(Event(state))
     }

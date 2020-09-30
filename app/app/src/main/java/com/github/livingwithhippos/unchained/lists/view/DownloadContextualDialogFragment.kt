@@ -1,25 +1,25 @@
 package com.github.livingwithhippos.unchained.lists.view
 
 import android.app.Dialog
-import android.content.Context
 import android.os.Bundle
+import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import com.github.livingwithhippos.unchained.R
-import com.github.livingwithhippos.unchained.data.model.TorrentItem
-import com.github.livingwithhippos.unchained.databinding.DialogTorrentItemBinding
+import com.github.livingwithhippos.unchained.data.model.DownloadItem
+import com.github.livingwithhippos.unchained.databinding.DialogDownloadItemBinding
 import com.github.livingwithhippos.unchained.lists.viewmodel.TorrentDialogViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
-class TorrentContextualDialogFragment : DialogFragment {
+class DownloadContextualDialogFragment: DialogFragment {
 
-    private var item: TorrentItem? = null
-    private var listener: TorrentDialogListener? = null
+    private var item: DownloadItem? = null
+    private var listener: DownloadDialogListener? = null
 
     val viewModel: TorrentDialogViewModel by viewModels()
 
-    constructor(item: TorrentItem, listener: TorrentDialogListener) : super() {
+    constructor(item: DownloadItem, listener: DownloadDialogListener) : super() {
         this.item = item
         this.listener = listener
     }
@@ -36,30 +36,21 @@ class TorrentContextualDialogFragment : DialogFragment {
             // Get the layout inflater
             val inflater = it.layoutInflater
 
-            val binding = DialogTorrentItemBinding.inflate(inflater)
+            val binding = DialogDownloadItemBinding.inflate(inflater)
 
             binding.bDelete.setOnClickListener {
-                item?.let { torrent ->
+                item?.let { download ->
                     listener?.let {mListener ->
-                        mListener.onDeleteTorrentClick(torrent.id)
+                        mListener.onDeleteDownloadClick(download.id)
                         dismiss()
                     }
                 }
             }
 
             binding.bOpen.setOnClickListener {
-                item?.let { torrent ->
+                item?.let { download ->
                     listener?.let {mListener ->
-                        mListener.onOpenTorrentClick(torrent.id)
-                        dismiss()
-                    }
-                }
-            }
-
-            binding.bDownload.setOnClickListener {
-                item?.let { torrent ->
-                    listener?.let {mListener ->
-                        mListener.onDownloadTorrentClick(torrent.links)
+                        mListener.onOpenDownloadClick(download.id)
                         dismiss()
                     }
                 }
@@ -78,10 +69,7 @@ class TorrentContextualDialogFragment : DialogFragment {
     }
 }
 
-
-
-interface TorrentDialogListener {
-    fun onDeleteTorrentClick(id: String)
-    fun onOpenTorrentClick(id: String)
-    fun onDownloadTorrentClick(id: List<String>)
+interface DownloadDialogListener {
+    fun onDeleteDownloadClick(id: String)
+    fun onOpenDownloadClick(id: String)
 }
