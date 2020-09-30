@@ -211,6 +211,7 @@
             android:layout_height="wrap_content"
             android:text="@string/logout"
             android:backgroundTint="?attr/colorSecondary"
+            android:textColor="?attr/colorOnSecondary"
             app:layout_constraintBottom_toBottomOf="@id/bPremium"
             app:layout_constraintEnd_toEndOf="@id/cvPremium"/>
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -183,6 +183,11 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
             context?.showToast(R.string.premium_needed)
     }
 
+    override fun onLongClick(item: TorrentItem) {
+        val dialog = TorrentContextualDialogFragment(item)
+        dialog.show(parentFragmentManager, "TorrentContextualDialogFragment")
+    }
+
     companion object {
         private const val TAB_DOWNLOADS = 0
         private const val TAB_TORRENTS = 1

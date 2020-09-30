@@ -375,4 +375,5 @@
     <string name="title_aspect">Aspect</string>
     <string name="delete">Delete</string>
     <string name="torrent_deleted">Torrent deleted.</string>
+    <string name="open">Open</string>
 </resources>

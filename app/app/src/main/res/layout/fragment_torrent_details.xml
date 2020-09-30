@@ -236,6 +236,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
             android:backgroundTint="?attr/colorSecondary"
+            android:textColor="?attr/colorOnSecondary"
             android:text="@string/delete"
             android:onClick="@{() -> listener.onDeleteClick(torrent.id)}"
             app:layout_constraintBottom_toBottomOf="parent"

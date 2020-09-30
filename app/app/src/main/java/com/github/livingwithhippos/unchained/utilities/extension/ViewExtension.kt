@@ -16,10 +16,13 @@ import android.widget.AutoCompleteTextView
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.github.livingwithhippos.unchained.R
+import com.github.livingwithhippos.unchained.data.model.TorrentItem
+import com.github.livingwithhippos.unchained.lists.view.TorrentListListener
 import com.google.android.material.progressindicator.ProgressIndicator
 import com.google.android.material.snackbar.Snackbar
 
@@ -260,4 +263,17 @@ fun View.showSnackbar(
                 it.setAction(actionText) { action() }
         }
         .show()
+}
+
+/**
+ * set a function to be called on [CardView] long click
+ * @param callback: the function to be called
+ * @param item: the item to be returned to the callback
+ */
+@BindingAdapter("onLongClickListener","cardTorrentItem")
+fun CardView.setBindingOnLongClickListener(listener: TorrentListListener, item: TorrentItem) {
+    this.setOnLongClickListener {
+        listener.onLongClick(item)
+        true
+    }
 }
