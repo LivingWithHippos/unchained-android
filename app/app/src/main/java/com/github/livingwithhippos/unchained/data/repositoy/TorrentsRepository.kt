@@ -153,20 +153,4 @@ class TorrentsRepository @Inject constructor(private val torrentApiHelper: Torre
 
         return responseCode
     }
-
-    suspend fun deleteTorrentBackup(token: String, id: String): Int? {
-        var responseCode = -1
-        torrentApiHelper.deleteTorrent(
-            token = "Bearer $token",
-            id = id,
-        ).enqueue(object : Callback<ResponseBody> {
-            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                responseCode = response.code()
-            }
-            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-            }
-        })
-
-        return responseCode
-    }
 }
