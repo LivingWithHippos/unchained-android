@@ -2,6 +2,7 @@ package com.github.livingwithhippos.unchained.lists.view
 
 import android.app.Dialog
 import android.os.Bundle
+import android.util.Log
 import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.setFragmentResult
@@ -9,14 +10,14 @@ import androidx.fragment.app.viewModels
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.databinding.DialogDownloadItemBinding
-import com.github.livingwithhippos.unchained.lists.viewmodel.TorrentDialogViewModel
+import com.github.livingwithhippos.unchained.lists.viewmodel.DownloadDialogViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class DownloadContextualDialogFragment: DialogFragment {
 
     private var item: DownloadItem? = null
 
-    val viewModel: TorrentDialogViewModel by viewModels()
+    val viewModel: DownloadDialogViewModel by viewModels()
 
     constructor(item: DownloadItem) : super() {
         this.item = item
@@ -36,6 +37,17 @@ class DownloadContextualDialogFragment: DialogFragment {
 
             val binding = DialogDownloadItemBinding.inflate(inflater)
 
+            var title = ""
+            item?.let { item ->
+                title = item.filename
+                viewModel.setItem(item)
+            }
+
+            if (item==null) {
+                item = viewModel.getItem()
+                title = item?.filename ?: ""
+            }
+            
             binding.bDelete.setOnClickListener {
                 item?.let { download ->
                     setFragmentResult("downloadActionKey", bundleOf("deletedDownloadKey" to download.id))
@@ -49,8 +61,6 @@ class DownloadContextualDialogFragment: DialogFragment {
                     dismiss()
                 }
             }
-
-            val title = item?.filename ?: ""
 
             builder.setView(binding.root)
                 .setTitle(title)
