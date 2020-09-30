@@ -148,7 +148,7 @@ class TorrentsRepository @Inject constructor(private val torrentApiHelper: Torre
                     id = id
                 )
             },
-            errorMessage = "Error Selecting Torrent Files"
+            errorMessage = "Error deleting Torrent"
         )
 
         return responseCode
