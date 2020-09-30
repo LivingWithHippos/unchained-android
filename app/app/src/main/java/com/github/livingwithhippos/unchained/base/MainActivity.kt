@@ -8,17 +8,15 @@ import android.content.ContentResolver.SCHEME_FILE
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
+import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.model.AuthenticationState
 import com.github.livingwithhippos.unchained.databinding.ActivityMainBinding
 import com.github.livingwithhippos.unchained.settings.SettingsActivity
-import com.github.livingwithhippos.unchained.settings.SettingsFragment.Companion.KEY_THEME
 import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewModel
 import com.github.livingwithhippos.unchained.utilities.BottomNavManager
 import com.github.livingwithhippos.unchained.utilities.SCHEME_HTTP
@@ -29,12 +27,10 @@ import com.github.livingwithhippos.unchained.utilities.extension.isTorrent
 import com.github.livingwithhippos.unchained.utilities.extension.observeOnce
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 
 /**
- * A [AppCompatActivity] subclass.
+ * A [UnchainedActivity] subclass.
  * Shared between all the fragments except for the preferences.
  */
 class MainActivity : UnchainedActivity() {
@@ -46,12 +42,12 @@ class MainActivity : UnchainedActivity() {
     val viewModel: MainActivityViewModel by viewModels()
 
     private val downloadReceiver: BroadcastReceiver = object : BroadcastReceiver() {
-            override fun onReceive(context: Context?, intent: Intent?) {
-                intent?.let {
-                    viewModel.checkDownload(it.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1))
-                }
+        override fun onReceive(context: Context?, intent: Intent?) {
+            intent?.let {
+                viewModel.checkDownload(it.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1))
             }
         }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,23 +57,9 @@ class MainActivity : UnchainedActivity() {
 
         setSupportActionBar(binding.topAppBar)
 
-
         if (savedInstanceState == null) {
             setupNavigationManager()
         }
-
-        /*
-        binding.topAppBar.setOnMenuItemClickListener { menuItem ->
-            when (menuItem.itemId) {
-                R.id.settings -> {
-                    openSettings()
-                    true
-                }
-                else -> false
-            }
-        }
-        *
-         */
 
         // manage the authentication state
         viewModel.authenticationState.observe(this, { state ->
@@ -112,6 +94,12 @@ class MainActivity : UnchainedActivity() {
             downloadReceiver,
             IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
         )
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val inflater = menuInflater
+        inflater.inflate(R.menu.top_app_bar, menu)
+        return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
