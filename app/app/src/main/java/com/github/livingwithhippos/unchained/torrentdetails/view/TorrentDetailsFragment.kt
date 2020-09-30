@@ -50,7 +50,8 @@ class TorrentDetailsFragment : Fragment(), TorrentDetailsListener {
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.torrent_details_bar, menu)
+        super.onCreateOptionsMenu(menu,inflater)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

@@ -29,32 +29,28 @@
 
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:id="@+id/rootLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="vertical"
         tools:context=".torrentdetails.view.TorrentDetailsFragment">
 
 
         <TextView
             android:id="@+id/tvName"
             style="@style/TextAppearance.UnchainedTheme.Headline5"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
             android:ellipsize="end"
             android:maxLines="3"
             android:text="@{torrent.filename, default=`File Name`}"
-            app:layout_constraintBottom_toTopOf="@id/cvTorrentDetails"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_gravity="center_horizontal"/>
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cvTorrentDetails"
-            android:layout_width="0dp"
-            app:layout_constraintWidth_max="400dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
             android:checkable="false"
@@ -65,9 +61,7 @@
             app:strokeColor="@color/grey_01"
             app:strokeWidth="0.05dp"
             app:cardBackgroundColor="?attr/colorSurface"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvName">
+            android:layout_gravity="center_horizontal">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -129,7 +123,7 @@
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cvDownloadDetails"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             app:layout_constraintWidth_max="400dp"
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
@@ -142,9 +136,7 @@
             app:strokeWidth="0.05dp"
             android:visibility="@{torrent.status.equalsIgnoreCase(`downloading`) ? View.VISIBLE : View.GONE}"
             app:cardBackgroundColor="?attr/colorSurface"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/cvTorrentDetails">
+            android:layout_gravity="center_horizontal" >
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -227,80 +219,8 @@
             android:text="@string/download"
             android:onClick="@{() -> listener.onDownloadClick(torrent.links)}"
             android:visibility="@{torrent.status.equalsIgnoreCase(`downloaded`) ? View.VISIBLE : View.GONE}"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@id/cvTorrentDetails" />
+            android:layout_gravity="center_horizontal" />
 
-        <Button
-            android:id="@+id/bDelete"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:backgroundTint="?attr/colorSecondary"
-            android:textColor="?attr/colorOnSecondary"
-            android:text="@string/delete"
-            android:onClick="@{() -> listener.onDeleteClick(torrent.id)}"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@id/cvTorrentDetails"/>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</layout><!--
-    {
-    "id": "string",
-    "filename": "string",
-    "original_filename": "string", // Original name of the torrent
-    "hash": "string", // SHA1 Hash of the torrent
-    "bytes": int, // Size of selected files only
-    "original_bytes": int, // Total size of the torrent
-    "host": "string", // Host main domain
-    "split": int, // Split size of links
-    "progress": int, // Possible values: 0 to 100
-    "status": "downloaded", // Current status of the torrent: magnet_error, magnet_conversion, waiting_files_selection, queued, downloading, downloaded, error, virus, compressing, uploading, dead
-    "added": "string", // jsonDate
-    "files": [
-    {
-    "id": int,
-    "path": "string", // Path to the file inside the torrent, starting with "/"
-    "bytes": int,
-    "selected": int // 0 or 1
-    },
-    {
-    "id": int,
-    "path": "string", // Path to the file inside the torrent, starting with "/"
-    "bytes": int,
-    "selected": int // 0 or 1
-    }
-    ],
-    "links": [
-    "string" // Host URL
-    ],
-    "ended": "string", // !! Only present when finished, jsonDate
-    "speed": int, // !! Only present in "downloading", "compressing", "uploading" status
-    "seeders": int // !! Only present in "downloading", "magnet_conversion" status
-    }
-
-    {
-    "id": "QBQBZDN2TSK4C",
-    "filename": "ubuntu-20.04-desktop-amd64.iso",
-    "original_filename": "ubuntu-20.04-desktop-amd64.iso",
-    "hash": "9fc20b9e98ea98b4a35e6223041a5ef94ea27809",
-    "bytes": 2715254784,
-    "original_bytes": 2715254784,
-    "host": "real-debrid.com",
-    "split": 2000,
-    "progress": 100,
-    "status": "downloaded",
-    "added": "2020-07-28T12:40:03.000Z",
-    "files": [
-    {
-    "id": 1,
-    "path": "\/ubuntu-20.04-desktop-amd64.iso",
-    "bytes": 2715254784,
-    "selected": 1
-    }
-    ],
-    "links": [
-    "https:\/\/real-debrid.com\/d\/HAEKRFWLC46ZE"
-    ],
-    "ended": "2020-04-23T19:56:28.000Z"
-    }
- END HTTP (586-byte body) -->
+    </LinearLayout>
+</layout>
