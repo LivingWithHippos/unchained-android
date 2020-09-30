@@ -28,7 +28,7 @@ import kotlinx.coroutines.launch
  * It is capable of showing a list of both [DownloadItem] and [TorrentItem] switched with a tab layout.
  */
 @AndroidEntryPoint
-class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListListener {
+class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListListener, TorrentDialogListener {
 
     private val viewModel: DownloadListViewModel by viewModels()
 
@@ -157,6 +157,14 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
             }
         })
 
+
+        viewModel.deletedTorrentLiveData.observe(viewLifecycleOwner, {
+            it.getContentIfNotHandled().let {
+                context?.showToast(R.string.torrent_deleted)
+                torrentAdapter.refresh()
+            }
+        })
+
         return listBinding.root
     }
 
@@ -184,8 +192,25 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
     }
 
     override fun onLongClick(item: TorrentItem) {
-        val dialog = TorrentContextualDialogFragment(item)
+        val dialog = TorrentContextualDialogFragment(item, this)
         dialog.show(parentFragmentManager, "TorrentContextualDialogFragment")
+    }
+
+    override fun onDeleteTorrentClick(id: String) {
+        viewModel.deleteTorrent(id)
+    }
+
+    override fun onOpenTorrentClick(id: String) {
+        val authState = activityViewModel.authenticationState.value?.peekContent()
+        if (authState == AuthenticationState.AUTHENTICATED) {
+            val action = ListsTabFragmentDirections.actionListsTabToTorrentDetails(id)
+            findNavController().navigate(action)
+        } else
+            context?.showToast(R.string.premium_needed)
+    }
+
+    override fun onDownloadTorrentClick(id: List<String>) {
+        viewModel.downloadTorrent(id)
     }
 
     companion object {
