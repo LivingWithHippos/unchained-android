@@ -2,8 +2,12 @@ package com.github.livingwithhippos.unchained.torrentdetails.view
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -13,6 +17,7 @@ import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.databinding.FragmentTorrentDetailsBinding
 import com.github.livingwithhippos.unchained.torrentdetails.viewmodel.TorrentDetailsViewModel
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
+import com.google.android.material.appbar.MaterialToolbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -38,6 +43,26 @@ class TorrentDetailsFragment : Fragment(), TorrentDetailsListener {
         "uploading"
     )
     val endedStatusList = listOf("magnet_error", "downloaded", "error", "virus", "dead")
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.delete -> {
+                // the delete operation is observed from the viewModel
+                viewModel.deleteTorrent(args.torrentID)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

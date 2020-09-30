@@ -162,4 +162,6 @@
     <string name="delete">Elimina</string>
     <string name="torrent_deleted">Torrent rimosso.</string>
     <string name="open">Apri</string>
+    <string name="content_description_delete_torrent_item">Rimuovi il torrent</string>
+    <string name="torrent_details">Dettagli Torrent</string>
 </resources>

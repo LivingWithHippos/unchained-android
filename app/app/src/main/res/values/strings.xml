@@ -376,4 +376,6 @@
     <string name="delete">Delete</string>
     <string name="torrent_deleted">Torrent deleted.</string>
     <string name="open">Open</string>
+    <string name="content_description_delete_torrent_item">Delete the torrent item</string>
+    <string name="torrent_details">Torrent Details</string>
 </resources>
