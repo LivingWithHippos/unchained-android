@@ -30,6 +30,10 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListListener, TorrentDialogListener {
 
+    enum class ListState {
+        UPDATE_TORRENT, UPDATE_DOWNLOAD, READY
+    }
+
     private val viewModel: DownloadListViewModel by viewModels()
 
     override fun onCreateView(
@@ -164,6 +168,19 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
                     context?.showToast(R.string.torrent_deleted)
                     torrentAdapter.refresh()
                 }
+            }
+        })
+
+        activityViewModel.listStateLiveData.observe(viewLifecycleOwner, {
+            when(it.getContentIfNotHandled()) {
+                ListState.UPDATE_DOWNLOAD -> {
+                    downloadAdapter.refresh()
+                }
+                ListState.UPDATE_TORRENT -> {
+                    torrentAdapter.refresh()
+                }
+                ListState.READY -> {}
+                else -> {}
             }
         })
 

@@ -15,6 +15,7 @@ import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.databinding.FragmentDownloadDetailsBinding
 import com.github.livingwithhippos.unchained.downloaddetails.viewmodel.DownloadDetailsViewModel
+import com.github.livingwithhippos.unchained.lists.view.ListsTabFragment
 import com.github.livingwithhippos.unchained.utilities.extension.copyToClipboard
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
@@ -71,6 +72,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
 
         viewModel.deletedDownloadLiveData.observe(viewLifecycleOwner, {
             it.getContentIfNotHandled().let {
+                activityViewModel.setListState(ListsTabFragment.ListState.UPDATE_DOWNLOAD)
                 // todo: check returned value (it)
                 activity?.baseContext?.showToast(R.string.download_removed)
                 // if deleted go back

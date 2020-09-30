@@ -14,7 +14,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.github.livingwithhippos.unchained.R
+import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.databinding.FragmentTorrentDetailsBinding
+import com.github.livingwithhippos.unchained.lists.view.ListsTabFragment
 import com.github.livingwithhippos.unchained.torrentdetails.viewmodel.TorrentDetailsViewModel
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.google.android.material.appbar.MaterialToolbar
@@ -27,7 +29,7 @@ import kotlinx.coroutines.launch
  * It is capable of showing the details of a [TorrentItem] and updating it.
  */
 @AndroidEntryPoint
-class TorrentDetailsFragment : Fragment(), TorrentDetailsListener {
+class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
 
     private val viewModel: TorrentDetailsViewModel by viewModels()
 
@@ -102,6 +104,7 @@ class TorrentDetailsFragment : Fragment(), TorrentDetailsListener {
 
         viewModel.deletedTorrentLiveData.observe(viewLifecycleOwner, {
             it.getContentIfNotHandled().let {
+                activityViewModel.setListState(ListsTabFragment.ListState.UPDATE_TORRENT)
                 // todo: check returned value (it)
                 activity?.baseContext?.showToast(R.string.torrent_deleted)
                 // if deleted go back
