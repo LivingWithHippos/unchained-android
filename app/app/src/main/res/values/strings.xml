@@ -379,4 +379,5 @@
     <string name="content_description_delete_torrent_item">Delete the torrent item</string>
     <string name="torrent_details">Torrent Details</string>
     <string name="download_removed">Download removed</string>
+    <string name="press_again_exit">Press back again to exit</string>
 </resources>

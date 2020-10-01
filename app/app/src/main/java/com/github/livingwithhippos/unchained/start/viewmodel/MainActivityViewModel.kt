@@ -163,9 +163,18 @@ class MainActivityViewModel @ViewModelInject constructor(
         listStateLiveData.postValue(Event(state))
     }
 
+    fun getLastBackPress(): Long {
+        return savedStateHandle.get<Long>(KEY_LAST_BACK_PRESS) ?: 0
+    }
+
+    fun setLastBackPress(time: Long) {
+        savedStateHandle.set(KEY_LAST_BACK_PRESS, time)
+    }
+
     companion object {
         const val KEY_TORRENT_DOWNLOAD_ID = "torrent_download_id_key"
         const val KEY_TORRENT_PATH = "torrent_path_key"
+        const val KEY_LAST_BACK_PRESS = "last_back_press_key"
     }
 
 }
