@@ -18,6 +18,9 @@ class SettingsActivity : UnchainedActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
 
+        setSupportActionBar(findViewById(R.id.emptyAppBar))
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
         val settingsFragment = SettingsFragment()
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, settingsFragment)

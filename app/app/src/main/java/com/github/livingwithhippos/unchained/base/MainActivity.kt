@@ -56,6 +56,7 @@ class MainActivity : UnchainedActivity() {
         setContentView(binding.root)
 
         setSupportActionBar(binding.topAppBar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         if (savedInstanceState == null) {
             setupNavigationManager()
@@ -99,6 +100,11 @@ class MainActivity : UnchainedActivity() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater = menuInflater
         inflater.inflate(R.menu.top_app_bar, menu)
+        return true
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        bottomNavManager?.onBackPressed()
         return true
     }
 
