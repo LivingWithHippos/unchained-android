@@ -1,5 +1,6 @@
 package com.github.livingwithhippos.unchained.downloaddetails.view
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -49,6 +50,14 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
             R.id.delete -> {
                 // the delete operation is observed from the viewModel
                 viewModel.deleteDownload(args.details.id)
+                true
+            }
+            R.id.share -> {
+                val shareIntent = Intent(Intent.ACTION_SEND)
+                shareIntent.type = "text/plain"
+                val shareLink = args.details.download
+                shareIntent.putExtra(Intent.EXTRA_TEXT, shareLink)
+                startActivity(Intent.createChooser(shareIntent, getString(R.string.share_with)))
                 true
             }
             else -> super.onOptionsItemSelected(item)

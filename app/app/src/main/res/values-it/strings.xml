@@ -163,7 +163,11 @@
     <string name="torrent_deleted">Torrent rimosso.</string>
     <string name="open">Apri</string>
     <string name="content_description_delete_torrent_item">Rimuovi il torrent</string>
+    <string name="content_description_delete_download_item">Rimuovi il download</string>
     <string name="torrent_details">Dettagli Torrent</string>
     <string name="download_removed">Download rimosso</string>
     <string name="press_again_exit">Premi ancora indietro per uscire</string>
+    <string name="content_description_share_download">Condividi download link</string>
+    <string name="share">Condividi</string>
+    <string name="share_with">Condividi link di download tramite:</string>
 </resources>

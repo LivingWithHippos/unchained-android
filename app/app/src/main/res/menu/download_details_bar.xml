@@ -4,8 +4,15 @@
     >
 
     <item
+        android:id="@+id/share"
+        android:contentDescription="@string/content_description_share_download"
+        android:icon="@drawable/icon_share"
+        android:title="@string/share"
+        app:showAsAction="ifRoom" />
+
+    <item
         android:id="@+id/delete"
-        android:contentDescription="@string/content_description_delete_torrent_item"
+        android:contentDescription="@string/content_description_delete_download_item"
         android:icon="@drawable/icon_delete"
         android:title="@string/delete"
         app:showAsAction="ifRoom" />

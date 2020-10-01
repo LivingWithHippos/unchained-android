@@ -374,10 +374,14 @@
     <string name="night_theme">Night mode</string>
     <string name="title_aspect">Aspect</string>
     <string name="delete">Delete</string>
-    <string name="torrent_deleted">Torrent deleted.</string>
+    <string name="torrent_deleted">Torrent removed</string>
     <string name="open">Open</string>
-    <string name="content_description_delete_torrent_item">Delete the torrent item</string>
+    <string name="content_description_delete_torrent_item">Remove the torrent item</string>
+    <string name="content_description_delete_download_item">Remove the download item</string>
     <string name="torrent_details">Torrent Details</string>
     <string name="download_removed">Download removed</string>
     <string name="press_again_exit">Press back again to exit</string>
+    <string name="content_description_share_download">Share download link</string>
+    <string name="share">Share</string>
+    <string name="share_with">Share download link via:</string>
 </resources>
