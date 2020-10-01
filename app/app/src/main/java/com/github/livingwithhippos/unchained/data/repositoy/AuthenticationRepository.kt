@@ -23,18 +23,18 @@ class AuthenticationRepository @Inject constructor(private val apiHelper: AuthAp
 
     suspend fun getSecrets(code: String): Secrets? {
 
-        val authResponse = safeApiCall(
+        val secretResponse = safeApiCall(
             call = { apiHelper.getSecrets(deviceCode = code) },
             errorMessage = "Error Fetching Secrets"
         )
 
-        return authResponse;
+        return secretResponse;
 
     }
 
     suspend fun getToken(clientId: String, clientSecret: String, deviceCode: String): Token? {
 
-        val authResponse = safeApiCall(
+        val tokenResponse = safeApiCall(
             call = {
                 apiHelper.getToken(
                     clientId = clientId,
@@ -45,7 +45,7 @@ class AuthenticationRepository @Inject constructor(private val apiHelper: AuthAp
             errorMessage = "Error Fetching Token"
         )
 
-        return authResponse;
+        return tokenResponse;
 
     }
 
