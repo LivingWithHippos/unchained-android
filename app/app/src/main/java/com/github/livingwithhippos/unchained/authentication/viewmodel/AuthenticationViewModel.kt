@@ -48,7 +48,7 @@ class AuthenticationViewModel @ViewModelInject constructor(
      * @param expireIn: the time in seconds before the deviceCode is not valid anymore for the secrets endpoint
      */
     fun fetchSecrets(deviceCode: String, expireIn: Int) {
-        val waitTime = 5000L
+        val waitTime = 2000L
         // this is just an estimate, keeping track of time would be more precise. As of now this value should be 120
         var calls = (expireIn * 1000 / waitTime).toInt() - 10
         // remove 10% of the calls to account for the api calls
