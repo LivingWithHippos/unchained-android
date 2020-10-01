@@ -65,15 +65,7 @@ class MainActivityViewModel @ViewModelInject constructor(
                 // step #2: test for open source credentials
                 if (user == null) {
                     completeCredentials.firstOrNull { it.deviceCode != PRIVATE_TOKEN }?.let{
-                        user = checkCredentials(it)
-                    }
-                }
-                // step #3: try to refresh open source credentials
-                if (user == null) {
-                    // to check values refreshToken was ported here
-                    completeCredentials.firstOrNull { it.deviceCode != PRIVATE_TOKEN }?.let{
-                        // refresh the token
-                        authRepository.refreshToken(it)?.let {token->
+                        authRepository.refreshToken(it)?.let { token ->
                             val newCredentials = Credentials(
                                 it.deviceCode,
                                 it.clientId,
@@ -82,15 +74,13 @@ class MainActivityViewModel @ViewModelInject constructor(
                                 token.refreshToken
                             )
 
-                            user = userRepository.getUserInfo(token.accessToken)
-
+                            user = userRepository.getUserInfo(newCredentials.accessToken!!)
                             if (user != null) {
                                 // update the credentials
                                 credentialRepository.updateCredentials(newCredentials)
                                 // program the refresh of the token
                                 programTokenRefresh(token.expiresIn)
                             }
-
                         }
                     }
                 }
