@@ -1,6 +1,7 @@
 package com.github.livingwithhippos.unchained.lists.view
 
 import android.app.Dialog
+import android.content.Intent
 import android.os.Bundle
 import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
@@ -57,6 +58,17 @@ class DownloadContextualDialogFragment: DialogFragment {
             binding.bOpen.setOnClickListener {
                 item?.let { download ->
                     setFragmentResult("downloadActionKey", bundleOf("openedDownloadItem" to download))
+                    dismiss()
+                }
+            }
+
+            binding.bShare.setOnClickListener {
+                item?.let { item ->
+                    val shareIntent = Intent(Intent.ACTION_SEND)
+                    shareIntent.type = "text/plain"
+                    val shareLink = item.download
+                    shareIntent.putExtra(Intent.EXTRA_TEXT, shareLink)
+                    startActivity(Intent.createChooser(shareIntent, getString(R.string.share_with)))
                     dismiss()
                 }
             }

@@ -21,6 +21,14 @@
             android:text="@string/open" />
 
         <Button
+            android:id="@+id/bShare"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:minWidth="150dp"
+            android:text="@string/share" />
+
+        <Button
             android:id="@+id/bDelete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
