@@ -104,7 +104,7 @@ class MainActivity : UnchainedActivity() {
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        bottomNavManager?.onBackPressed()
+        onBackPressed()
         return true
     }
 
@@ -241,7 +241,30 @@ class MainActivity : UnchainedActivity() {
     }
 
     override fun onBackPressed() {
-        if (bottomNavManager?.onBackPressed() == false) super.onBackPressed()
+        // if the navigation backstack is not empty pop it
+        if (bottomNavManager?.onBackPressed()==false) {
+            // check if we're in the home bottom bar, otherwise press back
+            val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_nav_view)
+            val asd = bottomNav.selectedItemId
+            val home = R.id.navigation_home
+            if (bottomNav.selectedItemId != R.id.navigation_home)
+                super.onBackPressed()
+            else {
+                // check if it has been 2 seconds since the last time we pressed back
+                val pressedTime = System.currentTimeMillis()
+                val lastPressedTime = viewModel.getLastBackPress()
+                if (pressedTime - lastPressedTime <= EXIT_WAIT_TIME)
+                    finish()
+                else {
+                    viewModel.setLastBackPress(pressedTime)
+                    this.showToast(R.string.press_again_exit)
+                }
+            }
+        }
+    }
+
+    companion object {
+        private const val EXIT_WAIT_TIME = 2000L
     }
 
 }

@@ -165,4 +165,5 @@
     <string name="content_description_delete_torrent_item">Rimuovi il torrent</string>
     <string name="torrent_details">Dettagli Torrent</string>
     <string name="download_removed">Download rimosso</string>
+    <string name="press_again_exit">Premi ancora indietro per uscire</string>
 </resources>
