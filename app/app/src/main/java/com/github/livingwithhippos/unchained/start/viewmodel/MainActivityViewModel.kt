@@ -58,7 +58,7 @@ class MainActivityViewModel @ViewModelInject constructor(
                 }
                 // if the private token is not working this also gets triggered
                 if (user == null)
-                    for (cred in completeCredentials) {
+                    for (cred in completeCredentials.filter { it.deviceCode != PRIVATE_TOKEN }) {
                         user = checkCredentials(cred)
                         if (user != null) {
                             break
