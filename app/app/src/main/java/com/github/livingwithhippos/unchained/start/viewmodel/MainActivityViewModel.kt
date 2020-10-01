@@ -171,6 +171,15 @@ class MainActivityViewModel @ViewModelInject constructor(
         savedStateHandle.set(KEY_LAST_BACK_PRESS, time)
     }
 
+    fun programTokenRefresh(secondsDelay: Int) {
+        // todo: add job that is cancelled everytime this function is called
+        viewModelScope.launch {
+            // secondsDelay*950L -> expiration time - 5%
+            delay(secondsDelay * 950L)
+            refreshToken()
+        }
+    }
+
     companion object {
         const val KEY_TORRENT_DOWNLOAD_ID = "torrent_download_id_key"
         const val KEY_TORRENT_PATH = "torrent_path_key"
