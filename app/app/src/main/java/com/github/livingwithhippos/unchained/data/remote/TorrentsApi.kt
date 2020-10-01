@@ -65,7 +65,7 @@ interface TorrentsApi {
         @Query("offset") offset: Int? = 0,
         @Query("page") page: Int? = 1,
         @Query("limit") limit: Int? = 10,
-        @Query("filter ") filter: String?
+        @Query("filter") filter: String?
     ): Response<List<TorrentItem>>
 
     /**
