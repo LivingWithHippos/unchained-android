@@ -3,6 +3,9 @@ package com.github.livingwithhippos.unchained.data.repositoy
 import android.util.Log
 import com.github.livingwithhippos.unchained.BuildConfig
 import com.github.livingwithhippos.unchained.data.model.NetworkResponse
+import okhttp3.ResponseBody
+import retrofit2.Call
+import retrofit2.Callback
 import retrofit2.Response
 import java.io.IOException
 
@@ -94,5 +97,26 @@ open class BaseRepository {
         }
 
         return NetworkResponse.Error(IOException("Error Occurred while getting api result, error : $errorMessage"))
+    }
+
+    suspend fun safeEmptyApiCall(call: suspend () -> Call<ResponseBody>, errorMessage: String): Int? {
+
+        //fixme: this fun returns always -1
+        var responseCode = -1
+
+        val callback = object : Callback<ResponseBody> {
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                responseCode = response.code()
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                if (BuildConfig.DEBUG)
+                    Log.d("BaseRepository", "Error during safeEmptyApiCall: ${t.message}")
+            }
+        }
+
+        call.invoke().enqueue(callback)
+
+        return responseCode
     }
 }

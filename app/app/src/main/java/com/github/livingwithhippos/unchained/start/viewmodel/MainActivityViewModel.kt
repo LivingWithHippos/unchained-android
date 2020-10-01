@@ -14,6 +14,7 @@ import com.github.livingwithhippos.unchained.data.model.User
 import com.github.livingwithhippos.unchained.data.repositoy.AuthenticationRepository
 import com.github.livingwithhippos.unchained.data.repositoy.CredentialsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.UserRepository
+import com.github.livingwithhippos.unchained.lists.view.ListsTabFragment
 import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.PRIVATE_TOKEN
 import kotlinx.coroutines.launch
@@ -36,6 +37,8 @@ class MainActivityViewModel @ViewModelInject constructor(
     val externalLinkLiveData = MutableLiveData<Event<Uri?>>()
 
     val downloadedTorrentLiveData = MutableLiveData<Event<String?>>()
+
+    val listStateLiveData = MutableLiveData<Event<ListsTabFragment.ListState>>()
 
     // fixme: this is here because userLiveData.postValue(user) is throwing an unsafe error
     //  but auto-correcting it changes the value of val authenticationState = MutableLiveData<Event<AuthenticationState>>() to a nullable one
@@ -153,6 +156,11 @@ class MainActivityViewModel @ViewModelInject constructor(
             if (fileName != null)
                 downloadedTorrentLiveData.postValue(Event(fileName))
         }
+    }
+
+    //todo: move this stuff to a shared navigationViewModel
+    fun setListState(state: ListsTabFragment.ListState) {
+        listStateLiveData.postValue(Event(state))
     }
 
     companion object {

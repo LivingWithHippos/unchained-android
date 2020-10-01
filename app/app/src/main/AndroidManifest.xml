@@ -14,7 +14,9 @@
         android:roundIcon="@mipmap/icon_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Unchained">
-        <activity android:name=".settings.SettingsActivity" />
+        <activity android:name=".settings.SettingsActivity"
+            android:parentActivityName=".base.MainActivity" >
+        </activity>
         <activity android:name=".base.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

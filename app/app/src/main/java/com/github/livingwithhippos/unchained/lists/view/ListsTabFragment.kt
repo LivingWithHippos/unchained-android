@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
@@ -30,6 +31,11 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListListener {
 
+    enum class ListState {
+        UPDATE_TORRENT, UPDATE_DOWNLOAD, READY
+    }
+
+    //todo: rename viewModel to ListTabViewModel
     private val viewModel: DownloadListViewModel by viewModels()
 
     override fun onCreateView(
@@ -107,6 +113,7 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
 
                     when (it.position) {
                         TAB_DOWNLOADS -> {
+                            viewModel.setSelectedTab(TAB_DOWNLOADS)
                             if (!viewModel.downloadsLiveData.hasActiveObservers())
                                 viewModel.downloadsLiveData.observe(
                                     viewLifecycleOwner,
@@ -114,6 +121,7 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
                                 )
                         }
                         TAB_TORRENTS -> {
+                            viewModel.setSelectedTab(TAB_TORRENTS)
                             if (!viewModel.torrentsLiveData.hasActiveObservers())
                                 viewModel.torrentsLiveData.observe(
                                     viewLifecycleOwner,
@@ -142,8 +150,6 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
             }
         })
 
-        listBinding.selectedTab = listBinding.tabs.selectedTabPosition
-
         viewModel.downloadItemLiveData.observe(viewLifecycleOwner, {
             it.getContentIfNotHandled()?.let { links ->
                 if (!links.isNullOrEmpty()) {
@@ -157,6 +163,65 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
             }
         })
 
+
+        viewModel.deletedTorrentLiveData.observe(viewLifecycleOwner, {
+            it.getContentIfNotHandled().let { deletedValue ->
+                if (deletedValue != null) {
+                    context?.showToast(R.string.torrent_deleted)
+                    torrentAdapter.refresh()
+                }
+            }
+        })
+
+        activityViewModel.listStateLiveData.observe(viewLifecycleOwner, {
+            when(it.getContentIfNotHandled()) {
+                ListState.UPDATE_DOWNLOAD -> {
+                    downloadAdapter.refresh()
+                }
+                ListState.UPDATE_TORRENT -> {
+                    torrentAdapter.refresh()
+                }
+                ListState.READY -> {}
+                else -> {}
+            }
+        })
+
+
+        setFragmentResultListener("downloadActionKey") { key, bundle ->
+            bundle.getString("deletedDownloadKey")?.let{
+                viewModel.deleteDownload(it)
+            }
+            bundle.getParcelable<DownloadItem>("openedDownloadItem")?.let{
+                onClick(it)
+            }
+        }
+
+        setFragmentResultListener("torrentActionKey") { key, bundle ->
+            bundle.getString("deletedTorrentKey")?.let{
+                viewModel.deleteTorrent(it)
+            }
+            bundle.getString("openedTorrentItem")?.let{
+                val authState = activityViewModel.authenticationState.value?.peekContent()
+                if (authState == AuthenticationState.AUTHENTICATED) {
+                    val action = ListsTabFragmentDirections.actionListsTabToTorrentDetails(it)
+                    findNavController().navigate(action)
+                } else
+                    context?.showToast(R.string.premium_needed)
+            }
+            bundle.getParcelable<TorrentItem>("downloadedTorrentItem")?.let{
+                onClick(it)
+            }
+        }
+
+        viewModel.deletedDownloadLiveData.observe(viewLifecycleOwner, {
+            it.getContentIfNotHandled().let {
+                context?.showToast(R.string.download_removed)
+                downloadAdapter.refresh()
+            }
+        })
+
+        listBinding.tabs.getTabAt(viewModel.getSelectedTab())?.select()
+
         return listBinding.root
     }
 
@@ -167,6 +232,11 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
             findNavController().navigate(action)
         } else
             context?.showToast(R.string.premium_needed)
+    }
+
+    override fun onLongClick(item: DownloadItem) {
+        val dialog = DownloadContextualDialogFragment(item)
+        dialog.show(parentFragmentManager, "DownloadContextualDialogFragment")
     }
 
     override fun onClick(item: TorrentItem) {
@@ -183,9 +253,14 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
             context?.showToast(R.string.premium_needed)
     }
 
+    override fun onLongClick(item: TorrentItem) {
+        val dialog = TorrentContextualDialogFragment(item)
+        dialog.show(parentFragmentManager, "TorrentContextualDialogFragment")
+    }
+
     companion object {
-        private const val TAB_DOWNLOADS = 0
-        private const val TAB_TORRENTS = 1
+        const val TAB_DOWNLOADS = 0
+        const val TAB_TORRENTS = 1
     }
 
 }

@@ -4,6 +4,8 @@ import com.github.livingwithhippos.unchained.data.model.AvailableHost
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.data.model.UploadedTorrent
 import okhttp3.RequestBody
+import okhttp3.ResponseBody
+import retrofit2.Call
 import retrofit2.Response
 
 interface TorrentApiHelper {
@@ -41,4 +43,9 @@ interface TorrentApiHelper {
         id: String,
         files: String
     ): Response<Unit>
+
+    suspend fun deleteTorrent(
+        token: String,
+        id: String
+    ): Call<ResponseBody>
 }

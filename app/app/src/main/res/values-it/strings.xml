@@ -146,8 +146,8 @@
     <string name="please_insert_url">Inserisci un magnet o un link</string>
     <string name="please_login">Si prega di autenticarsi sull\'account</string>
     <string name="premium_needed_torrent">Per torrent e magnet è richiestoun abbonamento premium</string>
-    <string name="loading_magnet_link">Caricando link magnet...</string>
-    <string name="loading_torrent_file">Caricando file torrent...</string>
+    <string name="loading_magnet_link">Caricando link magnet…</string>
+    <string name="loading_torrent_file">Caricando file torrent…</string>
     <string name="unchained_torrent_download">Unchained Scaricamento Torrent</string>
     <string name="temporary_torrent_download">Scaricamento temporaneo di un file torrent</string>
     <string name="error_loading_dialog">Errore nel caricamento della finestra, si prega di riaprirla.</string>
@@ -159,4 +159,10 @@
     <string name="original">Originale</string>
     <string name="night_theme">Modalità notte</string>
     <string name="title_aspect">Aspetto</string>
+    <string name="delete">Elimina</string>
+    <string name="torrent_deleted">Torrent rimosso.</string>
+    <string name="open">Apri</string>
+    <string name="content_description_delete_torrent_item">Rimuovi il torrent</string>
+    <string name="torrent_details">Dettagli Torrent</string>
+    <string name="download_removed">Download rimosso</string>
 </resources>

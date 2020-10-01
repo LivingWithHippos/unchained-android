@@ -32,5 +32,9 @@
         android:id="@+id/torrentDetailsFragment"
         android:name="com.github.livingwithhippos.unchained.torrentdetails.view.TorrentDetailsFragment"
         tools:layout="@layout/fragment_torrent_details"
-        android:label="TorrentDetailsFragment" />
+        android:label="TorrentDetailsFragment" >
+        <argument
+            android:name="torrentID"
+            app:argType="string" />
+    </fragment>
 </navigation>

@@ -26,6 +26,8 @@
         android:checkable="false"
         android:focusable="true"
         android:onClick="@{() -> listener.onClick(item)}"
+        app:onDownloadLongClickListener="@{listener}"
+        app:cardDownloadItem="@{item}"
         android:layout_gravity="center_horizontal"
         app:cardBackgroundColor="?attr/colorSurface"
         app:cardCornerRadius="10dp"

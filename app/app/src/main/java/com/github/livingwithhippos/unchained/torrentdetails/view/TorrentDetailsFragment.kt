@@ -2,16 +2,24 @@ package com.github.livingwithhippos.unchained.torrentdetails.view
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.github.livingwithhippos.unchained.R
+import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.databinding.FragmentTorrentDetailsBinding
+import com.github.livingwithhippos.unchained.lists.view.ListsTabFragment
 import com.github.livingwithhippos.unchained.torrentdetails.viewmodel.TorrentDetailsViewModel
+import com.github.livingwithhippos.unchained.utilities.extension.showToast
+import com.google.android.material.appbar.MaterialToolbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -21,7 +29,7 @@ import kotlinx.coroutines.launch
  * It is capable of showing the details of a [TorrentItem] and updating it.
  */
 @AndroidEntryPoint
-class TorrentDetailsFragment : Fragment(), TorrentDetailsListener {
+class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
 
     private val viewModel: TorrentDetailsViewModel by viewModels()
 
@@ -29,14 +37,35 @@ class TorrentDetailsFragment : Fragment(), TorrentDetailsListener {
 
     // possible status are magnet_error, magnet_conversion, waiting_files_selection,
     // queued, downloading, downloaded, error, virus, compressing, uploading, dead
-    val loadingStatusList = listOf<String>(
+    val loadingStatusList = listOf(
         "magnet_conversion",
         "waiting_files_selection",
         "queued",
         "compressing",
         "uploading"
     )
-    val endedStatusList = listOf<String>("magnet_error", "downloaded", "error", "virus", "dead")
+    val endedStatusList = listOf("magnet_error", "downloaded", "error", "virus", "dead")
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.torrent_details_bar, menu)
+        super.onCreateOptionsMenu(menu,inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.delete -> {
+                // the delete operation is observed from the viewModel
+                viewModel.deleteTorrent(args.torrentID)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -73,6 +102,16 @@ class TorrentDetailsFragment : Fragment(), TorrentDetailsListener {
 
         viewModel.fetchTorrentDetails(args.torrentID)
 
+        viewModel.deletedTorrentLiveData.observe(viewLifecycleOwner, {
+            it.getContentIfNotHandled().let {
+                activityViewModel.setListState(ListsTabFragment.ListState.UPDATE_TORRENT)
+                // todo: check returned value (it)
+                activity?.baseContext?.showToast(R.string.torrent_deleted)
+                // if deleted go back
+                activity?.onBackPressed()
+            }
+        })
+
         return torrentBinding.root
     }
 
@@ -89,8 +128,13 @@ class TorrentDetailsFragment : Fragment(), TorrentDetailsListener {
             TorrentDetailsFragmentDirections.actionTorrentDetailsFragmentToNewDownloadDest(links.toTypedArray())
         findNavController().navigate(action)
     }
+
+    override fun onDeleteClick(id: String) {
+        viewModel.deleteTorrent(id)
+    }
 }
 
 interface TorrentDetailsListener {
     fun onDownloadClick(links: List<String>)
+    fun onDeleteClick(id: String)
 }

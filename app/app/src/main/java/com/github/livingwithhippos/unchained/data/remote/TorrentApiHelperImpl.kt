@@ -37,4 +37,8 @@ class TorrentApiHelperImpl @Inject constructor(private val torrentsApi: Torrents
 
     override suspend fun selectFiles(token: String, id: String, files: String) =
         torrentsApi.selectFiles(token, id, files)
+
+    override suspend fun deleteTorrent(token: String, id: String) =
+        torrentsApi.deleteTorrent(token, id)
+
 }

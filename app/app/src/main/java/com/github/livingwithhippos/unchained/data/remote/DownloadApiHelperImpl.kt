@@ -14,4 +14,7 @@ class DownloadApiHelperImpl @Inject constructor(private val downloadsApi: Downlo
         limit: Int
     ): Response<List<DownloadItem>> =
         downloadsApi.getDownloads(token, offset, page, limit)
+
+    override suspend fun deleteDownload(token: String, id: String) =
+        downloadsApi.deleteDownload(token, id)
 }
