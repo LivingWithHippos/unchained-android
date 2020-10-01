@@ -18,6 +18,7 @@ class SettingsActivity : UnchainedActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
 
+        //todo: restore MainActivity fragment on back press
         setSupportActionBar(findViewById(R.id.emptyAppBar))
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
