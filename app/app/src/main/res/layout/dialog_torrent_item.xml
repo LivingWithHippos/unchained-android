@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
     </data>
@@ -18,7 +19,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:minWidth="150dp"
-            android:text="@string/open" />
+            android:text="@string/open"
+            app:icon="@drawable/icon_open"
+            style="@style/Widget.MaterialComponents.Button.Icon" />
 
         <Button
             android:id="@+id/bDownload"
@@ -26,7 +29,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:minWidth="150dp"
-            android:text="@string/download" />
+            android:text="@string/download"
+            app:icon="@drawable/icon_download"
+            style="@style/Widget.MaterialComponents.Button.Icon" />
 
         <Button
             android:id="@+id/bDelete"
@@ -36,7 +41,9 @@
             android:backgroundTint="?attr/colorSecondary"
             android:minWidth="150dp"
             android:text="@string/delete"
-            android:textColor="?attr/colorOnSecondary" />
+            android:textColor="?attr/colorOnSecondary"
+            app:icon="@drawable/icon_delete"
+            style="@style/Widget.MaterialComponents.Button.Icon"  />
     </LinearLayout>
 
 </layout>

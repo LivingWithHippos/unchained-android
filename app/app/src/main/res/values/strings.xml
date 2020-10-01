@@ -385,4 +385,5 @@
     <string name="share">Share</string>
     <string name="share_with">Share download link via:</string>
     <string name="restart_to_apply">Restart to apply</string>
+    <string name="remove">Remove</string>
 </resources>
