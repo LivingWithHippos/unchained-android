@@ -32,14 +32,14 @@ class AuthenticationRepository @Inject constructor(private val apiHelper: AuthAp
 
     }
 
-    suspend fun getToken(clientId: String, clientSecret: String, deviceCode: String): Token? {
+    suspend fun getToken(clientId: String, clientSecret: String, code: String): Token? {
 
         val tokenResponse = safeApiCall(
             call = {
                 apiHelper.getToken(
                     clientId = clientId,
                     clientSecret = clientSecret,
-                    deviceCode = deviceCode
+                    code = code
                 )
             },
             errorMessage = "Error Fetching Token"

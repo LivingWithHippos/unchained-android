@@ -18,6 +18,6 @@ class AuthApiHelperImpl @Inject constructor(private val authenticationApi: Authe
     override suspend fun getToken(
         clientId: String,
         clientSecret: String,
-        deviceCode: String
-    ): Response<Token> = authenticationApi.getToken(clientId, clientSecret, deviceCode)
+        code: String
+    ): Response<Token> = authenticationApi.getToken(clientId, clientSecret, code)
 }
