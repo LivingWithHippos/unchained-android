@@ -17,6 +17,7 @@ import com.github.livingwithhippos.unchained.data.repositoy.UserRepository
 import com.github.livingwithhippos.unchained.lists.view.ListsTabFragment
 import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.PRIVATE_TOKEN
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 /**
@@ -45,28 +46,58 @@ class MainActivityViewModel @ViewModelInject constructor(
     @SuppressLint("NullSafeMutableLiveData")
     fun fetchFirstWorkingCredentials() {
         viewModelScope.launch {
+
+            var user: User? = null
+
             val completeCredentials = credentialRepository
                 .getAllCredentials()
                 .filter { it.accessToken != null && it.clientId != null && it.clientSecret != null && it.deviceCode.isNotBlank() && it.refreshToken != null }
-            var user: User? = null
-            if (completeCredentials.isNotEmpty()) {
-                val privateCredentials =
-                    completeCredentials.firstOrNull { it.deviceCode == PRIVATE_TOKEN }
 
-                if (privateCredentials != null) {
-                    user = checkCredentials(privateCredentials)
+
+            if (completeCredentials.isNotEmpty()) {
+
+                // step #1: test for private API token
+                completeCredentials.firstOrNull { it.deviceCode == PRIVATE_TOKEN }?.let{
+                    user = checkCredentials(it)
                 }
-                // if the private token is not working this also gets triggered
-                if (user == null)
-                    for (cred in completeCredentials.filter { it.deviceCode != PRIVATE_TOKEN }) {
-                        user = checkCredentials(cred)
-                        if (user != null) {
-                            break
+                // step #2: test for open source credentials
+                if (user == null) {
+                    completeCredentials.firstOrNull { it.deviceCode != PRIVATE_TOKEN }?.let{
+                        user = checkCredentials(it)
+                    }
+                }
+                // step #3: try to refresh open source credentials
+                if (user == null) {
+                    // to check values refreshToken was ported here
+                    completeCredentials.firstOrNull { it.deviceCode != PRIVATE_TOKEN }?.let{
+                        // refresh the token
+                        authRepository.refreshToken(it)?.let {token->
+                            val newCredentials = Credentials(
+                                it.deviceCode,
+                                it.clientId,
+                                it.clientSecret,
+                                token.accessToken,
+                                token.refreshToken
+                            )
+
+                            user = userRepository.getUserInfo(token.accessToken)
+
+                            if (user != null) {
+                                // update the credentials
+                                credentialRepository.updateCredentials(newCredentials)
+                                // program the refresh of the token
+                                programTokenRefresh(token.expiresIn)
+                            }
+
                         }
                     }
+                }
+
             }
-            // passes null if no working credentials, otherwise pass the first working one
+
+            // pass whatever user was retrieved, or null if none was found
             userLiveData.postValue(user)
+
         }
     }
 
@@ -135,6 +166,9 @@ class MainActivityViewModel @ViewModelInject constructor(
                     )
                     // update the credentials
                     credentialRepository.updateCredentials(newCredentials)
+
+                    // program the refresh of the token
+                    programTokenRefresh(it.expiresIn)
                 }
             }
         }
