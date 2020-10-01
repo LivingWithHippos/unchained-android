@@ -140,6 +140,7 @@ dependencies {
     def glide_version="4.11.0"
     def swipe_version="1.1.0"
     def paging_version = '3.0.0-alpha06'
+    def leakcanary_version = '2.4'
 
 
     implementation fileTree(dir: "libs", include: ["*.jar"])
@@ -211,6 +212,9 @@ dependencies {
 
     // paging
     implementation "androidx.paging:paging-runtime-ktx:$paging_version"
+
+    // leak canary
+    debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakcanary_version"
 
 }
 
