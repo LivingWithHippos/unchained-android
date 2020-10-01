@@ -4,7 +4,8 @@
 
 
     <PreferenceCategory
-        android:title="@string/title_aspect">
+        android:title="@string/title_aspect"
+        android:summary="@string/restart_to_apply">
 
     <DropDownPreference
         android:key="current_theme"

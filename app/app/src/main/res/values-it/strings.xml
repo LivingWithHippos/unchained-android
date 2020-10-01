@@ -170,4 +170,5 @@
     <string name="content_description_share_download">Condividi download link</string>
     <string name="share">Condividi</string>
     <string name="share_with">Condividi link di download tramite:</string>
+    <string name="restart_to_apply">Riavvia per applicare</string>
 </resources>
