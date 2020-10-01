@@ -14,6 +14,7 @@ import com.github.livingwithhippos.unchained.data.model.User
 import com.github.livingwithhippos.unchained.data.repositoy.AuthenticationRepository
 import com.github.livingwithhippos.unchained.data.repositoy.CredentialsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.UserRepository
+import com.github.livingwithhippos.unchained.data.repositoy.VariousApiRepository
 import com.github.livingwithhippos.unchained.lists.view.ListsTabFragment
 import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.PRIVATE_TOKEN
@@ -28,7 +29,8 @@ class MainActivityViewModel @ViewModelInject constructor(
     @Assisted private val savedStateHandle: SavedStateHandle,
     private val authRepository: AuthenticationRepository,
     private val credentialRepository: CredentialsRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val variousApiRepository: VariousApiRepository
 ) : ViewModel() {
 
     val authenticationState = MutableLiveData<Event<AuthenticationState>>()
@@ -133,7 +135,7 @@ class MainActivityViewModel @ViewModelInject constructor(
             credentialRepository.getFirstCredentials()?.let {
                 if (it.refreshToken != null && it.refreshToken != PRIVATE_TOKEN) {
                     //setUnauthenticated()
-                    authRepository.disableToken(it.accessToken!!)
+                    variousApiRepository.disableToken(it.accessToken!!)
                 }
 
             }

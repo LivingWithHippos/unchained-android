@@ -49,18 +49,6 @@ class AuthenticationRepository @Inject constructor(private val apiHelper: AuthAp
 
     }
 
-    suspend fun disableToken(token: String): Any? {
-
-        val authResponse = safeApiCall(
-            call = { apiHelper.disableToken("Bearer $token") },
-            errorMessage = "Error disabling token"
-        )
-
-        return authResponse;
-
-    }
-
-
     /**
      * Get a new open source Token that usually lasts one hour.
      * You can not use both offset and page at the same time, page is prioritized in case it happens.
