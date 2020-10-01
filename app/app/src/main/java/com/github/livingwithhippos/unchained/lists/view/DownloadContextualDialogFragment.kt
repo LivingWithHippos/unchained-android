@@ -2,7 +2,6 @@ package com.github.livingwithhippos.unchained.lists.view
 
 import android.app.Dialog
 import android.os.Bundle
-import android.util.Log
 import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.setFragmentResult
@@ -47,7 +46,7 @@ class DownloadContextualDialogFragment: DialogFragment {
                 item = viewModel.getItem()
                 title = item?.filename ?: ""
             }
-            
+
             binding.bDelete.setOnClickListener {
                 item?.let { download ->
                     setFragmentResult("downloadActionKey", bundleOf("deletedDownloadKey" to download.id))

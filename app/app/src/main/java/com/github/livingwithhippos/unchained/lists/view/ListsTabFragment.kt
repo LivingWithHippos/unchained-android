@@ -29,7 +29,7 @@ import kotlinx.coroutines.launch
  * It is capable of showing a list of both [DownloadItem] and [TorrentItem] switched with a tab layout.
  */
 @AndroidEntryPoint
-class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListListener, TorrentDialogListener {
+class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListListener {
 
     enum class ListState {
         UPDATE_TORRENT, UPDATE_DOWNLOAD, READY
@@ -196,6 +196,23 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
             }
         }
 
+        setFragmentResultListener("torrentActionKey") { key, bundle ->
+            bundle.getString("deletedTorrentKey")?.let{
+                viewModel.deleteTorrent(it)
+            }
+            bundle.getString("openedTorrentItem")?.let{
+                val authState = activityViewModel.authenticationState.value?.peekContent()
+                if (authState == AuthenticationState.AUTHENTICATED) {
+                    val action = ListsTabFragmentDirections.actionListsTabToTorrentDetails(it)
+                    findNavController().navigate(action)
+                } else
+                    context?.showToast(R.string.premium_needed)
+            }
+            bundle.getParcelable<TorrentItem>("downloadedTorrentItem")?.let{
+                onClick(it)
+            }
+        }
+
         viewModel.deletedDownloadLiveData.observe(viewLifecycleOwner, {
             it.getContentIfNotHandled().let {
                 context?.showToast(R.string.download_removed)
@@ -237,25 +254,8 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
     }
 
     override fun onLongClick(item: TorrentItem) {
-        val dialog = TorrentContextualDialogFragment(item, this)
+        val dialog = TorrentContextualDialogFragment(item)
         dialog.show(parentFragmentManager, "TorrentContextualDialogFragment")
-    }
-
-    override fun onDeleteTorrentClick(id: String) {
-        viewModel.deleteTorrent(id)
-    }
-
-    override fun onOpenTorrentClick(id: String) {
-        val authState = activityViewModel.authenticationState.value?.peekContent()
-        if (authState == AuthenticationState.AUTHENTICATED) {
-            val action = ListsTabFragmentDirections.actionListsTabToTorrentDetails(id)
-            findNavController().navigate(action)
-        } else
-            context?.showToast(R.string.premium_needed)
-    }
-
-    override fun onDownloadTorrentClick(id: List<String>) {
-        viewModel.downloadTorrent(id)
     }
 
     companion object {

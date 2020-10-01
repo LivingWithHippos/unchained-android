@@ -3,8 +3,10 @@ package com.github.livingwithhippos.unchained.lists.view
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
+import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
@@ -15,13 +17,11 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 class TorrentContextualDialogFragment : DialogFragment {
 
     private var item: TorrentItem? = null
-    private var listener: TorrentDialogListener? = null
 
     val viewModel: TorrentDialogViewModel by viewModels()
 
-    constructor(item: TorrentItem, listener: TorrentDialogListener) : super() {
+    constructor(item: TorrentItem) : super() {
         this.item = item
-        this.listener = listener
     }
 
     constructor() : super()
@@ -38,34 +38,37 @@ class TorrentContextualDialogFragment : DialogFragment {
 
             val binding = DialogTorrentItemBinding.inflate(inflater)
 
+            var title = ""
+            item?.let { item ->
+                title = item.filename
+                viewModel.setItem(item)
+            }
+
+            if (item==null) {
+                item = viewModel.getItem()
+                title = item?.filename ?: ""
+            }
+
             binding.bDelete.setOnClickListener {
                 item?.let { torrent ->
-                    listener?.let {mListener ->
-                        mListener.onDeleteTorrentClick(torrent.id)
+                        setFragmentResult("torrentActionKey", bundleOf("deletedTorrentKey" to torrent.id))
                         dismiss()
-                    }
                 }
             }
 
             binding.bOpen.setOnClickListener {
                 item?.let { torrent ->
-                    listener?.let {mListener ->
-                        mListener.onOpenTorrentClick(torrent.id)
-                        dismiss()
-                    }
+                    setFragmentResult("torrentActionKey", bundleOf("openedTorrentItem" to torrent.id))
+                    dismiss()
                 }
             }
 
             binding.bDownload.setOnClickListener {
                 item?.let { torrent ->
-                    listener?.let {mListener ->
-                        mListener.onDownloadTorrentClick(torrent.links)
-                        dismiss()
-                    }
+                    setFragmentResult("torrentActionKey", bundleOf("downloadedTorrentItem" to torrent))
+                    dismiss()
                 }
             }
-
-            val title = item?.filename ?: ""
 
             builder.setView(binding.root)
                 .setTitle(title)
@@ -76,12 +79,4 @@ class TorrentContextualDialogFragment : DialogFragment {
             builder.create()
         } ?: throw IllegalStateException("Activity cannot be null")
     }
-}
-
-
-
-interface TorrentDialogListener {
-    fun onDeleteTorrentClick(id: String)
-    fun onOpenTorrentClick(id: String)
-    fun onDownloadTorrentClick(id: List<String>)
 }
