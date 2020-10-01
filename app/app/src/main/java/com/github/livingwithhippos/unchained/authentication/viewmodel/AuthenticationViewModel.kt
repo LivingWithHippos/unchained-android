@@ -56,7 +56,6 @@ class AuthenticationViewModel @ViewModelInject constructor(
         calls -= calls / 10
         viewModelScope.launch {
             var secretData = authRepository.getSecrets(deviceCode)
-            secretLiveData.postValue(Event(secretData))
             while (secretData?.clientId == null && calls-- > 0 && (getAuthState() != AuthenticationState.AUTHENTICATED || getAuthState() != AuthenticationState.AUTHENTICATED_NO_PREMIUM)) {
                 delay(waitTime)
                 secretData = authRepository.getSecrets(deviceCode)
