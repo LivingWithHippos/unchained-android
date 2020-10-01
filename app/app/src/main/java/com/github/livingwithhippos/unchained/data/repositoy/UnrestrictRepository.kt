@@ -1,5 +1,6 @@
 package com.github.livingwithhippos.unchained.data.repositoy
 
+import com.github.livingwithhippos.unchained.data.model.CompleteNetworkResponse
 import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.data.remote.UnrestrictApiHelper
 import kotlinx.coroutines.delay
@@ -14,7 +15,7 @@ class UnrestrictRepository @Inject constructor(private val unrestrictApiHelper: 
         remote: Int? = null
     ): DownloadItem? {
 
-        val linkResponse = unsafeApiCall(
+        val linkResponse = errorApiResult(
             call = {
                 unrestrictApiHelper.getUnrestrictedLink(
                     token = "Bearer $token",
@@ -26,7 +27,24 @@ class UnrestrictRepository @Inject constructor(private val unrestrictApiHelper: 
             errorMessage = "Error Fetching Unrestricted Link Info"
         )
 
-        return linkResponse
+        when (linkResponse) {
+            is CompleteNetworkResponse.Success -> {
+                return linkResponse.data
+            }
+            is CompleteNetworkResponse.SuccessEmptyBody -> {
+                val code = linkResponse.code
+                return null
+            }
+            is CompleteNetworkResponse.RDError<*> -> {
+                val error = linkResponse.error
+                return null
+            }
+            is CompleteNetworkResponse.Error -> {
+                val message = linkResponse.errorMessage
+                return null
+            }
+            else -> return null
+        }
     }
 
     suspend fun getUnrestrictedLinkList(
