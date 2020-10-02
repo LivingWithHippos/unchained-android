@@ -14,14 +14,17 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.navigation.NavController
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.navigateUp
+import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.model.AuthenticationState
 import com.github.livingwithhippos.unchained.databinding.ActivityMainBinding
 import com.github.livingwithhippos.unchained.settings.SettingsActivity
 import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewModel
-import com.github.livingwithhippos.unchained.utilities.BottomNavManager
 import com.github.livingwithhippos.unchained.utilities.SCHEME_HTTP
 import com.github.livingwithhippos.unchained.utilities.SCHEME_HTTPS
 import com.github.livingwithhippos.unchained.utilities.SCHEME_MAGNET
@@ -38,10 +41,11 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
  */
 class MainActivity : UnchainedActivity() {
 
-
     private lateinit var binding: ActivityMainBinding
 
     val viewModel: MainActivityViewModel by viewModels()
+
+    private lateinit var appBarConfiguration : AppBarConfiguration
 
     private val downloadReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -63,10 +67,22 @@ class MainActivity : UnchainedActivity() {
 
         val host: NavHostFragment = supportFragmentManager
             .findFragmentById(R.id.nav_host_fragment) as NavHostFragment? ?: return
-        
+
         val navController = host.navController
 
         setupBottomNavMenu(navController)
+
+        // the destinations will not display a back button
+        appBarConfiguration = AppBarConfiguration(
+            setOf(
+                R.id.authentication_dest,
+                R.id.start_dest,
+                R.id.profile_dest,
+                R.id.new_download_dest,
+                R.id.download_lists_dest),
+            null)
+
+        setupActionBar(navController, appBarConfiguration)
 
         // manage the authentication state
         viewModel.authenticationState.observe(this, { state ->
@@ -106,11 +122,6 @@ class MainActivity : UnchainedActivity() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater = menuInflater
         inflater.inflate(R.menu.top_app_bar, menu)
-        return true
-    }
-
-    override fun onSupportNavigateUp(): Boolean {
-        onBackPressed()
         return true
     }
 
@@ -228,6 +239,15 @@ class MainActivity : UnchainedActivity() {
     private fun setupBottomNavMenu(navController: NavController) {
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_nav_view)
         bottomNav?.setupWithNavController(navController)
+    }
+
+    private fun setupActionBar(navController: NavController,
+                               appBarConfig : AppBarConfiguration) {
+        setupActionBarWithNavController(navController, appBarConfig)
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        return findNavController(R.id.nav_host_fragment).navigateUp(appBarConfiguration)
     }
 
     companion object {
