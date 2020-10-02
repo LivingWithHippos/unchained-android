@@ -77,7 +77,7 @@ class MainActivity : UnchainedActivity() {
             setOf(
                 R.id.authentication_dest,
                 R.id.start_dest,
-                R.id.profile_dest,
+                R.id.user_dest,
                 R.id.new_download_dest,
                 R.id.download_lists_dest),
             null)
@@ -214,6 +214,7 @@ class MainActivity : UnchainedActivity() {
 
     private fun processLinkIntent(uri: Uri) {
         // simulate click on new download tab
+        //todo: move to deep link
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_nav_view)
         if (bottomNav.selectedItemId != R.id.new_download_dest) {
             bottomNav.selectedItemId = R.id.new_download_dest
@@ -231,8 +232,9 @@ class MainActivity : UnchainedActivity() {
     private fun openAuthentication() {
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_nav_view)
         // note: the [BottomNavManager] also has a selectItem() method but this should work for every bottom menu
-        if (bottomNav.selectedItemId != R.id.navigation_home) {
-            bottomNav.selectedItemId = R.id.navigation_home
+        //todo: move to deep link
+        if (bottomNav.selectedItemId != R.id.user_dest) {
+            bottomNav.selectedItemId = R.id.user_dest
         }
     }
 
