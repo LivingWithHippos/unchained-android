@@ -23,6 +23,7 @@ import androidx.navigation.fragment.navArgs
 import com.github.livingwithhippos.unchained.BuildConfig
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
+import com.github.livingwithhippos.unchained.data.model.APIError
 import com.github.livingwithhippos.unchained.data.model.AuthenticationState
 import com.github.livingwithhippos.unchained.databinding.NewDownloadFragmentBinding
 import com.github.livingwithhippos.unchained.newdownload.viewmodel.NewDownloadViewModel
@@ -83,55 +84,7 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
 
         viewModel.apiErrorLiveData.observe(viewLifecycleOwner, {
             it.getContentIfNotHandled()?.let { error ->
-                //todo: move this code outside onCreateView
-                when (error.errorCode) {
-                    -1 -> context?.showToast(R.string.internal_error)
-                    1 -> context?.showToast(R.string.missing_parameter)
-                    2 -> context?.showToast(R.string.bad_parameter_value)
-                    3 -> context?.showToast(R.string.unknown_method)
-                    4 -> context?.showToast(R.string.method_not_allowed)
-                    // what is this error for?
-                    5 -> context?.showToast(R.string.slow_down)
-                    6 -> context?.showToast(R.string.resource_unreachable)
-                    7 -> context?.showToast(R.string.resource_not_found)
-                    //todo: check these
-                    8 -> {
-                        context?.showToast(R.string.bad_token)
-                        activityViewModel.setUnauthenticated()
-                    }
-                    9 -> context?.showToast(R.string.permission_denied)
-                    10 -> context?.showToast(R.string.tfa_needed)
-                    11 -> context?.showToast(R.string.tfa_pending)
-                    12 -> {
-                        context?.showToast(R.string.invalid_login)
-                        activityViewModel.setUnauthenticated()
-                    }
-                    13 -> context?.showToast(R.string.invalid_password)
-                    14 -> {
-                        context?.showToast(R.string.account_locked)
-                        activityViewModel.setUnauthenticated()
-                    }
-                    15 -> context?.showToast(R.string.account_not_activated)
-                    16 -> context?.showToast(R.string.unsupported_hoster)
-                    17 -> context?.showToast(R.string.hoster_in_maintenance)
-                    18 -> context?.showToast(R.string.hoster_limit_reached)
-                    19 -> context?.showToast(R.string.hoster_temporarily_unavailable)
-                    20 -> context?.showToast(R.string.hoster_not_available_for_free_users)
-                    21 -> context?.showToast(R.string.too_many_active_downloads)
-                    22 -> context?.showToast(R.string.ip_Address_not_allowed)
-                    23 -> context?.showToast(R.string.traffic_exhausted)
-                    24 -> context?.showToast(R.string.file_unavailable)
-                    25 -> context?.showToast(R.string.service_unavailable)
-                    26 -> context?.showToast(R.string.upload_too_big)
-                    27 -> context?.showToast(R.string.upload_error)
-                    28 -> context?.showToast(R.string.file_not_allowed)
-                    29 -> context?.showToast(R.string.torrent_too_big)
-                    30 -> context?.showToast(R.string.torrent_file_invalid)
-                    31 -> context?.showToast(R.string.action_already_done)
-                    32 -> context?.showToast(R.string.image_resolution_error)
-                    33 -> context?.showToast(R.string.torrent_already_active)
-                    else -> context?.showToast(R.string.error_unrestricting_download)
-                }
+                showErrorMessage(error)
                 // re enable buttons to let the user take other actions
                 //todo: this needs to be done also for other errors. maybe throw another error from the ViewModel
                 downloadBinding.bUnrestrict.isEnabled = true
@@ -238,6 +191,58 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
         })
 
         return downloadBinding.root
+    }
+
+    private fun showErrorMessage(error: APIError) {
+        when (error.errorCode) {
+            -1 -> context?.showToast(R.string.internal_error)
+            1 -> context?.showToast(R.string.missing_parameter)
+            2 -> context?.showToast(R.string.bad_parameter_value)
+            3 -> context?.showToast(R.string.unknown_method)
+            4 -> context?.showToast(R.string.method_not_allowed)
+            // what is this error for?
+            5 -> context?.showToast(R.string.slow_down)
+            6 -> context?.showToast(R.string.resource_unreachable)
+            7 -> context?.showToast(R.string.resource_not_found)
+            //todo: check these
+            8 -> {
+                context?.showToast(R.string.bad_token)
+                activityViewModel.setUnauthenticated()
+            }
+            9 -> context?.showToast(R.string.permission_denied)
+            10 -> context?.showToast(R.string.tfa_needed)
+            11 -> context?.showToast(R.string.tfa_pending)
+            12 -> {
+                context?.showToast(R.string.invalid_login)
+                activityViewModel.setUnauthenticated()
+            }
+            13 -> context?.showToast(R.string.invalid_password)
+            14 -> {
+                context?.showToast(R.string.account_locked)
+                activityViewModel.setUnauthenticated()
+            }
+            15 -> context?.showToast(R.string.account_not_activated)
+            16 -> context?.showToast(R.string.unsupported_hoster)
+            17 -> context?.showToast(R.string.hoster_in_maintenance)
+            18 -> context?.showToast(R.string.hoster_limit_reached)
+            19 -> context?.showToast(R.string.hoster_temporarily_unavailable)
+            20 -> context?.showToast(R.string.hoster_not_available_for_free_users)
+            21 -> context?.showToast(R.string.too_many_active_downloads)
+            22 -> context?.showToast(R.string.ip_Address_not_allowed)
+            23 -> context?.showToast(R.string.traffic_exhausted)
+            24 -> context?.showToast(R.string.file_unavailable)
+            25 -> context?.showToast(R.string.service_unavailable)
+            26 -> context?.showToast(R.string.upload_too_big)
+            27 -> context?.showToast(R.string.upload_error)
+            28 -> context?.showToast(R.string.file_not_allowed)
+            29 -> context?.showToast(R.string.torrent_too_big)
+            30 -> context?.showToast(R.string.torrent_file_invalid)
+            31 -> context?.showToast(R.string.action_already_done)
+            32 -> context?.showToast(R.string.image_resolution_error)
+            33 -> context?.showToast(R.string.torrent_already_active)
+            else -> context?.showToast(R.string.error_unrestricting_download)
+        }
+
     }
 
     private val getTorrent: ActivityResultLauncher<String> =
