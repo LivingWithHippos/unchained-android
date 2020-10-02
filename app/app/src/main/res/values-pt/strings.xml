@@ -174,4 +174,5 @@
     <string name="confirm_torrent_removal_description">Are you sure you want to remove the torrent? This action cannot be undone.</string>
     <string name="confirm_item_removal_description">Are you sure you want to remove this item? The action cannot be undone.</string>
     <string name="confirm_removal">Confirm removal</string>
+    <string name="multiple_links_warning">This torrent has multiple links. Check the downloads list to find all of them.</string>
 </resources>
