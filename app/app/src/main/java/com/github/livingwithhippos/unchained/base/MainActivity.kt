@@ -13,6 +13,9 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.viewModels
+import androidx.navigation.NavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.model.AuthenticationState
 import com.github.livingwithhippos.unchained.databinding.ActivityMainBinding
@@ -56,6 +59,14 @@ class MainActivity : UnchainedActivity() {
 
         setSupportActionBar(binding.topAppBar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+
+        val host: NavHostFragment = supportFragmentManager
+            .findFragmentById(R.id.nav_host_fragment) as NavHostFragment? ?: return
+        
+        val navController = host.navController
+
+        setupBottomNavMenu(navController)
 
         // manage the authentication state
         viewModel.authenticationState.observe(this, { state ->
@@ -212,6 +223,11 @@ class MainActivity : UnchainedActivity() {
         if (bottomNav.selectedItemId != R.id.navigation_home) {
             bottomNav.selectedItemId = R.id.navigation_home
         }
+    }
+
+    private fun setupBottomNavMenu(navController: NavController) {
+        val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_nav_view)
+        bottomNav?.setupWithNavController(navController)
     }
 
     companion object {
