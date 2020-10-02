@@ -8,10 +8,12 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import com.github.livingwithhippos.unchained.R
+import com.github.livingwithhippos.unchained.base.DeleteDialogFragment
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.databinding.FragmentDownloadDetailsBinding
@@ -48,8 +50,8 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.delete -> {
-                // the delete operation is observed from the viewModel
-                viewModel.deleteDownload(args.details.id)
+                val dialog = DeleteDialogFragment()
+                dialog.show(parentFragmentManager, "DeleteDialogFragment")
                 true
             }
             R.id.share -> {
@@ -88,6 +90,12 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                 activity?.onBackPressed()
             }
         })
+
+        setFragmentResultListener("deleteActionKey") { key, bundle ->
+            // the delete operation is observed from the viewModel
+            if (bundle.getBoolean("deleteConfirmation"))
+                viewModel.deleteDownload(args.details.id)
+        }
 
         return detailsBinding.root
     }
