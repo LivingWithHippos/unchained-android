@@ -86,7 +86,7 @@
                 <com.google.android.material.progressindicator.ProgressIndicator
                     android:id="@+id/downloadBar"
                     style="@style/Widget.MaterialComponents.ProgressIndicator.Circular.Determinate"
-                    android:visibility="@{item.progress >=0 ? View.VISIBLE : View.GONE, default=visible}"
+                    android:visibility="@{item.progress >=0 &amp;&amp; item.progress &lt;100 ? View.VISIBLE : View.GONE, default=visible}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="10dp"
