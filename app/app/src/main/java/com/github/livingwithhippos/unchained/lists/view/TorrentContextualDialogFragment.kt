@@ -37,6 +37,8 @@ class TorrentContextualDialogFragment : DialogFragment {
             val inflater = it.layoutInflater
 
             val binding = DialogTorrentItemBinding.inflate(inflater)
+            // don't show the delete confirmation at start
+            binding.deleteConfirmation = false
 
             var title = ""
             item?.let { item ->
@@ -50,9 +52,13 @@ class TorrentContextualDialogFragment : DialogFragment {
             }
 
             binding.bDelete.setOnClickListener {
+                binding.deleteConfirmation = true
+            }
+
+            binding.bConfirmDelete.setOnClickListener {
                 item?.let { torrent ->
-                        setFragmentResult("torrentActionKey", bundleOf("deletedTorrentKey" to torrent.id))
-                        dismiss()
+                    setFragmentResult("torrentActionKey", bundleOf("deletedTorrentKey" to torrent.id))
+                    dismiss()
                 }
             }
 

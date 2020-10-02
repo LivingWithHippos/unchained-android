@@ -386,4 +386,9 @@
     <string name="share_with">Share download link via:</string>
     <string name="restart_to_apply">Restart to apply</string>
     <string name="remove">Remove</string>
+    <string name="confirm_download_removal_description">Are you sure you want to remove the download? This action cannot be undone.</string>
+    <string name="yes_remove">Yes, remove it</string>
+    <string name="confirm_torrent_removal_description">Are you sure you want to remove the torrent? This action cannot be undone.</string>
+    <string name="confirm_item_removal_description">Are you sure you want to remove this item? The action cannot be undone.</string>
+    <string name="confirm_removal">Confirm removal</string>
 </resources>

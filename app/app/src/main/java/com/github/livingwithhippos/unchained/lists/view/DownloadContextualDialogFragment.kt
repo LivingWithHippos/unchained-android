@@ -36,6 +36,8 @@ class DownloadContextualDialogFragment: DialogFragment {
             val inflater = it.layoutInflater
 
             val binding = DialogDownloadItemBinding.inflate(inflater)
+            // don't show the delete confirmation at start
+            binding.deleteConfirmation = false
 
             var title = ""
             item?.let { item ->
@@ -49,6 +51,10 @@ class DownloadContextualDialogFragment: DialogFragment {
             }
 
             binding.bDelete.setOnClickListener {
+                binding.deleteConfirmation = true
+            }
+
+            binding.bConfirmDelete.setOnClickListener {
                 item?.let { download ->
                     setFragmentResult("downloadActionKey", bundleOf("deletedDownloadKey" to download.id))
                     dismiss()
@@ -56,6 +62,7 @@ class DownloadContextualDialogFragment: DialogFragment {
             }
 
             binding.bOpen.setOnClickListener {
+
                 item?.let { download ->
                     setFragmentResult("downloadActionKey", bundleOf("openedDownloadItem" to download))
                     dismiss()
