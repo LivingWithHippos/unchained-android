@@ -103,7 +103,7 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
         viewModel.fetchTorrentDetails(args.torrentID)
 
         viewModel.deletedTorrentLiveData.observe(viewLifecycleOwner, {
-            it.getContentIfNotHandled().let {
+            it.getContentIfNotHandled()?.let {
                 //fixme: list does not update
                 activityViewModel.setListState(ListsTabFragment.ListState.UPDATE_TORRENT)
                 // todo: check returned value (it)
