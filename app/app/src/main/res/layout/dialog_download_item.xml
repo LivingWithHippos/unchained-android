@@ -72,7 +72,7 @@
             android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:text="@string/confirm_download_removal"
+            android:text="@string/confirm_download_removal_description"
             style="@style/TextAppearance.UnchainedTheme.Body1"/>
 
             <Button

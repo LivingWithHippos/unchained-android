@@ -7,19 +7,19 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.github.livingwithhippos.unchained.R
+import com.github.livingwithhippos.unchained.base.DeleteDialogFragment
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.databinding.FragmentTorrentDetailsBinding
 import com.github.livingwithhippos.unchained.lists.view.ListsTabFragment
 import com.github.livingwithhippos.unchained.torrentdetails.viewmodel.TorrentDetailsViewModel
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
-import com.google.android.material.appbar.MaterialToolbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -53,14 +53,14 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.torrent_details_bar, menu)
-        super.onCreateOptionsMenu(menu,inflater)
+        super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.delete -> {
-                // the delete operation is observed from the viewModel
-                viewModel.deleteTorrent(args.torrentID)
+                val dialog = DeleteDialogFragment()
+                dialog.show(parentFragmentManager, "DeleteDialogFragment")
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -111,6 +111,11 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
                 activity?.onBackPressed()
             }
         })
+
+        setFragmentResultListener("deleteActionKey") { key, bundle ->
+            if (bundle.getBoolean("deleteConfirmation"))
+                viewModel.deleteTorrent(args.torrentID)
+        }
 
         return torrentBinding.root
     }
