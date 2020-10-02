@@ -44,7 +44,6 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
         "compressing",
         "uploading"
     )
-    val endedStatusList = listOf("magnet_error", "downloaded", "error", "virus", "dead")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

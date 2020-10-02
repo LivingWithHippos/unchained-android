@@ -62,3 +62,7 @@ val errorMap = mapOf(
     33 to "Torrent already active"
 )
 
+// Torrent status list
+
+val endedStatusList = listOf("magnet_error", "downloaded", "error", "virus", "dead")
+

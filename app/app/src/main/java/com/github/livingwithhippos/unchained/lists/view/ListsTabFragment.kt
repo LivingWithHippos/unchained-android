@@ -17,6 +17,7 @@ import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.databinding.FragmentTabListsBinding
 import com.github.livingwithhippos.unchained.lists.viewmodel.DownloadListViewModel
+import com.github.livingwithhippos.unchained.utilities.endedStatusList
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.github.livingwithhippos.unchained.utilities.extension.verticalScrollToPosition
 import com.google.android.material.tabs.TabLayout
@@ -242,13 +243,19 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
     override fun onClick(item: TorrentItem) {
         val authState = activityViewModel.authenticationState.value?.peekContent()
         if (authState == AuthenticationState.AUTHENTICATED) {
-            if (item.status == "downloaded") {
-                // if the item has many links to download, show a toast
-                if (item.links.size > 2)
-                    context?.showToast(R.string.downloading_torrent)
-                viewModel.downloadTorrent(item)
-            } else
-                context?.showToast(R.string.torrent_not_downloaded)
+            when (item.status) {
+                "downloaded" -> {
+                    // if the item has many links to download, show a toast
+                    if (item.links.size > 2)
+                        context?.showToast(R.string.downloading_torrent)
+                    viewModel.downloadTorrent(item)
+                }
+                // open the torrent details fragment
+                else -> {
+                    val action = ListsTabFragmentDirections.actionListsTabToTorrentDetails(item.id)
+                    findNavController().navigate(action)
+                }
+            }
         } else
             context?.showToast(R.string.premium_needed)
     }
