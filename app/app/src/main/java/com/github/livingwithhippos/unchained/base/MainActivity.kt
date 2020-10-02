@@ -215,8 +215,8 @@ class MainActivity : UnchainedActivity() {
     private fun processLinkIntent(uri: Uri) {
         // simulate click on new download tab
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_nav_view)
-        if (bottomNav.selectedItemId != R.id.navigation_download) {
-            bottomNav.selectedItemId = R.id.navigation_download
+        if (bottomNav.selectedItemId != R.id.new_download_dest) {
+            bottomNav.selectedItemId = R.id.new_download_dest
         }
         viewModel.addLink(uri)
     }
