@@ -35,7 +35,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
  */
 class MainActivity : UnchainedActivity() {
 
-    private var bottomNavManager: BottomNavManager? = null
 
     private lateinit var binding: ActivityMainBinding
 
@@ -58,17 +57,13 @@ class MainActivity : UnchainedActivity() {
         setSupportActionBar(binding.topAppBar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        if (savedInstanceState == null) {
-            setupNavigationManager()
-        }
-
         // manage the authentication state
         viewModel.authenticationState.observe(this, { state ->
             when (state.peekContent()) {
                 // go to login fragment
                 AuthenticationState.UNAUTHENTICATED -> {
                     openAuthentication()
-                    bottomNavManager?.disableMenuItems(listOf(R.id.navigation_home))
+                    // bottomNavManager?.disableMenuItems(listOf(R.id.navigation_home))
                 }
                 // refresh the token.
                 // todo: if it keeps on being bad (hehe) delete the credentials and start the authentication from zero
@@ -78,11 +73,11 @@ class MainActivity : UnchainedActivity() {
                 // go to login fragment and show another error message
                 AuthenticationState.ACCOUNT_LOCKED -> {
                     openAuthentication()
-                    bottomNavManager?.disableMenuItems(listOf(R.id.navigation_home))
+                    // bottomNavManager?.disableMenuItems(listOf(R.id.navigation_home))
                 }
                 // do nothing
                 AuthenticationState.AUTHENTICATED, AuthenticationState.AUTHENTICATED_NO_PREMIUM -> {
-                    bottomNavManager?.enableMenuItems()
+                    // bottomNavManager?.enableMenuItems()
                 }
             }
         })
@@ -216,48 +211,6 @@ class MainActivity : UnchainedActivity() {
         // note: the [BottomNavManager] also has a selectItem() method but this should work for every bottom menu
         if (bottomNav.selectedItemId != R.id.navigation_home) {
             bottomNav.selectedItemId = R.id.navigation_home
-        }
-    }
-
-    private fun setupNavigationManager() {
-        bottomNavManager?.setupNavController() ?: kotlin.run {
-            bottomNavManager = BottomNavManager(
-                fragmentManager = supportFragmentManager,
-                containerId = R.id.nav_host_fragment,
-                bottomNavigationView = findViewById(R.id.bottom_nav_view)
-            )
-        }
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        bottomNavManager?.onSaveInstanceState(outState)
-    }
-
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
-        bottomNavManager?.onRestoreInstanceState(savedInstanceState)
-        setupNavigationManager()
-    }
-
-    override fun onBackPressed() {
-        // if the navigation backstack is not empty pop it
-        if (bottomNavManager?.onBackPressed()==false) {
-            // check if we're in the home bottom bar, otherwise press back
-            val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_nav_view)
-            if (bottomNav.selectedItemId != R.id.navigation_home)
-                super.onBackPressed()
-            else {
-                // check if it has been 2 seconds since the last time we pressed back
-                val pressedTime = System.currentTimeMillis()
-                val lastPressedTime = viewModel.getLastBackPress()
-                if (pressedTime - lastPressedTime <= EXIT_WAIT_TIME)
-                    finish()
-                else {
-                    viewModel.setLastBackPress(pressedTime)
-                    this.showToast(R.string.press_again_exit)
-                }
-            }
         }
     }
 
