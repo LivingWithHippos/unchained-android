@@ -82,7 +82,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         })
 
         viewModel.deletedDownloadLiveData.observe(viewLifecycleOwner, {
-            it.getContentIfNotHandled().let {
+            it.getContentIfNotHandled()?.let {
                 activityViewModel.setListState(ListsTabFragment.ListState.UPDATE_DOWNLOAD)
                 // todo: check returned value (it)
                 activity?.baseContext?.showToast(R.string.download_removed)

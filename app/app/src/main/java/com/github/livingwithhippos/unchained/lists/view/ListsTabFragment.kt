@@ -166,11 +166,9 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
 
 
         viewModel.deletedTorrentLiveData.observe(viewLifecycleOwner, {
-            it.getContentIfNotHandled().let { deletedValue ->
-                if (deletedValue != null) {
-                    context?.showToast(R.string.torrent_deleted)
-                    torrentAdapter.refresh()
-                }
+            it.getContentIfNotHandled()?.let { deletedValue ->
+                context?.showToast(R.string.torrent_deleted)
+                torrentAdapter.refresh()
             }
         })
 
