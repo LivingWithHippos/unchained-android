@@ -196,8 +196,8 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
         }
 
         // we must make this value null by default because it's the first fragment of the nav graph
-        if (args.links?.firstOrNull() != null) {
-            downloadBinding.tiLink.setText(args.links!!.first(), TextView.BufferType.EDITABLE)
+        if (args.link != null) {
+            downloadBinding.tiLink.setText(args.link, TextView.BufferType.EDITABLE)
             // run the ripple animation on the unrestrict button
             downloadBinding.bUnrestrict.runRippleAnimation()
         }

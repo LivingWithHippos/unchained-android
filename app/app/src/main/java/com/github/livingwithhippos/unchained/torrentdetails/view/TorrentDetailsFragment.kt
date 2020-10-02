@@ -117,6 +117,14 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
                 viewModel.deleteTorrent(args.torrentID)
         }
 
+        viewModel.downloadLiveData.observe(viewLifecycleOwner, {
+            it.getContentIfNotHandled()?.let {download ->
+                val action =
+                    TorrentDetailsFragmentDirections.actionTorrentDetailsToDownloadDetailsDest(download)
+                findNavController().navigate(action)
+            }
+        })
+
         return torrentBinding.root
     }
 
@@ -129,9 +137,10 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
     }
 
     override fun onDownloadClick(links: List<String>) {
-        val action =
-            TorrentDetailsFragmentDirections.actionTorrentDetailsFragmentToNewDownloadDest(links.toTypedArray())
-        findNavController().navigate(action)
+        if (links.size>1)
+            context?.showToast(R.string.multiple_links_warning)
+
+        viewModel.downloadTorrent()
     }
 
     override fun onDeleteClick(id: String) {

@@ -6,7 +6,7 @@
     app:startDestination="@id/listsTabFragment">
 
     <fragment
-        android:id="@+id/downloadDetailsFragment"
+        android:id="@+id/download_details_dest"
         android:name="com.github.livingwithhippos.unchained.downloaddetails.view.DownloadDetailsFragment"
         tools:layout="@layout/fragment_download_details"
         android:label="DownloadDetailsFragment" >
@@ -22,7 +22,7 @@
         tools:layout="@layout/fragment_tab_lists" >
         <action
             android:id="@+id/action_listsTab_to_downloadDetails"
-            app:destination="@id/downloadDetailsFragment" />
+            app:destination="@id/download_details_dest" />
         <action
             android:id="@+id/action_listsTab_to_torrentDetails"
             app:destination="@id/torrentDetailsFragment" />
@@ -36,5 +36,8 @@
         <argument
             android:name="torrentID"
             app:argType="string" />
+        <action
+            android:id="@+id/action_torrentDetails_to_download_details_dest"
+            app:destination="@id/download_details_dest" />
     </fragment>
 </navigation>

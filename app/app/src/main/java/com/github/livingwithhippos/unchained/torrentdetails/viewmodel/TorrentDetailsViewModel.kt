@@ -1,27 +1,30 @@
 package com.github.livingwithhippos.unchained.torrentdetails.viewmodel
 
-import android.util.Log
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.data.repositoy.CredentialsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.TorrentsRepository
+import com.github.livingwithhippos.unchained.data.repositoy.UnrestrictRepository
 import com.github.livingwithhippos.unchained.utilities.Event
 import kotlinx.coroutines.launch
 
 /**
- * a [ViewModel] SUBCLASS.
+ * a [ViewModel] subclass.
  * Retrieves a torrent's details
  */
 class TorrentDetailsViewModel @ViewModelInject constructor(
     private val credentialsRepository: CredentialsRepository,
-    private val torrentsRepository: TorrentsRepository
+    private val torrentsRepository: TorrentsRepository,
+    private val unrestrictRepository: UnrestrictRepository
 ) : ViewModel() {
 
     val torrentLiveData = MutableLiveData<TorrentItem?>()
     val deletedTorrentLiveData = MutableLiveData<Event<Int?>>()
+    val downloadLiveData = MutableLiveData<Event<DownloadItem?>>()
 
 
     fun fetchTorrentDetails(torrentID: String) {
@@ -48,8 +51,17 @@ class TorrentDetailsViewModel @ViewModelInject constructor(
         viewModelScope.launch {
             val token = getToken()
             val deletedTorrentResponse = torrentsRepository.deleteTorrent(token, id)
-            Log.d("TorrentDetailsViewModel","Response deleted torrent: $deletedTorrentResponse")
             deletedTorrentLiveData.postValue(Event(deletedTorrentResponse))
+        }
+    }
+
+    fun downloadTorrent() {
+        viewModelScope.launch {
+            val token = credentialsRepository.getToken()
+            torrentLiveData.value?.let {
+                val items = unrestrictRepository.getUnrestrictedLinkList(token, it.links)
+                downloadLiveData.postValue(Event(items.firstOrNull()))
+            }
         }
     }
 }
