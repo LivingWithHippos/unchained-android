@@ -80,26 +80,26 @@ open class BaseRepository {
         return responseCode
     }
 
-    public suspend fun <T : Any> errorApiResult(
+    suspend fun <T : Any> errorApiResult(
         call: suspend () -> Response<T>,
         errorMessage: String
     ): CompleteNetworkResponse<T?, APIError?> {
         val response = call.invoke()
-        if (response.isSuccessful) {
+        return if (response.isSuccessful) {
             val body = response.body()
             if (body != null)
-                return CompleteNetworkResponse.Success(body)
+                CompleteNetworkResponse.Success(body)
             else
-                return CompleteNetworkResponse.SuccessEmptyBody(response.code())
+                CompleteNetworkResponse.SuccessEmptyBody(response.code())
         } else {
             try {
                 val error: APIError? = jsonAdapter.fromJson(response.errorBody()!!.string())
-                return CompleteNetworkResponse.RDError(error)
+                CompleteNetworkResponse.RDError(error)
             } catch (e: IOException) {
                 e.printStackTrace()
+                CompleteNetworkResponse.Error(errorMessage)
             }
         }
 
-        return CompleteNetworkResponse.Error(errorMessage)
     }
 }
