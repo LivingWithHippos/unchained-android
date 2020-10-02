@@ -45,6 +45,12 @@ import javax.inject.Singleton
 @Module
 object ApiFactory {
 
+    /*********************************/
+    // N.B. all updates to this code //
+    // also need to be ported to the //
+    // release build flavor version. //
+    /*********************************/
+
     @Provides
     @Singleton
     fun provideOkHttpClient(): OkHttpClient {

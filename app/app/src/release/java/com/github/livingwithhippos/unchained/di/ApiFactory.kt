@@ -21,6 +21,9 @@ import com.github.livingwithhippos.unchained.data.remote.UnrestrictApiHelperImpl
 import com.github.livingwithhippos.unchained.data.remote.UserApi
 import com.github.livingwithhippos.unchained.data.remote.UserApiHelper
 import com.github.livingwithhippos.unchained.data.remote.UserApiHelperImpl
+import com.github.livingwithhippos.unchained.data.remote.VariousApi
+import com.github.livingwithhippos.unchained.data.remote.VariousApiHelper
+import com.github.livingwithhippos.unchained.data.remote.VariousApiHelperImpl
 import com.github.livingwithhippos.unchained.utilities.BASE_AUTH_URL
 import com.github.livingwithhippos.unchained.utilities.BASE_URL
 import com.squareup.moshi.Moshi
@@ -41,6 +44,12 @@ import javax.inject.Singleton
 @InstallIn(ApplicationComponent::class)
 @Module
 object ApiFactory {
+
+    /*********************************/
+    // N.B. all updates to this code //
+    // also need to be ported to the //
+    // debug build flavor version.   //
+    /*********************************/
 
     @Provides
     @Singleton
@@ -152,5 +161,17 @@ object ApiFactory {
     @Provides
     @Singleton
     fun provideHostsApiHelper(apiHelper: HostsApiHelperImpl): HostsApiHelper =
+        apiHelper
+    
+    // various api injection
+    @Provides
+    @Singleton
+    fun provideVariousApi(@ApiRetrofit retrofit: Retrofit): VariousApi {
+        return retrofit.create(VariousApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideVariousApiHelper(apiHelper: VariousApiHelperImpl): VariousApiHelper =
         apiHelper
 }
