@@ -172,6 +172,7 @@
     <string name="share_with">Condividi link di download tramite:</string>
     <string name="restart_to_apply">Riavvia per applicare</string>
     <string name="remove">Rimuovi</string>
-    <string name="confirm_delete">Sei sicuro di voler rimuovere il download? Questa azione non può essere annullata.</string>
+    <string name="confirm_download_removal">Sei sicuro di voler rimuovere il download? Questa azione non può essere annullata.</string>
     <string name="yes_remove">Sì, rimuovilo</string>
+    <string name="confirm_torrent_removal">Sei sicuro di voler rimuovere il torrent? Questa azione non può essere annullata.</string>
 </resources>

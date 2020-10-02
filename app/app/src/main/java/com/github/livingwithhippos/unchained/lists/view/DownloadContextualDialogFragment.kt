@@ -36,7 +36,7 @@ class DownloadContextualDialogFragment: DialogFragment {
             val inflater = it.layoutInflater
 
             val binding = DialogDownloadItemBinding.inflate(inflater)
-
+            // don't show the delete confirmation at start
             binding.deleteConfirmation = false
 
             var title = ""
