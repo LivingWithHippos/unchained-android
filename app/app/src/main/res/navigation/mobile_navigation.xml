@@ -72,7 +72,7 @@
     <fragment
         android:id="@+id/torrentDetailsFragment"
         android:name="com.github.livingwithhippos.unchained.torrentdetails.view.TorrentDetailsFragment"
-        android:label="TorrentDetailsFragment"
+        android:label="@string/torrent_details"
         tools:layout="@layout/fragment_torrent_details" >
         <argument
             android:name="torrentID"
@@ -85,7 +85,7 @@
     <fragment
         android:id="@+id/download_lists_dest"
         android:name="com.github.livingwithhippos.unchained.lists.view.ListsTabFragment"
-        android:label="ListsTabFragment"
+        android:label="@string/lists"
         tools:layout="@layout/fragment_tab_lists" >
         <action
             android:id="@+id/action_listsTab_to_downloadDetails"
