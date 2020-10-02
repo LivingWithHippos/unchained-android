@@ -37,7 +37,7 @@ interface UnrestrictApi {
         // Password to unlock the file access hoster side
         @Field("password") password: String? = null,
         // 0 or 1, use Remote traffic, dedicated servers and account sharing protections lifted
-        @Field("remote ") remote: Int? = null
+        @Field("remote") remote: Int? = null
     ): Response<DownloadItem>
 
 }

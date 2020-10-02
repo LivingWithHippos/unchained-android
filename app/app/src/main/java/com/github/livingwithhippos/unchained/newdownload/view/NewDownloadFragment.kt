@@ -156,7 +156,7 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
                         if (password.isNullOrBlank())
                             password = null
                         val remote: Int? =
-                            if (downloadBinding.switchRemote.isEnabled) REMOTE_TRAFFIC_ON else null
+                            if (downloadBinding.switchRemote.isChecked) REMOTE_TRAFFIC_ON else null
 
                         viewModel.fetchUnrestrictedLink(
                             link,

@@ -14,9 +14,11 @@ import com.github.livingwithhippos.unchained.data.model.User
 import com.github.livingwithhippos.unchained.data.repositoy.AuthenticationRepository
 import com.github.livingwithhippos.unchained.data.repositoy.CredentialsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.UserRepository
+import com.github.livingwithhippos.unchained.data.repositoy.VariousApiRepository
 import com.github.livingwithhippos.unchained.lists.view.ListsTabFragment
 import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.PRIVATE_TOKEN
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 /**
@@ -27,7 +29,8 @@ class MainActivityViewModel @ViewModelInject constructor(
     @Assisted private val savedStateHandle: SavedStateHandle,
     private val authRepository: AuthenticationRepository,
     private val credentialRepository: CredentialsRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val variousApiRepository: VariousApiRepository
 ) : ViewModel() {
 
     val authenticationState = MutableLiveData<Event<AuthenticationState>>()
@@ -45,28 +48,48 @@ class MainActivityViewModel @ViewModelInject constructor(
     @SuppressLint("NullSafeMutableLiveData")
     fun fetchFirstWorkingCredentials() {
         viewModelScope.launch {
+
+            var user: User? = null
+
             val completeCredentials = credentialRepository
                 .getAllCredentials()
                 .filter { it.accessToken != null && it.clientId != null && it.clientSecret != null && it.deviceCode.isNotBlank() && it.refreshToken != null }
-            var user: User? = null
-            if (completeCredentials.isNotEmpty()) {
-                val privateCredentials =
-                    completeCredentials.firstOrNull { it.deviceCode == PRIVATE_TOKEN }
 
-                if (privateCredentials != null) {
-                    user = checkCredentials(privateCredentials)
+
+            if (completeCredentials.isNotEmpty()) {
+
+                // step #1: test for private API token
+                completeCredentials.firstOrNull { it.deviceCode == PRIVATE_TOKEN }?.let{
+                    user = checkCredentials(it)
                 }
-                // if the private token is not working this also gets triggered
-                if (user == null)
-                    for (cred in completeCredentials) {
-                        user = checkCredentials(cred)
-                        if (user != null) {
-                            break
+                // step #2: test for open source credentials
+                if (user == null) {
+                    completeCredentials.firstOrNull { it.deviceCode != PRIVATE_TOKEN }?.let{
+                        authRepository.refreshToken(it)?.let { token ->
+                            val newCredentials = Credentials(
+                                it.deviceCode,
+                                it.clientId,
+                                it.clientSecret,
+                                token.accessToken,
+                                token.refreshToken
+                            )
+
+                            user = userRepository.getUserInfo(newCredentials.accessToken!!)
+                            if (user != null) {
+                                // update the credentials
+                                credentialRepository.updateCredentials(newCredentials)
+                                // program the refresh of the token
+                                programTokenRefresh(token.expiresIn)
+                            }
                         }
                     }
+                }
+
             }
-            // passes null if no working credentials, otherwise pass the first working one
+
+            // pass whatever user was retrieved, or null if none was found
             userLiveData.postValue(user)
+
         }
     }
 
@@ -102,7 +125,7 @@ class MainActivityViewModel @ViewModelInject constructor(
             credentialRepository.getFirstCredentials()?.let {
                 if (it.refreshToken != null && it.refreshToken != PRIVATE_TOKEN) {
                     //setUnauthenticated()
-                    authRepository.disableToken(it.accessToken!!)
+                    variousApiRepository.disableToken(it.accessToken!!)
                 }
 
             }
@@ -135,6 +158,9 @@ class MainActivityViewModel @ViewModelInject constructor(
                     )
                     // update the credentials
                     credentialRepository.updateCredentials(newCredentials)
+
+                    // program the refresh of the token
+                    programTokenRefresh(it.expiresIn)
                 }
             }
         }
@@ -169,6 +195,15 @@ class MainActivityViewModel @ViewModelInject constructor(
 
     fun setLastBackPress(time: Long) {
         savedStateHandle.set(KEY_LAST_BACK_PRESS, time)
+    }
+
+    fun programTokenRefresh(secondsDelay: Int) {
+        // todo: add job that is cancelled everytime this function is called
+        viewModelScope.launch {
+            // secondsDelay*950L -> expiration time - 5%
+            delay(secondsDelay * 950L)
+            refreshToken()
+        }
     }
 
     companion object {

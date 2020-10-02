@@ -22,7 +22,7 @@ interface DownloadsApi {
      * @param limit Entries returned per page / request (must be within 0 and 100, default: 50)
      * @return a Response<List<DownloadItem>> a list of download items
      */
-    @GET(" downloads")
+    @GET("downloads")
     suspend fun getDownloads(
         @Header("Authorization") token: String,
         @Query("offset") offset: Int?,

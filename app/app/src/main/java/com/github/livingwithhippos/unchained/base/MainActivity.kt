@@ -245,8 +245,6 @@ class MainActivity : UnchainedActivity() {
         if (bottomNavManager?.onBackPressed()==false) {
             // check if we're in the home bottom bar, otherwise press back
             val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_nav_view)
-            val asd = bottomNav.selectedItemId
-            val home = R.id.navigation_home
             if (bottomNav.selectedItemId != R.id.navigation_home)
                 super.onBackPressed()
             else {

@@ -48,6 +48,7 @@ class AuthenticationViewModel @ViewModelInject constructor(
      * @param expireIn: the time in seconds before the deviceCode is not valid anymore for the secrets endpoint
      */
     fun fetchSecrets(deviceCode: String, expireIn: Int) {
+        // 5 seconds is the value suggested by real debrid
         val waitTime = 5000L
         // this is just an estimate, keeping track of time would be more precise. As of now this value should be 120
         var calls = (expireIn * 1000 / waitTime).toInt() - 10
@@ -55,7 +56,6 @@ class AuthenticationViewModel @ViewModelInject constructor(
         calls -= calls / 10
         viewModelScope.launch {
             var secretData = authRepository.getSecrets(deviceCode)
-            secretLiveData.postValue(Event(secretData))
             while (secretData?.clientId == null && calls-- > 0 && (getAuthState() != AuthenticationState.AUTHENTICATED || getAuthState() != AuthenticationState.AUTHENTICATED_NO_PREMIUM)) {
                 delay(waitTime)
                 secretData = authRepository.getSecrets(deviceCode)

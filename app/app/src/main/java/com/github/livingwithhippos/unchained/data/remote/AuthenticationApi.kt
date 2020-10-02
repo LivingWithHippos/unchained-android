@@ -38,15 +38,7 @@ interface AuthenticationApi {
     suspend fun getToken(
         @Field("client_id") clientId: String,
         @Field("client_secret") clientSecret: String,
-        @Field("code") deviceCode: String,
+        @Field("code") code: String,
         @Field("grant_type") grantType: String = OPEN_SOURCE_GRANT_TYPE
     ): Response<Token>
-
-    /**
-     * Disable the current access token
-     */
-    @GET("disable_access_token")
-    suspend fun disableToken(
-        @Header("Authorization") token: String
-    ): Response<Any>
 }
