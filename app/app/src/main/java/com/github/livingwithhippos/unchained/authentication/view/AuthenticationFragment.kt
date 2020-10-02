@@ -63,8 +63,6 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
                 authBinding.token = token
                 // pass the value to be checked and eventually saved
                 viewModel.checkAndSaveToken(token = token)
-                // program the refresh of the token
-                activityViewModel.programTokenRefresh(token.expiresIn)
             }
         })
 
