@@ -74,17 +74,17 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
 
 
         val statusTranslation = mapOf(
-            "magnet_error" to resources.getString(R.string.magnet_error),
-            "magnet_conversion" to resources.getString(R.string.magnet_conversion),
-            "waiting_files_selection" to resources.getString(R.string.waiting_files_selection),
-            "queued" to resources.getString(R.string.queued),
-            "downloading" to resources.getString(R.string.downloading),
-            "downloaded" to resources.getString(R.string.downloaded),
-            "error" to resources.getString(R.string.error),
-            "virus" to resources.getString(R.string.virus),
-            "compressing" to resources.getString(R.string.compressing),
-            "uploading" to resources.getString(R.string.uploading),
-            "dead" to resources.getString(R.string.dead)
+            "magnet_error" to getString(R.string.magnet_error),
+            "magnet_conversion" to getString(R.string.magnet_conversion),
+            "waiting_files_selection" to getString(R.string.waiting_files_selection),
+            "queued" to getString(R.string.queued),
+            "downloading" to getString(R.string.downloading),
+            "downloaded" to getString(R.string.downloaded),
+            "error" to getString(R.string.error),
+            "virus" to getString(R.string.virus),
+            "compressing" to getString(R.string.compressing),
+            "uploading" to getString(R.string.uploading),
+            "dead" to getString(R.string.dead)
         )
 
         torrentBinding.loadingStatusList = loadingStatusList

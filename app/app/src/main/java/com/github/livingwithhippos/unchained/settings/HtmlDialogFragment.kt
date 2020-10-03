@@ -57,7 +57,7 @@ class HtmlDialogFragment : DialogFragment {
                 HtmlCompat.fromHtml(getString(message ?: R.string.error_loading_dialog), FROM_HTML_MODE_COMPACT)
 
             builder.setView(view)
-                .setNeutralButton(resources.getString(R.string.close)) { dialog, _ ->
+                .setNeutralButton(getString(R.string.close)) { dialog, _ ->
                     dialog.cancel()
                 }
             // Create the AlertDialog object and return it

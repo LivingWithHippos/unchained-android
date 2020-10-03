@@ -82,7 +82,7 @@ class DownloadContextualDialogFragment: DialogFragment {
 
             builder.setView(binding.root)
                 .setTitle(title)
-                .setNeutralButton(resources.getString(R.string.close)) { dialog, _ ->
+                .setNeutralButton(getString(R.string.close)) { dialog, _ ->
                     dialog.cancel()
                 }
             // Create the AlertDialog object and return it
