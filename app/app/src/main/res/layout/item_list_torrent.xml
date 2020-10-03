@@ -61,7 +61,7 @@
                     android:layout_height="wrap_content"
                     android:text="@{item.filename, default=`File Name`}"
                     android:maxLines="3"
-                    android:textSize="14"
+                    android:textSize="14sp"
                     android:ellipsize="middle"
                     app:layout_constraintBottom_toTopOf="@+id/tvSize"
                     app:layout_constraintStart_toStartOf="@+id/tvTitle"
