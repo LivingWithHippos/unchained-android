@@ -1,6 +1,7 @@
 package com.github.livingwithhippos.unchained.base
 
 
+import android.annotation.SuppressLint
 import android.app.DownloadManager
 import android.content.BroadcastReceiver
 import android.content.ContentResolver.SCHEME_CONTENT
@@ -132,6 +133,33 @@ class MainActivity : UnchainedActivity() {
                 true
             }
             else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    override fun onBackPressed() {
+        val currentDestination = findNavController(R.id.nav_host_fragment).currentDestination
+        val previousDestination = findNavController(R.id.nav_host_fragment).previousBackStackEntry
+
+        // check if we're pressing back from the user or authentication fragment
+        if (currentDestination?.id == R.id.user_dest || currentDestination?.id == R.id.authentication_dest) {
+            // check the destination for the back action
+            if (previousDestination == null || previousDestination.destination.id == R.id.authentication_dest || previousDestination.destination.id == R.id.start_dest || previousDestination.destination.id == R.id.user_dest) {
+                // check if it has been 2 seconds since the last time we pressed back
+                val pressedTime = System.currentTimeMillis()
+                val lastPressedTime = viewModel.getLastBackPress()
+                // exit if pressed back twice in EXIT_WAIT_TIME
+                if (pressedTime - lastPressedTime <= EXIT_WAIT_TIME)
+                    finish()
+                // else update the last time the user pressed back
+                else {
+                    viewModel.setLastBackPress(pressedTime)
+                    this.showToast(R.string.press_again_exit)
+                }
+            } else {
+                super.onBackPressed()
+            }
+        } else {
+            super.onBackPressed()
         }
     }
 
