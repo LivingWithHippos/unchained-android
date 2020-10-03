@@ -1,6 +1,7 @@
 package com.github.livingwithhippos.unchained.utilities.extension
 
 import android.content.Context
+import android.content.res.Resources
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.ClipDrawable
 import android.graphics.drawable.Drawable
@@ -10,6 +11,7 @@ import android.graphics.drawable.RippleDrawable
 import android.graphics.drawable.RotateDrawable
 import android.graphics.drawable.ScaleDrawable
 import android.graphics.drawable.VectorDrawable
+import android.util.TypedValue
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
@@ -20,6 +22,7 @@ import androidx.cardview.widget.CardView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
@@ -273,7 +276,7 @@ fun View.showSnackbar(
  * @param item: the item to be returned to the callback
  */
 //todo: rename to setBindingOnTorrentLongClickListener
-@BindingAdapter("onLongClickListener","cardTorrentItem")
+@BindingAdapter("onLongClickListener", "cardTorrentItem")
 fun CardView.setBindingOnLongClickListener(listener: TorrentListListener, item: TorrentItem) {
     this.setOnLongClickListener {
         listener.onLongClick(item)
@@ -286,10 +289,35 @@ fun CardView.setBindingOnLongClickListener(listener: TorrentListListener, item: 
  * @param callback: the function to be called
  * @param item: the item to be returned to the callback
  */
-@BindingAdapter("onDownloadLongClickListener","cardDownloadItem")
-fun CardView.setBindingOnDownloadLongClickListener(listener: DownloadListListener, item: DownloadItem) {
+@BindingAdapter("onDownloadLongClickListener", "cardDownloadItem")
+fun CardView.setBindingOnDownloadLongClickListener(
+    listener: DownloadListListener,
+    item: DownloadItem
+) {
     this.setOnLongClickListener {
         listener.onLongClick(item)
         true
+    }
+}
+
+/**
+ * The refresh indicator is not themed according to the app, it's always a black arrow in a white circle.
+ * This can be used to paint it.
+ */
+@BindingAdapter("refreshColorTheme")
+fun SwipeRefreshLayout.setRefreshThemeColor(themed: Boolean){
+    if (themed) {
+        // get a reference to the current theme
+        val typedValue = TypedValue()
+        val theme: Resources.Theme = context.theme
+        theme.resolveAttribute(R.attr.colorPrimary, typedValue, true)
+        // arrow color
+        val arrowColor = typedValue.data
+        // this function accept a number of colors, the refresh indicator will rotate between them.
+        setColorSchemeColors(arrowColor)
+        theme.resolveAttribute(R.attr.colorSurface, typedValue, true)
+        // background color
+        val backgroundColor = typedValue.data
+        setProgressBackgroundColorSchemeColor(backgroundColor)
     }
 }

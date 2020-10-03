@@ -40,7 +40,8 @@
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/srLayout"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        refreshColorTheme="@{true}">
         <FrameLayout
             android:layout_height="wrap_content"
             android:layout_width="match_parent">
