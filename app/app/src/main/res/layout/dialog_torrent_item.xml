@@ -52,7 +52,7 @@
             android:layout_marginTop="15dp"
             android:backgroundTint="?attr/colorSecondary"
             android:minWidth="150dp"
-            android:text="@string/delete"
+            android:text="@string/remove"
             android:textColor="?attr/colorOnSecondary"
             app:icon="@drawable/icon_delete"
             style="@style/Widget.MaterialComponents.Button.Icon"  />
