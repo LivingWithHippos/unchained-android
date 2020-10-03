@@ -16,15 +16,14 @@
 
     </data>
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cvTorrent"
-            android:layout_width="300dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
             android:layout_marginTop="20dp"
+            android:layout_marginEnd="20dp"
+            android:padding="10dp"
             android:checkable="false"
             android:focusable="true"
             android:onClick="@{() -> listener.onClick(item)}"
@@ -41,7 +40,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="15dp">
+                android:padding="20dp">
 
                 <!-- todo: add status translation (see TorrentDetailsFragment) -->
                 <TextView
@@ -101,5 +100,4 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </com.google.android.material.card.MaterialCardView>
-    </FrameLayout>
 </layout>

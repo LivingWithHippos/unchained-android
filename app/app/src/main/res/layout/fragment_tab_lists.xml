@@ -47,17 +47,17 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvTorrentList"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:scrollbars="vertical"
-                android:visibility="@{selectedTab == 1?  View.VISIBLE : View.GONE}"
+                android:visibility="@{selectedTab == 1?  View.VISIBLE : View.GONE, default=gone}"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:listitem="@layout/item_list_torrent" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvDownloadList"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:scrollbars="vertical"
