@@ -269,6 +269,9 @@ class MainActivity : UnchainedActivity() {
     private fun setupBottomNavMenu(navController: NavController) {
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_nav_view)
         bottomNav?.setupWithNavController(navController)
+        bottomNav?.setOnNavigationItemReselectedListener {
+            // do nothing on reselect. Fragments get recreated otherwise.
+        }
     }
 
     private fun setupActionBar(navController: NavController,
