@@ -47,7 +47,6 @@
                 android:layout_height="wrap_content"
                 android:text="@{item.streamable == 1 ? @string/streaming : @string/download, default=`Download`}"
                 android:textAllCaps="true"
-                android:textSize="14sp"
                 app:layout_constraintBottom_toTopOf="@+id/tvName"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -58,6 +57,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="@{item.filename, default=`File Name`}"
+                android:textSize="14sp"
                 android:maxLines="3"
                 android:ellipsize="middle"
                 android:layout_marginEnd="5dp"
