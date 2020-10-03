@@ -12,17 +12,17 @@
         <action
             android:id="@+id/action_startFragment_to_authenticationFragment"
             app:destination="@id/authentication_dest"
-            app:popUpTo="@id/authentication_dest"
-            app:popUpToInclusive="true"
             app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left" />
+            app:exitAnim="@anim/slide_out_left"
+            app:popUpTo="@id/start_dest"
+            app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_startFragment_to_userProfileFragment"
             app:destination="@id/user_dest"
-            app:popUpTo="@id/user_dest"
-            app:popUpToInclusive="true"
             app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left" />
+            app:exitAnim="@anim/slide_out_left"
+            app:popUpTo="@id/start_dest"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/authentication_dest"
@@ -45,8 +45,10 @@
         <action
             android:id="@+id/actionUserToAuthentication"
             app:destination="@id/authentication_dest"
-            app:popUpTo="@id/authentication_dest"
-            app:popUpToInclusive="true"/>
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popUpTo="@id/start_dest"
+            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
