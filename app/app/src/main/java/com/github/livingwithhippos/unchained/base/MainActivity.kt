@@ -85,7 +85,7 @@ class MainActivity : UnchainedActivity() {
                 // go to login fragment
                 AuthenticationState.UNAUTHENTICATED -> {
                     openAuthentication()
-                    disableBottomNavItems(R.id.navigation_download,R.id.navigation_lists)
+                    disableBottomNavItems(R.id.navigation_new_download,R.id.navigation_lists)
                 }
                 // refresh the token.
                 // todo: if it keeps on being bad (hehe) delete the credentials and start the authentication from zero
@@ -95,7 +95,7 @@ class MainActivity : UnchainedActivity() {
                 // go to login fragment and show another error message
                 AuthenticationState.ACCOUNT_LOCKED -> {
                     openAuthentication()
-                    disableBottomNavItems(R.id.navigation_download,R.id.navigation_lists)
+                    disableBottomNavItems(R.id.navigation_new_download,R.id.navigation_lists)
                 }
                 // do nothing
                 AuthenticationState.AUTHENTICATED, AuthenticationState.AUTHENTICATED_NO_PREMIUM -> {
@@ -214,8 +214,8 @@ class MainActivity : UnchainedActivity() {
     private fun processLinkIntent(uri: Uri) {
         // simulate click on new download tab
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_nav_view)
-        if (bottomNav.selectedItemId != R.id.navigation_download) {
-            bottomNav.selectedItemId = R.id.navigation_download
+        if (bottomNav.selectedItemId != R.id.navigation_new_download) {
+            bottomNav.selectedItemId = R.id.navigation_new_download
         }
         viewModel.addLink(uri)
     }
