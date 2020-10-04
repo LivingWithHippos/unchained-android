@@ -74,7 +74,7 @@ class MainActivity : UnchainedActivity() {
             setOf(
                 R.id.authentication_dest,
                 R.id.start_dest,
-                R.id.profile_dest,
+                R.id.user_dest,
                 R.id.new_download_dest,
                 R.id.list_tabs_dest),
             null)
