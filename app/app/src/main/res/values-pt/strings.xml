@@ -122,7 +122,6 @@
     <string name="torrent_not_downloaded">Torrent not ready yet</string>
     <string name="feedback_summary">Report technical issues or suggest new features</string>
     <string name="feedback_title">Send feedback</string>
-    <string name="credits_summary">Thanks to everyone who helped</string>
     <string name="credits_title">Credits</string>
     <string name="license_title">License</string>
     <string name="terms_title">Terms of use</string>
@@ -130,10 +129,12 @@
     <string name="close">Close</string>
     <string name="credits_text"><![CDATA[            <body>
                 <p>
-                    The following projects, resources and people have helped in the creation of this app:
+                    Various projects, resources, and people have helped in the creation of this app. A thank goes to:
                     <br>
                     <ul>
-                        <li> Logo and symbols inspired by <a href="https://www.rawpixel.com/image/843352/minimal-logo-designs-set" target="_blank" rel="noopener noreferrer">minimal logo design set</a> offered by rawpixel.com </li>
+                    <li> Real Debrid people for all their work </li>
+                    <li> @oathzed for testing every nooks and cranny of the app</li>
+                    <li> rawpixel.com for inspiring the logo and symbols with the <a href="https://www.rawpixel.com/image/843352/minimal-logo-designs-set" target="_blank" rel="noopener noreferrer">minimal logo design set</a> </li>
                     </ul>
                 </p>
             </body>
