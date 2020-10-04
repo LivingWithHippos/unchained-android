@@ -35,7 +35,6 @@
 
     <Preference
         app:key="credits"
-        app:summary="@string/credits_summary"
         app:title="@string/credits_title" />
 
     <Preference

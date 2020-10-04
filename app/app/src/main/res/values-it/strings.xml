@@ -122,7 +122,6 @@
     <string name="torrent_not_downloaded">Torrent non ancora scaricato</string>
     <string name="feedback_summary">Segnala problemi tecnici o suggerisci nuove funzionalità</string>
     <string name="feedback_title">Invia feedback</string>
-    <string name="credits_summary">Un ringraziamento a tutti</string>
     <string name="credits_title">Crediti</string>
     <string name="license_title">Licenza</string>
     <string name="terms_title">Termini di utilizzo</string>
@@ -132,10 +131,12 @@
         <![CDATA[
             <body>
                 <p>
-                    Tutti questi progetti, risorse o persone hanno contribuito alla creazione di questo progetto:
+                    Vari progetti, risorse e persone hanno contribuito alla creazione di questo progetto. In particolare vorrei ringraziare:
                     <br>
                     <ul>
-                        <li> Logo e simboli ispirati dal <a href="https://www.rawpixel.com/image/843352/minimal-logo-designs-set" target="_blank" rel="noopener noreferrer">set minimal logo design</a> offerto da rawpixel.com </li>
+                    <li> I dipendenti di Real Debrid per il loro lavoro </li>
+                    <li> @oathzed per aver testato ogni parte di questa app</li>
+                    <li> rawpixel.com per l\'ispirazione del logo e simboli con il <a href="https://www.rawpixel.com/image/843352/minimal-logo-designs-set" target="_blank" rel="noopener noreferrer">set minimal logo design</a></li>
                     </ul>
                 </p>
             </body>
