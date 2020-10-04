@@ -14,7 +14,7 @@
             app:destination="@id/download_details_dest" />
         <action
             android:id="@+id/action_new_download_dest_to_torrentDetailsFragment"
-            app:destination="@id/torrentDetailsFragment" />
+            app:destination="@id/torrent_details_dest" />
         <argument
             android:name="link"
             app:argType="string"
@@ -30,7 +30,7 @@
             app:argType="com.github.livingwithhippos.unchained.data.model.DownloadItem" />
     </fragment>
     <fragment
-        android:id="@+id/torrentDetailsFragment"
+        android:id="@+id/torrent_details_dest"
         android:name="com.github.livingwithhippos.unchained.torrentdetails.view.TorrentDetailsFragment"
         android:label="TorrentDetailsFragment"
         tools:layout="@layout/fragment_torrent_details" >

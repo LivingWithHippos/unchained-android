@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation_lists"
-    app:startDestination="@id/listsTabFragment">
+    app:startDestination="@id/list_tabs_dest">
 
     <fragment
         android:id="@+id/download_details_dest"
@@ -16,7 +16,7 @@
     </fragment>
 
     <fragment
-        android:id="@+id/listsTabFragment"
+        android:id="@+id/list_tabs_dest"
         android:name="com.github.livingwithhippos.unchained.lists.view.ListsTabFragment"
         android:label="ListsTabFragment"
         tools:layout="@layout/fragment_tab_lists" >
@@ -25,11 +25,11 @@
             app:destination="@id/download_details_dest" />
         <action
             android:id="@+id/action_listsTab_to_torrentDetails"
-            app:destination="@id/torrentDetailsFragment" />
+            app:destination="@id/torrent_details_dest" />
     </fragment>
 
     <fragment
-        android:id="@+id/torrentDetailsFragment"
+        android:id="@+id/torrent_details_dest"
         android:name="com.github.livingwithhippos.unchained.torrentdetails.view.TorrentDetailsFragment"
         tools:layout="@layout/fragment_torrent_details"
         android:label="TorrentDetailsFragment" >
