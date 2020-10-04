@@ -105,7 +105,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text="@{user.premium > 0 ? @string/premium : @string/not_premium, default=`Premium`}"
-                    android:textColor="@{user.premium > 0 ? @color/green_03 : @color/red_01, default=@color/green_03 }"
+                    android:textColor="?attr/colorPrimary"
                     android:textAllCaps="true"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="@id/tvStatus"
