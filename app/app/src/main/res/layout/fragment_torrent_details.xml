@@ -97,6 +97,7 @@
                     android:layout_height="wrap_content"
                     android:text="File Size"
                     fileSize="@{torrent.bytes}"
+                    android:textColor="?attr/colorPrimary"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintEnd_toStartOf="@id/loadingCircle"
