@@ -91,18 +91,19 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
 
         // checks the authentication state. Needed to avoid automatic API calls before the authentication process is finished
         activityViewModel.authenticationState.observe(viewLifecycleOwner, {
-            if (it.peekContent() == AuthenticationState.AUTHENTICATED ||
-                it.peekContent() == AuthenticationState.AUTHENTICATED_NO_PREMIUM
-            ) {
-                // register observers if not already registered
-                if (!viewModel.downloadsLiveData.hasActiveObservers())
-                    viewModel.downloadsLiveData.observe(viewLifecycleOwner, downloadObserver)
-                if (!viewModel.torrentsLiveData.hasActiveObservers())
-                    viewModel.torrentsLiveData.observe(viewLifecycleOwner, torrentObserver)
-            } else {
-                // remove observers if present
-                viewModel.downloadsLiveData.removeObserver(downloadObserver)
-                viewModel.torrentsLiveData.removeObserver(torrentObserver)
+            when (it.peekContent()) {
+                AuthenticationState.AUTHENTICATED, AuthenticationState.AUTHENTICATED_NO_PREMIUM -> {
+                    // register observers if not already registered
+                    if (!viewModel.downloadsLiveData.hasActiveObservers())
+                        viewModel.downloadsLiveData.observe(viewLifecycleOwner, downloadObserver)
+                    if (!viewModel.torrentsLiveData.hasActiveObservers())
+                        viewModel.torrentsLiveData.observe(viewLifecycleOwner, torrentObserver)
+                }
+                else -> {
+                    // remove observers if present
+                    viewModel.downloadsLiveData.removeObserver(downloadObserver)
+                    viewModel.torrentsLiveData.removeObserver(torrentObserver)
+                }
             }
         })
 
