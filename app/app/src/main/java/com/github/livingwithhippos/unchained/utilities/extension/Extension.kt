@@ -150,11 +150,15 @@ fun <T, K> zipLiveData(t: LiveData<T>, k: LiveData<K>): LiveData<Pair<T, K>> {
     }
 }
 
-fun <T> LiveData<T>.observeOnce(lifecycleOwner: LifecycleOwner, observer: Observer<T>) {
+fun <T> LiveData<T>.observeOnce(lifecycleOwner: LifecycleOwner, observer: Observer<T>, untilNotNull:  Boolean = false) {
     observe(lifecycleOwner, object : Observer<T> {
         override fun onChanged(t: T?) {
             observer.onChanged(t)
-            removeObserver(this)
+            if (untilNotNull) {
+                if (t != null)
+                    removeObserver(this)
+            } else
+                removeObserver(this)
         }
     })
 }
