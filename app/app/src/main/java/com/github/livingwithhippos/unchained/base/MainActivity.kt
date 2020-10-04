@@ -17,6 +17,8 @@ import androidx.core.view.forEach
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.model.AuthenticationState
@@ -41,6 +43,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 class MainActivity : UnchainedActivity() {
 
     private var currentNavController: LiveData<NavController>? = null
+    private lateinit var appBarConfiguration: AppBarConfiguration
 
     private lateinit var binding: ActivityMainBinding
 
@@ -66,6 +69,15 @@ class MainActivity : UnchainedActivity() {
         if (savedInstanceState == null) {
             setupBottomNavigationBar()
         } // Else, need to wait for onRestoreInstanceState
+
+        appBarConfiguration  = AppBarConfiguration(
+            setOf(
+                R.id.authentication_dest,
+                R.id.start_dest,
+                R.id.profile_dest,
+                R.id.new_download_dest,
+                R.id.list_tabs_dest),
+            null)
 
         // manage the authentication state
         viewModel.authenticationState.observe(this, { state ->
@@ -109,7 +121,7 @@ class MainActivity : UnchainedActivity() {
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        return currentNavController?.value?.navigateUp() ?: false
+        return currentNavController?.value?.navigateUp(appBarConfiguration) ?: false
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -257,7 +269,7 @@ class MainActivity : UnchainedActivity() {
 
         // Whenever the selected controller changes, setup the action bar.
         controller.observe(this, Observer { navController ->
-            setupActionBarWithNavController(navController)
+            setupActionBarWithNavController(navController, appBarConfiguration)
         })
         currentNavController = controller
     }
