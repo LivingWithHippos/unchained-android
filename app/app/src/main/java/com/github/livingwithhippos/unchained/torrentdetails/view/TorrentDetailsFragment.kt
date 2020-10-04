@@ -19,6 +19,7 @@ import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.databinding.FragmentTorrentDetailsBinding
 import com.github.livingwithhippos.unchained.lists.view.ListsTabFragment
 import com.github.livingwithhippos.unchained.torrentdetails.viewmodel.TorrentDetailsViewModel
+import com.github.livingwithhippos.unchained.utilities.extension.observeOnce
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
@@ -90,6 +91,10 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
         torrentBinding.loadingStatusList = loadingStatusList
         torrentBinding.statusTranslation = statusTranslation
         torrentBinding.listener = this
+
+        viewModel.torrentLiveData.observeOnce(viewLifecycleOwner, {
+            activityViewModel.setListState(ListsTabFragment.ListState.UPDATE_TORRENT)
+        }, true)
 
         viewModel.torrentLiveData.observe(viewLifecycleOwner, {
             if (it != null) {

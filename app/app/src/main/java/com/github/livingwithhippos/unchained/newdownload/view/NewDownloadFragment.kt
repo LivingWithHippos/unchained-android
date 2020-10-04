@@ -26,6 +26,7 @@ import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.data.model.APIError
 import com.github.livingwithhippos.unchained.data.model.AuthenticationState
 import com.github.livingwithhippos.unchained.databinding.NewDownloadFragmentBinding
+import com.github.livingwithhippos.unchained.lists.view.ListsTabFragment
 import com.github.livingwithhippos.unchained.newdownload.viewmodel.NewDownloadViewModel
 import com.github.livingwithhippos.unchained.utilities.REMOTE_TRAFFIC_ON
 import com.github.livingwithhippos.unchained.utilities.SCHEME_HTTP
@@ -64,6 +65,8 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
 
         viewModel.linkLiveData.observe(viewLifecycleOwner, {
             it.getContentIfNotHandled()?.let { linkDetails ->
+                // new download item, alert the list fragment that it needs updating
+                activityViewModel.setListState(ListsTabFragment.ListState.UPDATE_DOWNLOAD)
                 val action =
                     NewDownloadFragmentDirections.actionUnrestrictDownloadToDetailsFragment(
                         linkDetails
