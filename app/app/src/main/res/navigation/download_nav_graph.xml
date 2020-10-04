@@ -11,10 +11,18 @@
         tools:layout="@layout/new_download_fragment" >
         <action
             android:id="@+id/actionUnrestrictDownloadToDetailsFragment"
-            app:destination="@id/download_details_dest" />
+            app:destination="@id/download_details_dest"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
         <action
             android:id="@+id/action_new_download_dest_to_torrentDetailsFragment"
-            app:destination="@id/torrent_details_dest" />
+            app:destination="@id/torrent_details_dest"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
         <argument
             android:name="link"
             app:argType="string"
@@ -39,7 +47,11 @@
             app:argType="string" />
         <action
             android:id="@+id/action_torrentDetails_to_download_details_dest"
-            app:destination="@id/download_details_dest" />
+            app:destination="@id/download_details_dest"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
 
 </navigation>
