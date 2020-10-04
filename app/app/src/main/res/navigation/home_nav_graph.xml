@@ -14,12 +14,12 @@
         <action
             android:id="@+id/action_startFragment_to_authenticationFragment"
             app:destination="@id/authentication_dest"
-            app:popUpTo="@id/authentication_dest"
+            app:popUpTo="@id/start_dest"
             app:popUpToInclusive="true"/>
         <action
             android:id="@+id/action_startFragment_to_userProfileFragment"
-            app:destination="@id/profile_dest"
-            app:popUpTo="@id/profile_dest"
+            app:destination="@id/user_dest"
+            app:popUpTo="@id/start_dest"
             app:popUpToInclusive="true" />
     </fragment>
     <fragment
@@ -29,19 +29,19 @@
         android:label="@string/authenticate" >
         <action
             android:id="@+id/actionAuthenticationToUser"
-            app:destination="@id/profile_dest"
-            app:popUpTo="@id/profile_dest"
+            app:destination="@id/user_dest"
+            app:popUpTo="@id/start_dest"
             app:popUpToInclusive="true"  />
     </fragment>
     <fragment
-        android:id="@+id/profile_dest"
+        android:id="@+id/user_dest"
         android:name="com.github.livingwithhippos.unchained.user.view.UserProfileFragment"
         tools:layout="@layout/fragment_user_profile"
         android:label="@string/user" >
         <action
             android:id="@+id/actionUserToAuthentication"
             app:destination="@id/authentication_dest"
-            app:popUpTo="@id/authentication_dest"
+            app:popUpTo="@id/start_dest"
             app:popUpToInclusive="true"/>
     </fragment>
 </navigation>

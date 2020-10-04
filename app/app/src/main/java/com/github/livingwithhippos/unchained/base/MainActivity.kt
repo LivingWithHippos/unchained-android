@@ -13,18 +13,25 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.viewModels
+import androidx.core.view.forEach
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
+import androidx.navigation.NavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.navigateUp
+import androidx.navigation.ui.setupActionBarWithNavController
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.model.AuthenticationState
 import com.github.livingwithhippos.unchained.databinding.ActivityMainBinding
 import com.github.livingwithhippos.unchained.settings.SettingsActivity
 import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewModel
-import com.github.livingwithhippos.unchained.utilities.BottomNavManager
 import com.github.livingwithhippos.unchained.utilities.SCHEME_HTTP
 import com.github.livingwithhippos.unchained.utilities.SCHEME_HTTPS
 import com.github.livingwithhippos.unchained.utilities.SCHEME_MAGNET
 import com.github.livingwithhippos.unchained.utilities.extension.isMagnet
 import com.github.livingwithhippos.unchained.utilities.extension.isTorrent
 import com.github.livingwithhippos.unchained.utilities.extension.observeOnce
+import com.github.livingwithhippos.unchained.utilities.extension.setupWithNavController
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
@@ -35,7 +42,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
  */
 class MainActivity : UnchainedActivity() {
 
-    private var bottomNavManager: BottomNavManager? = null
+    private var currentNavController: LiveData<NavController>? = null
+    private lateinit var appBarConfiguration: AppBarConfiguration
 
     private lateinit var binding: ActivityMainBinding
 
@@ -59,8 +67,17 @@ class MainActivity : UnchainedActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         if (savedInstanceState == null) {
-            setupNavigationManager()
-        }
+            setupBottomNavigationBar()
+        } // Else, need to wait for onRestoreInstanceState
+
+        appBarConfiguration  = AppBarConfiguration(
+            setOf(
+                R.id.authentication_dest,
+                R.id.start_dest,
+                R.id.user_dest,
+                R.id.new_download_dest,
+                R.id.list_tabs_dest),
+            null)
 
         // manage the authentication state
         viewModel.authenticationState.observe(this, { state ->
@@ -68,7 +85,7 @@ class MainActivity : UnchainedActivity() {
                 // go to login fragment
                 AuthenticationState.UNAUTHENTICATED -> {
                     openAuthentication()
-                    bottomNavManager?.disableMenuItems(listOf(R.id.navigation_home))
+                    disableBottomNavItems(R.id.navigation_new_download,R.id.navigation_lists)
                 }
                 // refresh the token.
                 // todo: if it keeps on being bad (hehe) delete the credentials and start the authentication from zero
@@ -78,11 +95,11 @@ class MainActivity : UnchainedActivity() {
                 // go to login fragment and show another error message
                 AuthenticationState.ACCOUNT_LOCKED -> {
                     openAuthentication()
-                    bottomNavManager?.disableMenuItems(listOf(R.id.navigation_home))
+                    disableBottomNavItems(R.id.navigation_new_download,R.id.navigation_lists)
                 }
                 // do nothing
                 AuthenticationState.AUTHENTICATED, AuthenticationState.AUTHENTICATED_NO_PREMIUM -> {
-                    bottomNavManager?.enableMenuItems()
+                    enableAllBottomNavItems()
                 }
             }
         })
@@ -104,8 +121,7 @@ class MainActivity : UnchainedActivity() {
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        onBackPressed()
-        return true
+        return currentNavController?.value?.navigateUp(appBarConfiguration) ?: false
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -198,8 +214,8 @@ class MainActivity : UnchainedActivity() {
     private fun processLinkIntent(uri: Uri) {
         // simulate click on new download tab
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_nav_view)
-        if (bottomNav.selectedItemId != R.id.navigation_download) {
-            bottomNav.selectedItemId = R.id.navigation_download
+        if (bottomNav.selectedItemId != R.id.navigation_new_download) {
+            bottomNav.selectedItemId = R.id.navigation_new_download
         }
         viewModel.addLink(uri)
     }
@@ -219,47 +235,87 @@ class MainActivity : UnchainedActivity() {
         }
     }
 
-    private fun setupNavigationManager() {
-        bottomNavManager?.setupNavController() ?: kotlin.run {
-            bottomNavManager = BottomNavManager(
-                fragmentManager = supportFragmentManager,
-                containerId = R.id.nav_host_fragment,
-                bottomNavigationView = findViewById(R.id.bottom_nav_view)
-            )
+    // the standard menu items to disable are those for the download/torrent lists and the new download one
+    private fun disableBottomNavItems(vararg itemsIDs: Int) {
+        val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_nav_view)
+        bottomNav.menu.forEach {
+            if (itemsIDs.contains(it.itemId))
+                it.isEnabled = false
         }
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        bottomNavManager?.onSaveInstanceState(outState)
+    private fun enableAllBottomNavItems() {
+        val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_nav_view)
+        bottomNav.menu.forEach {
+            it.isEnabled = true
+        }
+    }
+
+    /**
+     * Called on first creation and when restoring state.
+     */
+    private fun setupBottomNavigationBar() {
+        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_nav_view)
+
+        val navGraphIds = listOf(R.navigation.home_nav_graph, R.navigation.download_nav_graph, R.navigation.lists_nav_graph)
+
+        // Setup the bottom navigation view with a list of navigation graphs
+        val controller = bottomNavigationView.setupWithNavController(
+            navGraphIds = navGraphIds,
+            fragmentManager = supportFragmentManager,
+            containerId = R.id.nav_host_fragment,
+            intent = intent
+        )
+
+        // Whenever the selected controller changes, setup the action bar.
+        controller.observe(this, Observer { navController ->
+            setupActionBarWithNavController(navController, appBarConfiguration)
+        })
+        currentNavController = controller
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
-        bottomNavManager?.onRestoreInstanceState(savedInstanceState)
-        setupNavigationManager()
+        // Now that BottomNavigationBar has restored its instance state
+        // and its selectedItemId, we can proceed with setting up the
+        // BottomNavigationBar with Navigation
+        setupBottomNavigationBar()
     }
 
+
     override fun onBackPressed() {
-        // if the navigation backstack is not empty pop it
-        if (bottomNavManager?.onBackPressed()==false) {
-            // check if we're in the home bottom bar, otherwise press back
-            val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_nav_view)
-            if (bottomNav.selectedItemId != R.id.navigation_home)
-                super.onBackPressed()
-            else {
-                // check if it has been 2 seconds since the last time we pressed back
-                val pressedTime = System.currentTimeMillis()
-                val lastPressedTime = viewModel.getLastBackPress()
-                if (pressedTime - lastPressedTime <= EXIT_WAIT_TIME)
-                    finish()
-                else {
-                    viewModel.setLastBackPress(pressedTime)
-                    this.showToast(R.string.press_again_exit)
+        // if the user is pressing back on an "exiting"fragment, show a toast alerting him and wait for him to press back again for confirmation
+        val navController = currentNavController?.value
+
+        if (navController!=null) {
+            val currentDestination = navController.currentDestination
+            val previousDestination = navController.previousBackStackEntry
+
+            // check if we're pressing back from the user or authentication fragment
+            if (currentDestination?.id == R.id.user_dest || currentDestination?.id == R.id.authentication_dest) {
+                // check the destination for the back action
+                if (previousDestination == null || previousDestination.destination.id == R.id.authentication_dest || previousDestination.destination.id == R.id.start_dest || previousDestination.destination.id == R.id.user_dest) {
+                    // check if it has been 2 seconds since the last time we pressed back
+                    val pressedTime = System.currentTimeMillis()
+                    val lastPressedTime = viewModel.getLastBackPress()
+                    // exit if pressed back twice in EXIT_WAIT_TIME
+                    if (pressedTime - lastPressedTime <= EXIT_WAIT_TIME)
+                        finish()
+                    // else update the last time the user pressed back
+                    else {
+                        viewModel.setLastBackPress(pressedTime)
+                        this.showToast(R.string.press_again_exit)
+                    }
+                } else {
+                    super.onBackPressed()
                 }
+            } else {
+                super.onBackPressed()
             }
-        }
+        } else
+            super.onBackPressed()
     }
+
 
     companion object {
         private const val EXIT_WAIT_TIME = 2000L

@@ -3,36 +3,44 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation_lists"
-    app:startDestination="@id/listsTabFragment">
+    app:startDestination="@id/list_tabs_dest">
 
     <fragment
         android:id="@+id/download_details_dest"
         android:name="com.github.livingwithhippos.unchained.downloaddetails.view.DownloadDetailsFragment"
         tools:layout="@layout/fragment_download_details"
-        android:label="DownloadDetailsFragment" >
+        android:label="@string/details" >
         <argument
             android:name="details"
             app:argType="com.github.livingwithhippos.unchained.data.model.DownloadItem" />
     </fragment>
 
     <fragment
-        android:id="@+id/listsTabFragment"
+        android:id="@+id/list_tabs_dest"
         android:name="com.github.livingwithhippos.unchained.lists.view.ListsTabFragment"
-        android:label="ListsTabFragment"
+        android:label="@string/lists"
         tools:layout="@layout/fragment_tab_lists" >
         <action
             android:id="@+id/action_listsTab_to_downloadDetails"
-            app:destination="@id/download_details_dest" />
+            app:destination="@id/download_details_dest"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_right"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_left" />
         <action
             android:id="@+id/action_listsTab_to_torrentDetails"
-            app:destination="@id/torrentDetailsFragment" />
+            app:destination="@id/torrent_details_dest"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
 
     <fragment
-        android:id="@+id/torrentDetailsFragment"
+        android:id="@+id/torrent_details_dest"
         android:name="com.github.livingwithhippos.unchained.torrentdetails.view.TorrentDetailsFragment"
         tools:layout="@layout/fragment_torrent_details"
-        android:label="TorrentDetailsFragment" >
+        android:label="@string/details" >
         <argument
             android:name="torrentID"
             app:argType="string" />
