@@ -14,12 +14,12 @@
         <action
             android:id="@+id/action_startFragment_to_authenticationFragment"
             app:destination="@id/authentication_dest"
-            app:popUpTo="@id/authentication_dest"
+            app:popUpTo="@id/start_dest"
             app:popUpToInclusive="true"/>
         <action
             android:id="@+id/action_startFragment_to_userProfileFragment"
             app:destination="@id/profile_dest"
-            app:popUpTo="@id/profile_dest"
+            app:popUpTo="@id/start_dest"
             app:popUpToInclusive="true" />
     </fragment>
     <fragment
@@ -30,7 +30,7 @@
         <action
             android:id="@+id/actionAuthenticationToUser"
             app:destination="@id/profile_dest"
-            app:popUpTo="@id/profile_dest"
+            app:popUpTo="@id/start_dest"
             app:popUpToInclusive="true"  />
     </fragment>
     <fragment
@@ -41,7 +41,7 @@
         <action
             android:id="@+id/actionUserToAuthentication"
             app:destination="@id/authentication_dest"
-            app:popUpTo="@id/authentication_dest"
+            app:popUpTo="@id/start_dest"
             app:popUpToInclusive="true"/>
     </fragment>
 </navigation>
