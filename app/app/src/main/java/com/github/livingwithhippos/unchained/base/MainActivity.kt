@@ -13,18 +13,22 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.viewModels
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
+import androidx.navigation.NavController
+import androidx.navigation.ui.setupActionBarWithNavController
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.model.AuthenticationState
 import com.github.livingwithhippos.unchained.databinding.ActivityMainBinding
 import com.github.livingwithhippos.unchained.settings.SettingsActivity
 import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewModel
-import com.github.livingwithhippos.unchained.utilities.BottomNavManager
 import com.github.livingwithhippos.unchained.utilities.SCHEME_HTTP
 import com.github.livingwithhippos.unchained.utilities.SCHEME_HTTPS
 import com.github.livingwithhippos.unchained.utilities.SCHEME_MAGNET
 import com.github.livingwithhippos.unchained.utilities.extension.isMagnet
 import com.github.livingwithhippos.unchained.utilities.extension.isTorrent
 import com.github.livingwithhippos.unchained.utilities.extension.observeOnce
+import com.github.livingwithhippos.unchained.utilities.extension.setupWithNavController
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
@@ -35,7 +39,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
  */
 class MainActivity : UnchainedActivity() {
 
-    private var bottomNavManager: BottomNavManager? = null
+    private var currentNavController: LiveData<NavController>? = null
 
     private lateinit var binding: ActivityMainBinding
 
@@ -59,8 +63,8 @@ class MainActivity : UnchainedActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         if (savedInstanceState == null) {
-            setupNavigationManager()
-        }
+            setupBottomNavigationBar()
+        } // Else, need to wait for onRestoreInstanceState
 
         // manage the authentication state
         viewModel.authenticationState.observe(this, { state ->
@@ -68,7 +72,8 @@ class MainActivity : UnchainedActivity() {
                 // go to login fragment
                 AuthenticationState.UNAUTHENTICATED -> {
                     openAuthentication()
-                    bottomNavManager?.disableMenuItems(listOf(R.id.navigation_home))
+                    //todo: port
+                    // bottomNavManager?.disableMenuItems(listOf(R.id.navigation_home))
                 }
                 // refresh the token.
                 // todo: if it keeps on being bad (hehe) delete the credentials and start the authentication from zero
@@ -78,11 +83,11 @@ class MainActivity : UnchainedActivity() {
                 // go to login fragment and show another error message
                 AuthenticationState.ACCOUNT_LOCKED -> {
                     openAuthentication()
-                    bottomNavManager?.disableMenuItems(listOf(R.id.navigation_home))
+                    // bottomNavManager?.disableMenuItems(listOf(R.id.navigation_home))
                 }
                 // do nothing
                 AuthenticationState.AUTHENTICATED, AuthenticationState.AUTHENTICATED_NO_PREMIUM -> {
-                    bottomNavManager?.enableMenuItems()
+                    // bottomNavManager?.enableMenuItems()
                 }
             }
         })
@@ -104,8 +109,7 @@ class MainActivity : UnchainedActivity() {
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        onBackPressed()
-        return true
+        return currentNavController?.value?.navigateUp() ?: false
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -219,47 +223,38 @@ class MainActivity : UnchainedActivity() {
         }
     }
 
-    private fun setupNavigationManager() {
-        bottomNavManager?.setupNavController() ?: kotlin.run {
-            bottomNavManager = BottomNavManager(
-                fragmentManager = supportFragmentManager,
-                containerId = R.id.nav_host_fragment,
-                bottomNavigationView = findViewById(R.id.bottom_nav_view)
-            )
-        }
-    }
+    /**
+     * Called on first creation and when restoring state.
+     */
+    private fun setupBottomNavigationBar() {
+        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_nav_view)
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        bottomNavManager?.onSaveInstanceState(outState)
+        val navGraphIds = listOf(R.navigation.home_nav_graph, R.navigation.download_nav_graph, R.navigation.lists_nav_graph)
+
+        // Setup the bottom navigation view with a list of navigation graphs
+        val controller = bottomNavigationView.setupWithNavController(
+            navGraphIds = navGraphIds,
+            fragmentManager = supportFragmentManager,
+            containerId = R.id.nav_host_fragment,
+            intent = intent
+        )
+
+        // Whenever the selected controller changes, setup the action bar.
+        controller.observe(this, Observer { navController ->
+            setupActionBarWithNavController(navController)
+        })
+        currentNavController = controller
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
-        bottomNavManager?.onRestoreInstanceState(savedInstanceState)
-        setupNavigationManager()
+        // Now that BottomNavigationBar has restored its instance state
+        // and its selectedItemId, we can proceed with setting up the
+        // BottomNavigationBar with Navigation
+        setupBottomNavigationBar()
     }
 
-    override fun onBackPressed() {
-        // if the navigation backstack is not empty pop it
-        if (bottomNavManager?.onBackPressed()==false) {
-            // check if we're in the home bottom bar, otherwise press back
-            val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_nav_view)
-            if (bottomNav.selectedItemId != R.id.navigation_home)
-                super.onBackPressed()
-            else {
-                // check if it has been 2 seconds since the last time we pressed back
-                val pressedTime = System.currentTimeMillis()
-                val lastPressedTime = viewModel.getLastBackPress()
-                if (pressedTime - lastPressedTime <= EXIT_WAIT_TIME)
-                    finish()
-                else {
-                    viewModel.setLastBackPress(pressedTime)
-                    this.showToast(R.string.press_again_exit)
-                }
-            }
-        }
-    }
+
 
     companion object {
         private const val EXIT_WAIT_TIME = 2000L
