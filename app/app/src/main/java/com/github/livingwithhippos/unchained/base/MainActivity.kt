@@ -13,6 +13,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.viewModels
+import androidx.core.view.forEach
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
@@ -72,8 +73,7 @@ class MainActivity : UnchainedActivity() {
                 // go to login fragment
                 AuthenticationState.UNAUTHENTICATED -> {
                     openAuthentication()
-                    //todo: port
-                    // bottomNavManager?.disableMenuItems(listOf(R.id.navigation_home))
+                    disableBottomNavItems(R.id.navigation_download,R.id.navigation_lists)
                 }
                 // refresh the token.
                 // todo: if it keeps on being bad (hehe) delete the credentials and start the authentication from zero
@@ -83,11 +83,11 @@ class MainActivity : UnchainedActivity() {
                 // go to login fragment and show another error message
                 AuthenticationState.ACCOUNT_LOCKED -> {
                     openAuthentication()
-                    // bottomNavManager?.disableMenuItems(listOf(R.id.navigation_home))
+                    disableBottomNavItems(R.id.navigation_download,R.id.navigation_lists)
                 }
                 // do nothing
                 AuthenticationState.AUTHENTICATED, AuthenticationState.AUTHENTICATED_NO_PREMIUM -> {
-                    // bottomNavManager?.enableMenuItems()
+                    enableAllBottomNavItems()
                 }
             }
         })
@@ -220,6 +220,22 @@ class MainActivity : UnchainedActivity() {
         // note: the [BottomNavManager] also has a selectItem() method but this should work for every bottom menu
         if (bottomNav.selectedItemId != R.id.navigation_home) {
             bottomNav.selectedItemId = R.id.navigation_home
+        }
+    }
+
+    // the standard menu items to disable are those for the download/torrent lists and the new download one
+    private fun disableBottomNavItems(vararg itemsIDs: Int) {
+        val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_nav_view)
+        bottomNav.menu.forEach {
+            if (itemsIDs.contains(it.itemId))
+                it.isEnabled = false
+        }
+    }
+
+    private fun enableAllBottomNavItems() {
+        val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_nav_view)
+        bottomNav.menu.forEach {
+            it.isEnabled = true
         }
     }
 
