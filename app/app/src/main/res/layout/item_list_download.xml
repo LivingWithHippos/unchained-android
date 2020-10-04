@@ -53,11 +53,10 @@
 
             <TextView
                 android:id="@+id/tvName"
-                style="@style/TextAppearance.UnchainedTheme.Body1"
+                style="@style/TextAppearance.UnchainedTheme.Subtitle2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="@{item.filename, default=`File Name`}"
-                android:textSize="14sp"
                 android:maxLines="3"
                 android:ellipsize="middle"
                 android:layout_marginEnd="5dp"
