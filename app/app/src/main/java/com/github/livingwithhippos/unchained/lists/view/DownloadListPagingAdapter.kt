@@ -17,7 +17,8 @@ class DownloadListPagingAdapter(listener: DownloadListListener) :
             oldItem.id == newItem.id
 
         override fun areContentsTheSame(oldItem: DownloadItem, newItem: DownloadItem): Boolean {
-            return oldItem.link == newItem.link
+            // content does not change on update
+            return true
         }
     }
 
