@@ -60,7 +60,6 @@
             app:cardCornerRadius="10dp"
             app:strokeColor="@color/grey_01"
             app:strokeWidth="0.05dp"
-            app:cardBackgroundColor="?attr/colorSurface"
             android:layout_gravity="center_horizontal">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -136,7 +135,6 @@
             app:strokeColor="@color/grey_01"
             app:strokeWidth="0.05dp"
             android:visibility="@{torrent.status.equalsIgnoreCase(`downloading`) ? View.VISIBLE : View.GONE}"
-            app:cardBackgroundColor="?attr/colorSurface"
             android:layout_gravity="center_horizontal" >
 
             <androidx.constraintlayout.widget.ConstraintLayout
