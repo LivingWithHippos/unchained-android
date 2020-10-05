@@ -41,4 +41,15 @@
     <color name="premium_gold">#FABE28</color>
     <color name="free_red">#FF003C</color>
     <color name="streaming_background">#00C176</color>
+
+    <!-- https://www.color-hex.com/color-palette/79885 -->
+    <!-- Tropical Sunset VaporWave Edition Color Palette -->
+    <color name="yellow_tropico">#feda84</color>
+    <color name="yellow_tropico_lighter">#ffffb5</color>
+    <color name="yellow_tropico_darker">#c9a955</color>
+
+    <color name="peach_tropico">#ff9b83</color>
+    <color name="peach_tropico_lighter">#ffcdb3</color>
+
+    <color name="plum_tropico">#976393</color>
 </resources>
