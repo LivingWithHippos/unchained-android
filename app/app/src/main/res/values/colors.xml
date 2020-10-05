@@ -8,7 +8,7 @@
     <color name="purple_700">#3700b3</color> <!--Color primary variant (light)-->
 
     <color name="green_200">#03dac6</color> <!--Color secondary-->
-    <color name="green_500">#018786</color> <!--Color secondary variant-->
+    <color name="green_500">#00a896</color> <!--Color secondary variant-->
 
     <color name="red_200">#cf6679</color> <!--Color error (dark)-->
     <color name="red_600">#b00020</color> <!--Color error (light)-->
@@ -22,6 +22,7 @@
     <!--color on surface (light)-->
     <color name="black_900">#000000</color>
 
+    <color name="grey_900">#212121</color>
     <!-- -->
     <color name="red_01">#f44336</color>
     <color name="orange_01">#FF5722</color>

@@ -5,9 +5,11 @@
     </array>
     <string-array name="themes" >
         <item>@string/original</item>
+        <item>@string/tropical_sunset</item>
     </string-array>
     <string-array name="theme_values">
         <item>original</item>
+        <item>tropical_sunset</item>
     </string-array>
     <string-array name="night_mode" >
         <item>@string/automatic</item>
@@ -19,4 +21,5 @@
         <item>night</item>
         <item>day</item>
     </string-array>
+    <string name="tropical_sunset" translatable="false">Tropical Sunset</string>
 </resources>
