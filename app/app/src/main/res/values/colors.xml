@@ -50,6 +50,10 @@
 
     <color name="peach_tropico">#ff9b83</color>
     <color name="peach_tropico_lighter">#ffcdb3</color>
+    <color name="peach_tropico_darker">#c96c56</color>
 
     <color name="plum_tropico">#976393</color>
+    <color name="plum_tropico_lighter">#c891c4</color>
+    <color name="plum_tropico_darker">#683765</color>
+
 </resources>
