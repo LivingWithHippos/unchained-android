@@ -107,6 +107,9 @@ class MainActivity : UnchainedActivity() {
             }
         })
 
+        disableBottomNavItems(R.id.navigation_new_download,R.id.navigation_lists)
+        viewModel.fetchFirstWorkingCredentials()
+
         // check if the app has been opened by clicking on torrents/magnet on sharing links
         getIntentData()
 

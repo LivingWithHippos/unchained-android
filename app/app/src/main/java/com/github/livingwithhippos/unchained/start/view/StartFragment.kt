@@ -41,8 +41,6 @@ class StartFragment : UnchainedFragment() {
                 findNavController().navigate(action)
             }
         })
-
-        activityViewModel.fetchFirstWorkingCredentials()
     }
 
     override fun onCreateView(
