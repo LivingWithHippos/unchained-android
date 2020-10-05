@@ -179,4 +179,5 @@
     <string name="confirm_item_removal_description">Sei sicuro di voler rimuovere l\'elemento? Questa azione non può essere annullata.</string>
     <string name="confirm_removal">Conferma rimozione</string>
     <string name="multiple_links_warning">Questo torrent ha più di un link. Controlla la lista dei download per vederli tutti.</string>
+    <string name="theme_day_support">Questo tema supporta solo la modalità giorno</string>
 </resources>
