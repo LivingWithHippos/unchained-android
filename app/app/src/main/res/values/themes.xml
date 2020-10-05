@@ -83,17 +83,8 @@
         <item name="colorPrimary">@color/peach_tropico</item>
         <item name="colorPrimaryVariant">@color/peach_tropico_lighter</item>
         <item name="colorPrimaryDark">@color/peach_tropico_darker</item>
-        <item name="colorSecondary">@color/yellow_tropico</item>
-        <item name="colorSecondaryVariant">@color/yellow_tropico_lighter</item>>
-
-        <!-- Theme the TextView  links colors -->
-        <item name="android:textColorLink">@color/plum_tropico</item>
-        <!-- Theme the Preference Categories title -->
-        <item name="colorAccent">@color/plum_tropico_darker</item>
-        <!-- Theme the default text color -->
-        <item name="android:textColorPrimary">?attr/colorOnSurface</item>
-        <!-- Theme the secondary text color -->
-        <item name="android:textColorSecondary">@color/grey_04</item>
+        <item name="colorSecondary">@color/plum_tropico</item>
+        <item name="colorSecondaryVariant">@color/plum_tropico_lighter</item>
 
         <!--colorBackground appears behind scrollable content and is used for the default window-->
         <!--background. colorSurface is mapped to the surface of components such as cards, sheets-->
