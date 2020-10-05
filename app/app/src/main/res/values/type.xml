@@ -91,7 +91,7 @@ See https://material.io/design/typography/the-type-system.html#type-scale for a 
 
     <style name="TextAppearance.UnchainedTheme.Overline" parent="TextAppearance.MaterialComponents.Overline">
         <!--Your custom type style here-->
-        <item name="android:textColor">@color/grey_02</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
     </style>
 
 </resources>

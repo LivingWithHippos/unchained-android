@@ -29,7 +29,6 @@
         app:onDownloadLongClickListener="@{listener}"
         app:cardDownloadItem="@{item}"
         android:layout_gravity="center_horizontal"
-        app:cardBackgroundColor="?attr/colorSurface"
         app:cardCornerRadius="10dp"
         app:cardElevation="3dp"
         app:strokeColor="@color/grey_01"

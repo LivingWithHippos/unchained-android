@@ -10,6 +10,7 @@ import android.content.res.Configuration
 import android.net.Uri
 import android.util.Log
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
@@ -17,6 +18,7 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Observer
 import com.github.livingwithhippos.unchained.BuildConfig
 import com.github.livingwithhippos.unchained.R
+import com.github.livingwithhippos.unchained.settings.SettingsFragment
 import java.util.*
 
 /**
@@ -161,4 +163,11 @@ fun <T> LiveData<T>.observeOnce(lifecycleOwner: LifecycleOwner, observer: Observ
                 removeObserver(this)
         }
     })
+}
+
+fun AppCompatActivity.setCustomTheme(theme: String) {
+    when (theme) {
+        "original" -> setTheme(R.style.Theme_Unchained)
+        "tropical_sunset" -> setTheme(R.style.Theme_Unchained_TropicalSunset)
+    }
 }

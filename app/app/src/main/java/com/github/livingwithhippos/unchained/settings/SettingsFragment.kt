@@ -2,24 +2,61 @@ package com.github.livingwithhippos.unchained.settings
 
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
+import android.view.View
+import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.utilities.FEEDBACK_URL
 import com.github.livingwithhippos.unchained.utilities.GPLV3_URL
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
+import com.github.livingwithhippos.unchained.utilities.extension.showToast
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.android.synthetic.main.activity_settings.*
 import javax.inject.Inject
 
 /**
  * A simple [PreferenceFragmentCompat] subclass.
  * Manages the interactions with the items in the preferences menu
  */
+@AndroidEntryPoint
 class SettingsFragment : PreferenceFragmentCompat() {
     @Inject
     lateinit var preferences: SharedPreferences
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.settings, rootKey)
+
+        val dayNightPreference = findPreference<ListPreference>(KEY_DAY_NIGHT)
+        val themePreference = findPreference<ListPreference>(KEY_THEME)
+
+        dayNightPreference?.setOnPreferenceChangeListener { _, newValue ->
+            if (newValue != THEME_DAY && themePreference?.value == "tropical_sunset") {
+                context?.showToast(R.string.theme_day_support)
+                false
+            }
+            else
+                true
+        }
+
+        themePreference?.setOnPreferenceChangeListener { _, newValue ->
+            if (newValue == "tropical_sunset" && dayNightPreference?.entry != THEME_DAY) {
+                setNightMode(THEME_DAY)
+                // todo: this produces a flicker. If possible find another way to update only the dayNightPreference summary, or restart the app to apply it.
+                // update the  dayNightPreference summary
+                setPreferencesFromResource(R.xml.settings, rootKey)
+            }
+            true
+        }
+    }
+
+    private fun setNightMode(nightMode: String) {
+        with(preferences.edit()) {
+            putString(KEY_DAY_NIGHT, nightMode)
+            apply()
+        }
+
     }
 
     override fun onPreferenceTreeClick(preference: Preference?): Boolean {
@@ -60,8 +97,10 @@ class SettingsFragment : PreferenceFragmentCompat() {
         // these must match the ones used in [xml/settings.xml]
         const val KEY_DAY_NIGHT = "day_night_theme"
         const val KEY_THEME = "current_theme"
-        const val KEY_THEME_AUTO = 0
-        const val KEY_THEME_NIGHT = 1
-        const val KEY_THEME_DAY = 2
+        const val THEME_AUTO = "auto"
+        const val THEME_NIGHT = "night"
+        const val THEME_DAY = "day"
+        const val THEME_ORIGINAL = "original"
+        const val THEME_TROPICAL = "tropical_sunset"
     }
 }
