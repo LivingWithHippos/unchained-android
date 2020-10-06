@@ -36,36 +36,6 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
 
     private val args: DownloadDetailsFragmentArgs by navArgs()
 
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.download_details_bar, menu)
-        super.onCreateOptionsMenu(menu,inflater)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.delete -> {
-                val dialog = DeleteDialogFragment()
-                dialog.show(parentFragmentManager, "DeleteDialogFragment")
-                true
-            }
-            R.id.share -> {
-                val shareIntent = Intent(Intent.ACTION_SEND)
-                shareIntent.type = "text/plain"
-                val shareLink = args.details.download
-                shareIntent.putExtra(Intent.EXTRA_TEXT, shareLink)
-                startActivity(Intent.createChooser(shareIntent, getString(R.string.share_with)))
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -98,6 +68,35 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         }
 
         return detailsBinding.root
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.download_details_bar, menu)
+        super.onCreateOptionsMenu(menu,inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.delete -> {
+                val dialog = DeleteDialogFragment()
+                dialog.show(parentFragmentManager, "DeleteDialogFragment")
+                true
+            }
+            R.id.share -> {
+                val shareIntent = Intent(Intent.ACTION_SEND)
+                shareIntent.type = "text/plain"
+                val shareLink = args.details.download
+                shareIntent.putExtra(Intent.EXTRA_TEXT, shareLink)
+                startActivity(Intent.createChooser(shareIntent, getString(R.string.share_with)))
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     override fun onCopyClick(text: String) {
