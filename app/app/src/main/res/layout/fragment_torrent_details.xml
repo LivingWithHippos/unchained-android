@@ -153,6 +153,18 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
+                    android:id="@+id/tvProgress"
+                    style="@style/TextAppearance.UnchainedTheme.Overline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="@{torrent.progress >=0 &amp;&amp; torrent.progress &lt;100 ? View.VISIBLE : View.GONE, default=visible}"
+                    android:text="@{@string/percent_format(torrent.progress), default=`90%`}"
+                    android:layout_marginStart="5dp"
+                    android:textColor="?attr/colorPrimary"
+                    app:layout_constraintBottom_toBottomOf="@+id/tvDownloadOverline"
+                    app:layout_constraintStart_toEndOf="@id/tvDownloadOverline" />
+
+                <TextView
                     android:id="@+id/tvSpeed"
                     style="@style/TextAppearance.UnchainedTheme.Headline6"
                     android:layout_width="0dp"
