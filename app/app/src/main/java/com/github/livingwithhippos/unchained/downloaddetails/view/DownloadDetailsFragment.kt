@@ -1,6 +1,9 @@
 package com.github.livingwithhippos.unchained.downloaddetails.view
 
+import android.content.ComponentName
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -24,6 +27,7 @@ import com.github.livingwithhippos.unchained.utilities.extension.openExternalWeb
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+
 
 /**
  * A simple [UnchainedFragment] subclass.
@@ -77,7 +81,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.download_details_bar, menu)
-        super.onCreateOptionsMenu(menu,inflater)
+        super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -108,6 +112,37 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         openExternalWebPage(url)
     }
 
+    override fun onOpenWith(url: String) {
+
+
+        val yatseIntent = Intent().apply {
+            action = "org.leetzone.android.yatsewidget.ACTION_MEDIA_PLAYURI"
+            component = ComponentName(
+                "org.leetzone.android.yatsewidgetfree",
+                "org.leetzone.android.yatsewidget.service.core.YatseCommandService"
+            )
+            putExtra("org.leetzone.android.yatsewidget.EXTRA_STRING_PARAMS", url)
+        }
+
+        val yatsePackage = requireContext().packageManager
+            .getInstalledPackages(PackageManager.GET_META_DATA)
+            .firstOrNull { it.packageName == "org.leetzone.android.yatsewidgetfree" }
+
+        if (yatsePackage != null) {
+            try {
+                context?.startService(yatseIntent)
+            } catch (e: IllegalStateException) {
+                // e.printStackTrace()
+                // context?.showToast(R.string.limitations)
+                // todo: check if this is the only alternative
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    context?.startForegroundService(yatseIntent)
+                }
+            }
+        } else
+            context?.showToast(R.string.app_not_installed)
+    }
+
     override fun onLoadStreamsClick(id: String) {
         lifecycleScope.launch {
             if (activityViewModel.isTokenPrivate()) {
@@ -126,6 +161,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
 interface DownloadDetailsListener {
     fun onCopyClick(text: String)
     fun onOpenClick(url: String)
+    fun onOpenWith(url: String)
     fun onLoadStreamsClick(id: String)
     fun onPlayStreamsClick(link: String)
 }

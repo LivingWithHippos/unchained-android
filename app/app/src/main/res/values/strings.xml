@@ -395,4 +395,6 @@
     <string name="multiple_links_warning">This torrent has multiple links. Check the downloads list to find all of them.</string>
     <string name="percent_format" translatable="false">%1$d%%</string>
     <string name="theme_day_support">This theme supports only the day mode</string>
+    <string name="open_with">Open with</string>
+    <string name="limitations">Error: your phone is limiting background activity.</string>
 </resources>

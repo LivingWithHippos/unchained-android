@@ -180,4 +180,6 @@
     <string name="confirm_removal">Conferma rimozione</string>
     <string name="multiple_links_warning">Questo torrent ha più di un link. Controlla la lista dei download per vederli tutti.</string>
     <string name="theme_day_support">Questo tema supporta solo la modalità giorno</string>
+    <string name="open_with">Apri con</string>
+    <string name="limitations">Errore: il tuo telefono sta limitando le attività in background.</string>
 </resources>
