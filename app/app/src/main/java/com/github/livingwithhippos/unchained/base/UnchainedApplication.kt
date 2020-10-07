@@ -1,8 +1,11 @@
 package com.github.livingwithhippos.unchained.base
 
 import android.app.Application
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
 import android.content.SharedPreferences
-import android.util.Log
+import android.os.Build
 import androidx.appcompat.app.AppCompatDelegate
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.repositoy.CredentialsRepository
@@ -44,5 +47,29 @@ class UnchainedApplication : Application() {
             nightModeArray[1] -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
             nightModeArray[2] -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         }
+
+        createNotificationChannel()
     }
+
+    private fun createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val name = getString(R.string.app_name)
+            val descriptionText = getString(R.string.torrent_channel_description)
+            val importance = NotificationManager.IMPORTANCE_LOW
+            val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
+                description = descriptionText
+            }
+            // Register the channel with the system
+            val notificationManager: NotificationManager =
+                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+        }
+    }
+
+    companion object {
+        const val CHANNEL_ID = "unchained_torrent_channel"
+    }
+
 }

@@ -7,6 +7,8 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
@@ -15,6 +17,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.DeleteDialogFragment
+import com.github.livingwithhippos.unchained.base.UnchainedApplication.Companion.CHANNEL_ID
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.databinding.FragmentTorrentDetailsBinding
 import com.github.livingwithhippos.unchained.lists.view.ListsTabFragment
@@ -46,6 +49,7 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
         "uploading"
     )
 
+    private lateinit var builder: NotificationCompat.Builder
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
@@ -88,19 +92,34 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
             "dead" to getString(R.string.dead)
         )
 
+        builder = NotificationCompat.Builder(requireContext(), CHANNEL_ID).apply {
+            setContentTitle(getString(R.string.torrent_in_progress))
+            setContentText(getString(R.string.loading))
+            setSmallIcon(R.drawable.ic_logo_no_bg)
+            priority = NotificationCompat.PRIORITY_LOW
+        }
+
         torrentBinding.loadingStatusList = loadingStatusList
         torrentBinding.statusTranslation = statusTranslation
         torrentBinding.listener = this
 
         viewModel.torrentLiveData.observeOnce(viewLifecycleOwner, {
-            activityViewModel.setListState(ListsTabFragment.ListState.UPDATE_TORRENT)
+            if (it != null) {
+                activityViewModel.setListState(ListsTabFragment.ListState.UPDATE_TORRENT)
+            }
         }, true)
 
         viewModel.torrentLiveData.observe(viewLifecycleOwner, {
             if (it != null) {
                 torrentBinding.torrent = it
-                if (loadingStatusList.contains(it.status) || it.status == "downloading")
-                    fetchTorrent()
+                when (it.status) {
+                    "downloading" -> {
+                        fetchTorrent()
+                        updateNotification(it.id.hashCode(), it.filename, it.progress)
+                    }
+                    "magnet_conversion", "waiting_files_selection", "queued", "compressing",
+                    "uploading" -> fetchTorrent()
+                }
             }
         })
 
@@ -123,9 +142,11 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
         }
 
         viewModel.downloadLiveData.observe(viewLifecycleOwner, {
-            it.getContentIfNotHandled()?.let {download ->
+            it.getContentIfNotHandled()?.let { download ->
                 val action =
-                    TorrentDetailsFragmentDirections.actionTorrentDetailsToDownloadDetailsDest(download)
+                    TorrentDetailsFragmentDirections.actionTorrentDetailsToDownloadDetailsDest(
+                        download
+                    )
                 findNavController().navigate(action)
             }
         })
@@ -133,7 +154,33 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
         return torrentBinding.root
     }
 
-    // fetch the torrent info every 2 seconds
+    // id could be the TorrentItem id
+    private fun updateNotification(id: Int, fileName: String, currentProgress: Int) {
+        context?.let {
+
+            NotificationManagerCompat.from(it).apply {
+                builder.setProgress(100, currentProgress, false)
+                    .setContentTitle(getString(R.string.torrent_in_progress_format, currentProgress))
+                    .setContentText(fileName)
+                notify(id, builder.build())
+            }
+        }
+    }
+
+    private fun completeNotification(id: Int){
+        context?.let {
+
+            NotificationManagerCompat.from(it).apply {
+                // When done, update the notification one more time to remove the progress bar
+                builder.setContentText(getString(R.string.download_complete))
+                    .setProgress(0, 0, false)
+                notify(id, builder.build())
+            }
+        }
+    }
+
+    // fetches the torrent info every 2 seconds
+    //todo: move fetchTorrent to ViewModel automatizing there
     private fun fetchTorrent(delay: Long = 2000) {
         lifecycleScope.launch {
             delay(delay)
@@ -142,7 +189,7 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
     }
 
     override fun onDownloadClick(links: List<String>) {
-        if (links.size>1)
+        if (links.size > 1)
             context?.showToast(R.string.multiple_links_warning)
 
         viewModel.downloadTorrent()

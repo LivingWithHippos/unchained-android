@@ -185,4 +185,8 @@
     <string name="open_link_format">Apri link %1$s</string>
     <string name="copy_link_format">Copia link %1$s</string>
     <string name="open_with_format">Apri %1$s con Yatse</string>
+    <string name="torrent_channel_description">Canale per gestire le notificeh di download dei torrent</string>
+    <string name="torrent_in_progress">Download torrent in corso</string>
+    <string name="torrent_in_progress_format">%1$d%% - Download in corso</string>
+    <string name="download_complete">Download completato</string>
 </resources>

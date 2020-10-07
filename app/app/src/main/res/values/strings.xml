@@ -401,4 +401,8 @@
     <string name="copy_link_format">Copy %1$s link </string>
     <string name="open_with_format">Open %1$s with Yatse</string>
     <string name="yatse" translatable="false">Yatse</string>
+    <string name="torrent_channel_description">Channel to manage torrents download notification</string>
+    <string name="torrent_in_progress">Torrent download in progress</string>
+    <string name="torrent_in_progress_format">%1$d%% - Download in progress</string>
+    <string name="download_complete">Download complete</string>
 </resources>
