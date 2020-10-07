@@ -11,6 +11,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -130,14 +131,9 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
 
         if (yatsePackage != null) {
             try {
-                context?.startService(yatseIntent)
+                ContextCompat.startForegroundService(requireContext(),yatseIntent)
             } catch (e: IllegalStateException) {
-                // e.printStackTrace()
-                // context?.showToast(R.string.limitations)
-                // todo: check if this is the only alternative
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    context?.startForegroundService(yatseIntent)
-                }
+                context?.showToast(R.string.limitations)
             }
         } else
             context?.showToast(R.string.app_not_installed)
