@@ -213,6 +213,8 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
                     .setPriority(NotificationCompat.PRIORITY_HIGH)
                 notify(id, builder.build())
             }
+
+            context?.vibrate()
         }
     }
 
