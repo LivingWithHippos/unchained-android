@@ -24,6 +24,7 @@ import com.github.livingwithhippos.unchained.lists.view.ListsTabFragment
 import com.github.livingwithhippos.unchained.torrentdetails.viewmodel.TorrentDetailsViewModel
 import com.github.livingwithhippos.unchained.utilities.extension.observeOnce
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
+import com.github.livingwithhippos.unchained.utilities.extension.vibrate
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -92,9 +93,12 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
             "dead" to getString(R.string.dead)
         )
 
+        // the priority here is needed before Android 7. On Android >= 8, the channel priority is used (see UnchainedApp)
+        // since it is not possible to change the priority of a channel, we manually vibrate the phone once when the download is terminated.
         builder = NotificationCompat.Builder(requireContext(), CHANNEL_ID).apply {
             setContentTitle(getString(R.string.torrent_in_progress))
             setContentText(getString(R.string.loading))
+            // fixme: using the logo from R.mipmap.icon_launcher gives a painted icon, this one does not. Maybe because this is missing a background?
             setSmallIcon(R.drawable.ic_logo_no_bg)
             priority = NotificationCompat.PRIORITY_LOW
         }
@@ -106,6 +110,7 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
         viewModel.torrentLiveData.observeOnce(viewLifecycleOwner, {
             if (it != null) {
                 activityViewModel.setListState(ListsTabFragment.ListState.UPDATE_TORRENT)
+                updateNotificationText(it.id, it.filename)
             }
         }, true)
 
@@ -117,26 +122,26 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
                     // before the download starts
                     "magnet_conversion", "waiting_files_selection", "queued",  -> {
                         fetchTorrent()
-                        updateNotificationStatus(it.id.hashCode(), statusTranslation[it.status])
+                        updateNotificationStatus(it.id, statusTranslation[it.status])
                         wasDownloading = true
                     }
                     // download is in progress
                     "downloading" -> {
                         fetchTorrent()
-                        updateNotificationProgress(it.id.hashCode(), it.filename, it.progress)
+                        updateNotificationProgress(it.id, it.filename, it.progress)
                         wasDownloading = true
                     }
                     // after the download has finished
                     "compressing", "uploading" -> {
                         fetchTorrent()
-                        updateNotificationStatus(it.id.hashCode(), statusTranslation[it.status], true)
+                        updateNotificationStatus(it.id, statusTranslation[it.status], true)
                         wasDownloading = true
                     }
                     // these won't require anymore updates
                     "downloaded", "error", "virus", "dead" -> {
                         if(wasDownloading) {
                             // gives a last message with a sound/vibration this time
-                            completeNotification(it.id.hashCode(), statusTranslation[it.status])
+                            completeNotification(it.id, it.filename, statusTranslation[it.status])
                             // shouldn't be needed
                             wasDownloading = false
                         }
@@ -177,41 +182,51 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
         return torrentBinding.root
     }
 
-    private fun updateNotificationProgress(id: Int, fileName: String, currentProgress: Int) {
+    private fun updateNotificationText(id: String, fileName: String) {
+        context?.let {
+
+            NotificationManagerCompat.from(it).apply {
+                builder.setContentText(fileName)
+                notify(id.hashCode(), builder.build())
+            }
+        }
+    }
+
+    private fun updateNotificationProgress(id: String, fileName: String, currentProgress: Int) {
         context?.let {
 
             NotificationManagerCompat.from(it).apply {
                 builder.setProgress(100, currentProgress, false)
                     .setContentTitle(getString(R.string.torrent_in_progress_format, currentProgress))
                     .setContentText(fileName)
-                notify(id, builder.build())
+                notify(id.hashCode(), builder.build())
             }
         }
     }
 
-    private fun updateNotificationStatus(id: Int, status: String?, removeStatusBar: Boolean = false) {
+    private fun updateNotificationStatus(id: String, status: String?, removeStatusBar: Boolean = false) {
         context?.let {
             val currentStatus = status ?: getString(R.string.status_unknown)
             NotificationManagerCompat.from(it).apply {
                 builder.setContentTitle(currentStatus)
                 if (removeStatusBar)
                     builder.setProgress(0, 0, false)
-                notify(id, builder.build())
+                notify(id.hashCode(), builder.build())
             }
         }
     }
 
-    private fun completeNotification(id: Int, status: String?){
+    private fun completeNotification(id: String, fileName: String, status: String?){
         context?.let {
             val currentStatus = status ?: getString(R.string.status_unknown)
 
             NotificationManagerCompat.from(it).apply {
                 builder.setContentTitle(currentStatus)
+                    // if the file is already downloaded the second row will not be set elsewhere
+                    .setContentText(fileName)
                     // remove the progressbar if present
                     .setProgress(0, 0, false)
-                    // this one should vibrate/sound
-                    .setPriority(NotificationCompat.PRIORITY_HIGH)
-                notify(id, builder.build())
+                notify(id.hashCode(), builder.build())
             }
 
             context?.vibrate()
