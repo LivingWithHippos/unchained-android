@@ -27,6 +27,7 @@ class TorrentDetailsViewModel @ViewModelInject constructor(
     val downloadLiveData = MutableLiveData<Event<DownloadItem?>>()
 
 
+    // todo: move this and the rest of the notification stuff to MainActivity so it works outside the details fragment
     fun fetchTorrentDetails(torrentID: String) {
         viewModelScope.launch {
             val token = getToken()

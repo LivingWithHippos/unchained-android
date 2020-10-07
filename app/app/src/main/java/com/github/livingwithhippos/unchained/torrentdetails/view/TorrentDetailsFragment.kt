@@ -41,7 +41,7 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
 
     // possible status are magnet_error, magnet_conversion, waiting_files_selection,
     // queued, downloading, downloaded, error, virus, compressing, uploading, dead
-    val loadingStatusList = listOf(
+    private val loadingStatusList = listOf(
         "magnet_conversion",
         "waiting_files_selection",
         "queued",
@@ -109,16 +109,39 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
             }
         }, true)
 
+        var wasDownloading = false
         viewModel.torrentLiveData.observe(viewLifecycleOwner, {
             if (it != null) {
                 torrentBinding.torrent = it
                 when (it.status) {
+                    // before the download starts
+                    "magnet_conversion", "waiting_files_selection", "queued",  -> {
+                        fetchTorrent()
+                        updateNotificationStatus(it.id.hashCode(), statusTranslation[it.status])
+                        wasDownloading = true
+                    }
+                    // download is in progress
                     "downloading" -> {
                         fetchTorrent()
-                        updateNotification(it.id.hashCode(), it.filename, it.progress)
+                        updateNotificationProgress(it.id.hashCode(), it.filename, it.progress)
+                        wasDownloading = true
                     }
-                    "magnet_conversion", "waiting_files_selection", "queued", "compressing",
-                    "uploading" -> fetchTorrent()
+                    // after the download has finished
+                    "compressing", "uploading" -> {
+                        fetchTorrent()
+                        updateNotificationStatus(it.id.hashCode(), statusTranslation[it.status], true)
+                        wasDownloading = true
+                    }
+                    // these won't require anymore updates
+                    "downloaded", "error", "virus", "dead" -> {
+                        if(wasDownloading) {
+                            // gives a last message with a sound/vibration this time
+                            completeNotification(it.id.hashCode(), statusTranslation[it.status])
+                            // shouldn't be needed
+                            wasDownloading = false
+                        }
+
+                    }
                 }
             }
         })
@@ -154,8 +177,7 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
         return torrentBinding.root
     }
 
-    // id could be the TorrentItem id
-    private fun updateNotification(id: Int, fileName: String, currentProgress: Int) {
+    private fun updateNotificationProgress(id: Int, fileName: String, currentProgress: Int) {
         context?.let {
 
             NotificationManagerCompat.from(it).apply {
@@ -167,13 +189,28 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
         }
     }
 
-    private fun completeNotification(id: Int){
+    private fun updateNotificationStatus(id: Int, status: String?, removeStatusBar: Boolean = false) {
         context?.let {
+            val currentStatus = status ?: getString(R.string.status_unknown)
+            NotificationManagerCompat.from(it).apply {
+                builder.setContentTitle(currentStatus)
+                if (removeStatusBar)
+                    builder.setProgress(0, 0, false)
+                notify(id, builder.build())
+            }
+        }
+    }
+
+    private fun completeNotification(id: Int, status: String?){
+        context?.let {
+            val currentStatus = status ?: getString(R.string.status_unknown)
 
             NotificationManagerCompat.from(it).apply {
-                // When done, update the notification one more time to remove the progress bar
-                builder.setContentText(getString(R.string.download_complete))
+                builder.setContentTitle(currentStatus)
+                    // remove the progressbar if present
                     .setProgress(0, 0, false)
+                    // this one should vibrate/sound
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
                 notify(id, builder.build())
             }
         }
