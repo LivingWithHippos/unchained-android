@@ -51,26 +51,6 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
     )
 
     private lateinit var builder: NotificationCompat.Builder
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.torrent_details_bar, menu)
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.delete -> {
-                val dialog = DeleteDialogFragment()
-                dialog.show(parentFragmentManager, "DeleteDialogFragment")
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -180,6 +160,27 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
         })
 
         return torrentBinding.root
+    }
+    
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.torrent_details_bar, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.delete -> {
+                val dialog = DeleteDialogFragment()
+                dialog.show(parentFragmentManager, "DeleteDialogFragment")
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     private fun updateNotificationText(id: String, fileName: String) {
