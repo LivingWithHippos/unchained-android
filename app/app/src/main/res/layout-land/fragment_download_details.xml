@@ -175,7 +175,7 @@
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="10dp"
                 android:onClick="@{() -> listener.onOpenWith(details.download)}"
-                android:text="@string/open_with_yatse"
+                android:text="@string/yatse"
                 android:visibility="@{details.streamable == 1 &amp;&amp; yatseInstalled ? View.VISIBLE : View.GONE, default=visible}"
                 app:icon="@drawable/icon_remote"
                 app:layout_constraintEnd_toStartOf="@id/bLoadStreams"
