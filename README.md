@@ -4,7 +4,7 @@
 
 # Unchained for Android
 
-[![License](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)    [![Kotlin Version](https://img.shields.io/badge/kotlin-1.3.72-blue)](http://kotlinlang.org/) [![Android Studio](https://img.shields.io/badge/Android%20Studio-4.0.1%2B-brightgreen)](https://developer.android.com/studio)    [![API](https://img.shields.io/badge/API-24%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=24)    [![CircleCI](https://circleci.com/gh/LivingWithHippos/Keter-Escape/tree/master.svg?style=shield)](https://circleci.com/gh/LivingWithHippos/unchained-android/tree/master)    [![Play Store](https://img.shields.io/badge/play%20store-v1.0.0--beta--2-brightgreen)](https://play.google.com/store/apps/details?id=com.github.livingwithhippos.unchained)
+[![License](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)    [![Kotlin Version](https://img.shields.io/badge/kotlin-1.4.10-blue)](http://kotlinlang.org/) [![Android Studio](https://img.shields.io/badge/Android%20Studio-4.1%2B-brightgreen)](https://developer.android.com/studio)    [![API](https://img.shields.io/badge/API-24%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=24)    [![CircleCI](https://circleci.com/gh/LivingWithHippos/Keter-Escape/tree/master.svg?style=shield)](https://circleci.com/gh/LivingWithHippos/unchained-android/tree/master)    [![Play Store](https://img.shields.io/badge/play%20store-v2.0.0--beta-brightgreen)](https://play.google.com/store/apps/details?id=com.github.livingwithhippos.unchained)
 
 
 
