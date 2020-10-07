@@ -46,7 +46,7 @@
     <string name="speed_format_mb" translatable="false">%1$.1f MB/s</string>
     <string name="speed_error">Error getting the download speed</string>
     <string name="seeders_format">%1$d seeders</string>
-    <string name="load_streams">Load Streaming Links</string>
+    <string name="load_streams">Load stream links</string>
     <string name="apple" translatable="false">Apple</string>
     <string name="dash" translatable="false">Dash</string>
     <string name="liveMP4" translatable="false">Live MP4</string>
@@ -395,7 +395,7 @@
     <string name="multiple_links_warning">This torrent has multiple links. Check the downloads list to find all of them.</string>
     <string name="percent_format" translatable="false">%1$d%%</string>
     <string name="theme_day_support">This theme supports only the day mode</string>
-    <string name="open_with">Open with</string>
+    <string name="open_with_yatse">Yatse</string>
     <string name="app_not_installed">App not installed. Check your settings.</string>
     <string name="limitations">Error: your phone is limiting background activity.</string>
 </resources>
