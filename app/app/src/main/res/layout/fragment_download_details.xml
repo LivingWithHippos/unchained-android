@@ -16,6 +16,10 @@
             type="com.github.livingwithhippos.unchained.data.model.Stream" />
 
         <variable
+            name="yatseInstalled"
+            type="Boolean" />
+
+        <variable
             name="listener"
             type="com.github.livingwithhippos.unchained.downloaddetails.view.DownloadDetailsListener" />
     </data>
@@ -168,7 +172,7 @@
             app:layout_constraintStart_toEndOf="@id/bOpen"
             app:layout_constraintEnd_toStartOf="@id/bCopy"
             app:layout_constraintBottom_toBottomOf="@id/bOpen"
-            android:visibility="@{details.streamable == 1 ? View.VISIBLE : View.GONE, default=visible}" />
+            android:visibility="@{details.streamable == 1 &amp;&amp; yatseInstalled ? View.VISIBLE : View.GONE, default=visible}" />
 
         <Button
             android:id="@+id/bCopy"

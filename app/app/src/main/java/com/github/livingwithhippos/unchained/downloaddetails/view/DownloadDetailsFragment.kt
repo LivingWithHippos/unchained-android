@@ -1,9 +1,9 @@
 package com.github.livingwithhippos.unchained.downloaddetails.view
 
+import android.annotation.SuppressLint
 import android.content.ComponentName
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -49,6 +49,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
 
         detailsBinding.details = args.details
         detailsBinding.listener = this
+        detailsBinding.yatseInstalled = isYatseInstalled()
 
         viewModel.streamLiveData.observe(viewLifecycleOwner, {
             if (it != null) {
@@ -115,7 +116,6 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
 
     override fun onOpenWith(url: String) {
 
-
         val yatseIntent = Intent().apply {
             action = "org.leetzone.android.yatsewidget.ACTION_MEDIA_PLAYURI"
             component = ComponentName(
@@ -125,18 +125,23 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
             putExtra("org.leetzone.android.yatsewidget.EXTRA_STRING_PARAMS", url)
         }
 
-        val yatsePackage = requireContext().packageManager
-            .getInstalledPackages(PackageManager.GET_META_DATA)
-            .firstOrNull { it.packageName == "org.leetzone.android.yatsewidgetfree" }
-
-        if (yatsePackage != null) {
+        // we already check once if it is installed, but this also takes care if yatse get uninstalled while this fragment is active
+        if (isYatseInstalled()) {
             try {
-                ContextCompat.startForegroundService(requireContext(),yatseIntent)
+                ContextCompat.startForegroundService(requireContext(), yatseIntent)
             } catch (e: IllegalStateException) {
                 context?.showToast(R.string.limitations)
             }
         } else
             context?.showToast(R.string.app_not_installed)
+    }
+
+    //already added the query
+    @SuppressLint("QueryPermissionsNeeded")
+    private fun isYatseInstalled(): Boolean {
+        return context?.packageManager
+            ?.getInstalledPackages(PackageManager.GET_META_DATA)
+            ?.firstOrNull { it.packageName == "org.leetzone.android.yatsewidgetfree" } != null
     }
 
     override fun onLoadStreamsClick(id: String) {
