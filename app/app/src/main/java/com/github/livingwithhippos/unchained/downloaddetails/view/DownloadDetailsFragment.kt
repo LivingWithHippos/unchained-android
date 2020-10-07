@@ -153,10 +153,6 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
 
         }
     }
-
-    override fun onPlayStreamsClick(link: String) {
-        openExternalWebPage(link)
-    }
 }
 
 interface DownloadDetailsListener {
@@ -164,5 +160,4 @@ interface DownloadDetailsListener {
     fun onOpenClick(url: String)
     fun onOpenWith(url: String)
     fun onLoadStreamsClick(id: String)
-    fun onPlayStreamsClick(link: String)
 }

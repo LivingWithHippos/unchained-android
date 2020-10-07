@@ -398,4 +398,7 @@
     <string name="open_with_yatse">Yatse</string>
     <string name="app_not_installed">App not installed. Check your settings.</string>
     <string name="limitations">Error: your phone is limiting background activity.</string>
+    <string name="open_link_format">Open %1$s link</string>
+    <string name="copy_link_format">Copy %1$s link </string>
+    <string name="open_with_format">Open %1$s with Yatse</string>
 </resources>
