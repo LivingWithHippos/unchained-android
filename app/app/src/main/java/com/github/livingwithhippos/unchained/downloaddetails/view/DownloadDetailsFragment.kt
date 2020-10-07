@@ -1,6 +1,9 @@
 package com.github.livingwithhippos.unchained.downloaddetails.view
 
+import android.annotation.SuppressLint
+import android.content.ComponentName
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -8,6 +11,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -25,6 +29,7 @@ import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+
 /**
  * A simple [UnchainedFragment] subclass.
  * It is capable of showing the details of a [DownloadItem]
@@ -36,36 +41,6 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
 
     private val args: DownloadDetailsFragmentArgs by navArgs()
 
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.download_details_bar, menu)
-        super.onCreateOptionsMenu(menu,inflater)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.delete -> {
-                val dialog = DeleteDialogFragment()
-                dialog.show(parentFragmentManager, "DeleteDialogFragment")
-                true
-            }
-            R.id.share -> {
-                val shareIntent = Intent(Intent.ACTION_SEND)
-                shareIntent.type = "text/plain"
-                val shareLink = args.details.download
-                shareIntent.putExtra(Intent.EXTRA_TEXT, shareLink)
-                startActivity(Intent.createChooser(shareIntent, getString(R.string.share_with)))
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -74,6 +49,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
 
         detailsBinding.details = args.details
         detailsBinding.listener = this
+        detailsBinding.yatseInstalled = isYatseInstalled()
 
         viewModel.streamLiveData.observe(viewLifecycleOwner, {
             if (it != null) {
@@ -100,6 +76,35 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         return detailsBinding.root
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.download_details_bar, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.delete -> {
+                val dialog = DeleteDialogFragment()
+                dialog.show(parentFragmentManager, "DeleteDialogFragment")
+                true
+            }
+            R.id.share -> {
+                val shareIntent = Intent(Intent.ACTION_SEND)
+                shareIntent.type = "text/plain"
+                val shareLink = args.details.download
+                shareIntent.putExtra(Intent.EXTRA_TEXT, shareLink)
+                startActivity(Intent.createChooser(shareIntent, getString(R.string.share_with)))
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
     override fun onCopyClick(text: String) {
         copyToClipboard("Real-Debrid Download Link", text)
         context?.showToast(R.string.link_copied)
@@ -107,6 +112,36 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
 
     override fun onOpenClick(url: String) {
         openExternalWebPage(url)
+    }
+
+    override fun onOpenWith(url: String) {
+
+        val yatseIntent = Intent().apply {
+            action = "org.leetzone.android.yatsewidget.ACTION_MEDIA_PLAYURI"
+            component = ComponentName(
+                "org.leetzone.android.yatsewidgetfree",
+                "org.leetzone.android.yatsewidget.service.core.YatseCommandService"
+            )
+            putExtra("org.leetzone.android.yatsewidget.EXTRA_STRING_PARAMS", url)
+        }
+
+        // we already check once if it is installed, but this also takes care if yatse get uninstalled while this fragment is active
+        if (isYatseInstalled()) {
+            try {
+                ContextCompat.startForegroundService(requireContext(), yatseIntent)
+            } catch (e: IllegalStateException) {
+                context?.showToast(R.string.limitations)
+            }
+        } else
+            context?.showToast(R.string.app_not_installed)
+    }
+
+    //already added the query
+    @SuppressLint("QueryPermissionsNeeded")
+    private fun isYatseInstalled(): Boolean {
+        return context?.packageManager
+            ?.getInstalledPackages(PackageManager.GET_META_DATA)
+            ?.firstOrNull { it.packageName == "org.leetzone.android.yatsewidgetfree" } != null
     }
 
     override fun onLoadStreamsClick(id: String) {
@@ -118,15 +153,11 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
 
         }
     }
-
-    override fun onPlayStreamsClick(link: String) {
-        openExternalWebPage(link)
-    }
 }
 
 interface DownloadDetailsListener {
     fun onCopyClick(text: String)
     fun onOpenClick(url: String)
+    fun onOpenWith(url: String)
     fun onLoadStreamsClick(id: String)
-    fun onPlayStreamsClick(link: String)
 }

@@ -35,7 +35,7 @@
     <string name="selected_file_size_format">%1$d MB / %2$d MB selezionati</string>
     <string name="torrent_status_format">Stato: %1$s</string>
     <string name="seeders_format">%1$d seeders</string>
-    <string name="load_streams">Carica links streaming</string>
+    <string name="load_streams">Carica i media</string>
     <string name="quality">Qualità</string>
     <string name="links">Links</string>
     <string name="add_private_token_message">Puoi anche usare il tuo codice API privato da https://real-debrid.com/apitoken che ti permetterà di utilizzare tutte le funzionalità incluso lo streaming.</string>
@@ -180,4 +180,9 @@
     <string name="confirm_removal">Conferma rimozione</string>
     <string name="multiple_links_warning">Questo torrent ha più di un link. Controlla la lista dei download per vederli tutti.</string>
     <string name="theme_day_support">Questo tema supporta solo la modalità giorno</string>
+    <string name="app_not_installed">Applicazione non installata. Controlla le impostazioni.</string>
+    <string name="limitations">Errore: il tuo telefono sta limitando le attività in background.</string>
+    <string name="open_link_format">Apri link %1$s</string>
+    <string name="copy_link_format">Copia link %1$s</string>
+    <string name="open_with_format">Apri %1$s con Yatse</string>
 </resources>
