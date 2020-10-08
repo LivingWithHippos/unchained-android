@@ -30,17 +30,26 @@ class HostsRepository @Inject constructor(
      * Gets the regexps to filter supported hosts from the network
      * @return the list of HostRegex from the network
      */
-    suspend fun getHostsRegexFromNetwork(): List<HostRegex> {
+    private suspend fun getHostsRegexFromNetwork(addCustomRegexps: Boolean = true): List<HostRegex> {
 
         val hostResponse = safeApiCall(
             call = { hostsApiHelper.getHostsRegex() },
             errorMessage = "Error Fetching Hosts Regex"
         )
         val list = mutableListOf<HostRegex>()
+        // add the regexps from the network
         hostResponse?.forEach {
             val regex = convertRegex(it)
             if (!regex.isBlank())
                 list.add(HostRegex(regex))
+        }
+        if (addCustomRegexps) {
+            // add the custom regexps
+            CUSTOM_REGEXPS.forEach {
+                val regex = convertRegex(it)
+                if (!regex.isBlank())
+                    list.add(HostRegex(regex))
+            }
         }
         return list
     }
@@ -62,7 +71,7 @@ class HostsRepository @Inject constructor(
      * Gets the regexps to filter supported hosts from the network and saves them in the local database, deleting the old ones
      * @return the list of HostRegex saved in the database, or an empty list
      */
-    suspend fun updateHostsRegex(): List<HostRegex> {
+    private suspend fun updateHostsRegex(): List<HostRegex> {
         val newRegexps = getHostsRegexFromNetwork()
         if (newRegexps.size > 10) {
             hostRegexDao.deleteAll()
@@ -93,5 +102,12 @@ class HostsRepository @Inject constructor(
             newRegex = ""
         }
         return newRegex
+    }
+
+    companion object {
+        // some of the converted host regexps are not enough, these are added to the db manually
+        val CUSTOM_REGEXPS = arrayOf(
+            "^https?:\\/\\/(www?\\d?\\.)?rapidgator\\.(net|asia)\\/file\\/[0-9a-z]{6,32}/([^(\\/| |\"|'|>|<|\\r\\n\\|\\r|\\n|:|\$)]+)\$"
+        )
     }
 }
