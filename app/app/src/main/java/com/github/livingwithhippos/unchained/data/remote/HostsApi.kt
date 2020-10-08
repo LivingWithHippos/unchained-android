@@ -11,4 +11,7 @@ interface HostsApi {
     suspend fun getStreams(
         @Header("Authorization") token: String
     ): Response<Host>
+
+    @GET("hosts/regex/")
+    suspend fun getHostsRegex(): Response<List<String>>
 }
