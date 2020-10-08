@@ -39,13 +39,9 @@ class NewDownloadViewModel @ViewModelInject constructor(
     fun fetchUnrestrictedLink(link: String, password: String?, remote: Int? = null) {
         viewModelScope.launch {
             val token = getToken()
-            try {
                 val unrestrictedData =
                     unrestrictRepository.getUnrestrictedLink(token, link, password, remote)
                 linkLiveData.postValue(Event(unrestrictedData))
-            } catch (e: APIException) {
-                apiErrorLiveData.postValue(Event(e.apiError))
-            }
         }
     }
 
