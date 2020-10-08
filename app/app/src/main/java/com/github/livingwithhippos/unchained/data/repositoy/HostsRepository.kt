@@ -36,9 +36,13 @@ class HostsRepository @Inject constructor(
             call = { hostsApiHelper.getHostsRegex() },
             errorMessage = "Error Fetching Hosts Regex"
         )
-
-        return hostResponse?.map { HostRegex(it) } ?: emptyList()
-
+        val list = mutableListOf<HostRegex>()
+        hostResponse?.forEach {
+            val regex = convertRegex(it)
+            if (!regex.isBlank())
+                list.add(HostRegex(regex))
+        }
+        return list
     }
 
     /**
