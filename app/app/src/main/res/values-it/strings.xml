@@ -189,4 +189,6 @@
     <string name="title_debugging">Debug</string>
     <string name="update_regexps">Aggiorna riconoscimento link hosts</string>
     <string name="updating_link_matcher">Aggiornamento dei link…</string>
+    <string name="unknown_error">Errore sconosciuto</string>
+    <string name="network_error">Errore di rete</string>
 </resources>

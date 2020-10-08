@@ -405,4 +405,6 @@
     <string name="title_debugging">Debug</string>
     <string name="update_regexps">Update hosts link matcher</string>
     <string name="updating_link_matcher">Updating link matcher…</string>
+    <string name="unknown_error">Unknown error</string>
+    <string name="network_error">Network error</string>
 </resources>
