@@ -10,9 +10,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.livingwithhippos.unchained.data.model.AuthenticationState
 import com.github.livingwithhippos.unchained.data.model.Credentials
+import com.github.livingwithhippos.unchained.data.model.HostRegex
 import com.github.livingwithhippos.unchained.data.model.User
 import com.github.livingwithhippos.unchained.data.repositoy.AuthenticationRepository
 import com.github.livingwithhippos.unchained.data.repositoy.CredentialsRepository
+import com.github.livingwithhippos.unchained.data.repositoy.HostsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.UserRepository
 import com.github.livingwithhippos.unchained.data.repositoy.VariousApiRepository
 import com.github.livingwithhippos.unchained.lists.view.ListsTabFragment
@@ -20,6 +22,8 @@ import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.PRIVATE_TOKEN
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 
 /**
  * a [ViewModel] subclass.
@@ -30,7 +34,8 @@ class MainActivityViewModel @ViewModelInject constructor(
     private val authRepository: AuthenticationRepository,
     private val credentialRepository: CredentialsRepository,
     private val userRepository: UserRepository,
-    private val variousApiRepository: VariousApiRepository
+    private val variousApiRepository: VariousApiRepository,
+    private val hostsRepository: HostsRepository
 ) : ViewModel() {
 
     val authenticationState = MutableLiveData<Event<AuthenticationState>>()
@@ -42,6 +47,9 @@ class MainActivityViewModel @ViewModelInject constructor(
     val downloadedTorrentLiveData = MutableLiveData<Event<String?>>()
 
     val listStateLiveData = MutableLiveData<Event<ListsTabFragment.ListState>>()
+
+    // todo: use a better name to reflect the difference between this and externalLinkLiveData
+    val linkLiveData = MutableLiveData<Event<String>>()
 
     // fixme: this is here because userLiveData.postValue(user) is throwing an unsafe error
     //  but auto-correcting it changes the value of val authenticationState = MutableLiveData<Event<AuthenticationState>>() to a nullable one
@@ -203,6 +211,18 @@ class MainActivityViewModel @ViewModelInject constructor(
             // secondsDelay*950L -> expiration time - 5%
             delay(secondsDelay * 950L)
             refreshToken()
+        }
+    }
+
+    fun checkIfLinkIsHoster(link: String) {
+        viewModelScope.launch {
+            for (hostRegex in hostsRepository.getHostsRegex()) {
+                val m: Matcher = Pattern.compile(hostRegex.regex).matcher(link)
+                if (m.matches()) {
+                    linkLiveData.postValue(Event(link))
+                    break
+                }
+            }
         }
     }
 
