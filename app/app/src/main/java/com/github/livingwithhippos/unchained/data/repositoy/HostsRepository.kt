@@ -4,6 +4,8 @@ import com.github.livingwithhippos.unchained.data.local.HostRegexDao
 import com.github.livingwithhippos.unchained.data.model.Host
 import com.github.livingwithhippos.unchained.data.model.HostRegex
 import com.github.livingwithhippos.unchained.data.remote.HostsApiHelper
+import java.util.regex.Pattern
+import java.util.regex.PatternSyntaxException
 import javax.inject.Inject
 
 
@@ -64,5 +66,28 @@ class HostsRepository @Inject constructor(
             return newRegexps
         } else
             return emptyList()
+    }
+
+    /**
+     * Converts the regex from the original received language (unknown) to the Java regex language
+     * @return the new regex or an empty string if the pattern could not be compiled
+     */
+    private fun convertRegex(originalRegex: String): String {
+        var newRegex = originalRegex
+            .trim()
+            .replace(
+            "/(http|https):\\/\\/(\\w+\\.)?",
+            "^https?:\\/\\/(www?\\d?\\.)?",
+            ignoreCase = true
+        )
+        if (newRegex[newRegex.lastIndex] == "/"[0])
+            // substring endIndex is not included
+            newRegex = newRegex.substring(0,newRegex.lastIndex)+"$"
+        try {
+            Pattern.compile(newRegex)
+        } catch (e: PatternSyntaxException) {
+            newRegex = ""
+        }
+        return newRegex
     }
 }
