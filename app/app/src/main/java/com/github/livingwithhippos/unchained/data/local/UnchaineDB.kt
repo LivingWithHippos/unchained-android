@@ -10,7 +10,7 @@ import com.github.livingwithhippos.unchained.data.model.Credentials
 @Database(
     entities = [Credentials::class],
     version = 1,
-    exportSchema = false
+    exportSchema = true
 )
 abstract class UnchaineDB : RoomDatabase() {
 
