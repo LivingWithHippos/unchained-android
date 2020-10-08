@@ -1,10 +1,15 @@
 package com.github.livingwithhippos.unchained.data.repositoy
 
 import android.util.Log
+import arrow.core.Either
 import com.github.livingwithhippos.unchained.BuildConfig
 import com.github.livingwithhippos.unchained.data.model.APIError
+import com.github.livingwithhippos.unchained.data.model.ApiConversionError
 import com.github.livingwithhippos.unchained.data.model.CompleteNetworkResponse
+import com.github.livingwithhippos.unchained.data.model.EmptyBodyError
+import com.github.livingwithhippos.unchained.data.model.NetworkError
 import com.github.livingwithhippos.unchained.data.model.NetworkResponse
+import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkException
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import okhttp3.ResponseBody
@@ -101,5 +106,30 @@ open class BaseRepository {
             }
         }
 
+    }
+
+    suspend fun <T : Any> eitherApiResult(
+        call: suspend () -> Response<T>,
+        errorMessage: String
+    ): Either<UnchainedNetworkException, T> {
+        val response = call.invoke()
+        if (response.isSuccessful) {
+            val body = response.body()
+            return if (body != null)
+                Either.Right(body)
+            else
+                Either.Left(EmptyBodyError(response.code()))
+        } else {
+            try {
+                val error: APIError? = jsonAdapter.fromJson(response.errorBody()!!.string())
+                return if (error!=null)
+                    Either.Left(error)
+                else
+                    Either.Left(ApiConversionError(-1))
+            } catch (e: IOException) {
+                // todo: analyze error to return code
+                return Either.Left(NetworkError(-1, errorMessage))
+            }
+        }
     }
 }

@@ -12,9 +12,19 @@ data class APIError(
     val errorDetails: String?,
     @Json(name = "error_code")
     val errorCode: Int?
-)
+): UnchainedNetworkException
 
-/**
- * Manager the response error body from the retrofit calls. WIP.
- */
-class APIException(val apiError: APIError) : Exception()
+data class EmptyBodyError(
+    val returnCode: Int
+): UnchainedNetworkException
+
+data class NetworkError(
+    val error: Int,
+    val message: String
+): UnchainedNetworkException
+
+data class ApiConversionError(
+    val error: Int
+): UnchainedNetworkException
+
+interface UnchainedNetworkException

@@ -171,3 +171,44 @@ fun AppCompatActivity.setCustomTheme(theme: String) {
         "tropical_sunset" -> setTheme(R.style.Theme_Unchained_TropicalSunset)
     }
 }
+
+fun Context.getApiErrorMessage(errorCode: Int): String {
+    return when (errorCode) {
+        -1 -> getString(R.string.internal_error)
+        1 -> getString(R.string.missing_parameter)
+        2 -> getString(R.string.bad_parameter_value)
+        3 -> getString(R.string.unknown_method)
+        4 -> getString(R.string.method_not_allowed)
+        // note: what is this error for?
+        5 -> getString(R.string.slow_down)
+        6 -> getString(R.string.resource_unreachable)
+        7 -> getString(R.string.resource_not_found)
+        8 -> getString(R.string.bad_token)
+        9 -> getString(R.string.permission_denied)
+        10 -> getString(R.string.tfa_needed)
+        11 -> getString(R.string.tfa_pending)
+        12 -> getString(R.string.invalid_login)
+        13 -> getString(R.string.invalid_password)
+        14 -> getString(R.string.account_locked)
+        15 -> getString(R.string.account_not_activated)
+        16 -> getString(R.string.unsupported_hoster)
+        17 -> getString(R.string.hoster_in_maintenance)
+        18 -> getString(R.string.hoster_limit_reached)
+        19 -> getString(R.string.hoster_temporarily_unavailable)
+        20 -> getString(R.string.hoster_not_available_for_free_users)
+        21 -> getString(R.string.too_many_active_downloads)
+        22 -> getString(R.string.ip_Address_not_allowed)
+        23 -> getString(R.string.traffic_exhausted)
+        24 -> getString(R.string.file_unavailable)
+        25 -> getString(R.string.service_unavailable)
+        26 -> getString(R.string.upload_too_big)
+        27 -> getString(R.string.upload_error)
+        28 -> getString(R.string.file_not_allowed)
+        29 -> getString(R.string.torrent_too_big)
+        30 -> getString(R.string.torrent_file_invalid)
+        31 -> getString(R.string.action_already_done)
+        32 -> getString(R.string.image_resolution_error)
+        33 -> getString(R.string.torrent_already_active)
+        else -> getString(R.string.unknown_error)
+    }
+}
