@@ -89,8 +89,8 @@ class HostsRepository @Inject constructor(
         var newRegex = originalRegex
             .trim()
             .replace(
-            "/(http|https):\\/\\/(\\w+\\.)?",
-            "^https?:\\/\\/(www?\\d?\\.)?",
+            "/(http|https):\\/\\/",
+            "^https?:\\/\\/",
             ignoreCase = true
         )
         if (newRegex[newRegex.lastIndex] == "/"[0])
