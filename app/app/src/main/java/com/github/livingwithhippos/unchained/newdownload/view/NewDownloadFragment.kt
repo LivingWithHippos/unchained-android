@@ -176,8 +176,20 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
                         loadTorrent(requireContext().contentResolver, link)
                     }
                     SCHEME_HTTP, SCHEME_HTTPS -> {
-                        context?.showToast(R.string.loading_torrent_file)
-                        downloadTorrent(link)
+                        if (link.toString().endsWith(".torrent")) {
+                            context?.showToast(R.string.loading_torrent_file)
+                            downloadTorrent(link)
+                        } else {
+                            context?.showToast(R.string.loading_host_link)
+                            // same as torrent
+                            // set as text input text
+                            downloadBinding.tiLink.setText(
+                                link.toString(),
+                                TextView.BufferType.EDITABLE
+                            )
+                            // simulate button click
+                            downloadBinding.bUnrestrict.performClick()
+                        }
                     }
                 }
             }

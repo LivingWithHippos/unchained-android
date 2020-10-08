@@ -7,21 +7,30 @@
         android:title="@string/title_aspect"
         android:summary="@string/restart_to_apply">
 
-    <DropDownPreference
-        android:key="current_theme"
-        android:title="@string/title_theme_preference"
-        android:entries="@array/themes"
-        android:entryValues="@array/theme_values"
-        android:defaultValue="original"
-        app:useSimpleSummaryProvider="true"/>
+        <DropDownPreference
+            android:key="current_theme"
+            android:title="@string/title_theme_preference"
+            android:entries="@array/themes"
+            android:entryValues="@array/theme_values"
+            android:defaultValue="original"
+            app:useSimpleSummaryProvider="true"/>
 
-    <DropDownPreference
-        android:key="day_night_theme"
-        android:title="@string/night_theme"
-        android:entries="@array/night_mode"
-        android:entryValues="@array/night_mode_values"
-        android:defaultValue="auto"
-        app:useSimpleSummaryProvider="true"/>
+        <DropDownPreference
+            android:key="day_night_theme"
+            android:title="@string/night_theme"
+            android:entries="@array/night_mode"
+            android:entryValues="@array/night_mode_values"
+            android:defaultValue="auto"
+            app:useSimpleSummaryProvider="true"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/title_debugging">
+
+        <Preference
+            app:key="update_regexps"
+            app:title="@string/update_regexps" />
 
     </PreferenceCategory>
 

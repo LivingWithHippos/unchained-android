@@ -356,7 +356,7 @@
     </body>
     ]]>
     </string>
-    <string name="premium_needed">A premium subscription is required to use this</string>
+    <string name="premium_needed">A premium subscription is required to do this</string>
     <string name="premium_needed_torrent">A premium subscription is required for magnet and torrents</string>
     <string name="downloading_torrent">Preparing torrent, please wait…</string>
     <string name="please_insert_url">Please insert a magnet or a link</string>
@@ -401,4 +401,8 @@
     <string name="copy_link_format">Copy %1$s link </string>
     <string name="open_with_format">Open %1$s with Yatse</string>
     <string name="yatse" translatable="false">Yatse</string>
+    <string name="loading_host_link">Loading host link</string>
+    <string name="title_debugging">Debug</string>
+    <string name="update_regexps">Update hosts link matcher</string>
+    <string name="updating_link_matcher">Updating link matcher…</string>
 </resources>

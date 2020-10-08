@@ -2,8 +2,7 @@ package com.github.livingwithhippos.unchained.settings
 
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
-import android.view.View
+import androidx.fragment.app.viewModels
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
@@ -13,7 +12,6 @@ import com.github.livingwithhippos.unchained.utilities.GPLV3_URL
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.activity_settings.*
 import javax.inject.Inject
 
 /**
@@ -24,6 +22,8 @@ import javax.inject.Inject
 class SettingsFragment : PreferenceFragmentCompat() {
     @Inject
     lateinit var preferences: SharedPreferences
+
+    private val viewModel: SettingsViewmodel by viewModels()
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.settings, rootKey)
@@ -71,6 +71,10 @@ class SettingsFragment : PreferenceFragmentCompat() {
             }
             "privacy" -> {
                 openPrivacyDialog()
+            }
+            "update_regexps" -> {
+                viewModel.updateRegexps()
+                context?.showToast(R.string.updating_link_matcher)
             }
             else -> return super.onPreferenceTreeClick(preference)
         }
