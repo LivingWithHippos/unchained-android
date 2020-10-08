@@ -402,4 +402,7 @@
     <string name="open_with_format">Open %1$s with Yatse</string>
     <string name="yatse" translatable="false">Yatse</string>
     <string name="loading_host_link">Loading host link</string>
+    <string name="title_debugging">Debug</string>
+    <string name="update_regexps">Update hosts link matcher</string>
+    <string name="updating_link_matcher">Updating link matcher…</string>
 </resources>

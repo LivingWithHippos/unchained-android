@@ -27,7 +27,7 @@ class HostsRepository @Inject constructor(
     }
 
     /**
-     * Gets the regexps to filter supported hosts from the network
+     * Gets the regexps to filter supported hosts from the network. Custom regexps are also added here.
      * @return the list of HostRegex from the network
      */
     private suspend fun getHostsRegexFromNetwork(addCustomRegexps: Boolean = true): List<HostRegex> {
@@ -71,7 +71,7 @@ class HostsRepository @Inject constructor(
      * Gets the regexps to filter supported hosts from the network and saves them in the local database, deleting the old ones
      * @return the list of HostRegex saved in the database, or an empty list
      */
-    private suspend fun updateHostsRegex(): List<HostRegex> {
+    suspend fun updateHostsRegex(): List<HostRegex> {
         val newRegexps = getHostsRegexFromNetwork()
         if (newRegexps.size > 10) {
             hostRegexDao.deleteAll()
