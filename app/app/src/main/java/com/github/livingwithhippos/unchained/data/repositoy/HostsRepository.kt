@@ -18,7 +18,7 @@ class HostsRepository @Inject constructor(private val hostsApiHelper: HostsApiHe
 
     }
 
-    suspend fun getHostsStatus(): List<String> {
+    suspend fun getHostsRegex(): List<String> {
 
         val hostResponse = safeApiCall(
             call = { hostsApiHelper.getHostsRegex() },
