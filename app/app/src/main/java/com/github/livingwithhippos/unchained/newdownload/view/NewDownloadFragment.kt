@@ -85,16 +85,6 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
             }
         })
 
-        viewModel.apiErrorLiveData.observe(viewLifecycleOwner, {
-            it.getContentIfNotHandled()?.let { error ->
-                showErrorMessage(error)
-                // re enable buttons to let the user take other actions
-                //todo: this needs to be done also for other errors. maybe throw another error from the ViewModel
-                downloadBinding.bUnrestrict.isEnabled = true
-                downloadBinding.bLoadTorrent.isEnabled = true
-            }
-        })
-
         // add the unrestrict button listener
         downloadBinding.bUnrestrict.setOnClickListener {
 

@@ -33,7 +33,6 @@ class NewDownloadViewModel @ViewModelInject constructor(
      */
     val linkLiveData = MutableLiveData<Event<DownloadItem?>>()
     val torrentLiveData = MutableLiveData<Event<UploadedTorrent?>>()
-    val apiErrorLiveData = MutableLiveData<Event<APIError?>>()
 
     fun fetchUnrestrictedLink(link: String, password: String?, remote: Int? = null) {
         viewModelScope.launch {
