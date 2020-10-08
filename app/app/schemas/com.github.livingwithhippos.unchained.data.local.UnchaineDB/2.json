@@ -1,0 +1,78 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 2,
+    "identityHash": "9e76365382425a810c05d9566f15c305",
+    "entities": [
+      {
+        "tableName": "credentials",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`device_code` TEXT NOT NULL, `client_id` TEXT, `client_secret` TEXT, `access_token` TEXT, `refresh_token` TEXT, PRIMARY KEY(`device_code`))",
+        "fields": [
+          {
+            "fieldPath": "deviceCode",
+            "columnName": "device_code",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "clientId",
+            "columnName": "client_id",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "clientSecret",
+            "columnName": "client_secret",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "accessToken",
+            "columnName": "access_token",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "refreshToken",
+            "columnName": "refresh_token",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "device_code"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "host_regex",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`regex` TEXT NOT NULL, PRIMARY KEY(`regex`))",
+        "fields": [
+          {
+            "fieldPath": "regex",
+            "columnName": "regex",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "regex"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '9e76365382425a810c05d9566f15c305')"
+    ]
+  }
+}

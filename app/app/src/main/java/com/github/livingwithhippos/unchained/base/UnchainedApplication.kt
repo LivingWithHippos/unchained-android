@@ -2,7 +2,6 @@ package com.github.livingwithhippos.unchained.base
 
 import android.app.Application
 import android.content.SharedPreferences
-import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.repositoy.CredentialsRepository
