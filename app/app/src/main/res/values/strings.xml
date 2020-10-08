@@ -401,4 +401,5 @@
     <string name="copy_link_format">Copy %1$s link </string>
     <string name="open_with_format">Open %1$s with Yatse</string>
     <string name="yatse" translatable="false">Yatse</string>
+    <string name="loading_host_link">Loading host link</string>
 </resources>

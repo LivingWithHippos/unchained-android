@@ -16,6 +16,7 @@ import androidx.activity.viewModels
 import androidx.core.view.forEach
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
@@ -36,6 +37,7 @@ import com.github.livingwithhippos.unchained.utilities.extension.setCustomTheme
 import com.github.livingwithhippos.unchained.utilities.extension.setupWithNavController
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import kotlinx.coroutines.launch
 
 
 /**
@@ -118,6 +120,23 @@ class MainActivity : UnchainedActivity() {
             downloadReceiver,
             IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
         )
+
+        viewModel.linkLiveData.observe(this, {
+            val link = it.getContentIfNotHandled()
+            if (link != null) {
+                // check the authentication
+                viewModel.authenticationState.observeOnce(this, { auth ->
+                    when (auth.peekContent()) {
+                        // same as a received magnet
+                        AuthenticationState.AUTHENTICATED -> processLinkIntent(link)
+                        AuthenticationState.AUTHENTICATED_NO_PREMIUM -> baseContext.showToast(
+                            R.string.premium_needed
+                        )
+                        else -> showToast(R.string.please_login)
+                    }
+                })
+            }
+        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -171,7 +190,7 @@ class MainActivity : UnchainedActivity() {
                                 })
                             }
                             else -> {
-                                // we do not have other cases
+                                viewModel.checkIfLinkIsHoster(text)
                             }
                         }
                     }
