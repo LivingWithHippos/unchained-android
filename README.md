@@ -32,7 +32,7 @@ You can take a look at the project [here](https://github.com/LivingWithHippos/un
 
 | Home  | New Download | Download Details |
 | ------------- | ------------- | ------------- |
-| <img width="150" src="/extra_assets/screenshots/home.png?raw=true" alt="User Screen"> <img width="150" src="/extra_assets/screenshots/home_dark.png?raw=true" alt="Dark User Screen"> | <img width="150" src="/extra_assets/screenshots/new_download.png?raw=true" alt="New Download Screen">  | <img width="150" src="/extra_assets/screenshots/download_details.png?raw=true" alt="Download Details Screen">  |
+| <img width="150" src="/extra_assets/screenshots/home.png?raw=true" alt="User Screen"> <img width="150" src="/extra_assets/screenshots/home_dark.png?raw=true" alt="Dark User Screen"> | <img width="150" src="/extra_assets/screenshots/new_download.png?raw=true" alt="New Download Screen">  | <img width="150" src="/extra_assets/screenshots/download_details_streaming.png?raw=true" alt="Download Details Screen">  |
 
 
 | Torrent Download                                                                                             | Download List                                                                                   |
