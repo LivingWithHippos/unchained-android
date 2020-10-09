@@ -32,12 +32,12 @@ You can take a look at the project [here](https://github.com/LivingWithHippos/un
 
 | Home  | New Download | Download Details |
 | ------------- | ------------- | ------------- |
-| <img width="300" src="/extra_assets/screenshots/home.jpg?raw=true" alt="User Screen"> | <img width="300" src="/extra_assets/screenshots/new_download.png?raw=true" alt="New Download Screen">  | <img width="300" src="/extra_assets/screenshots/download_details.png?raw=true" alt="Download Details Screen">  |
+| <img width="150" src="/extra_assets/screenshots/home.png?raw=true" alt="User Screen"> <img width="150" src="/extra_assets/screenshots/home_dark.png?raw=true" alt="Dark User Screen"> | <img width="150" src="/extra_assets/screenshots/new_download.png?raw=true" alt="New Download Screen">  | <img width="150" src="/extra_assets/screenshots/download_details.png?raw=true" alt="Download Details Screen">  |
 
 
-| Torrent Download  | Download List |
-| ------------- | ------------- |
-| <img width="300" src="/extra_assets/screenshots/torrent.png?raw=true" alt="Torrent Download Screen"> | <img width="300" src="/extra_assets/screenshots/lists.png?raw=true" alt="Download List Screen">  |
+| Torrent Download                                                                                             | Download List                                                                                   |
+|--------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------|
+| <img width="150" src="/extra_assets/screenshots/torrent_details.png?raw=true" alt="Torrent Download Screen"> | <img width="150" src="/extra_assets/screenshots/download_list.png?raw=true" alt="Download List Screen"> |
 
 ### Installation :calling:
 
