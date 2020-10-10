@@ -18,7 +18,6 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Observer
 import com.github.livingwithhippos.unchained.BuildConfig
 import com.github.livingwithhippos.unchained.R
-import com.github.livingwithhippos.unchained.settings.SettingsFragment
 import java.util.*
 
 /**
@@ -210,5 +209,23 @@ fun Context.getApiErrorMessage(errorCode: Int): String {
         32 -> getString(R.string.image_resolution_error)
         33 -> getString(R.string.torrent_already_active)
         else -> getString(R.string.unknown_error)
+    }
+}
+
+
+fun Context.getStatusTranslation(status: String): String {
+    return when(status) {
+        "magnet_error" -> getString(R.string.magnet_error)
+        "magnet_conversion" -> getString(R.string.magnet_conversion)
+        "waiting_files_selection" -> getString(R.string.waiting_files_selection)
+        "queued" -> getString(R.string.queued)
+        "downloading" -> getString(R.string.downloading)
+        "downloaded" -> getString(R.string.downloaded)
+        "error" -> getString(R.string.error)
+        "virus" -> getString(R.string.virus)
+        "compressing" -> getString(R.string.compressing)
+        "uploading" -> getString(R.string.uploading)
+        "dead" -> getString(R.string.dead)
+        else -> getString(R.string.unknown_status)
     }
 }
