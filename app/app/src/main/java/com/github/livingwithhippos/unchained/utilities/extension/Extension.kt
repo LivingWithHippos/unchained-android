@@ -8,6 +8,9 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.net.Uri
+import android.os.Build
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -227,5 +230,14 @@ fun Context.getStatusTranslation(status: String): String {
         "uploading" -> getString(R.string.uploading)
         "dead" -> getString(R.string.dead)
         else -> getString(R.string.unknown_status)
+    }
+}
+
+fun Context.vibrate(duration: Long = 200){
+    val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        vibrator.vibrate(VibrationEffect.createOneShot(duration, VibrationEffect.DEFAULT_AMPLITUDE))
+    } else {
+        vibrator.vibrate(duration)
     }
 }

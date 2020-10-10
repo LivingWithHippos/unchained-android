@@ -17,6 +17,7 @@ import com.github.livingwithhippos.unchained.data.repositoy.TorrentsRepository
 import com.github.livingwithhippos.unchained.di.SummaryNotification
 import com.github.livingwithhippos.unchained.di.TorrentNotification
 import com.github.livingwithhippos.unchained.utilities.extension.getStatusTranslation
+import com.github.livingwithhippos.unchained.utilities.extension.vibrate
 import com.github.livingwithhippos.unchained.utilities.loadingStatusList
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
@@ -122,6 +123,8 @@ class ForegroundTorrentService : LifecycleService() {
             finishedTorrents.forEach { torrent ->
                 completeNotification(torrent)
             }
+            if (finishedTorrents.isNotEmpty())
+                applicationContext.vibrate()
 
         })
 
