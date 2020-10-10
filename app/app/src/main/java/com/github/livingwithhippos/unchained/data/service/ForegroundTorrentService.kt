@@ -10,6 +10,7 @@ import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
 import com.github.livingwithhippos.unchained.R
+import com.github.livingwithhippos.unchained.base.UnchainedApplication.Companion.CHANNEL_ID
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.data.repositoy.CredentialsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.TorrentsRepository
@@ -41,6 +42,9 @@ class ForegroundTorrentService : LifecycleService() {
     @Inject
     lateinit var preferences: SharedPreferences
 
+    private var isListening = false
+
+
 
     override fun onBind(intent: Intent): IBinder? {
         super.onBind(intent)
@@ -57,7 +61,26 @@ class ForegroundTorrentService : LifecycleService() {
 
     override fun onCreate() {
         super.onCreate()
+        lifecycleScope.launch {
+            val activeTorrents = getTorrentList().filter { torrent -> loadingStatusList.contains(torrent.status) }
+            if (activeTorrents.isNotEmpty()) {
+                val ids = mutableSetOf<String>()
+                ids.addAll(activeTorrents.map { it.id })
 
+                with(preferences.edit()) {
+                    putStringSet(KEY_OBSERVED_TORRENTS, ids)
+                    apply()
+                }
+            }
+        }
+    }
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        startForegroundService()
+        return super.onStartCommand(intent, flags, startId)
+    }
+
+    private fun startForegroundService() {
         torrentsLiveData.observe(this, { list ->
 
             // the torrents we were observing
@@ -103,21 +126,44 @@ class ForegroundTorrentService : LifecycleService() {
 
         })
 
-        lifecycleScope.launch {
 
-            while ((preferences.getStringSet(
-                    KEY_OBSERVED_TORRENTS,
-                    emptySet()
-                ) as Set<String>).size > 0
-            ) {
-                // todo: manage token values
-                val token = credentialsRepository.getToken()
-                val torrents = torrentRepository.getTorrentsList(token, limit = 30)
-                torrentsLiveData.postValue(torrents)
+        val listener: SharedPreferences.OnSharedPreferenceChangeListener =
+            SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+                when (key) {
+                    KEY_OBSERVED_TORRENTS -> {
+                        if (!isListening && preferences.getStringSet(
+                                KEY_OBSERVED_TORRENTS,
+                                emptySet()
+                            )!!.size > 0
+                        ) {
+                            isListening = true
+                            startMonitoring()
+                        } else
+                            isListening = false
+                    }
+                }
+            }
+
+        preferences.registerOnSharedPreferenceChangeListener(listener)
+
+        startForeground(CHANNEL_ID.hashCode(), builder.build())
+
+    }
+
+    private fun startMonitoring() {
+        lifecycleScope.launch {
+            while (isListening) {
+                torrentsLiveData.postValue(getTorrentList())
                 // update notifications every 5 seconds
                 delay(5000)
             }
         }
+    }
+
+    private suspend fun getTorrentList(max: Int = 30): List<TorrentItem> {
+        // todo: manage token values
+        val token = credentialsRepository.getToken()
+        return torrentRepository.getTorrentsList(token, limit = max)
     }
 
     private fun updateNotification(item: TorrentItem) {

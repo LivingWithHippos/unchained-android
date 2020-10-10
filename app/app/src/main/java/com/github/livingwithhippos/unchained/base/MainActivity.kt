@@ -13,6 +13,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.viewModels
+import androidx.core.content.ContextCompat
 import androidx.core.view.forEach
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -23,6 +24,7 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.model.AuthenticationState
+import com.github.livingwithhippos.unchained.data.service.ForegroundTorrentService
 import com.github.livingwithhippos.unchained.databinding.ActivityMainBinding
 import com.github.livingwithhippos.unchained.settings.SettingsActivity
 import com.github.livingwithhippos.unchained.settings.SettingsFragment
@@ -105,6 +107,9 @@ class MainActivity : UnchainedActivity() {
                 // do nothing
                 AuthenticationState.AUTHENTICATED, AuthenticationState.AUTHENTICATED_NO_PREMIUM -> {
                     enableAllBottomNavItems()
+                    // start the notification system
+                    val notificationIntent = Intent(this, ForegroundTorrentService::class.java)
+                    ContextCompat.startForegroundService(this, notificationIntent)
                 }
             }
         })
