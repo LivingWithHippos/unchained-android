@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Binder
 import android.os.IBinder
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.LifecycleService
@@ -153,8 +154,9 @@ class ForegroundTorrentService : LifecycleService() {
         items.forEach { torrent ->
             torrentBuilder.setContentText(torrent.filename)
             if (torrent.status == "downloading") {
+                val speedMBs = (torrent.speed ?: 0).toFloat().div(1000000)
                 torrentBuilder.setProgress(100, torrent.progress, false)
-                    .setContentTitle(getString(R.string.torrent_in_progress_format, torrent.progress))
+                    .setContentTitle(getString(R.string.torrent_in_progress_format, torrent.progress, speedMBs))
             } else {
                 torrentBuilder.setContentTitle(torrent.status)
                     // note: this could be indeterminate = true since it's technically in a loading status which should change
@@ -164,8 +166,6 @@ class ForegroundTorrentService : LifecycleService() {
                 torrentBuilder.build()
             )
         }
-
-        summaryBuilder.setContentText(getString(R.string.downloading_torrent_format, items.size))
 
         notificationManager.apply {
             notifications.forEachIndexed { index, notification ->
