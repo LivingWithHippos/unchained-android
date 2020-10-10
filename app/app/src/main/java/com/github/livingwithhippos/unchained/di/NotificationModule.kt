@@ -34,7 +34,7 @@ object NotificationModule {
         @ApplicationContext applicationContext: Context
     ): NotificationCompat.Builder = NotificationCompat.Builder(applicationContext, UnchainedApplication.CHANNEL_ID)
         .setSmallIcon(R.mipmap.icon_launcher)
-        .setContentTitle(applicationContext.getString(R.string.app_name))
+        .setContentTitle(applicationContext.getString(R.string.monitor_torrents_download))
         .setPriority(NotificationCompat.PRIORITY_LOW)
         .setGroup(ForegroundTorrentService.GROUP_KEY_TORRENTS)
         .setGroupSummary(true)

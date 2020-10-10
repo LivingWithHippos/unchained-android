@@ -413,4 +413,5 @@
     <string name="download_complete">Download complete</string>
     <string name="status_unknown">Unknown Status</string>
     <string name="downloading_torrent_format">Downloading %1$d torrents</string>
+    <string name="monitor_torrents_download">Monitoring torrents download</string>
 </resources>
