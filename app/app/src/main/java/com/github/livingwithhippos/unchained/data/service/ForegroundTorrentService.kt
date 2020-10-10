@@ -42,7 +42,7 @@ class ForegroundTorrentService : LifecycleService() {
     @Inject
     lateinit var preferences: SharedPreferences
 
-    private var isListening = false
+    private var updateTiming = UPDATE_TIMING_SHORT
 
 
 
@@ -61,18 +61,8 @@ class ForegroundTorrentService : LifecycleService() {
 
     override fun onCreate() {
         super.onCreate()
-        lifecycleScope.launch {
-            val activeTorrents = getTorrentList().filter { torrent -> loadingStatusList.contains(torrent.status) }
-            if (activeTorrents.isNotEmpty()) {
-                val ids = mutableSetOf<String>()
-                ids.addAll(activeTorrents.map { it.id })
-
-                with(preferences.edit()) {
-                    putStringSet(KEY_OBSERVED_TORRENTS, ids)
-                    apply()
-                }
-            }
-        }
+        // here or in onStartCommand()
+        startMonitoring()
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -112,6 +102,10 @@ class ForegroundTorrentService : LifecycleService() {
                 putStringSet(KEY_OBSERVED_TORRENTS, newIDs)
                 apply()
             }
+            updateTiming = if (newIDs.isEmpty())
+                UPDATE_TIMING_LONG
+            else
+                UPDATE_TIMING_SHORT
 
             // let's first operate as if all the needed torrents were always in the list
 
@@ -126,36 +120,17 @@ class ForegroundTorrentService : LifecycleService() {
 
         })
 
-
-        val listener: SharedPreferences.OnSharedPreferenceChangeListener =
-            SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
-                when (key) {
-                    KEY_OBSERVED_TORRENTS -> {
-                        if (!isListening && preferences.getStringSet(
-                                KEY_OBSERVED_TORRENTS,
-                                emptySet()
-                            )!!.size > 0
-                        ) {
-                            isListening = true
-                            startMonitoring()
-                        } else
-                            isListening = false
-                    }
-                }
-            }
-
-        preferences.registerOnSharedPreferenceChangeListener(listener)
-
         startForeground(CHANNEL_ID.hashCode(), builder.build())
 
     }
 
     private fun startMonitoring() {
         lifecycleScope.launch {
-            while (isListening) {
+            // todo: use a variable
+            while (true) {
                 torrentsLiveData.postValue(getTorrentList())
                 // update notifications every 5 seconds
-                delay(5000)
+                delay(updateTiming)
             }
         }
     }
@@ -169,6 +144,7 @@ class ForegroundTorrentService : LifecycleService() {
     private fun updateNotification(item: TorrentItem) {
         notificationManager.apply {
             builder.setContentText(item.filename)
+                .setGroup(GROUP_KEY_TORRENTS)
             if (item.status == "downloading") {
                 builder.setProgress(100, item.progress, false)
                     .setContentTitle(getString(R.string.torrent_in_progress_format, item.progress))
@@ -195,5 +171,7 @@ class ForegroundTorrentService : LifecycleService() {
     companion object {
         const val GROUP_KEY_TORRENTS: String = "group_key_torrent"
         const val KEY_OBSERVED_TORRENTS: String = "observed_torrents_key"
+        const val UPDATE_TIMING_SHORT: Long = 5000
+        const val UPDATE_TIMING_LONG: Long = 30000
     }
 }
