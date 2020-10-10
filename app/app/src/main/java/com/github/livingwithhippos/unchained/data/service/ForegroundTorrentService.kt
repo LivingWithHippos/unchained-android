@@ -125,7 +125,7 @@ class ForegroundTorrentService : LifecycleService() {
 
         })
 
-        startForeground(CHANNEL_ID.hashCode(), summaryBuilder.build())
+        startForeground(SUMMARY_ID, summaryBuilder.build())
 
     }
 
@@ -174,6 +174,8 @@ class ForegroundTorrentService : LifecycleService() {
                 torrentBuilder.build()
             )
         }
+        
+        summaryBuilder.setContentText(getString(R.string.downloading_torrent_format, items.size))
 
         notificationManager.apply {
             notifications.forEachIndexed { index, notification ->
