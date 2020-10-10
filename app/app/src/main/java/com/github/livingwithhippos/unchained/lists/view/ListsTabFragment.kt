@@ -20,6 +20,7 @@ import com.github.livingwithhippos.unchained.lists.viewmodel.DownloadListViewMod
 import com.github.livingwithhippos.unchained.utilities.endedStatusList
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.github.livingwithhippos.unchained.utilities.extension.verticalScrollToPosition
+import com.github.livingwithhippos.unchained.utilities.loadingStatusList
 import com.google.android.material.tabs.TabLayout
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay

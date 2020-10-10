@@ -13,6 +13,7 @@ import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.data.repositoy.CredentialsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.TorrentsRepository
+import com.github.livingwithhippos.unchained.utilities.loadingStatusList
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -40,16 +41,6 @@ class ForegroundTorrentService : LifecycleService() {
     @Inject
     lateinit var preferences: SharedPreferences
 
-    // possible status are magnet_error, magnet_conversion, waiting_files_selection,
-    // queued, downloading, downloaded, error, virus, compressing, uploading, dead
-    private val loadingStatusList = listOf(
-        "downloading",
-        "magnet_conversion",
-        "waiting_files_selection",
-        "queued",
-        "compressing",
-        "uploading"
-    )
 
     override fun onBind(intent: Intent): IBinder? {
         super.onBind(intent)

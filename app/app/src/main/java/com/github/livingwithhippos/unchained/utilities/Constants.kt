@@ -66,3 +66,14 @@ val errorMap = mapOf(
 
 val endedStatusList = listOf("magnet_error", "downloaded", "error", "virus", "dead")
 
+// possible status are magnet_error, magnet_conversion, waiting_files_selection,
+// queued, downloading, downloaded, error, virus, compressing, uploading, dead
+val loadingStatusList = listOf(
+    "downloading",
+    "magnet_conversion",
+    "waiting_files_selection",
+    "queued",
+    "compressing",
+    "uploading"
+)
+

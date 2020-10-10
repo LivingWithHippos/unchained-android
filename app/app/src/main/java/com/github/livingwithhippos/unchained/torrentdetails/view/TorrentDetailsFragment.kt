@@ -21,6 +21,7 @@ import com.github.livingwithhippos.unchained.lists.view.ListsTabFragment
 import com.github.livingwithhippos.unchained.torrentdetails.viewmodel.TorrentDetailsViewModel
 import com.github.livingwithhippos.unchained.utilities.extension.observeOnce
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
+import com.github.livingwithhippos.unchained.utilities.loadingStatusList
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -35,16 +36,6 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
     private val viewModel: TorrentDetailsViewModel by viewModels()
 
     private val args: TorrentDetailsFragmentArgs by navArgs()
-
-    // possible status are magnet_error, magnet_conversion, waiting_files_selection,
-    // queued, downloading, downloaded, error, virus, compressing, uploading, dead
-    val loadingStatusList = listOf(
-        "magnet_conversion",
-        "waiting_files_selection",
-        "queued",
-        "compressing",
-        "uploading"
-    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
