@@ -407,4 +407,9 @@
     <string name="updating_link_matcher">Updating link matcher…</string>
     <string name="unknown_error">Unknown error</string>
     <string name="network_error">Network error</string>
+    <string name="torrent_channel_description">Notification channel for torrents download status</string>
+    <string name="torrent_in_progress">Torrent download in progress</string>
+    <string name="torrent_in_progress_format">%1$d%% - Download in progress</string>
+    <string name="download_complete">Download complete</string>
+    <string name="status_unknown">Unknown Status</string>
 </resources>

@@ -159,6 +159,12 @@
             </intent-filter>
         </activity>
 
+        <service
+            android:name="com.github.livingwithhippos.unchained.data.service.ForegroundTorrentService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="dataSync" />
+
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
