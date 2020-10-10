@@ -11,12 +11,12 @@ import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
 import com.github.livingwithhippos.unchained.R
-import com.github.livingwithhippos.unchained.base.UnchainedApplication.Companion.CHANNEL_ID
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.data.repositoy.CredentialsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.TorrentsRepository
 import com.github.livingwithhippos.unchained.di.SummaryNotification
 import com.github.livingwithhippos.unchained.di.TorrentNotification
+import com.github.livingwithhippos.unchained.utilities.extension.getStatusTranslation
 import com.github.livingwithhippos.unchained.utilities.loadingStatusList
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
@@ -166,7 +166,7 @@ class ForegroundTorrentService : LifecycleService() {
                         )
                     )
             } else {
-                torrentBuilder.setContentTitle(torrent.status)
+                torrentBuilder.setContentTitle(applicationContext.getStatusTranslation(torrent.status))
                     // note: this could be indeterminate = true since it's technically in a loading status which should change
                     .setProgress(0, 0, false)
             }
@@ -174,7 +174,7 @@ class ForegroundTorrentService : LifecycleService() {
                 torrentBuilder.build()
             )
         }
-        
+
         summaryBuilder.setContentText(getString(R.string.downloading_torrent_format, items.size))
 
         notificationManager.apply {
@@ -189,7 +189,7 @@ class ForegroundTorrentService : LifecycleService() {
 
     private fun completeNotification(item: TorrentItem) {
         notificationManager.apply {
-            torrentBuilder.setContentTitle(item.status)
+            torrentBuilder.setContentTitle(applicationContext.getStatusTranslation(item.status))
                 // if the file is already downloaded the second row will not be set elsewhere
                 .setContentText(item.filename)
                 // remove the progressbar if present
