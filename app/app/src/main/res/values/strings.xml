@@ -412,4 +412,5 @@
     <string name="torrent_in_progress_format">%1$d%% - Download in progress</string>
     <string name="download_complete">Download complete</string>
     <string name="status_unknown">Unknown Status</string>
+    <string name="downloading_torrent_format">Downloading %1$d torrents</string>
 </resources>

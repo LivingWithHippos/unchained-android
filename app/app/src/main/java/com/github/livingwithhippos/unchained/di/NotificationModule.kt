@@ -19,12 +19,25 @@ object NotificationModule {
 
     @ServiceScoped
     @Provides
-    fun provideNotificationBuilder(
+    @TorrentNotification
+    fun provideTorrentNotificationBuilder(
         @ApplicationContext applicationContext: Context
     ): NotificationCompat.Builder = NotificationCompat.Builder(applicationContext, UnchainedApplication.CHANNEL_ID)
         .setSmallIcon(R.mipmap.icon_launcher)
         .setPriority(NotificationCompat.PRIORITY_LOW)
         .setGroup(ForegroundTorrentService.GROUP_KEY_TORRENTS)
+
+    @ServiceScoped
+    @Provides
+    @SummaryNotification
+    fun provideSummaryNotificationBuilder(
+        @ApplicationContext applicationContext: Context
+    ): NotificationCompat.Builder = NotificationCompat.Builder(applicationContext, UnchainedApplication.CHANNEL_ID)
+        .setSmallIcon(R.mipmap.icon_launcher)
+        .setContentTitle(applicationContext.getString(R.string.app_name))
+        .setPriority(NotificationCompat.PRIORITY_LOW)
+        .setGroup(ForegroundTorrentService.GROUP_KEY_TORRENTS)
+        .setGroupSummary(true)
 
     @ServiceScoped
     @Provides

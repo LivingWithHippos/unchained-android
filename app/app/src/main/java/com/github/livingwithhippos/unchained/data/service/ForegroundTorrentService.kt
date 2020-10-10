@@ -1,5 +1,6 @@
 package com.github.livingwithhippos.unchained.data.service
 
+import android.app.Notification
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Binder
@@ -14,6 +15,8 @@ import com.github.livingwithhippos.unchained.base.UnchainedApplication.Companion
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.data.repositoy.CredentialsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.TorrentsRepository
+import com.github.livingwithhippos.unchained.di.SummaryNotification
+import com.github.livingwithhippos.unchained.di.TorrentNotification
 import com.github.livingwithhippos.unchained.utilities.loadingStatusList
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
@@ -34,7 +37,12 @@ class ForegroundTorrentService : LifecycleService() {
     private val torrentsLiveData = MutableLiveData<List<TorrentItem>>()
 
     @Inject
-    lateinit var builder: NotificationCompat.Builder
+    @SummaryNotification
+    lateinit var summaryBuilder: NotificationCompat.Builder
+
+    @Inject
+    @TorrentNotification
+    lateinit var torrentBuilder: NotificationCompat.Builder
 
     @Inject
     lateinit var notificationManager: NotificationManagerCompat
@@ -110,9 +118,7 @@ class ForegroundTorrentService : LifecycleService() {
             // let's first operate as if all the needed torrents were always in the list
 
             // update the notifications for torrents in one of the loading statuses
-            newLoadingTorrents.forEach { torrent ->
-                updateNotification(torrent)
-            }
+            updateNotification(newLoadingTorrents)
             // update the notifications for torrents in one of the finished statuses
             finishedTorrents.forEach { torrent ->
                 completeNotification(torrent)
@@ -120,7 +126,7 @@ class ForegroundTorrentService : LifecycleService() {
 
         })
 
-        startForeground(CHANNEL_ID.hashCode(), builder.build())
+        startForeground(CHANNEL_ID.hashCode(), summaryBuilder.build())
 
     }
 
@@ -141,30 +147,44 @@ class ForegroundTorrentService : LifecycleService() {
         return torrentRepository.getTorrentsList(token, limit = max)
     }
 
-    private fun updateNotification(item: TorrentItem) {
-        notificationManager.apply {
-            builder.setContentText(item.filename)
-                .setGroup(GROUP_KEY_TORRENTS)
-            if (item.status == "downloading") {
-                builder.setProgress(100, item.progress, false)
-                    .setContentTitle(getString(R.string.torrent_in_progress_format, item.progress))
+    private fun updateNotification(items: List<TorrentItem>) {
+
+        val notifications = mutableListOf<Notification>()
+        items.forEach { torrent ->
+            torrentBuilder.setContentText(torrent.filename)
+            if (torrent.status == "downloading") {
+                torrentBuilder.setProgress(100, torrent.progress, false)
+                    .setContentTitle(getString(R.string.torrent_in_progress_format, torrent.progress))
             } else {
-                builder.setContentTitle(item.status)
+                torrentBuilder.setContentTitle(torrent.status)
                     // note: this could be indeterminate = true since it's technically in a loading status which should change
                     .setProgress(0, 0, false)
             }
-            notify(item.id.hashCode(), builder.build())
+            notifications.add(
+                torrentBuilder.build()
+            )
+        }
+
+        summaryBuilder.setContentText(getString(R.string.downloading_torrent_format, items.size))
+
+        notificationManager.apply {
+            notifications.forEachIndexed { index, notification ->
+                //todo: check if the index is preserved
+                notify(items[index].id.hashCode(), notification)
+            }
+            //todo: edit
+            notify(SUMMARY_ID, summaryBuilder.build())
         }
     }
 
     private fun completeNotification(item: TorrentItem) {
         notificationManager.apply {
-            builder.setContentTitle(item.status)
+            torrentBuilder.setContentTitle(item.status)
                 // if the file is already downloaded the second row will not be set elsewhere
                 .setContentText(item.filename)
                 // remove the progressbar if present
                 .setProgress(0, 0, false)
-            notify(item.id.hashCode(), builder.build())
+            notify(item.id.hashCode(), torrentBuilder.build())
         }
     }
 
@@ -173,5 +193,6 @@ class ForegroundTorrentService : LifecycleService() {
         const val KEY_OBSERVED_TORRENTS: String = "observed_torrents_key"
         const val UPDATE_TIMING_SHORT: Long = 5000
         const val UPDATE_TIMING_LONG: Long = 30000
+        const val SUMMARY_ID : Int = 21
     }
 }
