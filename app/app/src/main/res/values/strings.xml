@@ -411,7 +411,7 @@
     <string name="torrent_in_progress">Torrent download in progress</string>
     <string name="torrent_in_progress_format">%1$d%% - %2$.2f MB/s</string>
     <string name="download_complete">Download complete</string>
-    <string name="status_unknown">Unknown Status</string>
+    <string name="unknown_status">Unknown Status</string>
     <string name="downloading_torrent_format">Downloading %1$d torrents</string>
     <string name="monitor_torrents_download">Monitoring torrents download</string>
 </resources>
