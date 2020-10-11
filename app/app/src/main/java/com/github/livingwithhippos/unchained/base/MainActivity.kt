@@ -245,7 +245,15 @@ class MainActivity : UnchainedActivity() {
                     }
                 }
             }
-            null -> { // app opened directly by the user. Do nothing.
+            null -> {
+                // could be because of the tap on a notification
+                intent.getStringExtra(KEY_TORRENT_ID)?.let{id ->
+
+                    viewModel.authenticationState.observeOnce(this, { auth ->
+                        if (auth.peekContent()==AuthenticationState.AUTHENTICATED || auth.peekContent()==AuthenticationState.AUTHENTICATED_NO_PREMIUM)
+                            processTorrentNotificationIntent(id)
+                    })
+                }
             }
             else -> {
 
@@ -256,6 +264,16 @@ class MainActivity : UnchainedActivity() {
     override fun onDestroy() {
         super.onDestroy()
         unregisterReceiver(downloadReceiver)
+    }
+
+    private fun processTorrentNotificationIntent(torrentID: String) {
+        // simulate click on new download tab
+        val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_nav_view)
+        if (bottomNav.selectedItemId != R.id.navigation_new_download) {
+            //todo: check how to double click
+            bottomNav.selectedItemId = R.id.navigation_new_download
+        }
+        viewModel.addTorrentId(torrentID)
     }
 
     private fun processLinkIntent(uri: Uri) {

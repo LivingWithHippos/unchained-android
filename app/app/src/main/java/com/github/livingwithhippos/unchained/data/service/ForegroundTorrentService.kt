@@ -206,12 +206,25 @@ class ForegroundTorrentService : LifecycleService() {
     }
 
     private fun completeNotification(item: TorrentItem) {
+        val resultIntent = Intent(this, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            putExtra(KEY_TORRENT_ID, item.id)
+        }
+
+        val resultPendingIntent: PendingIntent? = TaskStackBuilder.create(this).run {
+            // Add the intent, which inflates the back stack
+            addNextIntentWithParentStack(resultIntent)
+            // Get the PendingIntent containing the entire back stack
+            getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
+        }
+
         notificationManager.apply {
             torrentBuilder.setContentTitle(applicationContext.getStatusTranslation(item.status))
                 // if the file is already downloaded the second row will not be set elsewhere
                 .setContentText(item.filename)
                 // remove the progressbar if present
                 .setProgress(0, 0, false)
+                .setContentIntent(resultPendingIntent)
             notify(item.id.hashCode(), torrentBuilder.build())
         }
     }

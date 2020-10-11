@@ -15,6 +15,7 @@ import com.github.livingwithhippos.unchained.data.model.User
 import com.github.livingwithhippos.unchained.data.repositoy.AuthenticationRepository
 import com.github.livingwithhippos.unchained.data.repositoy.CredentialsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.HostsRepository
+import com.github.livingwithhippos.unchained.data.repositoy.TorrentsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.UserRepository
 import com.github.livingwithhippos.unchained.data.repositoy.VariousApiRepository
 import com.github.livingwithhippos.unchained.lists.view.ListsTabFragment
@@ -45,6 +46,8 @@ class MainActivityViewModel @ViewModelInject constructor(
     val externalLinkLiveData = MutableLiveData<Event<Uri?>>()
 
     val downloadedTorrentLiveData = MutableLiveData<Event<String?>>()
+
+    val notificationTorrentLiveData = MutableLiveData<Event<String>>()
 
     val listStateLiveData = MutableLiveData<Event<ListsTabFragment.ListState>>()
 
@@ -224,6 +227,10 @@ class MainActivityViewModel @ViewModelInject constructor(
                 }
             }
         }
+    }
+
+    fun addTorrentId(torrentID: String) {
+        notificationTorrentLiveData.postValue(Event(torrentID))
     }
 
     companion object {

@@ -54,6 +54,8 @@ import java.util.regex.Pattern
 @AndroidEntryPoint
 class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
 
+    // todo: switch to the navigation scoped viewmodel to manage the transition between fragments
+    // if we receive an intent and new download is already selected and showing a DownloadDetailsFragment, it may not trigger the observers in this class
     private val viewModel: NewDownloadViewModel by viewModels()
 
     private val args: NewDownloadFragmentArgs by navArgs()
@@ -242,6 +244,16 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
                 // already handled
                 null -> {
                 }
+            }
+        })
+
+        activityViewModel.notificationTorrentLiveData.observe(viewLifecycleOwner, {
+            it.getContentIfNotHandled()?.let { torrentID ->
+                val action =
+                    NewDownloadFragmentDirections.actionNewDownloadDestToTorrentDetailsFragment(
+                        torrentID
+                    )
+                findNavController().navigate(action)
             }
         })
 
