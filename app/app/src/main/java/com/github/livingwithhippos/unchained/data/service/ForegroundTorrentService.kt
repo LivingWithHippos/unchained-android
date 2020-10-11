@@ -228,6 +228,8 @@ class ForegroundTorrentService : LifecycleService() {
                 .setContentText(item.filename)
                 // remove the progressbar if present
                 .setProgress(0, 0, false)
+                // remove notification on tap
+                .setAutoCancel(true)
             notify(item.id.hashCode(), torrentBuilder.build())
         }
     }
