@@ -1,21 +1,27 @@
 package com.github.livingwithhippos.unchained.data.service
 
 import android.app.Notification
+import android.app.PendingIntent
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Binder
 import android.os.IBinder
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.app.TaskStackBuilder
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
+import androidx.preference.SwitchPreference
 import com.github.livingwithhippos.unchained.R
+import com.github.livingwithhippos.unchained.base.MainActivity
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.data.repositoy.CredentialsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.TorrentsRepository
 import com.github.livingwithhippos.unchained.di.SummaryNotification
 import com.github.livingwithhippos.unchained.di.TorrentNotification
+import com.github.livingwithhippos.unchained.settings.SettingsFragment
 import com.github.livingwithhippos.unchained.utilities.extension.getStatusTranslation
 import com.github.livingwithhippos.unchained.utilities.extension.vibrate
 import com.github.livingwithhippos.unchained.utilities.loadingStatusList
@@ -62,7 +68,7 @@ class ForegroundTorrentService : LifecycleService() {
     /**
      * Binder for the client. It can be used to retrieve this service and call its public methods.
      */
-    inner class TorrentServiceBinder : Binder() {
+    inner class TorrentBinder : Binder() {
         internal val service: ForegroundTorrentService
             get() = this@ForegroundTorrentService
     }
@@ -129,6 +135,15 @@ class ForegroundTorrentService : LifecycleService() {
         })
 
         startForeground(SUMMARY_ID, summaryBuilder.build())
+
+
+        preferences.registerOnSharedPreferenceChangeListener { sharedPreferences, key ->
+            if (key==SettingsFragment.KEY_TORRENT_NOTIFICATIONS) {
+                val enableTorrentNotifications = sharedPreferences.getBoolean(key, false)
+                if (!enableTorrentNotifications)
+                    stopTorrentService()
+            }
+        }
 
     }
 
@@ -201,11 +216,17 @@ class ForegroundTorrentService : LifecycleService() {
         }
     }
 
+    fun stopTorrentService() {
+        stopSelf()
+    }
+
     companion object {
         const val GROUP_KEY_TORRENTS: String = "group_key_torrent"
         const val KEY_OBSERVED_TORRENTS: String = "observed_torrents_key"
         const val UPDATE_TIMING_SHORT: Long = 5000
         const val UPDATE_TIMING_LONG: Long = 30000
         const val SUMMARY_ID: Int = 21
+        const val  TORRENT_NOTIFICATION_CODE = 86
+        const val  KEY_TORRENT_ID = "torrent_id_key"
     }
 }

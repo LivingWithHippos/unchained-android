@@ -10,6 +10,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.viewModels
@@ -25,9 +26,11 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.model.AuthenticationState
 import com.github.livingwithhippos.unchained.data.service.ForegroundTorrentService
+import com.github.livingwithhippos.unchained.data.service.ForegroundTorrentService.Companion.KEY_TORRENT_ID
 import com.github.livingwithhippos.unchained.databinding.ActivityMainBinding
 import com.github.livingwithhippos.unchained.settings.SettingsActivity
 import com.github.livingwithhippos.unchained.settings.SettingsFragment
+import com.github.livingwithhippos.unchained.settings.SettingsFragment.Companion.KEY_TORRENT_NOTIFICATIONS
 import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewModel
 import com.github.livingwithhippos.unchained.utilities.SCHEME_HTTP
 import com.github.livingwithhippos.unchained.utilities.SCHEME_HTTPS
@@ -108,7 +111,7 @@ class MainActivity : UnchainedActivity() {
                 AuthenticationState.AUTHENTICATED, AuthenticationState.AUTHENTICATED_NO_PREMIUM -> {
                     enableAllBottomNavItems()
                     // start the notification system if enabled
-                    if (preferences.getBoolean("enable_torrent_notifications", false)) {
+                    if (preferences.getBoolean(KEY_TORRENT_NOTIFICATIONS, false)) {
                         val notificationIntent = Intent(this, ForegroundTorrentService::class.java)
                         ContextCompat.startForegroundService(this, notificationIntent)
                     }
@@ -144,6 +147,18 @@ class MainActivity : UnchainedActivity() {
                 })
             }
         })
+
+        // monitor if the torrent notification service needs to be started. It monitor the preference change itself
+        // for the shutting down part
+        preferences.registerOnSharedPreferenceChangeListener { sharedPreferences, key ->
+            if (key == KEY_TORRENT_NOTIFICATIONS) {
+                val enableTorrentNotifications = sharedPreferences.getBoolean(key, false)
+                if (enableTorrentNotifications) {
+                    val notificationIntent = Intent(this, ForegroundTorrentService::class.java)
+                    ContextCompat.startForegroundService(this, notificationIntent)
+                }
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

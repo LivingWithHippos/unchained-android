@@ -38,7 +38,7 @@
         android:title="@string/notifications">
 
         <SwitchPreference
-            app:key="enable_torrent_notifications"
+            app:key="notification_torrent_key"
             app:title="@string/enable_torrent_monitoring_title"
             android:defaultValue="false"/>
 
