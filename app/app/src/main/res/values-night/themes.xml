@@ -29,8 +29,9 @@
         <item name="colorError">@color/red_200</item>
         <item name="colorOnPrimary">@color/black_900</item>
         <item name="colorOnSecondary">@color/black_900</item>
-        <item name="colorOnBackground">@color/white_50</item>
-        <item name="colorOnSurface">@color/white_50</item>
+
+        <item name="colorOnBackground">@color/white</item>
+        <item name="colorOnSurface">@color/white</item>
         <item name="colorOnError">@color/black_900</item>
         <item name="android:windowLightStatusBar">false</item>
         <item name="android:windowLightNavigationBar" tools:ignore="NewApi">true</item>
