@@ -124,7 +124,7 @@ data class Alternative(
     @Json(name = "download")
     val download: String,
     @Json(name = "mimeType")
-    val type: String,
+    val mimeType: String?,
     @Json(name = "quality")
     val quality: String?
 ) : Parcelable {
@@ -132,7 +132,7 @@ data class Alternative(
         parcel.readString()!!,
         parcel.readString()!!,
         parcel.readString()!!,
-        parcel.readString()!!,
+        parcel.readString(),
         parcel.readString()
     )
 
@@ -140,7 +140,7 @@ data class Alternative(
         parcel.writeString(id)
         parcel.writeString(filename)
         parcel.writeString(download)
-        parcel.writeString(type)
+        parcel.writeString(mimeType)
         parcel.writeString(quality)
 
     }
