@@ -200,4 +200,5 @@
     <string name="monitor_torrents_download">Controllando torrent</string>
     <string name="notifications">Notifiche</string>
     <string name="enable_torrent_monitoring_title">Abilita controllo torrent</string>
+    <string name="alternative_link">Link alternativo</string>
 </resources>

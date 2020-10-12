@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="item"
+            type="com.github.livingwithhippos.unchained.data.model.Alternative" />
+
+        <variable
+            name="listener"
+            type="com.github.livingwithhippos.unchained.downloaddetails.view.DownloadDetailsListener" />
+    </data>
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="15dp"
+        android:checkable="false"
+        android:clickable="false"
+        android:focusable="true"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="3dp"
+        app:strokeColor="@color/grey_01"
+        app:strokeWidth="0.05dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="20dp">
+
+
+            <TextView
+                android:id="@+id/streamingOverline1"
+                style="@style/TextAppearance.UnchainedTheme.Overline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{item.quality!= null ? item.quality : @string/alternative_link, default=`240p`}"
+                android:textAllCaps="true"
+                app:layout_constraintBottom_toTopOf="@+id/tvTitle"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed" />
+
+            <TextView
+                android:id="@+id/tvTitle"
+                style="@style/TextAppearance.UnchainedTheme.Headline6"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@{item.mimeType, default=`video mp4`}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/bOpen"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintHorizontal_chainStyle="spread"
+                app:layout_constraintStart_toStartOf="@id/streamingOverline1"
+                app:layout_constraintTop_toBottomOf="@+id/streamingOverline1" />
+
+            <ImageButton
+                android:id="@+id/bOpen"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:backgroundTint="@android:color/transparent"
+                android:contentDescription="@{@string/open_link_format(item.mimeType)}"
+                android:onClick="@{()->listener.onOpenClick(item.download)}"
+                android:src="@drawable/icon_open_external"
+                android:tint="?attr/colorPrimary"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/bCopy"
+                app:layout_constraintStart_toEndOf="@+id/tvTitle"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageButton
+                android:id="@+id/bCopy"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:backgroundTint="@android:color/transparent"
+                android:contentDescription="@{@string/copy_link_format(item.mimeType)}"
+                android:onClick="@{()->listener.onCopyClick(item.download)}"
+                android:src="@drawable/icon_copy"
+                android:tint="?attr/colorPrimary"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/bOpenWith"
+                app:layout_constraintStart_toEndOf="@+id/bOpen"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageButton
+                android:id="@+id/bOpenWith"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:backgroundTint="@android:color/transparent"
+                android:contentDescription="@{@string/open_with_format(item.mimeType)}"
+                android:onClick="@{()->listener.onOpenWith(item.download)}"
+                android:src="@drawable/icon_remote"
+                android:tint="?attr/colorPrimary"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/bCopy"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+</layout>

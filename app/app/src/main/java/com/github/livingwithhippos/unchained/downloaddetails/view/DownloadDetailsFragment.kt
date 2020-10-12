@@ -21,6 +21,7 @@ import com.github.livingwithhippos.unchained.base.DeleteDialogFragment
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.databinding.FragmentDownloadDetailsBinding
+import com.github.livingwithhippos.unchained.downloaddetails.model.AlternativeDownloadAdapter
 import com.github.livingwithhippos.unchained.downloaddetails.viewmodel.DownloadDetailsViewModel
 import com.github.livingwithhippos.unchained.lists.view.ListsTabFragment
 import com.github.livingwithhippos.unchained.utilities.extension.copyToClipboard
@@ -57,6 +58,13 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
             }
         })
 
+
+        if (!args.details.alternative.isNullOrEmpty()) {
+            val alternativeAdapter = AlternativeDownloadAdapter(this)
+            detailsBinding.rvAlternativeList.adapter = alternativeAdapter
+            alternativeAdapter.submitList(args.details.alternative)
+        }
+
         viewModel.deletedDownloadLiveData.observe(viewLifecycleOwner, {
             it.getContentIfNotHandled()?.let {
                 activityViewModel.setListState(ListsTabFragment.ListState.UPDATE_DOWNLOAD)
@@ -67,7 +75,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
             }
         })
 
-        setFragmentResultListener("deleteActionKey") { key, bundle ->
+        setFragmentResultListener("deleteActionKey") { _, bundle ->
             // the delete operation is observed from the viewModel
             if (bundle.getBoolean("deleteConfirmation"))
                 viewModel.deleteDownload(args.details.id)

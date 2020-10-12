@@ -201,7 +201,7 @@
                 android:layout_marginStart="10dp"
                 android:onClick="@{() -> listener.onLoadStreamsClick(details.id)}"
                 android:text="@string/load_streams"
-                android:enabled="@{details.streamable == 1 &amp;&amp; stream == null? true : false, default = true}"
+                android:enabled="@{details.streamable == 1 &amp;&amp; stream == null &amp;&amp; (details.alternative == null || details.alternative.size == 0)? true : false, default = true}"
                 android:visibility="@{details.streamable == 1 ? View.VISIBLE : View.GONE, default=visible}"
                 app:icon="@drawable/icon_play_outline"
                 app:layout_constraintEnd_toEndOf="@id/cvDetails"
@@ -214,6 +214,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:orientation="vertical"
+                android:visibility="@{stream != null ? View.VISIBLE : View.GONE, default=visible}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/bLoadStreams">
 
@@ -590,6 +591,22 @@
                 </com.google.android.material.card.MaterialCardView>
 
             </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvAlternativeList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="20dp"
+                android:scrollbars="vertical"
+                android:visibility="@{details.alternative != null &amp;&amp; details.alternative.size()>0 ?  View.VISIBLE : View.GONE, default=visible}"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                tools:listitem="@layout/item_alternative_download"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/bLoadStreams" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 

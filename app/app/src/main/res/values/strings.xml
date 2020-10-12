@@ -416,4 +416,5 @@
     <string name="monitor_torrents_download">Monitoring torrents download</string>
     <string name="notifications">Notifications</string>
     <string name="enable_torrent_monitoring_title">Enable torrent monitoring</string>
+    <string name="alternative_link">Alternative link</string>
 </resources>
