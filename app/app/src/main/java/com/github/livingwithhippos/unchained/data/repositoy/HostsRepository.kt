@@ -107,7 +107,8 @@ class HostsRepository @Inject constructor(
     companion object {
         // some of the converted host regexps are not enough, these are added to the db manually
         val CUSTOM_REGEXPS = arrayOf(
-            "^https?:\\/\\/(www?\\d?\\.)?rapidgator\\.(net|asia)\\/file\\/[0-9a-z]{6,32}/([^(\\/| |\"|'|>|<|\\r\\n\\|\\r|\\n|:|\$)]+)\$"
+            "^https?:\\/\\/(www?\\d?\\.)?rapidgator\\.(net|asia)\\/file\\/[0-9a-z]{6,32}/([^(\\/| |\"|'|>|<|\\r\\n\\|\\r|\\n|:|\$)]+)\$",
+            "^(https?:\\/\\/)?(www?\\d?\\.)?youtu(be)?\\.(com|be)\\/([^(|\"|'|>|<|\\s|\\r\\n\\|\\r|\\n|:|\$)]+)\$"
         )
     }
 }
