@@ -230,7 +230,6 @@ class ForegroundTorrentService : LifecycleService() {
             getPendingIntent( item.id.hashCode(), PendingIntent.FLAG_UPDATE_CURRENT)
         }
 
-        // fixme: viene cancellata la notifica sbagliata con setAutoCancel
         notificationManager.apply {
             torrentBuilder.setContentTitle(applicationContext.getStatusTranslation(item.status))
                 // if the file is already downloaded the second row will not be set elsewhere
@@ -248,7 +247,7 @@ class ForegroundTorrentService : LifecycleService() {
         }
     }
 
-    fun stopTorrentService() {
+    private fun stopTorrentService() {
         stopSelf()
     }
 
