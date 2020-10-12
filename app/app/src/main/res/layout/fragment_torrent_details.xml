@@ -107,7 +107,7 @@
                 <com.google.android.material.progressindicator.ProgressIndicator
                     android:id="@+id/loadingCircle"
                     style="@style/Widget.MaterialComponents.ProgressIndicator.Circular.Indeterminate"
-                    android:visibility="@{loadingStatusList.contains(torrent.status) ? View.VISIBLE : View.GONE}"
+                    android:visibility="@{loadingStatusList.contains(torrent.status) &amp;&amp; torrent.status!=`downloading` ? View.VISIBLE : View.GONE}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="10dp"
@@ -213,7 +213,6 @@
                         android:minHeight="60dp"
                         android:progress="@{torrent.progress}"
                         android:progressDrawable="@drawable/download_progressbar"
-                        android:visibility="@{loadingStatusList.contains(torrent.status) ? View.GONE : View.VISIBLE}"
                         app:progressColor="@{@color/streaming_background}" />
 
                 </FrameLayout>
