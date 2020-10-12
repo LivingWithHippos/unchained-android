@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <color name="deep_purple_50">#EDE7F6</color>
+    <color name="deep_purple_100">#D1C4E9</color>
+    <color name="deep_purple_200">#B39DDB</color>
     <color name="purple_100">#DFCCFB</color>
     <color name="purple_200">#bb86fc</color> <!--Color primary (dark)-->
     <color name="purple_500">#6200ee</color> <!--Color primary (light)-->

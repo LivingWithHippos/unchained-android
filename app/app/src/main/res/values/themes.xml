@@ -40,7 +40,7 @@
         <!--on which they appear.-->
         <item name="colorOnPrimary">@color/white</item>
         <item name="colorOnSecondary">@color/black_900</item>
-        <item name="colorOnBackground">@color/black_900</item>
+        <item name="colorOnBackground">@color/grey_03</item>
         <item name="colorOnSurface">@color/black_900</item>
         <item name="colorOnError">@color/white</item>
         <!--Material type attributes-->
