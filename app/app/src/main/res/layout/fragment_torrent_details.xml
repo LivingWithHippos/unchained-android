@@ -224,8 +224,8 @@
         <Button
             android:id="@+id/bDownload"
             style="@style/Widget.MaterialComponents.Button.Icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="150dp"
+            android:layout_height="80dp"
             android:onClick="@{() -> listener.onDownloadClick(torrent.links)}"
             android:layout_marginBottom="20dp"
             android:text="@string/download"
