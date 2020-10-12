@@ -67,11 +67,10 @@
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
     </style>
     <style name="Base.Theme.MaterialThemeBuilder" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="android:statusBarColor" tools:ignore="NewApi">?attr/colorSurface</item>
-        <item name="android:windowLightStatusBar" tools:ignore="NewApi">true</item>
-        <item name="android:navigationBarColor" tools:ignore="NewApi">?android:attr/colorBackground</item>
-        <item name="android:windowLightNavigationBar" tools:ignore="NewApi">true</item>
-        <item name="android:navigationBarDividerColor" tools:ignore="NewApi">?attr/colorControlHighlight</item>
+        <item name="android:statusBarColor">?attr/colorSurface</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:navigationBarColor" tools:ignore="NewApi">?attr/colorPrimary</item>
+        <item name="android:windowLightNavigationBar" tools:ignore="NewApi">false</item>
     </style>
 
     <!-- Tropical Sunset Theme -->

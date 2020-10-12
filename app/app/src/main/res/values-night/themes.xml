@@ -32,7 +32,7 @@
         <item name="colorOnBackground">@color/white_50</item>
         <item name="colorOnSurface">@color/white_50</item>
         <item name="colorOnError">@color/black_900</item>
-        <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
-        <item name="android:windowLightNavigationBar" tools:ignore="NewApi">false</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar" tools:ignore="NewApi">true</item>
     </style>
 </resources>
