@@ -6,14 +6,12 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Binder
 import android.os.IBinder
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.TaskStackBuilder
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
-import androidx.preference.SwitchPreference
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.MainActivity
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
@@ -96,7 +94,6 @@ class ForegroundTorrentService : LifecycleService() {
             // the new torrents to add to the notification system
             val unwatchedTorrents = newLoadingTorrents.filter { !oldTorrentsIDs.contains(it.id) }
             // the torrent whose status is not a loading one anymore.
-            //todo: vibrate once if this is not empty
             val finishedTorrents = list
                 // They are in our old list
                 .filter { oldTorrentsIDs.contains(it.id) }
@@ -166,7 +163,8 @@ class ForegroundTorrentService : LifecycleService() {
 
     private fun updateNotification(items: List<TorrentItem>) {
 
-        val notifications = mutableListOf<Notification>()
+        val notifications: MutableMap<String,Notification> =  mutableMapOf()
+
         items.forEach { torrent ->
             torrentBuilder.setStyle(
                 NotificationCompat.BigTextStyle()
@@ -199,35 +197,51 @@ class ForegroundTorrentService : LifecycleService() {
                 // Add the intent, which inflates the back stack
                 addNextIntentWithParentStack(resultIntent)
                 // Get the PendingIntent containing the entire back stack
-                getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
+                getPendingIntent(torrent.id.hashCode(), PendingIntent.FLAG_UPDATE_CURRENT)
             }
 
             torrentBuilder.setContentIntent(resultPendingIntent)
 
-            notifications.add(
-                torrentBuilder.build()
-            )
+            notifications[torrent.id] = torrentBuilder.build()
         }
         // will open the app on the torrent details page
         summaryBuilder.setContentText(getString(R.string.downloading_torrent_format, items.size))
 
         notificationManager.apply {
-            notifications.forEachIndexed { index, notification ->
-                //todo: check if the index is preserved
-                notify(items[index].id.hashCode(), notification)
+            notifications.forEach { (id, notification) ->
+                notify(id.hashCode(), notification)
             }
-            //todo: edit
             notify(SUMMARY_ID, summaryBuilder.build())
         }
     }
 
     private fun completeNotification(item: TorrentItem) {
+
+        val resultIntent = Intent(this, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            putExtra(KEY_TORRENT_ID, item.id)
+        }
+
+
+        val resultPendingIntent: PendingIntent? = TaskStackBuilder.create(this).run {
+            // Add the intent, which inflates the back stack
+            addNextIntentWithParentStack(resultIntent)
+            // Get the PendingIntent containing the entire back stack
+            getPendingIntent( item.id.hashCode(), PendingIntent.FLAG_UPDATE_CURRENT)
+        }
+
+        // fixme: viene cancellata la notifica sbagliata con setAutoCancel
         notificationManager.apply {
             torrentBuilder.setContentTitle(applicationContext.getStatusTranslation(item.status))
                 // if the file is already downloaded the second row will not be set elsewhere
-                .setContentText(item.filename)
+                .setStyle(
+                    NotificationCompat.BigTextStyle()
+                        .bigText(item.filename)
+                )
                 // remove the progressbar if present
                 .setProgress(0, 0, false)
+                // set click intent
+                .setContentIntent(resultPendingIntent)
                 // remove notification on tap
                 .setAutoCancel(true)
             notify(item.id.hashCode(), torrentBuilder.build())
@@ -244,7 +258,6 @@ class ForegroundTorrentService : LifecycleService() {
         const val UPDATE_TIMING_SHORT: Long = 5000
         const val UPDATE_TIMING_LONG: Long = 30000
         const val SUMMARY_ID: Int = 21
-        const val  TORRENT_NOTIFICATION_CODE = 86
         const val  KEY_TORRENT_ID = "torrent_id_key"
     }
 }
