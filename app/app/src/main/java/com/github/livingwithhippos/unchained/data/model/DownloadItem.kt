@@ -123,10 +123,13 @@ data class Alternative(
     val filename: String,
     @Json(name = "download")
     val download: String,
-    @Json(name = "type")
-    val type: String?
+    @Json(name = "mimeType")
+    val type: String,
+    @Json(name = "quality")
+    val quality: String?
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
+        parcel.readString()!!,
         parcel.readString()!!,
         parcel.readString()!!,
         parcel.readString()!!,
@@ -138,6 +141,7 @@ data class Alternative(
         parcel.writeString(filename)
         parcel.writeString(download)
         parcel.writeString(type)
+        parcel.writeString(quality)
 
     }
 
