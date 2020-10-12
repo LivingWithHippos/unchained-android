@@ -88,14 +88,12 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
         }, true)
 
         viewModel.torrentLiveData.observe(viewLifecycleOwner, {
-            if (it != null) {
-                torrentBinding.torrent = it
-                if (loadingStatusList.contains(it.status) || it.status == "downloading")
+            it.getContentIfNotHandled()?.let {torrent ->
+                torrentBinding.torrent = torrent
+                if (loadingStatusList.contains(torrent.status))
                     fetchTorrent()
             }
         })
-
-        viewModel.fetchTorrentDetails(args.torrentID)
 
         viewModel.deletedTorrentLiveData.observe(viewLifecycleOwner, {
             it.getContentIfNotHandled()?.let {
@@ -120,6 +118,8 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
                 findNavController().navigate(action)
             }
         })
+
+        viewModel.fetchTorrentDetails(args.torrentID)
 
         return torrentBinding.root
     }

@@ -22,7 +22,7 @@ class TorrentDetailsViewModel @ViewModelInject constructor(
     private val unrestrictRepository: UnrestrictRepository
 ) : ViewModel() {
 
-    val torrentLiveData = MutableLiveData<TorrentItem?>()
+    val torrentLiveData = MutableLiveData<Event<TorrentItem?>>()
     val deletedTorrentLiveData = MutableLiveData<Event<Int?>>()
     val downloadLiveData = MutableLiveData<Event<DownloadItem?>>()
 
@@ -32,7 +32,7 @@ class TorrentDetailsViewModel @ViewModelInject constructor(
             val token = getToken()
             val torrentData =
                 torrentsRepository.getTorrentInfo(token, torrentID)
-            torrentLiveData.postValue(torrentData)
+            torrentLiveData.postValue(Event(torrentData))
             if (torrentData?.status == "waiting_files_selection")
                 torrentsRepository.selectFiles(token, torrentID)
         }
@@ -59,8 +59,11 @@ class TorrentDetailsViewModel @ViewModelInject constructor(
         viewModelScope.launch {
             val token = credentialsRepository.getToken()
             torrentLiveData.value?.let {
-                val items = unrestrictRepository.getUnrestrictedLinkList(token, it.links)
-                downloadLiveData.postValue(Event(items.firstOrNull()))
+                val links = it.peekContent()?.links
+                if (links != null) {
+                    val items = unrestrictRepository.getUnrestrictedLinkList(token, links)
+                    downloadLiveData.postValue(Event(items.firstOrNull()))
+                }
             }
         }
     }
