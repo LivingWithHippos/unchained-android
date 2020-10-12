@@ -48,7 +48,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@{item.status, default=`downloading`}"
-                    android:textAllCaps="true"
                     app:layout_constraintBottom_toTopOf="@+id/tvName"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
