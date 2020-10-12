@@ -30,7 +30,7 @@ class HostsRepository @Inject constructor(
      * Gets the regexps to filter supported hosts from the network. Custom regexps are also added here.
      * @return the list of HostRegex from the network
      */
-    private suspend fun getHostsRegexFromNetwork(addCustomRegexps: Boolean = true): List<HostRegex> {
+    private suspend fun getHostsRegexFromNetwork(): List<HostRegex> {
 
         val hostResponse = safeApiCall(
             call = { hostsApiHelper.getHostsRegex() },
@@ -43,14 +43,6 @@ class HostsRepository @Inject constructor(
             if (!regex.isBlank())
                 list.add(HostRegex(regex))
         }
-        if (addCustomRegexps) {
-            // add the custom regexps
-            CUSTOM_REGEXPS.forEach {
-                val regex = convertRegex(it)
-                if (!regex.isBlank())
-                    list.add(HostRegex(regex))
-            }
-        }
         return list
     }
 
@@ -58,11 +50,19 @@ class HostsRepository @Inject constructor(
      * Gets the regexps to filter supported hosts from the db if any, otherwise tries to update them from the network
      * @return the list of HostRegex from the db or network, or an empty list
      */
-    suspend fun getHostsRegex(): List<HostRegex> {
+    suspend fun getHostsRegex(addCustomRegexps: Boolean = true): List<HostRegex> {
 
-        var regexps = hostRegexDao.getAllCredentials()
-        if (regexps.size < 10)
-            regexps = updateHostsRegex()
+        val regexps = mutableListOf<HostRegex>()
+        regexps.addAll(hostRegexDao.getAllRegexps())
+        if (regexps.size < 10){
+            regexps.clear()
+            regexps.addAll(updateHostsRegex())
+        }
+
+        // add the custom regexps
+        if (addCustomRegexps)
+            regexps.addAll(CUSTOM_REGEXPS.map{HostRegex(it)})
+
         return regexps
 
     }

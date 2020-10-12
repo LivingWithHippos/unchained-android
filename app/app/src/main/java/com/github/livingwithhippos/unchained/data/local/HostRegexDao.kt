@@ -19,7 +19,7 @@ interface HostRegexDao {
     suspend fun insertAll(list: List<HostRegex>)
 
     @Query("SELECT * from host_regex")
-    suspend fun getAllCredentials(): List<HostRegex>
+    suspend fun getAllRegexps(): List<HostRegex>
 
     @Query("DELETE FROM host_regex")
     suspend fun deleteAll()
