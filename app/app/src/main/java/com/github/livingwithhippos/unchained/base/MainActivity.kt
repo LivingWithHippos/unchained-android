@@ -10,9 +10,11 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.viewModels
+import androidx.core.content.ContextCompat
 import androidx.core.view.forEach
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -23,9 +25,12 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.model.AuthenticationState
+import com.github.livingwithhippos.unchained.data.service.ForegroundTorrentService
+import com.github.livingwithhippos.unchained.data.service.ForegroundTorrentService.Companion.KEY_TORRENT_ID
 import com.github.livingwithhippos.unchained.databinding.ActivityMainBinding
 import com.github.livingwithhippos.unchained.settings.SettingsActivity
 import com.github.livingwithhippos.unchained.settings.SettingsFragment
+import com.github.livingwithhippos.unchained.settings.SettingsFragment.Companion.KEY_TORRENT_NOTIFICATIONS
 import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewModel
 import com.github.livingwithhippos.unchained.utilities.SCHEME_HTTP
 import com.github.livingwithhippos.unchained.utilities.SCHEME_HTTPS
@@ -90,7 +95,7 @@ class MainActivity : UnchainedActivity() {
                 // go to login fragment
                 AuthenticationState.UNAUTHENTICATED -> {
                     openAuthentication()
-                    disableBottomNavItems(R.id.navigation_new_download,R.id.navigation_lists)
+                    disableBottomNavItems(R.id.navigation_new_download, R.id.navigation_lists)
                 }
                 // refresh the token.
                 // todo: if it keeps on being bad (hehe) delete the credentials and start the authentication from zero
@@ -100,11 +105,16 @@ class MainActivity : UnchainedActivity() {
                 // go to login fragment and show another error message
                 AuthenticationState.ACCOUNT_LOCKED -> {
                     openAuthentication()
-                    disableBottomNavItems(R.id.navigation_new_download,R.id.navigation_lists)
+                    disableBottomNavItems(R.id.navigation_new_download, R.id.navigation_lists)
                 }
                 // do nothing
                 AuthenticationState.AUTHENTICATED, AuthenticationState.AUTHENTICATED_NO_PREMIUM -> {
                     enableAllBottomNavItems()
+                    // start the notification system if enabled
+                    if (preferences.getBoolean(KEY_TORRENT_NOTIFICATIONS, false)) {
+                        val notificationIntent = Intent(this, ForegroundTorrentService::class.java)
+                        ContextCompat.startForegroundService(this, notificationIntent)
+                    }
                 }
             }
         })
@@ -137,6 +147,18 @@ class MainActivity : UnchainedActivity() {
                 })
             }
         })
+
+        // monitor if the torrent notification service needs to be started. It monitor the preference change itself
+        // for the shutting down part
+        preferences.registerOnSharedPreferenceChangeListener { sharedPreferences, key ->
+            if (key == KEY_TORRENT_NOTIFICATIONS) {
+                val enableTorrentNotifications = sharedPreferences.getBoolean(key, false)
+                if (enableTorrentNotifications) {
+                    val notificationIntent = Intent(this, ForegroundTorrentService::class.java)
+                    ContextCompat.startForegroundService(this, notificationIntent)
+                }
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -223,7 +245,15 @@ class MainActivity : UnchainedActivity() {
                     }
                 }
             }
-            null -> { // app opened directly by the user. Do nothing.
+            null -> {
+                // could be because of the tap on a notification
+                intent.getStringExtra(KEY_TORRENT_ID)?.let{id ->
+
+                    viewModel.authenticationState.observeOnce(this, { auth ->
+                        if (auth.peekContent()==AuthenticationState.AUTHENTICATED || auth.peekContent()==AuthenticationState.AUTHENTICATED_NO_PREMIUM)
+                            processTorrentNotificationIntent(id)
+                    })
+                }
             }
             else -> {
 
@@ -234,6 +264,16 @@ class MainActivity : UnchainedActivity() {
     override fun onDestroy() {
         super.onDestroy()
         unregisterReceiver(downloadReceiver)
+    }
+
+    private fun processTorrentNotificationIntent(torrentID: String) {
+        // simulate click on new download tab
+        val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_nav_view)
+        if (bottomNav.selectedItemId != R.id.navigation_new_download) {
+            //todo: check how to double click
+            bottomNav.selectedItemId = R.id.navigation_new_download
+        }
+        viewModel.addTorrentId(torrentID)
     }
 
     private fun processLinkIntent(uri: Uri) {

@@ -107,7 +107,7 @@
                 <com.google.android.material.progressindicator.ProgressIndicator
                     android:id="@+id/loadingCircle"
                     style="@style/Widget.MaterialComponents.ProgressIndicator.Circular.Indeterminate"
-                    android:visibility="@{loadingStatusList.contains(torrent.status) ? View.VISIBLE : View.GONE}"
+                    android:visibility="@{loadingStatusList.contains(torrent.status) &amp;&amp; !torrent.status.equalsIgnoreCase(`downloading`) ? View.VISIBLE : View.GONE}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="10dp"
@@ -213,7 +213,6 @@
                         android:minHeight="60dp"
                         android:progress="@{torrent.progress}"
                         android:progressDrawable="@drawable/download_progressbar"
-                        android:visibility="@{loadingStatusList.contains(torrent.status) ? View.GONE : View.VISIBLE}"
                         app:progressColor="@{@color/streaming_background}" />
 
                 </FrameLayout>
@@ -224,13 +223,18 @@
 
         <Button
             android:id="@+id/bDownload"
+            style="@style/Widget.MaterialComponents.Button.Icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:onClick="@{() -> listener.onDownloadClick(torrent.links)}"
             android:layout_marginBottom="20dp"
             android:text="@string/download"
-            android:onClick="@{() -> listener.onDownloadClick(torrent.links)}"
             android:visibility="@{torrent.status.equalsIgnoreCase(`downloaded`) ? View.VISIBLE : View.GONE}"
-            android:layout_gravity="center_horizontal" />
+            android:layout_gravity="center_horizontal"
+            app:icon="@drawable/icon_download"
+            app:layout_constraintStart_toStartOf="@id/cvDetails"
+            app:layout_constraintEnd_toStartOf="@id/bCopy"
+            app:layout_constraintTop_toBottomOf="@id/cvDetails" />
 
 
     </LinearLayout>

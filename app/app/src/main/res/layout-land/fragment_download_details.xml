@@ -141,7 +141,7 @@
 
             <Button
                 android:id="@+id/bOpen"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
+                style="@style/Widget.MaterialComponents.Button.Icon"
                 android:layout_width="0dp"
                 android:layout_height="80dp"
                 android:layout_marginTop="20dp"
@@ -155,7 +155,7 @@
 
             <Button
                 android:id="@+id/bCopy"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
+                style="@style/Widget.MaterialComponents.Button.Icon"
                 android:layout_width="0dp"
                 android:layout_height="80dp"
                 android:layout_marginTop="20dp"
@@ -169,7 +169,7 @@
 
             <Button
                 android:id="@+id/bOpenWith"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
+                style="@style/Widget.MaterialComponents.Button.Icon"
                 android:layout_width="0dp"
                 android:layout_height="80dp"
                 android:layout_marginTop="20dp"
@@ -184,7 +184,7 @@
 
             <Button
                 android:id="@+id/bLoadStreams"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
+                style="@style/Widget.MaterialComponents.Button.Icon"
                 android:layout_width="0dp"
                 android:layout_height="80dp"
                 android:layout_marginTop="20dp"

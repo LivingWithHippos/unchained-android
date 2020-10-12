@@ -10,3 +10,11 @@ annotation class AuthRetrofit
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class ApiRetrofit
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class TorrentNotification
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class SummaryNotification

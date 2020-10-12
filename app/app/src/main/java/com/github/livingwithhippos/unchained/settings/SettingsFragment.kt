@@ -1,12 +1,17 @@
 package com.github.livingwithhippos.unchained.settings
 
+import android.content.ComponentName
+import android.content.ServiceConnection
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.os.IBinder
 import androidx.fragment.app.viewModels
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.SwitchPreference
 import com.github.livingwithhippos.unchained.R
+import com.github.livingwithhippos.unchained.data.service.ForegroundTorrentService
 import com.github.livingwithhippos.unchained.utilities.FEEDBACK_URL
 import com.github.livingwithhippos.unchained.utilities.GPLV3_URL
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
@@ -101,6 +106,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         // these must match the ones used in [xml/settings.xml]
         const val KEY_DAY_NIGHT = "day_night_theme"
         const val KEY_THEME = "current_theme"
+        const val KEY_TORRENT_NOTIFICATIONS = "notification_torrent_key"
         const val THEME_AUTO = "auto"
         const val THEME_NIGHT = "night"
         const val THEME_DAY = "day"

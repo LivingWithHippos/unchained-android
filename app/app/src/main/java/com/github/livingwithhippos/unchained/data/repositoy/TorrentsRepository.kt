@@ -94,7 +94,7 @@ class TorrentsRepository @Inject constructor(private val torrentApiHelper: Torre
 
     suspend fun getTorrentsList(
         token: String,
-        offset: Int?,
+        offset: Int? = null,
         page: Int? = 1,
         limit: Int? = 10,
         filter: String? = null

@@ -407,4 +407,13 @@
     <string name="updating_link_matcher">Updating link matcher…</string>
     <string name="unknown_error">Unknown error</string>
     <string name="network_error">Network error</string>
+    <string name="torrent_channel_description">Notification channel for torrents download status</string>
+    <string name="torrent_in_progress">Torrent download in progress</string>
+    <string name="torrent_in_progress_format">%1$d%% - %2$.2f MB/s</string>
+    <string name="download_complete">Download complete</string>
+    <string name="unknown_status">Unknown Status</string>
+    <string name="downloading_torrent_format">Downloading %1$d torrents</string>
+    <string name="monitor_torrents_download">Monitoring torrents download</string>
+    <string name="notifications">Notifications</string>
+    <string name="enable_torrent_monitoring_title">Enable torrent monitoring</string>
 </resources>
