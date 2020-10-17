@@ -54,7 +54,7 @@ class AuthenticationRepository @Inject constructor(private val apiHelper: AuthAp
      * You can not use both offset and page at the same time, page is prioritized in case it happens.
      * @param clientId the client id obtained from the /device/credentials endpoint
      * @param clientSecret the code obtained from the /token endpoint
-     * @param deviceCode the device code obtained from the /device/code endpoint
+     * @param refreshToken the device code obtained from the /device/code endpoint
      * @return the new Token
      */
     suspend fun refreshToken(clientId: String, clientSecret: String, refreshToken: String): Token? =
