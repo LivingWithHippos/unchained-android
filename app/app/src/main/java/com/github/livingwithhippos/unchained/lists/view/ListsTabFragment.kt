@@ -168,7 +168,7 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
 
 
         viewModel.deletedTorrentLiveData.observe(viewLifecycleOwner, {
-            it.getContentIfNotHandled()?.let { deletedValue ->
+            it.getContentIfNotHandled()?.let { _ ->
                 context?.showToast(R.string.torrent_deleted)
                 torrentAdapter.refresh()
             }
@@ -188,7 +188,7 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
         })
 
 
-        setFragmentResultListener("downloadActionKey") { key, bundle ->
+        setFragmentResultListener("downloadActionKey") { _, bundle ->
             bundle.getString("deletedDownloadKey")?.let{
                 viewModel.deleteDownload(it)
             }
@@ -197,7 +197,7 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
             }
         }
 
-        setFragmentResultListener("torrentActionKey") { key, bundle ->
+        setFragmentResultListener("torrentActionKey") { _, bundle ->
             bundle.getString("deletedTorrentKey")?.let{
                 viewModel.deleteTorrent(it)
             }

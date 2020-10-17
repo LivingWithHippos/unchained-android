@@ -106,7 +106,7 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
             }
         })
 
-        setFragmentResultListener("deleteActionKey") { key, bundle ->
+        setFragmentResultListener("deleteActionKey") { _, bundle ->
             if (bundle.getBoolean("deleteConfirmation"))
                 viewModel.deleteTorrent(args.torrentID)
         }

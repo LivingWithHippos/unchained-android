@@ -34,7 +34,6 @@
     <string name="streaming">Streaming</string>
     <string name="megabytes_short" translatable="false">MB</string>
     <string name="file_size_format" translatable="false">%1$d MB</string>
-    <string name="file_size_format_b" translatable="false">%1$d bytes</string>
     <string name="file_size_format_kb" translatable="false">%1$.2f KB</string>
     <string name="file_size_format_mb" translatable="false">%1$.2f MB</string>
     <string name="file_size_format_gb" translatable="false">%1$.2f GB</string>
@@ -45,7 +44,6 @@
     <string name="speed_format_kb" translatable="false">%1$.1f KB/s</string>
     <string name="speed_format_mb" translatable="false">%1$.1f MB/s</string>
     <string name="speed_error">Error getting the download speed</string>
-    <string name="seeders_format">%1$d seeders</string>
     <string name="load_streams">Load stream links</string>
     <string name="apple" translatable="false">Apple</string>
     <string name="dash" translatable="false">Dash</string>
@@ -409,6 +407,11 @@
     <string name="network_error">Network error</string>
     <string name="torrent_channel_description">Notification channel for torrents download status</string>
     <string name="torrent_in_progress">Torrent download in progress</string>
+    <plurals
+        name="seeders_format">
+        <item quantity="one">%d seeder</item>
+        <item quantity="other">%d seeders</item>
+    </plurals>
     <string name="torrent_in_progress_format">%1$d%% - %2$.2f MB/s</string>
     <string name="download_complete">Download complete</string>
     <string name="unknown_status">Unknown Status</string>

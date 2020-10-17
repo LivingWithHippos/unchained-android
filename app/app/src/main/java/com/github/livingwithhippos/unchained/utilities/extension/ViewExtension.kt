@@ -185,7 +185,6 @@ fun TextView.setDownloadSpeed(speed: Int) {
 @BindingAdapter("fileSize")
 fun TextView.setFileSize(size: Long) {
     this.text = when {
-        size < 1023 -> this.context.getString(R.string.file_size_format_b, size)
         size < 1048575 -> this.context.getString(
             R.string.file_size_format_kb,
             size.toFloat() / 1024

@@ -34,7 +34,6 @@
     <string name="streaming">Streaming</string>
     <string name="selected_file_size_format">%1$d MB / %2$d MB selezionati</string>
     <string name="torrent_status_format">Stato: %1$s</string>
-    <string name="seeders_format">%1$d seeders</string>
     <string name="load_streams">Carica i media</string>
     <string name="quality">Qualità</string>
     <string name="links">Links</string>
@@ -194,6 +193,11 @@
     <string name="torrent_channel_description">Canale di notifiche per il download dei torrent</string>
     <string name="torrent_in_progress">Download torrent in corso</string>
     <string name="torrent_in_progress_format">%1$d%% - %2$.2f MB/s</string>
+    <plurals
+        name="seeders_format">
+        <item quantity="one">%d seeder</item>
+        <item quantity="other">%d seeders</item>
+    </plurals>
     <string name="download_complete">Download completato</string>
     <string name="unknown_status">Stato sconosciuto</string>
     <string name="downloading_torrent_format">%1$d torrent in download</string>
