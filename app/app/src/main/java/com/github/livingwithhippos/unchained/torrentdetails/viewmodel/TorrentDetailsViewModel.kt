@@ -4,8 +4,10 @@ import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import arrow.core.Either
 import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
+import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkException
 import com.github.livingwithhippos.unchained.data.repositoy.CredentialsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.TorrentsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.UnrestrictRepository
@@ -25,6 +27,7 @@ class TorrentDetailsViewModel @ViewModelInject constructor(
     val torrentLiveData = MutableLiveData<Event<TorrentItem?>>()
     val deletedTorrentLiveData = MutableLiveData<Event<Int?>>()
     val downloadLiveData = MutableLiveData<Event<DownloadItem?>>()
+    val errorsLiveData = MutableLiveData<Event<List<UnchainedNetworkException>>>()
 
 
     fun fetchTorrentDetails(torrentID: String) {
@@ -58,11 +61,18 @@ class TorrentDetailsViewModel @ViewModelInject constructor(
     fun downloadTorrent() {
         viewModelScope.launch {
             val token = credentialsRepository.getToken()
-            torrentLiveData.value?.let {
-                val links = it.peekContent()?.links
+            torrentLiveData.value?.let {torrent ->
+                val links = torrent.peekContent()?.links
                 if (links != null) {
                     val items = unrestrictRepository.getUnrestrictedLinkList(token, links)
-                    downloadLiveData.postValue(Event(items.firstOrNull()))
+
+                    val values = items.filterIsInstance<Either.Right<DownloadItem>>().map { it.b }
+                    val errors = items.filterIsInstance<Either.Left<UnchainedNetworkException>>().map { it.a }
+
+                    // since the torrent want to open a download details page we oen only the first link
+                    downloadLiveData.postValue(Event(values.firstOrNull()))
+                    if (errors.isNotEmpty())
+                        errorsLiveData.postValue(Event(errors))
                 }
             }
         }

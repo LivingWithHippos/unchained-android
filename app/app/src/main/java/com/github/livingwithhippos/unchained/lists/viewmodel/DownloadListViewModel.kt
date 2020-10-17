@@ -13,8 +13,10 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.liveData
+import arrow.core.Either
 import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
+import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkException
 import com.github.livingwithhippos.unchained.data.repositoy.CredentialsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.DownloadRepository
 import com.github.livingwithhippos.unchained.data.repositoy.TorrentsRepository
@@ -46,6 +48,8 @@ class DownloadListViewModel @ViewModelInject constructor(
         TorrentPagingSource(torrentsRepository, credentialsRepository)
     }.liveData.cachedIn(viewModelScope)
 
+    val errorsLiveData = MutableLiveData<Event<List<UnchainedNetworkException>>>()
+
     val downloadItemLiveData = MutableLiveData<Event<List<DownloadItem?>>>()
 
     val deletedTorrentLiveData = MutableLiveData<Event<Int?>>()
@@ -55,15 +59,12 @@ class DownloadListViewModel @ViewModelInject constructor(
         viewModelScope.launch {
             val token = credentialsRepository.getToken()
             val items = unrestrictRepository.getUnrestrictedLinkList(token, torrent.links)
-            downloadItemLiveData.postValue(Event(items))
-        }
-    }
+            val values = items.filterIsInstance<Either.Right<DownloadItem>>().map { it.b }
+            val errors = items.filterIsInstance<Either.Left<UnchainedNetworkException>>().map { it.a }
 
-    fun downloadTorrent(links: List<String>) {
-        viewModelScope.launch {
-            val token = credentialsRepository.getToken()
-            val items = unrestrictRepository.getUnrestrictedLinkList(token, links)
-            downloadItemLiveData.postValue(Event(items))
+            downloadItemLiveData.postValue(Event(values))
+            if (errors.isNotEmpty())
+                errorsLiveData.postValue(Event(errors))
         }
     }
 
