@@ -242,11 +242,22 @@
                         android:layout_height="wrap_content"
                         android:text="@string/apple"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/bOpenApple"
+                        app:layout_constraintEnd_toStartOf="@+id/appleButtonsLayout"
                         app:layout_constraintHorizontal_bias="0.5"
                         app:layout_constraintHorizontal_chainStyle="spread"
                         app:layout_constraintStart_toStartOf="@id/streamingOverline1"
                         app:layout_constraintTop_toBottomOf="@+id/streamingOverline1" />
+
+                    <LinearLayout
+                        android:id="@+id/appleButtonsLayout"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:gravity="end"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/tvAppleTitle">
 
                     <ImageButton
                         android:id="@+id/bOpenApple"
@@ -256,11 +267,7 @@
                         android:contentDescription="@{@string/open_link_format(`apple`)}"
                         android:onClick="@{()->listener.onOpenClick(stream.apple.link)}"
                         android:src="@drawable/icon_open_external"
-                        android:tint="?attr/colorPrimary"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@id/bCopyApple"
-                        app:layout_constraintStart_toEndOf="@+id/tvAppleTitle"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        android:tint="?attr/colorPrimary" />
 
                     <ImageButton
                         android:id="@+id/bCopyApple"
@@ -270,11 +277,7 @@
                         android:contentDescription="@{@string/copy_link_format(`apple`)}"
                         android:onClick="@{()->listener.onCopyClick(stream.apple.link)}"
                         android:src="@drawable/icon_copy"
-                        android:tint="?attr/colorPrimary"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@id/bOpenWithApple"
-                        app:layout_constraintStart_toEndOf="@+id/bOpenApple"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        android:tint="?attr/colorPrimary"/>
 
                     <ImageButton
                         android:id="@+id/bOpenWithApple"
@@ -283,12 +286,10 @@
                         android:backgroundTint="@android:color/transparent"
                         android:contentDescription="@{@string/open_with_format(`apple`)}"
                         android:onClick="@{()->listener.onOpenWith(stream.apple.link)}"
+                        android:visibility="@{yatseInstalled ? View.VISIBLE : View.GONE, default=visible}"
                         android:src="@drawable/icon_remote"
-                        android:tint="?attr/colorPrimary"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/bCopyApple"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        android:tint="?attr/colorPrimary"/>
+                </LinearLayout>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>
@@ -337,11 +338,22 @@
                         android:layout_height="wrap_content"
                         android:text="@string/dash"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@id/bOpenDash"
+                        app:layout_constraintEnd_toStartOf="@id/dashButtonsLayout"
                         app:layout_constraintHorizontal_bias="0.5"
                         app:layout_constraintHorizontal_chainStyle="spread"
                         app:layout_constraintStart_toStartOf="@id/streamingOverline2"
                         app:layout_constraintTop_toBottomOf="@+id/streamingOverline2" />
+
+                    <LinearLayout
+                        android:id="@+id/dashButtonsLayout"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:gravity="end"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/tvDashTitle">
 
                     <ImageButton
                         android:id="@+id/bOpenDash"
@@ -351,11 +363,7 @@
                         android:contentDescription="@{@string/open_link_format(`dash`)}"
                         android:onClick="@{()->listener.onOpenClick(stream.dash.link)}"
                         android:src="@drawable/icon_open_external"
-                        android:tint="?attr/colorPrimary"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@id/bCopyDash"
-                        app:layout_constraintStart_toEndOf="@+id/tvDashTitle"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        android:tint="?attr/colorPrimary"/>
 
                     <ImageButton
                         android:id="@+id/bCopyDash"
@@ -365,14 +373,10 @@
                         android:contentDescription="@{@string/copy_link_format(`dash`)}"
                         android:onClick="@{()->listener.onCopyClick(stream.dash.link)}"
                         android:src="@drawable/icon_copy"
-                        android:tint="?attr/colorPrimary"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@id/bOpenWithyDash"
-                        app:layout_constraintStart_toEndOf="@+id/bOpenDash"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        android:tint="?attr/colorPrimary"/>
 
                     <ImageButton
-                        android:id="@+id/bOpenWithyDash"
+                        android:id="@+id/bOpenWithDash"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:backgroundTint="@android:color/transparent"
@@ -380,10 +384,8 @@
                         android:onClick="@{()->listener.onOpenWith(stream.dash.link)}"
                         android:src="@drawable/icon_remote"
                         android:tint="?attr/colorPrimary"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/bCopyDash"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        android:visibility="@{yatseInstalled ? View.VISIBLE : View.GONE, default=visible}" />
+                    </LinearLayout>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>
@@ -433,11 +435,22 @@
                         android:layout_height="wrap_content"
                         android:text="@string/liveMP4"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@id/bOpenMp4"
+                        app:layout_constraintEnd_toStartOf="@id/mp4ButtonsLayout"
                         app:layout_constraintHorizontal_bias="0.5"
                         app:layout_constraintHorizontal_chainStyle="spread"
                         app:layout_constraintStart_toStartOf="@id/streamingOverline3"
                         app:layout_constraintTop_toBottomOf="@+id/streamingOverline3" />
+
+                    <LinearLayout
+                        android:id="@+id/mp4ButtonsLayout"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:gravity="end"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/tvMp4Title">
 
                     <ImageButton
                         android:id="@+id/bOpenMp4"
@@ -447,11 +460,7 @@
                         android:contentDescription="@{@string/open_link_format(`mp4`)}"
                         android:onClick="@{()->listener.onOpenClick(stream.liveMP4.link)}"
                         android:src="@drawable/icon_open_external"
-                        android:tint="?attr/colorPrimary"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@id/bCopyMp4"
-                        app:layout_constraintStart_toEndOf="@+id/tvMp4Title"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        android:tint="?attr/colorPrimary" />
 
                     <ImageButton
                         android:id="@+id/bCopyMp4"
@@ -461,11 +470,7 @@
                         android:contentDescription="@{@string/copy_link_format(`mp4`)}"
                         android:onClick="@{()->listener.onCopyClick(stream.liveMP4.link)}"
                         android:src="@drawable/icon_copy"
-                        android:tint="?attr/colorPrimary"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@id/bOpenWithMp4"
-                        app:layout_constraintStart_toEndOf="@+id/bOpenMp4"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        android:tint="?attr/colorPrimary" />
 
                     <ImageButton
                         android:id="@+id/bOpenWithMp4"
@@ -475,11 +480,10 @@
                         android:contentDescription="@{@string/open_with_format(`mp4`)}"
                         android:onClick="@{()->listener.onOpenWith(stream.liveMP4.link)}"
                         android:src="@drawable/icon_remote"
-                        android:tint="?attr/colorPrimary"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/bCopyMp4"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        android:visibility="@{yatseInstalled ? View.VISIBLE : View.GONE, default=visible}"
+                        android:tint="?attr/colorPrimary" />
+
+                    </LinearLayout>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>
@@ -526,11 +530,22 @@
                         android:layout_height="wrap_content"
                         android:text="@string/h264_webm"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@id/bOpenH264"
+                        app:layout_constraintEnd_toStartOf="@id/h264ButtonsLayout"
                         app:layout_constraintHorizontal_bias="0.5"
                         app:layout_constraintHorizontal_chainStyle="spread"
                         app:layout_constraintStart_toStartOf="@id/streamingOverline4"
                         app:layout_constraintTop_toBottomOf="@+id/streamingOverline4" />
+
+                    <LinearLayout
+                        android:id="@+id/h264ButtonsLayout"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:gravity="end"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/tvH264Title">
 
                     <ImageButton
                         android:id="@+id/bOpenH264"
@@ -540,11 +555,7 @@
                         android:contentDescription="@{@string/open_link_format(`h264 webM`)}"
                         android:onClick="@{()->listener.onOpenClick(stream.h264WebM.link)}"
                         android:src="@drawable/icon_open_external"
-                        android:tint="?attr/colorPrimary"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@id/bCopyH264"
-                        app:layout_constraintStart_toEndOf="@+id/tvH264Title"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        android:tint="?attr/colorPrimary" />
 
                     <ImageButton
                         android:id="@+id/bCopyH264"
@@ -554,11 +565,7 @@
                         android:contentDescription="@{@string/copy_link_format(`h264 webM`)}"
                         android:onClick="@{()->listener.onCopyClick(stream.h264WebM.link)}"
                         android:src="@drawable/icon_copy"
-                        android:tint="?attr/colorPrimary"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@id/bOpenWithH264"
-                        app:layout_constraintStart_toEndOf="@+id/bOpenH264"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        android:tint="?attr/colorPrimary"/>
 
                     <ImageButton
                         android:id="@+id/bOpenWithH264"
@@ -567,12 +574,11 @@
                         android:backgroundTint="@android:color/transparent"
                         android:contentDescription="@{@string/open_with_format(`h264 webM`)}"
                         android:onClick="@{()->listener.onOpenWith(stream.h264WebM.link)}"
+                        android:visibility="@{yatseInstalled ? View.VISIBLE : View.GONE, default=visible}"
                         android:src="@drawable/icon_remote"
-                        android:tint="?attr/colorPrimary"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/bCopyH264"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        android:tint="?attr/colorPrimary" />
+
+                    </LinearLayout>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>
