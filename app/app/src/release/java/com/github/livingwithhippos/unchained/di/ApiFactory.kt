@@ -1,5 +1,6 @@
 package com.github.livingwithhippos.unchained.di
 
+import com.github.livingwithhippos.unchained.data.model.EmptyBodyInterceptor
 import com.github.livingwithhippos.unchained.data.remote.AuthApiHelper
 import com.github.livingwithhippos.unchained.data.remote.AuthApiHelperImpl
 import com.github.livingwithhippos.unchained.data.remote.AuthenticationApi
@@ -33,7 +34,6 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
 import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import javax.inject.Singleton
@@ -55,6 +55,8 @@ object ApiFactory {
     @Singleton
     fun provideOkHttpClient(): OkHttpClient = OkHttpClient()
         .newBuilder()
+        // avoid issues with empty bodies on delete/put and 20x return codes
+        .addInterceptor(EmptyBodyInterceptor)
         .build()
 
     @Provides
