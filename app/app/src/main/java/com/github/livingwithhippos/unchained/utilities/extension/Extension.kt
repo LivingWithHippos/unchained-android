@@ -18,6 +18,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.github.livingwithhippos.unchained.BuildConfig
 import com.github.livingwithhippos.unchained.R
@@ -174,7 +175,7 @@ fun AppCompatActivity.setCustomTheme(theme: String) {
     }
 }
 
-fun Context.getApiErrorMessage(errorCode: Int): String {
+fun Context.getApiErrorMessage(errorCode: Int?): String {
     return when (errorCode) {
         -1 -> getString(R.string.internal_error)
         1 -> getString(R.string.missing_parameter)

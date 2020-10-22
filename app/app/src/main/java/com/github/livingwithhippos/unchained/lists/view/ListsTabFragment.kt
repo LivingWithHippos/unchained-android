@@ -12,15 +12,19 @@ import androidx.navigation.fragment.findNavController
 import androidx.paging.PagingData
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
+import com.github.livingwithhippos.unchained.data.model.APIError
+import com.github.livingwithhippos.unchained.data.model.ApiConversionError
 import com.github.livingwithhippos.unchained.data.model.AuthenticationState
 import com.github.livingwithhippos.unchained.data.model.DownloadItem
+import com.github.livingwithhippos.unchained.data.model.EmptyBodyError
+import com.github.livingwithhippos.unchained.data.model.NetworkError
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.databinding.FragmentTabListsBinding
 import com.github.livingwithhippos.unchained.lists.viewmodel.DownloadListViewModel
-import com.github.livingwithhippos.unchained.utilities.endedStatusList
+import com.github.livingwithhippos.unchained.utilities.EventObserver
+import com.github.livingwithhippos.unchained.utilities.extension.getApiErrorMessage
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.github.livingwithhippos.unchained.utilities.extension.verticalScrollToPosition
-import com.github.livingwithhippos.unchained.utilities.loadingStatusList
 import com.google.android.material.tabs.TabLayout
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
@@ -175,33 +179,35 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
         })
 
         activityViewModel.listStateLiveData.observe(viewLifecycleOwner, {
-            when(it.getContentIfNotHandled()) {
+            when (it.getContentIfNotHandled()) {
                 ListState.UPDATE_DOWNLOAD -> {
                     downloadAdapter.refresh()
                 }
                 ListState.UPDATE_TORRENT -> {
                     torrentAdapter.refresh()
                 }
-                ListState.READY -> {}
-                else -> {}
+                ListState.READY -> {
+                }
+                else -> {
+                }
             }
         })
 
 
         setFragmentResultListener("downloadActionKey") { _, bundle ->
-            bundle.getString("deletedDownloadKey")?.let{
+            bundle.getString("deletedDownloadKey")?.let {
                 viewModel.deleteDownload(it)
             }
-            bundle.getParcelable<DownloadItem>("openedDownloadItem")?.let{
+            bundle.getParcelable<DownloadItem>("openedDownloadItem")?.let {
                 onClick(it)
             }
         }
 
         setFragmentResultListener("torrentActionKey") { _, bundle ->
-            bundle.getString("deletedTorrentKey")?.let{
+            bundle.getString("deletedTorrentKey")?.let {
                 viewModel.deleteTorrent(it)
             }
-            bundle.getString("openedTorrentItem")?.let{
+            bundle.getString("openedTorrentItem")?.let {
                 val authState = activityViewModel.authenticationState.value?.peekContent()
                 if (authState == AuthenticationState.AUTHENTICATED) {
                     val action = ListsTabFragmentDirections.actionListsTabToTorrentDetails(it)
@@ -209,7 +215,7 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
                 } else
                     context?.showToast(R.string.premium_needed)
             }
-            bundle.getParcelable<TorrentItem>("downloadedTorrentItem")?.let{
+            bundle.getParcelable<TorrentItem>("downloadedTorrentItem")?.let {
                 onClick(it)
             }
         }
@@ -218,6 +224,30 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
             it.getContentIfNotHandled().let {
                 context?.showToast(R.string.download_removed)
                 downloadAdapter.refresh()
+            }
+        })
+
+        viewModel.errorsLiveData.observe(viewLifecycleOwner, EventObserver {
+            for (error in it) {
+                when (error) {
+                    is APIError -> {
+                        context?.let { c ->
+                            c.showToast(c.getApiErrorMessage(error.errorCode))
+                        }
+                    }
+                    is EmptyBodyError -> {
+                    }
+                    is NetworkError -> {
+                        context?.let { c ->
+                            c.showToast(R.string.network_error)
+                        }
+                    }
+                    is ApiConversionError -> {
+                        context?.let { c ->
+                            c.showToast(R.string.parsing_error)
+                        }
+                    }
+                }
             }
         })
 

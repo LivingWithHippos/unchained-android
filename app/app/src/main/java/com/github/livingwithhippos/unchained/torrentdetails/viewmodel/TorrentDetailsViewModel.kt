@@ -6,13 +6,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.Either
 import com.github.livingwithhippos.unchained.data.model.DownloadItem
-import com.github.livingwithhippos.unchained.data.model.EmptyBodyError
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkException
 import com.github.livingwithhippos.unchained.data.repositoy.CredentialsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.TorrentsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.UnrestrictRepository
 import com.github.livingwithhippos.unchained.utilities.Event
+import com.github.livingwithhippos.unchained.utilities.postEvent
 import kotlinx.coroutines.launch
 
 /**
@@ -54,13 +54,13 @@ class TorrentDetailsViewModel @ViewModelInject constructor(
     fun deleteTorrent(id: String) {
         viewModelScope.launch {
             val token = getToken()
-            val deletedTorrentResponse = torrentsRepository.deleteTorrent(token, id)
-            when (deletedTorrentResponse) {
+            val deleted = torrentsRepository.deleteTorrent(token, id)
+            when (deleted) {
                 is Either.Left -> {
-                    //todo: add toast with error
+                    errorsLiveData.postEvent(listOf(deleted.a))
                 }
                 is Either.Right -> {
-                    deletedTorrentLiveData.postValue(Event(204))
+                    deletedTorrentLiveData.postEvent(204)
                 }
             }
         }
@@ -78,9 +78,9 @@ class TorrentDetailsViewModel @ViewModelInject constructor(
                     val errors = items.filterIsInstance<Either.Left<UnchainedNetworkException>>().map { it.a }
 
                     // since the torrent want to open a download details page we oen only the first link
-                    downloadLiveData.postValue(Event(values.firstOrNull()))
+                    downloadLiveData.postEvent(values.firstOrNull())
                     if (errors.isNotEmpty())
-                        errorsLiveData.postValue(Event(errors))
+                        errorsLiveData.postEvent(errors)
                 }
             }
         }

@@ -14,6 +14,7 @@ data class APIError(
     val errorCode: Int?
 ): UnchainedNetworkException
 
+// todo: this has been resolved by adding an interceptor, change class name at least
 data class EmptyBodyError(
     val returnCode: Int
 ): UnchainedNetworkException

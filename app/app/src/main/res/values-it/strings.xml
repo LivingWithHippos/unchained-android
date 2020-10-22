@@ -205,4 +205,5 @@
     <string name="notifications">Notifiche</string>
     <string name="enable_torrent_monitoring_title">Abilita controllo torrent</string>
     <string name="alternative_link">Link alternativo</string>
+    <string name="parsing_error">Errore durante l\'elaborazione della risposta dal server</string>
 </resources>

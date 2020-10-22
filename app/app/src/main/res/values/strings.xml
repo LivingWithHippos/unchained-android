@@ -420,4 +420,5 @@
     <string name="notifications">Notifications</string>
     <string name="enable_torrent_monitoring_title">Enable torrent monitoring</string>
     <string name="alternative_link">Alternative link</string>
+    <string name="parsing_error">Error parsing the server response</string>
 </resources>

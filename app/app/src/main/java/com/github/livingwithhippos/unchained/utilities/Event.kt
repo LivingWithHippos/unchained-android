@@ -59,7 +59,7 @@ class EventObserver<T>(private val onEventUnhandledContent: (T) -> Unit) : Obser
 }
 
 /**
- * Simple extension to post Event values
+ * This function posts value in [MutableLiveData] as Event(value)
  */
 fun <T> MutableLiveData<Event<T>>.postEvent(value: T) {
     postValue(Event(value))

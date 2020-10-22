@@ -16,9 +16,15 @@ import androidx.navigation.fragment.navArgs
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.DeleteDialogFragment
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
+import com.github.livingwithhippos.unchained.data.model.APIError
+import com.github.livingwithhippos.unchained.data.model.ApiConversionError
+import com.github.livingwithhippos.unchained.data.model.EmptyBodyError
+import com.github.livingwithhippos.unchained.data.model.NetworkError
 import com.github.livingwithhippos.unchained.databinding.FragmentTorrentDetailsBinding
 import com.github.livingwithhippos.unchained.lists.view.ListsTabFragment
 import com.github.livingwithhippos.unchained.torrentdetails.viewmodel.TorrentDetailsViewModel
+import com.github.livingwithhippos.unchained.utilities.EventObserver
+import com.github.livingwithhippos.unchained.utilities.extension.getApiErrorMessage
 import com.github.livingwithhippos.unchained.utilities.extension.observeOnce
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.github.livingwithhippos.unchained.utilities.loadingStatusList
@@ -116,6 +122,30 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
                 val action =
                     TorrentDetailsFragmentDirections.actionTorrentDetailsToDownloadDetailsDest(download)
                 findNavController().navigate(action)
+            }
+        })
+
+        viewModel.errorsLiveData.observe(viewLifecycleOwner, EventObserver {
+            for (error in it) {
+                when (error) {
+                    is APIError -> {
+                        context?.let { c ->
+                            c.showToast(c.getApiErrorMessage(error.errorCode))
+                        }
+                    }
+                    is EmptyBodyError -> {
+                    }
+                    is NetworkError -> {
+                        context?.let { c ->
+                            c.showToast(R.string.network_error)
+                        }
+                    }
+                    is ApiConversionError -> {
+                        context?.let { c ->
+                            c.showToast(R.string.parsing_error)
+                        }
+                    }
+                }
             }
         })
 

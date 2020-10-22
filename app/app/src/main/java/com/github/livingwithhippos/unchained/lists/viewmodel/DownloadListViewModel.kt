@@ -26,6 +26,7 @@ import com.github.livingwithhippos.unchained.lists.model.DownloadPagingSource
 import com.github.livingwithhippos.unchained.lists.model.TorrentPagingSource
 import com.github.livingwithhippos.unchained.lists.view.ListsTabFragment.Companion.TAB_DOWNLOADS
 import com.github.livingwithhippos.unchained.utilities.Event
+import com.github.livingwithhippos.unchained.utilities.postEvent
 import kotlinx.coroutines.launch
 import retrofit2.Response
 
@@ -76,10 +77,10 @@ class DownloadListViewModel @ViewModelInject constructor(
             val deleted = torrentsRepository.deleteTorrent(token, id)
             when (deleted) {
                 is Either.Left -> {
-                    //todo: add toast with error
+                    errorsLiveData.postEvent(listOf(deleted.a))
                 }
                 is Either.Right -> {
-                    deletedTorrentLiveData.postValue(Event(204))
+                    deletedTorrentLiveData.postEvent(204)
                 }
             }
         }
@@ -90,9 +91,9 @@ class DownloadListViewModel @ViewModelInject constructor(
             val token = credentialsRepository.getToken()
             val deleted = downloadRepository.deleteTorrent(token, id)
             if (deleted == null)
-                deletedDownloadLiveData.postValue(Event(-1))
+                deletedDownloadLiveData.postEvent(-1)
             else
-                deletedDownloadLiveData.postValue(Event(1))
+                deletedDownloadLiveData.postEvent(1)
         }
     }
 
