@@ -47,5 +47,5 @@ interface TorrentApiHelper {
     suspend fun deleteTorrent(
         token: String,
         id: String
-    ): Call<ResponseBody>
+    ): Response<Unit>
 }

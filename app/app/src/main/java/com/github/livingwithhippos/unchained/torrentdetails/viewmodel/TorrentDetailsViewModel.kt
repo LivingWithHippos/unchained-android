@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.Either
 import com.github.livingwithhippos.unchained.data.model.DownloadItem
+import com.github.livingwithhippos.unchained.data.model.EmptyBodyError
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkException
 import com.github.livingwithhippos.unchained.data.repositoy.CredentialsRepository
@@ -54,7 +55,14 @@ class TorrentDetailsViewModel @ViewModelInject constructor(
         viewModelScope.launch {
             val token = getToken()
             val deletedTorrentResponse = torrentsRepository.deleteTorrent(token, id)
-            deletedTorrentLiveData.postValue(Event(deletedTorrentResponse))
+            when (deletedTorrentResponse) {
+                is Either.Left -> {
+                    //todo: add toast with error
+                }
+                is Either.Right -> {
+                    deletedTorrentLiveData.postValue(Event(204))
+                }
+            }
         }
     }
 

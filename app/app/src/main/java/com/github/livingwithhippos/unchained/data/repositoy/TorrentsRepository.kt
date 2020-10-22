@@ -1,10 +1,9 @@
 package com.github.livingwithhippos.unchained.data.repositoy
 
 import android.util.Log
+import arrow.core.Either
 import com.github.livingwithhippos.unchained.BuildConfig
-import com.github.livingwithhippos.unchained.data.model.AvailableHost
-import com.github.livingwithhippos.unchained.data.model.TorrentItem
-import com.github.livingwithhippos.unchained.data.model.UploadedTorrent
+import com.github.livingwithhippos.unchained.data.model.*
 import com.github.livingwithhippos.unchained.data.remote.TorrentApiHelper
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
@@ -139,9 +138,9 @@ class TorrentsRepository @Inject constructor(private val torrentApiHelper: Torre
 
     }
 
-    suspend fun deleteTorrent(token: String, id: String): Int? {
+    suspend fun deleteTorrent(token: String, id: String): Either<UnchainedNetworkException, Unit> {
 
-        val responseCode = safeEmptyApiCall(
+        val response = eitherApiResult(
             call = {
                 torrentApiHelper.deleteTorrent(
                     token = "Bearer $token",
@@ -151,6 +150,6 @@ class TorrentsRepository @Inject constructor(private val torrentApiHelper: Torre
             errorMessage = "Error deleting Torrent"
         )
 
-        return responseCode
+        return response
     }
 }

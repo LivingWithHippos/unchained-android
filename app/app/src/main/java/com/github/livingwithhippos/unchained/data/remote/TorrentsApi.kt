@@ -88,9 +88,9 @@ interface TorrentsApi {
      * @param id the torrent ID, returned by addTorrent or getTorrentsList
      */
     @DELETE("torrents/delete/{id}")
-    fun deleteTorrent(
+    suspend fun deleteTorrent(
         @Header("Authorization") token: String,
         @Path("id") id: String,
-    ): Call<ResponseBody>
+    ): Response<Unit>
 
 }

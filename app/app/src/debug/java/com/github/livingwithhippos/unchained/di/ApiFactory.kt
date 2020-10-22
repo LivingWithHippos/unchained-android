@@ -1,5 +1,6 @@
 package com.github.livingwithhippos.unchained.di
 
+import com.github.livingwithhippos.unchained.data.model.EmptyBodyInterceptor
 import com.github.livingwithhippos.unchained.data.remote.AuthApiHelper
 import com.github.livingwithhippos.unchained.data.remote.AuthApiHelperImpl
 import com.github.livingwithhippos.unchained.data.remote.AuthenticationApi
@@ -59,7 +60,10 @@ object ApiFactory {
         }
 
         return OkHttpClient().newBuilder()
+            // logs all the calls, removed in the release channel
             .addInterceptor(logInterceptor)
+            // avoid issues with empty bodies on delete/put and 20x return codes
+            .addInterceptor(EmptyBodyInterceptor)
             .build()
     }
 
@@ -77,7 +81,7 @@ object ApiFactory {
     @ApiRetrofit
     fun apiRetrofit(okHttpClient: OkHttpClient): Retrofit {
         val moshi = Moshi.Builder()
-            .add(KotlinJsonAdapterFactory())
+            .addLast(KotlinJsonAdapterFactory())
             .build()
 
         return Retrofit.Builder()

@@ -5,7 +5,6 @@ import arrow.core.Either
 import com.github.livingwithhippos.unchained.BuildConfig
 import com.github.livingwithhippos.unchained.data.model.APIError
 import com.github.livingwithhippos.unchained.data.model.ApiConversionError
-import com.github.livingwithhippos.unchained.data.model.CompleteNetworkResponse
 import com.github.livingwithhippos.unchained.data.model.EmptyBodyError
 import com.github.livingwithhippos.unchained.data.model.NetworkError
 import com.github.livingwithhippos.unchained.data.model.NetworkResponse
@@ -64,50 +63,6 @@ open class BaseRepository {
         return NetworkResponse.Error(IOException("Error Occurred while getting api result, error : $errorMessage"))
     }
 
-    suspend fun safeEmptyApiCall(call: suspend () -> Call<ResponseBody>, errorMessage: String): Int? {
-
-        //fixme: this fun returns always -1
-        var responseCode = -1
-
-        val callback = object : Callback<ResponseBody> {
-            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                responseCode = response.code()
-            }
-
-            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                if (BuildConfig.DEBUG)
-                    Log.d("BaseRepository", "Error during safeEmptyApiCall: ${t.message}")
-            }
-        }
-
-        call.invoke().enqueue(callback)
-
-        return responseCode
-    }
-
-    suspend fun <T : Any> errorApiResult(
-        call: suspend () -> Response<T>,
-        errorMessage: String
-    ): CompleteNetworkResponse<T?, APIError?> {
-        val response = call.invoke()
-        return if (response.isSuccessful) {
-            val body = response.body()
-            if (body != null)
-                CompleteNetworkResponse.Success(body)
-            else
-                CompleteNetworkResponse.SuccessEmptyBody(response.code())
-        } else {
-            try {
-                val error: APIError? = jsonAdapter.fromJson(response.errorBody()!!.string())
-                CompleteNetworkResponse.RDError(error)
-            } catch (e: IOException) {
-                e.printStackTrace()
-                CompleteNetworkResponse.Error(errorMessage)
-            }
-        }
-
-    }
-
     suspend fun <T : Any> eitherApiResult(
         call: suspend () -> Response<T>,
         errorMessage: String
@@ -122,7 +77,7 @@ open class BaseRepository {
         } else {
             try {
                 val error: APIError? = jsonAdapter.fromJson(response.errorBody()!!.string())
-                return if (error!=null)
+                return if (error != null)
                     Either.Left(error)
                 else
                     Either.Left(ApiConversionError(-1))

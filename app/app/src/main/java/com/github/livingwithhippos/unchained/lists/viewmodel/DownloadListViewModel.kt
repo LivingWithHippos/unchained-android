@@ -15,6 +15,7 @@ import androidx.paging.cachedIn
 import androidx.paging.liveData
 import arrow.core.Either
 import com.github.livingwithhippos.unchained.data.model.DownloadItem
+import com.github.livingwithhippos.unchained.data.model.EmptyBodyError
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkException
 import com.github.livingwithhippos.unchained.data.repositoy.CredentialsRepository
@@ -26,6 +27,7 @@ import com.github.livingwithhippos.unchained.lists.model.TorrentPagingSource
 import com.github.livingwithhippos.unchained.lists.view.ListsTabFragment.Companion.TAB_DOWNLOADS
 import com.github.livingwithhippos.unchained.utilities.Event
 import kotlinx.coroutines.launch
+import retrofit2.Response
 
 /**
  * A [ViewModel] subclass.
@@ -72,7 +74,14 @@ class DownloadListViewModel @ViewModelInject constructor(
         viewModelScope.launch {
             val token = credentialsRepository.getToken()
             val deleted = torrentsRepository.deleteTorrent(token, id)
-            deletedTorrentLiveData.postValue(Event(deleted))
+            when (deleted) {
+                is Either.Left -> {
+                    //todo: add toast with error
+                }
+                is Either.Right -> {
+                    deletedTorrentLiveData.postValue(Event(204))
+                }
+            }
         }
     }
 
