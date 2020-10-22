@@ -26,7 +26,7 @@ class DownloadRepository @Inject constructor(private val downloadApiHelper: Down
 
     }
 
-    suspend fun deleteTorrent(token: String, id: String): Unit? {
+    suspend fun deleteDownload(token: String, id: String): Unit? {
 
         val response = safeApiCall(
             call = {

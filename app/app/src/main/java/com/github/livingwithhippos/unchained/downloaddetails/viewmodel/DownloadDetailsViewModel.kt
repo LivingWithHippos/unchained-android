@@ -37,7 +37,7 @@ class DownloadDetailsViewModel @ViewModelInject constructor(
     fun deleteDownload(id: String) {
         viewModelScope.launch {
             val token = credentialsRepository.getToken()
-            val deleted = downloadRepository.deleteTorrent(token, id)
+            val deleted = downloadRepository.deleteDownload(token, id)
             if (deleted == null)
                 deletedDownloadLiveData.postValue(Event(-1))
             else
