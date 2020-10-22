@@ -1,7 +1,6 @@
 package com.github.livingwithhippos.unchained.data.repositoy
 
 import arrow.core.Either
-import com.github.livingwithhippos.unchained.data.model.CompleteNetworkResponse
 import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkException
 import com.github.livingwithhippos.unchained.data.remote.UnrestrictApiHelper

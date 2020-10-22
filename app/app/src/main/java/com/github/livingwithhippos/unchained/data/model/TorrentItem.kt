@@ -77,7 +77,7 @@ data class TorrentItem(
     val speed: Int?,
     @Json(name = "seeders")
     val seeders: Int?
-): Parcelable {
+) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString()!!,
         parcel.readString()!!,
@@ -142,10 +142,10 @@ data class InnerTorrentFile(
     val bytes: Long,
     @Json(name = "selected")
     val selected: Int
-): Parcelable {
+) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readInt(),
-        parcel.readString()?: "",
+        parcel.readString() ?: "",
         parcel.readLong(),
         parcel.readInt()
     ) {
@@ -179,10 +179,10 @@ data class UploadedTorrent(
     val id: String,
     @Json(name = "uri")
     val uri: String
-): Parcelable {
+) : Parcelable {
     constructor(parcel: Parcel) : this(
-        parcel.readString()?: "",
-        parcel.readString()?: ""
+        parcel.readString() ?: "",
+        parcel.readString() ?: ""
     ) {
     }
 
@@ -212,7 +212,7 @@ data class AvailableHost(
     val host: String,
     @Json(name = "max_file_size")
     val maxFileSize: Int
-): Parcelable {
+) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString() ?: "",
         parcel.readInt()

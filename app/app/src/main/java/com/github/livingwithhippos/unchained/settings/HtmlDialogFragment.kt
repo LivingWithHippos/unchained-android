@@ -35,12 +35,12 @@ class HtmlDialogFragment : DialogFragment {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let {
 
-            if (title==null)
+            if (title == null)
                 title = viewModel.getTitleResource()
             else
                 viewModel.setTitleResource(title)
 
-            if (message==null)
+            if (message == null)
                 message = viewModel.getMessageResource()
             else
                 viewModel.setMessageResource(message)
@@ -54,7 +54,10 @@ class HtmlDialogFragment : DialogFragment {
             val view = inflater.inflate(R.layout.dialog_settings_plain, null)
             view.findViewById<TextView>(R.id.tvHeader).text = getString(title ?: R.string.error)
             view.findViewById<TextView>(R.id.tvMessage).text =
-                HtmlCompat.fromHtml(getString(message ?: R.string.error_loading_dialog), FROM_HTML_MODE_COMPACT)
+                HtmlCompat.fromHtml(
+                    getString(message ?: R.string.error_loading_dialog),
+                    FROM_HTML_MODE_COMPACT
+                )
 
             builder.setView(view)
                 .setNeutralButton(getString(R.string.close)) { dialog, _ ->

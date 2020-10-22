@@ -61,7 +61,8 @@ class DownloadListViewModel @ViewModelInject constructor(
             val token = credentialsRepository.getToken()
             val items = unrestrictRepository.getUnrestrictedLinkList(token, torrent.links)
             val values = items.filterIsInstance<Either.Right<DownloadItem>>().map { it.b }
-            val errors = items.filterIsInstance<Either.Left<UnchainedNetworkException>>().map { it.a }
+            val errors =
+                items.filterIsInstance<Either.Left<UnchainedNetworkException>>().map { it.a }
 
             downloadItemLiveData.postValue(Event(values))
             if (errors.isNotEmpty())
@@ -96,7 +97,7 @@ class DownloadListViewModel @ViewModelInject constructor(
     }
 
     fun setSelectedTab(tabID: Int) {
-        savedStateHandle.set(KEY_SELECTED_TAB,tabID)
+        savedStateHandle.set(KEY_SELECTED_TAB, tabID)
     }
 
     fun getSelectedTab(): Int {

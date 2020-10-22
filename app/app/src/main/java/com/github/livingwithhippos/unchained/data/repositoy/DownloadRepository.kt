@@ -2,10 +2,6 @@ package com.github.livingwithhippos.unchained.data.repositoy
 
 import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.data.remote.DownloadApiHelper
-import okhttp3.ResponseBody
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import javax.inject.Inject
 
 class DownloadRepository @Inject constructor(private val downloadApiHelper: DownloadApiHelper) :

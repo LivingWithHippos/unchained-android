@@ -1,17 +1,12 @@
 package com.github.livingwithhippos.unchained.settings
 
-import android.content.ComponentName
-import android.content.ServiceConnection
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.os.IBinder
 import androidx.fragment.app.viewModels
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
-import androidx.preference.SwitchPreference
 import com.github.livingwithhippos.unchained.R
-import com.github.livingwithhippos.unchained.data.service.ForegroundTorrentService
 import com.github.livingwithhippos.unchained.utilities.FEEDBACK_URL
 import com.github.livingwithhippos.unchained.utilities.GPLV3_URL
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
@@ -40,8 +35,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
             if (newValue != THEME_DAY && themePreference?.value == "tropical_sunset") {
                 context?.showToast(R.string.theme_day_support)
                 false
-            }
-            else
+            } else
                 true
         }
 

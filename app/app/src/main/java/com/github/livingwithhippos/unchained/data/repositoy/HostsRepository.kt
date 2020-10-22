@@ -54,14 +54,14 @@ class HostsRepository @Inject constructor(
 
         val regexps = mutableListOf<HostRegex>()
         regexps.addAll(hostRegexDao.getAllRegexps())
-        if (regexps.size < 10){
+        if (regexps.size < 10) {
             regexps.clear()
             regexps.addAll(updateHostsRegex())
         }
 
         // add the custom regexps
         if (addCustomRegexps)
-            regexps.addAll(CUSTOM_REGEXPS.map{HostRegex(it)})
+            regexps.addAll(CUSTOM_REGEXPS.map { HostRegex(it) })
 
         return regexps
 
@@ -89,13 +89,13 @@ class HostsRepository @Inject constructor(
         var newRegex = originalRegex
             .trim()
             .replace(
-            "/(http|https):\\/\\/",
-            "^https?:\\/\\/",
-            ignoreCase = true
-        )
+                "/(http|https):\\/\\/",
+                "^https?:\\/\\/",
+                ignoreCase = true
+            )
         if (newRegex[newRegex.lastIndex] == "/"[0])
-            // substring endIndex is not included
-            newRegex = newRegex.substring(0,newRegex.lastIndex)+"$"
+        // substring endIndex is not included
+            newRegex = newRegex.substring(0, newRegex.lastIndex) + "$"
         try {
             Pattern.compile(newRegex)
         } catch (e: PatternSyntaxException) {

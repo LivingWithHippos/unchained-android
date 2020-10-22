@@ -10,7 +10,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.viewModels
@@ -18,7 +17,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.forEach
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
@@ -42,7 +40,6 @@ import com.github.livingwithhippos.unchained.utilities.extension.setCustomTheme
 import com.github.livingwithhippos.unchained.utilities.extension.setupWithNavController
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import kotlinx.coroutines.launch
 
 
 /**
@@ -80,14 +77,16 @@ class MainActivity : UnchainedActivity() {
             setupBottomNavigationBar()
         } // Else, need to wait for onRestoreInstanceState
 
-        appBarConfiguration  = AppBarConfiguration(
+        appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.authentication_dest,
                 R.id.start_dest,
                 R.id.user_dest,
                 R.id.new_download_dest,
-                R.id.list_tabs_dest),
-            null)
+                R.id.list_tabs_dest
+            ),
+            null
+        )
 
         // manage the authentication state
         viewModel.authenticationState.observe(this, { state ->
@@ -119,7 +118,7 @@ class MainActivity : UnchainedActivity() {
             }
         })
 
-        disableBottomNavItems(R.id.navigation_new_download,R.id.navigation_lists)
+        disableBottomNavItems(R.id.navigation_new_download, R.id.navigation_lists)
         viewModel.fetchFirstWorkingCredentials()
 
         // check if the app has been opened by clicking on torrents/magnet on sharing links
@@ -247,10 +246,10 @@ class MainActivity : UnchainedActivity() {
             }
             null -> {
                 // could be because of the tap on a notification
-                intent.getStringExtra(KEY_TORRENT_ID)?.let{id ->
+                intent.getStringExtra(KEY_TORRENT_ID)?.let { id ->
 
                     viewModel.authenticationState.observeOnce(this, { auth ->
-                        if (auth.peekContent()==AuthenticationState.AUTHENTICATED || auth.peekContent()==AuthenticationState.AUTHENTICATED_NO_PREMIUM)
+                        if (auth.peekContent() == AuthenticationState.AUTHENTICATED || auth.peekContent() == AuthenticationState.AUTHENTICATED_NO_PREMIUM)
                             processTorrentNotificationIntent(id)
                     })
                 }
@@ -322,7 +321,11 @@ class MainActivity : UnchainedActivity() {
     private fun setupBottomNavigationBar() {
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_nav_view)
 
-        val navGraphIds = listOf(R.navigation.home_nav_graph, R.navigation.download_nav_graph, R.navigation.lists_nav_graph)
+        val navGraphIds = listOf(
+            R.navigation.home_nav_graph,
+            R.navigation.download_nav_graph,
+            R.navigation.lists_nav_graph
+        )
 
         // Setup the bottom navigation view with a list of navigation graphs
         val controller = bottomNavigationView.setupWithNavController(
@@ -352,7 +355,7 @@ class MainActivity : UnchainedActivity() {
         // if the user is pressing back on an "exiting"fragment, show a toast alerting him and wait for him to press back again for confirmation
         val navController = currentNavController?.value
 
-        if (navController!=null) {
+        if (navController != null) {
             val currentDestination = navController.currentDestination
             val previousDestination = navController.previousBackStackEntry
 

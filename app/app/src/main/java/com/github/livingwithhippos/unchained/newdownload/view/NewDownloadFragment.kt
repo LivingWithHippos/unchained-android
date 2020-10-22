@@ -213,7 +213,7 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
                     val errorCode = exception.errorCode ?: -2
                     // manage the api error result
                     when (exception.errorCode) {
-                        -1,1 -> context?.let {
+                        -1, 1 -> context?.let {
                             it.showToast(it.getApiErrorMessage(errorCode))
                         }
                         // since here we monitor new downloads, use a less generic, custom message

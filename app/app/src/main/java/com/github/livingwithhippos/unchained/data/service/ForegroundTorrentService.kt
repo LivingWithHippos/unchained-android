@@ -135,7 +135,7 @@ class ForegroundTorrentService : LifecycleService() {
 
 
         preferences.registerOnSharedPreferenceChangeListener { sharedPreferences, key ->
-            if (key==SettingsFragment.KEY_TORRENT_NOTIFICATIONS) {
+            if (key == SettingsFragment.KEY_TORRENT_NOTIFICATIONS) {
                 val enableTorrentNotifications = sharedPreferences.getBoolean(key, false)
                 if (!enableTorrentNotifications)
                     stopTorrentService()
@@ -163,7 +163,7 @@ class ForegroundTorrentService : LifecycleService() {
 
     private fun updateNotification(items: List<TorrentItem>) {
 
-        val notifications: MutableMap<String,Notification> =  mutableMapOf()
+        val notifications: MutableMap<String, Notification> = mutableMapOf()
 
         items.forEach { torrent ->
             torrentBuilder.setStyle(
@@ -227,7 +227,7 @@ class ForegroundTorrentService : LifecycleService() {
             // Add the intent, which inflates the back stack
             addNextIntentWithParentStack(resultIntent)
             // Get the PendingIntent containing the entire back stack
-            getPendingIntent( item.id.hashCode(), PendingIntent.FLAG_UPDATE_CURRENT)
+            getPendingIntent(item.id.hashCode(), PendingIntent.FLAG_UPDATE_CURRENT)
         }
 
         notificationManager.apply {
@@ -257,6 +257,6 @@ class ForegroundTorrentService : LifecycleService() {
         const val UPDATE_TIMING_SHORT: Long = 5000
         const val UPDATE_TIMING_LONG: Long = 30000
         const val SUMMARY_ID: Int = 21
-        const val  KEY_TORRENT_ID = "torrent_id_key"
+        const val KEY_TORRENT_ID = "torrent_id_key"
     }
 }

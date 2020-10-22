@@ -304,7 +304,7 @@ fun CardView.setBindingOnDownloadLongClickListener(
  * This can be used to paint it.
  */
 @BindingAdapter("refreshColorTheme")
-fun SwipeRefreshLayout.setRefreshThemeColor(themed: Boolean){
+fun SwipeRefreshLayout.setRefreshThemeColor(themed: Boolean) {
     if (themed) {
         // get a reference to the current theme
         val typedValue = TypedValue()

@@ -10,12 +10,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.livingwithhippos.unchained.data.model.AuthenticationState
 import com.github.livingwithhippos.unchained.data.model.Credentials
-import com.github.livingwithhippos.unchained.data.model.HostRegex
 import com.github.livingwithhippos.unchained.data.model.User
 import com.github.livingwithhippos.unchained.data.repositoy.AuthenticationRepository
 import com.github.livingwithhippos.unchained.data.repositoy.CredentialsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.HostsRepository
-import com.github.livingwithhippos.unchained.data.repositoy.TorrentsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.UserRepository
 import com.github.livingwithhippos.unchained.data.repositoy.VariousApiRepository
 import com.github.livingwithhippos.unchained.lists.view.ListsTabFragment
@@ -70,12 +68,12 @@ class MainActivityViewModel @ViewModelInject constructor(
             if (completeCredentials.isNotEmpty()) {
 
                 // step #1: test for private API token
-                completeCredentials.firstOrNull { it.deviceCode == PRIVATE_TOKEN }?.let{
+                completeCredentials.firstOrNull { it.deviceCode == PRIVATE_TOKEN }?.let {
                     user = checkCredentials(it)
                 }
                 // step #2: test for open source credentials
                 if (user == null) {
-                    completeCredentials.firstOrNull { it.deviceCode != PRIVATE_TOKEN }?.let{
+                    completeCredentials.firstOrNull { it.deviceCode != PRIVATE_TOKEN }?.let {
                         authRepository.refreshToken(it)?.let { token ->
                             val newCredentials = Credentials(
                                 it.deviceCode,

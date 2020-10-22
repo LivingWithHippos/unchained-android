@@ -3,15 +3,14 @@ package com.github.livingwithhippos.unchained.data.repositoy
 import android.util.Log
 import arrow.core.Either
 import com.github.livingwithhippos.unchained.BuildConfig
-import com.github.livingwithhippos.unchained.data.model.*
+import com.github.livingwithhippos.unchained.data.model.AvailableHost
+import com.github.livingwithhippos.unchained.data.model.TorrentItem
+import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkException
+import com.github.livingwithhippos.unchained.data.model.UploadedTorrent
 import com.github.livingwithhippos.unchained.data.remote.TorrentApiHelper
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
-import okhttp3.ResponseBody
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import javax.inject.Inject
 
 

@@ -18,7 +18,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.github.livingwithhippos.unchained.BuildConfig
 import com.github.livingwithhippos.unchained.R
@@ -155,7 +154,11 @@ fun <T, K> zipLiveData(t: LiveData<T>, k: LiveData<K>): LiveData<Pair<T, K>> {
     }
 }
 
-fun <T> LiveData<T>.observeOnce(lifecycleOwner: LifecycleOwner, observer: Observer<T>, untilNotNull:  Boolean = false) {
+fun <T> LiveData<T>.observeOnce(
+    lifecycleOwner: LifecycleOwner,
+    observer: Observer<T>,
+    untilNotNull: Boolean = false
+) {
     observe(lifecycleOwner, object : Observer<T> {
         override fun onChanged(t: T?) {
             observer.onChanged(t)
@@ -218,7 +221,7 @@ fun Context.getApiErrorMessage(errorCode: Int?): String {
 
 
 fun Context.getStatusTranslation(status: String): String {
-    return when(status) {
+    return when (status) {
         "magnet_error" -> getString(R.string.magnet_error)
         "magnet_conversion" -> getString(R.string.magnet_conversion)
         "waiting_files_selection" -> getString(R.string.waiting_files_selection)
@@ -234,7 +237,7 @@ fun Context.getStatusTranslation(status: String): String {
     }
 }
 
-fun Context.vibrate(duration: Long = 200){
+fun Context.vibrate(duration: Long = 200) {
     val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         vibrator.vibrate(VibrationEffect.createOneShot(duration, VibrationEffect.DEFAULT_AMPLITUDE))

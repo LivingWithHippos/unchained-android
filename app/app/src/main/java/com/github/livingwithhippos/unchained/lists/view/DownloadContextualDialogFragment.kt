@@ -13,7 +13,7 @@ import com.github.livingwithhippos.unchained.databinding.DialogDownloadItemBindi
 import com.github.livingwithhippos.unchained.lists.viewmodel.DownloadDialogViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
-class DownloadContextualDialogFragment: DialogFragment {
+class DownloadContextualDialogFragment : DialogFragment {
 
     private var item: DownloadItem? = null
 
@@ -45,7 +45,7 @@ class DownloadContextualDialogFragment: DialogFragment {
                 viewModel.setItem(item)
             }
 
-            if (item==null) {
+            if (item == null) {
                 item = viewModel.getItem()
                 title = item?.filename ?: ""
             }
@@ -56,7 +56,10 @@ class DownloadContextualDialogFragment: DialogFragment {
 
             binding.bConfirmDelete.setOnClickListener {
                 item?.let { download ->
-                    setFragmentResult("downloadActionKey", bundleOf("deletedDownloadKey" to download.id))
+                    setFragmentResult(
+                        "downloadActionKey",
+                        bundleOf("deletedDownloadKey" to download.id)
+                    )
                     dismiss()
                 }
             }
@@ -64,7 +67,10 @@ class DownloadContextualDialogFragment: DialogFragment {
             binding.bOpen.setOnClickListener {
 
                 item?.let { download ->
-                    setFragmentResult("downloadActionKey", bundleOf("openedDownloadItem" to download))
+                    setFragmentResult(
+                        "downloadActionKey",
+                        bundleOf("openedDownloadItem" to download)
+                    )
                     dismiss()
                 }
             }

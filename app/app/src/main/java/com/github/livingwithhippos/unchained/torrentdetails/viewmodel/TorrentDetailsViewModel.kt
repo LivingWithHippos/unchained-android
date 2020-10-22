@@ -69,13 +69,14 @@ class TorrentDetailsViewModel @ViewModelInject constructor(
     fun downloadTorrent() {
         viewModelScope.launch {
             val token = credentialsRepository.getToken()
-            torrentLiveData.value?.let {torrent ->
+            torrentLiveData.value?.let { torrent ->
                 val links = torrent.peekContent()?.links
                 if (links != null) {
                     val items = unrestrictRepository.getUnrestrictedLinkList(token, links)
 
                     val values = items.filterIsInstance<Either.Right<DownloadItem>>().map { it.b }
-                    val errors = items.filterIsInstance<Either.Left<UnchainedNetworkException>>().map { it.a }
+                    val errors = items.filterIsInstance<Either.Left<UnchainedNetworkException>>()
+                        .map { it.a }
 
                     // since the torrent want to open a download details page we oen only the first link
                     downloadLiveData.postEvent(values.firstOrNull())

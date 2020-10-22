@@ -12,20 +12,20 @@ data class APIError(
     val errorDetails: String?,
     @Json(name = "error_code")
     val errorCode: Int?
-): UnchainedNetworkException
+) : UnchainedNetworkException
 
 // todo: this has been resolved by adding an interceptor, change class name at least
 data class EmptyBodyError(
     val returnCode: Int
-): UnchainedNetworkException
+) : UnchainedNetworkException
 
 data class NetworkError(
     val error: Int,
     val message: String
-): UnchainedNetworkException
+) : UnchainedNetworkException
 
 data class ApiConversionError(
     val error: Int
-): UnchainedNetworkException
+) : UnchainedNetworkException
 
 interface UnchainedNetworkException

@@ -10,7 +10,7 @@ import coil.load
  */
 @BindingAdapter("imageURL")
 fun ImageView.loadImage(imageURL: String?) {
-    this.load(imageURL){
+    this.load(imageURL) {
         crossfade(true)
     }
 }

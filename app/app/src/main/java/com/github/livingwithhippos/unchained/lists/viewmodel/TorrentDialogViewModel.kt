@@ -10,7 +10,7 @@ class TorrentDialogViewModel @ViewModelInject constructor(
     @Assisted private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    fun setItem(item: TorrentItem?){
+    fun setItem(item: TorrentItem?) {
         item.let {
             savedStateHandle.set(KEY_ITEM, it)
         }

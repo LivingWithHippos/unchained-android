@@ -68,7 +68,7 @@ class UnchainedApplication : Application() {
         }
     }
 
-        companion object {
-            const val CHANNEL_ID = "unchained_torrent_channel"
-        }
+    companion object {
+        const val CHANNEL_ID = "unchained_torrent_channel"
+    }
 }

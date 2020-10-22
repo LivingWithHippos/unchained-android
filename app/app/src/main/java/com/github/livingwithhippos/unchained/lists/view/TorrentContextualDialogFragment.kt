@@ -1,11 +1,9 @@
 package com.github.livingwithhippos.unchained.lists.view
 
 import android.app.Dialog
-import android.content.Context
 import android.os.Bundle
 import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import com.github.livingwithhippos.unchained.R
@@ -46,7 +44,7 @@ class TorrentContextualDialogFragment : DialogFragment {
                 viewModel.setItem(item)
             }
 
-            if (item==null) {
+            if (item == null) {
                 item = viewModel.getItem()
                 title = item?.filename ?: ""
             }
@@ -57,21 +55,30 @@ class TorrentContextualDialogFragment : DialogFragment {
 
             binding.bConfirmDelete.setOnClickListener {
                 item?.let { torrent ->
-                    setFragmentResult("torrentActionKey", bundleOf("deletedTorrentKey" to torrent.id))
+                    setFragmentResult(
+                        "torrentActionKey",
+                        bundleOf("deletedTorrentKey" to torrent.id)
+                    )
                     dismiss()
                 }
             }
 
             binding.bOpen.setOnClickListener {
                 item?.let { torrent ->
-                    setFragmentResult("torrentActionKey", bundleOf("openedTorrentItem" to torrent.id))
+                    setFragmentResult(
+                        "torrentActionKey",
+                        bundleOf("openedTorrentItem" to torrent.id)
+                    )
                     dismiss()
                 }
             }
 
             binding.bDownload.setOnClickListener {
                 item?.let { torrent ->
-                    setFragmentResult("torrentActionKey", bundleOf("downloadedTorrentItem" to torrent))
+                    setFragmentResult(
+                        "torrentActionKey",
+                        bundleOf("downloadedTorrentItem" to torrent)
+                    )
                     dismiss()
                 }
             }

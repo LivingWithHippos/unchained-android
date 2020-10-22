@@ -94,7 +94,7 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
         }, true)
 
         viewModel.torrentLiveData.observe(viewLifecycleOwner, {
-            it.getContentIfNotHandled()?.let {torrent ->
+            it.getContentIfNotHandled()?.let { torrent ->
                 torrentBinding.torrent = torrent
                 if (loadingStatusList.contains(torrent.status))
                     fetchTorrent()
@@ -118,9 +118,11 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
         }
 
         viewModel.downloadLiveData.observe(viewLifecycleOwner, {
-            it.getContentIfNotHandled()?.let {download ->
+            it.getContentIfNotHandled()?.let { download ->
                 val action =
-                    TorrentDetailsFragmentDirections.actionTorrentDetailsToDownloadDetailsDest(download)
+                    TorrentDetailsFragmentDirections.actionTorrentDetailsToDownloadDetailsDest(
+                        download
+                    )
                 findNavController().navigate(action)
             }
         })
@@ -163,7 +165,7 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
     }
 
     override fun onDownloadClick(links: List<String>) {
-        if (links.size>1)
+        if (links.size > 1)
             context?.showToast(R.string.multiple_links_warning)
 
         viewModel.downloadTorrent()

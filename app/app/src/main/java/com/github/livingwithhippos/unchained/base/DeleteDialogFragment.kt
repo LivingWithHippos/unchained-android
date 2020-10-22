@@ -9,7 +9,7 @@ import androidx.fragment.app.setFragmentResult
 import com.github.livingwithhippos.unchained.R
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
-class DeleteDialogFragment: DialogFragment() {
+class DeleteDialogFragment : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let {

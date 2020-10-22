@@ -11,9 +11,6 @@ import com.github.livingwithhippos.unchained.data.model.NetworkResponse
 import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkException
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
-import okhttp3.ResponseBody
-import retrofit2.Call
-import retrofit2.Callback
 import retrofit2.Response
 import java.io.IOException
 

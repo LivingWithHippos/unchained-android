@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.Either
 import com.github.livingwithhippos.unchained.BuildConfig
-import com.github.livingwithhippos.unchained.data.model.APIError
 import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkException
 import com.github.livingwithhippos.unchained.data.model.UploadedTorrent
@@ -40,9 +39,9 @@ class NewDownloadViewModel @ViewModelInject constructor(
     fun fetchUnrestrictedLink(link: String, password: String?, remote: Int? = null) {
         viewModelScope.launch {
             val token = getToken()
-                val response =
-                    unrestrictRepository.getEitherUnrestrictedLink(token, link, password, remote)
-            when(response) {
+            val response =
+                unrestrictRepository.getEitherUnrestrictedLink(token, link, password, remote)
+            when (response) {
                 is Either.Left -> networkExceptionLiveData.postValue(Event(response.a))
                 is Either.Right -> linkLiveData.postValue(Event(response.b))
             }

@@ -22,22 +22,24 @@ object NotificationModule {
     @TorrentNotification
     fun provideTorrentNotificationBuilder(
         @ApplicationContext applicationContext: Context
-    ): NotificationCompat.Builder = NotificationCompat.Builder(applicationContext, UnchainedApplication.CHANNEL_ID)
-        .setSmallIcon(R.drawable.logo_no_background)
-        .setPriority(NotificationCompat.PRIORITY_LOW)
-        .setGroup(ForegroundTorrentService.GROUP_KEY_TORRENTS)
+    ): NotificationCompat.Builder =
+        NotificationCompat.Builder(applicationContext, UnchainedApplication.CHANNEL_ID)
+            .setSmallIcon(R.drawable.logo_no_background)
+            .setPriority(NotificationCompat.PRIORITY_LOW)
+            .setGroup(ForegroundTorrentService.GROUP_KEY_TORRENTS)
 
     @ServiceScoped
     @Provides
     @SummaryNotification
     fun provideSummaryNotificationBuilder(
         @ApplicationContext applicationContext: Context
-    ): NotificationCompat.Builder = NotificationCompat.Builder(applicationContext, UnchainedApplication.CHANNEL_ID)
-        .setSmallIcon(R.drawable.logo_no_background)
-        .setContentTitle(applicationContext.getString(R.string.monitor_torrents_download))
-        .setPriority(NotificationCompat.PRIORITY_LOW)
-        .setGroup(ForegroundTorrentService.GROUP_KEY_TORRENTS)
-        .setGroupSummary(true)
+    ): NotificationCompat.Builder =
+        NotificationCompat.Builder(applicationContext, UnchainedApplication.CHANNEL_ID)
+            .setSmallIcon(R.drawable.logo_no_background)
+            .setContentTitle(applicationContext.getString(R.string.monitor_torrents_download))
+            .setPriority(NotificationCompat.PRIORITY_LOW)
+            .setGroup(ForegroundTorrentService.GROUP_KEY_TORRENTS)
+            .setGroupSummary(true)
 
     @ServiceScoped
     @Provides

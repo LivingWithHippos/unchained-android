@@ -15,9 +15,10 @@ sealed class NetworkResponse<out T : Any> {
     data class Error(val exception: Exception) : NetworkResponse<Nothing>()
 }
 
-sealed class CompleteNetworkResponse<out T : Any?, out U: APIError?> {
+sealed class CompleteNetworkResponse<out T : Any?, out U : APIError?> {
     data class Success<out T : Any>(val data: T) : CompleteNetworkResponse<T, Nothing>()
     data class SuccessEmptyBody(val code: Int) : CompleteNetworkResponse<Nothing, Nothing>()
     data class Error(val errorMessage: String) : CompleteNetworkResponse<Nothing, Nothing>()
-    data class RDError<out U: APIError?>(val error: U) : CompleteNetworkResponse<Nothing, APIError?>()
+    data class RDError<out U : APIError?>(val error: U) :
+        CompleteNetworkResponse<Nothing, APIError?>()
 }
