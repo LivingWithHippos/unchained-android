@@ -52,7 +52,7 @@ fun ImageView.startAnimation(start: Boolean) {
 @BindingAdapter("adapter")
 fun AutoCompleteTextView.setAdapter(contents: List<String>) {
     // a simple layout is set for the dropdown items
-    val adapter = ArrayAdapter(this.context, R.layout.dropdown_plain_item, contents)
+    val adapter = ArrayAdapter(this.context, R.layout.item_dropdown_plain, contents)
     this.setAdapter(adapter)
 }
 
