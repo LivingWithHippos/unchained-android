@@ -26,7 +26,7 @@
     <string name="no">No</string>
     <string name="unrestrict">Sblocca</string>
     <string name="invalid_url">URL non valido</string>
-    <string name="loading">Caricando</string>
+    <string name="loading">Caricamento</string>
     <string name="copy">Copia</string>
     <string name="open_link">Apri link</string>
     <string name="copy_link">Copia link</string>
@@ -43,7 +43,7 @@
     <string name="private_token">"Codice privato "</string>
     <string name="invalid_token">Per favore controlla il codice</string>
     <string name="download_details">Dettagli Download</string>
-    <string name="authenticate">Autentica</string>
+    <string name="authenticate">Autenticazione</string>
     <string name="upload_torrent">Carica torrent</string>
     <string name="error_loading_torrent">Nessun torrent caricato</string>
     <string name="link_or_magnet">Link o Magnet</string>
