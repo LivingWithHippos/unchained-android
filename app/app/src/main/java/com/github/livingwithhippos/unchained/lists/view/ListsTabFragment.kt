@@ -1,7 +1,11 @@
 package com.github.livingwithhippos.unchained.lists.view
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.setFragmentResultListener
@@ -11,6 +15,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.PagingData
 import com.github.livingwithhippos.unchained.R
+import com.github.livingwithhippos.unchained.base.DeleteDialogFragment
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.data.model.APIError
 import com.github.livingwithhippos.unchained.data.model.ApiConversionError
@@ -254,6 +259,20 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
         listBinding.tabs.getTabAt(viewModel.getSelectedTab())?.select()
 
         return listBinding.root
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.lists_bar, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.search -> {
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     override fun onClick(item: DownloadItem) {
