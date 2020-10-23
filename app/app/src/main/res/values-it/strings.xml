@@ -206,4 +206,6 @@
     <string name="enable_torrent_monitoring_title">Abilita controllo torrent</string>
     <string name="alternative_link">Link alternativo</string>
     <string name="parsing_error">Errore durante l\'elaborazione della risposta dal server</string>
+    <string name="content_description_search">Filtra le liste</string>
+    <string name="search">Cerca</string>
 </resources>
