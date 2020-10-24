@@ -43,20 +43,18 @@ class DownloadListViewModel @ViewModelInject constructor(
 
     private val queryLiveData = MutableLiveData<String>()
 
-    // note: this value (pageSize) is triplicated when the first call is made. Yes it does, no I don't know why.
-    private val pagingConfig = PagingConfig(pageSize = 10)
+    val downloadsLiveData: LiveData<PagingData<DownloadItem>> = Transformations.switchMap(queryLiveData) { query: String ->
+        // note: this value (pageSize) is triplicated when the first call is made. Yes it does, no I don't know why.
+        Pager(PagingConfig(pageSize = 10)) {
+            DownloadPagingSource(downloadRepository, credentialsRepository, query)
+        }.liveData.cachedIn(viewModelScope)
+    }
 
-    val downloadsLiveData: LiveData<PagingData<DownloadItem>> = Transformations.switchMap(
-            queryLiveData
-        ) { query: String ->
-            Pager(pagingConfig) {
-                DownloadPagingSource(downloadRepository, credentialsRepository, query)
-            }.liveData.cachedIn(viewModelScope)
-        }
-
-    val torrentsLiveData: LiveData<PagingData<TorrentItem>> = Pager(PagingConfig(pageSize = 10)) {
-        TorrentPagingSource(torrentsRepository, credentialsRepository)
-    }.liveData.cachedIn(viewModelScope)
+    val torrentsLiveData: LiveData<PagingData<TorrentItem>> = Transformations.switchMap(queryLiveData) { query: String ->
+        Pager(PagingConfig(pageSize = 10)) {
+            TorrentPagingSource(torrentsRepository, credentialsRepository, query)
+        }.liveData.cachedIn(viewModelScope)
+    }
 
     val errorsLiveData = MutableLiveData<Event<List<UnchainedNetworkException>>>()
 
