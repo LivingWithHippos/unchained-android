@@ -49,6 +49,7 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
     //todo: rename viewModel/fragment to ListTab or DownloadLists
     private val viewModel: DownloadListViewModel by viewModels()
 
+    // used to simulate a debounce effect while typing on the search bar
     var queryJob: Job? = null
 
     override fun onCreateView(
@@ -258,6 +259,7 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
             }
         })
 
+        // without this the lists won't get initialized
         viewModel.setListFilter("")
 
         listBinding.tabs.getTabAt(viewModel.getSelectedTab())?.select()
@@ -277,13 +279,17 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
 
         val searchItem = menu.findItem(R.id.search)
         val searchView = searchItem.actionView as SearchView
+        // listens to the user typing in the search bar
+
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            // since there is a 500ms delay on new queries, this will help if the user types something and press search in less than half sec. May be unnecessary. The value is checked anyway in the viewmodel to avoid reloading with the same query as the last one.
             override fun onQueryTextSubmit(query: String?): Boolean {
                 viewModel.setListFilter(query)
                 return true
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
+                // simulate debounce
                 queryJob?.cancel()
 
                 queryJob = lifecycleScope.launch {

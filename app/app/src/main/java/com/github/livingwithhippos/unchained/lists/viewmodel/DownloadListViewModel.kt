@@ -41,10 +41,11 @@ class DownloadListViewModel @ViewModelInject constructor(
     private val unrestrictRepository: UnrestrictRepository
 ) : ViewModel() {
 
+    // stores the last query value
     private val queryLiveData = MutableLiveData<String>()
 
+    // items are filtered returning only if their names contain the query
     val downloadsLiveData: LiveData<PagingData<DownloadItem>> = Transformations.switchMap(queryLiveData) { query: String ->
-        // note: this value (pageSize) is triplicated when the first call is made. Yes it does, no I don't know why.
         Pager(PagingConfig(pageSize = 50)) {
             DownloadPagingSource(downloadRepository, credentialsRepository, query)
         }.liveData.cachedIn(viewModelScope)
@@ -112,7 +113,7 @@ class DownloadListViewModel @ViewModelInject constructor(
     }
 
     fun setListFilter(query: String?) {
-        // we don't check for cases but we could
+        // Avoid updating the lists if the query hasn't changed. We don't check for cases but we could
         if (queryLiveData.value != query)
             queryLiveData.postValue(query?.trim() ?: "")
     }
