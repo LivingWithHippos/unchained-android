@@ -82,7 +82,6 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
 
         viewModel.torrentLiveData.observe(viewLifecycleOwner, {
             it.getContentIfNotHandled()?.let { torrent ->
-                context?.showToast(R.string.loading_torrent)
                 // new torrent item, alert the list fragment that it needs updating
                 activityViewModel.setListState(ListsTabFragment.ListState.UPDATE_TORRENT)
                 val action =
@@ -101,6 +100,7 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
                 val link: String = downloadBinding.tiLink.text.toString().trim()
                 when {
                     link.isWebUrl() -> {
+                        context?.showToast(R.string.loading_host_link)
                         downloadBinding.bUnrestrict.isEnabled = false
                         downloadBinding.bLoadTorrent.isEnabled = false
 
@@ -119,6 +119,7 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
                         )
                     }
                     link.isMagnet() -> {
+                        context?.showToast(R.string.loading_magnet_link)
                         downloadBinding.bUnrestrict.isEnabled = false
                         downloadBinding.bLoadTorrent.isEnabled = false
                         viewModel.fetchAddedMagnet(link)
