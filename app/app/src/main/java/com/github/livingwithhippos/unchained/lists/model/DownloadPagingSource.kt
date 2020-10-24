@@ -12,7 +12,8 @@ private const val DOWNLOAD_STARTING_PAGE_INDEX = 1
 
 class DownloadPagingSource(
     private val downloadRepository: DownloadRepository,
-    private val credentialsRepository: CredentialsRepository
+    private val credentialsRepository: CredentialsRepository,
+    private val query: String,
 ) : PagingSource<Int, DownloadItem>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, DownloadItem> {
@@ -22,7 +23,12 @@ class DownloadPagingSource(
             throw IllegalArgumentException("Error loading token: $token")
 
         return try {
-            val response = downloadRepository.getDownloads(token, null, page, params.loadSize)
+            val response =
+                if (query.isBlank())
+                    downloadRepository.getDownloads(token, null, page, params.loadSize)
+                else
+                    downloadRepository.getDownloads(token, null, page, params.loadSize)
+                        .filter { it.filename.contains(query, ignoreCase = true) }
 
             LoadResult.Page(
                 data = response,

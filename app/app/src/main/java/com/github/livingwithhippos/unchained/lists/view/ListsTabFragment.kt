@@ -1,6 +1,5 @@
 package com.github.livingwithhippos.unchained.lists.view
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -8,6 +7,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -15,7 +15,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.PagingData
 import com.github.livingwithhippos.unchained.R
-import com.github.livingwithhippos.unchained.base.DeleteDialogFragment
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.data.model.APIError
 import com.github.livingwithhippos.unchained.data.model.ApiConversionError
@@ -32,6 +31,7 @@ import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.github.livingwithhippos.unchained.utilities.extension.verticalScrollToPosition
 import com.google.android.material.tabs.TabLayout
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -46,8 +46,10 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
         UPDATE_TORRENT, UPDATE_DOWNLOAD, READY
     }
 
-    //todo: rename viewModel to ListTabViewModel
+    //todo: rename viewModel/fragment to ListTab or DownloadLists
     private val viewModel: DownloadListViewModel by viewModels()
+
+    var queryJob: Job? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -256,14 +258,43 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
             }
         })
 
+        viewModel.setListFilter("")
+
         listBinding.tabs.getTabAt(viewModel.getSelectedTab())?.select()
 
         return listBinding.root
     }
 
+    // menu-related functions
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.lists_bar, menu)
         super.onCreateOptionsMenu(menu, inflater)
+
+        val searchItem = menu.findItem(R.id.search)
+        val searchView = searchItem.actionView as SearchView
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                viewModel.setListFilter(query)
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                queryJob?.cancel()
+
+                queryJob = lifecycleScope.launch {
+                    delay(500)
+                    viewModel.setListFilter(newText)
+                }
+                return true
+            }
+
+        })
+
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
