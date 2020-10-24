@@ -167,8 +167,7 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
             }
         })
 
-        viewModel.downloadItemLiveData.observe(viewLifecycleOwner, EventObserver {
-            it?.let { links ->
+        viewModel.downloadItemLiveData.observe(viewLifecycleOwner, EventObserver { links ->
                 if (!links.isNullOrEmpty()) {
                     // switch to download tab
                     listBinding.tabs.getTabAt(TAB_DOWNLOADS)?.select()
@@ -177,7 +176,6 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
                     // refresh items, when returned they'll stop the animation
                     downloadAdapter.refresh()
                 }
-            }
         })
 
 

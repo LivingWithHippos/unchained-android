@@ -1,19 +1,19 @@
 <resources>
     <string name="app_name" translatable="false">Unchained</string>
     <string name="loading_auth_link">Loading Authentication…</string>
-    <string name="please_go">Please go on</string>
+    <string name="please_visit">Please visit\u0020</string>
     <string name="link">Link</string>
-    <string name="insert_code">And Insert Code</string>
-    <string name="copy_code">Copy Code</string>
-    <string name="code_copied">Code Copied To Clipboard</string>
+    <string name="using_code">using the code</string>
+    <string name="copy_code">Copy code</string>
+    <string name="code_copied">Code copied to clipboard</string>
     <string name="or_visit">Or directly visit</string>
-    <string name="waiting_user_auth">Waiting User Authorization</string>
-    <string name="obtained_user_auth">Obtained User Authorization</string>
+    <string name="waiting_user_auth">Waiting user authorization</string>
+    <string name="obtained_user_auth">Obtained user authorization</string>
     <string name="waiting_secret">Waiting Secret</string>
-    <string name="waiting_token">Waiting Token</string>
-    <string name="obtained_token">Obtained Token</string>
-    <string name="waiting_link">Loading Authorization Link</string>
-    <string name="link_loaded">Authorization Link Loaded</string>
+    <string name="waiting_token">Waiting token confirmation</string>
+    <string name="obtained_token">Obtained token</string>
+    <string name="waiting_link">Loading authorization link</string>
+    <string name="link_loaded">Authorization link loaded</string>
     <string name="premium">Premium</string>
     <string name="not_premium">Not Premium</string>
     <string name="premium_points_format">Premium Points: %1$d/1000</string>
@@ -429,4 +429,7 @@
     <string name="decline">Decline</string>
     <string name="accept">Accept</string>
     <string name="referral_proposal">You can support this app by navigating to your account page by using a referral link. We\'ll bother you only once; you can change your choice in the settings.</string>
+    <string name="to_authenticate">\u0020to get authenticated\u0020</string>
+    <string name="this_link">this link</string>
+    <string name="login_message_placeholder">Please visit this link to get authenticated</string>
 </resources>

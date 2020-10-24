@@ -1,6 +1,11 @@
 package com.github.livingwithhippos.unchained.authentication.view
 
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.text.style.ForegroundColorSpan
+import android.text.style.UnderlineSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +20,8 @@ import com.github.livingwithhippos.unchained.databinding.FragmentAuthenticationB
 import com.github.livingwithhippos.unchained.utilities.EventObserver
 import com.github.livingwithhippos.unchained.utilities.extension.copyToClipboard
 import com.github.livingwithhippos.unchained.utilities.extension.getClipboardText
+import com.github.livingwithhippos.unchained.utilities.extension.getThemeColor
+import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.google.android.material.textfield.TextInputEditText
 import dagger.hilt.android.AndroidEntryPoint
@@ -38,6 +45,10 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
         //todo: add loading gif
 
         authBinding.listener = this
+
+        authBinding.loginMessageDirect = getLoginMessage(LOGIN_TYPE_DIRECT)
+        authBinding.loginMessageIndirect = getLoginMessage(LOGIN_TYPE_INDIRECT)
+
 
         //open source client id observers:
 
@@ -103,6 +114,25 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
         return authBinding.root
     }
 
+    private fun getLoginMessage(type: Int): SpannableStringBuilder {
+        val sb = SpannableStringBuilder()
+
+        sb.append(getString(R.string.please_visit))
+
+        val link = SpannableString(getString(R.string.this_link))
+        link.setSpan(UnderlineSpan(), 0, link.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        val colorSecondary = requireContext().getThemeColor(R.attr.colorSecondary)
+        link.setSpan(ForegroundColorSpan(colorSecondary), 0, link.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        sb.append(link)
+
+        sb.append(getString(R.string.to_authenticate))
+
+        if (type == LOGIN_TYPE_INDIRECT)
+            sb.append(getString(R.string.using_code))
+
+        return sb
+    }
+
     override fun onCopyClick(text: String) {
         copyToClipboard("real-debrid authorization code", text)
         context?.showToast(R.string.code_copied)
@@ -123,10 +153,20 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
         codeInputField.setText(pasteText, TextView.BufferType.EDITABLE)
     }
 
+    override fun onOpenLinkClick(url: String) {
+        openExternalWebPage(url)
+    }
+
+    companion object {
+        const val LOGIN_TYPE_DIRECT = 0
+        const val LOGIN_TYPE_INDIRECT = 1
+    }
+
 }
 
 interface ButtonListener {
     fun onCopyClick(text: String)
     fun onSaveCodeClick(codeInputField: TextInputEditText)
     fun onPasteCodeClick(codeInputField: TextInputEditText)
+    fun onOpenLinkClick(url: String)
 }
