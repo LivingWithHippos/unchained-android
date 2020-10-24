@@ -147,35 +147,44 @@
             android:autoLink="web"
             android:text="@string/add_private_token_message"
             android:textAlignment="center"
-            app:layout_constraintBottom_toTopOf="@id/etLink"
+            app:layout_constraintBottom_toTopOf="@id/tfPrivateCode"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/cbToken" />
 
-        <EditText
-            android:id="@+id/etLink"
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tfPrivateCode"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
-            android:ems="10"
             android:hint="@string/private_token"
-            android:textAlignment="center"
             android:importantForAutofill="no"
-            android:inputType="textPersonName"
+            app:endIconMode="clear_text"
             app:layout_constraintBottom_toTopOf="@id/bInsertPrivate"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvUsePrivateToken" />
+            app:layout_constraintTop_toBottomOf="@id/tvUsePrivateToken"
+           >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tiPrivateCode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:singleLine="true" />
+
+        </com.google.android.material.textfield.TextInputLayout>
 
         <Button
             android:id="@+id/bInsertPrivate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="@{() -> listener.onInsertTokenClick(etLink)}"
+            android:onClick="@{() -> listener.onInsertTokenClick(tiPrivateCode)}"
             android:text="@string/save"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/etLink" />
+            app:layout_constraintTop_toBottomOf="@id/tfPrivateCode" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

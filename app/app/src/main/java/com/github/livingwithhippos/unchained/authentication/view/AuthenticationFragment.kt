@@ -15,6 +15,7 @@ import com.github.livingwithhippos.unchained.databinding.FragmentAuthenticationB
 import com.github.livingwithhippos.unchained.utilities.EventObserver
 import com.github.livingwithhippos.unchained.utilities.extension.copyToClipboard
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
+import com.google.android.material.textfield.TextInputEditText
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -106,9 +107,8 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
         context?.showToast(R.string.code_copied)
     }
 
-    override fun onInsertTokenClick(etToken: EditText) {
-        //todo: rename all these references to privateKey or something like that to avoid confusion with token from open source client id
-        val token = etToken.text.toString().trim()
+    override fun onInsertTokenClick(inputField: TextInputEditText) {
+        val token: String = inputField.text.toString().trim()
         // mine is 52 characters
         if (token.length < 40)
             context?.showToast(R.string.invalid_token)
@@ -121,5 +121,5 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
 
 interface ButtonListener {
     fun onCopyClick(text: String)
-    fun onInsertTokenClick(etToken: EditText)
+    fun onInsertTokenClick(inputField: TextInputEditText)
 }
