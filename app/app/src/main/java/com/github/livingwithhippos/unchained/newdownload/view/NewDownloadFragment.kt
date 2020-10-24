@@ -239,9 +239,6 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
                     // todo: alert the user according to the different network error
                     context?.showToast(R.string.network_error)
                 }
-                // already handled
-                null -> {
-                }
             }
         })
 

@@ -57,7 +57,10 @@ android {
          * used with a local file
          * needs to be commented out otherwise circleci will try to process this, fail to find the storeFile and crash
         local {
-            storeFile file(keyProperties['releaseStoreFile'])
+            // windows
+            // storeFile file(keyProperties['releaseStoreFile'])
+            // linux
+            storeFile file("/home/user/.keystore/release.pfk")
             storePassword keyProperties['releaseStorePassword']
             keyAlias keyProperties['keyAlias']
             keyPassword keyProperties['releaseStorePassword']
@@ -85,7 +88,7 @@ android {
 
         release {
 
-            signingConfig signingConfigs.release
+            signingConfig signingConfigs.local
 
             debuggable false
 
