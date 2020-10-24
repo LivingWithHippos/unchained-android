@@ -82,8 +82,7 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
                 downloadAdapter.submitData(it)
                 if (listBinding.srLayout.isRefreshing) {
                     listBinding.srLayout.isRefreshing = false
-                    delayedListScrolling(listBinding.rvDownloadList.layoutManager)
-                    //todo: add ripple animation on item at position 0 if possible, see [runRippleAnimation]
+                    delayedListScrolling(listBinding.rvDownloadList)
                 }
 
             }
@@ -94,7 +93,7 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
                 torrentAdapter.submitData(it)
                 if (listBinding.srLayout.isRefreshing) {
                     listBinding.srLayout.isRefreshing = false
-                    delayedListScrolling(listBinding.rvTorrentList.layoutManager)
+                    delayedListScrolling(listBinding.rvTorrentList)
                 }
             }
         }
@@ -189,14 +188,14 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
                     lifecycleScope.launch{
                         delay(300L)
                         downloadAdapter.refresh()
-                        delayedListScrolling(listBinding.rvDownloadList.layoutManager)
+                        delayedListScrolling(listBinding.rvDownloadList)
                     }
                 }
                 ListState.UPDATE_TORRENT -> {
                     lifecycleScope.launch {
                         delay(300L)
                         torrentAdapter.refresh()
-                        delayedListScrolling(listBinding.rvTorrentList.layoutManager)
+                        delayedListScrolling(listBinding.rvTorrentList)
                     }
                 }
                 ListState.READY -> {
@@ -356,8 +355,8 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
         dialog.show(parentFragmentManager, "TorrentContextualDialogFragment")
     }
 
-    private fun delayedListScrolling(layoutManager: RecyclerView.LayoutManager?, delay: Long = 300) {
-        layoutManager?.let{
+    private fun delayedListScrolling(recyclerView: RecyclerView, delay: Long = 300) {
+        recyclerView.layoutManager?.let{
             lifecycleScope.launch {
                 // this delay is needed to activate the scrolling, otherwise it won't work. It probably depends on the device.
                 delay(delay)
