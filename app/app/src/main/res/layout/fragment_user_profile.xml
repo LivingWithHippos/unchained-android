@@ -190,13 +190,13 @@
             android:autoLink="web"
             android:textAlignment="center"
             android:text="@string/rd_settings_link_description"
-            app:layout_constraintBottom_toTopOf="@+id/bPremium"
+            app:layout_constraintBottom_toTopOf="@+id/bAccount"
             app:layout_constraintStart_toStartOf="@id/cvPremium"
             app:layout_constraintEnd_toEndOf="@id/cvPremium"
             app:layout_constraintTop_toBottomOf="@id/divider" />
 
         <Button
-            android:id="@+id/bPremium"
+            android:id="@+id/bAccount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/account_page"
@@ -212,7 +212,7 @@
             android:text="@string/logout"
             android:backgroundTint="?attr/colorSecondary"
             android:textColor="?attr/colorOnSecondary"
-            app:layout_constraintBottom_toBottomOf="@id/bPremium"
+            app:layout_constraintBottom_toBottomOf="@id/bAccount"
             app:layout_constraintEnd_toEndOf="@id/cvPremium"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>

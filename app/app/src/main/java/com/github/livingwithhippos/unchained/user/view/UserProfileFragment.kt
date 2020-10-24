@@ -46,7 +46,7 @@ class UserProfileFragment : UnchainedFragment() {
             }
         })
 
-        userBinding.bPremium.setOnClickListener {
+        userBinding.bAccount.setOnClickListener {
             //todo: ask user and either load the referral link
             // or the premium page, add to settings fragment
             openExternalWebPage(REFERRAL_LINK)
