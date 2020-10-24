@@ -82,11 +82,7 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
                 downloadAdapter.submitData(it)
                 if (listBinding.srLayout.isRefreshing) {
                     listBinding.srLayout.isRefreshing = false
-                    // this delay is needed to activate the scrolling, otherwise it won't work. Even 150L was not enough.
-                    delay(200)
-                    listBinding.rvDownloadList.layoutManager?.verticalScrollToPosition(
-                        requireContext()
-                    )
+                    delayedListScrolling(listBinding.rvDownloadList.layoutManager)
                     //todo: add ripple animation on item at position 0 if possible, see [runRippleAnimation]
                 }
 
@@ -98,7 +94,7 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
                 torrentAdapter.submitData(it)
                 if (listBinding.srLayout.isRefreshing) {
                     listBinding.srLayout.isRefreshing = false
-                    listBinding.rvTorrentList.layoutManager?.verticalScrollToPosition(requireContext())
+                    delayedListScrolling(listBinding.rvTorrentList.layoutManager)
                 }
             }
         }
@@ -193,16 +189,14 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
                     lifecycleScope.launch{
                         delay(300L)
                         downloadAdapter.refresh()
-                        delay(300L)
-                        listBinding.rvDownloadList.layoutManager?.verticalScrollToPosition(requireContext())
+                        delayedListScrolling(listBinding.rvDownloadList.layoutManager)
                     }
                 }
                 ListState.UPDATE_TORRENT -> {
                     lifecycleScope.launch {
                         delay(300L)
                         torrentAdapter.refresh()
-                        delay(300L)
-                        listBinding.rvTorrentList.layoutManager?.verticalScrollToPosition(requireContext())
+                        delayedListScrolling(listBinding.rvTorrentList.layoutManager)
                     }
                 }
                 ListState.READY -> {
@@ -362,9 +356,10 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
         dialog.show(parentFragmentManager, "TorrentContextualDialogFragment")
     }
 
-    private fun delayedListScrolling(layoutManager: RecyclerView.LayoutManager?, delay: Long = 200) {
+    private fun delayedListScrolling(layoutManager: RecyclerView.LayoutManager?, delay: Long = 300) {
         layoutManager?.let{
             lifecycleScope.launch {
+                // this delay is needed to activate the scrolling, otherwise it won't work. It probably depends on the device.
                 delay(delay)
                 it.verticalScrollToPosition(requireContext())
             }
