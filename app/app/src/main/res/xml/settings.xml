@@ -47,10 +47,16 @@
     <PreferenceCategory
         android:title="@string/title_various">
 
-    <Preference
-        app:key="feedback"
-        app:summary="@string/feedback_summary"
-        app:title="@string/feedback_title" />
+        <SwitchPreference
+            app:key="referral"
+            app:summary="@string/referral_summary"
+            app:title="@string/referral"
+            android:defaultValue="false"/>
+
+        <Preference
+            app:key="feedback"
+            app:summary="@string/feedback_summary"
+            app:title="@string/feedback_title" />
 
     <Preference
         app:key="credits"

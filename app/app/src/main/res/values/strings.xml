@@ -424,4 +424,6 @@
     <string name="content_description_search">Filter the lists</string>
     <string name="search">Search</string>
     <string name="loading_torrent">Loading torrent</string>
+    <string name="referral">Referral</string>
+    <string name="referral_summary">Use a referral when clicking on the account page button</string>
 </resources>

@@ -209,4 +209,6 @@
     <string name="content_description_search">Filtra le liste</string>
     <string name="search">Cerca</string>
     <string name="loading_torrent">Caricando il torrent</string>
+    <string name="referral">Referral</string>
+    <string name="referral_summary">Usa un referral quando si clicca sul pulsante della pagina account</string>
 </resources>
