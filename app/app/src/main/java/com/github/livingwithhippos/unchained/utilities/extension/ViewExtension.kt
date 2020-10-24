@@ -11,6 +11,7 @@ import android.graphics.drawable.RippleDrawable
 import android.graphics.drawable.RotateDrawable
 import android.graphics.drawable.ScaleDrawable
 import android.graphics.drawable.VectorDrawable
+import android.text.SpannableStringBuilder
 import android.util.TypedValue
 import android.view.View
 import android.widget.ArrayAdapter
@@ -200,6 +201,16 @@ fun TextView.setFileSize(size: Long) {
         )
         else -> this.context.getString(R.string.size_error)
     }
+}
+
+/**
+ * This function sets a SpannableStringBuilder as the TextView text.
+ * @param spannableStringBuilder - the text to be displayed
+ */
+@BindingAdapter("spannableText")
+fun TextView.setTextFromSpan(spannableStringBuilder: SpannableStringBuilder?) {
+    if (spannableStringBuilder!= null)
+        setText(spannableStringBuilder,  TextView.BufferType.SPANNABLE);
 }
 
 /**
