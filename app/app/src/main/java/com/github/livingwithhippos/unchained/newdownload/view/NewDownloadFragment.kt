@@ -82,6 +82,7 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
 
         viewModel.torrentLiveData.observe(viewLifecycleOwner, {
             it.getContentIfNotHandled()?.let { torrent ->
+                context?.showToast(R.string.loading_torrent)
                 val action =
                     NewDownloadFragmentDirections.actionNewDownloadDestToTorrentDetailsFragment(
                         torrent.id

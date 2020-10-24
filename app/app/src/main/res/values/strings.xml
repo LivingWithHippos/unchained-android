@@ -423,4 +423,5 @@
     <string name="parsing_error">Error parsing the server response</string>
     <string name="content_description_search">Filter the lists</string>
     <string name="search">Search</string>
+    <string name="loading_torrent">Loading torrent</string>
 </resources>
