@@ -10,7 +10,7 @@ class DownloadRepository @Inject constructor(private val downloadApiHelper: Down
         token: String,
         offset: Int?,
         page: Int = 1,
-        limit: Int = 30
+        limit: Int = 50
     ): List<DownloadItem> {
 
         val downloadResponse = safeApiCall(

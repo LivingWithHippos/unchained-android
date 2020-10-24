@@ -45,13 +45,13 @@ class DownloadListViewModel @ViewModelInject constructor(
 
     val downloadsLiveData: LiveData<PagingData<DownloadItem>> = Transformations.switchMap(queryLiveData) { query: String ->
         // note: this value (pageSize) is triplicated when the first call is made. Yes it does, no I don't know why.
-        Pager(PagingConfig(pageSize = 10)) {
+        Pager(PagingConfig(pageSize = 50)) {
             DownloadPagingSource(downloadRepository, credentialsRepository, query)
         }.liveData.cachedIn(viewModelScope)
     }
 
     val torrentsLiveData: LiveData<PagingData<TorrentItem>> = Transformations.switchMap(queryLiveData) { query: String ->
-        Pager(PagingConfig(pageSize = 10)) {
+        Pager(PagingConfig(pageSize = 50)) {
             TorrentPagingSource(torrentsRepository, credentialsRepository, query)
         }.liveData.cachedIn(viewModelScope)
     }

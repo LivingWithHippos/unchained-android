@@ -94,7 +94,7 @@ class TorrentsRepository @Inject constructor(private val torrentApiHelper: Torre
         token: String,
         offset: Int? = null,
         page: Int? = 1,
-        limit: Int? = 10,
+        limit: Int? = 50,
         filter: String? = null
     ): List<TorrentItem> {
 
