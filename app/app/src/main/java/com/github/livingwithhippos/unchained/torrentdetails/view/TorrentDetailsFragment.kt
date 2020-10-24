@@ -89,10 +89,6 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
         torrentBinding.statusTranslation = statusTranslation
         torrentBinding.listener = this
 
-        viewModel.torrentLiveData.observeOnce(viewLifecycleOwner, {
-            activityViewModel.setListState(ListsTabFragment.ListState.UPDATE_TORRENT)
-        }, true)
-
         viewModel.torrentLiveData.observe(viewLifecycleOwner, {
             it.getContentIfNotHandled()?.let { torrent ->
                 torrentBinding.torrent = torrent

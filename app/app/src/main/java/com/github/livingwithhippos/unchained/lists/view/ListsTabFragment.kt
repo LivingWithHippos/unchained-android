@@ -189,10 +189,20 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
         activityViewModel.listStateLiveData.observe(viewLifecycleOwner, {
             when (it.getContentIfNotHandled()) {
                 ListState.UPDATE_DOWNLOAD -> {
-                    downloadAdapter.refresh()
+                    lifecycleScope.launch{
+                        delay(200L)
+                        downloadAdapter.refresh()
+                        delay(200L)
+                        listBinding.rvDownloadList.layoutManager?.verticalScrollToPosition(requireContext())
+                    }
                 }
                 ListState.UPDATE_TORRENT -> {
-                    torrentAdapter.refresh()
+                    lifecycleScope.launch {
+                        delay(200L)
+                        torrentAdapter.refresh()
+                        delay(200L)
+                        listBinding.rvTorrentList.layoutManager?.verticalScrollToPosition(requireContext())
+                    }
                 }
                 ListState.READY -> {
                 }

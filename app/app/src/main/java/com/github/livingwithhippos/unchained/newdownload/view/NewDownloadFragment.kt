@@ -83,6 +83,8 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
         viewModel.torrentLiveData.observe(viewLifecycleOwner, {
             it.getContentIfNotHandled()?.let { torrent ->
                 context?.showToast(R.string.loading_torrent)
+                // new torrent item, alert the list fragment that it needs updating
+                activityViewModel.setListState(ListsTabFragment.ListState.UPDATE_TORRENT)
                 val action =
                     NewDownloadFragmentDirections.actionNewDownloadDestToTorrentDetailsFragment(
                         torrent.id
@@ -154,6 +156,8 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
             downloadBinding.bUnrestrict.runRippleAnimation()
         }
 
+        // we don't need to update the list fragment because when opened externally it gets loaded for the first time anyway
+        // this will change when we'll be able to use the already loaded activity instead of creating a new one
         activityViewModel.externalLinkLiveData.observe(viewLifecycleOwner, {
             it.getContentIfNotHandled()?.let { link ->
                 when (link.scheme) {
