@@ -57,7 +57,7 @@ class AuthenticationViewModel @ViewModelInject constructor(
         calls -= calls / 10
         viewModelScope.launch {
             var secretData = authRepository.getSecrets(deviceCode)
-            while (secretData?.clientId == null && calls-- > 0 && (getAuthState() != AuthenticationState.AUTHENTICATED || getAuthState() != AuthenticationState.AUTHENTICATED_NO_PREMIUM)) {
+            while (secretData?.clientId == null && calls-- > 0 && !(getAuthState() == AuthenticationState.AUTHENTICATED || getAuthState() == AuthenticationState.AUTHENTICATED_NO_PREMIUM)) {
                 delay(waitTime)
                 secretData = authRepository.getSecrets(deviceCode)
                 calls++
@@ -124,7 +124,6 @@ class AuthenticationViewModel @ViewModelInject constructor(
     }
 
     private fun getAuthState(): AuthenticationState? {
-        // this value is only checked against AUTHENTICATED
         return savedStateHandle.get(AUTH_STATE)
     }
 
