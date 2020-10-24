@@ -14,6 +14,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.PagingData
+import androidx.recyclerview.widget.RecyclerView
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.data.model.APIError
@@ -359,6 +360,15 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
     override fun onLongClick(item: TorrentItem) {
         val dialog = TorrentContextualDialogFragment(item)
         dialog.show(parentFragmentManager, "TorrentContextualDialogFragment")
+    }
+
+    private fun delayedListScrolling(layoutManager: RecyclerView.LayoutManager?, delay: Long = 200) {
+        layoutManager?.let{
+            lifecycleScope.launch {
+                delay(delay)
+                it.verticalScrollToPosition(requireContext())
+            }
+        }
     }
 
     companion object {
