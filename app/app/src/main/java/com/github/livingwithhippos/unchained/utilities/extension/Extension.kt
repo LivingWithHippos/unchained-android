@@ -7,11 +7,13 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
+import android.content.res.Resources
 import android.net.Uri
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.util.Log
+import android.util.TypedValue
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -22,6 +24,7 @@ import androidx.lifecycle.Observer
 import com.github.livingwithhippos.unchained.BuildConfig
 import com.github.livingwithhippos.unchained.R
 import java.util.*
+
 
 /**
  * Show a toast message
@@ -39,6 +42,18 @@ fun Context.showToast(stringResource: Int, length: Int = Toast.LENGTH_SHORT) =
  */
 fun Context.showToast(message: String, length: Int = Toast.LENGTH_SHORT) {
     Toast.makeText(this, message, length).show()
+}
+/**
+ * Return the int value of the color of a certain attribute for the current theme
+ * @param attributeID: the attribute id, like R.attr.colorAccent
+ * @return the int value of the color
+ */
+fun Context.getThemeColor(attributeID: Int): Int {
+    // get a reference to the current theme
+    val typedValue = TypedValue()
+    val theme: Resources.Theme = this.theme
+    theme.resolveAttribute(attributeID, typedValue, true)
+    return typedValue.data
 }
 
 /**
