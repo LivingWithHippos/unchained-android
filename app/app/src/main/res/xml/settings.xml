@@ -48,7 +48,7 @@
         android:title="@string/title_various">
 
         <SwitchPreference
-            app:key="referral"
+            app:key="use_referral_key"
             app:summary="@string/referral_summary"
             app:title="@string/referral"
             android:defaultValue="false"/>

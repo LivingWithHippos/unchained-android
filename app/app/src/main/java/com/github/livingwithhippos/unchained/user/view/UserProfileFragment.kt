@@ -1,5 +1,6 @@
 package com.github.livingwithhippos.unchained.user.view
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,17 +8,23 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.data.model.AuthenticationState
 import com.github.livingwithhippos.unchained.databinding.FragmentUserProfileBinding
+import com.github.livingwithhippos.unchained.settings.SettingsFragment.Companion.KEY_REFERRAL_ASKED
+import com.github.livingwithhippos.unchained.settings.SettingsFragment.Companion.KEY_REFERRAL_USE
 import com.github.livingwithhippos.unchained.user.viewmodel.UserProfileViewModel
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 
 const val REFERRAL_LINK = "http://real-debrid.com/?id=78841"
 const val PREMIUM_LINK = "https://real-debrid.com/premium"
+const val ACCOUNT_LINK = "https://real-debrid.com/account"
 
 /**
  * A simple [UnchainedFragment] subclass.
@@ -27,6 +34,9 @@ const val PREMIUM_LINK = "https://real-debrid.com/premium"
 class UserProfileFragment : UnchainedFragment() {
 
     private val viewModel: UserProfileViewModel by viewModels()
+
+    @Inject
+    lateinit var preferences: SharedPreferences
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,9 +57,38 @@ class UserProfileFragment : UnchainedFragment() {
         })
 
         userBinding.bAccount.setOnClickListener {
-            //todo: ask user and either load the referral link
-            // or the premium page, add to settings fragment
-            openExternalWebPage(REFERRAL_LINK)
+            // if we never asked, show a dialog
+            if (!preferences.getBoolean(KEY_REFERRAL_ASKED, false)) {
+                // set asked as true
+                with(preferences.edit()) {
+                    putBoolean(KEY_REFERRAL_ASKED, true)
+                    apply()
+                }
+
+                MaterialAlertDialogBuilder(requireContext())
+                    .setTitle(resources.getString(R.string.referral))
+                    .setMessage(resources.getString(R.string.referral_proposal))
+                    .setNegativeButton(resources.getString(R.string.decline)) { dialog, _ ->
+                        with(preferences.edit()) {
+                            putBoolean(KEY_REFERRAL_USE, false)
+                            apply()
+                        }
+                        openExternalWebPage(ACCOUNT_LINK)
+                    }
+                    .setPositiveButton(resources.getString(R.string.accept)) { dialog, _ ->
+                        with(preferences.edit()) {
+                            putBoolean(KEY_REFERRAL_USE, true)
+                            apply()
+                        }
+                        openExternalWebPage(REFERRAL_LINK)
+                    }
+                    .show()
+            } else {
+                if (preferences.getBoolean(KEY_REFERRAL_USE, false))
+                    openExternalWebPage(REFERRAL_LINK)
+                else
+                    openExternalWebPage(ACCOUNT_LINK)
+            }
         }
 
         activityViewModel.authenticationState.observe(viewLifecycleOwner, {

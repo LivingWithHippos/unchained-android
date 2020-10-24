@@ -101,6 +101,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
         const val KEY_DAY_NIGHT = "day_night_theme"
         const val KEY_THEME = "current_theme"
         const val KEY_TORRENT_NOTIFICATIONS = "notification_torrent_key"
+        const val KEY_REFERRAL_ASKED = "referral_asked_key"
+        const val KEY_REFERRAL_USE = "use_referral_key"
         const val THEME_AUTO = "auto"
         const val THEME_NIGHT = "night"
         const val THEME_DAY = "day"

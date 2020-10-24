@@ -211,4 +211,7 @@
     <string name="loading_torrent">Caricando il torrent</string>
     <string name="referral">Referral</string>
     <string name="referral_summary">Usa un referral quando si clicca sul pulsante della pagina account</string>
+    <string name="decline">Declina</string>
+    <string name="accept">Accetta</string>
+    <string name="referral_proposal">Puoi supportare questa app navigando sulla tua pagina account tramite un referral. Ti annoieremo solo una volta, puoi cambiare la tua scelta nelle impostazioni.</string>
 </resources>
