@@ -12,6 +12,7 @@ import com.github.livingwithhippos.unchained.authentication.viewmodel.Authentica
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.data.model.AuthenticationState
 import com.github.livingwithhippos.unchained.databinding.FragmentAuthenticationBinding
+import com.github.livingwithhippos.unchained.utilities.EventObserver
 import com.github.livingwithhippos.unchained.utilities.extension.copyToClipboard
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
@@ -39,36 +40,31 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
         //open source client id observers:
 
         // start checking for the auth link
-        viewModel.authLiveData.observe(viewLifecycleOwner, {
-            it.getContentIfNotHandled()?.let { auth ->
+        viewModel.authLiveData.observe(viewLifecycleOwner, EventObserver { auth ->
+            if (auth != null) {
                 authBinding.auth = auth
                 viewModel.fetchSecrets(auth.deviceCode, auth.expiresIn)
             }
         })
 
         // start checking for user confirmation
-        viewModel.secretLiveData.observe(viewLifecycleOwner, {
-            it.getContentIfNotHandled()?.let { secrets ->
+        viewModel.secretLiveData.observe(viewLifecycleOwner, EventObserver{secrets ->
                 authBinding.secrets = secrets
                 viewModel.authLiveData.value?.peekContent()?.deviceCode?.let { device ->
                     viewModel.fetchToken(secrets.clientId, device, secrets.clientSecret)
                 }
-
-            }
         })
 
         // start checking for the authentication token
-        viewModel.tokenLiveData.observe(viewLifecycleOwner, {
-            it.getContentIfNotHandled()?.let { token ->
+        viewModel.tokenLiveData.observe(viewLifecycleOwner, EventObserver{ token ->
                 authBinding.token = token
                 // pass the value to be checked and eventually saved
                 viewModel.checkAndSaveToken(token = token)
-            }
         })
 
         // a user is retrieved when a working token is used
-        viewModel.userLiveData.observe(viewLifecycleOwner, {
-            it.getContentIfNotHandled()?.let { user ->
+        viewModel.userLiveData.observe(viewLifecycleOwner, EventObserver{
+            it?.let { user ->
                 if (user.premium > 0)
                     activityViewModel.setAuthenticated()
                 else

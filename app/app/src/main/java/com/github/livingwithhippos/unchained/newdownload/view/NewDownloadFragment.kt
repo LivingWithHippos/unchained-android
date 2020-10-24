@@ -30,6 +30,7 @@ import com.github.livingwithhippos.unchained.data.model.NetworkError
 import com.github.livingwithhippos.unchained.databinding.NewDownloadFragmentBinding
 import com.github.livingwithhippos.unchained.lists.view.ListsTabFragment
 import com.github.livingwithhippos.unchained.newdownload.viewmodel.NewDownloadViewModel
+import com.github.livingwithhippos.unchained.utilities.EventObserver
 import com.github.livingwithhippos.unchained.utilities.REMOTE_TRAFFIC_ON
 import com.github.livingwithhippos.unchained.utilities.SCHEME_HTTP
 import com.github.livingwithhippos.unchained.utilities.SCHEME_HTTPS
@@ -68,8 +69,7 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
 
         downloadBinding.listener = this
 
-        viewModel.linkLiveData.observe(viewLifecycleOwner, {
-            it.getContentIfNotHandled()?.let { linkDetails ->
+        viewModel.linkLiveData.observe(viewLifecycleOwner, EventObserver {linkDetails ->
                 // new download item, alert the list fragment that it needs updating
                 activityViewModel.setListState(ListsTabFragment.ListState.UPDATE_DOWNLOAD)
                 val action =
@@ -77,11 +77,9 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
                         linkDetails
                     )
                 findNavController().navigate(action)
-            }
         })
 
-        viewModel.torrentLiveData.observe(viewLifecycleOwner, {
-            it.getContentIfNotHandled()?.let { torrent ->
+        viewModel.torrentLiveData.observe(viewLifecycleOwner, EventObserver { torrent ->
                 // new torrent item, alert the list fragment that it needs updating
                 activityViewModel.setListState(ListsTabFragment.ListState.UPDATE_TORRENT)
                 val action =
@@ -89,7 +87,6 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
                         torrent.id
                     )
                 findNavController().navigate(action)
-            }
         })
 
         // add the unrestrict button listener
@@ -159,8 +156,7 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
 
         // we don't need to update the list fragment because when opened externally it gets loaded for the first time anyway
         // this will change when we'll be able to use the already loaded activity instead of creating a new one
-        activityViewModel.externalLinkLiveData.observe(viewLifecycleOwner, {
-            it.getContentIfNotHandled()?.let { link ->
+        activityViewModel.externalLinkLiveData.observe(viewLifecycleOwner, EventObserver {link ->
                 when (link.scheme) {
                     SCHEME_MAGNET -> {
                         context?.showToast(R.string.loading_magnet_link)
@@ -193,21 +189,17 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
                         }
                     }
                 }
-            }
         })
 
-        activityViewModel.downloadedTorrentLiveData.observe(viewLifecycleOwner, {
-            it.getContentIfNotHandled()?.let { fileName ->
+        activityViewModel.downloadedTorrentLiveData.observe(viewLifecycleOwner, EventObserver { fileName ->
                 val torrentFile = File(
                     requireContext().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS),
                     fileName
                 )
                 loadTorrent(requireContext().contentResolver, torrentFile.toUri())
-            }
         })
 
-        viewModel.networkExceptionLiveData.observe(viewLifecycleOwner, { e ->
-            val exception = e.getContentIfNotHandled()
+        viewModel.networkExceptionLiveData.observe(viewLifecycleOwner, EventObserver { exception ->
 
             // re-enable the buttons to allow the user to take new actions
             downloadBinding.bUnrestrict.isEnabled = true
@@ -253,14 +245,12 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
             }
         })
 
-        activityViewModel.notificationTorrentLiveData.observe(viewLifecycleOwner, {
-            it.getContentIfNotHandled()?.let { torrentID ->
+        activityViewModel.notificationTorrentLiveData.observe(viewLifecycleOwner, EventObserver {torrentID ->
                 val action =
                     NewDownloadFragmentDirections.actionNewDownloadDestToTorrentDetailsFragment(
                         torrentID
                     )
                 findNavController().navigate(action)
-            }
         })
 
         return downloadBinding.root

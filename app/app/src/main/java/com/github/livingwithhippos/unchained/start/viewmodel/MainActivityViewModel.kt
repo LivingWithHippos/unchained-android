@@ -19,6 +19,7 @@ import com.github.livingwithhippos.unchained.data.repositoy.VariousApiRepository
 import com.github.livingwithhippos.unchained.lists.view.ListsTabFragment
 import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.PRIVATE_TOKEN
+import com.github.livingwithhippos.unchained.utilities.postEvent
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.regex.Matcher
@@ -39,11 +40,11 @@ class MainActivityViewModel @ViewModelInject constructor(
 
     val authenticationState = MutableLiveData<Event<AuthenticationState>>()
 
-    val userLiveData = MutableLiveData<User?>()
+    val userLiveData = MutableLiveData<User>()
 
-    val externalLinkLiveData = MutableLiveData<Event<Uri?>>()
+    val externalLinkLiveData = MutableLiveData<Event<Uri>>()
 
-    val downloadedTorrentLiveData = MutableLiveData<Event<String?>>()
+    val downloadedTorrentLiveData = MutableLiveData<Event<String>>()
 
     val notificationTorrentLiveData = MutableLiveData<Event<String>>()
 
@@ -111,15 +112,15 @@ class MainActivityViewModel @ViewModelInject constructor(
     }
 
     fun setAuthenticated() {
-        authenticationState.postValue(Event(AuthenticationState.AUTHENTICATED))
+        authenticationState.postEvent(AuthenticationState.AUTHENTICATED)
     }
 
     fun setAuthenticatedNoPremium() {
-        authenticationState.postValue(Event(AuthenticationState.AUTHENTICATED_NO_PREMIUM))
+        authenticationState.postEvent(AuthenticationState.AUTHENTICATED_NO_PREMIUM)
     }
 
     fun setUnauthenticated() {
-        authenticationState.postValue(Event(AuthenticationState.UNAUTHENTICATED))
+        authenticationState.postEvent(AuthenticationState.UNAUTHENTICATED)
     }
 
     fun logout() {
@@ -176,7 +177,7 @@ class MainActivityViewModel @ViewModelInject constructor(
     }
 
     fun addLink(uri: Uri) {
-        externalLinkLiveData.postValue(Event(uri))
+        externalLinkLiveData.postEvent(uri)
     }
 
     fun setDownload(downloadID: Long, filePath: String) {
@@ -189,13 +190,13 @@ class MainActivityViewModel @ViewModelInject constructor(
         if (id == downloadID) {
             val fileName = savedStateHandle.get<String>(KEY_TORRENT_PATH)
             if (fileName != null)
-                downloadedTorrentLiveData.postValue(Event(fileName))
+                downloadedTorrentLiveData.postEvent(fileName)
         }
     }
 
     //todo: move this stuff to a shared navigationViewModel
     fun setListState(state: ListsTabFragment.ListState) {
-        listStateLiveData.postValue(Event(state))
+        listStateLiveData.postEvent(state)
     }
 
     fun getLastBackPress(): Long {
@@ -220,7 +221,7 @@ class MainActivityViewModel @ViewModelInject constructor(
             for (hostRegex in hostsRepository.getHostsRegex()) {
                 val m: Matcher = Pattern.compile(hostRegex.regex).matcher(link)
                 if (m.matches()) {
-                    linkLiveData.postValue(Event(link))
+                    linkLiveData.postEvent(link)
                     break
                 }
             }
@@ -228,7 +229,7 @@ class MainActivityViewModel @ViewModelInject constructor(
     }
 
     fun addTorrentId(torrentID: String) {
-        notificationTorrentLiveData.postValue(Event(torrentID))
+        notificationTorrentLiveData.postEvent(torrentID)
     }
 
     companion object {

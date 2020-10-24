@@ -26,7 +26,7 @@ class TorrentDetailsViewModel @ViewModelInject constructor(
 ) : ViewModel() {
 
     val torrentLiveData = MutableLiveData<Event<TorrentItem?>>()
-    val deletedTorrentLiveData = MutableLiveData<Event<Int?>>()
+    val deletedTorrentLiveData = MutableLiveData<Event<Int>>()
     val downloadLiveData = MutableLiveData<Event<DownloadItem?>>()
     val errorsLiveData = MutableLiveData<Event<List<UnchainedNetworkException>>>()
 

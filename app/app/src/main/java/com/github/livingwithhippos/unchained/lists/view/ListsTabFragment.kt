@@ -167,8 +167,8 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
             }
         })
 
-        viewModel.downloadItemLiveData.observe(viewLifecycleOwner, {
-            it.getContentIfNotHandled()?.let { links ->
+        viewModel.downloadItemLiveData.observe(viewLifecycleOwner, EventObserver {
+            it?.let { links ->
                 if (!links.isNullOrEmpty()) {
                     // switch to download tab
                     listBinding.tabs.getTabAt(TAB_DOWNLOADS)?.select()
@@ -181,15 +181,13 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
         })
 
 
-        viewModel.deletedTorrentLiveData.observe(viewLifecycleOwner, {
-            it.getContentIfNotHandled()?.let { _ ->
-                context?.showToast(R.string.torrent_deleted)
-                torrentAdapter.refresh()
-            }
+        viewModel.deletedTorrentLiveData.observe(viewLifecycleOwner, EventObserver {
+            context?.showToast(R.string.torrent_deleted)
+            torrentAdapter.refresh()
         })
 
-        activityViewModel.listStateLiveData.observe(viewLifecycleOwner, {
-            when (it.getContentIfNotHandled()) {
+        activityViewModel.listStateLiveData.observe(viewLifecycleOwner, EventObserver{
+            when (it) {
                 ListState.UPDATE_DOWNLOAD -> {
                     lifecycleScope.launch{
                         delay(300L)
@@ -205,8 +203,6 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
                     }
                 }
                 ListState.READY -> {
-                }
-                else -> {
                 }
             }
         })
@@ -238,11 +234,9 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
             }
         }
 
-        viewModel.deletedDownloadLiveData.observe(viewLifecycleOwner, {
-            it.getContentIfNotHandled().let {
-                context?.showToast(R.string.download_removed)
-                downloadAdapter.refresh()
-            }
+        viewModel.deletedDownloadLiveData.observe(viewLifecycleOwner, EventObserver {
+            context?.showToast(R.string.download_removed)
+            downloadAdapter.refresh()
         })
 
         viewModel.errorsLiveData.observe(viewLifecycleOwner, EventObserver {

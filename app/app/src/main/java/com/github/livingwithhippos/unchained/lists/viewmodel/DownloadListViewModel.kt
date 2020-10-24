@@ -59,10 +59,10 @@ class DownloadListViewModel @ViewModelInject constructor(
 
     val errorsLiveData = MutableLiveData<Event<List<UnchainedNetworkException>>>()
 
-    val downloadItemLiveData = MutableLiveData<Event<List<DownloadItem?>>>()
+    val downloadItemLiveData = MutableLiveData<Event<List<DownloadItem>>>()
 
-    val deletedTorrentLiveData = MutableLiveData<Event<Int?>>()
-    val deletedDownloadLiveData = MutableLiveData<Event<Int?>>()
+    val deletedTorrentLiveData = MutableLiveData<Event<Int>>()
+    val deletedDownloadLiveData = MutableLiveData<Event<Int>>()
 
     fun downloadTorrent(torrent: TorrentItem) {
         viewModelScope.launch {
@@ -72,9 +72,9 @@ class DownloadListViewModel @ViewModelInject constructor(
             val errors =
                 items.filterIsInstance<Either.Left<UnchainedNetworkException>>().map { it.a }
 
-            downloadItemLiveData.postValue(Event(values))
+            downloadItemLiveData.postEvent(values)
             if (errors.isNotEmpty())
-                errorsLiveData.postValue(Event(errors))
+                errorsLiveData.postEvent(errors)
         }
     }
 

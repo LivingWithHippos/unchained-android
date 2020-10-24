@@ -89,22 +89,20 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
         torrentBinding.statusTranslation = statusTranslation
         torrentBinding.listener = this
 
-        viewModel.torrentLiveData.observe(viewLifecycleOwner, {
-            it.getContentIfNotHandled()?.let { torrent ->
+        viewModel.torrentLiveData.observe(viewLifecycleOwner, EventObserver{
+            it?.let{torrent ->
                 torrentBinding.torrent = torrent
                 if (loadingStatusList.contains(torrent.status))
                     fetchTorrent()
             }
         })
 
-        viewModel.deletedTorrentLiveData.observe(viewLifecycleOwner, {
-            it.getContentIfNotHandled()?.let {
+        viewModel.deletedTorrentLiveData.observe(viewLifecycleOwner, EventObserver{
                 // todo: check returned value (it)
                 activity?.baseContext?.showToast(R.string.torrent_deleted)
                 // if deleted go back
                 activity?.onBackPressed()
                 activityViewModel.setListState(ListsTabFragment.ListState.UPDATE_TORRENT)
-            }
         })
 
         setFragmentResultListener("deleteActionKey") { _, bundle ->
@@ -112,8 +110,8 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
                 viewModel.deleteTorrent(args.torrentID)
         }
 
-        viewModel.downloadLiveData.observe(viewLifecycleOwner, {
-            it.getContentIfNotHandled()?.let { download ->
+        viewModel.downloadLiveData.observe(viewLifecycleOwner, EventObserver{
+            it?.let { download ->
                 val action =
                     TorrentDetailsFragmentDirections.actionTorrentDetailsToDownloadDetailsDest(
                         download

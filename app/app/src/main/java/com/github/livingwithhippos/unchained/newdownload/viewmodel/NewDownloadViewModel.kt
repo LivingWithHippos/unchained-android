@@ -14,6 +14,7 @@ import com.github.livingwithhippos.unchained.data.repositoy.CredentialsRepositor
 import com.github.livingwithhippos.unchained.data.repositoy.TorrentsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.UnrestrictRepository
 import com.github.livingwithhippos.unchained.utilities.Event
+import com.github.livingwithhippos.unchained.utilities.postEvent
 import kotlinx.coroutines.launch
 
 /**
@@ -32,8 +33,8 @@ class NewDownloadViewModel @ViewModelInject constructor(
      * and navigating there.
      * See https://medium.com/androiddevelopers/livedata-with-snackbar-navigation-and-other-events-the-singleliveevent-case-ac2622673150 for mode details
      */
-    val linkLiveData = MutableLiveData<Event<DownloadItem?>>()
-    val torrentLiveData = MutableLiveData<Event<UploadedTorrent?>>()
+    val linkLiveData = MutableLiveData<Event<DownloadItem>>()
+    val torrentLiveData = MutableLiveData<Event<UploadedTorrent>>()
     val networkExceptionLiveData = MutableLiveData<Event<UnchainedNetworkException>>()
 
     fun fetchUnrestrictedLink(link: String, password: String?, remote: Int? = null) {
@@ -42,8 +43,8 @@ class NewDownloadViewModel @ViewModelInject constructor(
             val response =
                 unrestrictRepository.getEitherUnrestrictedLink(token, link, password, remote)
             when (response) {
-                is Either.Left -> networkExceptionLiveData.postValue(Event(response.a))
-                is Either.Right -> linkLiveData.postValue(Event(response.b))
+                is Either.Left -> networkExceptionLiveData.postEvent(response.a)
+                is Either.Right -> linkLiveData.postEvent(response.b)
             }
         }
     }
@@ -62,7 +63,7 @@ class NewDownloadViewModel @ViewModelInject constructor(
                     // todo: add custom selection of files, this queues all the files
                     //todo: add checks for already chosen torrent/magnet (if possible), otherwise we get multiple downloads
                     //todo: get file info and check if it has already been downloaded before doing a select files
-                    torrentLiveData.postValue(Event(addedMagnet))
+                    torrentLiveData.postEvent(addedMagnet)
                 }
             }
         }
@@ -80,7 +81,7 @@ class NewDownloadViewModel @ViewModelInject constructor(
                     torrentsRepository.addTorrent(token, binaryTorrent, availableHosts.first().host)
                 if (uploadedTorrent != null) {
                     //todo: add checks for already chosen torrent/magnet (if possible), otherwise we get multiple downloads
-                    torrentLiveData.postValue(Event(uploadedTorrent))
+                    torrentLiveData.postEvent(uploadedTorrent)
                 }
             }
         }

@@ -30,6 +30,7 @@ import com.github.livingwithhippos.unchained.settings.SettingsActivity
 import com.github.livingwithhippos.unchained.settings.SettingsFragment
 import com.github.livingwithhippos.unchained.settings.SettingsFragment.Companion.KEY_TORRENT_NOTIFICATIONS
 import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewModel
+import com.github.livingwithhippos.unchained.utilities.EventObserver
 import com.github.livingwithhippos.unchained.utilities.SCHEME_HTTP
 import com.github.livingwithhippos.unchained.utilities.SCHEME_HTTPS
 import com.github.livingwithhippos.unchained.utilities.SCHEME_MAGNET
@@ -130,9 +131,7 @@ class MainActivity : UnchainedActivity() {
             IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
         )
 
-        viewModel.linkLiveData.observe(this, {
-            val link = it.getContentIfNotHandled()
-            if (link != null) {
+        viewModel.linkLiveData.observe(this, EventObserver { link ->
                 // check the authentication
                 viewModel.authenticationState.observeOnce(this, { auth ->
                     when (auth.peekContent()) {
@@ -144,7 +143,6 @@ class MainActivity : UnchainedActivity() {
                         else -> showToast(R.string.please_login)
                     }
                 })
-            }
         })
 
         // monitor if the torrent notification service needs to be started. It monitor the preference change itself

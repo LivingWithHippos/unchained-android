@@ -16,6 +16,7 @@ import com.github.livingwithhippos.unchained.data.repositoy.AuthenticationReposi
 import com.github.livingwithhippos.unchained.data.repositoy.CredentialsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.UserRepository
 import com.github.livingwithhippos.unchained.utilities.Event
+import com.github.livingwithhippos.unchained.utilities.postEvent
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -31,7 +32,7 @@ class AuthenticationViewModel @ViewModelInject constructor(
 ) : ViewModel() {
 
     val authLiveData = MutableLiveData<Event<Authentication?>>()
-    val secretLiveData = MutableLiveData<Event<Secrets?>>()
+    val secretLiveData = MutableLiveData<Event<Secrets>>()
     val tokenLiveData = MutableLiveData<Event<Token?>>()
     val userLiveData = MutableLiveData<Event<User?>>()
 
@@ -39,7 +40,7 @@ class AuthenticationViewModel @ViewModelInject constructor(
     fun fetchAuthenticationInfo() {
         viewModelScope.launch {
             val authData = authRepository.getVerificationCode()
-            authLiveData.postValue(Event(authData))
+            authLiveData.postEvent(authData)
         }
     }
 
@@ -62,7 +63,7 @@ class AuthenticationViewModel @ViewModelInject constructor(
                 calls++
             }
             if (secretData?.clientId != null) {
-                secretLiveData.postValue(Event(secretData))
+                secretLiveData.postEvent(secretData)
             } else {
                 // if the authentication link has expired before the user confirmation, request a new one
                 if (calls <= 0)
@@ -75,7 +76,7 @@ class AuthenticationViewModel @ViewModelInject constructor(
     fun fetchToken(clientId: String, deviceCode: String, clientSecret: String) {
         viewModelScope.launch {
             val tokenData = authRepository.getToken(clientId, clientSecret, deviceCode)
-            tokenLiveData.postValue(Event(tokenData))
+            tokenLiveData.postEvent(tokenData)
             if (tokenData?.accessToken != null) {
                 // i need only a set of credentials in my application
                 credentialRepository.deleteAllOpenSourceCredentials()
@@ -114,7 +115,7 @@ class AuthenticationViewModel @ViewModelInject constructor(
             }
 
             // alert the observing fragment of the result
-            userLiveData.postValue(Event(user))
+            userLiveData.postEvent(user)
         }
     }
 

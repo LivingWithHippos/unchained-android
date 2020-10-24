@@ -9,6 +9,7 @@ import com.github.livingwithhippos.unchained.data.repositoy.CredentialsRepositor
 import com.github.livingwithhippos.unchained.data.repositoy.DownloadRepository
 import com.github.livingwithhippos.unchained.data.repositoy.StreamingRepository
 import com.github.livingwithhippos.unchained.utilities.Event
+import com.github.livingwithhippos.unchained.utilities.postEvent
 import kotlinx.coroutines.launch
 
 /**
@@ -22,7 +23,7 @@ class DownloadDetailsViewModel @ViewModelInject constructor(
 ) : ViewModel() {
 
     val streamLiveData = MutableLiveData<Stream?>()
-    val deletedDownloadLiveData = MutableLiveData<Event<Int?>>()
+    val deletedDownloadLiveData = MutableLiveData<Event<Int>>()
 
     fun fetchStreamingInfo(id: String) {
         viewModelScope.launch {
@@ -39,9 +40,9 @@ class DownloadDetailsViewModel @ViewModelInject constructor(
             val token = credentialsRepository.getToken()
             val deleted = downloadRepository.deleteDownload(token, id)
             if (deleted == null)
-                deletedDownloadLiveData.postValue(Event(-1))
+                deletedDownloadLiveData.postEvent(-1)
             else
-                deletedDownloadLiveData.postValue(Event(1))
+                deletedDownloadLiveData.postEvent(1)
         }
     }
 }
