@@ -74,7 +74,7 @@
     </style>
 
     <!-- Tropical Sunset Theme -->
-    <style name="Theme.Unchained.TropicalSunset" parent="Base.Theme.Unchained">
+    <style name="Theme.TropicalSunset" parent="Base.Theme.Unchained">
 
         <!--colorPrimary colors map to components and elements, such as app bars and buttons. -->
         <!--colorSecondary colors are most often used as accents on components, such as FABs and -->

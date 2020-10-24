@@ -189,7 +189,7 @@ fun <T> LiveData<T>.observeOnce(
 fun AppCompatActivity.setCustomTheme(theme: String) {
     when (theme) {
         "original" -> setTheme(R.style.Theme_Unchained)
-        "tropical_sunset" -> setTheme(R.style.Theme_Unchained_TropicalSunset)
+        "tropical_sunset" -> setTheme(R.style.Theme_TropicalSunset)
     }
 }
 
