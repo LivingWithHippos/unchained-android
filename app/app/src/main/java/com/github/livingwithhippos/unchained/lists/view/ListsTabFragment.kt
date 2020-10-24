@@ -80,11 +80,15 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
         val downloadObserver = Observer<PagingData<DownloadItem>> {
             lifecycleScope.launch {
                 downloadAdapter.submitData(it)
+                // stop the refresh animation if playing
                 if (listBinding.srLayout.isRefreshing) {
                     listBinding.srLayout.isRefreshing = false
+                    // scroll to top if we were refreshing
                     delayedListScrolling(listBinding.rvDownloadList)
                 }
-
+                // delay for notifying the list that the items have changed, otherwise stuff like the status and the progress are not updated until you scroll away and back there
+                delay(300)
+                downloadAdapter.notifyDataSetChanged()
             }
         }
 
@@ -95,6 +99,8 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
                     listBinding.srLayout.isRefreshing = false
                     delayedListScrolling(listBinding.rvTorrentList)
                 }
+                delay(300)
+                torrentAdapter.notifyDataSetChanged()
             }
         }
 
