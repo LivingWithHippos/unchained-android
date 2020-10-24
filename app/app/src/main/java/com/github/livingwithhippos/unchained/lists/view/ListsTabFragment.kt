@@ -2,8 +2,12 @@ package com.github.livingwithhippos.unchained.lists.view
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -27,6 +31,7 @@ import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.github.livingwithhippos.unchained.utilities.extension.verticalScrollToPosition
 import com.google.android.material.tabs.TabLayout
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -41,8 +46,11 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
         UPDATE_TORRENT, UPDATE_DOWNLOAD, READY
     }
 
-    //todo: rename viewModel to ListTabViewModel
+    //todo: rename viewModel/fragment to ListTab or DownloadLists
     private val viewModel: DownloadListViewModel by viewModels()
+
+    // used to simulate a debounce effect while typing on the search bar
+    var queryJob: Job? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -251,9 +259,57 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
             }
         })
 
+        // without this the lists won't get initialized
+        viewModel.setListFilter("")
+
         listBinding.tabs.getTabAt(viewModel.getSelectedTab())?.select()
 
         return listBinding.root
+    }
+
+    // menu-related functions
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.lists_bar, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+
+        val searchItem = menu.findItem(R.id.search)
+        val searchView = searchItem.actionView as SearchView
+        // listens to the user typing in the search bar
+
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            // since there is a 500ms delay on new queries, this will help if the user types something and press search in less than half sec. May be unnecessary. The value is checked anyway in the viewmodel to avoid reloading with the same query as the last one.
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                viewModel.setListFilter(query)
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                // simulate debounce
+                queryJob?.cancel()
+
+                queryJob = lifecycleScope.launch {
+                    delay(500)
+                    viewModel.setListFilter(newText)
+                }
+                return true
+            }
+
+        })
+
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.search -> {
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     override fun onClick(item: DownloadItem) {

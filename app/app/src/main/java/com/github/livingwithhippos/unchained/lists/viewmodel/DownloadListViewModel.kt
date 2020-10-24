@@ -6,6 +6,7 @@ import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
@@ -40,14 +41,21 @@ class DownloadListViewModel @ViewModelInject constructor(
     private val unrestrictRepository: UnrestrictRepository
 ) : ViewModel() {
 
-    // note: this value (pageSize) is triplicated when the first call is made. Yes it does, no I don't know why.
-    val downloadsLiveData: LiveData<PagingData<DownloadItem>> = Pager(PagingConfig(pageSize = 10)) {
-        DownloadPagingSource(downloadRepository, credentialsRepository)
-    }.liveData.cachedIn(viewModelScope)
+    // stores the last query value
+    private val queryLiveData = MutableLiveData<String>()
 
-    val torrentsLiveData: LiveData<PagingData<TorrentItem>> = Pager(PagingConfig(pageSize = 10)) {
-        TorrentPagingSource(torrentsRepository, credentialsRepository)
-    }.liveData.cachedIn(viewModelScope)
+    // items are filtered returning only if their names contain the query
+    val downloadsLiveData: LiveData<PagingData<DownloadItem>> = Transformations.switchMap(queryLiveData) { query: String ->
+        Pager(PagingConfig(pageSize = 50)) {
+            DownloadPagingSource(downloadRepository, credentialsRepository, query)
+        }.liveData.cachedIn(viewModelScope)
+    }
+
+    val torrentsLiveData: LiveData<PagingData<TorrentItem>> = Transformations.switchMap(queryLiveData) { query: String ->
+        Pager(PagingConfig(pageSize = 50)) {
+            TorrentPagingSource(torrentsRepository, credentialsRepository, query)
+        }.liveData.cachedIn(viewModelScope)
+    }
 
     val errorsLiveData = MutableLiveData<Event<List<UnchainedNetworkException>>>()
 
@@ -102,6 +110,12 @@ class DownloadListViewModel @ViewModelInject constructor(
 
     fun getSelectedTab(): Int {
         return savedStateHandle.get(KEY_SELECTED_TAB) ?: TAB_DOWNLOADS
+    }
+
+    fun setListFilter(query: String?) {
+        // Avoid updating the lists if the query hasn't changed. We don't check for cases but we could
+        if (queryLiveData.value != query)
+            queryLiveData.postValue(query?.trim() ?: "")
     }
 
     companion object {
