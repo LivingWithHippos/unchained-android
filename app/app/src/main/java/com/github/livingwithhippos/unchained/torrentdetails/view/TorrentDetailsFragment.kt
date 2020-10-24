@@ -103,12 +103,11 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
 
         viewModel.deletedTorrentLiveData.observe(viewLifecycleOwner, {
             it.getContentIfNotHandled()?.let {
-                //fixme: list does not update
-                activityViewModel.setListState(ListsTabFragment.ListState.UPDATE_TORRENT)
                 // todo: check returned value (it)
                 activity?.baseContext?.showToast(R.string.torrent_deleted)
                 // if deleted go back
                 activity?.onBackPressed()
+                activityViewModel.setListState(ListsTabFragment.ListState.UPDATE_TORRENT)
             }
         })
 
