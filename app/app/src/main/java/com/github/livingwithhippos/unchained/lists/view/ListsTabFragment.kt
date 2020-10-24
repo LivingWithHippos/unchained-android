@@ -190,17 +190,17 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
             when (it.getContentIfNotHandled()) {
                 ListState.UPDATE_DOWNLOAD -> {
                     lifecycleScope.launch{
-                        delay(200L)
+                        delay(300L)
                         downloadAdapter.refresh()
-                        delay(200L)
+                        delay(300L)
                         listBinding.rvDownloadList.layoutManager?.verticalScrollToPosition(requireContext())
                     }
                 }
                 ListState.UPDATE_TORRENT -> {
                     lifecycleScope.launch {
-                        delay(200L)
+                        delay(300L)
                         torrentAdapter.refresh()
-                        delay(200L)
+                        delay(300L)
                         listBinding.rvTorrentList.layoutManager?.verticalScrollToPosition(requireContext())
                     }
                 }
