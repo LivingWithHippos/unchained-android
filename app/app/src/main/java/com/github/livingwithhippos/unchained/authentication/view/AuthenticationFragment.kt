@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
+import android.widget.TextView
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.github.livingwithhippos.unchained.R
@@ -14,6 +14,7 @@ import com.github.livingwithhippos.unchained.data.model.AuthenticationState
 import com.github.livingwithhippos.unchained.databinding.FragmentAuthenticationBinding
 import com.github.livingwithhippos.unchained.utilities.EventObserver
 import com.github.livingwithhippos.unchained.utilities.extension.copyToClipboard
+import com.github.livingwithhippos.unchained.utilities.extension.getClipboardText
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.google.android.material.textfield.TextInputEditText
 import dagger.hilt.android.AndroidEntryPoint
@@ -49,22 +50,22 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
         })
 
         // start checking for user confirmation
-        viewModel.secretLiveData.observe(viewLifecycleOwner, EventObserver{secrets ->
-                authBinding.secrets = secrets
-                viewModel.authLiveData.value?.peekContent()?.deviceCode?.let { device ->
-                    viewModel.fetchToken(secrets.clientId, device, secrets.clientSecret)
-                }
+        viewModel.secretLiveData.observe(viewLifecycleOwner, EventObserver { secrets ->
+            authBinding.secrets = secrets
+            viewModel.authLiveData.value?.peekContent()?.deviceCode?.let { device ->
+                viewModel.fetchToken(secrets.clientId, device, secrets.clientSecret)
+            }
         })
 
         // start checking for the authentication token
-        viewModel.tokenLiveData.observe(viewLifecycleOwner, EventObserver{ token ->
-                authBinding.token = token
-                // pass the value to be checked and eventually saved
-                viewModel.checkAndSaveToken(token = token)
+        viewModel.tokenLiveData.observe(viewLifecycleOwner, EventObserver { token ->
+            authBinding.token = token
+            // pass the value to be checked and eventually saved
+            viewModel.checkAndSaveToken(token = token)
         })
 
         // a user is retrieved when a working token is used
-        viewModel.userLiveData.observe(viewLifecycleOwner, EventObserver{
+        viewModel.userLiveData.observe(viewLifecycleOwner, EventObserver {
             it?.let { user ->
                 if (user.premium > 0)
                     activityViewModel.setAuthenticated()
@@ -107,8 +108,8 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
         context?.showToast(R.string.code_copied)
     }
 
-    override fun onInsertTokenClick(inputField: TextInputEditText) {
-        val token: String = inputField.text.toString().trim()
+    override fun onSaveCodeClick(codeInputField: TextInputEditText) {
+        val token: String = codeInputField.text.toString().trim()
         // mine is 52 characters
         if (token.length < 40)
             context?.showToast(R.string.invalid_token)
@@ -117,9 +118,15 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
             viewModel.checkAndSaveToken(privateKey = token)
     }
 
+    override fun onPasteCodeClick(codeInputField: TextInputEditText) {
+        val pasteText = getClipboardText()
+        codeInputField.setText(pasteText, TextView.BufferType.EDITABLE)
+    }
+
 }
 
 interface ButtonListener {
     fun onCopyClick(text: String)
-    fun onInsertTokenClick(inputField: TextInputEditText)
+    fun onSaveCodeClick(codeInputField: TextInputEditText)
+    fun onPasteCodeClick(codeInputField: TextInputEditText)
 }

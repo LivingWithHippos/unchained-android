@@ -23,9 +23,15 @@
             type="com.github.livingwithhippos.unchained.data.model.Token" />
     </data>
 
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical">
 
         <LinearLayout
             android:id="@+id/llLinks"
@@ -42,30 +48,30 @@
             app:layout_constraintVertical_chainStyle="packed">
 
             <TextView
-                style="@style/TextAppearance.UnchainedTheme.Subtitle1"
                 android:id="@+id/tvPlease"
+                style="@style/TextAppearance.UnchainedTheme.Subtitle1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/please_go" />
 
             <TextView
-                style="@style/TextAppearance.UnchainedTheme.Subtitle2"
                 android:id="@+id/tvLink"
+                style="@style/TextAppearance.UnchainedTheme.Subtitle2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:autoLink="web"
                 android:text="@{auth.verificationUrl, default=`https://real-debrid.com/device`}" />
 
             <TextView
-                style="@style/TextAppearance.UnchainedTheme.Subtitle1"
                 android:id="@+id/tvInsert"
+                style="@style/TextAppearance.UnchainedTheme.Subtitle1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/insert_code" />
 
             <TextView
-                style="@style/TextAppearance.UnchainedTheme.Subtitle1"
                 android:id="@+id/tvCode"
+                style="@style/TextAppearance.UnchainedTheme.Subtitle1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@{auth.userCode, default=`AB1CDEFGH`}" />
@@ -78,17 +84,18 @@
                 android:text="@string/copy_code"
                 android:visibility="@{auth.userCode == null ? View.GONE : View.VISIBLE}" />
 
+            <!-- TODO: if this is available avoid showing the copy code part-->
             <TextView
-                style="@style/TextAppearance.UnchainedTheme.Subtitle1"
                 android:id="@+id/tvOrVisit"
+                style="@style/TextAppearance.UnchainedTheme.Subtitle1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/or_visit"
-                android:visibility="@{auth.directVerificationUrl == null ? View.GONE : View.VISIBLE}" />
+                android:visibility="@{auth.directVerificationUrl == null ? View.GONE : View.VISIBLE, default=visible}" />
 
             <TextView
-                style="@style/TextAppearance.UnchainedTheme.Subtitle2"
                 android:id="@+id/tvDirectLink"
+                style="@style/TextAppearance.UnchainedTheme.Subtitle2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
@@ -97,7 +104,7 @@
                 android:ellipsize="middle"
                 android:singleLine="true"
                 android:text="@{auth.directVerificationUrl, default=`https://real-debrid.com/authorize?client_id=X245A4XAIBGVM&amp;device_id=ABCDEFGHIJKLMNOPQ`}"
-                android:visibility="@{auth.directVerificationUrl == null ? View.GONE : View.VISIBLE}" />
+                android:visibility="@{auth.directVerificationUrl == null ? View.GONE : View.VISIBLE, default=visible}" />
 
         </LinearLayout>
 
@@ -138,8 +145,8 @@
 
 
         <TextView
-            style="@style/TextAppearance.UnchainedTheme.Subtitle1"
             android:id="@+id/tvUsePrivateToken"
+            style="@style/TextAppearance.UnchainedTheme.Subtitle1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
@@ -156,16 +163,17 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tfPrivateCode"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="250dp"
+            android:layout_width="wrap_content"
+            android:minWidth="200dp"
             android:layout_height="wrap_content"
             android:hint="@string/private_token"
             android:importantForAutofill="no"
             app:endIconMode="clear_text"
             app:layout_constraintBottom_toTopOf="@id/bInsertPrivate"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/bPastePrivateCode"
+            app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvUsePrivateToken"
-           >
+            app:layout_constraintTop_toBottomOf="@id/tvUsePrivateToken">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/tiPrivateCode"
@@ -175,11 +183,26 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
+
+        <Button
+            android:id="@+id/bPastePrivateCode"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginStart="10dp"
+            android:background="@drawable/icon_paste"
+            android:contentDescription="@string/paste"
+            android:onClick="@{() -> listener.onPasteCodeClick(tiPrivateCode)}"
+            app:layout_constraintBottom_toBottomOf="@id/tfPrivateCode"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@id/tfPrivateCode"
+            app:layout_constraintTop_toTopOf="@id/tfPrivateCode" />
+
         <Button
             android:id="@+id/bInsertPrivate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="@{() -> listener.onInsertTokenClick(tiPrivateCode)}"
+            android:onClick="@{() -> listener.onSaveCodeClick(tiPrivateCode)}"
             android:text="@string/save"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -187,4 +210,6 @@
             app:layout_constraintTop_toBottomOf="@id/tfPrivateCode" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
 </layout>
