@@ -73,6 +73,15 @@
         <item name="android:windowLightNavigationBar" tools:ignore="NewApi">false</item>
     </style>
 
+    <style name="Widget.Unchained.Toolbar.Primary" parent="Widget.MaterialComponents.Toolbar.Primary">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.Unchained.Toolbar.Primary</item>
+    </style>
+
+    <style name="ThemeOverlay.Unchained.Toolbar.Primary" parent="">
+        <!-- Changes the text color for the SearchView. They're on the top bar, so match it with the primary color. -->
+        <item name="android:editTextColor">?attr/colorOnPrimary</item>
+    </style>
+
     <!-- Tropical Sunset Theme -->
     <style name="Theme.TropicalSunset" parent="Base.Theme.Unchained">
 
