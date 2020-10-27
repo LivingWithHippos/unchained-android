@@ -39,9 +39,9 @@
         <!--"On" colors define how text, icons and strokes are colored in relation to the surface-->
         <!--on which they appear.-->
         <item name="colorOnPrimary">@color/white</item>
-        <item name="colorOnSecondary">@color/black_900</item>
+        <item name="colorOnSecondary">@color/black</item>
         <item name="colorOnBackground">@color/grey_03</item>
-        <item name="colorOnSurface">@color/black_900</item>
+        <item name="colorOnSurface">@color/black</item>
         <item name="colorOnError">@color/white</item>
         <!--Material type attributes-->
         <item name="textAppearanceHeadline1">@style/TextAppearance.UnchainedTheme.Headline1</item>
@@ -103,12 +103,43 @@
         <item name="colorError">@color/red_600</item>
         <!--"On" colors define how text, icons and strokes are colored in relation to the surface-->
         <!--on which they appear.-->
-        <item name="colorOnPrimary">@color/black_900</item>
-        <item name="colorOnSecondary">@color/black_900</item>
+        <item name="colorOnPrimary">@color/black</item>
+        <item name="colorOnSecondary">@color/black</item>
         <item name="colorOnBackground">@color/white</item>
         <item name="colorOnSurface">@color/black_800</item>
         <item name="colorOnError">@color/white</item>
 
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
+    </style>
+
+    <!-- Black & White theme -->
+    <style name="Theme.BlackAndWhite" parent="Base.Theme.Unchained">
+
+        <!--colorPrimary colors map to components and elements, such as app bars and buttons. -->
+        <!--colorSecondary colors are most often used as accents on components, such as FABs and -->
+        <!--selection controls.-->
+        <item name="colorPrimary">@color/white</item>
+        <item name="colorPrimaryVariant">@color/grey_50</item>
+        <item name="colorPrimaryDark">@color/grey_100</item>
+        <item name="colorSecondary">@color/black_800</item>
+        <item name="colorSecondaryVariant">@color/grey_900</item>
+
+        <!--colorBackground appears behind scrollable content and is used for the default window-->
+        <!--background. colorSurface is mapped to the surface of components such as cards, sheets-->
+        <!--and menus. colorError is used to indicate an error state for components such as-->
+        <!--text fields.-->
+        <item name="android:colorBackground">@color/white</item>
+        <item name="colorSurface">@color/grey_400</item>
+        <item name="colorError">@color/red_600</item>
+        <!--"On" colors define how text, icons and strokes are colored in relation to the surface-->
+        <!--on which they appear.-->
+        <item name="colorOnPrimary">@color/black</item>
+        <item name="colorOnSecondary">@color/white</item>
+        <item name="colorOnBackground">@color/black_800</item>
+        <item name="colorOnSurface">@color/black_800</item>
+        <item name="colorOnError">@color/white</item>
+
+        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
+        <item name="android:windowLightNavigationBar" tools:ignore="NewApi">true</item>
     </style>
 </resources>

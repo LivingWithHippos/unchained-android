@@ -432,4 +432,5 @@
     <string name="to_authenticate">\u0020to get authenticated\u0020</string>
     <string name="this_link">this link</string>
     <string name="login_message_placeholder">Please visit this link to get authenticated</string>
+    <string name="black_and_white">Black and white</string>
 </resources>

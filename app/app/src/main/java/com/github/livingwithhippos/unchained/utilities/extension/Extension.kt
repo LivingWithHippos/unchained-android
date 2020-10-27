@@ -190,6 +190,7 @@ fun AppCompatActivity.setCustomTheme(theme: String) {
     when (theme) {
         "original" -> setTheme(R.style.Theme_Unchained)
         "tropical_sunset" -> setTheme(R.style.Theme_TropicalSunset)
+        "black_n_white" -> setTheme(R.style.Theme_BlackAndWhite)
     }
 }
 
