@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.model.AuthenticationState
 import com.github.livingwithhippos.unchained.data.model.Credentials
 import com.github.livingwithhippos.unchained.data.model.User
@@ -52,6 +53,8 @@ class MainActivityViewModel @ViewModelInject constructor(
 
     // todo: use a better name to reflect the difference between this and externalLinkLiveData
     val linkLiveData = MutableLiveData<Event<String>>()
+
+    val messageLiveData = MutableLiveData<Event<Int>>()
 
     // fixme: this is here because userLiveData.postValue(user) is throwing an unsafe error
     //  but auto-correcting it changes the value of val authenticationState = MutableLiveData<Event<AuthenticationState>>() to a nullable one
@@ -218,13 +221,17 @@ class MainActivityViewModel @ViewModelInject constructor(
 
     fun checkIfLinkIsHoster(link: String) {
         viewModelScope.launch {
+            var matchFound = false
             for (hostRegex in hostsRepository.getHostsRegex()) {
                 val m: Matcher = Pattern.compile(hostRegex.regex).matcher(link)
                 if (m.matches()) {
+                    matchFound = true
                     linkLiveData.postEvent(link)
                     break
                 }
             }
+            if (!matchFound)
+                messageLiveData.postEvent(R.string.host_match_not_found)
         }
     }
 

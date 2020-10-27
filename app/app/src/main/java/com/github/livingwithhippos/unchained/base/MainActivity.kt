@@ -12,6 +12,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import androidx.core.view.forEach
@@ -156,6 +157,11 @@ class MainActivity : UnchainedActivity() {
                 }
             }
         }
+
+        viewModel.messageLiveData.observe(this, EventObserver{
+            showToast(it, length = Toast.LENGTH_LONG)
+        })
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

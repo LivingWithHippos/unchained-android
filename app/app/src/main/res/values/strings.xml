@@ -432,4 +432,5 @@
     <string name="to_authenticate">\u0020to get authenticated\u0020</string>
     <string name="this_link">this link</string>
     <string name="login_message_placeholder">Please visit this link to get authenticated</string>
+    <string name="host_match_not_found">No matching host found. Refresh hosts from settings if needed.</string>
 </resources>
