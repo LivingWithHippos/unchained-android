@@ -82,6 +82,18 @@
         <item name="android:editTextColor">?attr/colorOnPrimary</item>
     </style>
 
+    <style name="Widget.Unchained.Button.Icon.Secondary" parent="Widget.MaterialComponents.Button.Icon">
+        <item name="backgroundTint">?attr/colorSecondary</item>
+        <item name="iconTint">?attr/colorOnSecondary</item>
+        <item name="android:textColor">?attr/colorOnSecondary</item>
+    </style>
+
+    <style name="Widget.Unchained.Button.Icon.Error" parent="Widget.MaterialComponents.Button.Icon">
+        <item name="backgroundTint">?attr/colorError</item>
+        <item name="iconTint">?attr/colorOnError</item>
+        <item name="android:textColor">?attr/colorOnError</item>
+    </style>
+
     <!-- Tropical Sunset Theme -->
     <style name="Theme.TropicalSunset" parent="Base.Theme.Unchained">
 

@@ -17,14 +17,12 @@
 
     <Button
         android:id="@+id/bConfirmDelete"
-        style="@style/Widget.MaterialComponents.Button.Icon"
+        style="@style/Widget.Unchained.Button.Icon.Error"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
-        android:backgroundTint="?attr/colorError"
         android:minWidth="150dp"
         android:text="@string/yes_remove"
-        android:textColor="?attr/colorOnError"
         app:icon="@drawable/icon_delete" />
 
 </LinearLayout>
