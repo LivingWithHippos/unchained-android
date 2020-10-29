@@ -87,7 +87,7 @@ class MainActivityViewModel @ViewModelInject constructor(
                                 token.refreshToken
                             )
 
-                            user = userRepository.getUserInfo(newCredentials.accessToken!!)
+                            user = userRepository.getUserInfo(token.accessToken)
                             if (user != null) {
                                 // update the credentials
                                 credentialRepository.updateCredentials(newCredentials)
@@ -124,6 +124,10 @@ class MainActivityViewModel @ViewModelInject constructor(
 
     fun setUnauthenticated() {
         authenticationState.postEvent(AuthenticationState.UNAUTHENTICATED)
+    }
+
+    fun setBadToken() {
+        authenticationState.postEvent(AuthenticationState.BAD_TOKEN)
     }
 
     fun logout() {
@@ -239,10 +243,19 @@ class MainActivityViewModel @ViewModelInject constructor(
         notificationTorrentLiveData.postEvent(torrentID)
     }
 
+    fun setTokenRefreshing(refreshing: Boolean) {
+        savedStateHandle.set(KEY_REFRESHING_TOKEN, refreshing)
+    }
+
+    fun isTokenRefreshing(): Boolean {
+        return savedStateHandle.get<Boolean>(KEY_REFRESHING_TOKEN) ?: false
+    }
+
     companion object {
         const val KEY_TORRENT_DOWNLOAD_ID = "torrent_download_id_key"
         const val KEY_TORRENT_PATH = "torrent_path_key"
         const val KEY_LAST_BACK_PRESS = "last_back_press_key"
+        const val KEY_REFRESHING_TOKEN = "refreshing_token_key"
     }
 
 }

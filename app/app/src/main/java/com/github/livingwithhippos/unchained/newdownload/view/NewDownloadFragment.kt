@@ -219,7 +219,15 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
                         in 3..7 -> context?.let {
                             it.showToast(it.getApiErrorMessage(errorCode))
                         }
-                        in 8..15 -> {
+                        8 -> {
+                            // try refreshing the token
+                            context?.let {
+                                it.showToast(it.getApiErrorMessage(errorCode))
+                            }
+                            activityViewModel.setBadToken()
+                            context?.showToast(R.string.refreshing_token)
+                        }
+                        in 9..15 -> {
                             context?.let {
                                 it.showToast(it.getApiErrorMessage(errorCode))
                             }

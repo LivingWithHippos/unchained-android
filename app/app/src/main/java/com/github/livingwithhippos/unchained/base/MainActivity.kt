@@ -97,16 +97,22 @@ class MainActivity : UnchainedActivity() {
                 AuthenticationState.UNAUTHENTICATED -> {
                     openAuthentication()
                     disableBottomNavItems(R.id.navigation_new_download, R.id.navigation_lists)
+                    viewModel.setTokenRefreshing(false)
                 }
                 // refresh the token.
-                // todo: if it keeps on being bad (hehe) delete the credentials and start the authentication from zero
                 AuthenticationState.BAD_TOKEN -> {
-                    viewModel.refreshToken()
+                    if (!viewModel.isTokenRefreshing()) {
+                        viewModel.refreshToken()
+                        viewModel.setTokenRefreshing(true)
+                    } else {
+                        viewModel.setUnauthenticated()
+                    }
                 }
                 // go to login fragment and show another error message
                 AuthenticationState.ACCOUNT_LOCKED -> {
                     openAuthentication()
                     disableBottomNavItems(R.id.navigation_new_download, R.id.navigation_lists)
+                    viewModel.setTokenRefreshing(false)
                 }
                 // do nothing
                 AuthenticationState.AUTHENTICATED, AuthenticationState.AUTHENTICATED_NO_PREMIUM -> {
@@ -116,6 +122,7 @@ class MainActivity : UnchainedActivity() {
                         val notificationIntent = Intent(this, ForegroundTorrentService::class.java)
                         ContextCompat.startForegroundService(this, notificationIntent)
                     }
+                    viewModel.setTokenRefreshing(false)
                 }
             }
         })

@@ -244,18 +244,21 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
                         context?.let { c ->
                             c.showToast(c.getApiErrorMessage(error.errorCode))
                         }
+                        when(error.errorCode) {
+                            8 -> {
+                                //bad token, try refreshing it
+                                activityViewModel.setBadToken()
+                                context?.showToast(R.string.refreshing_token)
+                            }
+                        }
                     }
                     is EmptyBodyError -> {
                     }
                     is NetworkError -> {
-                        context?.let { c ->
-                            c.showToast(R.string.network_error)
-                        }
+                        context?.showToast(R.string.network_error)
                     }
                     is ApiConversionError -> {
-                        context?.let { c ->
-                            c.showToast(R.string.parsing_error)
-                        }
+                        context?.showToast(R.string.parsing_error)
                     }
                 }
             }
