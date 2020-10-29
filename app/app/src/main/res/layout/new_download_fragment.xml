@@ -55,7 +55,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
 
-        <Button
+        <ImageButton
             android:id="@+id/bPasteLink"
             android:layout_width="35dp"
             android:layout_height="35dp"
@@ -93,7 +93,7 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <Button
+        <ImageButton
             android:id="@+id/bPastePassword"
             android:layout_width="35dp"
             android:layout_height="35dp"

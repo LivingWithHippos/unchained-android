@@ -105,8 +105,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text="@{user.premium > 0 ? @string/premium : @string/not_premium, default=`Premium`}"
-                    android:textColor="?attr/colorPrimary"
                     android:textAllCaps="true"
+                    android:textColor="?attr/colorPrimary"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="@id/tvStatus"
                     app:layout_constraintTop_toBottomOf="@id/tvStatus" />
@@ -123,18 +123,18 @@
 
                 <com.google.android.material.progressindicator.ProgressIndicator
                     android:id="@+id/pointsBar"
+                    style="@style/Widget.MaterialComponents.ProgressIndicator.Linear.Determinate"
+                    progressCompat="@{user.points}"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    app:indicatorSize="25dp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tvPremiumDays"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:indicatorCornerRadius="20dp"
-                    style="@style/Widget.MaterialComponents.ProgressIndicator.Linear.Determinate"
                     android:max="1000"
-                    progressCompat="@{user.points}"
-                    app:indicatorColor="?attr/colorPrimary" />
+                    app:indicatorColor="?attr/colorPrimary"
+                    app:indicatorCornerRadius="20dp"
+                    app:indicatorSize="25dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvPremiumDays" />
 
                 <TextView
                     android:id="@+id/tvPoints"
