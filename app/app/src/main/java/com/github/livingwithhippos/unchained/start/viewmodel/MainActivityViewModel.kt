@@ -21,6 +21,7 @@ import com.github.livingwithhippos.unchained.lists.view.ListsTabFragment
 import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.PRIVATE_TOKEN
 import com.github.livingwithhippos.unchained.utilities.postEvent
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.regex.Matcher
@@ -55,6 +56,8 @@ class MainActivityViewModel @ViewModelInject constructor(
     val linkLiveData = MutableLiveData<Event<String>>()
 
     val messageLiveData = MutableLiveData<Event<Int>>()
+
+    var refreshJob: Job? = null
 
     // fixme: this is here because userLiveData.postValue(user) is throwing an unsafe error
     //  but auto-correcting it changes the value of val authenticationState = MutableLiveData<Event<AuthenticationState>>() to a nullable one
@@ -214,9 +217,9 @@ class MainActivityViewModel @ViewModelInject constructor(
         savedStateHandle.set(KEY_LAST_BACK_PRESS, time)
     }
 
-    fun programTokenRefresh(secondsDelay: Int) {
-        // todo: add job that is cancelled everytime this function is called
-        viewModelScope.launch {
+    private fun programTokenRefresh(secondsDelay: Int) {
+        refreshJob?.cancel()
+        refreshJob = viewModelScope.launch {
             // secondsDelay*950L -> expiration time - 5%
             delay(secondsDelay * 950L)
             refreshToken()
