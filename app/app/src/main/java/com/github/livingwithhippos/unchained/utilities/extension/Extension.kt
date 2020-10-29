@@ -18,7 +18,6 @@ import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.view.WindowInsetsController
-import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -223,14 +222,14 @@ fun AppCompatActivity.setNavigationBarColor(color: Int, alpha: Int = 0) {
                 @Suppress("DEPRECATION")
                 @SuppressLint("InlinedApi")
                 window.decorView.systemUiVisibility =
-                    WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                    window.decorView.systemUiVisibility or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
             }
         }
     } else
         @Suppress("DEPRECATION")
         @SuppressLint("InlinedApi")
         window.decorView.systemUiVisibility =
-            window.decorView.systemUiVisibility and View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR.inv() and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inv()
+            window.decorView.systemUiVisibility and View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR.inv()
 
 }
 
