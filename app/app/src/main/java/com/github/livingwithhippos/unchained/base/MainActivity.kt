@@ -12,6 +12,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import androidx.core.view.forEach
@@ -96,16 +97,22 @@ class MainActivity : UnchainedActivity() {
                 AuthenticationState.UNAUTHENTICATED -> {
                     openAuthentication()
                     disableBottomNavItems(R.id.navigation_new_download, R.id.navigation_lists)
+                    viewModel.setTokenRefreshing(false)
                 }
                 // refresh the token.
-                // todo: if it keeps on being bad (hehe) delete the credentials and start the authentication from zero
                 AuthenticationState.BAD_TOKEN -> {
-                    viewModel.refreshToken()
+                    if (!viewModel.isTokenRefreshing()) {
+                        viewModel.refreshToken()
+                        viewModel.setTokenRefreshing(true)
+                    } else {
+                        viewModel.setUnauthenticated()
+                    }
                 }
                 // go to login fragment and show another error message
                 AuthenticationState.ACCOUNT_LOCKED -> {
                     openAuthentication()
                     disableBottomNavItems(R.id.navigation_new_download, R.id.navigation_lists)
+                    viewModel.setTokenRefreshing(false)
                 }
                 // do nothing
                 AuthenticationState.AUTHENTICATED, AuthenticationState.AUTHENTICATED_NO_PREMIUM -> {
@@ -115,6 +122,7 @@ class MainActivity : UnchainedActivity() {
                         val notificationIntent = Intent(this, ForegroundTorrentService::class.java)
                         ContextCompat.startForegroundService(this, notificationIntent)
                     }
+                    viewModel.setTokenRefreshing(false)
                 }
             }
         })
@@ -156,6 +164,11 @@ class MainActivity : UnchainedActivity() {
                 }
             }
         }
+
+        viewModel.messageLiveData.observe(this, EventObserver{
+            showToast(it, length = Toast.LENGTH_LONG)
+        })
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

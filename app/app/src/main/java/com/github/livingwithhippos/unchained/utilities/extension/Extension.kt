@@ -1,5 +1,6 @@
 package com.github.livingwithhippos.unchained.utilities.extension
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ClipData
 import android.content.ClipDescription.MIMETYPE_TEXT_PLAIN
@@ -8,12 +9,15 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.content.res.Resources
+import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.util.Log
 import android.util.TypedValue
+import android.view.View
+import android.view.WindowInsetsController
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -43,6 +47,7 @@ fun Context.showToast(stringResource: Int, length: Int = Toast.LENGTH_SHORT) =
 fun Context.showToast(message: String, length: Int = Toast.LENGTH_SHORT) {
     Toast.makeText(this, message, length).show()
 }
+
 /**
  * Return the int value of the color of a certain attribute for the current theme
  * @param attributeID: the attribute id, like R.attr.colorAccent
@@ -192,6 +197,41 @@ fun AppCompatActivity.setCustomTheme(theme: String) {
         "tropical_sunset" -> setTheme(R.style.Theme_TropicalSunset)
         "black_n_white" -> setTheme(R.style.Theme_BlackAndWhite)
     }
+}
+
+fun AppCompatActivity.setNavigationBarColor(color: Int, alpha: Int = 0) {
+    val newColor = Color.argb(
+        alpha, Color.red(color), Color.green(color), Color.blue(
+            color
+        )
+    )
+
+    // set the color before applying the light bar effect
+    window.navigationBarColor = newColor
+
+    val luminance = Color.luminance(color)
+    if (luminance >= 0.25) {
+        when {
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> {
+                window.insetsController?.setSystemBarsAppearance(
+                    WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS,
+                    WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS
+                )
+            }
+            Build.VERSION.SDK_INT in Build.VERSION_CODES.O..Build.VERSION_CODES.Q -> {
+                // the check above is not recognized
+                @Suppress("DEPRECATION")
+                @SuppressLint("InlinedApi")
+                window.decorView.systemUiVisibility =
+                    window.decorView.systemUiVisibility or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
+            }
+        }
+    } else
+        @Suppress("DEPRECATION")
+        @SuppressLint("InlinedApi")
+        window.decorView.systemUiVisibility =
+            window.decorView.systemUiVisibility and View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR.inv()
+
 }
 
 fun Context.getApiErrorMessage(errorCode: Int?): String {

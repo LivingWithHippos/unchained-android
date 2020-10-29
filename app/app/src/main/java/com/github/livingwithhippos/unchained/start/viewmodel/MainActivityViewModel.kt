@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.model.AuthenticationState
 import com.github.livingwithhippos.unchained.data.model.Credentials
 import com.github.livingwithhippos.unchained.data.model.User
@@ -20,6 +21,7 @@ import com.github.livingwithhippos.unchained.lists.view.ListsTabFragment
 import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.PRIVATE_TOKEN
 import com.github.livingwithhippos.unchained.utilities.postEvent
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.regex.Matcher
@@ -53,6 +55,10 @@ class MainActivityViewModel @ViewModelInject constructor(
     // todo: use a better name to reflect the difference between this and externalLinkLiveData
     val linkLiveData = MutableLiveData<Event<String>>()
 
+    val messageLiveData = MutableLiveData<Event<Int>>()
+
+    var refreshJob: Job? = null
+
     // fixme: this is here because userLiveData.postValue(user) is throwing an unsafe error
     //  but auto-correcting it changes the value of val authenticationState = MutableLiveData<Event<AuthenticationState>>() to a nullable one
     @SuppressLint("NullSafeMutableLiveData")
@@ -84,7 +90,7 @@ class MainActivityViewModel @ViewModelInject constructor(
                                 token.refreshToken
                             )
 
-                            user = userRepository.getUserInfo(newCredentials.accessToken!!)
+                            user = userRepository.getUserInfo(token.accessToken)
                             if (user != null) {
                                 // update the credentials
                                 credentialRepository.updateCredentials(newCredentials)
@@ -121,6 +127,10 @@ class MainActivityViewModel @ViewModelInject constructor(
 
     fun setUnauthenticated() {
         authenticationState.postEvent(AuthenticationState.UNAUTHENTICATED)
+    }
+
+    fun setBadToken() {
+        authenticationState.postEvent(AuthenticationState.BAD_TOKEN)
     }
 
     fun logout() {
@@ -207,9 +217,9 @@ class MainActivityViewModel @ViewModelInject constructor(
         savedStateHandle.set(KEY_LAST_BACK_PRESS, time)
     }
 
-    fun programTokenRefresh(secondsDelay: Int) {
-        // todo: add job that is cancelled everytime this function is called
-        viewModelScope.launch {
+    private fun programTokenRefresh(secondsDelay: Int) {
+        refreshJob?.cancel()
+        refreshJob = viewModelScope.launch {
             // secondsDelay*950L -> expiration time - 5%
             delay(secondsDelay * 950L)
             refreshToken()
@@ -218,13 +228,17 @@ class MainActivityViewModel @ViewModelInject constructor(
 
     fun checkIfLinkIsHoster(link: String) {
         viewModelScope.launch {
+            var matchFound = false
             for (hostRegex in hostsRepository.getHostsRegex()) {
                 val m: Matcher = Pattern.compile(hostRegex.regex).matcher(link)
                 if (m.matches()) {
+                    matchFound = true
                     linkLiveData.postEvent(link)
                     break
                 }
             }
+            if (!matchFound)
+                messageLiveData.postEvent(R.string.host_match_not_found)
         }
     }
 
@@ -232,10 +246,19 @@ class MainActivityViewModel @ViewModelInject constructor(
         notificationTorrentLiveData.postEvent(torrentID)
     }
 
+    fun setTokenRefreshing(refreshing: Boolean) {
+        savedStateHandle.set(KEY_REFRESHING_TOKEN, refreshing)
+    }
+
+    fun isTokenRefreshing(): Boolean {
+        return savedStateHandle.get<Boolean>(KEY_REFRESHING_TOKEN) ?: false
+    }
+
     companion object {
         const val KEY_TORRENT_DOWNLOAD_ID = "torrent_download_id_key"
         const val KEY_TORRENT_PATH = "torrent_path_key"
         const val KEY_LAST_BACK_PRESS = "last_back_press_key"
+        const val KEY_REFRESHING_TOKEN = "refreshing_token_key"
     }
 
 }

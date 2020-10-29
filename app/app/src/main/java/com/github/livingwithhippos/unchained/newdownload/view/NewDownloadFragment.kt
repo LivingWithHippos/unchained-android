@@ -156,7 +156,7 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
 
         // we don't need to update the list fragment because when opened externally it gets loaded for the first time anyway
         // this will change when we'll be able to use the already loaded activity instead of creating a new one
-        activityViewModel.externalLinkLiveData.observe(viewLifecycleOwner, EventObserver {link ->
+        activityViewModel.externalLinkLiveData.observe(viewLifecycleOwner, EventObserver { link ->
                 when (link.scheme) {
                     SCHEME_MAGNET -> {
                         context?.showToast(R.string.loading_magnet_link)
@@ -219,7 +219,15 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
                         in 3..7 -> context?.let {
                             it.showToast(it.getApiErrorMessage(errorCode))
                         }
-                        in 8..15 -> {
+                        8 -> {
+                            // try refreshing the token
+                            context?.let {
+                                it.showToast(it.getApiErrorMessage(errorCode))
+                            }
+                            activityViewModel.setBadToken()
+                            context?.showToast(R.string.refreshing_token)
+                        }
+                        in 9..15 -> {
                             context?.let {
                                 it.showToast(it.getApiErrorMessage(errorCode))
                             }
