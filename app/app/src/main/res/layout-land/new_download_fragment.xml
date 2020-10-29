@@ -103,7 +103,7 @@
                 app:layout_constraintStart_toEndOf="@+id/tiPassword" />
 
             <!-- https://material.io/develop/android/components/switches -->
-            <com.google.android.material.switchmaterial.SwitchMaterial
+            <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/switchRemote"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
