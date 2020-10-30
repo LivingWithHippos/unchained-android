@@ -8,12 +8,14 @@ import android.content.ContentResolver.SCHEME_FILE
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.forEach
 import androidx.lifecycle.LiveData
@@ -40,13 +42,14 @@ import com.github.livingwithhippos.unchained.utilities.extension.observeOnce
 import com.github.livingwithhippos.unchained.utilities.extension.setupWithNavController
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import javax.inject.Inject
 
 
 /**
- * A [UnchainedActivity] subclass.
+ * A [AppCompatActivity] subclass.
  * Shared between all the fragments except for the preferences.
  */
-class MainActivity : UnchainedActivity() {
+class MainActivity : AppCompatActivity() {
 
     private var currentNavController: LiveData<NavController>? = null
     private lateinit var appBarConfiguration: AppBarConfiguration
@@ -54,6 +57,9 @@ class MainActivity : UnchainedActivity() {
     private lateinit var binding: ActivityMainBinding
 
     val viewModel: MainActivityViewModel by viewModels()
+
+    @Inject
+    lateinit var preferences: SharedPreferences
 
     private val downloadReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
