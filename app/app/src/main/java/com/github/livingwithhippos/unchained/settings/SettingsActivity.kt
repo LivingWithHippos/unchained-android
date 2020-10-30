@@ -5,11 +5,13 @@ import androidx.appcompat.app.AppCompatActivity
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.utilities.extension.getThemeColor
 import com.github.livingwithhippos.unchained.utilities.extension.setNavigationBarColor
+import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * A simple [AppCompatActivity] subclass.
  * Used to navigate from any fragment to the settings screen since the multiple backstack navigation makes it kind of complicated.
  */
+@AndroidEntryPoint
 class SettingsActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

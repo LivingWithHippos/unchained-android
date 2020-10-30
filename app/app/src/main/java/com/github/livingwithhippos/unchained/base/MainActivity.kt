@@ -42,6 +42,7 @@ import com.github.livingwithhippos.unchained.utilities.extension.observeOnce
 import com.github.livingwithhippos.unchained.utilities.extension.setupWithNavController
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 
@@ -49,6 +50,7 @@ import javax.inject.Inject
  * A [AppCompatActivity] subclass.
  * Shared between all the fragments except for the preferences.
  */
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private var currentNavController: LiveData<NavController>? = null
