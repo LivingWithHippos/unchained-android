@@ -4,7 +4,6 @@ import android.os.Bundle
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedActivity
 import com.github.livingwithhippos.unchained.utilities.extension.getThemeColor
-import com.github.livingwithhippos.unchained.utilities.extension.setCustomTheme
 import com.github.livingwithhippos.unchained.utilities.extension.setNavigationBarColor
 
 /**
@@ -16,7 +15,6 @@ class SettingsActivity : UnchainedActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setCustomTheme(preferences.getString(SettingsFragment.KEY_THEME, "original")!!)
         setContentView(R.layout.activity_settings)
 
         //todo: restore MainActivity fragment on back press
