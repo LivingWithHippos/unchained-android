@@ -65,9 +65,7 @@
                 app:layout_constraintBottom_toTopOf="@id/bOpen"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvName"
-                app:strokeColor="@color/grey_01"
-                app:strokeWidth="0.05dp">
+                app:layout_constraintTop_toBottomOf="@id/tvName" >
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -213,9 +211,7 @@
                 app:cardElevation="3dp"
                 app:layout_constraintEnd_toStartOf="@id/cvDash"
                 app:layout_constraintStart_toStartOf="@id/bOpen"
-                app:layout_constraintTop_toBottomOf="@id/bOpen"
-                app:strokeColor="@color/grey_01"
-                app:strokeWidth="0.05dp">
+                app:layout_constraintTop_toBottomOf="@id/bOpen" >
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -309,9 +305,7 @@
                 app:cardElevation="3dp"
                 app:layout_constraintEnd_toEndOf="@id/bLoadStreams"
                 app:layout_constraintStart_toEndOf="@id/cvApple"
-                app:layout_constraintTop_toBottomOf="@id/bLoadStreams"
-                app:strokeColor="@color/grey_01"
-                app:strokeWidth="0.05dp">
+                app:layout_constraintTop_toBottomOf="@id/bLoadStreams" >
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -405,9 +399,7 @@
                 app:layout_constraintEnd_toStartOf="@id/cvH264"
                 app:layout_constraintStart_toStartOf="@id/bOpen"
                 app:layout_constraintTop_toBottomOf="@id/cvApple"
-                app:layout_constraintBottom_toBottomOf="@id/cvH264"
-                app:strokeColor="@color/grey_01"
-                app:strokeWidth="0.05dp">
+                app:layout_constraintBottom_toBottomOf="@id/cvH264" >
 
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -502,9 +494,7 @@
                 app:cardElevation="3dp"
                 app:layout_constraintEnd_toEndOf="@id/bLoadStreams"
                 app:layout_constraintStart_toEndOf="@id/cvMp4"
-                app:layout_constraintTop_toBottomOf="@id/cvDash"
-                app:strokeColor="@color/grey_01"
-                app:strokeWidth="0.05dp">
+                app:layout_constraintTop_toBottomOf="@id/cvDash" >
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"

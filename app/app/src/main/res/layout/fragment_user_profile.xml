@@ -78,8 +78,6 @@
             android:padding="10dp"
             app:cardElevation="5dp"
             app:cardCornerRadius="10dp"
-            app:strokeColor="@color/grey_01"
-            app:strokeWidth="0.05dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/ivProfilePic">

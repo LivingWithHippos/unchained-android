@@ -30,9 +30,7 @@
         app:cardDownloadItem="@{item}"
         android:layout_gravity="center_horizontal"
         app:cardCornerRadius="10dp"
-        app:cardElevation="3dp"
-        app:strokeColor="@color/grey_01"
-        app:strokeWidth="0.05dp">
+        app:cardElevation="3dp" >
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
