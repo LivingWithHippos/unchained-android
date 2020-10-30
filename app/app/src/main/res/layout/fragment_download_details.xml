@@ -269,7 +269,7 @@
 
                         <LinearLayout
                             android:id="@+id/appleButtonsLayout"
-                            android:layout_width="0dp"
+                            android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:orientation="horizontal"
                             android:gravity="end"
@@ -364,7 +364,7 @@
 
                         <LinearLayout
                             android:id="@+id/dashButtonsLayout"
-                            android:layout_width="0dp"
+                            android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:orientation="horizontal"
                             android:gravity="end"
@@ -459,7 +459,7 @@
 
                         <LinearLayout
                             android:id="@+id/mp4ButtonsLayout"
-                            android:layout_width="0dp"
+                            android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:orientation="horizontal"
                             android:gravity="end"
@@ -553,7 +553,7 @@
 
                         <LinearLayout
                             android:id="@+id/h264ButtonsLayout"
-                            android:layout_width="0dp"
+                            android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:orientation="horizontal"
                             android:gravity="end"
