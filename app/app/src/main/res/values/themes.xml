@@ -23,7 +23,7 @@
         <!--colorPrimary colors map to components and elements, such as app bars and buttons. -->
         <!--colorSecondary colors are most often used as accents on components, such as FABs and -->
         <!--selection controls.-->
-        <item name="colorPrimary">@color/purple_500</item>
+        <item name="colorPrimary">@color/purple_A700</item>
         <item name="colorPrimaryVariant">@color/purple_100</item>
         <item name="colorSecondary">@color/green_200</item>
         <item name="colorSecondaryVariant">@color/green_500</item>
@@ -39,6 +39,7 @@
         <item name="colorOnPrimary">@color/white</item>
         <item name="colorOnSecondary">@color/black</item>
         <item name="colorOnBackground">@color/grey_03</item>
+        <item name="colorOnBackgroundVariant">@color/purple_300</item>
         <item name="colorOnSurface">@color/black</item>
         <item name="colorOnError">@color/white</item>
     </style>
@@ -52,8 +53,8 @@
         <item name="colorPrimary">@color/peach_tropico</item>
         <item name="colorPrimaryVariant">@color/peach_tropico_lighter</item>
         <item name="colorPrimaryDark">@color/peach_tropico_darker</item>
-        <item name="colorSecondary">@color/plum_tropico</item>
-        <item name="colorSecondaryVariant">@color/plum_tropico_lighter</item>
+        <item name="colorSecondary">@color/plum_tropico_lighter</item>
+        <item name="colorSecondaryVariant">@color/plum_tropico</item>
 
         <!--colorBackground appears behind scrollable content and is used for the default window-->
         <!--background. colorSurface is mapped to the surface of components such as cards, sheets-->
@@ -67,6 +68,7 @@
         <item name="colorOnPrimary">@color/black</item>
         <item name="colorOnSecondary">@color/black</item>
         <item name="colorOnBackground">@color/white</item>
+        <item name="colorOnBackgroundVariant">@color/grey_700</item>
         <item name="colorOnSurface">@color/black_800</item>
         <item name="colorOnError">@color/white</item>
 
@@ -102,7 +104,7 @@
 
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
         <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
-        <!-- alternative text colors on surface -->
+        <!-- alternative text colors on surfaces -->
         <item name="colorOnSurfaceVariant">@color/grey_700</item>
     </style>
 
@@ -132,6 +134,7 @@
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- custom ones -->
         <item name="colorOnSurfaceVariant">?attr/colorPrimary</item>
+        <item name="colorOnBackgroundVariant">?attr/colorOnBackground</item>
     </style>
 
     <style name="Base.Theme.MaterialThemeBuilder" parent="Theme.MaterialComponents.DayNight.NoActionBar">

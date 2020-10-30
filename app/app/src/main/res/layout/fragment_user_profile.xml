@@ -50,6 +50,7 @@
             android:textAlignment="viewStart"
             android:text="@{user.email, default=`Email@Address`}"
             android:textAppearance="?attr/textAppearanceOverline"
+            android:textColor="?attr/colorOnBackgroundVariant"
             app:layout_constraintEnd_toStartOf="@id/ivProfilePic"
             app:layout_constraintStart_toStartOf="@id/tvName"
             app:layout_constraintTop_toBottomOf="@id/tvName" />

@@ -1,14 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="deep_purple_50">#EDE7F6</color>
-    <color name="deep_purple_100">#D1C4E9</color>
-    <color name="deep_purple_200">#B39DDB</color>
-    <color name="purple_100">#DFCCFB</color>
-    <color name="purple_200">#bb86fc</color> <!--Color primary (dark)-->
-    <color name="purple_500">#6200ee</color> <!--Color primary (light)-->
-    <color name="purple_600">#4b01d0</color> <!--Color primary variant (dark)-->
-    <color name="purple_700">#3700b3</color> <!--Color primary variant (light)-->
+    <color name="purple_50">#EDE7F6</color>
+    <color name="purple_100">#D1C4E9</color>
+    <color name="purple_200">#B39DDB</color>
+    <color name="purple_300">#9575CD</color>
+    <color name="purple_400">#7E57C2</color>
+    <color name="purple_500">#673AB7</color>
+    <color name="purple_600">#5E35B1</color>
+    <color name="purple_700">#512DA8</color>
+    <color name="purple_800">#4527A0</color>
+    <color name="purple_900">#311B92</color>
+    <color name="purple_A100">#B388FF</color>
+    <color name="purple_A200">#7C4DFF</color>
+    <color name="purple_A400">#651FFF</color>
+    <color name="purple_A700">#6200EA</color>
 
     <color name="green_200">#03dac6</color> <!--Color secondary-->
     <color name="green_500">#00a896</color> <!--Color secondary variant-->
