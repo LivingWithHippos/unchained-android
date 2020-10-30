@@ -44,7 +44,7 @@
         <!--colorPrimary colors map to components and elements, such as app bars and buttons. -->
         <!--colorSecondary colors are most often used as accents on components, such as FABs and -->
         <!--selection controls.-->
-        <item name="colorPrimary">@color/grey_1000</item>
+        <item name="colorPrimary">@color/grey_900</item>
         <item name="colorPrimaryVariant">@color/grey_700</item>
         <item name="colorPrimaryDark">@color/black</item>
         <item name="colorSecondary">@color/white</item>
