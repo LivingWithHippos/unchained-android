@@ -207,12 +207,13 @@
         <Button
             android:id="@+id/bLogout"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:text="@string/logout"
             android:layout_marginStart="20dp"
             android:backgroundTint="?attr/colorSecondary"
             android:textColor="?attr/colorOnSecondary"
             app:layout_constraintBottom_toBottomOf="@id/bAccount"
+            app:layout_constraintTop_toTopOf="@id/bAccount"
             app:layout_constraintStart_toEndOf="@+id/bAccount"
             app:layout_constraintEnd_toEndOf="@id/cvPremium"/>
 
