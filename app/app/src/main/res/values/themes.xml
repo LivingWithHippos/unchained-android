@@ -90,7 +90,7 @@
         <!--and menus. colorError is used to indicate an error state for components such as-->
         <!--text fields.-->
         <item name="android:colorBackground">@color/white</item>
-        <item name="colorSurface">@color/grey_400</item>
+        <item name="colorSurface">@color/grey_300</item>
         <item name="colorError">@color/red_600</item>
         <!--"On" colors define how text, icons and strokes are colored in relation to the surface-->
         <!--on which they appear.-->
@@ -102,6 +102,8 @@
 
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
         <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
+        <!-- alternative text colors on surface -->
+        <item name="colorOnSurfaceVariant">@color/grey_700</item>
     </style>
 
     <!--BASE CUSTOM THEME which will be shared between both light and dark theme variants-->
@@ -128,6 +130,8 @@
         <item name="materialAlertDialogTheme">@style/ThemeOverlay.MaterialComponents.Dialog.Alert</item>
         <item name="toolbarStyle">@style/Widget.MaterialComponents.Toolbar.PrimarySurface</item>
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+        <!-- custom ones -->
+        <item name="colorOnSurfaceVariant">?attr/colorPrimary</item>
     </style>
 
     <style name="Base.Theme.MaterialThemeBuilder" parent="Theme.MaterialComponents.DayNight.NoActionBar">
@@ -157,5 +161,6 @@
         <item name="iconTint">?attr/colorOnError</item>
         <item name="android:textColor">?attr/colorOnError</item>
     </style>
+
 
 </resources>

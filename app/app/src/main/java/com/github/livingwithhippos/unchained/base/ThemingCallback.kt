@@ -64,6 +64,6 @@ class ThemingCallback( val preferences: SharedPreferences) : Application.Activit
     }
 
     companion object {
-        private val DAY_ONLY_THEMES = arrayOf("tropical_sunset","black_n_white")
+        private val DAY_ONLY_THEMES = arrayOf("tropical_sunset")
     }
 }

@@ -104,7 +104,7 @@
                     android:layout_gravity="center"
                     android:text="@{user.premium > 0 ? @string/premium : @string/not_premium, default=`Premium`}"
                     android:textAllCaps="true"
-                    android:textColor="?attr/colorPrimary"
+                    android:textColor="?attr/colorOnSurfaceVariant"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="@id/tvStatus"
                     app:layout_constraintTop_toBottomOf="@id/tvStatus" />

@@ -51,6 +51,18 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
+                    android:id="@+id/tvProgress"
+                    style="@style/TextAppearance.UnchainedTheme.Overline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="@{item.progress >=0 &amp;&amp; item.progress &lt;100 ? View.VISIBLE : View.GONE, default=visible}"
+                    android:text="@{@string/percent_format(item.progress), default=`90%`}"
+                    android:layout_marginStart="5dp"
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    app:layout_constraintBottom_toBottomOf="@+id/tvTitle"
+                    app:layout_constraintStart_toEndOf="@id/tvTitle" />
+
+                <TextView
                     android:id="@+id/tvName"
                     style="@style/TextAppearance.UnchainedTheme.Body1"
                     android:layout_width="0dp"
@@ -71,23 +83,12 @@
                     android:layout_height="wrap_content"
                     fileSize="@{item.bytes}"
                     android:text="20 MB"
-                    android:textColor="?attr/colorPrimary"
+                    android:textColor="?attr/colorOnSurfaceVariant"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/tvName"
                     app:layout_constraintTop_toBottomOf="@+id/tvName"
                     tools:ignore="HardcodedText" />
 
-                <TextView
-                    android:id="@+id/tvProgress"
-                    style="@style/TextAppearance.UnchainedTheme.Overline"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:visibility="@{item.progress >=0 &amp;&amp; item.progress &lt;100 ? View.VISIBLE : View.GONE, default=visible}"
-                    android:text="@{@string/percent_format(item.progress), default=`90%`}"
-                    android:layout_marginStart="5dp"
-                    android:textColor="?attr/colorPrimary"
-                    app:layout_constraintBottom_toBottomOf="@+id/tvTitle"
-                    app:layout_constraintStart_toEndOf="@id/tvTitle" />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>

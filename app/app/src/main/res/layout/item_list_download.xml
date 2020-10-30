@@ -69,7 +69,7 @@
                 android:layout_height="wrap_content"
                 fileSize="@{item.fileSize}"
                 android:text="20 MB"
-                android:textColor="?attr/colorPrimary"
+                android:textColor="?attr/colorOnSurfaceVariant"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/tvName"
                 app:layout_constraintTop_toBottomOf="@+id/tvName"

@@ -13,9 +13,6 @@
     <color name="green_200">#03dac6</color> <!--Color secondary-->
     <color name="green_500">#00a896</color> <!--Color secondary variant-->
 
-    <color name="red_200">#cf6679</color> <!--Color error (dark)-->
-    <color name="red_600">#b00020</color> <!--Color error (light)-->
-
     <!--Color surface (light), color on error (light), -->
     <!--color on surface (dark), color on surface (dark)-->
     <color name="white">#ffffff</color>
@@ -62,8 +59,22 @@
     <color name="grey_700">#616161</color>
     <color name="grey_800">#424242</color>
     <color name="grey_900">#212121</color>
+    <color name="grey_1000">#111111</color>
 
-
+    <color name="red_50">#FFEBEE</color>
+    <color name="red_100">#FFCDD2</color>
+    <color name="red_200">#EF9A9A</color>
+    <color name="red_300">#E57373</color>
+    <color name="red_400">#EF5350</color>
+    <color name="red_500">#F44336</color>
+    <color name="red_600">#E53935</color>
+    <color name="red_700">#D32F2F</color>
+    <color name="red_800">#C62828</color>
+    <color name="red_900">#B71C1C</color>
+    <color name="red_A100">#FF8A80</color>
+    <color name="red_A200">#FF5252</color>
+    <color name="red_A400">#FF1744</color>
+    <color name="red_A700">#D50000</color>
 
     <!-- https://www.colourlovers.com/palette/56122/Sweet_Lolly -->
     <color name="premium_gold">#FABE28</color>
