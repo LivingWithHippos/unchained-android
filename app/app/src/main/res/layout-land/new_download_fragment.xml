@@ -22,6 +22,7 @@
             android:id="@+id/rootLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
             tools:context=".newdownload.view.NewDownloadFragment">
 
             <com.google.android.material.textfield.TextInputLayout
@@ -50,14 +51,13 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-
-            <Button
+            <ImageButton
                 android:id="@+id/bPasteLink"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:layout_marginStart="10dp"
-                android:background="@drawable/icon_paste"
                 android:contentDescription="@string/paste"
+                android:background="@drawable/icon_paste"
                 app:layout_constraintBottom_toBottomOf="@id/tfLink"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -89,7 +89,7 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <Button
+            <ImageButton
                 android:id="@+id/bPastePassword"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
@@ -103,7 +103,7 @@
                 app:layout_constraintStart_toEndOf="@+id/tiPassword" />
 
             <!-- https://material.io/develop/android/components/switches -->
-            <com.google.android.material.switchmaterial.SwitchMaterial
+            <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/switchRemote"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

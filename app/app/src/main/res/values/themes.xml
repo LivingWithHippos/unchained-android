@@ -18,9 +18,7 @@
 <!-- This file has been modified -->
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!--Top level DayNight theme to be used in AndroidManifest.xml-->
-    <style name="Theme.Unchained" parent="Base.Theme.Unchained"/>
-    <!--Base custom theme which will be shared between both light and dark theme variants-->
-    <style name="Base.Theme.Unchained" parent="Base.Theme.MaterialThemeBuilder">
+    <style name="Theme.Unchained" parent="Base.Theme.Unchained">
         <!--Material color attributes (light theme) -->
         <!--colorPrimary colors map to components and elements, such as app bars and buttons. -->
         <!--colorSecondary colors are most often used as accents on components, such as FABs and -->
@@ -39,47 +37,10 @@
         <!--"On" colors define how text, icons and strokes are colored in relation to the surface-->
         <!--on which they appear.-->
         <item name="colorOnPrimary">@color/white</item>
-        <item name="colorOnSecondary">@color/black_900</item>
+        <item name="colorOnSecondary">@color/black</item>
         <item name="colorOnBackground">@color/grey_03</item>
-        <item name="colorOnSurface">@color/black_900</item>
+        <item name="colorOnSurface">@color/black</item>
         <item name="colorOnError">@color/white</item>
-        <!--Material type attributes-->
-        <item name="textAppearanceHeadline1">@style/TextAppearance.UnchainedTheme.Headline1</item>
-        <item name="textAppearanceHeadline2">@style/TextAppearance.UnchainedTheme.Headline2</item>
-        <item name="textAppearanceHeadline3">@style/TextAppearance.UnchainedTheme.Headline3</item>
-        <item name="textAppearanceHeadline4">@style/TextAppearance.UnchainedTheme.Headline4</item>
-        <item name="textAppearanceHeadline5">@style/TextAppearance.UnchainedTheme.Headline5</item>
-        <item name="textAppearanceHeadline6">@style/TextAppearance.UnchainedTheme.Headline6</item>
-        <item name="textAppearanceSubtitle1">@style/TextAppearance.UnchainedTheme.Subtitle1</item>
-        <item name="textAppearanceSubtitle2">@style/TextAppearance.UnchainedTheme.Subtitle2</item>
-        <item name="textAppearanceBody1">@style/TextAppearance.UnchainedTheme.Body1</item>
-        <item name="textAppearanceBody2">@style/TextAppearance.UnchainedTheme.Body2</item>
-        <item name="textAppearanceButton">@style/TextAppearance.UnchainedTheme.Button</item>
-        <item name="textAppearanceCaption">@style/TextAppearance.UnchainedTheme.Caption</item>
-        <item name="textAppearanceOverline">@style/TextAppearance.UnchainedTheme.Overline</item>
-        <!--Material shape attributes-->
-        <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.UnchainedTheme.SmallComponent</item>
-        <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.UnchainedTheme.MediumComponent</item>
-        <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.UnchainedTheme.LargeComponent</item>
-        <!--Component styles-->
-        <item name="materialAlertDialogTheme">@style/ThemeOverlay.MaterialComponents.Dialog.Alert</item>
-        <item name="toolbarStyle">@style/Widget.MaterialComponents.Toolbar.PrimarySurface</item>
-        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
-    </style>
-    <style name="Base.Theme.MaterialThemeBuilder" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="android:statusBarColor">?attr/colorSurface</item>
-        <item name="android:windowLightStatusBar">true</item>
-        <item name="android:navigationBarColor" tools:ignore="NewApi">?attr/colorPrimary</item>
-        <item name="android:windowLightNavigationBar" tools:ignore="NewApi">false</item>
-    </style>
-
-    <style name="Widget.Unchained.Toolbar.Primary" parent="Widget.MaterialComponents.Toolbar.Primary">
-        <item name="materialThemeOverlay">@style/ThemeOverlay.Unchained.Toolbar.Primary</item>
-    </style>
-
-    <style name="ThemeOverlay.Unchained.Toolbar.Primary" parent="">
-        <!-- Changes the text color for the SearchView. They're on the top bar, so match it with the primary color. -->
-        <item name="android:editTextColor">?attr/colorOnPrimary</item>
     </style>
 
     <!-- Tropical Sunset Theme -->
@@ -103,12 +64,103 @@
         <item name="colorError">@color/red_600</item>
         <!--"On" colors define how text, icons and strokes are colored in relation to the surface-->
         <!--on which they appear.-->
-        <item name="colorOnPrimary">@color/black_900</item>
-        <item name="colorOnSecondary">@color/black_900</item>
+        <item name="colorOnPrimary">@color/black</item>
+        <item name="colorOnSecondary">@color/black</item>
         <item name="colorOnBackground">@color/white</item>
         <item name="colorOnSurface">@color/black_800</item>
         <item name="colorOnError">@color/white</item>
 
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
     </style>
+
+    <!-- Black & White theme -->
+    <style name="Theme.BlackAndWhite" parent="Base.Theme.Unchained">
+
+        <!--colorPrimary colors map to components and elements, such as app bars and buttons. -->
+        <!--colorSecondary colors are most often used as accents on components, such as FABs and -->
+        <!--selection controls.-->
+        <item name="colorPrimary">@color/white</item>
+        <item name="colorPrimaryVariant">@color/grey_50</item>
+        <item name="colorPrimaryDark">@color/grey_100</item>
+        <item name="colorSecondary">@color/black_800</item>
+        <item name="colorSecondaryVariant">@color/grey_900</item>
+
+        <!--colorBackground appears behind scrollable content and is used for the default window-->
+        <!--background. colorSurface is mapped to the surface of components such as cards, sheets-->
+        <!--and menus. colorError is used to indicate an error state for components such as-->
+        <!--text fields.-->
+        <item name="android:colorBackground">@color/white</item>
+        <item name="colorSurface">@color/grey_300</item>
+        <item name="colorError">@color/red_600</item>
+        <!--"On" colors define how text, icons and strokes are colored in relation to the surface-->
+        <!--on which they appear.-->
+        <item name="colorOnPrimary">@color/black</item>
+        <item name="colorOnSecondary">@color/white</item>
+        <item name="colorOnBackground">@color/black_800</item>
+        <item name="colorOnSurface">@color/black_800</item>
+        <item name="colorOnError">@color/white</item>
+
+        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
+        <!-- alternative text colors on surface -->
+        <item name="colorOnSurfaceVariant">@color/grey_700</item>
+    </style>
+
+    <!--BASE CUSTOM THEME which will be shared between both light and dark theme variants-->
+    <style name="Base.Theme.Unchained" parent="Base.Theme.MaterialThemeBuilder">
+        <!--Material type attributes-->
+        <item name="textAppearanceHeadline1">@style/TextAppearance.UnchainedTheme.Headline1</item>
+        <item name="textAppearanceHeadline2">@style/TextAppearance.UnchainedTheme.Headline2</item>
+        <item name="textAppearanceHeadline3">@style/TextAppearance.UnchainedTheme.Headline3</item>
+        <item name="textAppearanceHeadline4">@style/TextAppearance.UnchainedTheme.Headline4</item>
+        <item name="textAppearanceHeadline5">@style/TextAppearance.UnchainedTheme.Headline5</item>
+        <item name="textAppearanceHeadline6">@style/TextAppearance.UnchainedTheme.Headline6</item>
+        <item name="textAppearanceSubtitle1">@style/TextAppearance.UnchainedTheme.Subtitle1</item>
+        <item name="textAppearanceSubtitle2">@style/TextAppearance.UnchainedTheme.Subtitle2</item>
+        <item name="textAppearanceBody1">@style/TextAppearance.UnchainedTheme.Body1</item>
+        <item name="textAppearanceBody2">@style/TextAppearance.UnchainedTheme.Body2</item>
+        <item name="textAppearanceButton">@style/TextAppearance.UnchainedTheme.Button</item>
+        <item name="textAppearanceCaption">@style/TextAppearance.UnchainedTheme.Caption</item>
+        <item name="textAppearanceOverline">@style/TextAppearance.UnchainedTheme.Overline</item>
+        <!--Material shape attributes-->
+        <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.UnchainedTheme.SmallComponent</item>
+        <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.UnchainedTheme.MediumComponent</item>
+        <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.UnchainedTheme.LargeComponent</item>
+        <!--Component styles-->
+        <item name="materialAlertDialogTheme">@style/ThemeOverlay.MaterialComponents.Dialog.Alert</item>
+        <item name="toolbarStyle">@style/Widget.MaterialComponents.Toolbar.PrimarySurface</item>
+        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+        <!-- custom ones -->
+        <item name="colorOnSurfaceVariant">?attr/colorPrimary</item>
+    </style>
+
+    <style name="Base.Theme.MaterialThemeBuilder" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:statusBarColor">?attr/colorSurface</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:navigationBarColor">?attr/colorPrimary</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">false</item>
+    </style>
+
+    <style name="Widget.Unchained.Toolbar.Primary" parent="Widget.MaterialComponents.Toolbar.Primary">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.Unchained.Toolbar.Primary</item>
+    </style>
+
+    <style name="ThemeOverlay.Unchained.Toolbar.Primary" parent="">
+        <!-- Changes the text color for the SearchView. They're on the top bar, so match it with the primary color. -->
+        <item name="android:editTextColor">?attr/colorOnPrimary</item>
+    </style>
+
+    <style name="Widget.Unchained.Button.Icon.Secondary" parent="Widget.MaterialComponents.Button.Icon">
+        <item name="backgroundTint">?attr/colorSecondary</item>
+        <item name="iconTint">?attr/colorOnSecondary</item>
+        <item name="android:textColor">?attr/colorOnSecondary</item>
+    </style>
+
+    <style name="Widget.Unchained.Button.Icon.Error" parent="Widget.MaterialComponents.Button.Icon">
+        <item name="backgroundTint">?attr/colorError</item>
+        <item name="iconTint">?attr/colorOnError</item>
+        <item name="android:textColor">?attr/colorOnError</item>
+    </style>
+
+
 </resources>

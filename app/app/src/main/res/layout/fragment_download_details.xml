@@ -65,9 +65,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvName"
-                app:strokeColor="@color/grey_01"
-                app:strokeWidth="0.05dp">
+                app:layout_constraintTop_toBottomOf="@id/tvName" >
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -118,7 +116,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="5dp"
                         android:text="123 MB"
-                        android:textColor="?attr/colorPrimary"
+                        android:textColor="?attr/colorOnSurfaceVariant"
                         app:layout_constraintBottom_toTopOf="@id/tvMimeType"
                         app:layout_constraintStart_toEndOf="@id/ivHosterPic"
                         app:layout_constraintTop_toBottomOf="@id/tvDownloadId"
@@ -153,11 +151,12 @@
                 android:id="@+id/bOpen"
                 style="@style/Widget.MaterialComponents.Button.Icon"
                 android:layout_width="0dp"
-                android:layout_height="80dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="10dp"
                 android:onClick="@{() -> listener.onOpenClick(details.download)}"
                 android:text="@string/open_link"
+                android:minLines="3"
                 app:icon="@drawable/icon_open_external"
                 app:layout_constraintStart_toStartOf="@id/cvDetails"
                 app:layout_constraintEnd_toStartOf="@id/bCopy"
@@ -167,11 +166,12 @@
                 android:id="@+id/bCopy"
                 style="@style/Widget.MaterialComponents.Button.Icon"
                 android:layout_width="0dp"
-                android:layout_height="80dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:layout_marginStart="10dp"
                 android:onClick="@{() -> listener.onCopyClick(details.download)}"
                 android:text="@string/copy_link"
+                android:minLines="3"
                 app:icon="@drawable/icon_copy"
                 app:layout_constraintEnd_toEndOf="@id/cvDetails"
                 app:layout_constraintStart_toEndOf="@id/bOpen"
@@ -181,11 +181,12 @@
                 android:id="@+id/bOpenWith"
                 style="@style/Widget.MaterialComponents.Button.Icon"
                 android:layout_width="0dp"
-                android:layout_height="80dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:layout_marginEnd="10dp"
                 android:onClick="@{() -> listener.onOpenWith(details.download)}"
                 android:text="@string/yatse"
+                android:minLines="3"
                 android:visibility="@{details.streamable == 1 ? View.VISIBLE : View.GONE, default=visible}"
                 android:enabled="@{yatseInstalled ? true : false, default=true}"
                 app:icon="@drawable/icon_remote"
@@ -197,8 +198,7 @@
                 android:id="@+id/bLoadStreams"
                 style="@style/Widget.MaterialComponents.Button.Icon"
                 android:layout_width="0dp"
-                android:layout_height="80dp"
-                android:layout_marginTop="5dp"
+                android:layout_height="0dp"
                 android:layout_marginStart="10dp"
                 android:onClick="@{() -> listener.onLoadStreamsClick(details.id)}"
                 android:text="@string/load_streams"
@@ -207,7 +207,8 @@
                 app:icon="@drawable/icon_play_outline"
                 app:layout_constraintEnd_toEndOf="@id/cvDetails"
                 app:layout_constraintStart_toEndOf="@id/bOpenWith"
-                app:layout_constraintTop_toBottomOf="@id/bCopy" />
+                app:layout_constraintTop_toTopOf="@id/bOpenWith"
+                app:layout_constraintBottom_toBottomOf="@id/bOpenWith" />
 
             <LinearLayout
                 android:id="@+id/llStreaming"
@@ -232,9 +233,7 @@
                     android:focusable="true"
                     android:visibility="@{stream.apple == null ? View.GONE : View.VISIBLE}"
                     app:cardCornerRadius="10dp"
-                    app:cardElevation="3dp"
-                    app:strokeColor="@color/grey_01"
-                    app:strokeWidth="0.05dp">
+                    app:cardElevation="3dp" >
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
@@ -269,7 +268,7 @@
 
                         <LinearLayout
                             android:id="@+id/appleButtonsLayout"
-                            android:layout_width="0dp"
+                            android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:orientation="horizontal"
                             android:gravity="end"
@@ -327,9 +326,7 @@
                     android:focusable="true"
                     android:visibility="@{stream.dash == null ? View.GONE : View.VISIBLE}"
                     app:cardCornerRadius="10dp"
-                    app:cardElevation="3dp"
-                    app:strokeColor="@color/grey_01"
-                    app:strokeWidth="0.05dp">
+                    app:cardElevation="3dp" >
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
@@ -364,7 +361,7 @@
 
                         <LinearLayout
                             android:id="@+id/dashButtonsLayout"
-                            android:layout_width="0dp"
+                            android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:orientation="horizontal"
                             android:gravity="end"
@@ -422,9 +419,7 @@
                     android:focusable="true"
                     android:visibility="@{stream.liveMP4 == null ? View.GONE : View.VISIBLE}"
                     app:cardCornerRadius="10dp"
-                    app:cardElevation="3dp"
-                    app:strokeColor="@color/grey_01"
-                    app:strokeWidth="0.05dp">
+                    app:cardElevation="3dp" >
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
@@ -459,7 +454,7 @@
 
                         <LinearLayout
                             android:id="@+id/mp4ButtonsLayout"
-                            android:layout_width="0dp"
+                            android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:orientation="horizontal"
                             android:gravity="end"
@@ -517,9 +512,7 @@
                     android:focusable="true"
                     android:visibility="@{stream.h264WebM == null ? View.GONE : View.VISIBLE}"
                     app:cardCornerRadius="10dp"
-                    app:cardElevation="3dp"
-                    app:strokeColor="@color/grey_01"
-                    app:strokeWidth="0.05dp">
+                    app:cardElevation="3dp" >
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
@@ -553,7 +546,7 @@
 
                         <LinearLayout
                             android:id="@+id/h264ButtonsLayout"
-                            android:layout_width="0dp"
+                            android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:orientation="horizontal"
                             android:gravity="end"

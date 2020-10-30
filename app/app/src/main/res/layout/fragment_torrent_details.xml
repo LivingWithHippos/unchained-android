@@ -56,10 +56,8 @@
             android:checkable="false"
             android:clickable="false"
             android:focusable="true"
-            app:cardElevation="0dp"
+            app:cardElevation="5dp"
             app:cardCornerRadius="10dp"
-            app:strokeColor="@color/grey_01"
-            app:strokeWidth="0.05dp"
             android:layout_gravity="center_horizontal">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -96,7 +94,7 @@
                     android:layout_height="wrap_content"
                     android:text="File Size"
                     fileSize="@{torrent.bytes}"
-                    android:textColor="?attr/colorPrimary"
+                    android:textColor="?attr/colorOnSurfaceVariant"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintEnd_toStartOf="@id/loadingCircle"
@@ -130,10 +128,8 @@
             android:checkable="false"
             android:clickable="false"
             android:focusable="true"
-            app:cardElevation="0dp"
+            app:cardElevation="5dp"
             app:cardCornerRadius="10dp"
-            app:strokeColor="@color/grey_01"
-            app:strokeWidth="0.05dp"
             android:visibility="@{torrent.status.equalsIgnoreCase(`downloading`) ? View.VISIBLE : View.GONE}"
             android:layout_gravity="center_horizontal" >
 
@@ -160,7 +156,7 @@
                     android:visibility="@{torrent.progress >=0 &amp;&amp; torrent.progress &lt;100 ? View.VISIBLE : View.GONE, default=visible}"
                     android:text="@{@string/percent_format(torrent.progress), default=`90%`}"
                     android:layout_marginStart="5dp"
-                    android:textColor="?attr/colorPrimary"
+                    android:textColor="?attr/colorOnSurfaceVariant"
                     app:layout_constraintBottom_toBottomOf="@+id/tvDownloadOverline"
                     app:layout_constraintStart_toEndOf="@id/tvDownloadOverline" />
 
@@ -224,10 +220,11 @@
             android:id="@+id/bDownload"
             style="@style/Widget.MaterialComponents.Button.Icon"
             android:layout_width="150dp"
-            android:layout_height="80dp"
+            android:layout_height="wrap_content"
             android:onClick="@{() -> listener.onDownloadClick(torrent.links)}"
             android:layout_marginBottom="20dp"
             android:text="@string/download"
+            android:minLines="3"
             android:visibility="@{torrent.status.equalsIgnoreCase(`downloaded`) ? View.VISIBLE : View.GONE}"
             android:layout_gravity="center_horizontal"
             app:icon="@drawable/icon_download"

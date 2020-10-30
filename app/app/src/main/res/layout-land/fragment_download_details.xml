@@ -65,9 +65,7 @@
                 app:layout_constraintBottom_toTopOf="@id/bOpen"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvName"
-                app:strokeColor="@color/grey_01"
-                app:strokeWidth="0.05dp">
+                app:layout_constraintTop_toBottomOf="@id/tvName" >
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -143,11 +141,12 @@
                 android:id="@+id/bOpen"
                 style="@style/Widget.MaterialComponents.Button.Icon"
                 android:layout_width="0dp"
-                android:layout_height="80dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="10dp"
                 android:onClick="@{() -> listener.onOpenClick(details.download)}"
                 android:text="@string/open_link"
+                android:minLines="3"
                 app:icon="@drawable/icon_open_external"
                 app:layout_constraintEnd_toStartOf="@id/bCopy"
                 app:layout_constraintStart_toStartOf="@id/cvDetails"
@@ -157,22 +156,21 @@
                 android:id="@+id/bCopy"
                 style="@style/Widget.MaterialComponents.Button.Icon"
                 android:layout_width="0dp"
-                android:layout_height="80dp"
-                android:layout_marginTop="20dp"
+                android:layout_height="0dp"
                 android:layout_marginEnd="10dp"
                 android:onClick="@{() -> listener.onCopyClick(details.download)}"
                 android:text="@string/copy_link"
                 app:icon="@drawable/icon_copy"
                 app:layout_constraintEnd_toStartOf="@id/bOpenWith"
                 app:layout_constraintStart_toEndOf="@id/bOpen"
-                app:layout_constraintTop_toBottomOf="@id/cvDetails" />
+                app:layout_constraintTop_toTopOf="@id/bOpen"
+                app:layout_constraintBottom_toBottomOf="@id/bOpen" />
 
             <Button
                 android:id="@+id/bOpenWith"
                 style="@style/Widget.MaterialComponents.Button.Icon"
                 android:layout_width="0dp"
-                android:layout_height="80dp"
-                android:layout_marginTop="20dp"
+                android:layout_height="0dp"
                 android:layout_marginEnd="10dp"
                 android:onClick="@{() -> listener.onOpenWith(details.download)}"
                 android:text="@string/yatse"
@@ -181,22 +179,24 @@
                 app:icon="@drawable/icon_remote"
                 app:layout_constraintEnd_toStartOf="@id/bLoadStreams"
                 app:layout_constraintStart_toEndOf="@id/bCopy"
-                app:layout_constraintTop_toBottomOf="@id/cvDetails" />
+                app:layout_constraintTop_toTopOf="@id/bOpen"
+                app:layout_constraintBottom_toBottomOf="@id/bOpen" />
 
             <Button
                 android:id="@+id/bLoadStreams"
                 style="@style/Widget.MaterialComponents.Button.Icon"
                 android:layout_width="0dp"
-                android:layout_height="80dp"
-                android:layout_marginTop="20dp"
+                android:layout_height="0dp"
                 android:onClick="@{() -> listener.onLoadStreamsClick(details.id)}"
                 android:text="@string/load_streams"
+                android:minLines="3"
                 android:enabled="@{stream == null &amp;&amp; (details.alternative == null || details.alternative.size == 0)? true : false, default = true}"
                 android:visibility="@{details.streamable == 1 ? View.VISIBLE : View.GONE, default=visible}"
                 app:icon="@drawable/icon_play_outline"
                 app:layout_constraintEnd_toEndOf="@id/cvDetails"
                 app:layout_constraintStart_toEndOf="@id/bOpenWith"
-                app:layout_constraintTop_toBottomOf="@id/cvDetails" />
+                app:layout_constraintTop_toTopOf="@id/bOpen"
+                app:layout_constraintBottom_toBottomOf="@id/bOpen"  />
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cvApple"
@@ -213,9 +213,7 @@
                 app:cardElevation="3dp"
                 app:layout_constraintEnd_toStartOf="@id/cvDash"
                 app:layout_constraintStart_toStartOf="@id/bOpen"
-                app:layout_constraintTop_toBottomOf="@id/bOpen"
-                app:strokeColor="@color/grey_01"
-                app:strokeWidth="0.05dp">
+                app:layout_constraintTop_toBottomOf="@id/bOpen" >
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -250,7 +248,7 @@
 
                     <LinearLayout
                         android:id="@+id/appleButtonsLayout"
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:orientation="horizontal"
                         android:gravity="end"
@@ -309,9 +307,7 @@
                 app:cardElevation="3dp"
                 app:layout_constraintEnd_toEndOf="@id/bLoadStreams"
                 app:layout_constraintStart_toEndOf="@id/cvApple"
-                app:layout_constraintTop_toBottomOf="@id/bLoadStreams"
-                app:strokeColor="@color/grey_01"
-                app:strokeWidth="0.05dp">
+                app:layout_constraintTop_toBottomOf="@id/bLoadStreams" >
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -346,7 +342,7 @@
 
                     <LinearLayout
                         android:id="@+id/dashButtonsLayout"
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:orientation="horizontal"
                         android:gravity="end"
@@ -405,9 +401,7 @@
                 app:layout_constraintEnd_toStartOf="@id/cvH264"
                 app:layout_constraintStart_toStartOf="@id/bOpen"
                 app:layout_constraintTop_toBottomOf="@id/cvApple"
-                app:layout_constraintBottom_toBottomOf="@id/cvH264"
-                app:strokeColor="@color/grey_01"
-                app:strokeWidth="0.05dp">
+                app:layout_constraintBottom_toBottomOf="@id/cvH264" >
 
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -443,7 +437,7 @@
 
                     <LinearLayout
                         android:id="@+id/mp4ButtonsLayout"
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:orientation="horizontal"
                         android:gravity="end"
@@ -502,9 +496,7 @@
                 app:cardElevation="3dp"
                 app:layout_constraintEnd_toEndOf="@id/bLoadStreams"
                 app:layout_constraintStart_toEndOf="@id/cvMp4"
-                app:layout_constraintTop_toBottomOf="@id/cvDash"
-                app:strokeColor="@color/grey_01"
-                app:strokeWidth="0.05dp">
+                app:layout_constraintTop_toBottomOf="@id/cvDash" >
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -538,7 +530,7 @@
 
                     <LinearLayout
                         android:id="@+id/h264ButtonsLayout"
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:orientation="horizontal"
                         android:gravity="end"

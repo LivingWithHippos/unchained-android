@@ -219,4 +219,5 @@
     <string name="login_message_placeholder">Per favore visita questo link per completare il login</string>
     <string name="host_match_not_found">Nessun host compatibile trovato. Aggiorna gli host dalle impostazioni se necessario.</string>
     <string name="refreshing_token">Aggiornando autenticazione, riprova tra poco</string>
+    <string name="black_and_white">Bianco e nero</string>
 </resources>

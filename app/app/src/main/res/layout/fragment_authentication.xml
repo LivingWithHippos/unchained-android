@@ -61,9 +61,8 @@
                 style="@style/TextAppearance.UnchainedTheme.Body1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
-                android:text="@string/login_message_placeholder"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
                 android:textAlignment="center"
                 android:clickable="true"
                 android:focusable="true"
@@ -141,8 +140,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
             android:autoLink="web"
             android:justificationMode="inter_word"
             android:text="@string/add_private_token_message"
@@ -155,7 +154,7 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tfPrivateCode"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:minWidth="200dp"
             android:layout_marginTop="10dp"
             android:layout_height="wrap_content"
@@ -165,7 +164,7 @@
             app:layout_constraintBottom_toTopOf="@id/bInsertPrivate"
             app:layout_constraintEnd_toStartOf="@id/bPastePrivateCode"
             app:layout_constraintHorizontal_chainStyle="packed"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/tvUsePrivateToken"
             app:layout_constraintTop_toBottomOf="@id/tvUsePrivateToken">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -176,8 +175,7 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-
-        <Button
+        <ImageButton
             android:id="@+id/bPastePrivateCode"
             android:layout_width="35dp"
             android:layout_height="35dp"
@@ -186,7 +184,7 @@
             android:contentDescription="@string/paste"
             android:onClick="@{() -> listener.onPasteCodeClick(tiPrivateCode)}"
             app:layout_constraintBottom_toBottomOf="@id/tfPrivateCode"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/tvUsePrivateToken"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@id/tfPrivateCode"
             app:layout_constraintTop_toTopOf="@id/tfPrivateCode" />

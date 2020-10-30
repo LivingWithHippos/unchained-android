@@ -8,12 +8,14 @@ import android.content.ContentResolver.SCHEME_FILE
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.forEach
 import androidx.lifecycle.LiveData
@@ -28,7 +30,6 @@ import com.github.livingwithhippos.unchained.data.service.ForegroundTorrentServi
 import com.github.livingwithhippos.unchained.data.service.ForegroundTorrentService.Companion.KEY_TORRENT_ID
 import com.github.livingwithhippos.unchained.databinding.ActivityMainBinding
 import com.github.livingwithhippos.unchained.settings.SettingsActivity
-import com.github.livingwithhippos.unchained.settings.SettingsFragment
 import com.github.livingwithhippos.unchained.settings.SettingsFragment.Companion.KEY_TORRENT_NOTIFICATIONS
 import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewModel
 import com.github.livingwithhippos.unchained.utilities.EventObserver
@@ -38,17 +39,19 @@ import com.github.livingwithhippos.unchained.utilities.SCHEME_MAGNET
 import com.github.livingwithhippos.unchained.utilities.extension.isMagnet
 import com.github.livingwithhippos.unchained.utilities.extension.isTorrent
 import com.github.livingwithhippos.unchained.utilities.extension.observeOnce
-import com.github.livingwithhippos.unchained.utilities.extension.setCustomTheme
 import com.github.livingwithhippos.unchained.utilities.extension.setupWithNavController
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 
 /**
- * A [UnchainedActivity] subclass.
+ * A [AppCompatActivity] subclass.
  * Shared between all the fragments except for the preferences.
  */
-class MainActivity : UnchainedActivity() {
+@AndroidEntryPoint
+class MainActivity : AppCompatActivity() {
 
     private var currentNavController: LiveData<NavController>? = null
     private lateinit var appBarConfiguration: AppBarConfiguration
@@ -56,6 +59,9 @@ class MainActivity : UnchainedActivity() {
     private lateinit var binding: ActivityMainBinding
 
     val viewModel: MainActivityViewModel by viewModels()
+
+    @Inject
+    lateinit var preferences: SharedPreferences
 
     private val downloadReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -68,7 +74,6 @@ class MainActivity : UnchainedActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setCustomTheme(preferences.getString(SettingsFragment.KEY_THEME, "original")!!)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
