@@ -120,16 +120,18 @@
                     app:layout_constraintStart_toStartOf="@id/tvPremium"
                     app:layout_constraintTop_toBottomOf="@id/tvPremium" />
 
-                <com.google.android.material.progressindicator.ProgressIndicator
+                <com.google.android.material.progressindicator.LinearProgressIndicator
                     android:id="@+id/pointsBar"
-                    style="@style/Widget.MaterialComponents.ProgressIndicator.Linear.Determinate"
+                    style="@style/Widget.MaterialComponents.LinearProgressIndicator"
+                    android:indeterminate="false"
+                    app:trackThickness="20dp"
                     progressCompat="@{user.points}"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
                     android:max="1000"
                     app:indicatorColor="?attr/colorPrimary"
-                    app:indicatorCornerRadius="20dp"
+                    app:trackCornerRadius="20dp"
                     app:indicatorSize="25dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

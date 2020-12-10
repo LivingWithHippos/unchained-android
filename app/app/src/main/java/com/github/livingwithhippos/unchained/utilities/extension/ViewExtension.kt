@@ -29,7 +29,7 @@ import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.lists.view.DownloadListListener
 import com.github.livingwithhippos.unchained.lists.view.TorrentListListener
-import com.google.android.material.progressindicator.ProgressIndicator
+import com.google.android.material.progressindicator.BaseProgressIndicator
 import com.google.android.material.snackbar.Snackbar
 
 /**
@@ -160,7 +160,7 @@ fun ProgressBar.getDrawableByLayerId(id: Int): Drawable {
  * @param progress: the progress to be set
  */
 @BindingAdapter("progressCompat")
-fun ProgressIndicator.setRealProgress(progress: Int) {
+fun BaseProgressIndicator<*>.setRealProgress(progress: Int) {
     val animated = true
     this.setProgressCompat(progress, animated)
 }

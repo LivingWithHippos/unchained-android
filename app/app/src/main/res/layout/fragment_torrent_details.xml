@@ -102,19 +102,19 @@
                     app:layout_constraintTop_toBottomOf="@+id/tvStatus"
                     tools:ignore="HardcodedText" />
 
-                <com.google.android.material.progressindicator.ProgressIndicator
+                <com.google.android.material.progressindicator.CircularProgressIndicator
                     android:id="@+id/loadingCircle"
-                    style="@style/Widget.MaterialComponents.ProgressIndicator.Circular.Indeterminate"
+                    style="@style/Widget.MaterialComponents.CircularProgressIndicator"
+                    android:indeterminate="true"
                     android:visibility="@{loadingStatusList.contains(torrent.status) &amp;&amp; !torrent.status.equalsIgnoreCase(`downloading`) ? View.VISIBLE : View.GONE}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="10dp"
-                    app:indicatorCornerRadius="20dp"
+                    app:trackCornerRadius="20dp"
                     app:indicatorColor="?attr/colorPrimary"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"/>
-
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>
