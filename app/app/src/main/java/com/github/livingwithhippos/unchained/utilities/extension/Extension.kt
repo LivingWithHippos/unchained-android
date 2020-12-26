@@ -200,37 +200,40 @@ fun AppCompatActivity.setCustomTheme(theme: String) {
 }
 
 fun AppCompatActivity.setNavigationBarColor(color: Int, alpha: Int = 0) {
-    val newColor = Color.argb(
-        alpha, Color.red(color), Color.green(color), Color.blue(
-            color
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        val newColor = Color.argb(
+            alpha, Color.red(color), Color.green(color), Color.blue(
+                color
+            )
         )
-    )
 
-    // set the color before applying the light bar effect
-    window.navigationBarColor = newColor
+        // set the color before applying the light bar effect
+        window.navigationBarColor = newColor
 
-    val luminance = Color.luminance(color)
-    if (luminance >= 0.25) {
-        when {
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> {
-                window.insetsController?.setSystemBarsAppearance(
-                    WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS,
-                    WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS
-                )
+        val luminance = Color.luminance(color)
+        if (luminance >= 0.25) {
+            when {
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> {
+                    window.insetsController?.setSystemBarsAppearance(
+                        WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS,
+                        WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS
+                    )
+                }
+                Build.VERSION.SDK_INT in Build.VERSION_CODES.O..Build.VERSION_CODES.Q -> {
+                    // the check above is not recognized
+                    @Suppress("DEPRECATION")
+                    @SuppressLint("InlinedApi")
+                    window.decorView.systemUiVisibility =
+                        window.decorView.systemUiVisibility or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
+                }
             }
-            Build.VERSION.SDK_INT in Build.VERSION_CODES.O..Build.VERSION_CODES.Q -> {
-                // the check above is not recognized
-                @Suppress("DEPRECATION")
-                @SuppressLint("InlinedApi")
-                window.decorView.systemUiVisibility =
-                    window.decorView.systemUiVisibility or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
-            }
-        }
-    } else
-        @Suppress("DEPRECATION")
-        @SuppressLint("InlinedApi")
-        window.decorView.systemUiVisibility =
-            window.decorView.systemUiVisibility and View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR.inv()
+        } else
+            @Suppress("DEPRECATION")
+            @SuppressLint("InlinedApi")
+            window.decorView.systemUiVisibility =
+                window.decorView.systemUiVisibility and View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR.inv()
+
+    }
 
 }
 
