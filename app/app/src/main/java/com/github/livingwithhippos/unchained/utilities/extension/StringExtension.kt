@@ -3,6 +3,7 @@ package com.github.livingwithhippos.unchained.utilities.extension
 import android.annotation.SuppressLint
 import android.icu.text.DateFormat
 import android.icu.text.SimpleDateFormat
+import android.os.Build
 import android.util.Patterns
 import com.github.livingwithhippos.unchained.utilities.MAGNET_PATTERN
 import com.github.livingwithhippos.unchained.utilities.TORRENT_PATTERN
@@ -42,8 +43,14 @@ fun String?.isTorrent(): Boolean {
  */
 @SuppressLint("SimpleDateFormat")
 fun String.toCustomDate(datePattern: String = "yyyy-MM-dd'T'hh:mm:ss"): String {
-    val originalDate: DateFormat = SimpleDateFormat(datePattern)
-    val date: Date = originalDate.parse(this)
-    val localDate: DateFormat = SimpleDateFormat.getDateTimeInstance()
-    return localDate.format(date)
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        val originalDate: DateFormat = SimpleDateFormat(datePattern)
+        val date: Date = originalDate.parse(this)
+        val localDate: DateFormat = SimpleDateFormat.getDateTimeInstance()
+        return localDate.format(date)
+
+    } else {
+        //todo: use a more robust option
+        return this
+    }
 }
