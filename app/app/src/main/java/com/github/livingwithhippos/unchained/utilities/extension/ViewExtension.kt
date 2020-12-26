@@ -11,6 +11,7 @@ import android.graphics.drawable.RippleDrawable
 import android.graphics.drawable.RotateDrawable
 import android.graphics.drawable.ScaleDrawable
 import android.graphics.drawable.VectorDrawable
+import android.os.Build
 import android.text.SpannableStringBuilder
 import android.util.TypedValue
 import android.view.View
@@ -127,14 +128,16 @@ fun ProgressBar.tintDrawable(layerId: Int, color: Int) {
  * @param drawable: the drawable to apply
  */
 fun ProgressBar.swapLayerDrawable(layerId: Int, drawable: Drawable) {
-    when (val oldDrawable = getDrawableByLayerId(layerId)) {
-        is ClipDrawable -> oldDrawable.drawable = drawable
-        is ScaleDrawable -> oldDrawable.drawable = drawable
-        is InsetDrawable -> oldDrawable.drawable = drawable
-        is RotateDrawable -> oldDrawable.drawable = drawable
-        is VectorDrawable -> getLayerDrawable().setDrawableByLayerId(layerId, drawable)
-        // ShapeDrawable is a generic shape and does not have drawables
-        // is ShapeDrawable ->
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        when (val oldDrawable = getDrawableByLayerId(layerId)) {
+            is ClipDrawable -> oldDrawable.drawable = drawable
+            is ScaleDrawable -> oldDrawable.drawable = drawable
+            is InsetDrawable -> oldDrawable.drawable = drawable
+            is RotateDrawable -> oldDrawable.drawable = drawable
+            is VectorDrawable -> getLayerDrawable().setDrawableByLayerId(layerId, drawable)
+            // ShapeDrawable is a generic shape and does not have drawables
+            // is ShapeDrawable ->
+        }
     }
 }
 
