@@ -128,9 +128,9 @@ dependencies {
     //todo: move versions to external variables
 
     def nav_version = "2.3.2"
-    def room_version = "2.2.5"
+    def room_version = "2.2.6"
     def coroutines_version = "1.3.9"
-    def material_version = '1.3.0-alpha04'
+    def material_version = '1.3.0-beta01'
     def constraintlayout_version = '2.0.4'
     def preferences_version = '1.1.1'
     def retrofit_version = '2.9.0'
@@ -138,10 +138,10 @@ dependencies {
     def okhttp_version = '4.9.0'
     def lifecycle_version = "2.2.0"
     def hilt_viewmodel_version = '1.0.0-alpha02'
-    def fragment_version = '1.3.0-beta02'
-    def coil_version = "1.0.0"
+    def fragment_version = '1.3.0-rc01'
+    def coil_version = "1.1.0"
     def swipe_version="1.1.0"
-    def paging_version = '3.0.0-alpha10'
+    def paging_version = '3.0.0-alpha11'
     def leakcanary_version = '2.4'
     def arrow_version = "0.11.0"
 
