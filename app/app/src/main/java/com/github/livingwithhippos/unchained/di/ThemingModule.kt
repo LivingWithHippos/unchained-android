@@ -5,13 +5,13 @@ import com.github.livingwithhippos.unchained.base.ThemingCallback
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ApplicationComponent
+import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
 /**
  * Provides the activity lifecycle callback to be injected with Dagger Hilt
  */
-@InstallIn(ApplicationComponent::class)
+@InstallIn(SingletonComponent::class)
 @Module
 object ThemingModule {
 
