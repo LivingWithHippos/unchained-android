@@ -17,7 +17,7 @@ android {
 
     defaultConfig {
         applicationId "com.github.livingwithhippos.unchained"
-        minSdkVersion 24
+        minSdkVersion 22
         targetSdkVersion 30
         versionCode 12
         versionName "2.7.9-beta"
