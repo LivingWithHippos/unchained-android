@@ -19,8 +19,8 @@ android {
         applicationId "com.github.livingwithhippos.unchained"
         minSdkVersion 22
         targetSdkVersion 30
-        versionCode 12
-        versionName "2.7.9-beta"
+        versionCode 13
+        versionName "2.8.9-beta"
         resConfigs "en", "it"
 
 
