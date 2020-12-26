@@ -89,7 +89,7 @@ fun Fragment.getClipboardText(): String {
     } else {
         if (BuildConfig.DEBUG)
             Log.d(
-                "Fragment.getClipboardText",
+                "GetClipboardText",
                 "Clipboard was empty or did not contain any text mime type."
             )
     }
