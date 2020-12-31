@@ -161,6 +161,7 @@
             android:hint="@string/private_token"
             android:importantForAutofill="no"
             app:endIconMode="clear_text"
+            android:focusable="true"
             app:layout_constraintBottom_toTopOf="@id/bInsertPrivate"
             app:layout_constraintEnd_toStartOf="@id/bPastePrivateCode"
             app:layout_constraintHorizontal_chainStyle="packed"
@@ -171,6 +172,7 @@
                 android:id="@+id/tiPrivateCode"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:focusable="true"
                 android:singleLine="true" />
 
         </com.google.android.material.textfield.TextInputLayout>
