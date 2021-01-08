@@ -160,7 +160,7 @@
     <string name="night_theme">Modalità notte</string>
     <string name="title_aspect">Aspetto</string>
     <string name="delete">Elimina</string>
-    <string name="torrent_deleted">Torrent rimosso.</string>
+    <string name="torrent_deleted">Torrent rimosso</string>
     <string name="open">Apri</string>
     <string name="content_description_delete_torrent_item">Rimuovi il torrent</string>
     <string name="content_description_delete_download_item">Rimuovi il download</string>
@@ -193,8 +193,7 @@
     <string name="torrent_channel_description">Canale di notifiche per il download dei torrent</string>
     <string name="torrent_in_progress">Download torrent in corso</string>
     <string name="torrent_in_progress_format">%1$d%% - %2$.2f MB/s</string>
-    <plurals
-        name="seeders_format">
+    <plurals name="seeders_format">
         <item quantity="one">%d seeder</item>
         <item quantity="other">%d seeders</item>
     </plurals>
