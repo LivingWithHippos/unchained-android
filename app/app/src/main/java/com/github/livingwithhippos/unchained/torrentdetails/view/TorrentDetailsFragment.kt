@@ -67,7 +67,7 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val torrentBinding = FragmentTorrentDetailsBinding.inflate(inflater, container, false)
 
 

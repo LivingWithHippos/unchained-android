@@ -39,7 +39,7 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         val authBinding = FragmentAuthenticationBinding.inflate(inflater, container, false)
         //todo: add loading gif

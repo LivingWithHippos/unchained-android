@@ -46,7 +46,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val detailsBinding = FragmentDownloadDetailsBinding.inflate(inflater, container, false)
 
         detailsBinding.details = args.details
