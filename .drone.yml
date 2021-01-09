@@ -7,16 +7,19 @@ steps:
   - name: run-tests
     image: circleci/android:api-30
     depends_on: [ clone ] 
+    environment:
+      GRADLE_USER_HOME:~/gradle_6_7_cache/.gradle
     commands:
       - cd app
       #if permission for Gradlew Dependencies fail, use this.
-      - sudo chmod +x ./gradlew
+      # - sudo chmod +x ./gradlew
       - ./gradlew lint test --stacktrace
 
   - name: build
     image: circleci/android:api-30
     depends_on: [ run-tests ] 
     environment:
+      GRADLE_USER_HOME:
       JVM_OPTS: -Xmx3200m
     commands:
       - echo $ENCODED_KEYSTORE | base64 --decode > ~/unchained-android/app/release.pfk
