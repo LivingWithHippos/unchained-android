@@ -3,16 +3,8 @@ kind: pipeline
 type: docker
 name: default
 
-steps:
-  - name: run-tests
-    # alternative images: nextcloudci/android:androidBase-4 nextcloudci/android:android-54 circleci/android:api-30
-    image: nextcloudci/android:android-54
-    depends_on: [ clone ]
-    commands:
-      - cd app
-      #if permission for Gradlew Dependencies fail, use this.
-      # - sudo chmod +x ./gradlew
-      - ./gradlew lint test
+workspace:
+  base: /drone/src
 
   - name: build
     image: nextcloudci/android:android-54
@@ -20,6 +12,9 @@ steps:
     environment:
       JVM_OPTS: -Xmx3200m
     commands:
+      - echo $PWD
+      - cd app
+      - echo $PWD
       - ls
       - echo $ENCODED_KEYSTORE | base64 --decode > /drone/src/app/release.pfk
       - echo 'export KEYSTORE=/drone/src/app/release.pfk' >> $BASH_ENV
