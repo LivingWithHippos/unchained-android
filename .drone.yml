@@ -4,7 +4,7 @@ type: docker
 name: tests
 
 workspace:
-  path: /drone/src/app
+  path: /drone/src/app/app
 
 steps:
   - name: run tests
