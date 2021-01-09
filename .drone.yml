@@ -7,4 +7,5 @@ steps:
   - name: run-tests
     image: circleci/android:api-30
     commands:
-      - ./gradlew lint test
+      - echo "Hello World"
+      - echo $(pwd)
