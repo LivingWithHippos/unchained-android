@@ -6,6 +6,7 @@ name: default
 workspace:
   base: /drone/src
 
+steps:
   - name: build
     image: nextcloudci/android:android-54
     depends_on: [ run-tests ] 
