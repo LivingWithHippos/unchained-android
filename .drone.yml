@@ -8,4 +8,4 @@ steps:
     image: circleci/android:api-30
     commands:
       - echo "Hello World"
-      - echo $(pwd)
+      - ls
