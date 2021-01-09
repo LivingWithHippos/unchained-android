@@ -8,12 +8,8 @@ steps:
     image: circleci/android:api-30
     depends_on: [ clone ] 
     commands:
-      - echo $PWD
-      - ls
       - cd app
-      - echo $PWD
-      - ls
-      - ./gradlew lint test
+      - ./gradlew lint test --stacktrace
 
   - name: build
     image: circleci/android:api-30
