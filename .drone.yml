@@ -7,21 +7,14 @@ workspace:
   base: /drone/src
 
 steps:
-  - name: run-tests
-    # alternative images: nextcloudci/android:androidBase-4 nextcloudci/android:android-54 circleci/android:api-30
-    image: nextcloudci/android:android-54
-    depends_on: [ clone ]
-    commands:
-      - cd app
-      #if permission for Gradlew Dependencies fail, use this.
-      # - sudo chmod +x ./gradlew
-      - ./gradlew lint test
 
   - name: build
     image: nextcloudci/android:android-54
-    depends_on: [ run-tests ] 
+    depends_on: [ clone ] 
     environment:
       JVM_OPTS: -Xmx3200m
+      ENCODED_KEYSTORE:
+        from_secret: ENCODED_KEYSTORE
       KEYSTORE_PASSWORD:
         from_secret: KEYSTORE_PASSWORD
       KEY_ALIAS:
@@ -30,6 +23,5 @@ steps:
         from_secret: KEY_PASSWORD
     commands:
       - cd app
-      - echo $ENCODED_KEYSTORE
       - echo $ENCODED_KEYSTORE | base64 --decode > ./release.pfk
       - ./gradlew clean assembleRelease --no-daemon --stacktrace
