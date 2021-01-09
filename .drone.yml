@@ -17,6 +17,6 @@ steps:
       - cd app
       - echo $PWD
       - ls
-      - echo $ENCODED_KEYSTORE | base64 --decode > /drone/src/app/release.pfk
+      - echo $ENCODED_KEYSTORE | base64 --decode > release.pfk
       - echo 'export KEYSTORE=/drone/src/app/release.pfk' >> $BASH_ENV
       - ./gradlew clean assembleRelease --no-daemon --stacktrace
