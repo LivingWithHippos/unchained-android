@@ -3,12 +3,8 @@ kind: pipeline
 type: docker
 name: tests
 
-workspace:
-  base: ~/unchained-android/app
-
 steps:
   - name: Run Tests
     image: circleci/android:api-30
-    depends_on: [ clone ] 
     commands:
       - ./gradlew lint test
