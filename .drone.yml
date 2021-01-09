@@ -1,10 +1,10 @@
 ---
 kind: pipeline
 type: docker
-name: tests
+name: default
 
 workspace:
-  base: /drone/src/app
+  base: /drone/src/app/app
 
 steps:
   - name: run tests
