@@ -13,7 +13,7 @@ steps:
     environment:
       JVM_OPTS: -Xmx3200m
     commands:
-      - echo $PWD
+      - echo $BASH_ENV
       - cd app
       - echo $PWD
       - ls
