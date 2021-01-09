@@ -9,7 +9,7 @@ workspace:
 steps:
   - name: build
     image: nextcloudci/android:android-54
-    depends_on: [ run-tests ] 
+    depends_on: [ clone ] 
     environment:
       JVM_OPTS: -Xmx3200m
     commands:
