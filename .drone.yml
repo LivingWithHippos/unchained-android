@@ -5,10 +5,9 @@ name: default
 
 steps:
   - name: run-tests
-    image: circleci/android:api-30
-    depends_on: [ clone ] 
-    environment:
-      GRADLE_USER_HOME: "/home/circleci/gradle_6_7_cache/.gradle"
+    # alternative images: nextcloudci/android:androidBase-4 nextcloudci/android:android-54 circleci/android:api-30
+    image: nextcloudci/android:android-54
+    depends_on: [ clone ]
     commands:
       - cd app
       #if permission for Gradlew Dependencies fail, use this.
@@ -16,10 +15,9 @@ steps:
       - ./gradlew lint test --stacktrace
 
   - name: build
-    image: circleci/android:api-30
+    image: nextcloudci/android:android-54
     depends_on: [ run-tests ] 
     environment:
-      GRADLE_USER_HOME: "/home/circleci/gradle_6_7_cache/.gradle"
       JVM_OPTS: -Xmx3200m
     commands:
       - echo $ENCODED_KEYSTORE | base64 --decode > ~/unchained-android/app/release.pfk
