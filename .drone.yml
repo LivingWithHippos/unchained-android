@@ -4,7 +4,7 @@ type: docker
 name: tests
 
 steps:
-  - name: Run Tests
+  - name: run-tests
     image: circleci/android:api-30
     commands:
       - ./gradlew lint test
