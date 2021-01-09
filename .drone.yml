@@ -11,18 +11,10 @@ steps:
     image: circleci/android:api-30
     depends_on: [ clone ] 
     commands:
+      - echo $PWD
       - ls
       - ./gradlew lint test
 
----
-kind: pipeline
-type: docker
-name: build
-
-workspace:
-  path: /drone/src/app
-
-steps:
   - name: build
     image: circleci/android:api-30
     environment:
