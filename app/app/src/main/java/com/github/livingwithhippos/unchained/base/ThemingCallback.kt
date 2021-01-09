@@ -49,7 +49,7 @@ class ThemingCallback( val preferences: SharedPreferences) : Application.Activit
             // update the night mode if not the day one
             if (nightMode != "day")
                 with(preferences.edit()) {
-                    putString(com.github.livingwithhippos.unchained.settings.SettingsFragment.KEY_DAY_NIGHT, "day")
+                    putString(SettingsFragment.KEY_DAY_NIGHT, "day")
                     apply()
                 }
         }

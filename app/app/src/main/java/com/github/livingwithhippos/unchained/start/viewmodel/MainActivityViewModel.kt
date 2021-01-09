@@ -57,7 +57,7 @@ class MainActivityViewModel @ViewModelInject constructor(
 
     val messageLiveData = MutableLiveData<Event<Int>>()
 
-    var refreshJob: Job? = null
+    private var refreshJob: Job? = null
 
     // fixme: this is here because userLiveData.postValue(user) is throwing an unsafe error
     //  but auto-correcting it changes the value of val authenticationState = MutableLiveData<Event<AuthenticationState>>() to a nullable one

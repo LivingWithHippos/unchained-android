@@ -27,12 +27,7 @@ class NewDownloadViewModel @ViewModelInject constructor(
     private val torrentsRepository: TorrentsRepository
 ) : ViewModel() {
 
-    /**
-     * We can't use a normal MutableLiveData here because while navigating back an event will be fired again
-     * and the [NewDownloadFragment] observer will be called, creating a new [DownloadDetailsFragment]
-     * and navigating there.
-     * See https://medium.com/androiddevelopers/livedata-with-snackbar-navigation-and-other-events-the-singleliveevent-case-ac2622673150 for mode details
-     */
+    // use Event since navigating back to this fragment would trigger this observable again
     val linkLiveData = MutableLiveData<Event<DownloadItem>>()
     val torrentLiveData = MutableLiveData<Event<UploadedTorrent>>()
     val networkExceptionLiveData = MutableLiveData<Event<UnchainedNetworkException>>()
