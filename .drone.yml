@@ -21,7 +21,9 @@ steps:
         from_secret: KEY_ALIAS
       KEY_PASSWORD:
         from_secret: KEY_PASSWORD
+      KEYSTORE:
+        from_secret: KEYSTORE
     commands:
       - cd app
-      - echo $ENCODED_KEYSTORE | base64 --decode > ./release.pfk
+      - echo $ENCODED_KEYSTORE | base64 --decode > /drone/src/app/release.pfk
       - ./gradlew clean assembleRelease --no-daemon --stacktrace
