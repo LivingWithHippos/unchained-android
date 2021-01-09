@@ -11,6 +11,7 @@ steps:
     image: circleci/android:api-30
     depends_on: [ clone ] 
     commands:
+      - ls
       - ./gradlew lint test
 
 ---
