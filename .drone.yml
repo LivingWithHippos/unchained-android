@@ -9,6 +9,8 @@ steps:
     depends_on: [ clone ] 
     commands:
       - cd app
+      #if permission for Gradlew Dependencies fail, use this.
+      - sudo chmod +x ./gradlew
       - ./gradlew lint test --stacktrace
 
   - name: build
