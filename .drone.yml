@@ -22,8 +22,6 @@ steps:
     depends_on: [ run-tests ] 
     environment:
       JVM_OPTS: -Xmx3200m
-      ENCODED_KEYSTORE:
-        from_secret: ENCODED_KEYSTORE
       KEYSTORE_PASSWORD:
         from_secret: KEYSTORE_PASSWORD
       KEY_ALIAS:
@@ -31,5 +29,7 @@ steps:
       KEY_PASSWORD:
         from_secret: KEY_PASSWORD
     commands:
+      - cd app
+      - echo $ENCODED_KEYSTORE
       - echo $ENCODED_KEYSTORE | base64 --decode > ./release.pfk
       - ./gradlew clean assembleRelease --no-daemon --stacktrace
