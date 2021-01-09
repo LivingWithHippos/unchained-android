@@ -4,10 +4,10 @@ type: docker
 name: default
 
 workspace:
-  base: /drone/src/app/app
+  base: /drone/src/app
 
 steps:
-  - name: run tests
+  - name: run-tests
     image: circleci/android:api-30
     depends_on: [ clone ] 
     commands:
@@ -17,6 +17,7 @@ steps:
 
   - name: build
     image: circleci/android:api-30
+    depends_on: [ run-tests ] 
     environment:
       JVM_OPTS: -Xmx3200m
     commands:
