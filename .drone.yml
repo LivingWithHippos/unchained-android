@@ -1,0 +1,36 @@
+---
+kind: pipeline
+type: docker
+name: tests
+
+workspace:
+  base: ~/unchained-android/app
+
+steps:
+  - name: Run Tests
+    image: circleci/android:api-30
+    depends_on: [ clone ] 
+    commands:
+      - ./gradlew lint test
+      
+trigger:
+  event:
+    - pull_request
+
+---
+kind: pipeline
+type: docker
+name: build
+
+workspace:
+  base: ~/unchained-android/app
+
+steps:
+  - name: build
+    image: circleci/android:api-30
+    environment:
+      JVM_OPTS: -Xmx3200m
+    commands:
+      - echo $ENCODED_KEYSTORE | base64 --decode > ~/unchained-android/app/release.pfk
+      - echo 'export KEYSTORE=~/unchained-android/app/release.pfk' >> $BASH_ENV
+      - ./gradlew clean assembleRelease --no-daemon --stacktrace
