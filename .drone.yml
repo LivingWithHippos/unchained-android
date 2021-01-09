@@ -3,14 +3,14 @@ kind: pipeline
 type: docker
 name: default
 
-workspace:
-  base: /drone/src/app
-
 steps:
   - name: run-tests
     image: circleci/android:api-30
     depends_on: [ clone ] 
     commands:
+      - echo $PWD
+      - ls
+      - cd app
       - echo $PWD
       - ls
       - ./gradlew lint test
