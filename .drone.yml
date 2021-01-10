@@ -34,6 +34,5 @@ steps:
         from_secret: KEYSTORE
     commands:
       - cd app
-      - base64 --version
       - echo $ENCODED_KEYSTORE | base64 --decode -i > /drone/src/app/release.pfk
       - ./gradlew clean assembleRelease --no-daemon --stacktrace
