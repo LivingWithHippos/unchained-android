@@ -6,7 +6,21 @@ name: default
 workspace:
   base: /drone/src
 
+
+
+          
 steps:
+
+  - name: restore-cache
+    image: drillster/drone-volume-cache
+    settings:
+      restore: true
+      mount:
+        - /root/.gradle
+    volumes:
+    - name: cache
+      path: /cache
+
   - name: run-tests
     # alternative images: nextcloudci/android:androidBase-4 nextcloudci/android:android-54 circleci/android:api-30
     image: nextcloudci/android:android-54
@@ -36,3 +50,18 @@ steps:
       - cd app
       - echo $ENCODED_KEYSTORE | base64 --decode -i > /drone/src/app/release.pfk
       - ./gradlew clean assembleRelease --no-daemon --stacktrace
+      
+  - name: rebuild-cache
+    image: drillster/drone-volume-cache
+    volumes:
+    - name: cache
+      path: /cache
+    settings:
+      rebuild: true
+      mount:
+        - /root/.gradle
+      
+volumes:
+  - name: cache
+    host: 
+      path: /tmp/cache
