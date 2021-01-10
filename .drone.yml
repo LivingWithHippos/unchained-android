@@ -53,6 +53,7 @@ steps:
       
   - name: rebuild-cache
     image: drillster/drone-volume-cache
+    depends_on: [ build ] 
     volumes:
     - name: cache
       path: /cache
