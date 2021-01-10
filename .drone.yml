@@ -6,14 +6,10 @@ name: default
 workspace:
   base: /drone/src
 
-
-
-          
 steps:
 
   - name: restore-cache
     image: drillster/drone-volume-cache
-    depends_on: [ clone ]
     settings:
       restore: true
       mount:
@@ -28,6 +24,7 @@ steps:
     depends_on: [ restore-cache ]
     commands:
       - cd app
+      - echo $GRADLE_USER_HOME
       #if permission for Gradlew Dependencies fail, use this.
       # - sudo chmod +x ./gradlew
       - ./gradlew lint test
@@ -36,6 +33,7 @@ steps:
     image: nextcloudci/android:android-54
     depends_on: [ run-tests ] 
     environment:
+      GRADLE_USER_HOME: /root/.gradle
       JVM_OPTS: -Xmx3200m
       ENCODED_KEYSTORE:
         from_secret: ENCODED_KEYSTORE
