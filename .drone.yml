@@ -13,6 +13,7 @@ steps:
 
   - name: restore-cache
     image: drillster/drone-volume-cache
+    depends_on: [ clone ]
     settings:
       restore: true
       mount:
@@ -24,7 +25,7 @@ steps:
   - name: run-tests
     # alternative images: nextcloudci/android:androidBase-4 nextcloudci/android:android-54 circleci/android:api-30
     image: nextcloudci/android:android-54
-    depends_on: [ clone ]
+    depends_on: [ restore-cache ]
     commands:
       - cd app
       #if permission for Gradlew Dependencies fail, use this.
