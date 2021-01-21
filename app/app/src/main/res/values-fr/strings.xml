@@ -1,6 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name" translatable="false">Unchained</string>
-    <string name="loading_auth_link">Chargement de l’authentification...</string>
+    <string name="loading_auth_link">Chargement de l’authentification…</string>
     <string name="please_visit">Veuillez vous rendre à\u0020</string>
     <string name="link">Lien</string>
     <string name="using_code">en utilisant le code</string>
@@ -85,7 +86,7 @@
     <string name="details">Détails</string>
     <string name="file_id_format">ID : %1$s</string>
     <string name="file_type_format">Type : %1$s</string>
-    <string name="rd_settings_link_description">Gérez vos paramètres utilisateur, statut Premium et convertissez des points depuis la page de votre compte</string>
+    <string name="rd_settings_link_description">Gérez vos paramètres utilisateur, statut Premium et convertissez des points depuis la page de votre compte.</string>
     <string name="settings">Paramètres</string>
     <string name="content_description_settings">Paramètres pour l’application</string>
     <string name="error_unrestricting_download">Erreur lors du retrait de la restriction du téléchargement</string>
@@ -127,7 +128,7 @@
     <string name="account_page">Page du compte</string>
     <string name="login_type_open">Identifié avec le jeton ouvert Certaines fonctionnalités comme le streaming ne sont pas disponibles.</string>
     <string name="login_type_private">Identifié avec un jeton privé. Toutes les fonctionnalités sont disponibles.</string>
-    <string name="api_needs_private_token">Cette fonction requiert un jeton d’API privé.</string>
+    <string name="api_needs_private_token">Cette fonction requiert un jeton d’API privé</string>
     <string name="torrents">Torrents</string>
     <string name="downloads">Téléchargements</string>
     <string name="torrent_not_downloaded">Torrent pas encore prêt</string>
@@ -354,13 +355,13 @@
     </body>
     ]]>
     </string>
-    <string name="premium_needed">Vous devez posséder un compte Premium pour faire ceci.</string>
-    <string name="premium_needed_torrent">Vous devez posséder un compte Premium pour les magnets et torrents.</string>
-    <string name="downloading_torrent">Torrent en préparation, veuillez patienter...</string>
+    <string name="premium_needed">Vous devez posséder un compte Premium pour faire ceci</string>
+    <string name="premium_needed_torrent">Vous devez posséder un compte Premium pour les magnets et torrents</string>
+    <string name="downloading_torrent">Torrent en préparation, veuillez patienter…</string>
     <string name="please_insert_url">Veuillez entrer un magnet ou un lien</string>
     <string name="please_login">Veuillez vous identifier</string>
     <string name="loading_magnet_link">Chargement du lien du magnet…</string>
-    <string name="loading_torrent_file">Chargement du fichier torrent...</string>
+    <string name="loading_torrent_file">Chargement du fichier torrent…</string>
     <string name="unchained_torrent_download">Téléchargement de torrents Unchained</string>
     <string name="temporary_torrent_download">Téléchargement temporaire d’un fichier torrent</string>
     <string name="error_loading_dialog">Erreur lors du chargement de la fenêtre, veuillez la rouvrir.</string>
@@ -407,8 +408,7 @@
     <string name="network_error">Erreur réseau</string>
     <string name="torrent_channel_description">Canal de notification pour l’état du téléchargement des torrents</string>
     <string name="torrent_in_progress">Téléchargement du torrent en cours</string>
-    <plurals
-        name="seeders_format">
+    <plurals name="seeders_format">
         <item quantity="one">%d seeder</item>
         <item quantity="other">%d seeders</item>
     </plurals>
@@ -434,5 +434,5 @@
     <string name="login_message_placeholder">Veuillez cliquer sur ce lien pour vous authentifier</string>
     <string name="host_match_not_found">Aucun hôte correspondant trouvé. Mettez à jour la liste des hôtes depuis les paramètres si nécessaire.</string>
     <string name="refreshing_token">Mise à jour de l’authentification, veuillez réessayer un peu plus tard</string>
-	<string name="black_and_white">Noir et blanc</string>
+    <string name="black_and_white">Noir et blanc</string>
 </resources>
