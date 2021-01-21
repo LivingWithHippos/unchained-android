@@ -58,7 +58,7 @@ class ForegroundTorrentService : LifecycleService() {
     private var updateTiming = UPDATE_TIMING_SHORT
 
 
-    override fun onBind(intent: Intent): IBinder? {
+    override fun onBind(intent: Intent): IBinder {
         super.onBind(intent)
         return torrentBinder
     }
@@ -101,7 +101,7 @@ class ForegroundTorrentService : LifecycleService() {
             // the new torrents to add to the notification system
             val unwatchedTorrents = newLoadingTorrents.filter { !oldTorrentsIDs.contains(it.id) }
             // the torrents not in our updated list anymore. These needs to be retrieved and analyzed singularly.
-            // Should't happen often since there is a limit on how many active torrents you can have in real debrid
+            // Shouldn't happen often since there is a limit on how many active torrents you can have in real debrid
             // and we retrieve the last 30 torrents every time
             val missingTorrents = oldTorrentsIDs.filter { id ->
                 !list.map { it.id }.contains(id)

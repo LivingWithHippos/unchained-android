@@ -56,7 +56,7 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val listBinding = FragmentTabListsBinding.inflate(inflater, container, false)
 
         val downloadAdapter = DownloadListPagingAdapter(this)

@@ -14,7 +14,7 @@ class StreamingRepository @Inject constructor(private val streamingApiHelper: St
             errorMessage = "Error Fetching Streaming Info"
         )
 
-        return streamResponse;
+        return streamResponse
 
     }
 }

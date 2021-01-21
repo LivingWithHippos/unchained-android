@@ -1,0 +1,15 @@
+Unchained for Android is a free and open-source app interfacing with Real Debrid APIs. Forget your computer and unchain the power of Real Debrid on mobile! Just log in to your account, and you're ready.
+
+<b>Why use Unchained? 📝</b>
+
+&#8226;&#8195; download from all the available hosters
+
+&#8226;&#8195; add torrent files and magnet links
+
+&#8226;&#8195; unlock all the features with the private API key
+
+&#8226;&#8195; keep your subscription under control
+
+&#8226;&#8195; free and without ads
+
+Note: this app requires a paid Real Debrid account to work

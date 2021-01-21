@@ -41,7 +41,7 @@ class UserProfileFragment : UnchainedFragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         val userBinding = FragmentUserProfileBinding.inflate(inflater, container, false)
 

@@ -39,7 +39,7 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         val authBinding = FragmentAuthenticationBinding.inflate(inflater, container, false)
         //todo: add loading gif
@@ -123,7 +123,7 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
         link.setSpan(UnderlineSpan(), 0, link.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         val colorSecondary = requireContext().getThemeColor(R.attr.colorSecondary)
         link.setSpan(ForegroundColorSpan(colorSecondary), 0, link.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        val append = sb.append(link)
+        sb.append(link)
 
         sb.append(getString(R.string.to_authenticate))
 

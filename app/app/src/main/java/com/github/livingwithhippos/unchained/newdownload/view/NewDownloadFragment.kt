@@ -64,7 +64,7 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val downloadBinding = NewDownloadFragmentBinding.inflate(inflater, container, false)
 
         downloadBinding.listener = this

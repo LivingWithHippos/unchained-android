@@ -17,7 +17,7 @@ class AuthenticationRepository @Inject constructor(private val apiHelper: AuthAp
             errorMessage = "Error Fetching Authentication Info"
         )
 
-        return authResponse;
+        return authResponse
 
     }
 
@@ -28,7 +28,7 @@ class AuthenticationRepository @Inject constructor(private val apiHelper: AuthAp
             errorMessage = "Error Fetching Secrets"
         )
 
-        return secretResponse;
+        return secretResponse
 
     }
 
@@ -45,7 +45,7 @@ class AuthenticationRepository @Inject constructor(private val apiHelper: AuthAp
             errorMessage = "Error Fetching Token"
         )
 
-        return tokenResponse;
+        return tokenResponse
 
     }
 
