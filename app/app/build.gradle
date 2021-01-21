@@ -21,7 +21,8 @@ android {
         targetSdkVersion 30
         versionCode 14
         versionName "2.9.0-beta"
-        resConfigs "en", "it"
+        // limit resources to a single configuration
+        // resConfigs "en", "it"
 
 
         javaCompileOptions {
