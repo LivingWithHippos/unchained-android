@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- NOTE: keep updated the v26 version of the layout-->
+<!--the only change in this file is the justification mode.-->
 <layout xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -147,6 +147,7 @@
             android:autoLink="web"
             android:nextFocusUp="@id/bCopy"
             android:nextFocusDown="@id/tiPrivateCode"
+            android:justificationMode="inter_word"
             android:text="@string/add_private_token_message"
             app:layout_constraintBottom_toTopOf="@id/tfPrivateCode"
             app:layout_constraintEnd_toEndOf="parent"
