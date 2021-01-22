@@ -88,3 +88,4 @@ app/AndroidSqlEditorDatabases/
 app/.idea/*
 app/generated-apks/*
 app/signingkey.properties
+*.pfk
