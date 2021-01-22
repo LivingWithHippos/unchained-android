@@ -9,7 +9,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.os.ParcelFileDescriptor
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,7 +19,6 @@ import androidx.core.net.toUri
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.github.livingwithhippos.unchained.BuildConfig
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.data.model.APIError
@@ -42,6 +40,7 @@ import com.github.livingwithhippos.unchained.utilities.extension.isWebUrl
 import com.github.livingwithhippos.unchained.utilities.extension.runRippleAnimation
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 import java.io.File
 import java.io.FileDescriptor
 import java.io.FileInputStream
@@ -289,11 +288,7 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
             fileInputStream.close()
             viewModel.fetchUploadedTorrent(buffer)
         } else {
-            if (BuildConfig.DEBUG)
-                Log.e(
-                    "NewDownloadFragment",
-                    "Torrent conversion: Error getting parcelFileDescriptor -> null"
-                )
+            Timber.e("Torrent conversion: Error getting parcelFileDescriptor -> null")
         }
 
     }

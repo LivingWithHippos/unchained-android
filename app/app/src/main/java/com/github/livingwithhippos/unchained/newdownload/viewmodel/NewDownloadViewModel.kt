@@ -1,11 +1,9 @@
 package com.github.livingwithhippos.unchained.newdownload.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.Either
-import com.github.livingwithhippos.unchained.BuildConfig
 import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkException
 import com.github.livingwithhippos.unchained.data.model.UploadedTorrent
@@ -16,6 +14,7 @@ import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.postEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -51,8 +50,7 @@ class NewDownloadViewModel @Inject constructor(
             val token = getToken()
             val availableHosts = torrentsRepository.getAvailableHosts(token)
             if (availableHosts.isNullOrEmpty()) {
-                if (BuildConfig.DEBUG)
-                    Log.e("NewDownloadViewModel", "Error fetching available hosts")
+                Timber.e("Error fetching available hosts")
             } else {
                 val addedMagnet =
                     torrentsRepository.addMagnet(token, magnet, availableHosts.first().host)
@@ -71,8 +69,7 @@ class NewDownloadViewModel @Inject constructor(
             val token = getToken()
             val availableHosts = torrentsRepository.getAvailableHosts(token)
             if (availableHosts.isNullOrEmpty()) {
-                if (BuildConfig.DEBUG)
-                    Log.e("NewDownloadViewModel", "Error fetching available hosts")
+                Timber.e("Error fetching available hosts")
             } else {
                 val uploadedTorrent =
                     torrentsRepository.addTorrent(token, binaryTorrent, availableHosts.first().host)

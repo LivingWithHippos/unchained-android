@@ -14,7 +14,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
-import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.view.WindowInsetsController
@@ -25,8 +24,8 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Observer
-import com.github.livingwithhippos.unchained.BuildConfig
 import com.github.livingwithhippos.unchained.R
+import timber.log.Timber
 import java.util.*
 
 
@@ -87,11 +86,7 @@ fun Fragment.getClipboardText(): String {
         val item = clipboard.primaryClip!!.getItemAt(0)
         text = item.text.toString()
     } else {
-        if (BuildConfig.DEBUG)
-            Log.d(
-                "GetClipboardText",
-                "Clipboard was empty or did not contain any text mime type."
-            )
+        Timber.d("Clipboard was empty or did not contain any text mime type.")
     }
     return text
 }

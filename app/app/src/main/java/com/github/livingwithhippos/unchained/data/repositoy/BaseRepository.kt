@@ -1,8 +1,6 @@
 package com.github.livingwithhippos.unchained.data.repositoy
 
-import android.util.Log
 import arrow.core.Either
-import com.github.livingwithhippos.unchained.BuildConfig
 import com.github.livingwithhippos.unchained.data.model.APIError
 import com.github.livingwithhippos.unchained.data.model.ApiConversionError
 import com.github.livingwithhippos.unchained.data.model.EmptyBodyError
@@ -12,6 +10,7 @@ import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkExceptio
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import retrofit2.Response
+import timber.log.Timber
 import java.io.IOException
 
 /**
@@ -34,11 +33,9 @@ open class BaseRepository {
             is NetworkResponse.Success ->
                 data = result.data
             is NetworkResponse.SuccessEmptyBody ->
-                if (BuildConfig.DEBUG)
-                    Log.d("BaseRepository", "Successful call with empty body : ${result.code}")
+                Timber.d("Successful call with empty body : ${result.code}")
             is NetworkResponse.Error ->
-                if (BuildConfig.DEBUG)
-                    Log.d("BaseRepository", errorMessage)
+                Timber.d(errorMessage)
         }
 
         return data
