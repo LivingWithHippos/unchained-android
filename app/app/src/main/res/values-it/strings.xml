@@ -32,6 +32,14 @@
     <string name="copy_link">Copia link</string>
     <string name="link_copied">Link copiato</string>
     <string name="streaming">Streaming</string>
+    <string name="megabytes_short">MB</string>
+    <string name="file_size_format">%1$d MB</string>
+    <string name="file_size_format_kb">%1$.2f KB</string>
+    <string name="file_size_format_mb">%1$.2f MB</string>
+    <string name="file_size_format_gb">%1$.2f GB</string>
+    <string name="speed_format_b">%1$d b/s</string>
+    <string name="speed_format_kb">%1$.1f KB/s</string>
+    <string name="speed_format_mb">%1$.1f MB/s</string>
     <string name="selected_file_size_format">%1$d MB / %2$d MB selezionati</string>
     <string name="torrent_status_format">Stato: %1$s</string>
     <string name="load_streams">Carica i media</string>

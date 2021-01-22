@@ -32,17 +32,17 @@
     <string name="copy_link">Copy Link</string>
     <string name="link_copied">Link Copied</string>
     <string name="streaming">Streaming</string>
-    <string name="megabytes_short" translatable="false">MB</string>
-    <string name="file_size_format" translatable="false">%1$d MB</string>
-    <string name="file_size_format_kb" translatable="false">%1$.2f KB</string>
-    <string name="file_size_format_mb" translatable="false">%1$.2f MB</string>
-    <string name="file_size_format_gb" translatable="false">%1$.2f GB</string>
+    <string name="megabytes_short">MB</string>
+    <string name="file_size_format">%1$d MB</string>
+    <string name="file_size_format_kb">%1$.2f KB</string>
+    <string name="file_size_format_mb">%1$.2f MB</string>
+    <string name="file_size_format_gb">%1$.2f GB</string>
     <string name="selected_file_size_format">%1$d MB / %2$d MB selected</string>
     <string name="size_error">Error getting the file size</string>
     <string name="torrent_status_format">Status: %1$s</string>
-    <string name="speed_format_b" translatable="false">%1$d b/s</string>
-    <string name="speed_format_kb" translatable="false">%1$.1f KB/s</string>
-    <string name="speed_format_mb" translatable="false">%1$.1f MB/s</string>
+    <string name="speed_format_b">%1$d b/s</string>
+    <string name="speed_format_kb">%1$.1f KB/s</string>
+    <string name="speed_format_mb">%1$.1f MB/s</string>
     <string name="speed_error">Error getting the download speed</string>
     <string name="load_streams">Load stream links</string>
     <string name="apple" translatable="false">Apple</string>
