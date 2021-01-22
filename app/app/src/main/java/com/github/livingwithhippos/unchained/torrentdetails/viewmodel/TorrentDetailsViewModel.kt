@@ -1,6 +1,5 @@
 package com.github.livingwithhippos.unchained.torrentdetails.viewmodel
 
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -13,13 +12,16 @@ import com.github.livingwithhippos.unchained.data.repositoy.TorrentsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.UnrestrictRepository
 import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.postEvent
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 /**
  * a [ViewModel] subclass.
  * Retrieves a torrent's details
  */
-class TorrentDetailsViewModel @ViewModelInject constructor(
+@HiltViewModel
+class TorrentDetailsViewModel @Inject constructor(
     private val credentialsRepository: CredentialsRepository,
     private val torrentsRepository: TorrentsRepository,
     private val unrestrictRepository: UnrestrictRepository

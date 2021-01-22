@@ -1,12 +1,13 @@
 package com.github.livingwithhippos.unchained.settings
 
-import androidx.hilt.Assisted
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class HtmlDialogViewModel @ViewModelInject constructor(
-    @Assisted private val savedStateHandle: SavedStateHandle
+@HiltViewModel
+class HtmlDialogViewModel @Inject constructor(
+    private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     fun setTitleResource(titleRes: Int?) {

@@ -1,7 +1,5 @@
 package com.github.livingwithhippos.unchained.authentication.viewmodel
 
-import androidx.hilt.Assisted
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -17,15 +15,18 @@ import com.github.livingwithhippos.unchained.data.repositoy.CredentialsRepositor
 import com.github.livingwithhippos.unchained.data.repositoy.UserRepository
 import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.postEvent
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 /**
  * A [ViewModel] subclass.
  * It offers LiveData to be observed during the authentication process and uses the [AuthenticationRepository] to manage its process.
  */
-class AuthenticationViewModel @ViewModelInject constructor(
-    @Assisted private val savedStateHandle: SavedStateHandle,
+@HiltViewModel
+class AuthenticationViewModel @Inject constructor(
+    private val savedStateHandle: SavedStateHandle,
     private val authRepository: AuthenticationRepository,
     private val credentialRepository: CredentialsRepository,
     private val userRepository: UserRepository

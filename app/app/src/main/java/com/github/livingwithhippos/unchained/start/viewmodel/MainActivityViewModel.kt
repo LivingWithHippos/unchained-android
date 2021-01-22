@@ -2,8 +2,6 @@ package com.github.livingwithhippos.unchained.start.viewmodel
 
 import android.annotation.SuppressLint
 import android.net.Uri
-import androidx.hilt.Assisted
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -21,18 +19,21 @@ import com.github.livingwithhippos.unchained.lists.view.ListsTabFragment
 import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.PRIVATE_TOKEN
 import com.github.livingwithhippos.unchained.utilities.postEvent
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.regex.Matcher
 import java.util.regex.Pattern
+import javax.inject.Inject
 
 /**
  * a [ViewModel] subclass.
  * Shared between the fragments to observe the authentication status and update it.
  */
-class MainActivityViewModel @ViewModelInject constructor(
-    @Assisted private val savedStateHandle: SavedStateHandle,
+@HiltViewModel
+class MainActivityViewModel @Inject constructor(
+    private val savedStateHandle: SavedStateHandle,
     private val authRepository: AuthenticationRepository,
     private val credentialRepository: CredentialsRepository,
     private val userRepository: UserRepository,

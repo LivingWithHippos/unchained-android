@@ -1,12 +1,14 @@
 package com.github.livingwithhippos.unchained.lists.viewmodel
 
 import androidx.hilt.Assisted
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.github.livingwithhippos.unchained.data.model.DownloadItem
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class DownloadDialogViewModel @ViewModelInject constructor(
+@HiltViewModel
+class DownloadDialogViewModel @Inject constructor(
     @Assisted private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 

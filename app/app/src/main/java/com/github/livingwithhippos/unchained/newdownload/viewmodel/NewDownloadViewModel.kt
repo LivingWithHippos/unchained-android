@@ -1,7 +1,6 @@
 package com.github.livingwithhippos.unchained.newdownload.viewmodel
 
 import android.util.Log
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -15,13 +14,16 @@ import com.github.livingwithhippos.unchained.data.repositoy.TorrentsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.UnrestrictRepository
 import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.postEvent
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 /**
  * A [ViewModel] subclass.
  * It offers LiveData to be observed while creating new downloads
  */
-class NewDownloadViewModel @ViewModelInject constructor(
+@HiltViewModel
+class NewDownloadViewModel @Inject constructor(
     private val credentialsRepository: CredentialsRepository,
     private val unrestrictRepository: UnrestrictRepository,
     private val torrentsRepository: TorrentsRepository

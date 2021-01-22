@@ -1,6 +1,5 @@
 package com.github.livingwithhippos.unchained.downloaddetails.viewmodel
 
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -10,13 +9,16 @@ import com.github.livingwithhippos.unchained.data.repositoy.DownloadRepository
 import com.github.livingwithhippos.unchained.data.repositoy.StreamingRepository
 import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.postEvent
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 /**
  * A [ViewModel] subclass.
  * It offers LiveData to observe the calls to the streaming endpoint
  */
-class DownloadDetailsViewModel @ViewModelInject constructor(
+@HiltViewModel
+class DownloadDetailsViewModel @Inject constructor(
     private val credentialsRepository: CredentialsRepository,
     private val streamingRepository: StreamingRepository,
     private val downloadRepository: DownloadRepository
