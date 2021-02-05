@@ -1,6 +1,7 @@
 package com.github.livingwithhippos.unchained.lists.model
 
 import androidx.paging.PagingSource
+import androidx.paging.PagingState
 import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.data.repositoy.CredentialsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.DownloadRepository
@@ -40,6 +41,10 @@ class DownloadPagingSource(
         } catch (exception: HttpException) {
             return LoadResult.Error(exception)
         }
+    }
+
+    override fun getRefreshKey(state: PagingState<Int, DownloadItem>): Int? {
+        return state.anchorPosition
     }
 
 
