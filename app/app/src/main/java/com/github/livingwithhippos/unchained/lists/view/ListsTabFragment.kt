@@ -126,11 +126,12 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
 
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 tab?.let {
-                    listBinding.selectedTab = it.position
 
                     when (it.position) {
                         TAB_DOWNLOADS -> {
                             viewModel.setSelectedTab(TAB_DOWNLOADS)
+                            listBinding.rvTorrentList.visibility = View.GONE
+                            listBinding.rvDownloadList.visibility = View.VISIBLE
                             if (!viewModel.downloadsLiveData.hasActiveObservers())
                                 viewModel.downloadsLiveData.observe(
                                     viewLifecycleOwner,
@@ -139,6 +140,8 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
                         }
                         TAB_TORRENTS -> {
                             viewModel.setSelectedTab(TAB_TORRENTS)
+                            listBinding.rvTorrentList.visibility = View.VISIBLE
+                            listBinding.rvDownloadList.visibility = View.GONE
                             if (!viewModel.torrentsLiveData.hasActiveObservers())
                                 viewModel.torrentsLiveData.observe(
                                     viewLifecycleOwner,

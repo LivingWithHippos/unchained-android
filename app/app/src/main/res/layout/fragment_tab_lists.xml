@@ -4,10 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools">
     <data>
         <import type="android.view.View" />
-
-        <variable
-            name="selectedTab"
-            type="Integer" />
     </data>
 <LinearLayout
     android:layout_width="match_parent"
@@ -52,7 +48,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:scrollbars="vertical"
-                android:visibility="@{selectedTab == 1?  View.VISIBLE : View.GONE, default=gone}"
+                android:visibility="gone"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:listitem="@layout/item_list_torrent" />
 
@@ -62,7 +58,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:scrollbars="vertical"
-                android:visibility="@{selectedTab == 0 ?  View.VISIBLE : View.GONE}"
+                android:visibility="visible"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:listitem="@layout/item_list_download" />
 
