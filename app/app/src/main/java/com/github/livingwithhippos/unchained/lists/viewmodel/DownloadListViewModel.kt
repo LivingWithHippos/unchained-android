@@ -1,7 +1,6 @@
 package com.github.livingwithhippos.unchained.lists.viewmodel
 
 
-import androidx.hilt.Assisted
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
