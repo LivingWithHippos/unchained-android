@@ -1,6 +1,6 @@
-package com.github.livingwithhippos.unchained.lists.model
 
 import androidx.paging.PagingSource
+import androidx.paging.PagingState
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.data.repositoy.CredentialsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.TorrentsRepository
@@ -38,6 +38,12 @@ class TorrentPagingSource(
             return LoadResult.Error(exception)
         } catch (exception: HttpException) {
             return LoadResult.Error(exception)
+        }
+    }
+
+    override fun getRefreshKey(state: PagingState<Int, TorrentItem>): Int? {
+        return state.anchorPosition?.let { anchorPosition ->
+            state.closestPageToPosition(anchorPosition)?.prevKey
         }
     }
 
