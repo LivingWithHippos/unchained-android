@@ -46,17 +46,19 @@ class DownloadListViewModel @Inject constructor(
     private val queryLiveData = MutableLiveData<String>()
 
     // items are filtered returning only if their names contain the query
-    val downloadsLiveData: LiveData<PagingData<DownloadItem>> = Transformations.switchMap(queryLiveData) { query: String ->
-        Pager(PagingConfig(pageSize = 50, initialLoadSize = 100)) {
-            DownloadPagingSource(downloadRepository, credentialsRepository, query)
-        }.liveData.cachedIn(viewModelScope)
-    }
+    val downloadsLiveData: LiveData<PagingData<DownloadItem>> =
+        Transformations.switchMap(queryLiveData) { query: String ->
+            Pager(PagingConfig(pageSize = 50, initialLoadSize = 100)) {
+                DownloadPagingSource(downloadRepository, credentialsRepository, query)
+            }.liveData.cachedIn(viewModelScope)
+        }
 
-    val torrentsLiveData: LiveData<PagingData<TorrentItem>> = Transformations.switchMap(queryLiveData) { query: String ->
-        Pager(PagingConfig(pageSize = 50, initialLoadSize = 100)) {
-            TorrentPagingSource(torrentsRepository, credentialsRepository, query)
-        }.liveData.cachedIn(viewModelScope)
-    }
+    val torrentsLiveData: LiveData<PagingData<TorrentItem>> =
+        Transformations.switchMap(queryLiveData) { query: String ->
+            Pager(PagingConfig(pageSize = 50, initialLoadSize = 100)) {
+                TorrentPagingSource(torrentsRepository, credentialsRepository, query)
+            }.liveData.cachedIn(viewModelScope)
+        }
 
     val errorsLiveData = MutableLiveData<Event<List<UnchainedNetworkException>>>()
 

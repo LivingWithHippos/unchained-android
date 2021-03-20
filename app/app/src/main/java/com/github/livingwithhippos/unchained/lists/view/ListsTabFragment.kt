@@ -171,14 +171,14 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
         })
 
         viewModel.downloadItemLiveData.observe(viewLifecycleOwner, EventObserver { links ->
-                if (!links.isNullOrEmpty()) {
-                    // switch to download tab
-                    listBinding.tabs.getTabAt(TAB_DOWNLOADS)?.select()
-                    // simulate list refresh
-                    listBinding.srLayout.isRefreshing = true
-                    // refresh items, when returned they'll stop the animation
-                    downloadAdapter.refresh()
-                }
+            if (!links.isNullOrEmpty()) {
+                // switch to download tab
+                listBinding.tabs.getTabAt(TAB_DOWNLOADS)?.select()
+                // simulate list refresh
+                listBinding.srLayout.isRefreshing = true
+                // refresh items, when returned they'll stop the animation
+                downloadAdapter.refresh()
+            }
         })
 
 
@@ -187,10 +187,10 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
             torrentAdapter.refresh()
         })
 
-        activityViewModel.listStateLiveData.observe(viewLifecycleOwner, EventObserver{
+        activityViewModel.listStateLiveData.observe(viewLifecycleOwner, EventObserver {
             when (it) {
                 ListState.UPDATE_DOWNLOAD -> {
-                    lifecycleScope.launch{
+                    lifecycleScope.launch {
                         delay(300L)
                         downloadAdapter.refresh()
                         delayedListScrolling(listBinding.rvDownloadList)
@@ -247,7 +247,7 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
                         context?.let { c ->
                             c.showToast(c.getApiErrorMessage(error.errorCode))
                         }
-                        when(error.errorCode) {
+                        when (error.errorCode) {
                             8 -> {
                                 //bad token, try refreshing it
                                 activityViewModel.setBadToken()
@@ -360,7 +360,7 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
     }
 
     private fun delayedListScrolling(recyclerView: RecyclerView, delay: Long = 300) {
-        recyclerView.layoutManager?.let{
+        recyclerView.layoutManager?.let {
             lifecycleScope.launch {
                 // this delay is needed to activate the scrolling, otherwise it won't work. It probably depends on the device.
                 delay(delay)

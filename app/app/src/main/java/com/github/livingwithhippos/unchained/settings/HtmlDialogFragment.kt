@@ -28,8 +28,7 @@ class HtmlDialogFragment : DialogFragment {
         this.message = message
     }
 
-    constructor() : super() {
-    }
+    constructor() : super()
 
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

@@ -144,17 +144,17 @@ class MainActivity : AppCompatActivity() {
         )
 
         viewModel.linkLiveData.observe(this, EventObserver { link ->
-                // check the authentication
-                viewModel.authenticationState.observeOnce(this, { auth ->
-                    when (auth.peekContent()) {
-                        // same as a received magnet
-                        AuthenticationState.AUTHENTICATED -> processLinkIntent(link)
-                        AuthenticationState.AUTHENTICATED_NO_PREMIUM -> baseContext.showToast(
-                            R.string.premium_needed
-                        )
-                        else -> showToast(R.string.please_login)
-                    }
-                })
+            // check the authentication
+            viewModel.authenticationState.observeOnce(this, { auth ->
+                when (auth.peekContent()) {
+                    // same as a received magnet
+                    AuthenticationState.AUTHENTICATED -> processLinkIntent(link)
+                    AuthenticationState.AUTHENTICATED_NO_PREMIUM -> baseContext.showToast(
+                        R.string.premium_needed
+                    )
+                    else -> showToast(R.string.please_login)
+                }
+            })
         })
 
         // monitor if the torrent notification service needs to be started. It monitor the preference change itself
@@ -169,7 +169,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        viewModel.messageLiveData.observe(this, EventObserver{
+        viewModel.messageLiveData.observe(this, EventObserver {
             showToast(it, length = Toast.LENGTH_LONG)
         })
 
