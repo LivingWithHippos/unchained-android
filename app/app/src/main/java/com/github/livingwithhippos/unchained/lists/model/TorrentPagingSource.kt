@@ -1,4 +1,3 @@
-package com.github.livingwithhippos.unchained.lists.model
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
@@ -49,10 +48,6 @@ class TorrentPagingSource(
 
     override fun getRefreshKey(state: PagingState<Int, TorrentItem>): Int? {
         return state.anchorPosition?.let { anchorPosition ->
-            // This loads starting from previous page, but since PagingConfig.initialLoadSize spans
-            // multiple pages, the initial load will still load items centered around
-            // anchorPosition. This also prevents needing to immediately launch prepend due to
-            // prefetchDistance.
             state.closestPageToPosition(anchorPosition)?.prevKey
         }
     }
