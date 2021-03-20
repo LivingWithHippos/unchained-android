@@ -13,6 +13,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.recyclerview.widget.RecyclerView
 import com.github.livingwithhippos.unchained.R
@@ -34,6 +35,10 @@ import com.google.android.material.tabs.TabLayout
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChangedBy
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 
 /**
@@ -47,8 +52,15 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
         UPDATE_TORRENT, UPDATE_DOWNLOAD, READY
     }
 
+    private var _listBinding: FragmentTabListsBinding? = null
+    private val listBinding get() = _listBinding!!
+
+
     //todo: rename viewModel/fragment to ListTab or DownloadLists
     private val viewModel: DownloadListViewModel by viewModels()
+
+    private val downloadAdapter = DownloadListPagingAdapter(this)
+    private val torrentAdapter = TorrentListPagingAdapter(this)
 
     // used to simulate a debounce effect while typing on the search bar
     var queryJob: Job? = null
@@ -57,12 +69,10 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val listBinding = FragmentTabListsBinding.inflate(inflater, container, false)
 
-        val downloadAdapter = DownloadListPagingAdapter(this)
-        val torrentAdapter = TorrentListPagingAdapter(this)
+        // we use databinding because there's a Binding Adapter function in the layout
+        _listBinding = FragmentTabListsBinding.inflate(inflater, container, false)
 
-        listBinding.rvDownloadList.adapter = downloadAdapter
         listBinding.rvTorrentList.adapter = torrentAdapter
 
         listBinding.srLayout.setOnRefreshListener {
@@ -76,22 +86,11 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
             }
         }
 
-        // observers created to be easily added and removed. Pass the retrieved list to the adapter and removes the loading icon from the swipe layout
-        val downloadObserver = Observer<PagingData<DownloadItem>> {
-            lifecycleScope.launch {
-                downloadAdapter.submitData(it)
-                // stop the refresh animation if playing
-                if (listBinding.srLayout.isRefreshing) {
-                    listBinding.srLayout.isRefreshing = false
-                    // scroll to top if we were refreshing
-                    delayedListScrolling(listBinding.rvDownloadList)
-                }
-                // delay for notifying the list that the items have changed, otherwise stuff like the status and the progress are not updated until you scroll away and back there
-                delay(300)
-                downloadAdapter.notifyDataSetChanged()
-            }
-        }
+        initDownloadAdapter()
+        initSearch()
 
+        // observers created to be easily added and removed.
+        // Passes the retrieved list to the adapter and removes the loading icon from the swipe layout
         val torrentObserver = Observer<PagingData<TorrentItem>> {
             lifecycleScope.launch {
                 torrentAdapter.submitData(it)
@@ -109,14 +108,11 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
             when (it.peekContent()) {
                 AuthenticationState.AUTHENTICATED, AuthenticationState.AUTHENTICATED_NO_PREMIUM -> {
                     // register observers if not already registered
-                    if (!viewModel.downloadsLiveData.hasActiveObservers())
-                        viewModel.downloadsLiveData.observe(viewLifecycleOwner, downloadObserver)
                     if (!viewModel.torrentsLiveData.hasActiveObservers())
                         viewModel.torrentsLiveData.observe(viewLifecycleOwner, torrentObserver)
                 }
                 else -> {
                     // remove observers if present
-                    viewModel.downloadsLiveData.removeObserver(downloadObserver)
                     viewModel.torrentsLiveData.removeObserver(torrentObserver)
                 }
             }
@@ -132,11 +128,6 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
                             viewModel.setSelectedTab(TAB_DOWNLOADS)
                             listBinding.rvTorrentList.visibility = View.GONE
                             listBinding.rvDownloadList.visibility = View.VISIBLE
-                            if (!viewModel.downloadsLiveData.hasActiveObservers())
-                                viewModel.downloadsLiveData.observe(
-                                    viewLifecycleOwner,
-                                    downloadObserver
-                                )
                         }
                         TAB_TORRENTS -> {
                             viewModel.setSelectedTab(TAB_TORRENTS)
@@ -161,7 +152,6 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
                 // remove observer
                 when (tab?.position) {
                     TAB_DOWNLOADS -> {
-                        viewModel.downloadsLiveData.removeObserver(downloadObserver)
                     }
                     TAB_TORRENTS -> {
                         viewModel.torrentsLiveData.removeObserver(torrentObserver)
@@ -207,7 +197,6 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
                 }
             }
         })
-
 
         setFragmentResultListener("downloadActionKey") { _, bundle ->
             bundle.getString("deletedDownloadKey")?.let {
@@ -275,6 +264,22 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
         return listBinding.root
     }
 
+    private fun initDownloadAdapter() {
+        listBinding.rvDownloadList.adapter = downloadAdapter
+    }
+
+    private fun initSearch() {
+        // Scroll to top when the list is refreshed from network.
+        lifecycleScope.launch {
+            downloadAdapter.loadStateFlow
+                // Only emit when REFRESH LoadState for RemoteMediator changes.
+                .distinctUntilChangedBy { it.refresh }
+                // Only react to cases where Remote REFRESH completes i.e., NotLoading.
+                .filter { it.refresh is LoadState.NotLoading }
+                .collect { listBinding.rvDownloadList.scrollToPosition(0) }
+        }
+    }
+
     // menu-related functions
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -297,17 +302,31 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                // simulate debounce
-                queryJob?.cancel()
-
-                queryJob = lifecycleScope.launch {
-                    delay(500)
-                    viewModel.setListFilter(newText)
-                }
+                listBinding.rvDownloadList.scrollToPosition(0)
+                queryDownloads(newText ?: "")
                 return true
             }
 
         })
+
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _listBinding = null
+    }
+
+
+    private fun queryDownloads(query:String) {
+        // simulate debounce
+        queryJob?.cancel()
+
+        queryJob = lifecycleScope.launch {
+            delay(500)
+            viewModel.loadDownloads(query).collectLatest {
+                downloadAdapter.submitData(it)
+            }
+        }
 
     }
 
