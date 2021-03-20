@@ -22,7 +22,7 @@ class HostsRepository @Inject constructor(
             errorMessage = "Error Fetching Streaming Info"
         )
 
-        return hostResponse;
+        return hostResponse
 
     }
 

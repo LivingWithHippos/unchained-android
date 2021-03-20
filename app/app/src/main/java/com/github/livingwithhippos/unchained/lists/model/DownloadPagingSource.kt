@@ -45,6 +45,10 @@ class DownloadPagingSource(
 
     override fun getRefreshKey(state: PagingState<Int, DownloadItem>): Int? {
         return state.anchorPosition?.let { anchorPosition ->
+            // This loads starting from previous page, but since PagingConfig.initialLoadSize spans
+            // multiple pages, the initial load will still load items centered around
+            // anchorPosition. This also prevents needing to immediately launch prepend due to
+            // prefetchDistance.
             state.closestPageToPosition(anchorPosition)?.prevKey
         }
     }

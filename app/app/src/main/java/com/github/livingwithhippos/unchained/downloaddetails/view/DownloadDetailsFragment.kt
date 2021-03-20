@@ -67,11 +67,11 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         }
 
         viewModel.deletedDownloadLiveData.observe(viewLifecycleOwner, EventObserver {
-                // todo: check returned value (it)
-                activity?.baseContext?.showToast(R.string.download_removed)
-                // if deleted go back
-                activity?.onBackPressed()
-                activityViewModel.setListState(ListsTabFragment.ListState.UPDATE_DOWNLOAD)
+            // todo: check returned value (it)
+            activity?.baseContext?.showToast(R.string.download_removed)
+            // if deleted go back
+            activity?.onBackPressed()
+            activityViewModel.setListState(ListsTabFragment.ListState.UPDATE_DOWNLOAD)
         })
 
         setFragmentResultListener("deleteActionKey") { _, bundle ->

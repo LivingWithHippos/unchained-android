@@ -212,8 +212,8 @@ fun TextView.setFileSize(size: Long) {
  */
 @BindingAdapter("spannableText")
 fun TextView.setTextFromSpan(spannableStringBuilder: SpannableStringBuilder?) {
-    if (spannableStringBuilder!= null)
-        setText(spannableStringBuilder,  TextView.BufferType.SPANNABLE);
+    if (spannableStringBuilder != null)
+        setText(spannableStringBuilder, TextView.BufferType.SPANNABLE)
 }
 
 /**

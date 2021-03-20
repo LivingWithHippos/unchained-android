@@ -23,7 +23,7 @@ interface DownloadsApi {
     suspend fun getDownloads(
         @Header("Authorization") token: String,
         @Query("offset") offset: Int?,
-        @Query("page") page: Int,
+        @Query("page") page: Int? = 1,
         @Query("limit") limit: Int = 50
     ): Response<List<DownloadItem>>
 

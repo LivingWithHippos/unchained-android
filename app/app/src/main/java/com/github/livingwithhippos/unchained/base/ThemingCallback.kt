@@ -11,10 +11,10 @@ import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.settings.SettingsFragment
 import com.github.livingwithhippos.unchained.utilities.extension.setCustomTheme
 
-class ThemingCallback( val preferences: SharedPreferences) : Application.ActivityLifecycleCallbacks {
+class ThemingCallback(val preferences: SharedPreferences) : Application.ActivityLifecycleCallbacks {
 
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
-        preferences.getString(SettingsFragment.KEY_THEME, "original")?.let{
+        preferences.getString(SettingsFragment.KEY_THEME, "original")?.let {
             setupNightMode(activity.resources, it)
             if (activity is AppCompatActivity)
                 activity.setCustomTheme(it)
@@ -39,7 +39,7 @@ class ThemingCallback( val preferences: SharedPreferences) : Application.Activit
     override fun onActivityDestroyed(activity: Activity) {
     }
 
-    private fun setupNightMode(resources: Resources, theme: String){
+    private fun setupNightMode(resources: Resources, theme: String) {
         // get night mode values
         val nightModeArray = resources.getStringArray(R.array.night_mode_values)
         val nightMode = preferences.getString(SettingsFragment.KEY_DAY_NIGHT, "auto")
@@ -52,8 +52,7 @@ class ThemingCallback( val preferences: SharedPreferences) : Application.Activit
                     putString(SettingsFragment.KEY_DAY_NIGHT, "day")
                     apply()
                 }
-        }
-        else {
+        } else {
             // enable or disable night mode according with the preferences
             when (nightMode) {
                 nightModeArray[0] -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)

@@ -9,6 +9,9 @@ import java.io.IOException
 
 private const val TORRENT_STARTING_PAGE_INDEX = 1
 
+/**
+ * Paging Source Using Paging V3. See https://github.com/android/architecture-components-samples/tree/main/PagingWithNetworkSample for a sample
+ */
 class TorrentPagingSource(
     private val torrentsRepository: TorrentsRepository,
     private val credentialsRepository: CredentialsRepository,
@@ -40,6 +43,8 @@ class TorrentPagingSource(
             return LoadResult.Error(exception)
         }
     }
+
+    override val jumpingSupported: Boolean = true
 
     override fun getRefreshKey(state: PagingState<Int, TorrentItem>): Int? {
         return state.anchorPosition?.let { anchorPosition ->
