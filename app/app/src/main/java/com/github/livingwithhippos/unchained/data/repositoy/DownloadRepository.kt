@@ -1,15 +1,10 @@
 package com.github.livingwithhippos.unchained.data.repositoy
 
-import androidx.lifecycle.viewModelScope
-import androidx.paging.*
-import com.github.livingwithhippos.unchained.data.local.CredentialsDao
 import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.data.remote.DownloadApiHelper
-import com.github.livingwithhippos.unchained.lists.model.DownloadPagingSource
-import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class DownloadRepository @Inject constructor(private val downloadApiHelper: DownloadApiHelper, private val credentialsDao: CredentialsDao) :
+class DownloadRepository @Inject constructor(private val downloadApiHelper: DownloadApiHelper) :
     BaseRepository() {
     suspend fun getDownloads(
         token: String,
@@ -40,19 +35,6 @@ class DownloadRepository @Inject constructor(private val downloadApiHelper: Down
         )
 
         return response
-    }
-
-    fun getDownloadsResultStream(query: String): Flow<PagingData<DownloadItem>> {
-        return Pager(
-            config = PagingConfig(pageSize = 50, initialLoadSize = 100),
-            pagingSourceFactory = {
-                DownloadPagingSource(
-                    downloadApiHelper,
-                    credentialsDao,
-                    query
-                )
-            })
-            .flow
     }
 
 }

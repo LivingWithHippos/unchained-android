@@ -26,7 +26,6 @@ import com.github.livingwithhippos.unchained.lists.view.ListsTabFragment.Compani
 import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.postEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -46,14 +45,18 @@ class DownloadListViewModel @Inject constructor(
     // stores the last query value
     private val queryLiveData = MutableLiveData<String>()
 
+    // items are filtered returning only if their names contain the query
+    val downloadsLiveData: LiveData<PagingData<DownloadItem>> = Transformations.switchMap(queryLiveData) { query: String ->
+        Pager(PagingConfig(pageSize = 50, initialLoadSize = 100)) {
+            DownloadPagingSource(downloadRepository, credentialsRepository, query)
+        }.liveData.cachedIn(viewModelScope)
+    }
+
     val torrentsLiveData: LiveData<PagingData<TorrentItem>> = Transformations.switchMap(queryLiveData) { query: String ->
         Pager(PagingConfig(pageSize = 50, initialLoadSize = 100)) {
             TorrentPagingSource(torrentsRepository, credentialsRepository, query)
         }.liveData.cachedIn(viewModelScope)
     }
-
-    private var currentQuery: String? = null
-    private var currentDownloadsResult: Flow<PagingData<DownloadItem>>? = null
 
     val errorsLiveData = MutableLiveData<Event<List<UnchainedNetworkException>>>()
 
@@ -74,19 +77,6 @@ class DownloadListViewModel @Inject constructor(
             if (errors.isNotEmpty())
                 errorsLiveData.postEvent(errors)
         }
-    }
-
-    fun loadDownloads(query: String): Flow<PagingData<DownloadItem>> {
-        val lastResult = currentDownloadsResult
-        if (query == currentQuery && lastResult != null) {
-            return lastResult
-        }
-        currentQuery = query
-        val newResult: Flow<PagingData<DownloadItem>> = downloadRepository.getDownloadsResultStream(query)
-            .cachedIn(viewModelScope)
-
-        currentDownloadsResult = newResult
-        return newResult
     }
 
     fun deleteTorrent(id: String) {
