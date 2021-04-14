@@ -65,7 +65,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvName" >
+                app:layout_constraintTop_toBottomOf="@id/tvName"
+                app:layout_constraintBottom_toTopOf="@id/clButtonsLayout">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -147,6 +148,16 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>
 
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/clButtonsLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="@id/cvDetails"
+            app:layout_constraintTop_toBottomOf="@id/cvDetails"
+            app:layout_constraintEnd_toEndOf="@id/cvDetails"
+            >
+
             <Button
                 android:id="@+id/bOpen"
                 style="@style/Widget.MaterialComponents.Button.Icon"
@@ -158,9 +169,9 @@
                 android:text="@string/open_link"
                 android:minLines="3"
                 app:icon="@drawable/icon_open_external"
-                app:layout_constraintStart_toStartOf="@id/cvDetails"
                 app:layout_constraintEnd_toStartOf="@id/bCopy"
-                app:layout_constraintTop_toBottomOf="@id/cvDetails" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <Button
                 android:id="@+id/bCopy"
@@ -173,9 +184,9 @@
                 android:text="@string/copy_link"
                 android:minLines="3"
                 app:icon="@drawable/icon_copy"
-                app:layout_constraintEnd_toEndOf="@id/cvDetails"
                 app:layout_constraintStart_toEndOf="@id/bOpen"
-                app:layout_constraintTop_toBottomOf="@id/cvDetails" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <Button
                 android:id="@+id/bOpenWith"
@@ -190,7 +201,7 @@
                 android:visibility="@{details.streamable == 1 ? View.VISIBLE : View.GONE, default=visible}"
                 android:enabled="@{yatseInstalled ? true : false, default=true}"
                 app:icon="@drawable/icon_remote"
-                app:layout_constraintStart_toStartOf="@id/cvDetails"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/bLoadStreams"
                 app:layout_constraintTop_toBottomOf="@id/bOpen" />
 
@@ -205,393 +216,27 @@
                 android:enabled="@{stream == null &amp;&amp; (details.alternative == null || details.alternative.size == 0)? true : false, default = true}"
                 android:visibility="@{details.streamable == 1 ? View.VISIBLE : View.GONE, default=visible}"
                 app:icon="@drawable/icon_play_outline"
-                app:layout_constraintEnd_toEndOf="@id/cvDetails"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/bOpenWith"
                 app:layout_constraintTop_toTopOf="@id/bOpenWith"
                 app:layout_constraintBottom_toBottomOf="@id/bOpenWith" />
 
-            <LinearLayout
-                android:id="@+id/llStreaming"
-                android:layout_width="match_parent"
+            <Button
+                android:id="@+id/bStreamBrowser"
+                style="@style/Widget.MaterialComponents.Button.Icon"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:orientation="vertical"
-                android:visibility="@{stream != null ? View.VISIBLE : View.GONE, default=visible}"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/bLoadStreams">
-
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/cvApple"
-                    android:layout_width="300dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginEnd="20dp"
-                    android:layout_marginBottom="15dp"
-                    android:checkable="false"
-                    android:clickable="false"
-                    android:focusable="true"
-                    android:visibility="@{stream.apple == null ? View.GONE : View.VISIBLE}"
-                    app:cardCornerRadius="10dp"
-                    app:cardElevation="3dp" >
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:padding="20dp">
-
-
-                        <TextView
-                            android:id="@+id/streamingOverline1"
-                            style="@style/TextAppearance.UnchainedTheme.Overline"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/streaming"
-                            android:textAllCaps="true"
-                            app:layout_constraintBottom_toTopOf="@+id/tvAppleTitle"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintVertical_chainStyle="packed" />
-
-                        <TextView
-                            android:id="@+id/tvAppleTitle"
-                            style="@style/TextAppearance.UnchainedTheme.Headline6"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:text="@string/apple"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toStartOf="@+id/appleButtonsLayout"
-                            app:layout_constraintHorizontal_bias="0.5"
-                            app:layout_constraintHorizontal_chainStyle="spread"
-                            app:layout_constraintStart_toStartOf="@id/streamingOverline1"
-                            app:layout_constraintTop_toBottomOf="@+id/streamingOverline1" />
-
-                        <LinearLayout
-                            android:id="@+id/appleButtonsLayout"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:orientation="horizontal"
-                            android:gravity="end"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toEndOf="@+id/tvAppleTitle">
-
-                            <ImageButton
-                                android:id="@+id/bOpenApple"
-                                android:layout_width="50dp"
-                                android:layout_height="50dp"
-                                android:backgroundTint="@android:color/transparent"
-                                android:contentDescription="@{@string/open_link_format(`apple`)}"
-                                android:onClick="@{()->listener.onOpenClick(stream.apple.link)}"
-                                android:src="@drawable/icon_open_external"
-                                android:tint="?attr/colorPrimary" />
-
-                            <ImageButton
-                                android:id="@+id/bCopyApple"
-                                android:layout_width="50dp"
-                                android:layout_height="50dp"
-                                android:backgroundTint="@android:color/transparent"
-                                android:contentDescription="@{@string/copy_link_format(`apple`)}"
-                                android:onClick="@{()->listener.onCopyClick(stream.apple.link)}"
-                                android:src="@drawable/icon_copy"
-                                android:tint="?attr/colorPrimary"/>
-
-                            <ImageButton
-                                android:id="@+id/bOpenWithApple"
-                                android:layout_width="50dp"
-                                android:layout_height="50dp"
-                                android:backgroundTint="@android:color/transparent"
-                                android:contentDescription="@{@string/open_with_format(`apple`)}"
-                                android:onClick="@{()->listener.onOpenWith(stream.apple.link)}"
-                                android:visibility="@{yatseInstalled ? View.VISIBLE : View.GONE, default=visible}"
-                                android:src="@drawable/icon_remote"
-                                android:tint="?attr/colorPrimary"/>
-                        </LinearLayout>
-
-
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-                </com.google.android.material.card.MaterialCardView>
-
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/cvDash"
-                    android:layout_width="300dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginEnd="20dp"
-                    android:layout_marginBottom="15dp"
-                    android:checkable="false"
-                    android:clickable="false"
-                    android:focusable="true"
-                    android:visibility="@{stream.dash == null ? View.GONE : View.VISIBLE}"
-                    app:cardCornerRadius="10dp"
-                    app:cardElevation="3dp" >
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:padding="20dp">
-
-
-                        <TextView
-                            android:id="@+id/streamingOverline2"
-                            style="@style/TextAppearance.UnchainedTheme.Overline"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/streaming"
-                            android:textAllCaps="true"
-                            app:layout_constraintBottom_toTopOf="@+id/tvDashTitle"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintVertical_chainStyle="packed" />
-
-                        <TextView
-                            android:id="@+id/tvDashTitle"
-                            style="@style/TextAppearance.UnchainedTheme.Headline6"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:text="@string/dash"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toStartOf="@id/dashButtonsLayout"
-                            app:layout_constraintHorizontal_bias="0.5"
-                            app:layout_constraintHorizontal_chainStyle="spread"
-                            app:layout_constraintStart_toStartOf="@id/streamingOverline2"
-                            app:layout_constraintTop_toBottomOf="@+id/streamingOverline2" />
-
-                        <LinearLayout
-                            android:id="@+id/dashButtonsLayout"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:orientation="horizontal"
-                            android:gravity="end"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toEndOf="@+id/tvDashTitle">
-
-                            <ImageButton
-                                android:id="@+id/bOpenDash"
-                                android:layout_width="50dp"
-                                android:layout_height="50dp"
-                                android:backgroundTint="@android:color/transparent"
-                                android:contentDescription="@{@string/open_link_format(`dash`)}"
-                                android:onClick="@{()->listener.onOpenClick(stream.dash.link)}"
-                                android:src="@drawable/icon_open_external"
-                                android:tint="?attr/colorPrimary"/>
-
-                            <ImageButton
-                                android:id="@+id/bCopyDash"
-                                android:layout_width="50dp"
-                                android:layout_height="50dp"
-                                android:backgroundTint="@android:color/transparent"
-                                android:contentDescription="@{@string/copy_link_format(`dash`)}"
-                                android:onClick="@{()->listener.onCopyClick(stream.dash.link)}"
-                                android:src="@drawable/icon_copy"
-                                android:tint="?attr/colorPrimary"/>
-
-                            <ImageButton
-                                android:id="@+id/bOpenWithDash"
-                                android:layout_width="50dp"
-                                android:layout_height="50dp"
-                                android:backgroundTint="@android:color/transparent"
-                                android:contentDescription="@{@string/open_with_format(`dash`)}"
-                                android:onClick="@{()->listener.onOpenWith(stream.dash.link)}"
-                                android:src="@drawable/icon_remote"
-                                android:tint="?attr/colorPrimary"
-                                android:visibility="@{yatseInstalled ? View.VISIBLE : View.GONE, default=visible}" />
-                        </LinearLayout>
-
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-                </com.google.android.material.card.MaterialCardView>
-
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/cvMp4"
-                    android:layout_width="300dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginEnd="20dp"
-                    android:layout_marginBottom="15dp"
-                    android:checkable="false"
-                    android:clickable="false"
-                    android:focusable="true"
-                    android:visibility="@{stream.liveMP4 == null ? View.GONE : View.VISIBLE}"
-                    app:cardCornerRadius="10dp"
-                    app:cardElevation="3dp" >
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:padding="20dp">
-
-
-                        <TextView
-                            android:id="@+id/streamingOverline3"
-                            style="@style/TextAppearance.UnchainedTheme.Overline"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/streaming"
-                            android:textAllCaps="true"
-                            app:layout_constraintBottom_toTopOf="@+id/tvMp4Title"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintVertical_chainStyle="packed" />
-
-                        <TextView
-                            android:id="@+id/tvMp4Title"
-                            style="@style/TextAppearance.UnchainedTheme.Headline6"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:text="@string/liveMP4"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toStartOf="@id/mp4ButtonsLayout"
-                            app:layout_constraintHorizontal_bias="0.5"
-                            app:layout_constraintHorizontal_chainStyle="spread"
-                            app:layout_constraintStart_toStartOf="@id/streamingOverline3"
-                            app:layout_constraintTop_toBottomOf="@+id/streamingOverline3" />
-
-                        <LinearLayout
-                            android:id="@+id/mp4ButtonsLayout"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:orientation="horizontal"
-                            android:gravity="end"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toEndOf="@+id/tvMp4Title">
-
-                            <ImageButton
-                                android:id="@+id/bOpenMp4"
-                                android:layout_width="50dp"
-                                android:layout_height="50dp"
-                                android:backgroundTint="@android:color/transparent"
-                                android:contentDescription="@{@string/open_link_format(`mp4`)}"
-                                android:onClick="@{()->listener.onOpenClick(stream.liveMP4.link)}"
-                                android:src="@drawable/icon_open_external"
-                                android:tint="?attr/colorPrimary" />
-
-                            <ImageButton
-                                android:id="@+id/bCopyMp4"
-                                android:layout_width="50dp"
-                                android:layout_height="50dp"
-                                android:backgroundTint="@android:color/transparent"
-                                android:contentDescription="@{@string/copy_link_format(`mp4`)}"
-                                android:onClick="@{()->listener.onCopyClick(stream.liveMP4.link)}"
-                                android:src="@drawable/icon_copy"
-                                android:tint="?attr/colorPrimary" />
-
-                            <ImageButton
-                                android:id="@+id/bOpenWithMp4"
-                                android:layout_width="50dp"
-                                android:layout_height="50dp"
-                                android:backgroundTint="@android:color/transparent"
-                                android:contentDescription="@{@string/open_with_format(`mp4`)}"
-                                android:onClick="@{()->listener.onOpenWith(stream.liveMP4.link)}"
-                                android:src="@drawable/icon_remote"
-                                android:visibility="@{yatseInstalled ? View.VISIBLE : View.GONE, default=visible}"
-                                android:tint="?attr/colorPrimary" />
-
-                        </LinearLayout>
-
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-                </com.google.android.material.card.MaterialCardView>
-
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/cvH264"
-                    android:layout_width="300dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginEnd="20dp"
-                    android:layout_marginBottom="20dp"
-                    android:checkable="false"
-                    android:clickable="false"
-                    android:focusable="true"
-                    android:visibility="@{stream.h264WebM == null ? View.GONE : View.VISIBLE}"
-                    app:cardCornerRadius="10dp"
-                    app:cardElevation="3dp" >
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:padding="20dp">
-
-                        <TextView
-                            android:id="@+id/streamingOverline4"
-                            style="@style/TextAppearance.UnchainedTheme.Overline"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/streaming"
-                            android:textAllCaps="true"
-                            app:layout_constraintBottom_toTopOf="@+id/tvH264Title"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintVertical_chainStyle="packed" />
-
-                        <TextView
-                            android:id="@+id/tvH264Title"
-                            style="@style/TextAppearance.UnchainedTheme.Headline6"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:text="@string/h264_webm"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toStartOf="@id/h264ButtonsLayout"
-                            app:layout_constraintHorizontal_bias="0.5"
-                            app:layout_constraintHorizontal_chainStyle="spread"
-                            app:layout_constraintStart_toStartOf="@id/streamingOverline4"
-                            app:layout_constraintTop_toBottomOf="@+id/streamingOverline4" />
-
-                        <LinearLayout
-                            android:id="@+id/h264ButtonsLayout"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:orientation="horizontal"
-                            android:gravity="end"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toEndOf="@+id/tvH264Title">
-
-                            <ImageButton
-                                android:id="@+id/bOpenH264"
-                                android:layout_width="50dp"
-                                android:layout_height="50dp"
-                                android:backgroundTint="@android:color/transparent"
-                                android:contentDescription="@{@string/open_link_format(`h264 webM`)}"
-                                android:onClick="@{()->listener.onOpenClick(stream.h264WebM.link)}"
-                                android:src="@drawable/icon_open_external"
-                                android:tint="?attr/colorPrimary" />
-
-                            <ImageButton
-                                android:id="@+id/bCopyH264"
-                                android:layout_width="50dp"
-                                android:layout_height="50dp"
-                                android:backgroundTint="@android:color/transparent"
-                                android:contentDescription="@{@string/copy_link_format(`h264 webM`)}"
-                                android:onClick="@{()->listener.onCopyClick(stream.h264WebM.link)}"
-                                android:src="@drawable/icon_copy"
-                                android:tint="?attr/colorPrimary"/>
-
-                            <ImageButton
-                                android:id="@+id/bOpenWithH264"
-                                android:layout_width="50dp"
-                                android:layout_height="50dp"
-                                android:backgroundTint="@android:color/transparent"
-                                android:contentDescription="@{@string/open_with_format(`h264 webM`)}"
-                                android:onClick="@{()->listener.onOpenWith(stream.h264WebM.link)}"
-                                android:visibility="@{yatseInstalled ? View.VISIBLE : View.GONE, default=visible}"
-                                android:src="@drawable/icon_remote"
-                                android:tint="?attr/colorPrimary" />
-
-                        </LinearLayout>
-
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-                </com.google.android.material.card.MaterialCardView>
-
-            </LinearLayout>
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="20dp"
+                android:onClick="@{() -> listener.onBrowserStreamsClick(details.id)}"
+                android:text="@string/open_browser_stream"
+                android:minLines="3"
+                android:visibility="@{details.streamable == 1 ? View.VISIBLE : View.GONE, default=visible}"
+                app:icon="@drawable/icon_browser_stream"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/bLoadStreams"
+                app:layout_constraintTop_toBottomOf="@id/bOpenWith" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvAlternativeList"
@@ -600,13 +245,13 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="20dp"
                 android:scrollbars="vertical"
-                android:visibility="@{details.alternative != null &amp;&amp; details.alternative.size()>0 ?  View.VISIBLE : View.GONE, default=gone}"
+                android:visibility="@{(details.alternative != null &amp;&amp; details.alternative.size()>0)||(stream != null) ?  View.VISIBLE : View.GONE, default=visible}"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 tools:listitem="@layout/item_alternative_download"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/bLoadStreams" />
+                app:layout_constraintTop_toBottomOf="@id/clButtonsLayout" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

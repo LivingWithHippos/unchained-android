@@ -8,6 +8,8 @@ const val BASE_URL = "https://api.real-debrid.com/rest/1.0/"
 
 const val BASE_AUTH_URL = "https://api.real-debrid.com/oauth/v2/"
 
+const val RD_STREAMING_URL = "https://real-debrid.com/streaming-"
+
 const val KEY_TOKEN: String = "TOKEN_KEY"
 
 const val PRIVATE_TOKEN: String = "private_token"

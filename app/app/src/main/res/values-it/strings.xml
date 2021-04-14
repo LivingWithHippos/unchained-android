@@ -227,4 +227,5 @@
     <string name="host_match_not_found">Nessun host compatibile trovato. Aggiorna gli host dalle impostazioni se necessario.</string>
     <string name="refreshing_token">Aggiornando autenticazione, riprova tra poco</string>
     <string name="black_and_white">Bianco e nero</string>
+    <string name="open_browser_stream">Stream nel browser</string>
 </resources>
