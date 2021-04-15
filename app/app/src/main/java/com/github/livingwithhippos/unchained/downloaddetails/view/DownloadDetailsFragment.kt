@@ -19,12 +19,14 @@ import androidx.navigation.fragment.navArgs
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.DeleteDialogFragment
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
+import com.github.livingwithhippos.unchained.data.model.Alternative
 import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.databinding.FragmentDownloadDetailsBinding
 import com.github.livingwithhippos.unchained.downloaddetails.model.AlternativeDownloadAdapter
 import com.github.livingwithhippos.unchained.downloaddetails.viewmodel.DownloadDetailsViewModel
 import com.github.livingwithhippos.unchained.lists.view.ListsTabFragment
 import com.github.livingwithhippos.unchained.utilities.EventObserver
+import com.github.livingwithhippos.unchained.utilities.RD_STREAMING_URL
 import com.github.livingwithhippos.unchained.utilities.extension.copyToClipboard
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
@@ -53,18 +55,63 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         detailsBinding.listener = this
         detailsBinding.yatseInstalled = isYatseInstalled()
 
+        // set up streams and alternative (e.g. for youtube) links list
+        val alternativeAdapter = AlternativeDownloadAdapter(this)
+        detailsBinding.rvAlternativeList.adapter = alternativeAdapter
+
+        if (!args.details.alternative.isNullOrEmpty()) {
+            alternativeAdapter.submitList(args.details.alternative)
+        }
+
         viewModel.streamLiveData.observe(viewLifecycleOwner, {
             if (it != null) {
                 detailsBinding.stream = it
+
+                val streams = mutableListOf<Alternative>()
+                // parameter mimetype gets shown as the name and "streaming" as title in the list, the other params don't matter
+                streams.add(
+                    Alternative(
+                        "h264WebM",
+                        "h264WebM",
+                        it.h264WebM.link,
+                        getString(R.string.h264_webm),
+                        getString(R.string.streaming)
+                    )
+                )
+                streams.add(
+                    Alternative(
+                        "liveMP4",
+                        "liveMP4",
+                        it.liveMP4.link,
+                        getString(R.string.liveMP4),
+                        getString(R.string.streaming)
+                    )
+                )
+                streams.add(
+                    Alternative(
+                        "apple",
+                        "apple",
+                        it.apple.link,
+                        getString(R.string.apple),
+                        getString(R.string.streaming)
+                    )
+                )
+                streams.add(
+                    Alternative(
+                        "dash",
+                        "dash",
+                        it.dash.link,
+                        getString(R.string.dash),
+                        getString(R.string.streaming)
+                    )
+                )
+
+                if (!args.details.alternative.isNullOrEmpty())
+                    streams.addAll(args.details.alternative!!)
+
+                alternativeAdapter.submitList(streams)
             }
         })
-
-
-        if (!args.details.alternative.isNullOrEmpty()) {
-            val alternativeAdapter = AlternativeDownloadAdapter(this)
-            detailsBinding.rvAlternativeList.adapter = alternativeAdapter
-            alternativeAdapter.submitList(args.details.alternative)
-        }
 
         viewModel.deletedDownloadLiveData.observe(viewLifecycleOwner, EventObserver {
             // todo: check returned value (it)
@@ -160,6 +207,10 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
 
         }
     }
+
+    override fun onBrowserStreamsClick(id: String) {
+        openExternalWebPage(RD_STREAMING_URL + id)
+    }
 }
 
 interface DownloadDetailsListener {
@@ -167,4 +218,5 @@ interface DownloadDetailsListener {
     fun onOpenClick(url: String)
     fun onOpenWith(url: String)
     fun onLoadStreamsClick(id: String)
+    fun onBrowserStreamsClick(id: String)
 }
