@@ -8,5 +8,10 @@ import androidx.room.PrimaryKey
 class HostRegex(
     @PrimaryKey
     @ColumnInfo(name = "regex")
-    val regex: String
+    val regex: String,
+    @ColumnInfo(name = "type")
+    val type: Int = REGEX_TYPE_HOST
 )
+
+const val REGEX_TYPE_HOST = 0
+const val REGEX_TYPE_FOLDER = 1

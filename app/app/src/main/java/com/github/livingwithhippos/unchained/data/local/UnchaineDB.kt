@@ -10,7 +10,7 @@ import com.github.livingwithhippos.unchained.data.model.HostRegex
  */
 @Database(
     entities = [Credentials::class, HostRegex::class],
-    version = 2,
+    version = 3,
     exportSchema = true
 )
 abstract class UnchaineDB : RoomDatabase() {
