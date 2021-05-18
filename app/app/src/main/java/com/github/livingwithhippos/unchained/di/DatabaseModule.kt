@@ -55,7 +55,7 @@ object DatabaseModule {
 
     private val MIGRATION_2_3 = object : Migration(2, 3) {
         override fun migrate(database: SupportSQLiteDatabase) {
-            database.execSQL("ALTER TABLE HostRegex ADD COLUMN type INTEGER NOT NULL DEFAULT $REGEX_TYPE_HOST")
+            database.execSQL("ALTER TABLE host_regex ADD COLUMN type INTEGER NOT NULL DEFAULT $REGEX_TYPE_HOST")
         }
     }
 

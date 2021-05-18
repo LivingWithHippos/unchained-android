@@ -44,14 +44,14 @@ interface UnrestrictApi {
 
 
     /**
-     * TODO
+     * Unrestrict a folder link and get a new list of link
      *
      * @param token the authentication token
      * @param link the original folder link
      * @return
      */
     @FormUrlEncoded
-    @POST("unrestrict/link")
+    @POST("unrestrict/folder")
     suspend fun getUnrestrictedFolder(
         @Header("Authorization") token: String,
         @Field("link") link: String
