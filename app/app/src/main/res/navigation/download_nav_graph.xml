@@ -28,6 +28,9 @@
             app:argType="string"
             app:nullable="true"
             android:defaultValue="@null" />
+        <action
+            android:id="@+id/action_new_download_dest_to_folderListFragment"
+            app:destination="@id/folderListFragment" />
     </fragment>
     <fragment
         android:id="@+id/download_details_dest"
@@ -52,6 +55,18 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/folderListFragment"
+        android:name="com.github.livingwithhippos.unchained.folderlist.view.FolderListFragment"
+        android:label="@string/folder"
+        tools:layout="@layout/fragment_folder_list" >
+        <argument
+            android:name="folderFiles"
+            app:argType="com.github.livingwithhippos.unchained.data.model.DownloadItem[]" />
+        <action
+            android:id="@+id/action_folderListFragment_to_download_details_dest"
+            app:destination="@id/download_details_dest" />
     </fragment>
 
 </navigation>

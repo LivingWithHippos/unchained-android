@@ -228,4 +228,6 @@
     <string name="refreshing_token">Aggiornando autenticazione, riprova tra poco</string>
     <string name="black_and_white">Bianco e nero</string>
     <string name="open_browser_stream">Stream nel browser</string>
+    <string name="folder">Cartella</string>
+    <string name="files_list">Lista files</string>
 </resources>

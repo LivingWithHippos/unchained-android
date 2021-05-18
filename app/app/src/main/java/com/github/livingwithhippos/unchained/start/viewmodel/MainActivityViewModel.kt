@@ -227,15 +227,27 @@ class MainActivityViewModel @Inject constructor(
         }
     }
 
-    fun checkIfLinkIsHoster(link: String) {
+    fun checkLinkSupported(link: String) {
         viewModelScope.launch {
             var matchFound = false
+            // check the hosts regexs
             for (hostRegex in hostsRepository.getHostsRegex()) {
                 val m: Matcher = Pattern.compile(hostRegex.regex).matcher(link)
                 if (m.matches()) {
                     matchFound = true
                     linkLiveData.postEvent(link)
                     break
+                }
+            }
+            // check the folders regexs
+            if (!matchFound) {
+                for (hostRegex in hostsRepository.getFoldersRegex()) {
+                    val m: Matcher = Pattern.compile(hostRegex.regex).matcher(link)
+                    if (m.matches()) {
+                        matchFound = true
+                        linkLiveData.postEvent(link)
+                        break
+                    }
                 }
             }
             if (!matchFound)

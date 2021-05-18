@@ -228,4 +228,6 @@
     <string name="refreshing_token">Mise à jour de l’authentification, veuillez réessayer un peu plus tard</string>
     <string name="black_and_white">Noir et blanc</string>
     <string name="open_browser_stream">Streaming dans le navigateur</string>
+    <string name="folder">Fichier</string>
+    <string name="files_list">Liste des fichiers</string>
 </resources>

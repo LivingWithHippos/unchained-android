@@ -15,6 +15,7 @@ class SettingsViewmodel @Inject constructor(
     fun updateRegexps() {
         viewModelScope.launch {
             hostsRepository.updateHostsRegex()
+            hostsRepository.updateFoldersRegex()
         }
     }
 }

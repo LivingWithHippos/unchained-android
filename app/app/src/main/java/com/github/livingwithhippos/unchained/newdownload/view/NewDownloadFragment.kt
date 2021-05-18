@@ -78,6 +78,15 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
             findNavController().navigate(action)
         })
 
+        viewModel.folderLiveData.observe(viewLifecycleOwner, EventObserver {  folderDetails ->
+
+            val action =
+                NewDownloadFragmentDirections.actionNewDownloadDestToFolderListFragment(
+                    folderDetails
+                )
+            findNavController().navigate(action)
+        })
+
         viewModel.torrentLiveData.observe(viewLifecycleOwner, EventObserver { torrent ->
             // new torrent item, alert the list fragment that it needs updating
             activityViewModel.setListState(ListsTabFragment.ListState.UPDATE_TORRENT)

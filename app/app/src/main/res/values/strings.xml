@@ -436,4 +436,6 @@
     <string name="refreshing_token">Refreshing authentication, please retry in a bit</string>
 	<string name="black_and_white">Black and white</string>
     <string name="open_browser_stream">Stream in browser</string>
+    <string name="folder">Folder</string>
+    <string name="files_list">Files List</string>
 </resources>

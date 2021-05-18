@@ -8,6 +8,7 @@ import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkException
 import com.github.livingwithhippos.unchained.data.model.UploadedTorrent
 import com.github.livingwithhippos.unchained.data.repositoy.CredentialsRepository
+import com.github.livingwithhippos.unchained.data.repositoy.HostsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.TorrentsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.UnrestrictRepository
 import com.github.livingwithhippos.unchained.utilities.Event
@@ -15,6 +16,8 @@ import com.github.livingwithhippos.unchained.utilities.postEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 import javax.inject.Inject
 
 /**
@@ -25,22 +28,52 @@ import javax.inject.Inject
 class NewDownloadViewModel @Inject constructor(
     private val credentialsRepository: CredentialsRepository,
     private val unrestrictRepository: UnrestrictRepository,
-    private val torrentsRepository: TorrentsRepository
+    private val torrentsRepository: TorrentsRepository,
+    private val hostsRepository: HostsRepository
 ) : ViewModel() {
 
     // use Event since navigating back to this fragment would trigger this observable again
     val linkLiveData = MutableLiveData<Event<DownloadItem>>()
+    val folderLiveData = MutableLiveData<Event<Array<DownloadItem>>>()
     val torrentLiveData = MutableLiveData<Event<UploadedTorrent>>()
     val networkExceptionLiveData = MutableLiveData<Event<UnchainedNetworkException>>()
 
     fun fetchUnrestrictedLink(link: String, password: String?, remote: Int? = null) {
         viewModelScope.launch {
             val token = getToken()
-            val response =
-                unrestrictRepository.getEitherUnrestrictedLink(token, link, password, remote)
-            when (response) {
-                is Either.Left -> networkExceptionLiveData.postEvent(response.a)
-                is Either.Right -> linkLiveData.postEvent(response.b)
+            // check if it's a folder link
+            var isFolder = false
+            for (hostRegex in hostsRepository.getFoldersRegex()) {
+                val m: Matcher = Pattern.compile(hostRegex.regex).matcher(link)
+                if (m.matches()) {
+                    isFolder = true
+
+                    val hitList = mutableListOf<DownloadItem>()
+
+                    Timber.d(link)
+                    val response = unrestrictRepository.getEitherUnrestrictedFolder(
+                        token,
+                        link,
+                        password,
+                        remote
+                    )
+                    response.forEach {
+                        when (it) {
+                            is Either.Left -> networkExceptionLiveData.postEvent(it.a)
+                            is Either.Right -> hitList.add(it.b)
+                        }
+                    }
+                    folderLiveData.postEvent(hitList.toTypedArray())
+                    break
+                }
+            }
+            if (!isFolder) {
+                val response =
+                    unrestrictRepository.getEitherUnrestrictedLink(token, link, password, remote)
+                when (response) {
+                    is Either.Left -> networkExceptionLiveData.postEvent(response.a)
+                    is Either.Right -> linkLiveData.postEvent(response.b)
+                }
             }
         }
     }
@@ -87,4 +120,11 @@ class NewDownloadViewModel @Inject constructor(
             throw IllegalArgumentException("Loaded token was null or empty: $token")
         return token
     }
+}
+
+sealed class Link {
+    data class Host(val link: String) : Link()
+    data class Folder(val link: String) : Link()
+    data class Magnet(val link: String) : Link()
+    data class Torrent(val link: String) : Link()
 }

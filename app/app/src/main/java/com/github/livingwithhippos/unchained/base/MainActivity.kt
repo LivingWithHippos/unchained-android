@@ -145,6 +145,7 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.linkLiveData.observe(this, EventObserver { link ->
             // check the authentication
+            //todo: replace all these with a simple call and just elaborate the returned error in case
             viewModel.authenticationState.observeOnce(this, { auth ->
                 when (auth.peekContent()) {
                     // same as a received magnet
@@ -226,7 +227,7 @@ class MainActivity : AppCompatActivity() {
                                 })
                             }
                             else -> {
-                                viewModel.checkIfLinkIsHoster(text)
+                                viewModel.checkLinkSupported(text)
                             }
                         }
                     }
@@ -299,7 +300,7 @@ class MainActivity : AppCompatActivity() {
         viewModel.addLink(uri)
     }
 
-    private fun processLinkIntent(text: String) = processLinkIntent(Uri.parse(text))
+    private fun processLinkIntent(link: String) = processLinkIntent(Uri.parse(link))
 
     private fun openSettings() {
         val intent = Intent(this, SettingsActivity::class.java)
