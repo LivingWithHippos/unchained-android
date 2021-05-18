@@ -1,11 +1,10 @@
 package com.github.livingwithhippos.unchained.folderlist.view
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.setFragmentResultListener
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -13,7 +12,6 @@ import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.databinding.FragmentFolderListBinding
 import com.github.livingwithhippos.unchained.folderlist.model.FolderItemAdapter
 import com.github.livingwithhippos.unchained.folderlist.viewmodel.FolderListViewModel
-import com.github.livingwithhippos.unchained.lists.view.DownloadContextualDialogFragment
 import com.github.livingwithhippos.unchained.lists.view.DownloadListListener
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -55,24 +53,15 @@ class FolderListFragment : Fragment(), DownloadListListener {
                 adapter.notifyDataSetChanged()
             }
         }
-
-        setFragmentResultListener("downloadActionKey") { _, bundle ->
-            bundle.getString("deletedDownloadKey")?.let {
-                viewModel.deleteDownload(it)
-            }
-            bundle.getParcelable<DownloadItem>("openedDownloadItem")?.let {
-                onClick(it)
-            }
-        }
     }
 
     override fun onClick(item: DownloadItem) {
-        val action = FolderListFragmentDirections.actionFolderListFragmentToDownloadDetailsDest(item)
+        val action =
+            FolderListFragmentDirections.actionFolderListFragmentToDownloadDetailsDest(item)
         findNavController().navigate(action)
     }
 
     override fun onLongClick(item: DownloadItem) {
-        val dialog = DownloadContextualDialogFragment(item)
-        dialog.show(parentFragmentManager, "DownloadContextualDialogFragment")
+        // do nothing for now
     }
 }
