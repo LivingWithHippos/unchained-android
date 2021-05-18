@@ -14,4 +14,9 @@ class UnrestrictApiHelperImpl @Inject constructor(private val unrestrictApi: Unr
     ): Response<DownloadItem> =
         unrestrictApi.getUnrestrictedLink(token, link, password, remote)
 
+    override suspend fun getUnrestrictedFolder(
+        token: String,
+        link: String
+    ): Response<List<String>> = unrestrictApi.getUnrestrictedFolder(token, link)
+
 }

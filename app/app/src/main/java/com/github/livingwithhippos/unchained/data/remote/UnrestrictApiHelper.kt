@@ -11,4 +11,9 @@ interface UnrestrictApiHelper {
         password: String? = null,
         remote: Int? = null
     ): Response<DownloadItem>
+
+    suspend fun getUnrestrictedFolder(
+        token: String,
+        link: String
+    ): Response<List<String>>
 }

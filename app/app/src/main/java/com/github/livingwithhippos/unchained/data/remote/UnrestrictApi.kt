@@ -25,19 +25,36 @@ import retrofit2.http.POST
 interface UnrestrictApi {
 
     /**
-     * Unrestrict a hoster link and get a new unrestricted link
+     * Unrestrict a hoster link and get a new download link
      *
+     * @param token the authentication token
+     * @param link the original hoster link
+     * @param password password to unlock the file access hoster side
+     * @param remote 0 or 1, use Remote traffic, dedicated servers and account sharing protections lifted
+     * @return a [DownloadItem] representing the download
      */
     @FormUrlEncoded
     @POST("unrestrict/link")
     suspend fun getUnrestrictedLink(
         @Header("Authorization") token: String,
-        // The original hoster link
         @Field("link") link: String,
-        // Password to unlock the file access hoster side
         @Field("password") password: String? = null,
-        // 0 or 1, use Remote traffic, dedicated servers and account sharing protections lifted
         @Field("remote") remote: Int? = null
     ): Response<DownloadItem>
+
+
+    /**
+     * TODO
+     *
+     * @param token the authentication token
+     * @param link the original folder link
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("unrestrict/link")
+    suspend fun getUnrestrictedFolder(
+        @Header("Authorization") token: String,
+        @Field("link") link: String
+    ): Response<List<String>>
 
 }
