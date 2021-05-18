@@ -14,4 +14,7 @@ interface HostsApi {
 
     @GET("hosts/regex/")
     suspend fun getHostsRegex(): Response<List<String>>
+
+    @GET("hosts/regexFolder/")
+    suspend fun getHostsFoldersRegex(): Response<List<String>>
 }
