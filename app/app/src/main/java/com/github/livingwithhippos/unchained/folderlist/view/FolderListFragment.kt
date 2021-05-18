@@ -38,15 +38,23 @@ class FolderListFragment : Fragment(), DownloadListListener {
     ): View {
         _binding = FragmentFolderListBinding.inflate(inflater, container, false)
 
-        setup(args.folderFiles)
+        setup(args.folder)
         return binding.root
     }
 
-    private fun setup(folderLink: Array<DownloadItem>) {
+    private fun setup(folder: String) {
+
+        viewModel.retrieveFileList(folder)
 
         val adapter = FolderItemAdapter(this)
         binding.rvFolderList.adapter = adapter
-        adapter.submitList(folderLink.toList())
+
+        viewModel.folderLiveData.observe(viewLifecycleOwner) {
+            it.getContentIfNotHandled()?.let { files ->
+                adapter.submitList(files)
+                adapter.notifyDataSetChanged()
+            }
+        }
 
         setFragmentResultListener("downloadActionKey") { _, bundle ->
             bundle.getString("deletedDownloadKey")?.let {

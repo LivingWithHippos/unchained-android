@@ -62,8 +62,8 @@
         android:label="@string/folder"
         tools:layout="@layout/fragment_folder_list" >
         <argument
-            android:name="folderFiles"
-            app:argType="com.github.livingwithhippos.unchained.data.model.DownloadItem[]" />
+            android:name="folder"
+            app:argType="string" />
         <action
             android:id="@+id/action_folderListFragment_to_download_details_dest"
             app:destination="@id/download_details_dest" />

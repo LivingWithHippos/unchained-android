@@ -38,13 +38,14 @@ class UnrestrictRepository @Inject constructor(private val unrestrictApiHelper: 
         token: String,
         linksList: List<String>,
         password: String? = null,
-        remote: Int? = null
+        remote: Int? = null,
+        callDelay: Long = 100
     ): List<Either<UnchainedNetworkException, DownloadItem>> {
         val unrestrictedLinks = mutableListOf<Either<UnchainedNetworkException, DownloadItem>>()
         linksList.forEach {
             unrestrictedLinks.add(getEitherUnrestrictedLink(token, it, password, remote))
             // just to be on the safe side...
-            delay(100)
+            delay(callDelay)
         }
         return unrestrictedLinks
     }
@@ -71,5 +72,23 @@ class UnrestrictRepository @Inject constructor(private val unrestrictApiHelper: 
         } else {
             listOf(Either.left((folderResponse as Either.Left).a))
         }
+    }
+
+    suspend fun getEitherFolderLinks(
+        token: String,
+        link: String
+    ): Either<UnchainedNetworkException, List<String>> {
+
+        val folderResponse: Either<UnchainedNetworkException, List<String>> = eitherApiResult(
+            call = {
+                unrestrictApiHelper.getUnrestrictedFolder(
+                    token = "Bearer $token",
+                    link = link
+                )
+            },
+            errorMessage = "Error Fetching Unrestricted Folders Info"
+        )
+
+        return folderResponse
     }
 }

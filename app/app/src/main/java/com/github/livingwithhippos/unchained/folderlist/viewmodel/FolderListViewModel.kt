@@ -1,10 +1,10 @@
 package com.github.livingwithhippos.unchained.folderlist.viewmodel
 
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.Either
-import com.github.livingwithhippos.unchained.data.model.Authentication
 import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkException
 import com.github.livingwithhippos.unchained.data.repositoy.CredentialsRepository
@@ -18,33 +18,65 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FolderListViewModel @Inject constructor(
+    private val savedStateHandle: SavedStateHandle,
     private val unrestrictRepository: UnrestrictRepository,
     private val credentialsRepository: CredentialsRepository,
     private val downloadRepository: DownloadRepository,
 ) : ViewModel() {
 
-    val folderLiveData = MutableLiveData<List<DownloadItem>>()
+    val folderLiveData = MutableLiveData<Event<List<DownloadItem>>>()
     val deletedDownloadLiveData = MutableLiveData<Event<Int>>()
+    val errorsLiveData = MutableLiveData<Event<UnchainedNetworkException>>()
 
     fun retrieveFileList(folderLink: String) {
         viewModelScope.launch {
             val token = credentialsRepository.getToken()
 
-            val filesList: List<Either<UnchainedNetworkException, DownloadItem>> = unrestrictRepository.getEitherUnrestrictedFolder(token, folderLink)
+            val filesList: Either<UnchainedNetworkException, List<String>> =
+                unrestrictRepository.getEitherFolderLinks(token, folderLink)
 
-            val hitList = mutableListOf<DownloadItem>()
-            val missList = mutableListOf<UnchainedNetworkException>()
+            val currentListSize = if (filesList is Either.Right)
+                filesList.b.size
+            else
+                -2
 
-            filesList.forEach {
-                if (it is Either.Right)
-                    hitList.add(it.b)
-                else
-                    missList.add((it as Either.Left).a)
+            // Retrieve files only if I didn't already do it
+            if (currentListSize != getRetrievedLinks()) {
+
+                val hitList = mutableListOf<DownloadItem>()
+
+                if (filesList is Either.Left)
+                    errorsLiveData.postEvent(filesList.a)
+                else {
+                    (filesList as Either.Right).b.forEach {
+                        when (val file =
+                            unrestrictRepository.getEitherUnrestrictedLink(token, it)) {
+                            is Either.Left -> {
+                                errorsLiveData.postEvent(file.a)
+                            }
+                            is Either.Right -> {
+                                hitList.add(file.b)
+                                folderLiveData.postEvent(hitList)
+                                setRetrievedLinks(hitList.size)
+                            }
+                        }
+                    }
+                }
+            } else {
+                // repost the last value
+                folderLiveData.value?.let {
+                    folderLiveData.postEvent(it.peekContent())
+                }
             }
-
-            folderLiveData.postValue(hitList)
-
         }
+    }
+
+    fun setRetrievedLinks(links: Int) {
+        savedStateHandle.set(KEY_RETRIEVED_LINKS, links)
+    }
+
+    fun getRetrievedLinks(): Int {
+        return savedStateHandle.get(KEY_RETRIEVED_LINKS) ?: -1
     }
 
     fun deleteDownload(id: String) {
@@ -56,5 +88,9 @@ class FolderListViewModel @Inject constructor(
             else
                 deletedDownloadLiveData.postEvent(1)
         }
+    }
+
+    companion object {
+        const val KEY_RETRIEVED_LINKS = "retrieve_links"
     }
 }

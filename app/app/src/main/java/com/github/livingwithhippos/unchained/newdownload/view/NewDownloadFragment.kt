@@ -78,11 +78,11 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
             findNavController().navigate(action)
         })
 
-        viewModel.folderLiveData.observe(viewLifecycleOwner, EventObserver {  folderDetails ->
+        viewModel.folderLiveData.observe(viewLifecycleOwner, EventObserver {  folder ->
 
             val action =
                 NewDownloadFragmentDirections.actionNewDownloadDestToFolderListFragment(
-                    folderDetails
+                    folder
                 )
             findNavController().navigate(action)
         })

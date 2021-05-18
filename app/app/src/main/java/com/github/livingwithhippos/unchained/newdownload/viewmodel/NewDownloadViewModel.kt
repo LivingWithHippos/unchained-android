@@ -34,7 +34,7 @@ class NewDownloadViewModel @Inject constructor(
 
     // use Event since navigating back to this fragment would trigger this observable again
     val linkLiveData = MutableLiveData<Event<DownloadItem>>()
-    val folderLiveData = MutableLiveData<Event<Array<DownloadItem>>>()
+    val folderLiveData = MutableLiveData<Event<String>>()
     val torrentLiveData = MutableLiveData<Event<UploadedTorrent>>()
     val networkExceptionLiveData = MutableLiveData<Event<UnchainedNetworkException>>()
 
@@ -47,23 +47,7 @@ class NewDownloadViewModel @Inject constructor(
                 val m: Matcher = Pattern.compile(hostRegex.regex).matcher(link)
                 if (m.matches()) {
                     isFolder = true
-
-                    val hitList = mutableListOf<DownloadItem>()
-
-                    Timber.d(link)
-                    val response = unrestrictRepository.getEitherUnrestrictedFolder(
-                        token,
-                        link,
-                        password,
-                        remote
-                    )
-                    response.forEach {
-                        when (it) {
-                            is Either.Left -> networkExceptionLiveData.postEvent(it.a)
-                            is Either.Right -> hitList.add(it.b)
-                        }
-                    }
-                    folderLiveData.postEvent(hitList.toTypedArray())
+                    folderLiveData.postEvent(link)
                     break
                 }
             }
