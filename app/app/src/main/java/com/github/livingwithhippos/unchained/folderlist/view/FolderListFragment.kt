@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -75,6 +76,7 @@ class FolderListFragment : Fragment(), DownloadListListener {
             binding.loadingCircle.progress = it
         }
 
+        // load all the links
         if (args.folder != null)
             viewModel.retrieveFolderFileList(args.folder!!)
         else
@@ -82,6 +84,18 @@ class FolderListFragment : Fragment(), DownloadListListener {
                 binding.tvTitle.text = args.torrent!!.filename
                 viewModel.retrieveTorrentFileList(args.torrent!!)
             }
+
+        // observe the search bar for changes
+        binding.tiFilter.addTextChangedListener {
+            viewModel.filterList(it?.toString())
+        }
+        viewModel.queryLiveData.observe(viewLifecycleOwner) {
+            val list = viewModel.folderLiveData.value?.peekContent()?.filter { item ->
+                item.filename.contains(it)
+            }
+            adapter.submitList( list )
+            adapter.notifyDataSetChanged()
+        }
 
     }
 

@@ -15,6 +15,8 @@ import com.github.livingwithhippos.unchained.data.repositoy.UnrestrictRepository
 import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.postEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -31,6 +33,12 @@ class FolderListViewModel @Inject constructor(
     val deletedDownloadLiveData = MutableLiveData<Event<Int>>()
     val errorsLiveData = MutableLiveData<Event<UnchainedNetworkException>>()
     val progressLiveData = MutableLiveData<Int>()
+
+    // used to simulate a debounce effect while typing on the search bar
+    private var queryJob: Job? = null
+
+    // stores the last query value
+    val queryLiveData = MutableLiveData<String>()
 
     fun retrieveFolderFileList(folderLink: String) {
         viewModelScope.launch {
@@ -100,6 +108,16 @@ class FolderListViewModel @Inject constructor(
                 deletedDownloadLiveData.postEvent(-1)
             else
                 deletedDownloadLiveData.postEvent(1)
+        }
+    }
+
+    fun filterList(query: String?) {
+        // simulate debounce
+        queryJob?.cancel()
+
+        queryJob = viewModelScope.launch {
+            delay(500)
+            queryLiveData.postValue(query?.trim() ?: "")
         }
     }
 
