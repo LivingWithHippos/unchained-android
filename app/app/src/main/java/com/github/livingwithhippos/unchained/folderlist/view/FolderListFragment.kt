@@ -74,8 +74,10 @@ class FolderListFragment : Fragment(), DownloadListListener {
         if (args.folder != null)
             viewModel.retrieveFolderFileList(args.folder!!)
         else
-            if (args.torrent != null)
+            if (args.torrent != null) {
+                binding.tvTitle.text = args.torrent!!.filename
                 viewModel.retrieveTorrentFileList(args.torrent!!)
+            }
 
     }
 
