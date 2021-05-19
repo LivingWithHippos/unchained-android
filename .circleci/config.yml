@@ -8,12 +8,10 @@ jobs:
       - image: circleci/android:api-30
     environment:
       JVM_OPTS: -Xmx2048m
+      GRADLE_OPTS: -Xmx1536m -XX:+HeapDumpOnOutOfMemoryError -Dorg.gradle.caching=true -Dorg.gradle.configureondemand=true -Dkotlin.compiler.execution.strategy=in-process -Dkotlin.incremental=false
     steps:
       - checkout:
           path: ~/unchained-android
-      - run:
-          name: Delete Cache
-          command: rm -r ~/.gradle
       - restore_cache:
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
 #      - run:
