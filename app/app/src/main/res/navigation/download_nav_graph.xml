@@ -63,7 +63,12 @@
         tools:layout="@layout/fragment_folder_list" >
         <argument
             android:name="folder"
-            app:argType="string" />
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="torrent"
+            app:argType="com.github.livingwithhippos.unchained.data.model.TorrentItem"
+            app:nullable="true" />
         <action
             android:id="@+id/action_folderListFragment_to_download_details_dest"
             app:destination="@id/download_details_dest" />

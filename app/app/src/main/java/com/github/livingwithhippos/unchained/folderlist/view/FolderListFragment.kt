@@ -8,18 +8,22 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.github.livingwithhippos.unchained.data.model.DownloadItem
+import com.github.livingwithhippos.unchained.data.model.*
 import com.github.livingwithhippos.unchained.databinding.FragmentFolderListBinding
 import com.github.livingwithhippos.unchained.folderlist.model.FolderItemAdapter
 import com.github.livingwithhippos.unchained.folderlist.viewmodel.FolderListViewModel
 import com.github.livingwithhippos.unchained.lists.view.DownloadListListener
+import com.github.livingwithhippos.unchained.utilities.errorMap
+import com.github.livingwithhippos.unchained.utilities.extension.getApiErrorMessage
+import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 
 @AndroidEntryPoint
 class FolderListFragment : Fragment(), DownloadListListener {
 
-    var _binding: FragmentFolderListBinding? = null
+    private var _binding: FragmentFolderListBinding? = null
     val binding get() = _binding!!
 
     private val viewModel: FolderListViewModel by viewModels()
@@ -36,13 +40,11 @@ class FolderListFragment : Fragment(), DownloadListListener {
     ): View {
         _binding = FragmentFolderListBinding.inflate(inflater, container, false)
 
-        setup(args.folder)
+        setup()
         return binding.root
     }
 
-    private fun setup(folder: String) {
-
-        viewModel.retrieveFileList(folder)
+    private fun setup() {
 
         val adapter = FolderItemAdapter(this)
         binding.rvFolderList.adapter = adapter
@@ -53,6 +55,28 @@ class FolderListFragment : Fragment(), DownloadListListener {
                 adapter.notifyDataSetChanged()
             }
         }
+
+        viewModel.errorsLiveData.observe(viewLifecycleOwner) {
+            it.getContentIfNotHandled()?.let { exception ->
+                when(exception){
+                    is APIError -> {
+                        // val error = requireContext().getApiErrorMessage(exception.errorCode)
+                        // requireContext().showToast(error)
+                        binding.tvError.visibility = View.VISIBLE
+                    }
+                    is EmptyBodyError -> Timber.d("Empty Body error, return code: ${exception.returnCode}")
+                    is NetworkError -> Timber.d("Network error, message: ${exception.message}")
+                    is ApiConversionError -> Timber.d("Api Conversion error, error: ${exception.error}")
+                }
+            }
+        }
+
+        if (args.folder != null)
+            viewModel.retrieveFolderFileList(args.folder!!)
+        else
+            if (args.torrent != null)
+                viewModel.retrieveTorrentFileList(args.torrent!!)
+
     }
 
     override fun onClick(item: DownloadItem) {

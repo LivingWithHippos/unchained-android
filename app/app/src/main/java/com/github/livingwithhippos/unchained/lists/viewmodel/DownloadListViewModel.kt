@@ -81,6 +81,20 @@ class DownloadListViewModel @Inject constructor(
         }
     }
 
+    fun downloadTorrentFolder(torrent: TorrentItem) {
+        viewModelScope.launch {
+            val token = credentialsRepository.getToken()
+            val items = unrestrictRepository.getUnrestrictedLinkList(token, torrent.links)
+            val values = items.filterIsInstance<Either.Right<DownloadItem>>().map { it.b }
+            val errors =
+                items.filterIsInstance<Either.Left<UnchainedNetworkException>>().map { it.a }
+
+            downloadItemLiveData.postEvent(values)
+            if (errors.isNotEmpty())
+                errorsLiveData.postEvent(errors)
+        }
+    }
+
     fun deleteTorrent(id: String) {
         viewModelScope.launch {
             val token = credentialsRepository.getToken()

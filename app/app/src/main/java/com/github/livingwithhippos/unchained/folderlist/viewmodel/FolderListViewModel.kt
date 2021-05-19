@@ -6,9 +6,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.Either
 import com.github.livingwithhippos.unchained.data.model.DownloadItem
+import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkException
 import com.github.livingwithhippos.unchained.data.repositoy.CredentialsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.DownloadRepository
+import com.github.livingwithhippos.unchained.data.repositoy.TorrentsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.UnrestrictRepository
 import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.postEvent
@@ -22,53 +24,61 @@ class FolderListViewModel @Inject constructor(
     private val unrestrictRepository: UnrestrictRepository,
     private val credentialsRepository: CredentialsRepository,
     private val downloadRepository: DownloadRepository,
+    private val torrentsRepository: TorrentsRepository,
 ) : ViewModel() {
 
     val folderLiveData = MutableLiveData<Event<List<DownloadItem>>>()
     val deletedDownloadLiveData = MutableLiveData<Event<Int>>()
     val errorsLiveData = MutableLiveData<Event<UnchainedNetworkException>>()
 
-    fun retrieveFileList(folderLink: String) {
+    fun retrieveFolderFileList(folderLink: String) {
         viewModelScope.launch {
             val token = credentialsRepository.getToken()
 
             val filesList: Either<UnchainedNetworkException, List<String>> =
                 unrestrictRepository.getEitherFolderLinks(token, folderLink)
 
-            val currentListSize = if (filesList is Either.Right)
-                filesList.b.size
-            else
-                -2
-
-            // Retrieve files only if I didn't already do it
-            if (currentListSize != getRetrievedLinks()) {
-
-                val hitList = mutableListOf<DownloadItem>()
-
-                if (filesList is Either.Left)
-                    errorsLiveData.postEvent(filesList.a)
-                else {
-                    (filesList as Either.Right).b.forEach {
-                        when (val file =
-                            unrestrictRepository.getEitherUnrestrictedLink(token, it)) {
-                            is Either.Left -> {
-                                errorsLiveData.postEvent(file.a)
-                            }
-                            is Either.Right -> {
-                                hitList.add(file.b)
-                                folderLiveData.postEvent(hitList)
-                                setRetrievedLinks(hitList.size)
-                            }
-                        }
-                    }
-                }
-            } else {
-                // repost the last value
-                folderLiveData.value?.let {
-                    folderLiveData.postEvent(it.peekContent())
-                }
+            when (filesList) {
+                is Either.Left -> errorsLiveData.postEvent(filesList.a)
+                is Either.Right -> retrieveFiles(token, filesList.b)
             }
         }
+    }
+
+    fun retrieveTorrentFileList(item: TorrentItem) {
+        viewModelScope.launch {
+            val token = credentialsRepository.getToken()
+
+            retrieveFiles(token, item.links)
+        }
+    }
+
+    private suspend fun retrieveFiles(token: String, links: List<String>) {
+        // either first time or there were some errors, re-download
+        if (links.size != getRetrievedLinks()) {
+
+            val hitList = mutableListOf<DownloadItem>()
+
+            links.forEach {
+                when (val file =
+                    unrestrictRepository.getEitherUnrestrictedLink(token, it)) {
+                    is Either.Left -> {
+                        errorsLiveData.postEvent(file.a)
+                    }
+                    is Either.Right -> {
+                        hitList.add(file.b)
+                        folderLiveData.postEvent(hitList)
+                        setRetrievedLinks(hitList.size)
+                    }
+                }
+            }
+        } else {
+            // I already downloaded all the files, repost the last value
+            folderLiveData.value?.let {
+                folderLiveData.postEvent(it.peekContent())
+            }
+        }
+
     }
 
     fun setRetrievedLinks(links: Int) {

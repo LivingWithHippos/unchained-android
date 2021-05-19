@@ -82,7 +82,8 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
 
             val action =
                 NewDownloadFragmentDirections.actionNewDownloadDestToFolderListFragment(
-                    folder
+                    folder=folder,
+                    torrent= null
                 )
             findNavController().navigate(action)
         })

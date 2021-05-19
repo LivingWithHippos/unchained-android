@@ -438,4 +438,5 @@
     <string name="open_browser_stream">Stream in browser</string>
     <string name="folder">Folder</string>
     <string name="files_list">Files List</string>
+    <string name="error_loading_folder">Some links couldn\'t be loaded</string>
 </resources>

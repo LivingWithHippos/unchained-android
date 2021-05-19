@@ -230,4 +230,5 @@
     <string name="open_browser_stream">Streaming dans le navigateur</string>
     <string name="folder">Fichier</string>
     <string name="files_list">Liste des fichiers</string>
+    <string name="error_loading_folder">Certains liens n\'ont pas pu être chargés</string>
 </resources>

@@ -1,7 +1,9 @@
 package com.github.livingwithhippos.unchained.data.model
 
+import com.github.livingwithhippos.unchained.utilities.errorMap
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import timber.log.Timber
 
 
 @JsonClass(generateAdapter = true)
@@ -29,3 +31,16 @@ data class ApiConversionError(
 ) : UnchainedNetworkException
 
 interface UnchainedNetworkException
+
+/**
+ * Helper function to quickly debug network errors. Will output them using Timber.
+ *
+ */
+fun UnchainedNetworkException.printError() {
+    when(this){
+        is APIError -> Timber.d(errorMap[this.errorCode ?: -1])
+        is EmptyBodyError -> Timber.d("Empty Body error, return code: ${this.returnCode}")
+        is NetworkError -> Timber.d("Network error, message: ${this.message}")
+        is ApiConversionError -> Timber.d("Api Conversion error, error: ${this.error}")
+    }
+}

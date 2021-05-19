@@ -24,6 +24,7 @@ import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.data.model.EmptyBodyError
 import com.github.livingwithhippos.unchained.data.model.NetworkError
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
+import com.github.livingwithhippos.unchained.databinding.FragmentFolderListBinding
 import com.github.livingwithhippos.unchained.databinding.FragmentTabListsBinding
 import com.github.livingwithhippos.unchained.lists.viewmodel.DownloadListViewModel
 import com.github.livingwithhippos.unchained.utilities.EventObserver
@@ -50,23 +51,31 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
     //todo: rename viewModel/fragment to ListTab or DownloadLists
     private val viewModel: DownloadListViewModel by viewModels()
 
+    private var _binding: FragmentTabListsBinding? = null
+    val binding get() = _binding!!
+
     // used to simulate a debounce effect while typing on the search bar
     var queryJob: Job? = null
+
+    override fun onDestroyView() {
+        _binding = null
+        super.onDestroyView()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val listBinding = FragmentTabListsBinding.inflate(inflater, container, false)
+        _binding = FragmentTabListsBinding.inflate(inflater, container, false)
 
         val downloadAdapter = DownloadListPagingAdapter(this)
         val torrentAdapter = TorrentListPagingAdapter(this)
 
-        listBinding.rvDownloadList.adapter = downloadAdapter
-        listBinding.rvTorrentList.adapter = torrentAdapter
+        binding.rvDownloadList.adapter = downloadAdapter
+        binding.rvTorrentList.adapter = torrentAdapter
 
-        listBinding.srLayout.setOnRefreshListener {
-            when (listBinding.tabs.selectedTabPosition) {
+        binding.srLayout.setOnRefreshListener {
+            when (binding.tabs.selectedTabPosition) {
                 TAB_DOWNLOADS -> {
                     downloadAdapter.refresh()
                 }
@@ -81,10 +90,10 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
             lifecycleScope.launch {
                 downloadAdapter.submitData(it)
                 // stop the refresh animation if playing
-                if (listBinding.srLayout.isRefreshing) {
-                    listBinding.srLayout.isRefreshing = false
+                if (binding.srLayout.isRefreshing) {
+                    binding.srLayout.isRefreshing = false
                     // scroll to top if we were refreshing
-                    delayedListScrolling(listBinding.rvDownloadList)
+                    delayedListScrolling(binding.rvDownloadList)
                 }
                 // delay for notifying the list that the items have changed, otherwise stuff like the status and the progress are not updated until you scroll away and back there
                 delay(300)
@@ -95,9 +104,9 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
         val torrentObserver = Observer<PagingData<TorrentItem>> {
             lifecycleScope.launch {
                 torrentAdapter.submitData(it)
-                if (listBinding.srLayout.isRefreshing) {
-                    listBinding.srLayout.isRefreshing = false
-                    delayedListScrolling(listBinding.rvTorrentList)
+                if (binding.srLayout.isRefreshing) {
+                    binding.srLayout.isRefreshing = false
+                    delayedListScrolling(binding.rvTorrentList)
                 }
                 delay(300)
                 torrentAdapter.notifyDataSetChanged()
@@ -122,7 +131,7 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
             }
         })
 
-        listBinding.tabs.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+        binding.tabs.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
 
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 tab?.let {
@@ -130,8 +139,8 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
                     when (it.position) {
                         TAB_DOWNLOADS -> {
                             viewModel.setSelectedTab(TAB_DOWNLOADS)
-                            listBinding.rvTorrentList.visibility = View.GONE
-                            listBinding.rvDownloadList.visibility = View.VISIBLE
+                            binding.rvTorrentList.visibility = View.GONE
+                            binding.rvDownloadList.visibility = View.VISIBLE
                             if (!viewModel.downloadsLiveData.hasActiveObservers())
                                 viewModel.downloadsLiveData.observe(
                                     viewLifecycleOwner,
@@ -140,8 +149,8 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
                         }
                         TAB_TORRENTS -> {
                             viewModel.setSelectedTab(TAB_TORRENTS)
-                            listBinding.rvTorrentList.visibility = View.VISIBLE
-                            listBinding.rvDownloadList.visibility = View.GONE
+                            binding.rvTorrentList.visibility = View.VISIBLE
+                            binding.rvDownloadList.visibility = View.GONE
                             if (!viewModel.torrentsLiveData.hasActiveObservers())
                                 viewModel.torrentsLiveData.observe(
                                     viewLifecycleOwner,
@@ -173,9 +182,9 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
         viewModel.downloadItemLiveData.observe(viewLifecycleOwner, EventObserver { links ->
             if (!links.isNullOrEmpty()) {
                 // switch to download tab
-                listBinding.tabs.getTabAt(TAB_DOWNLOADS)?.select()
+                binding.tabs.getTabAt(TAB_DOWNLOADS)?.select()
                 // simulate list refresh
-                listBinding.srLayout.isRefreshing = true
+                binding.srLayout.isRefreshing = true
                 // refresh items, when returned they'll stop the animation
                 downloadAdapter.refresh()
             }
@@ -193,14 +202,14 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
                     lifecycleScope.launch {
                         delay(300L)
                         downloadAdapter.refresh()
-                        delayedListScrolling(listBinding.rvDownloadList)
+                        delayedListScrolling(binding.rvDownloadList)
                     }
                 }
                 ListState.UPDATE_TORRENT -> {
                     lifecycleScope.launch {
                         delay(300L)
                         torrentAdapter.refresh()
-                        delayedListScrolling(listBinding.rvTorrentList)
+                        delayedListScrolling(binding.rvTorrentList)
                     }
                 }
                 ListState.READY -> {
@@ -270,9 +279,9 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
         // without this the lists won't get initialized
         viewModel.setListFilter("")
 
-        listBinding.tabs.getTabAt(viewModel.getSelectedTab())?.select()
+        binding.tabs.getTabAt(viewModel.getSelectedTab())?.select()
 
-        return listBinding.root
+        return binding.root
     }
 
     // menu-related functions
@@ -339,10 +348,12 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
         if (authState == AuthenticationState.AUTHENTICATED) {
             when (item.status) {
                 "downloaded" -> {
-                    // if the item has many links to download, show a toast
-                    if (item.links.size > 2)
-                        context?.showToast(R.string.downloading_torrent)
-                    viewModel.downloadTorrent(item)
+                    if (item.links.size > 1) {
+                        val action = ListsTabFragmentDirections.actionListTabsDestToFolderListFragment2(folder = null, torrent = item)
+                        findNavController().navigate(action)
+                    }
+                    else
+                        viewModel.downloadTorrent(item)
                 }
                 // open the torrent details fragment
                 else -> {
