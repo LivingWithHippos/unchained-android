@@ -11,6 +11,9 @@ jobs:
     steps:
       - checkout:
           path: ~/unchained-android
+      - run:
+          name: Delete Cache
+          command: rm -r ~/.gradle
       - restore_cache:
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
 #      - run:
