@@ -32,7 +32,7 @@ jobs:
           path: app/build/test-results
       - run:
           name: Build
-          command: ./gradlew clean assembleRelease --no-daemon --stacktrace
+          command: ./gradlew clean assembleRelease --stacktrace
       - store_artifacts: # save the generated apk folder
           path: app/build/outputs/apk/release
           destination: release
