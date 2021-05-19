@@ -16,10 +16,7 @@ import androidx.navigation.fragment.navArgs
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.DeleteDialogFragment
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
-import com.github.livingwithhippos.unchained.data.model.APIError
-import com.github.livingwithhippos.unchained.data.model.ApiConversionError
-import com.github.livingwithhippos.unchained.data.model.EmptyBodyError
-import com.github.livingwithhippos.unchained.data.model.NetworkError
+import com.github.livingwithhippos.unchained.data.model.*
 import com.github.livingwithhippos.unchained.databinding.FragmentTorrentDetailsBinding
 import com.github.livingwithhippos.unchained.lists.view.ListsTabFragment
 import com.github.livingwithhippos.unchained.torrentdetails.viewmodel.TorrentDetailsViewModel
@@ -156,11 +153,13 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
         }
     }
 
-    override fun onDownloadClick(links: List<String>) {
-        if (links.size > 1)
-            context?.showToast(R.string.multiple_links_warning)
-
-        viewModel.downloadTorrent()
+    override fun onDownloadClick(item: TorrentItem) {
+        if (item.links.size > 1) {
+            val action = TorrentDetailsFragmentDirections.actionTorrentDetailsDestToTorrentListFragment(folder = null, torrent = item)
+            findNavController().navigate(action)
+        } else {
+            viewModel.downloadTorrent()
+        }
     }
 
     override fun onDeleteClick(id: String) {
@@ -169,6 +168,6 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
 }
 
 interface TorrentDetailsListener {
-    fun onDownloadClick(links: List<String>)
+    fun onDownloadClick(item: TorrentItem)
     fun onDeleteClick(id: String)
 }

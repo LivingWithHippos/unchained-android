@@ -210,7 +210,7 @@
             style="@style/Widget.MaterialComponents.Button.Icon"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
-            android:onClick="@{() -> listener.onDownloadClick(torrent.links)}"
+            android:onClick="@{() -> listener.onDownloadClick(torrent)}"
             android:layout_marginBottom="20dp"
             android:text="@string/download"
             android:minLines="3"

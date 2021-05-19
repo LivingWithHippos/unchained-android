@@ -42,6 +42,9 @@
         <action
             android:id="@+id/action_torrentDetails_to_download_details_dest"
             app:destination="@id/download_details_dest" />
+        <action
+            android:id="@+id/action_torrent_details_dest_to_torrentListFragment"
+            app:destination="@id/folderListFragment2" />
     </fragment>
     <fragment
         android:id="@+id/folderListFragment2"
