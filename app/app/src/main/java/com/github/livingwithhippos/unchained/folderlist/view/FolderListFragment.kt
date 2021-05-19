@@ -13,9 +13,6 @@ import com.github.livingwithhippos.unchained.databinding.FragmentFolderListBindi
 import com.github.livingwithhippos.unchained.folderlist.model.FolderItemAdapter
 import com.github.livingwithhippos.unchained.folderlist.viewmodel.FolderListViewModel
 import com.github.livingwithhippos.unchained.lists.view.DownloadListListener
-import com.github.livingwithhippos.unchained.utilities.errorMap
-import com.github.livingwithhippos.unchained.utilities.extension.getApiErrorMessage
-import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -49,6 +46,7 @@ class FolderListFragment : Fragment(), DownloadListListener {
         val adapter = FolderItemAdapter(this)
         binding.rvFolderList.adapter = adapter
 
+        // observe the list loading status
         viewModel.folderLiveData.observe(viewLifecycleOwner) {
             it.getContentIfNotHandled()?.let { files ->
                 adapter.submitList(files)
@@ -56,6 +54,7 @@ class FolderListFragment : Fragment(), DownloadListListener {
             }
         }
 
+        // observe errors
         viewModel.errorsLiveData.observe(viewLifecycleOwner) {
             it.getContentIfNotHandled()?.let { exception ->
                 when(exception){
@@ -69,6 +68,11 @@ class FolderListFragment : Fragment(), DownloadListListener {
                     is ApiConversionError -> Timber.d("Api Conversion error, error: ${exception.error}")
                 }
             }
+        }
+
+        // update the progress bar
+        viewModel.progressLiveData.observe(viewLifecycleOwner) {
+            binding.loadingCircle.progress = it
         }
 
         if (args.folder != null)

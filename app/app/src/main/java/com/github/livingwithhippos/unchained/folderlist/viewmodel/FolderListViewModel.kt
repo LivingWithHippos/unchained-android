@@ -30,6 +30,7 @@ class FolderListViewModel @Inject constructor(
     val folderLiveData = MutableLiveData<Event<List<DownloadItem>>>()
     val deletedDownloadLiveData = MutableLiveData<Event<Int>>()
     val errorsLiveData = MutableLiveData<Event<UnchainedNetworkException>>()
+    val progressLiveData = MutableLiveData<Int>()
 
     fun retrieveFolderFileList(folderLink: String) {
         viewModelScope.launch {
@@ -59,16 +60,18 @@ class FolderListViewModel @Inject constructor(
 
             val hitList = mutableListOf<DownloadItem>()
 
-            links.forEach {
+            links.forEachIndexed { index, link ->
                 when (val file =
-                    unrestrictRepository.getEitherUnrestrictedLink(token, it)) {
+                    unrestrictRepository.getEitherUnrestrictedLink(token, link)) {
                     is Either.Left -> {
                         errorsLiveData.postEvent(file.a)
+                        progressLiveData.postValue((index+1)*100/links.size)
                     }
                     is Either.Right -> {
                         hitList.add(file.b)
                         folderLiveData.postEvent(hitList)
                         setRetrievedLinks(hitList.size)
+                        progressLiveData.postValue((index+1)*100/links.size)
                     }
                 }
             }
