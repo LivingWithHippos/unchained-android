@@ -59,7 +59,7 @@ class TorrentDetailsViewModel @Inject constructor(
             val deleted = torrentsRepository.deleteTorrent(token, id)
             when (deleted) {
                 is Either.Left -> {
-                    errorsLiveData.postEvent(listOf(deleted.a))
+                    errorsLiveData.postEvent(listOf(deleted.value))
                 }
                 is Either.Right -> {
                     deletedTorrentLiveData.postEvent(204)
@@ -76,9 +76,9 @@ class TorrentDetailsViewModel @Inject constructor(
                 if (links != null) {
                     val items = unrestrictRepository.getUnrestrictedLinkList(token, links)
 
-                    val values = items.filterIsInstance<Either.Right<DownloadItem>>().map { it.b }
+                    val values = items.filterIsInstance<Either.Right<DownloadItem>>().map { it.value }
                     val errors = items.filterIsInstance<Either.Left<UnchainedNetworkException>>()
-                        .map { it.a }
+                        .map { it.value }
 
                     // since the torrent want to open a download details page we oen only the first link
                     downloadLiveData.postEvent(values.firstOrNull())

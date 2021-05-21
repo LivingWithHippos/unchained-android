@@ -55,8 +55,8 @@ class NewDownloadViewModel @Inject constructor(
                 val response =
                     unrestrictRepository.getEitherUnrestrictedLink(token, link, password, remote)
                 when (response) {
-                    is Either.Left -> networkExceptionLiveData.postEvent(response.a)
-                    is Either.Right -> linkLiveData.postEvent(response.b)
+                    is Either.Left -> networkExceptionLiveData.postEvent(response.value)
+                    is Either.Right -> linkLiveData.postEvent(response.value)
                 }
             }
         }

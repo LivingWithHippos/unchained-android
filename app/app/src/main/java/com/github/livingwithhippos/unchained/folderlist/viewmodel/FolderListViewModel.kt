@@ -48,8 +48,8 @@ class FolderListViewModel @Inject constructor(
                 unrestrictRepository.getEitherFolderLinks(token, folderLink)
 
             when (filesList) {
-                is Either.Left -> errorsLiveData.postEvent(filesList.a)
-                is Either.Right -> retrieveFiles(token, filesList.b)
+                is Either.Left -> errorsLiveData.postEvent(filesList.value)
+                is Either.Right -> retrieveFiles(token, filesList.value)
             }
         }
     }
@@ -72,11 +72,11 @@ class FolderListViewModel @Inject constructor(
                 when (val file =
                     unrestrictRepository.getEitherUnrestrictedLink(token, link)) {
                     is Either.Left -> {
-                        errorsLiveData.postEvent(file.a)
+                        errorsLiveData.postEvent(file.value)
                         progressLiveData.postValue((index+1)*100/links.size)
                     }
                     is Either.Right -> {
-                        hitList.add(file.b)
+                        hitList.add(file.value)
                         folderLiveData.postEvent(hitList)
                         setRetrievedLinks(hitList.size)
                         progressLiveData.postValue((index+1)*100/links.size)

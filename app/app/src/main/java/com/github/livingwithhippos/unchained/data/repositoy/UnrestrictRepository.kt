@@ -67,10 +67,9 @@ class UnrestrictRepository @Inject constructor(private val unrestrictApiHelper: 
             errorMessage = "Error Fetching Unrestricted Folders Info"
         )
 
-        return if (folderResponse is Either.Right) {
-            getUnrestrictedLinkList(token, folderResponse.b, password, remote)
-        } else {
-            listOf(Either.left((folderResponse as Either.Left).a))
+        return when(folderResponse) {
+            is Either.Right -> getUnrestrictedLinkList(token, folderResponse.value, password, remote)
+            is Either.Left -> listOf(Either.Left(folderResponse.value))
         }
     }
 
