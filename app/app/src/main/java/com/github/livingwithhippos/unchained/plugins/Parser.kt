@@ -1,12 +1,8 @@
 package com.github.livingwithhippos.unchained.plugins
 
 import com.github.livingwithhippos.unchained.plugins.model.Plugin
-import com.github.livingwithhippos.unchained.utilities.MAGNET_PATTERN
-import com.github.livingwithhippos.unchained.utilities.extension.isMagnet
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import java.util.regex.Matcher
-import java.util.regex.Pattern
 
 class Parser(val client: OkHttpClient) {
 
@@ -27,13 +23,13 @@ class Parser(val client: OkHttpClient) {
         }
     }
 
-    private fun getSource(url: String) : String {
+    private fun getSource(url: String): String {
         val request: Request = Request.Builder()
             .url(url)
             .build()
 
-        client.newCall(request).execute().use {
-                response -> return response.body?.string() ?: ""
+        client.newCall(request).execute().use { response ->
+            return response.body?.string() ?: ""
         }
     }
 
@@ -51,10 +47,15 @@ class Parser(val client: OkHttpClient) {
         }.toList()
     }
 
-    private fun searchWithCategory(plugin: Plugin, query: String, category: String, page: Int = 1): ParserResult  {
+    private fun searchWithCategory(
+        plugin: Plugin,
+        query: String,
+        category: String,
+        page: Int = 1
+    ): ParserResult {
         val currentCategory = getCategory(plugin, category)
         val queryUrl = plugin.search.urlCategory
-        if (currentCategory == null || queryUrl == null )
+        if (currentCategory == null || queryUrl == null)
             return ParserResult.MissingCategory
         else {
             return parsePage(plugin, queryUrl)
@@ -62,7 +63,7 @@ class Parser(val client: OkHttpClient) {
     }
 
 
-    private fun parseLinks(plugin: Plugin, source: String): LinkData{
+    private fun parseLinks(plugin: Plugin, source: String): LinkData {
         val magnets = mutableListOf<String>()
         val torrents = mutableListOf<String>()
         // get magnets
@@ -86,7 +87,7 @@ class Parser(val client: OkHttpClient) {
         return LinkData(name, magnets, torrents)
     }
 
-    private fun searchWithoutCategory(plugin: Plugin, query: String, pag: Int = 1): ParserResult  {
+    private fun searchWithoutCategory(plugin: Plugin, query: String, pag: Int = 1): ParserResult {
         val url = plugin.url
         // todo: check var substitution
         return parsePage(plugin, plugin.search.urlNoCategory)
@@ -100,7 +101,8 @@ class Parser(val client: OkHttpClient) {
         if (plugin.download.internalLink != null) {
             // check if all the options are acceptable before calling parseInnerLinks
             if (plugin.download.internalLink.slugType == "append_other"
-                && plugin.download.internalLink.other == null)
+                && plugin.download.internalLink.other == null
+            )
                 return ParserResult.PluginParsingError
 
             val innerSource: List<String> = parseInnerLinks(plugin, source)
@@ -121,13 +123,13 @@ class Parser(val client: OkHttpClient) {
 
     private fun getCategory(plugin: Plugin, category: String): String? {
         return when (category) {
-            "all" -> plugin.supportedCategories.all
-            "anime" -> plugin.supportedCategories.anime
-            "software" -> plugin.supportedCategories.software
-            "games" -> plugin.supportedCategories.games
-            "movies" -> plugin.supportedCategories.movies
-            "music" -> plugin.supportedCategories.music
-            "tv" -> plugin.supportedCategories.tv
+            "all" -> plugin.supportedCategories?.all
+            "anime" -> plugin.supportedCategories?.anime
+            "software" -> plugin.supportedCategories?.software
+            "games" -> plugin.supportedCategories?.games
+            "movies" -> plugin.supportedCategories?.movies
+            "music" -> plugin.supportedCategories?.music
+            "tv" -> plugin.supportedCategories?.tv
             else -> null
         }
     }
@@ -138,13 +140,13 @@ class Parser(val client: OkHttpClient) {
 }
 
 sealed class ParserResult {
-    object MissingQuery: ParserResult()
-    object MissingCategory: ParserResult()
-    object NetworkBodyError: ParserResult()
-    object EmptyInnerLinksError: ParserResult()
-    object PluginParsingError: ParserResult()
-    object MissingImplementationError: ParserResult()
-    data class Result(val values: List<LinkData>): ParserResult()
+    object MissingQuery : ParserResult()
+    object MissingCategory : ParserResult()
+    object NetworkBodyError : ParserResult()
+    object EmptyInnerLinksError : ParserResult()
+    object PluginParsingError : ParserResult()
+    object MissingImplementationError : ParserResult()
+    data class Result(val values: List<LinkData>) : ParserResult()
 }
 
 data class LinkData(

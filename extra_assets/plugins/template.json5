@@ -1,0 +1,77 @@
+/**
+* UNCHAINED FOR ANDROID SEARCH PLUGIN
+* This file is a JSON5
+*/
+{
+  /**
+   * The engine for which this plugin was developed
+   * used to check compatibility with the current plugin system.
+   * Minor versions will be compatible (e.g 1.1, 1.2, 1.3),
+   * Major versions will not be compatible (e.g. 2, 3)
+  */
+  "engine_version": 1.0,
+  // the current plugin version. Used to check for updates
+  "version": 1.0,
+  // basic url used to replace {url}, WITHOUT trailing /
+  "url": "https://myurl.com",
+  // plugin/website name which will be shown to the user
+  "name": "My Site",
+  // plugin description, may contain author, links etc. Optional
+  "description": "Parser for my site",
+  /**
+  * basic categories system. Will be used to implement a generic
+  * categories search system. Optional, remove it if the service does not
+  * support categories
+  */
+  "supported_categories": {
+    "all": "None",
+    "anime": "Anime",
+    "software": "Applications",
+    "games": "Games",
+    "movies": "Movies",
+    "music": "Music",
+    "tv": "TV"
+  },
+  /**
+  * Urls used to query the service.
+  * The slugs $url,$query, $category, $page are currently supported
+  * to build the link dynamically.
+  *
+  * "url_category": url used to search with categories
+  * "url_no_category": url used to search without categories, optional
+  */
+  "search": {
+    "category": "$url/category-search/$query/$category/$page/",
+    "no_category": "$url/search/$query/$page/"
+  },
+  /**
+  * "download" will be used to get links from the "search" urls
+  *
+  * "table" is optional, it's used to parse a table in the html returned by the search page
+  * but needs to be parsed from a link in those pages
+  */
+  "download": {
+    // "name" is the regex to parse the item name
+    "name": "box-info-heading clearfix\"><h1>([^<]+)</h1>",
+    // "magnet" is the link to the magnet, it's a java regex. The magnet needs to be inside parenthesis (magnet:...)
+    "magnet": "href=\"(magnet:\\?xt=urn:btih:[^\"]+)",
+    // "torrent" is the array with links to the torrent, it's a java regex. The link needs to be inside parenthesis (https://...torrent)
+    "torrent": [
+      "(https?://torrentsite1\\.org/torrent/[^\\.]+.torrent)",
+      "(https?://torrentsite2\\.info/torrent\\.php\\?h=/[^\"]+)"
+    ],
+    // "internal" is optional, it's used if the results are not directly from the "search" urls
+    "internal": {
+      "link": "href=\"(/torrent/[^\"]+)",
+      // is the link complete (www.xyz.com) or does it need to be filled (/hello.com -> www.xyz.com/hello.com)
+      // valid values: append_url, append_other, completed
+      "slug_type": "append_url",
+      // if slug_type is append_other this needs to be present
+      "other": "https://other_url.com"
+    },
+    // work in progress to parse tables
+    "table": {
+      "class": "table-list"
+    }
+  }
+}

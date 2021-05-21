@@ -17,7 +17,7 @@ data class Plugin(
     @Json(name = "description")
     val description: String?,
     @Json(name = "supported_categories")
-    val supportedCategories: SupportedCategories,
+    val supportedCategories: SupportedCategories?,
     @Json(name = "search")
     val search: PluginSearch,
     @Json(name = "download")
