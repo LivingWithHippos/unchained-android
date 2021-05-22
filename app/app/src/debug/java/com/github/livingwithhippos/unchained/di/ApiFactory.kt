@@ -25,6 +25,7 @@ import com.github.livingwithhippos.unchained.data.remote.UserApiHelperImpl
 import com.github.livingwithhippos.unchained.data.remote.VariousApi
 import com.github.livingwithhippos.unchained.data.remote.VariousApiHelper
 import com.github.livingwithhippos.unchained.data.remote.VariousApiHelperImpl
+import com.github.livingwithhippos.unchained.plugins.Parser
 import com.github.livingwithhippos.unchained.utilities.BASE_AUTH_URL
 import com.github.livingwithhippos.unchained.utilities.BASE_URL
 import com.squareup.moshi.Moshi
@@ -184,4 +185,18 @@ object ApiFactory {
     @Singleton
     fun provideVariousApiHelper(apiHelper: VariousApiHelperImpl): VariousApiHelper =
         apiHelper
+
+    /**
+     * Search Plugins stuff
+     */
+
+    @Provides
+    @Singleton
+    fun provideParser(okHttpClient: OkHttpClient): Parser = Parser(okHttpClient)
+
+    /*********************************/
+    // N.B. all updates to this code //
+    // also need to be ported to the //
+    // release build flavor version. //
+    /*********************************/
 }
