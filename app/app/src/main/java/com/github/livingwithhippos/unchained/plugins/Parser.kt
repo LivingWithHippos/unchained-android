@@ -1,6 +1,8 @@
 package com.github.livingwithhippos.unchained.plugins
 
 import com.github.livingwithhippos.unchained.plugins.model.Plugin
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
 
@@ -12,7 +14,7 @@ class Parser(val client: OkHttpClient) {
         return plugin.engineVersion.toInt() == PLUGIN_ENGINE_VERSION.toInt()
     }
 
-    fun search(plugin: Plugin, query: String, category: String? = null): ParserResult {
+    suspend fun search(plugin: Plugin, query: String, category: String? = null): ParserResult {
         if (query.isNotEmpty()) {
             if (category != null)
                 return searchWithCategory(plugin, query, category)
@@ -23,13 +25,13 @@ class Parser(val client: OkHttpClient) {
         }
     }
 
-    private fun getSource(url: String): String {
+    private suspend fun getSource(url: String): String =  withContext(Dispatchers.IO) {
         val request: Request = Request.Builder()
             .url(url)
             .build()
 
         client.newCall(request).execute().use { response ->
-            return response.body?.string() ?: ""
+            response.body?.string() ?: ""
         }
     }
 
@@ -47,23 +49,46 @@ class Parser(val client: OkHttpClient) {
         }.toList()
     }
 
-    private fun searchWithCategory(
+    private suspend fun searchWithCategory(
         plugin: Plugin,
         query: String,
         category: String,
         page: Int = 1
     ): ParserResult {
         val currentCategory = getCategory(plugin, category)
-        val queryUrl = plugin.search.urlCategory
-        if (currentCategory == null || queryUrl == null)
+        val queryUrl = replaceData(
+            oldUrl = plugin.search.urlCategory!!,
+            url = plugin.url,
+            query = query,
+            category = currentCategory,
+            page = page
+        )
+        if (currentCategory == null)
             return ParserResult.MissingCategory
         else {
             return parsePage(plugin, queryUrl)
         }
     }
 
+    private fun replaceData(
+        oldUrl: String,
+        url: String,
+        query: String,
+        category: String?,
+        page: Int?,
+    ): String {
+        var newUrl = oldUrl.replace("\${url}", url)
+            .replace("\${query}", query)
+        if (category != null)
+            newUrl = newUrl.replace("\${category}", category)
+        if (page != null)
+            newUrl = newUrl.replace("\${page}", page.toString())
 
-    private fun parseLinks(plugin: Plugin, source: String): LinkData {
+        return newUrl
+    }
+
+
+    private fun parseLinks(plugin: Plugin, source: String, link: String): LinkData {
         val magnets = mutableListOf<String>()
         val torrents = mutableListOf<String>()
         // get magnets
@@ -84,16 +109,23 @@ class Parser(val client: OkHttpClient) {
         }
         val nameRegex: Regex = plugin.download.name.toRegex()
         val name: String = nameRegex.find(source)?.groupValues?.get(1) ?: ""
-        return LinkData(name, magnets, torrents)
+        return LinkData(link, name, magnets, torrents)
     }
 
-    private fun searchWithoutCategory(plugin: Plugin, query: String, pag: Int = 1): ParserResult {
-        val url = plugin.url
-        // todo: check var substitution
-        return parsePage(plugin, plugin.search.urlNoCategory)
+    private suspend fun searchWithoutCategory(plugin: Plugin, query: String, page: Int = 1): ParserResult {
+
+        val queryUrl = replaceData(
+            oldUrl = plugin.search.urlNoCategory,
+            url = plugin.url,
+            query = query,
+            category = null,
+            page = page
+        )
+
+        return parsePage(plugin, queryUrl)
     }
 
-    private fun parsePage(plugin: Plugin, query: String): ParserResult {
+    private suspend fun parsePage(plugin: Plugin, query: String): ParserResult {
         val source = getSource(query)
         if (source.length < 10)
             return ParserResult.NetworkBodyError
@@ -110,7 +142,7 @@ class Parser(val client: OkHttpClient) {
                 val results = mutableListOf<LinkData>()
                 for (link in innerSource) {
                     val s = getSource(link)
-                    results.add(parseLinks(plugin, s))
+                    results.add(parseLinks(plugin, s, link))
                 }
                 return ParserResult.Result(results)
             } else {
@@ -150,6 +182,7 @@ sealed class ParserResult {
 }
 
 data class LinkData(
+    val link: String,
     val name: String,
     val magnets: List<String>,
     val torrents: List<String>

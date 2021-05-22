@@ -34,15 +34,15 @@
   },
   /**
   * Urls used to query the service.
-  * The slugs $url,$query, $category, $page are currently supported
+  * The slugs ${url},${query}, ${category}, ${page} are currently supported
   * to build the link dynamically.
   *
   * "url_category": url used to search with categories
   * "url_no_category": url used to search without categories, optional
   */
   "search": {
-    "category": "$url/category-search/$query/$category/$page/",
-    "no_category": "$url/search/$query/$page/"
+    "category": "${url}/category-search/${query}/${category}/${page}/",
+    "no_category": "${url}/search/${query}/${page}/"
   },
   /**
   * "download" will be used to get links from the "search" urls

@@ -7,6 +7,7 @@ import android.content.ClipDescription.MIMETYPE_TEXT_PLAIN
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.content.res.AssetManager
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.graphics.Color
@@ -300,4 +301,20 @@ fun Context.vibrate(duration: Long = 200) {
         // minsdk is 24
         vibrator.vibrate(duration)
     }
+}
+
+/**
+ * AssetManager extensions
+ */
+
+/**
+ * This function returns the list of files and folder found in a path of the assets folder,
+ * it removes the "/" at the end and checks again if no files are found.
+ */
+fun AssetManager.smartList(path: String) : Array<String>?  {
+    val result = this.list(path)
+    if (result.isNullOrEmpty())
+        if (path.endsWith("/"))
+            return this.list(path.dropLast(1))
+    return result
 }

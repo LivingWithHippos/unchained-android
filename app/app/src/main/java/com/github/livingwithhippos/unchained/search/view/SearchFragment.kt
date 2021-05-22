@@ -10,11 +10,15 @@ import androidx.fragment.app.viewModels
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.databinding.FragmentSearchBinding
+import com.github.livingwithhippos.unchained.plugins.LinkData
+import com.github.livingwithhippos.unchained.search.model.SearchItemAdapter
+import com.github.livingwithhippos.unchained.search.model.SearchItemListener
 import com.github.livingwithhippos.unchained.search.viewmodel.SearchViewModel
+import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class SearchFragment : UnchainedFragment() {
+class SearchFragment : UnchainedFragment(), SearchItemListener {
 
     private var _binding: FragmentSearchBinding? = null
     val binding get() = _binding!!
@@ -40,24 +44,44 @@ class SearchFragment : UnchainedFragment() {
     private fun setup() {
 
         // setup the plugin dropdown
-        val items = listOf("Option 1", "Option 2", "Option 3", "Option 4")
-        val adapter = ArrayAdapter(requireContext(), R.layout.plugin_list_item, items)
-        (binding.pluginPicker.editText as? AutoCompleteTextView)?.setAdapter(adapter)
+        viewModel.pluginLiveData.observe(viewLifecycleOwner) {
+            val adapter = ArrayAdapter(requireContext(), R.layout.plugin_list_item, it.map {  plugin ->
+                plugin.name
+            })
+            (binding.pluginPicker.editText as? AutoCompleteTextView)?.setAdapter(adapter)
+
+            if (binding.pluginPicker.editText.toString().isNullOrBlank()
+                && it.isNotEmpty()
+            ) {
+                // select the first item of the list
+                //todo: record the item used in the preferences and reselect it at setup time
+                // todo: fix
+                (binding.pluginPicker.editText as? AutoCompleteTextView)?.setText(it.first().name, false);
+            }
+        }
+        viewModel.fetchPlugins()
 
         // search button listener
         binding.tfSearch.setEndIconOnClickListener {
             viewModel.search(
                 query = binding.tiSearch.text.toString(),
-                plugin = getSelectedPlugin()
+                pluginName = getSelectedPlugin()
             )
+        }
+
+        val adapter = SearchItemAdapter(this)
+        binding.rvSearchList.adapter = adapter
+        viewModel.resultLiveData.observe(viewLifecycleOwner) {
+            adapter.submitList( it )
+            adapter.notifyDataSetChanged()
         }
     }
 
-    private fun collectPlugins() {
-
+    private fun getSelectedPlugin(): String {
+        return binding.pluginPicker.editText?.text.toString()
     }
 
-    private fun getSelectedPlugin(): String {
-        return ""
+    override fun onClick(linkData: LinkData) {
+        context?.showToast("Clicked ${linkData.name}")
     }
 }
