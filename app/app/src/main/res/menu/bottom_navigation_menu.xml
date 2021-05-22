@@ -15,4 +15,9 @@
         android:enabled="true"
         android:icon="@drawable/icon_lists"
         android:title="@string/lists" />
+    <item
+        android:id="@+id/navigation_search"
+        android:enabled="true"
+        android:icon="@drawable/icon_search"
+        android:title="@string/search" />
 </menu>

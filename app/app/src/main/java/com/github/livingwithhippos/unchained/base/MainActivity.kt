@@ -89,7 +89,8 @@ class MainActivity : AppCompatActivity() {
                 R.id.start_dest,
                 R.id.user_dest,
                 R.id.new_download_dest,
-                R.id.list_tabs_dest
+                R.id.list_tabs_dest,
+                R.id.search_dest
             ),
             null
         )
@@ -340,7 +341,8 @@ class MainActivity : AppCompatActivity() {
         val navGraphIds = listOf(
             R.navigation.home_nav_graph,
             R.navigation.download_nav_graph,
-            R.navigation.lists_nav_graph
+            R.navigation.lists_nav_graph,
+            R.navigation.search_nav_graph,
         )
 
         // Setup the bottom navigation view with a list of navigation graphs
@@ -378,7 +380,11 @@ class MainActivity : AppCompatActivity() {
             // check if we're pressing back from the user or authentication fragment
             if (currentDestination?.id == R.id.user_dest || currentDestination?.id == R.id.authentication_dest) {
                 // check the destination for the back action
-                if (previousDestination == null || previousDestination.destination.id == R.id.authentication_dest || previousDestination.destination.id == R.id.start_dest || previousDestination.destination.id == R.id.user_dest) {
+                if (previousDestination == null
+                    || previousDestination.destination.id == R.id.authentication_dest
+                    || previousDestination.destination.id == R.id.start_dest
+                    || previousDestination.destination.id == R.id.user_dest
+                    || previousDestination.destination.id == R.id.search_dest) {
                     // check if it has been 2 seconds since the last time we pressed back
                     val pressedTime = System.currentTimeMillis()
                     val lastPressedTime = viewModel.getLastBackPress()

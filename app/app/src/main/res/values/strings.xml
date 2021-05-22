@@ -439,4 +439,5 @@
     <string name="files_list">Files List</string>
     <string name="error_loading_folder">Some links couldn\'t be loaded</string>
     <string name="plugin">Plugin</string>
+    <string name="search_files">Search Files</string>
 </resources>

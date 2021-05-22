@@ -231,4 +231,6 @@
     <string name="folder">Cartella</string>
     <string name="files_list">Lista files</string>
     <string name="error_loading_folder">Errore durante il caricamento dei files</string>
+    <string name="search_files">Cerca Files</string>
+    <string name="plugin">Plugin</string>
 </resources>
