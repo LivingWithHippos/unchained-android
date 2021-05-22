@@ -407,8 +407,7 @@
     <string name="network_error">Network error</string>
     <string name="torrent_channel_description">Notification channel for torrents download status</string>
     <string name="torrent_in_progress">Torrent download in progress</string>
-    <plurals
-        name="seeders_format">
+    <plurals name="seeders_format">
         <item quantity="one">%d seeder</item>
         <item quantity="other">%d seeders</item>
     </plurals>
@@ -434,9 +433,10 @@
     <string name="login_message_placeholder">Please visit this link to get authenticated</string>
     <string name="host_match_not_found">No matching host found. Refresh hosts from settings if needed.</string>
     <string name="refreshing_token">Refreshing authentication, please retry in a bit</string>
-	<string name="black_and_white">Black and white</string>
+    <string name="black_and_white">Black and white</string>
     <string name="open_browser_stream">Stream in browser</string>
     <string name="folder">Folder</string>
     <string name="files_list">Files List</string>
     <string name="error_loading_folder">Some links couldn\'t be loaded</string>
+    <string name="plugin">Plugin</string>
 </resources>
