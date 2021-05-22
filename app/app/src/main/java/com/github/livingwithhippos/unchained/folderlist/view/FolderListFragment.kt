@@ -48,9 +48,12 @@ class FolderListFragment : Fragment(), DownloadListListener {
         binding.rvFolderList.adapter = adapter
 
         // observe the list loading status
+        // todo: add more sorting methodds, dinamically chosen by the user
         viewModel.folderLiveData.observe(viewLifecycleOwner) {
             it.getContentIfNotHandled()?.let { files ->
-                adapter.submitList(files)
+                adapter.submitList(files.sortedBy { item ->
+                    item.filename }
+                )
                 adapter.notifyDataSetChanged()
             }
         }
@@ -93,7 +96,7 @@ class FolderListFragment : Fragment(), DownloadListListener {
             val list = viewModel.folderLiveData.value?.peekContent()?.filter { item ->
                 item.filename.contains(it)
             }
-            adapter.submitList( list )
+            adapter.submitList(list)
             adapter.notifyDataSetChanged()
         }
 
