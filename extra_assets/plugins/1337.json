@@ -1,0 +1,38 @@
+{
+  "engine_version": 1.0,
+  "version": 1.0,
+  "url": "https://1337x.to",
+  "name": "1337x",
+  "description": "Parser for 1337x.to",
+  "supported_categories": {
+    "all": "None",
+    "anime": "Anime",
+    "software": "Applications",
+    "games": "Games",
+    "movies": "Movies",
+    "music": "Music",
+    "tv": "TV"
+  },
+  "search": {
+    "category": "$url/category-search/$query/$category/$page/",
+    "no_category": "$url/search/$query/$page/"
+  },
+  "download": {
+    "name": "box-info-heading clearfix\"><h1>([^<]+)</h1>",
+    "magnet": "href=\"(magnet:\\?xt=urn:btih:[^\"]+)",
+    "torrent": [
+      "(https?://itorrents\\.org/torrent/[^\\.]+.torrent)",
+      "(https?://torrage\\.info/torrent\\.php\\?h=/[^\"]+)",
+      "(https?://btcache\\.me/torrent/[^\"]+)"
+    ],
+    "internal": {
+      "link": "href=\"(/torrent/[^\"]+)",
+      "slug_type": "append_url"
+    },
+    "table": {
+      "class": "table-list",
+      "link": "href=\"(/torrent/[^\"]+)",
+      "slug_type": "append_url"
+    }
+  }
+}
