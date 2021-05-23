@@ -12,7 +12,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class PluginRepository @Inject constructor(
-    @ApplicationContext private val appContext: Context,
+    @ApplicationContext private val appContext: Context
 ) {
 
     private val SYSTEM_ASSETS_FOLDER = listOf("images", "webkit")

@@ -171,8 +171,8 @@ dependencies {
 
     //okhttp
     implementation "com.squareup.okhttp3:okhttp:$okhttp_version"
-    //okhttp logging
     implementation "com.squareup.okhttp3:logging-interceptor:$okhttp_version"
+    implementation "com.squareup.okhttp3:okhttp-dnsoverhttps:$okhttp_version"
 
     // navigation
     implementation "androidx.navigation:navigation-fragment-ktx:$rootProject.nav_version"

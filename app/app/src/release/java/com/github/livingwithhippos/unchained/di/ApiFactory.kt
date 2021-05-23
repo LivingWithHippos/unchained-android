@@ -34,7 +34,9 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
+import okhttp3.dnsoverhttps.DnsOverHttps
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import javax.inject.Singleton
@@ -59,6 +61,28 @@ object ApiFactory {
         // avoid issues with empty bodies on delete/put and 20x return codes
         .addInterceptor(EmptyBodyInterceptor)
         .build()
+
+    /**
+     * examples: [https://github.com/square/okhttp/blob/master/okhttp-dnsoverhttps/src/test/java/okhttp3/dnsoverhttps/DohProviders.java]
+     * list: [https://github.com/curl/curl/wiki/DNS-over-HTTPS]
+     * @return
+     */
+    @Provides
+    @Singleton
+    fun provideDOHClient(okHttpClient: OkHttpClient): DnsOverHttps {
+
+        val dnsUrl = HttpUrl.Builder()
+            .scheme("https")
+            .host("mozilla.cloudflare-dns.com")
+            .addPathSegment("dns-query")
+            .build();
+
+        return DnsOverHttps.Builder()
+            .client(okHttpClient)
+            .url(dnsUrl)
+            // .bootstrapDnsHosts(InetAddress.getByName())
+            .build()
+    }
 
     @Provides
     @Singleton
@@ -165,7 +189,7 @@ object ApiFactory {
     @Singleton
     fun provideHostsApiHelper(apiHelper: HostsApiHelperImpl): HostsApiHelper =
         apiHelper
-    
+
     // various api injection
     @Provides
     @Singleton
@@ -184,7 +208,7 @@ object ApiFactory {
 
     @Provides
     @Singleton
-    fun provideParser(okHttpClient: OkHttpClient): Parser = Parser(okHttpClient)
+    fun provideParser(dohClient: DnsOverHttps): Parser = Parser(dohClient)
 
     /*********************************/
     // N.B. all updates to this code //

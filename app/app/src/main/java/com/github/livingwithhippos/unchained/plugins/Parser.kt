@@ -4,13 +4,13 @@ import com.github.livingwithhippos.unchained.plugins.model.Plugin
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
-import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
+import okhttp3.dnsoverhttps.DnsOverHttps
 
-class Parser(val client: OkHttpClient) {
-
-    // todo: implement okhttp DnsOverHttps (https://square.github.io/okhttp/4.x/okhttp-dnsoverhttps/okhttp3.dnsoverhttps/-dns-over-https/) to get the domains
+class Parser(
+    val dohClient: DnsOverHttps
+) {
 
     private fun isPluginSupported(plugin: Plugin): Boolean {
         return plugin.engineVersion.toInt() == PLUGIN_ENGINE_VERSION.toInt()
@@ -18,12 +18,12 @@ class Parser(val client: OkHttpClient) {
 
     fun completeSearch(plugin: Plugin, query: String, category: String? = null, page: Int = 1) =
         flow {
-            // todo: format queries with unsupported web characters
             if (query.isBlank())
                 emit(ParserResult.MissingQuery)
             else {
+                // todo: format queries with other unsupported web characters
                 // todo: check if this works with other plugins, otherwise add it as a json parameter. Possible alternative: %20
-                val currentQuery = query.trim().replace("\\s+".toRegex(),"+")
+                val currentQuery = query.trim().replace("\\s+".toRegex(), "+")
                 if (!isPluginSupported(plugin)) {
                     emit(ParserResult.PluginVersionUnsupported)
                 } else {
@@ -39,7 +39,6 @@ class Parser(val client: OkHttpClient) {
                     )
 
                     val source = getSource(queryUrl)
-
                     if (source.length < 10)
                         emit(ParserResult.NetworkBodyError)
                     else {
@@ -77,8 +76,9 @@ class Parser(val client: OkHttpClient) {
             .url(url)
             .build()
 
+        // todo: check if this works and add a custom agent
         // todo: return the complete Response to let the caller check the return code
-        client.newCall(request).execute().use { response: Response ->
+        dohClient.client.newCall(request).execute().use { response: Response ->
             response.body?.string() ?: ""
         }
     }
