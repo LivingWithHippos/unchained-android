@@ -14,7 +14,6 @@ import com.github.livingwithhippos.unchained.plugins.LinkData
 import com.github.livingwithhippos.unchained.plugins.ParserResult
 import com.github.livingwithhippos.unchained.search.model.SearchItemAdapter
 import com.github.livingwithhippos.unchained.search.model.SearchItemListener
-import com.github.livingwithhippos.unchained.search.viewmodel.SearchStatus
 import com.github.livingwithhippos.unchained.search.viewmodel.SearchViewModel
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
@@ -48,9 +47,10 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
 
         // setup the plugin dropdown
         viewModel.pluginLiveData.observe(viewLifecycleOwner) {
-            val adapter = ArrayAdapter(requireContext(), R.layout.plugin_list_item, it.map {  plugin ->
-                plugin.name
-            })
+            val adapter =
+                ArrayAdapter(requireContext(), R.layout.plugin_list_item, it.map { plugin ->
+                    plugin.name
+                })
             (binding.pluginPicker.editText as? AutoCompleteTextView)?.setAdapter(adapter)
 
             if (binding.pluginPicker.editText.toString().isBlank()
@@ -59,7 +59,10 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
                 // select the first item of the list
                 //todo: record the item used in the preferences and reselect it at setup time
                 // todo: fix
-                (binding.pluginPicker.editText as? AutoCompleteTextView)?.setText(it.first().name, false);
+                (binding.pluginPicker.editText as? AutoCompleteTextView)?.setText(
+                    it.first().name,
+                    false
+                );
             }
         }
         viewModel.fetchPlugins()
@@ -75,7 +78,7 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
             ).observe(viewLifecycleOwner) { result ->
                 when (result) {
                     is ParserResult.SingleResult -> {
-                        adapter.submitList( listOf(result.value) )
+                        adapter.submitList(listOf(result.value))
                         adapter.notifyDataSetChanged()
                     }
                     is ParserResult.Result -> {

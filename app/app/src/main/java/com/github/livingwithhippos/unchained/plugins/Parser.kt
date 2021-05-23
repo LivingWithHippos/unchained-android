@@ -12,68 +12,63 @@ class Parser(val client: OkHttpClient) {
 
     // todo: implement okhttp DnsOverHttps (https://square.github.io/okhttp/4.x/okhttp-dnsoverhttps/okhttp3.dnsoverhttps/-dns-over-https/) to get the domains
 
-    fun checkSupportedVersion(plugin: Plugin): Boolean {
+    private fun isPluginSupported(plugin: Plugin): Boolean {
         return plugin.engineVersion.toInt() == PLUGIN_ENGINE_VERSION.toInt()
     }
 
     fun completeSearch(plugin: Plugin, query: String, category: String? = null, page: Int = 1) =
-        flow<ParserResult> {
+        flow {
+            // todo: format queries with unsupported web characters
             if (query.isBlank())
                 emit(ParserResult.MissingQuery)
             else {
-                val currentCategory =
-                    if (category.isNullOrBlank()) null else getCategory(plugin, category)
+                if (!isPluginSupported(plugin)) {
+                    emit(ParserResult.PluginVersionUnsupported)
+                } else {
+                    val currentCategory =
+                        if (category.isNullOrBlank()) null else getCategory(plugin, category)
 
-                val queryUrl = replaceData(
-                    oldUrl = plugin.search.urlNoCategory,
-                    url = plugin.url,
-                    query = query,
-                    category = currentCategory,
-                    page = page
-                )
+                    val queryUrl = replaceData(
+                        oldUrl = plugin.search.urlNoCategory,
+                        url = plugin.url,
+                        query = query,
+                        category = currentCategory,
+                        page = page
+                    )
 
-                val source = getSource(queryUrl)
+                    val source = getSource(queryUrl)
 
-                if (source.length < 10)
-                    emit(ParserResult.NetworkBodyError)
-                else {
-                    // todo: add other ways to parse links
-                    if (plugin.download.internalLink != null) {
-                        // check if all the options are acceptable before calling parseInnerLinks
-                        if (plugin.download.internalLink.slugType == "append_other"
-                            && plugin.download.internalLink.other.isNullOrBlank()
-                        )
-                            emit(ParserResult.PluginBuildError)
-                        else {
-                            val innerSource: List<String> = parseInnerLinks(plugin, source)
-                            if (innerSource.isNotEmpty()) {
-                                emit(ParserResult.SearchStarted(innerSource.size))
-                                for (link in innerSource) {
-                                    val s = getSource(link)
-                                    emit(ParserResult.SingleResult(parseLinks(plugin, s, link)))
+                    if (source.length < 10)
+                        emit(ParserResult.NetworkBodyError)
+                    else {
+                        if (plugin.download.internalLink != null) {
+                            // check if all the options are acceptable before calling parseInnerLinks
+                            if (plugin.download.internalLink.slugType == "append_other"
+                                && plugin.download.internalLink.other.isNullOrBlank()
+                            )
+                                emit(ParserResult.PluginBuildError)
+                            else {
+                                val innerSource: List<String> = parseInnerLinks(plugin, source)
+                                if (innerSource.isNotEmpty()) {
+                                    emit(ParserResult.SearchStarted(innerSource.size))
+                                    for (link in innerSource) {
+                                        val s = getSource(link)
+                                        emit(ParserResult.SingleResult(parseLinks(plugin, s, link)))
+                                    }
+                                    emit(ParserResult.SearchFinished)
+                                } else {
+                                    emit(ParserResult.EmptyInnerLinksError)
                                 }
-                                emit(ParserResult.SearchFinished)
-                            } else {
-                                emit(ParserResult.EmptyInnerLinksError)
                             }
+                        } else {
+                            // todo: add other ways to parse links
+                            emit(ParserResult.MissingImplementationError)
                         }
-                    } else {
-                        emit(ParserResult.EmptyInnerLinksError)
                     }
                 }
             }
         }
 
-    suspend fun search(plugin: Plugin, query: String, category: String? = null): ParserResult {
-        if (query.isNotEmpty()) {
-            if (category != null)
-                return searchWithCategory(plugin, query, category)
-            else
-                return searchWithoutCategory(plugin, query)
-        } else {
-            return ParserResult.MissingQuery
-        }
-    }
 
     private suspend fun getSource(url: String): String = withContext(Dispatchers.IO) {
         val request: Request = Request.Builder()
@@ -98,27 +93,6 @@ class Parser(val client: OkHttpClient) {
                 else -> it.groupValues[1]
             }
         }.toList()
-    }
-
-    private suspend fun searchWithCategory(
-        plugin: Plugin,
-        query: String,
-        category: String,
-        page: Int = 1
-    ): ParserResult {
-        val currentCategory = getCategory(plugin, category)
-        val queryUrl = replaceData(
-            oldUrl = plugin.search.urlCategory!!,
-            url = plugin.url,
-            query = query,
-            category = currentCategory,
-            page = page
-        )
-        if (currentCategory == null)
-            return ParserResult.MissingCategory
-        else {
-            return parsePage(plugin, queryUrl)
-        }
     }
 
     private fun replaceData(
@@ -163,51 +137,6 @@ class Parser(val client: OkHttpClient) {
         return LinkData(link, name, magnets, torrents)
     }
 
-    private suspend fun searchWithoutCategory(
-        plugin: Plugin,
-        query: String,
-        page: Int = 1
-    ): ParserResult {
-
-        val queryUrl = replaceData(
-            oldUrl = plugin.search.urlNoCategory,
-            url = plugin.url,
-            query = query,
-            category = null,
-            page = page
-        )
-
-        return parsePage(plugin, queryUrl)
-    }
-
-    private suspend fun parsePage(plugin: Plugin, query: String): ParserResult {
-        val source = getSource(query)
-        if (source.length < 10)
-            return ParserResult.NetworkBodyError
-        // todo: add other ways to parse links
-        if (plugin.download.internalLink != null) {
-            // check if all the options are acceptable before calling parseInnerLinks
-            if (plugin.download.internalLink.slugType == "append_other"
-                && plugin.download.internalLink.other == null
-            )
-                return ParserResult.PluginBuildError
-
-            val innerSource: List<String> = parseInnerLinks(plugin, source)
-            if (innerSource.isNotEmpty()) {
-                val results = mutableListOf<LinkData>()
-                for (link in innerSource) {
-                    val s = getSource(link)
-                    results.add(parseLinks(plugin, s, link))
-                }
-                return ParserResult.Result(results)
-            } else {
-                return ParserResult.EmptyInnerLinksError
-            }
-        } else {
-            return ParserResult.MissingImplementationError
-        }
-    }
-
     private fun getCategory(plugin: Plugin, category: String): String? {
         return when (category) {
             "all" -> plugin.supportedCategories?.all
@@ -229,15 +158,18 @@ class Parser(val client: OkHttpClient) {
 sealed class ParserResult {
     // errors
     object MissingPlugin : ParserResult()
+    object PluginVersionUnsupported : ParserResult()
     object MissingQuery : ParserResult()
     object MissingCategory : ParserResult()
     object NetworkBodyError : ParserResult()
     object EmptyInnerLinksError : ParserResult()
     object PluginBuildError : ParserResult()
     object MissingImplementationError : ParserResult()
+
     // search flow
     data class SearchStarted(val size: Int) : ParserResult()
     object SearchFinished : ParserResult()
+
     // results
     data class Result(val values: List<LinkData>) : ParserResult()
     data class SingleResult(val value: LinkData) : ParserResult()
