@@ -22,6 +22,8 @@ class Parser(val client: OkHttpClient) {
             if (query.isBlank())
                 emit(ParserResult.MissingQuery)
             else {
+                // todo: check if this works with other plugins, otherwise add it as a json parameter. Possible alternative: %20
+                val currentQuery = query.trim().replace("\\s+".toRegex(),"+")
                 if (!isPluginSupported(plugin)) {
                     emit(ParserResult.PluginVersionUnsupported)
                 } else {
@@ -31,7 +33,7 @@ class Parser(val client: OkHttpClient) {
                     val queryUrl = replaceData(
                         oldUrl = plugin.search.urlNoCategory,
                         url = plugin.url,
-                        query = query,
+                        query = currentQuery,
                         category = currentCategory,
                         page = page
                     )
