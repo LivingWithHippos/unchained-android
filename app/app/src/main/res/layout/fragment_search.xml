@@ -50,10 +50,12 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/pluginPicker"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/tfSearch"
             app:layout_constraintBottom_toTopOf="@id/llList"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/loadingCircle"
             android:hint="@string/plugin">
 
             <AutoCompleteTextView
@@ -63,6 +65,22 @@
                 />
 
         </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/loadingCircle"
+            style="@style/Widget.MaterialComponents.CircularProgressIndicator"
+            app:indicatorColor="?attr/colorPrimary"
+            android:indeterminate="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            app:trackCornerRadius="20dp"
+            android:visibility="invisible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/pluginPicker"
+            app:layout_constraintTop_toTopOf="@id/pluginPicker"
+            app:layout_constraintBottom_toBottomOf="@id/pluginPicker"/>
+
 
         <LinearLayout
             android:id="@+id/llList"

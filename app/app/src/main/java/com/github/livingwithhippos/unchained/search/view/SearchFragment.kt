@@ -11,11 +11,14 @@ import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.databinding.FragmentSearchBinding
 import com.github.livingwithhippos.unchained.plugins.LinkData
+import com.github.livingwithhippos.unchained.plugins.ParserResult
 import com.github.livingwithhippos.unchained.search.model.SearchItemAdapter
 import com.github.livingwithhippos.unchained.search.model.SearchItemListener
+import com.github.livingwithhippos.unchained.search.viewmodel.SearchStatus
 import com.github.livingwithhippos.unchained.search.viewmodel.SearchViewModel
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 @AndroidEntryPoint
 class SearchFragment : UnchainedFragment(), SearchItemListener {
@@ -50,7 +53,7 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
             })
             (binding.pluginPicker.editText as? AutoCompleteTextView)?.setAdapter(adapter)
 
-            if (binding.pluginPicker.editText.toString().isNullOrBlank()
+            if (binding.pluginPicker.editText.toString().isBlank()
                 && it.isNotEmpty()
             ) {
                 // select the first item of the list
@@ -61,19 +64,36 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
         }
         viewModel.fetchPlugins()
 
-        // search button listener
-        binding.tfSearch.setEndIconOnClickListener {
-            viewModel.search(
-                query = binding.tiSearch.text.toString(),
-                pluginName = getSelectedPlugin()
-            )
-        }
-
         val adapter = SearchItemAdapter(this)
         binding.rvSearchList.adapter = adapter
-        viewModel.resultLiveData.observe(viewLifecycleOwner) {
-            adapter.submitList( it )
-            adapter.notifyDataSetChanged()
+
+        // search button listener
+        binding.tfSearch.setEndIconOnClickListener {
+            viewModel.completeSearch(
+                query = binding.tiSearch.text.toString(),
+                pluginName = getSelectedPlugin()
+            ).observe(viewLifecycleOwner) { result ->
+                when (result) {
+                    is ParserResult.SingleResult -> {
+                        adapter.submitList( listOf(result.value) )
+                        adapter.notifyDataSetChanged()
+                    }
+                    is ParserResult.Result -> {
+                        adapter.submitList(result.values)
+                        adapter.notifyDataSetChanged()
+                    }
+                    is ParserResult.SearchStarted -> {
+                        binding.loadingCircle.visibility = View.VISIBLE
+                    }
+                    is ParserResult.SearchFinished -> {
+                        binding.loadingCircle.visibility = View.INVISIBLE
+                    }
+                    else -> {
+                        Timber.d(result.toString())
+                        binding.loadingCircle.visibility = View.INVISIBLE
+                    }
+                }
+            }
         }
     }
 
