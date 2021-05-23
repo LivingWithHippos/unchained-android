@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.databinding.FragmentSearchBinding
@@ -104,6 +105,8 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
     }
 
     override fun onClick(linkData: LinkData) {
-        context?.showToast("Clicked ${linkData.name}")
+        viewModel.stopSearch()
+        val action = SearchFragmentDirections.actionSearchDestToSearchItemFragment(linkData)
+        findNavController().navigate(action)
     }
 }

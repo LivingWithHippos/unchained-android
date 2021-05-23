@@ -9,5 +9,17 @@
         android:label="@string/search_files"
         android:name="com.github.livingwithhippos.unchained.search.view.SearchFragment"
         tools:layout="@layout/fragment_search"
-        />
+        >
+        <action
+            android:id="@+id/action_search_dest_to_searchItemFragment"
+            app:destination="@id/searchItemFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/searchItemFragment"
+        android:name="com.github.livingwithhippos.unchained.search.view.SearchItemFragment"
+        android:label="@string/links" >
+        <argument
+            android:name="item"
+            app:argType="com.github.livingwithhippos.unchained.plugins.LinkData" />
+    </fragment>
 </navigation>

@@ -1,5 +1,7 @@
 package com.github.livingwithhippos.unchained.plugins
 
+import android.os.Parcel
+import android.os.Parcelable
 import com.github.livingwithhippos.unchained.plugins.model.Plugin
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
@@ -116,8 +118,8 @@ class Parser(
 
 
     private fun parseLinks(plugin: Plugin, source: String, link: String): LinkData {
-        val magnets = mutableListOf<String>()
-        val torrents = mutableListOf<String>()
+        val magnets = mutableSetOf<String>()
+        val torrents = mutableSetOf<String>()
         // get magnets
         val magnetRegex: Regex = plugin.download.magnet.toRegex()
         val matches: Sequence<MatchResult> = magnetRegex.findAll(source)
@@ -136,7 +138,7 @@ class Parser(
         }
         val nameRegex: Regex = plugin.download.name.toRegex()
         val name: String = nameRegex.find(source)?.groupValues?.get(1) ?: ""
-        return LinkData(link, name, magnets, torrents)
+        return LinkData(link, name, magnets.toList(), torrents.toList())
     }
 
     private fun getCategory(plugin: Plugin, category: String): String? {
@@ -182,4 +184,33 @@ data class LinkData(
     val name: String,
     val magnets: List<String>,
     val torrents: List<String>
-)
+): Parcelable {
+    constructor(parcel: Parcel) : this(
+        parcel.readString() ?: "",
+        parcel.readString()?: "",
+        parcel.createStringArrayList() ?: emptyList<String>(),
+        parcel.createStringArrayList() ?: emptyList<String>()
+    ) {
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(link)
+        parcel.writeString(name)
+        parcel.writeStringList(magnets)
+        parcel.writeStringList(torrents)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<LinkData> {
+        override fun createFromParcel(parcel: Parcel): LinkData {
+            return LinkData(parcel)
+        }
+
+        override fun newArray(size: Int): Array<LinkData?> {
+            return arrayOfNulls(size)
+        }
+    }
+}

@@ -64,4 +64,8 @@ class SearchViewModel @Inject constructor(
         }
     }
 
+    fun stopSearch() {
+        job?.cancelIfActive()
+    }
+
 }

@@ -233,4 +233,5 @@
     <string name="error_loading_folder">Errore durante il caricamento dei files</string>
     <string name="search_files">Cerca Files</string>
     <string name="plugin">Plugin</string>
+    <string name="magnet">Magnet</string>
 </resources>

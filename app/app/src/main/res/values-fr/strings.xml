@@ -233,4 +233,5 @@
     <string name="error_loading_folder">Certains liens n\'ont pas pu être chargés</string>
     <string name="search_files">Recherche de fichiers</string>
     <string name="plugin">Plugin</string>
+    <string name="magnet">Magnet</string>
 </resources>
