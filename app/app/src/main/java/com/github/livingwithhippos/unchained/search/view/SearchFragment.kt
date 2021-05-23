@@ -53,16 +53,15 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
                 })
             (binding.pluginPicker.editText as? AutoCompleteTextView)?.setAdapter(adapter)
 
-            if (binding.pluginPicker.editText.toString().isBlank()
+            if (binding.pluginPicker.editText?.text.toString().isBlank()
                 && it.isNotEmpty()
             ) {
                 // select the first item of the list
                 //todo: record the item used in the preferences and reselect it at setup time
-                // todo: fix
                 (binding.pluginPicker.editText as? AutoCompleteTextView)?.setText(
                     it.first().name,
                     false
-                );
+                )
             }
         }
         viewModel.fetchPlugins()
