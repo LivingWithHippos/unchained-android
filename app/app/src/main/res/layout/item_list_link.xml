@@ -9,6 +9,10 @@
             name="item"
             type="com.github.livingwithhippos.unchained.search.model.LinkItem" />
 
+        <variable
+            name="listener"
+            type="com.github.livingwithhippos.unchained.search.model.LinkItemListener" />
+
     </data>
 
     <com.google.android.material.card.MaterialCardView
@@ -22,6 +26,7 @@
         android:focusable="true"
         app:cardCornerRadius="10dp"
         app:cardElevation="5dp"
+        android:onClick="@{() -> listener.onClick(item)}"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"

@@ -18,6 +18,10 @@ import com.github.livingwithhippos.unchained.data.repositoy.VariousApiRepository
 import com.github.livingwithhippos.unchained.lists.view.ListsTabFragment
 import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.PRIVATE_TOKEN
+import com.github.livingwithhippos.unchained.utilities.extension.isMagnet
+import com.github.livingwithhippos.unchained.utilities.extension.isTorrent
+import com.github.livingwithhippos.unchained.utilities.extension.observeOnce
+import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.github.livingwithhippos.unchained.utilities.postEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -227,31 +231,37 @@ class MainActivityViewModel @Inject constructor(
         }
     }
 
-    fun checkLinkSupported(link: String) {
+    fun downloadSupportedLink(link: String) {
         viewModelScope.launch {
-            var matchFound = false
-            // check the hosts regexs
-            for (hostRegex in hostsRepository.getHostsRegex()) {
-                val m: Matcher = Pattern.compile(hostRegex.regex).matcher(link)
-                if (m.matches()) {
-                    matchFound = true
-                    linkLiveData.postEvent(link)
-                    break
-                }
-            }
-            // check the folders regexs
-            if (!matchFound) {
-                for (hostRegex in hostsRepository.getFoldersRegex()) {
-                    val m: Matcher = Pattern.compile(hostRegex.regex).matcher(link)
-                    if (m.matches()) {
-                        matchFound = true
-                        linkLiveData.postEvent(link)
-                        break
+            when {
+                link.isMagnet() -> linkLiveData.postEvent(link)
+                link.isTorrent() -> linkLiveData.postEvent(link)
+                else -> {
+                    var matchFound = false
+                    // check the hosts regexs
+                    for (hostRegex in hostsRepository.getHostsRegex()) {
+                        val m: Matcher = Pattern.compile(hostRegex.regex).matcher(link)
+                        if (m.matches()) {
+                            matchFound = true
+                            linkLiveData.postEvent(link)
+                            break
+                        }
                     }
+                    // check the folders regexs
+                    if (!matchFound) {
+                        for (hostRegex in hostsRepository.getFoldersRegex()) {
+                            val m: Matcher = Pattern.compile(hostRegex.regex).matcher(link)
+                            if (m.matches()) {
+                                matchFound = true
+                                linkLiveData.postEvent(link)
+                                break
+                            }
+                        }
+                    }
+                    if (!matchFound)
+                        messageLiveData.postEvent(R.string.host_match_not_found)
                 }
             }
-            if (!matchFound)
-                messageLiveData.postEvent(R.string.host_match_not_found)
         }
     }
 

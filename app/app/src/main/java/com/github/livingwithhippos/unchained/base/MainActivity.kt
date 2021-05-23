@@ -35,8 +35,6 @@ import com.github.livingwithhippos.unchained.utilities.EventObserver
 import com.github.livingwithhippos.unchained.utilities.SCHEME_HTTP
 import com.github.livingwithhippos.unchained.utilities.SCHEME_HTTPS
 import com.github.livingwithhippos.unchained.utilities.SCHEME_MAGNET
-import com.github.livingwithhippos.unchained.utilities.extension.isMagnet
-import com.github.livingwithhippos.unchained.utilities.extension.isTorrent
 import com.github.livingwithhippos.unchained.utilities.extension.observeOnce
 import com.github.livingwithhippos.unchained.utilities.extension.setupWithNavController
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
@@ -203,34 +201,7 @@ class MainActivity : AppCompatActivity() {
             Intent.ACTION_SEND -> {
                 if (intent.type == "text/plain")
                     intent.getStringExtra(Intent.EXTRA_TEXT)?.let { text ->
-                        when {
-                            text.isMagnet() -> {
-                                // check auth state before loading it
-                                viewModel.authenticationState.observeOnce(this, { auth ->
-                                    when (auth.peekContent()) {
-                                        AuthenticationState.AUTHENTICATED -> processLinkIntent(text)
-                                        AuthenticationState.AUTHENTICATED_NO_PREMIUM -> baseContext.showToast(
-                                            R.string.premium_needed_torrent
-                                        )
-                                        else -> showToast(R.string.please_login)
-                                    }
-                                })
-                            }
-                            text.isTorrent() -> {
-                                viewModel.authenticationState.observeOnce(this, { auth ->
-                                    when (auth.peekContent()) {
-                                        AuthenticationState.AUTHENTICATED -> processLinkIntent(text)
-                                        AuthenticationState.AUTHENTICATED_NO_PREMIUM -> baseContext.showToast(
-                                            R.string.premium_needed_torrent
-                                        )
-                                        else -> showToast(R.string.please_login)
-                                    }
-                                })
-                            }
-                            else -> {
-                                viewModel.checkLinkSupported(text)
-                            }
-                        }
+                        viewModel.downloadSupportedLink(text)
                     }
 
             }

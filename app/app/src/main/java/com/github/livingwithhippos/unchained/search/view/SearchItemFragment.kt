@@ -1,5 +1,6 @@
 package com.github.livingwithhippos.unchained.search.view
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,7 +13,6 @@ import com.github.livingwithhippos.unchained.plugins.LinkData
 import com.github.livingwithhippos.unchained.search.model.LinkItem
 import com.github.livingwithhippos.unchained.search.model.LinkItemAdapter
 import com.github.livingwithhippos.unchained.search.model.LinkItemListener
-import com.github.livingwithhippos.unchained.search.model.SearchItemAdapter
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -54,6 +54,6 @@ class SearchItemFragment : UnchainedFragment(), LinkItemListener {
     }
 
     override fun onClick(item: LinkItem) {
-        TODO("Not yet implemented")
+        activityViewModel.downloadSupportedLink(item.link)
     }
 }

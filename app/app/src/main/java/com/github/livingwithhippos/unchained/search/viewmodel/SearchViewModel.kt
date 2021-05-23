@@ -6,7 +6,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.livingwithhippos.unchained.data.repositoy.PluginRepository
-import com.github.livingwithhippos.unchained.newdownload.viewmodel.Link
 import com.github.livingwithhippos.unchained.plugins.LinkData
 import com.github.livingwithhippos.unchained.plugins.Parser
 import com.github.livingwithhippos.unchained.plugins.ParserResult

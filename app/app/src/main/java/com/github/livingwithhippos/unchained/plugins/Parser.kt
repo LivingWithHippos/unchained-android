@@ -190,8 +190,7 @@ data class LinkData(
         parcel.readString()?: "",
         parcel.createStringArrayList() ?: emptyList<String>(),
         parcel.createStringArrayList() ?: emptyList<String>()
-    ) {
-    }
+    )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(link)
