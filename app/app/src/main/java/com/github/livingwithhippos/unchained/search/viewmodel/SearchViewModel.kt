@@ -2,9 +2,11 @@ package com.github.livingwithhippos.unchained.search.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.livingwithhippos.unchained.data.repositoy.PluginRepository
+import com.github.livingwithhippos.unchained.newdownload.viewmodel.Link
 import com.github.livingwithhippos.unchained.plugins.LinkData
 import com.github.livingwithhippos.unchained.plugins.Parser
 import com.github.livingwithhippos.unchained.plugins.ParserResult
@@ -19,6 +21,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
+    private val savedStateHandle: SavedStateHandle,
     private val pluginRepository: PluginRepository,
     private val parser: Parser
 ) : ViewModel() {
@@ -45,6 +48,7 @@ class SearchViewModel @Inject constructor(
                     if (it is ParserResult.SingleResult) {
                         results.add(it.value)
                         parsingLiveData.value = ParserResult.Result(results)
+                        saveSearchResults(results)
                     } else {
                         parsingLiveData.value = it
                     }
@@ -64,8 +68,19 @@ class SearchViewModel @Inject constructor(
         }
     }
 
+    fun getSearchResults(): List<LinkData> {
+        return savedStateHandle.get<List<LinkData>>(KEY_RESULTS) ?: emptyList()
+    }
+
+    fun saveSearchResults(results: List<LinkData>) {
+        savedStateHandle.set(KEY_RESULTS, results)
+    }
+
     fun stopSearch() {
         job?.cancelIfActive()
     }
 
+    companion object {
+        const val KEY_RESULTS = "results_key"
+    }
 }

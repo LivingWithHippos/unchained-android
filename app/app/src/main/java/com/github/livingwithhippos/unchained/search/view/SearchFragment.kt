@@ -45,7 +45,6 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
     }
 
     private fun setup() {
-
         // setup the plugin dropdown
         viewModel.pluginLiveData.observe(viewLifecycleOwner) {
             val adapter =
@@ -69,6 +68,11 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
 
         val adapter = SearchItemAdapter(this)
         binding.rvSearchList.adapter = adapter
+
+        // load the latest results if coming back from another fragment
+        val lastResults = viewModel.getSearchResults()
+        if (lastResults.isNotEmpty())
+            adapter.submitList(lastResults)
 
         // search button listener
         binding.tfSearch.setEndIconOnClickListener {

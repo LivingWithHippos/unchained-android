@@ -138,7 +138,7 @@ class Parser(
         }
         val nameRegex: Regex = plugin.download.name.toRegex()
         val name: String = nameRegex.find(source)?.groupValues?.get(1) ?: ""
-        return LinkData(link, name, magnets.toList(), torrents.toList())
+        return LinkData(link, name.trim(), magnets.toList(), torrents.toList())
     }
 
     private fun getCategory(plugin: Plugin, category: String): String? {
