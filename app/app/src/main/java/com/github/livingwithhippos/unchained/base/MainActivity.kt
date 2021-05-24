@@ -99,7 +99,7 @@ class MainActivity : AppCompatActivity() {
                 // go to login fragment
                 AuthenticationState.UNAUTHENTICATED -> {
                     openAuthentication()
-                    disableBottomNavItems(R.id.navigation_new_download, R.id.navigation_lists)
+                    disableBottomNavItems(R.id.navigation_new_download, R.id.navigation_lists, R.id.navigation_search)
                     viewModel.setTokenRefreshing(false)
                 }
                 // refresh the token.
@@ -114,7 +114,7 @@ class MainActivity : AppCompatActivity() {
                 // go to login fragment and show another error message
                 AuthenticationState.ACCOUNT_LOCKED -> {
                     openAuthentication()
-                    disableBottomNavItems(R.id.navigation_new_download, R.id.navigation_lists)
+                    disableBottomNavItems(R.id.navigation_new_download, R.id.navigation_lists, R.id.navigation_search)
                     viewModel.setTokenRefreshing(false)
                 }
                 // do nothing
@@ -130,7 +130,7 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-        disableBottomNavItems(R.id.navigation_new_download, R.id.navigation_lists)
+        disableBottomNavItems(R.id.navigation_new_download, R.id.navigation_lists, R.id.navigation_search)
         viewModel.fetchFirstWorkingCredentials()
 
         // check if the app has been opened by clicking on torrents/magnet on sharing links

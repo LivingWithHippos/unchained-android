@@ -55,9 +55,9 @@ data class PluginDownload(
     @Json(name = "name")
     val name: String,
     @Json(name = "magnet")
-    val magnet: String,
+    val magnet: String?,
     @Json(name = "torrent")
-    val torrent: List<String>,
+    val torrent: List<String>?,
     @Json(name = "internal")
     val internalLink: InternalLink?
 )

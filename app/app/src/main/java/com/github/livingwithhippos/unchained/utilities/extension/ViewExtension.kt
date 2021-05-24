@@ -15,6 +15,7 @@ import android.os.Build
 import android.text.SpannableStringBuilder
 import android.util.TypedValue
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.ImageView
@@ -332,5 +333,17 @@ fun SwipeRefreshLayout.setRefreshThemeColor(themed: Boolean) {
         // background color
         val backgroundColor = typedValue.data
         setProgressBackgroundColorSchemeColor(backgroundColor)
+    }
+}
+
+/**
+ * hides the keyboard when called on a View
+ *
+ */
+fun View.hideKeyboard() {
+    context?.let {
+        val inputMethodManager =
+            it.getSystemService(android.content.Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+        inputMethodManager?.hideSoftInputFromWindow(this.windowToken, 0)
     }
 }

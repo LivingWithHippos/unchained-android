@@ -54,9 +54,11 @@
     // "name" is the regex to parse the item name
     "name": "box-info-heading clearfix\"><h1>([^<]+)</h1>",
     // "magnet" is the link to the magnet, it's a java regex. The magnet needs to be inside parenthesis (magnet:...)
+	// it is optional if there are only .torrent links in the page
     "magnet": "href=\"(magnet:\\?xt=urn:btih:[^\"]+)",
     // "torrent" is the array with links to the torrent, it's a java regex. The link needs to be inside parenthesis (https://...torrent)
-    // only direct links to .torrent files are supported
+    // only direct links to .torrent files are supported, copy and paste one manually in the new download screen and try to unrestrict it
+	// it is optional if there are only magnet links in the page
 	"torrent": [
       "(https?://torrentsite1\\.org/torrent/[^\\.]+.torrent)",
     ],

@@ -121,20 +121,24 @@ class Parser(
         val magnets = mutableSetOf<String>()
         val torrents = mutableSetOf<String>()
         // get magnets
-        val magnetRegex: Regex = plugin.download.magnet.toRegex()
-        val matches: Sequence<MatchResult> = magnetRegex.findAll(source)
-        magnets.addAll(
-            matches.map { it.groupValues[1] }
-        )
-        // get torrents
-        val torrentRegexes: List<Regex> = plugin.download.torrent.map {
-            it.toRegex()
-        }
-        torrentRegexes.forEach {
-            val m = it.findAll(source)
-            torrents.addAll(
-                m.map { torrent -> torrent.groupValues[1] }
+        if (plugin.download.magnet != null) {
+            val magnetRegex: Regex = plugin.download.magnet.toRegex()
+            val matches: Sequence<MatchResult> = magnetRegex.findAll(source)
+            magnets.addAll(
+                matches.map { it.groupValues[1] }
             )
+        }
+        if (plugin.download.torrent != null) {
+            // get torrents
+            val torrentRegexes: List<Regex> = plugin.download.torrent.map {
+                it.toRegex()
+            }
+            torrentRegexes.forEach {
+                val m = it.findAll(source)
+                torrents.addAll(
+                    m.map { torrent -> torrent.groupValues[1] }
+                )
+            }
         }
         val nameRegex: Regex = plugin.download.name.toRegex()
         val name: String = nameRegex.find(source)?.groupValues?.get(1) ?: ""

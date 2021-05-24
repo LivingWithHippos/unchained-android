@@ -39,6 +39,7 @@ import com.github.livingwithhippos.unchained.utilities.extension.isWebUrl
 import com.github.livingwithhippos.unchained.utilities.extension.runRippleAnimation
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Job
 import timber.log.Timber
 import java.io.File
 import java.io.IOException
@@ -58,11 +59,22 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
 
     private val args: NewDownloadFragmentArgs by navArgs()
 
+    private var _binding: NewDownloadFragmentBinding? = null
+    val downloadBinding get() = _binding!!
+
+    // used to simulate a debounce effect while typing on the search bar
+    var queryJob: Job? = null
+
+    override fun onDestroyView() {
+        _binding = null
+        super.onDestroyView()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val downloadBinding = NewDownloadFragmentBinding.inflate(inflater, container, false)
+        _binding = NewDownloadFragmentBinding.inflate(inflater, container, false)
 
         downloadBinding.listener = this
 
@@ -103,6 +115,22 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
             if (authState == AuthenticationState.AUTHENTICATED) {
                 val link: String = downloadBinding.tiLink.text.toString().trim()
                 when {
+                    // this must be before the link.isWebUrl() check
+                    link.isTorrent() -> {
+                        context?.showToast(R.string.loading_torrent)
+                        downloadBinding.bUnrestrict.isEnabled = false
+                        downloadBinding.bLoadTorrent.isEnabled = false
+                        /**
+                         * DownloadManager does not support insecure (https) links anymore
+                         * to add support for it, follow these instructions
+                         * [https://stackoverflow.com/a/50834600]
+                         */
+                        val secureLink = if (link.startsWith("http://")) link.replaceFirst(
+                            "http:",
+                            "https:"
+                        ) else link
+                        downloadTorrent(Uri.parse(secureLink))
+                    }
                     link.isWebUrl() -> {
                         context?.showToast(R.string.loading_host_link)
                         downloadBinding.bUnrestrict.isEnabled = false
@@ -127,12 +155,6 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
                         downloadBinding.bUnrestrict.isEnabled = false
                         downloadBinding.bLoadTorrent.isEnabled = false
                         viewModel.fetchAddedMagnet(link)
-                    }
-                    link.isTorrent() -> {
-                        context?.showToast(R.string.loading_torrent)
-                        downloadBinding.bUnrestrict.isEnabled = false
-                        downloadBinding.bLoadTorrent.isEnabled = false
-                        downloadTorrent(Uri.parse(link))
                     }
                     link.isBlank() -> {
                         context?.showToast(R.string.please_insert_url)
@@ -186,20 +208,16 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
                     loadTorrent(link)
                 }
                 SCHEME_HTTP, SCHEME_HTTPS -> {
-                    if (link.toString().endsWith(".torrent")) {
-                        context?.showToast(R.string.loading_torrent_file)
-                        downloadTorrent(link)
-                    } else {
+                    if (!link.toString().endsWith(".torrent"))
                         context?.showToast(R.string.loading_host_link)
-                        // same as torrent
-                        // set as text input text
-                        downloadBinding.tiLink.setText(
-                            link.toString(),
-                            TextView.BufferType.EDITABLE
-                        )
-                        // simulate button click
-                        downloadBinding.bUnrestrict.performClick()
-                    }
+
+                    // set as text input text
+                    downloadBinding.tiLink.setText(
+                        link.toString(),
+                        TextView.BufferType.EDITABLE
+                    )
+                    // simulate button click
+                    downloadBinding.bUnrestrict.performClick()
                 }
             }
         })
@@ -303,7 +321,10 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
                 viewModel.fetchUploadedTorrent(buffer)
             }
         } catch (exception: IOException) {
-            Timber.e("Torrent conversion: Error getting parcelFileDescriptor -> null")
+            Timber.e("Torrent conversion: Error getting the file: ${exception.message}")
+            downloadBinding.bUnrestrict.isEnabled = true
+            downloadBinding.bLoadTorrent.isEnabled = true
+            requireContext().showToast(R.string.error_loading_torrent)
         }
     }
 

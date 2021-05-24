@@ -16,6 +16,7 @@ import com.github.livingwithhippos.unchained.plugins.ParserResult
 import com.github.livingwithhippos.unchained.search.model.SearchItemAdapter
 import com.github.livingwithhippos.unchained.search.model.SearchItemListener
 import com.github.livingwithhippos.unchained.search.viewmodel.SearchViewModel
+import com.github.livingwithhippos.unchained.utilities.extension.hideKeyboard
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -76,6 +77,7 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
 
         // search button listener
         binding.tfSearch.setEndIconOnClickListener {
+            it.hideKeyboard()
             viewModel.completeSearch(
                 query = binding.tiSearch.text.toString(),
                 pluginName = getSelectedPlugin()
