@@ -56,9 +56,9 @@
     // "magnet" is the link to the magnet, it's a java regex. The magnet needs to be inside parenthesis (magnet:...)
     "magnet": "href=\"(magnet:\\?xt=urn:btih:[^\"]+)",
     // "torrent" is the array with links to the torrent, it's a java regex. The link needs to be inside parenthesis (https://...torrent)
-    "torrent": [
+    // only direct links to .torrent files are supported
+	"torrent": [
       "(https?://torrentsite1\\.org/torrent/[^\\.]+.torrent)",
-      "(https?://torrentsite2\\.info/torrent\\.php\\?h=/[^\"]+)"
     ],
     // "internal" is optional, it's used if the results are not directly from the "search" urls
     "internal": {
