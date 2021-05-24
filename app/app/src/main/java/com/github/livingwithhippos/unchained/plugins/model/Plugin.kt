@@ -16,6 +16,8 @@ data class Plugin(
     val name: String,
     @Json(name = "description")
     val description: String?,
+    @Json(name = "author")
+    val author: String?,
     @Json(name = "supported_categories")
     val supportedCategories: SupportedCategories?,
     @Json(name = "search")
@@ -49,7 +51,9 @@ data class PluginSearch(
     @Json(name = "category")
     val urlCategory: String?,
     @Json(name = "no_category")
-    val urlNoCategory: String
+    val urlNoCategory: String,
+    @Json(name = "page_start")
+    val pageStart: Int = 1
 )
 
 @JsonClass(generateAdapter = true)

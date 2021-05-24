@@ -17,8 +17,10 @@
   "url": "https://myurl.com",
   // plugin/website name which will be shown to the user
   "name": "My Site",
-  // plugin description, may contain author, links etc. Optional
+  // optional plugin description, may contain author, links etc. Optional
   "description": "Parser for my site",
+  // optional author name
+  "author": "Author name",
   /**
   * basic categories system. Will be used to implement a generic
   * categories search system. Optional, remove it if the service does not
@@ -31,7 +33,8 @@
     "games": "Games",
     "movies": "Movies",
     "music": "Music",
-    "tv": "TV"
+    "tv": "TV",
+    "books": "books"
   },
   /**
   * Urls used to query the service.
@@ -40,10 +43,12 @@
   *
   * "url_category": url used to search with categories
   * "url_no_category": url used to search without categories, optional
+  * "page_start": starting page number, usually 0 or 1
   */
   "search": {
     "category": "${url}/category-search/${query}/${category}/${page}/",
-    "no_category": "${url}/search/${query}/${page}/"
+    "no_category": "${url}/search/${query}/${page}/",
+    "page_start": 0
   },
   /**
   * "download" will be used to get links from the "search" urls

@@ -1,0 +1,19 @@
+{
+  "engine_version": 1.0,
+  "version": 1.0,
+  "url": "https://zooqle.com",
+  "name": "Zooqle",
+  "description": "Parser for my zooqle.com",
+  "search": {
+    "no_category": "${url}/search\\?pg={page}&q=${query}",
+    "page_start": 1
+  },
+  "download": {
+    "magnet": "href=\"(magnet:\\?xt=urn:btih:[^\"]+)",
+    "internal": {
+      "name": "id=\"torname\">([^<]+)<span",
+      "link": "class=\" small\" href=\"([^\"]+)",
+      "slug_type": "append_url"
+    }
+  }
+}
