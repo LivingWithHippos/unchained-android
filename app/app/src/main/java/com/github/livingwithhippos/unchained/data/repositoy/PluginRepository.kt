@@ -34,27 +34,47 @@ class PluginRepository @Inject constructor(
 
     suspend fun getPlugins(): List<Plugin> = withContext(Dispatchers.IO) {
 
+        /**
+         * get local json files from the assets folder
+         */
         val jsonFiles = searchFiles()
         val plugins = mutableListOf<Plugin>()
 
         for (json in jsonFiles) {
-            try {
-                /**
-                 * parse
-                 * add to list
-                 */
 
+            val plugin: Plugin? = try {
                 val pluginJSON = appContext.assets.open(json)
                     .bufferedReader()
                     .use { it.readText() }
 
-                val plugin = pluginAdapter.fromJson(pluginJSON)
-                if (plugin != null)
-                    plugins.add(plugin)
-
+                pluginAdapter.fromJson(pluginJSON)
             } catch (ex: Exception) {
                 Timber.e("Error reading file in path $json, exception ${ex.message}")
+                null
             }
+
+            if (plugin != null)
+                plugins.add(plugin)
+        }
+
+        /**
+         * get installed .unchained search plugins
+         */
+
+        appContext.fileList().filter {
+            it.endsWith(".unchained")
+        }.forEach {
+            appContext.openFileInput(it).bufferedReader().use { reader ->
+                try {
+                    val plugin = pluginAdapter.fromJson(reader.readText())
+                    if (plugin != null)
+                        plugins.add(plugin)
+                } catch (ex: Exception) {
+                    Timber.e("Error reading file in path $it, exception ${ex.message}")
+                }
+            }
+
+
         }
 
         plugins
