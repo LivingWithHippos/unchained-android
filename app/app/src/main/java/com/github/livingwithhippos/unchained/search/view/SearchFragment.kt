@@ -45,33 +45,6 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
         return binding.root
     }
 
-    fun setupCategory(plugin: Plugin) {
-        val choices = mutableListOf<String>()
-        choices.add(getString(R.string.category_all))
-        if (plugin.supportedCategories.anime != null)
-            choices.add(getString(R.string.category_anime))
-        if (plugin.supportedCategories.anime != null)
-            choices.add(getString(R.string.category_software))
-        if (plugin.supportedCategories.anime != null)
-            choices.add(getString(R.string.category_games))
-        if (plugin.supportedCategories.anime != null)
-            choices.add(getString(R.string.category_movies))
-        if (plugin.supportedCategories.anime != null)
-            choices.add(getString(R.string.category_music))
-        if (plugin.supportedCategories.anime != null)
-            choices.add(getString(R.string.category_tv))
-        if (plugin.supportedCategories.anime != null)
-            choices.add(getString(R.string.category_books))
-
-        val adapter = ArrayAdapter(requireContext(), R.layout.plugin_list_item, choices)
-        (binding.categoryPicker.editText as? AutoCompleteTextView)?.setAdapter(adapter)
-
-        (binding.categoryPicker.editText as? AutoCompleteTextView)?.setText(
-            choices.first(),
-            false
-        )
-    }
-
     private fun setup() {
         // setup the plugin dropdown
         viewModel.pluginLiveData.observe(viewLifecycleOwner) { plugins ->
@@ -94,7 +67,7 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
             }
 
 
-            (binding.pluginPicker.editText as? AutoCompleteTextView)?.setOnItemClickListener { parent, view, position, id ->
+            (binding.pluginPicker.editText as? AutoCompleteTextView)?.setOnItemClickListener { _, _, position, _ ->
                 val selection: String? = adapter.getItem(position)
                 if (selection != null)
                     setupCategory(plugins.first { it.name == selection })
@@ -115,7 +88,8 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
             it.hideKeyboard()
             viewModel.completeSearch(
                 query = binding.tiSearch.text.toString(),
-                pluginName = getSelectedPlugin()
+                pluginName = getSelectedPluginName(),
+                category = getSelectedCategory()
             ).observe(viewLifecycleOwner) { result ->
                 when (result) {
                     is ParserResult.SingleResult -> {
@@ -141,8 +115,59 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
         }
     }
 
-    private fun getSelectedPlugin(): String {
+
+    fun setupCategory(plugin: Plugin) {
+        val choices = mutableListOf<String>()
+        choices.add(getString(R.string.category_all))
+        if (plugin.supportedCategories.anime != null)
+            choices.add(getString(R.string.category_anime))
+        if (plugin.supportedCategories.software != null)
+            choices.add(getString(R.string.category_software))
+        if (plugin.supportedCategories.games != null)
+            choices.add(getString(R.string.category_games))
+        if (plugin.supportedCategories.movies != null)
+            choices.add(getString(R.string.category_movies))
+        if (plugin.supportedCategories.music != null)
+            choices.add(getString(R.string.category_music))
+        if (plugin.supportedCategories.tv != null)
+            choices.add(getString(R.string.category_tv))
+        if (plugin.supportedCategories.books != null)
+            choices.add(getString(R.string.category_books))
+
+        val adapter = ArrayAdapter(requireContext(), R.layout.plugin_list_item, choices)
+        (binding.categoryPicker.editText as? AutoCompleteTextView)?.setAdapter(adapter)
+
+        (binding.categoryPicker.editText as? AutoCompleteTextView)?.setText(
+            choices.first(),
+            false
+        )
+    }
+
+    private fun getSelectedCategory(): String? {
+        return when (binding.categoryPicker.editText?.text.toString()) {
+            getString(R.string.category_all) -> {
+                // "all"
+                // searches on "all" will just be redirected to the no_category search
+                null
+            }
+            getString(R.string.category_anime) -> "anime"
+            getString(R.string.category_software) -> "software"
+            getString(R.string.category_games) -> "games"
+            getString(R.string.category_movies) -> "movies"
+            getString(R.string.category_music) -> "music"
+            getString(R.string.category_tv) -> "tv"
+            getString(R.string.category_tv) -> "books"
+            else -> null
+        }
+    }
+
+    private fun getSelectedPluginName(): String {
         return binding.pluginPicker.editText?.text.toString()
+    }
+
+    private fun getSelectedPlugin(): Plugin? {
+        return viewModel.getPlugins()
+            .firstOrNull { it.name == getSelectedPluginName() }
     }
 
     override fun onClick(linkData: LinkData) {

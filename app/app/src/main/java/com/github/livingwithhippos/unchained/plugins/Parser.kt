@@ -34,7 +34,7 @@ class Parser(
                         if (category.isNullOrBlank()) null else getCategory(plugin, category)
 
                     val queryUrl = replaceData(
-                        oldUrl = plugin.search.urlNoCategory,
+                        oldUrl = if (currentCategory == null) plugin.search.urlNoCategory else plugin.search.urlCategory!!,
                         url = plugin.url,
                         query = currentQuery,
                         category = currentCategory,
@@ -57,7 +57,16 @@ class Parser(
                                     emit(ParserResult.SearchStarted(innerSource.size))
                                     for (link in innerSource) {
                                         val s = getSource(link)
-                                        emit(ParserResult.SingleResult(parseLinks(plugin, s, link, plugin.download.internalLink.name)))
+                                        emit(
+                                            ParserResult.SingleResult(
+                                                parseLinks(
+                                                    plugin,
+                                                    s,
+                                                    link,
+                                                    plugin.download.internalLink.name
+                                                )
+                                            )
+                                        )
                                     }
                                     emit(ParserResult.SearchFinished)
                                 } else {
@@ -118,7 +127,12 @@ class Parser(
     }
 
 
-    private fun parseLinks(plugin: Plugin, source: String, link: String, nameRegex: String): LinkData {
+    private fun parseLinks(
+        plugin: Plugin,
+        source: String,
+        link: String,
+        nameRegex: String
+    ): LinkData {
         val magnets = mutableSetOf<String>()
         val torrents = mutableSetOf<String>()
         // get magnets
@@ -155,6 +169,7 @@ class Parser(
             "movies" -> plugin.supportedCategories?.movies
             "music" -> plugin.supportedCategories?.music
             "tv" -> plugin.supportedCategories?.tv
+            "books" -> plugin.supportedCategories?.books
             else -> null
         }
     }
@@ -189,10 +204,10 @@ data class LinkData(
     val name: String,
     val magnets: List<String>,
     val torrents: List<String>
-): Parcelable {
+) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString() ?: "",
-        parcel.readString()?: "",
+        parcel.readString() ?: "",
         parcel.createStringArrayList() ?: emptyList<String>(),
         parcel.createStringArrayList() ?: emptyList<String>()
     )

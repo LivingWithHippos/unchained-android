@@ -41,6 +41,8 @@ class SearchViewModel @Inject constructor(
         val plugin = pluginLiveData.value?.firstOrNull { it.name == pluginName }
         if (plugin != null) {
             val results = mutableListOf<LinkData>()
+            // empty saved results on new searches
+            saveSearchResults(results)
             job?.cancelIfActive()
             job = parser.completeSearch(plugin, query, category, page)
                 .onEach {
@@ -64,6 +66,7 @@ class SearchViewModel @Inject constructor(
         viewModelScope.launch {
             val plugins = pluginRepository.getPlugins()
             pluginLiveData.postValue(plugins)
+            setPlugins(plugins)
         }
     }
 
@@ -71,8 +74,16 @@ class SearchViewModel @Inject constructor(
         return savedStateHandle.get<List<LinkData>>(KEY_RESULTS) ?: emptyList()
     }
 
-    fun saveSearchResults(results: List<LinkData>) {
+    private fun saveSearchResults(results: List<LinkData>) {
         savedStateHandle.set(KEY_RESULTS, results)
+    }
+
+    fun getPlugins(): List<Plugin> {
+        return savedStateHandle.get<List<Plugin>>(KEY_PLUGINS) ?: emptyList()
+    }
+
+    private fun setPlugins(plugins: List<Plugin>) {
+        savedStateHandle.set(KEY_PLUGINS, plugins)
     }
 
     fun stopSearch() {
@@ -81,5 +92,6 @@ class SearchViewModel @Inject constructor(
 
     companion object {
         const val KEY_RESULTS = "results_key"
+        const val KEY_PLUGINS = "plugins_key"
     }
 }
