@@ -4,6 +4,9 @@
   "url": "https://zooqle.com",
   "name": "Zooqle",
   "description": "Parser for my zooqle.com",
+  "supported_categories": {
+  "all": "None"
+  },
   "search": {
     "no_category": "${url}/search\\?pg={page}&q=${query}",
     "page_start": 1

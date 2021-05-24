@@ -23,8 +23,9 @@
   "author": "Author name",
   /**
   * basic categories system. Will be used to implement a generic
-  * categories search system. Optional, remove it if the service does not
-  * support categories
+  * categories search system.
+  * If the service does not support categories leave only the "all" value with whatever you want
+  * and remove "category" under " search"
   */
   "supported_categories": {
     "all": "None",

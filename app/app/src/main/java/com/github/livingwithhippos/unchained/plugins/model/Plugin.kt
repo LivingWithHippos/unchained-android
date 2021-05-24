@@ -19,7 +19,7 @@ data class Plugin(
     @Json(name = "author")
     val author: String?,
     @Json(name = "supported_categories")
-    val supportedCategories: SupportedCategories?,
+    val supportedCategories: SupportedCategories,
     @Json(name = "search")
     val search: PluginSearch,
     @Json(name = "download")
@@ -29,7 +29,7 @@ data class Plugin(
 @JsonClass(generateAdapter = true)
 data class SupportedCategories(
     @Json(name = "all")
-    val all: String?,
+    val all: String,
     @Json(name = "anime")
     val anime: String?,
     @Json(name = "software")

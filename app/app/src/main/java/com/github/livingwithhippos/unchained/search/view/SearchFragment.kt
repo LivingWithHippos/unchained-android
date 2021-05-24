@@ -13,11 +13,11 @@ import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.databinding.FragmentSearchBinding
 import com.github.livingwithhippos.unchained.plugins.LinkData
 import com.github.livingwithhippos.unchained.plugins.ParserResult
+import com.github.livingwithhippos.unchained.plugins.model.Plugin
 import com.github.livingwithhippos.unchained.search.model.SearchItemAdapter
 import com.github.livingwithhippos.unchained.search.model.SearchItemListener
 import com.github.livingwithhippos.unchained.search.viewmodel.SearchViewModel
 import com.github.livingwithhippos.unchained.utilities.extension.hideKeyboard
-import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -45,24 +45,59 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
         return binding.root
     }
 
+    fun setupCategory(plugin: Plugin) {
+        val choices = mutableListOf<String>()
+        choices.add(getString(R.string.category_all))
+        if (plugin.supportedCategories.anime != null)
+            choices.add(getString(R.string.category_anime))
+        if (plugin.supportedCategories.anime != null)
+            choices.add(getString(R.string.category_software))
+        if (plugin.supportedCategories.anime != null)
+            choices.add(getString(R.string.category_games))
+        if (plugin.supportedCategories.anime != null)
+            choices.add(getString(R.string.category_movies))
+        if (plugin.supportedCategories.anime != null)
+            choices.add(getString(R.string.category_music))
+        if (plugin.supportedCategories.anime != null)
+            choices.add(getString(R.string.category_tv))
+        if (plugin.supportedCategories.anime != null)
+            choices.add(getString(R.string.category_books))
+
+        val adapter = ArrayAdapter(requireContext(), R.layout.plugin_list_item, choices)
+        (binding.categoryPicker.editText as? AutoCompleteTextView)?.setAdapter(adapter)
+
+        (binding.categoryPicker.editText as? AutoCompleteTextView)?.setText(
+            choices.first(),
+            false
+        )
+    }
+
     private fun setup() {
         // setup the plugin dropdown
-        viewModel.pluginLiveData.observe(viewLifecycleOwner) {
+        viewModel.pluginLiveData.observe(viewLifecycleOwner) { plugins ->
             val adapter =
-                ArrayAdapter(requireContext(), R.layout.plugin_list_item, it.map { plugin ->
+                ArrayAdapter(requireContext(), R.layout.plugin_list_item, plugins.map { plugin ->
                     plugin.name
                 })
             (binding.pluginPicker.editText as? AutoCompleteTextView)?.setAdapter(adapter)
 
             if (binding.pluginPicker.editText?.text.toString().isBlank()
-                && it.isNotEmpty()
+                && plugins.isNotEmpty()
             ) {
                 // select the first item of the list
                 //todo: record the item used in the preferences and reselect it at setup time
                 (binding.pluginPicker.editText as? AutoCompleteTextView)?.setText(
-                    it.first().name,
+                    plugins.first().name,
                     false
                 )
+                setupCategory(plugins.first())
+            }
+
+
+            (binding.pluginPicker.editText as? AutoCompleteTextView)?.setOnItemClickListener { parent, view, position, id ->
+                val selection: String? = adapter.getItem(position)
+                if (selection != null)
+                    setupCategory(plugins.first { it.name == selection })
             }
         }
         viewModel.fetchPlugins()

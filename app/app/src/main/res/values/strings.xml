@@ -442,4 +442,13 @@
     <string name="search_files">Search Files</string>
     <string name="magnet">Magnet</string>
     <string name="error_loading_file">Error loading file</string>
+    <string name="category">Category</string>
+    <string name="category_all">All</string>
+    <string name="category_anime">Anime</string>
+    <string name="category_software">Software</string>
+    <string name="category_games">Games</string>
+    <string name="category_movies">Movies</string>
+    <string name="category_music">Music</string>
+    <string name="category_tv">TV shows</string>
+    <string name="category_books">Books</string>
 </resources>
