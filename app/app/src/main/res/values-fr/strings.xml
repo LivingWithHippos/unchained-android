@@ -234,4 +234,5 @@
     <string name="search_files">Recherche de fichiers</string>
     <string name="plugin">Plugin</string>
     <string name="magnet">Magnet</string>
+    <string name="error_loading_file">Aucun fichier chargé</string>
 </resources>

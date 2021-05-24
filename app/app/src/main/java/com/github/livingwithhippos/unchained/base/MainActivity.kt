@@ -40,6 +40,8 @@ import com.github.livingwithhippos.unchained.utilities.extension.setupWithNavCon
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
+import java.io.IOException
 import javax.inject.Inject
 
 
@@ -99,7 +101,11 @@ class MainActivity : AppCompatActivity() {
                 // go to login fragment
                 AuthenticationState.UNAUTHENTICATED -> {
                     openAuthentication()
-                    disableBottomNavItems(R.id.navigation_new_download, R.id.navigation_lists, R.id.navigation_search)
+                    disableBottomNavItems(
+                        R.id.navigation_new_download,
+                        R.id.navigation_lists,
+                        R.id.navigation_search
+                    )
                     viewModel.setTokenRefreshing(false)
                 }
                 // refresh the token.
@@ -114,7 +120,11 @@ class MainActivity : AppCompatActivity() {
                 // go to login fragment and show another error message
                 AuthenticationState.ACCOUNT_LOCKED -> {
                     openAuthentication()
-                    disableBottomNavItems(R.id.navigation_new_download, R.id.navigation_lists, R.id.navigation_search)
+                    disableBottomNavItems(
+                        R.id.navigation_new_download,
+                        R.id.navigation_lists,
+                        R.id.navigation_search
+                    )
                     viewModel.setTokenRefreshing(false)
                 }
                 // do nothing
@@ -130,7 +140,11 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-        disableBottomNavItems(R.id.navigation_new_download, R.id.navigation_lists, R.id.navigation_search)
+        disableBottomNavItems(
+            R.id.navigation_new_download,
+            R.id.navigation_lists,
+            R.id.navigation_search
+        )
         viewModel.fetchFirstWorkingCredentials()
 
         // check if the app has been opened by clicking on torrents/magnet on sharing links
@@ -213,18 +227,22 @@ class MainActivity : AppCompatActivity() {
                 if (data != null) {
 
                     when (data.scheme) {
-                        //clicked on a torrent file or a magnet link
+                        //clicked on a torrent file or a magnet link or .unchained file
                         SCHEME_MAGNET, SCHEME_CONTENT, SCHEME_FILE -> {
-                            // check auth state before loading it
-                            viewModel.authenticationState.observeOnce(this, { auth ->
-                                when (auth.peekContent()) {
-                                    AuthenticationState.AUTHENTICATED -> processLinkIntent(data)
-                                    AuthenticationState.AUTHENTICATED_NO_PREMIUM -> baseContext.showToast(
-                                        R.string.premium_needed_torrent
-                                    )
-                                    else -> showToast(R.string.please_login)
-                                }
-                            })
+                            // check if it's a search plugin
+                            if (data.path?.endsWith(".unchained") == true) {
+                                addSearchPlugin(data)
+                            } else
+                            // it's a magnet/torrent, check auth state before loading it
+                                viewModel.authenticationState.observeOnce(this, { auth ->
+                                    when (auth.peekContent()) {
+                                        AuthenticationState.AUTHENTICATED -> processLinkIntent(data)
+                                        AuthenticationState.AUTHENTICATED_NO_PREMIUM -> baseContext.showToast(
+                                            R.string.premium_needed_torrent
+                                        )
+                                        else -> showToast(R.string.please_login)
+                                    }
+                                })
                         }
                         SCHEME_HTTP, SCHEME_HTTPS -> {
                             showToast("You activated the http/s scheme somehow")
@@ -286,6 +304,24 @@ class MainActivity : AppCompatActivity() {
             bottomNav.selectedItemId = R.id.navigation_home
         }
     }
+
+
+    private fun addSearchPlugin(data: Uri) {
+        try {
+            applicationContext.contentResolver.openInputStream(data)?.use { inputStream ->
+                val buffer: ByteArray = inputStream.readBytes()
+                val filename = data.path?.split("/")?.last()
+                if (filename != null)
+                    openFileOutput(filename, Context.MODE_PRIVATE).use {
+                        it.write(buffer)
+                    }
+            }
+        } catch (exception: IOException) {
+            Timber.e("Error loading the file ${data.path}: ${exception.message}")
+            applicationContext.showToast(R.string.error_loading_file)
+        }
+    }
+
 
     // the standard menu items to disable are those for the download/torrent lists and the new download one
     private fun disableBottomNavItems(vararg itemsIDs: Int) {
@@ -355,7 +391,8 @@ class MainActivity : AppCompatActivity() {
                     || previousDestination.destination.id == R.id.authentication_dest
                     || previousDestination.destination.id == R.id.start_dest
                     || previousDestination.destination.id == R.id.user_dest
-                    || previousDestination.destination.id == R.id.search_dest) {
+                    || previousDestination.destination.id == R.id.search_dest
+                ) {
                     // check if it has been 2 seconds since the last time we pressed back
                     val pressedTime = System.currentTimeMillis()
                     val lastPressedTime = viewModel.getLastBackPress()

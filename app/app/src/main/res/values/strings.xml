@@ -441,4 +441,5 @@
     <string name="plugin">Plugin</string>
     <string name="search_files">Search Files</string>
     <string name="magnet">Magnet</string>
+    <string name="error_loading_file">Error loading file</string>
 </resources>
