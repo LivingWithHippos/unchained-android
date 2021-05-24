@@ -3,6 +3,7 @@ package com.github.livingwithhippos.unchained.plugins
 import android.os.Parcel
 import android.os.Parcelable
 import com.github.livingwithhippos.unchained.plugins.model.Plugin
+import com.github.livingwithhippos.unchained.utilities.extension.removeWebFormatting
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
@@ -56,7 +57,7 @@ class Parser(
                                     emit(ParserResult.SearchStarted(innerSource.size))
                                     for (link in innerSource) {
                                         val s = getSource(link)
-                                        emit(ParserResult.SingleResult(parseLinks(plugin, s, link)))
+                                        emit(ParserResult.SingleResult(parseLinks(plugin, s, link, plugin.download.internalLink.name)))
                                     }
                                     emit(ParserResult.SearchFinished)
                                 } else {
@@ -117,7 +118,7 @@ class Parser(
     }
 
 
-    private fun parseLinks(plugin: Plugin, source: String, link: String): LinkData {
+    private fun parseLinks(plugin: Plugin, source: String, link: String, nameRegex: String): LinkData {
         val magnets = mutableSetOf<String>()
         val torrents = mutableSetOf<String>()
         // get magnets
@@ -125,7 +126,7 @@ class Parser(
             val magnetRegex: Regex = plugin.download.magnet.toRegex()
             val matches: Sequence<MatchResult> = magnetRegex.findAll(source)
             magnets.addAll(
-                matches.map { it.groupValues[1] }
+                matches.map { it.groupValues[1].removeWebFormatting() }
             )
         }
         if (plugin.download.torrent != null) {
@@ -140,8 +141,8 @@ class Parser(
                 )
             }
         }
-        val nameRegex: Regex = plugin.download.name.toRegex()
-        val name: String = nameRegex.find(source)?.groupValues?.get(1) ?: ""
+
+        val name: String = nameRegex.toRegex().find(source)?.groupValues?.get(1) ?: ""
         return LinkData(link, name.trim(), magnets.toList(), torrents.toList())
     }
 

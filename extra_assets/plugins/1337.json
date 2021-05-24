@@ -14,23 +14,16 @@
     "tv": "TV"
   },
   "search": {
-    "category": "$url/category-search/$query/$category/$page/",
-    "no_category": "$url/search/$query/$page/"
+    "category": "${url}/category-search/${query}/${category}/${page}/",
+    "no_category": "${url}/search/${query}/${page}/"
   },
   "download": {
-    "name": "box-info-heading clearfix\"><h1>([^<]+)</h1>",
     "magnet": "href=\"(magnet:\\?xt=urn:btih:[^\"]+)",
     "torrent": [
-      "(https?://itorrents\\.org/torrent/[^\\.]+.torrent)",
-      "(https?://torrage\\.info/torrent\\.php\\?h=/[^\"]+)",
-      "(https?://btcache\\.me/torrent/[^\"]+)"
+      "(https?://itorrents\\.org/torrent/[^\\.]+\\.torrent)"
     ],
     "internal": {
-      "link": "href=\"(/torrent/[^\"]+)",
-      "slug_type": "append_url"
-    },
-    "table": {
-      "class": "table-list",
+      "name": "box-info-heading clearfix\"><h1>([^<]+)</h1>",
       "link": "href=\"(/torrent/[^\"]+)",
       "slug_type": "append_url"
     }

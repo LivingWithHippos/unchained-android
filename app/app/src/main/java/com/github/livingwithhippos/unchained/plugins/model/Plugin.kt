@@ -39,7 +39,9 @@ data class SupportedCategories(
     @Json(name = "music")
     val music: String?,
     @Json(name = "tv")
-    val tv: String?
+    val tv: String?,
+    @Json(name = "books")
+    val books: String?
 )
 
 @JsonClass(generateAdapter = true)
@@ -52,8 +54,6 @@ data class PluginSearch(
 
 @JsonClass(generateAdapter = true)
 data class PluginDownload(
-    @Json(name = "name")
-    val name: String,
     @Json(name = "magnet")
     val magnet: String?,
     @Json(name = "torrent")
@@ -64,6 +64,8 @@ data class PluginDownload(
 
 @JsonClass(generateAdapter = true)
 data class InternalLink(
+    @Json(name = "name")
+    val name: String,
     @Json(name = "link")
     val link: String,
     @Json(name = "slug_type")

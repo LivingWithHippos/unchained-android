@@ -1,6 +1,7 @@
 /**
 * UNCHAINED FOR ANDROID SEARCH PLUGIN
 * This file is a JSON5
+* Comments need to be removed before renaming this file to your_plugin.unchained
 */
 {
   /**
@@ -51,19 +52,21 @@
   * but needs to be parsed from a link in those pages
   */
   "download": {
-    // "name" is the regex to parse the item name
-    "name": "box-info-heading clearfix\"><h1>([^<]+)</h1>",
     // "magnet" is the link to the magnet, it's a java regex. The magnet needs to be inside parenthesis (magnet:...)
-	// it is optional if there are only .torrent links in the page
+	// it is optional if you use the .torrent links in the page
     "magnet": "href=\"(magnet:\\?xt=urn:btih:[^\"]+)",
     // "torrent" is the array with links to the torrent, it's a java regex. The link needs to be inside parenthesis (https://...torrent)
-    // only direct links to .torrent files are supported, copy and paste one manually in the new download screen and try to unrestrict it
-	// it is optional if there are only magnet links in the page
+    // only direct links to .torrent files are supported, copy and paste one manually in the new download screen and try to unrestrict it to check if it works
+	// optional if you use magnet links
+	// at the moment http links get redirected to https. If the site does not support https avoid adding it, or open an issue on Gihub if you REALLY need it.
 	"torrent": [
       "(https?://torrentsite1\\.org/torrent/[^\\.]+.torrent)",
     ],
-    // "internal" is optional, it's used if the results are not directly from the "search" urls
+    // "internal" is optional, it's used if the results are not directly from the "search"
     "internal": {
+      // "name" is the regex to parse the item name
+      "name": "box-info-heading clearfix\"><h1>([^<]+)</h1>",
+      // "link" is the regex to parse the page link
       "link": "href=\"(/torrent/[^\"]+)",
       // is the link complete (www.xyz.com) or does it need to be filled (/hello.com -> www.xyz.com/hello.com)
       // valid values: append_url, append_other, completed
