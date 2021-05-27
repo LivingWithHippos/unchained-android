@@ -47,32 +47,38 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
 
     private fun setup() {
         // setup the plugin dropdown
+        val pluginAdapter = ArrayAdapter(requireContext(), R.layout.plugin_list_item, arrayListOf<String>())
+        (binding.pluginPicker.editText as? AutoCompleteTextView)?.setAdapter(pluginAdapter)
+
         viewModel.pluginLiveData.observe(viewLifecycleOwner) { plugins ->
-            val adapter =
-                ArrayAdapter(requireContext(), R.layout.plugin_list_item, plugins.map { plugin ->
-                    plugin.name
-                })
-            (binding.pluginPicker.editText as? AutoCompleteTextView)?.setAdapter(adapter)
+            pluginAdapter.clear()
+            pluginAdapter.addAll(plugins.map { it.name })
 
             if (binding.pluginPicker.editText?.text.toString().isBlank()
                 && plugins.isNotEmpty()
             ) {
-                // select the first item of the list
+                // load the latest selected plugin or the first one available
+                val lastPlugin: String = viewModel.getLastSelectedPlugin()
+                val selectedPlugin: Plugin = plugins.firstOrNull{ it.name == lastPlugin} ?: plugins.first()
+
                 //todo: record the item used in the preferences and reselect it at setup time
                 (binding.pluginPicker.editText as? AutoCompleteTextView)?.setText(
-                    plugins.first().name,
+                    selectedPlugin.name,
                     false
                 )
                 setupCategory(plugins.first())
             }
 
-
+            // update the categories dropdown when the selected plugins change
             (binding.pluginPicker.editText as? AutoCompleteTextView)?.setOnItemClickListener { _, _, position, _ ->
-                val selection: String? = adapter.getItem(position)
-                if (selection != null)
+                val selection: String? = pluginAdapter.getItem(position)
+                if (selection != null) {
                     setupCategory(plugins.first { it.name == selection })
+                    viewModel.setLastSelectedPlugin(plugins.first { it.name == selection }.name)
+                }
             }
         }
+
         viewModel.fetchPlugins()
 
         val adapter = SearchItemAdapter(this)

@@ -1,5 +1,6 @@
 package com.github.livingwithhippos.unchained.search.viewmodel
 
+import android.content.SharedPreferences
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
@@ -21,6 +22,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SearchViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
+    private val preferences: SharedPreferences,
     private val pluginRepository: PluginRepository,
     private val parser: Parser
 ) : ViewModel() {
@@ -90,8 +92,20 @@ class SearchViewModel @Inject constructor(
         job?.cancelIfActive()
     }
 
+    fun getLastSelectedPlugin(): String {
+        return preferences.getString(KEY__LAST_SELECTED_PLUGIN, "") ?: ""
+    }
+
+    fun setLastSelectedPlugin(name: String) {
+        with(preferences.edit()) {
+            putString(KEY__LAST_SELECTED_PLUGIN, name)
+            apply()
+        }
+    }
+
     companion object {
         const val KEY_RESULTS = "results_key"
         const val KEY_PLUGINS = "plugins_key"
+        const val KEY__LAST_SELECTED_PLUGIN = "plugin_last_selected_key"
     }
 }
