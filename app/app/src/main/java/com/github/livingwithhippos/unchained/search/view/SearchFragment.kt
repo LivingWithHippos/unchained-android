@@ -11,8 +11,8 @@ import androidx.navigation.fragment.findNavController
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.databinding.FragmentSearchBinding
-import com.github.livingwithhippos.unchained.plugins.LinkData
 import com.github.livingwithhippos.unchained.plugins.ParserResult
+import com.github.livingwithhippos.unchained.plugins.ScrapedItem
 import com.github.livingwithhippos.unchained.plugins.model.Plugin
 import com.github.livingwithhippos.unchained.search.model.SearchItemAdapter
 import com.github.livingwithhippos.unchained.search.model.SearchItemListener
@@ -96,7 +96,7 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
                         adapter.submitList(listOf(result.value))
                         adapter.notifyDataSetChanged()
                     }
-                    is ParserResult.Result -> {
+                    is ParserResult.Results -> {
                         adapter.submitList(result.values)
                         adapter.notifyDataSetChanged()
                     }
@@ -170,9 +170,9 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
             .firstOrNull { it.name == getSelectedPluginName() }
     }
 
-    override fun onClick(linkData: LinkData) {
+    override fun onClick(item: ScrapedItem) {
         viewModel.stopSearch()
-        val action = SearchFragmentDirections.actionSearchDestToSearchItemFragment(linkData)
+        val action = SearchFragmentDirections.actionSearchDestToSearchItemFragment(item)
         findNavController().navigate(action)
     }
 }

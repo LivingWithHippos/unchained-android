@@ -9,7 +9,7 @@
 
         <variable
             name="item"
-            type="com.github.livingwithhippos.unchained.plugins.LinkData" />
+            type="com.github.livingwithhippos.unchained.plugins.ScrapedItem" />
 
     </data>
 

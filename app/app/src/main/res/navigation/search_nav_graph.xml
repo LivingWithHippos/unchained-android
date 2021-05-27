@@ -20,6 +20,6 @@
         android:label="@string/links" >
         <argument
             android:name="item"
-            app:argType="com.github.livingwithhippos.unchained.plugins.LinkData" />
+            app:argType="com.github.livingwithhippos.unchained.plugins.ScrapedItem" />
     </fragment>
 </navigation>

@@ -1,6 +1,5 @@
 package com.github.livingwithhippos.unchained.search.view
 
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,7 +8,7 @@ import androidx.navigation.fragment.navArgs
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.databinding.FragmentSearchItemBinding
-import com.github.livingwithhippos.unchained.plugins.LinkData
+import com.github.livingwithhippos.unchained.plugins.ScrapedItem
 import com.github.livingwithhippos.unchained.search.model.LinkItem
 import com.github.livingwithhippos.unchained.search.model.LinkItemAdapter
 import com.github.livingwithhippos.unchained.search.model.LinkItemListener
@@ -35,7 +34,7 @@ class SearchItemFragment : UnchainedFragment(), LinkItemListener {
     }
 
     private fun setup() {
-        val item: LinkData = args.item
+        val item: ScrapedItem = args.item
         binding.item = item
 
 

@@ -9,14 +9,14 @@
 
         <variable
             name="item"
-            type="com.github.livingwithhippos.unchained.plugins.LinkData" />
+            type="com.github.livingwithhippos.unchained.plugins.ScrapedItem" />
 
         <variable
             name="listener"
             type="com.github.livingwithhippos.unchained.search.model.SearchItemListener" />
     </data>
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/cvLinkData"
+        android:id="@+id/cvScrapedItem"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"

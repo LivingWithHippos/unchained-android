@@ -6,9 +6,9 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.livingwithhippos.unchained.data.repositoy.PluginRepository
-import com.github.livingwithhippos.unchained.plugins.LinkData
 import com.github.livingwithhippos.unchained.plugins.Parser
 import com.github.livingwithhippos.unchained.plugins.ParserResult
+import com.github.livingwithhippos.unchained.plugins.ScrapedItem
 import com.github.livingwithhippos.unchained.plugins.model.Plugin
 import com.github.livingwithhippos.unchained.utilities.extension.cancelIfActive
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -40,7 +40,7 @@ class SearchViewModel @Inject constructor(
 
         val plugin = pluginLiveData.value?.firstOrNull { it.name == pluginName }
         if (plugin != null) {
-            val results = mutableListOf<LinkData>()
+            val results = mutableListOf<ScrapedItem>()
             // empty saved results on new searches
             saveSearchResults(results)
             job?.cancelIfActive()
@@ -48,7 +48,7 @@ class SearchViewModel @Inject constructor(
                 .onEach {
                     if (it is ParserResult.SingleResult) {
                         results.add(it.value)
-                        parsingLiveData.value = ParserResult.Result(results)
+                        parsingLiveData.value = ParserResult.Results(results)
                         saveSearchResults(results)
                     } else {
                         parsingLiveData.value = it
@@ -70,11 +70,11 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    fun getSearchResults(): List<LinkData> {
-        return savedStateHandle.get<List<LinkData>>(KEY_RESULTS) ?: emptyList()
+    fun getSearchResults(): List<ScrapedItem> {
+        return savedStateHandle.get<List<ScrapedItem>>(KEY_RESULTS) ?: emptyList()
     }
 
-    private fun saveSearchResults(results: List<LinkData>) {
+    private fun saveSearchResults(results: List<ScrapedItem>) {
         savedStateHandle.set(KEY_RESULTS, results)
     }
 
