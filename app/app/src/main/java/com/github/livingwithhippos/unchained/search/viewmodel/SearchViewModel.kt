@@ -1,5 +1,6 @@
 package com.github.livingwithhippos.unchained.search.viewmodel
 
+import android.content.Context
 import android.content.SharedPreferences
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -64,9 +65,9 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    fun fetchPlugins() {
+    fun fetchPlugins(context: Context) {
         viewModelScope.launch {
-            val plugins = pluginRepository.getPlugins()
+            val plugins = pluginRepository.getPlugins(context)
             pluginLiveData.postValue(plugins)
             setPlugins(plugins)
         }

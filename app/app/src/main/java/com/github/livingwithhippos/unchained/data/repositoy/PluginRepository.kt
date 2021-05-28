@@ -1,6 +1,7 @@
 package com.github.livingwithhippos.unchained.data.repositoy
 
 import android.content.Context
+import com.github.livingwithhippos.unchained.data.local.AssetsManager
 import com.github.livingwithhippos.unchained.plugins.model.Plugin
 import com.github.livingwithhippos.unchained.utilities.extension.smartList
 import com.squareup.moshi.JsonAdapter
@@ -12,38 +13,27 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class PluginRepository @Inject constructor(
-    @ApplicationContext private val appContext: Context
+    private val assetsManager: AssetsManager
 ) {
 
-    private val SYSTEM_ASSETS_FOLDER = listOf("images", "webkit")
 
     //todo: inject
     private val pluginAdapter: JsonAdapter<Plugin> = Moshi.Builder()
         .build()
         .adapter(Plugin::class.java)
 
-    private fun getAssetsPath(path: String): Array<String> {
-        // on some phones the path works with / at the end, on others not.
-        return appContext.assets.smartList(path) ?: emptyArray()
-    }
-
-    // TODO: check if this returns true also for empty directories
-    fun isFile(path: String): Boolean {
-        return appContext.assets.list(path).isNullOrEmpty()
-    }
-
-    suspend fun getPlugins(): List<Plugin> = withContext(Dispatchers.IO) {
+    suspend fun getPlugins(context: Context): List<Plugin> = withContext(Dispatchers.IO) {
 
         /**
          * get local json files from the assets folder
          */
-        val jsonFiles = searchFiles()
+        val jsonFiles = assetsManager.searchFiles(TYPE_JSON, PLUGIN_FOLDER)
         val plugins = mutableListOf<Plugin>()
 
         for (json in jsonFiles) {
 
             val plugin: Plugin? = try {
-                val pluginJSON = appContext.assets.open(json)
+                val pluginJSON = context.assets.open(json)
                     .bufferedReader()
                     .use { it.readText() }
 
@@ -61,10 +51,10 @@ class PluginRepository @Inject constructor(
          * get installed .unchained search plugins
          */
 
-        appContext.fileList().filter {
+        context.fileList().filter {
             it.endsWith(".unchained")
         }.forEach {
-            appContext.openFileInput(it).bufferedReader().use { reader ->
+            context.openFileInput(it).bufferedReader().use { reader ->
                 try {
                     val plugin = pluginAdapter.fromJson(reader.readText())
                     if (plugin != null)
@@ -80,35 +70,11 @@ class PluginRepository @Inject constructor(
         plugins
     }
 
-    fun searchFiles(
-        fileType: String = TYPE_JSON,
-        folder: String = PLUGIN_FOLDER,
-        skipSystemFolders: Boolean = true
-    ): List<String> {
-        val results: MutableList<String> = mutableListOf()
-        val pathList = getAssetsPath(folder)
-
-        for (path in pathList) {
-            // skip if system folder
-            if (skipSystemFolders && SYSTEM_ASSETS_FOLDER.contains(path))
-                continue
-
-            val newPath = if (folder == "") path else folder.plus("/").plus(path)
-            // the path is a file
-            if (isFile(newPath)) {
-                // if the name is correct we add it to the list
-                if (newPath.endsWith(fileType))
-                    results.add(newPath)
-            }
-        }
-
-        return results
-    }
-
     companion object {
         const val PLUGIN_FOLDER = "search_plugins"
 
         // todo: rename in .unchained and add it to the manifest
         const val TYPE_JSON = ".json"
+        const val TYPE_UNCHAINED = ".unchained"
     }
 }

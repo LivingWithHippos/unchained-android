@@ -1,7 +1,6 @@
 package com.github.livingwithhippos.unchained.search.view
 
 import android.app.AlertDialog
-import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -52,7 +51,8 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
     private fun setup() {
         showDialogIfNeeded()
         // setup the plugin dropdown
-        val pluginAdapter = ArrayAdapter(requireContext(), R.layout.plugin_list_item, arrayListOf<String>())
+        val pluginAdapter =
+            ArrayAdapter(requireContext(), R.layout.plugin_list_item, arrayListOf<String>())
         (binding.pluginPicker.editText as? AutoCompleteTextView)?.setAdapter(pluginAdapter)
 
         viewModel.pluginLiveData.observe(viewLifecycleOwner) { plugins ->
@@ -64,7 +64,8 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
             ) {
                 // load the latest selected plugin or the first one available
                 val lastPlugin: String = viewModel.getLastSelectedPlugin()
-                val selectedPlugin: Plugin = plugins.firstOrNull{ it.name == lastPlugin} ?: plugins.first()
+                val selectedPlugin: Plugin =
+                    plugins.firstOrNull { it.name == lastPlugin } ?: plugins.first()
 
                 //todo: record the item used in the preferences and reselect it at setup time
                 (binding.pluginPicker.editText as? AutoCompleteTextView)?.setText(
@@ -84,7 +85,7 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
             }
         }
 
-        viewModel.fetchPlugins()
+        viewModel.fetchPlugins(requireContext())
 
         val adapter = SearchItemAdapter(this)
         binding.rvSearchList.adapter = adapter
@@ -133,12 +134,12 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
                 builder.apply {
                     setTitle(R.string.search_plugins)
                     setMessage(R.string.plugin_description_message)
-                    setPositiveButton(R.string.open_github) { dialog, id ->
+                    setPositiveButton(R.string.open_github) { _, _ ->
                         viewModel.setDialogNeeded(false)
                         // User clicked OK button
                         openExternalWebPage(PLUGINS_URL)
                     }
-                    setNegativeButton(R.string.close) { dialog, id ->
+                    setNegativeButton(R.string.close) { _, _ ->
                         viewModel.setDialogNeeded(false)
                     }
                 }

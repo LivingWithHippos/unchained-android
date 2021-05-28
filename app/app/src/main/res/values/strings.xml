@@ -454,4 +454,8 @@
     <string name="open_github">Open Github</string>
     <string name="plugin_description_message">"On this screen you'll be able to search for torrent and magnet files. Aside from the basic plugins available, you'll find more on the internet with the extension '.unchained', download and then open them with this app. Try the official GitHub repository for starters."</string>
     <string name="search_plugins">Search Plugins</string>
+    <string name="get_search_plugins">Get search plugins</string>
+    <string name="delete_plugins">Delete external plugins</string>
+    <string name="delete_plugins_summary">Remove all the plugins installed by the user</string>
+    <string name="plugin_removed">%1$d plugin/s removed</string>
 </resources>
