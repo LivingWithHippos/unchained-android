@@ -2,6 +2,8 @@ package com.github.livingwithhippos.unchained.plugins
 
 import android.os.Parcel
 import android.os.Parcelable
+import android.text.Spanned
+import androidx.core.text.HtmlCompat
 import com.github.livingwithhippos.unchained.plugins.model.CustomRegex
 import com.github.livingwithhippos.unchained.plugins.model.Plugin
 import com.github.livingwithhippos.unchained.plugins.model.TableLink
@@ -65,14 +67,20 @@ class Parser(
                                     for (link in innerSource) {
                                         // parse every page linked to the results
                                         val s = getSource(link)
-                                        val name = parseSingle(
-                                            plugin.download.internalLink.name,
-                                            s,
-                                            plugin.url
-                                        ) ?: ""
+                                        val name = cleanName(
+                                            parseSingle(
+                                                plugin.download.internalLink.name,
+                                                s,
+                                                plugin.url
+                                            ) ?: ""
+                                        )
                                         // parse magnets
                                         val magnets = if (plugin.download.magnet != null)
-                                            parseList(plugin.download.magnet, s, plugin.url).map { it.removeWebFormatting() }
+                                            parseList(
+                                                plugin.download.magnet,
+                                                s,
+                                                plugin.url
+                                            ).map { it.removeWebFormatting() }
                                         else
                                             emptyList()
                                         // parse torrents
@@ -337,7 +345,8 @@ class Parser(
     }
 
     private fun cleanName(name: String): String {
-        return name.trim()
+        val textFromHtml: Spanned = HtmlCompat.fromHtml(name, HtmlCompat.FROM_HTML_MODE_COMPACT)
+        return textFromHtml.trim()
             // replace newlines with spaces
             .replace("\\R+".toRegex(), " ")
             // remove all html tags from the name. Will replace anything like <*> if it's in the name

@@ -59,7 +59,7 @@
   */
   "download": {
     // "magnet" is the link to the magnet, it's a java regex. The magnet needs to be inside parenthesis (magnet:...)
-	// it is optional if you use the .torrent links in the page
+    // it is optional if you use the .torrent links in the page
     "magnet": {
       // these is the regex structure used for all the regexs in this template
       // java regex for the torrent link (direct links only).
@@ -75,9 +75,10 @@
     },
     // "torrent" is the array with the regex structure used to parse the torrent, it's a java regex. The link needs to be inside parenthesis (https://...torrent)
     // only direct links to .torrent files are supported, copy and paste one manually in the new download screen and try to unrestrict it to check if it works
-	// optional if you use magnet links
-	// at the moment http links get redirected to https. If the site does not support https avoid adding it, or open an issue on Github if you REALLY need it.
-	"torrent": [
+    // if you don't use this you need the magnet object to get some results.
+    // at the moment http links get redirected to https. If the site does not support https avoid adding it, or open an issue on Github if you REALLY need it.
+    // this is an array so even for a single regex you'll need the square brackets -> torrent: [{...}]
+    "torrent": [
       {
         "regex": "(https?://torrentsite1\\.org/torrent/[^\\.]+.torrent)",
         "group": 1,
@@ -114,7 +115,7 @@
       // these are the indexes of the columns with the data. Columns start at zero.
       // Name is the only one not optional, but at least one between torrent and magnet is needed.
       // all regexes are optional, if missing the whole text or the cell will be taken
-      "name_column" : 0,
+      "name_column": 0,
       "name_regex": {
         "regex": "href=\"(/torrent/[^\"]+)",
         "group": 1,
