@@ -62,35 +62,48 @@
 
 
                 <TextView
-                    android:id="@+id/tvMagnet"
+                    android:id="@+id/tvLinks"
                     style="@style/TextAppearance.UnchainedTheme.Caption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="5dp"
-                    android:text= "@{@plurals/magnet_format(item.magnets.size(), item.magnets.size()), default=`1 magnet`}"
+                    android:layout_marginEnd="8dp"
+                    android:text= "@{@plurals/links_format(item.magnets.size()+item.torrents.size(), item.magnets.size()+item.torrents.size()), default=`2 links`}"
                     android:textColor="?attr/colorOnSurfaceVariant"
                     android:visibility="@{item.magnets.size() == 0 ? View.GONE : View.VISIBLE}"
                     />
 
                 <TextView
-                    android:id="@+id/tvTorrent"
+                    android:id="@+id/tvSeeders"
                     style="@style/TextAppearance.UnchainedTheme.Caption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text= "@{@plurals/torrent_format(item.torrents.size(), item.torrents.size()), default=`2 torrents`}"
+                    android:layout_marginEnd="5dp"
+                    android:text= "@{String.format(@string/seeders_short_format, item.seeders), default=`S: 16`}"
                     android:textColor="?attr/colorOnSurfaceVariant"
-                    android:visibility="@{item.torrents.size() == 0 ? View.GONE : View.VISIBLE}"
+                    android:visibility="@{item.seeders == null ? View.GONE : View.VISIBLE}"
                     />
 
                 <TextView
-                    android:id="@+id/tvNoLinks"
+                    android:id="@+id/tvLeechers"
                     style="@style/TextAppearance.UnchainedTheme.Caption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text= "@string/no_links"
+                    android:layout_marginEnd="8dp"
+                    android:text= "@{String.format(@string/leechers_short_format, item.leechers), default=`L: 4`}"
                     android:textColor="?attr/colorOnSurfaceVariant"
-                    android:visibility="@{item.torrents.size() == 0 &amp;&amp; item.magnets.size() == 0? View.VISIBLE : View.GONE}"
+                    android:visibility="@{item.leechers == null ? View.GONE : View.VISIBLE}"
                     />
+
+                <TextView
+                    android:id="@+id/tvSize"
+                    style="@style/TextAppearance.UnchainedTheme.Caption"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text= "@{item.size, default=`3.4 GB`}"
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    android:visibility="@{item.size == null ? View.GONE : View.VISIBLE}"
+                    />
+
             </LinearLayout>
 
 

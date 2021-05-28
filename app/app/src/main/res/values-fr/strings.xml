@@ -263,4 +263,8 @@
         <item quantity="one">%d torrent</item>
         <item quantity="other">%d torrents</item>
     </plurals>
+    <plurals name="links_format">
+        <item quantity="one">%d lien</item>
+        <item quantity="other">%d liens</item>
+    </plurals>
 </resources>

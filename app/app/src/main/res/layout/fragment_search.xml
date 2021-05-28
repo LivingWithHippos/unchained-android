@@ -68,6 +68,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="5dp"
+            android:layout_marginTop="5dp"
             app:layout_constraintTop_toBottomOf="@id/tfSearch"
             app:layout_constraintBottom_toTopOf="@id/llList"
             app:layout_constraintStart_toStartOf="parent"

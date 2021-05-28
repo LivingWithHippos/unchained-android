@@ -470,4 +470,11 @@
         <item quantity="one">%d torrent</item>
         <item quantity="other">%d torrents</item>
     </plurals>
+    <plurals name="links_format">
+        <item quantity="zero">No links</item>
+        <item quantity="one">1 link</item>
+        <item quantity="other">%d links</item>
+    </plurals>
+    <string name="seeders_short_format" translatable="false">S: %s</string>
+    <string name="leechers_short_format" translatable="false">L: %s</string>
 </resources>

@@ -112,7 +112,7 @@ class Parser(
                                     }
                                     emit(ParserResult.SearchFinished)
                                 } else {
-                                    emit(ParserResult.EmptyInnerLinksError)
+                                    emit(ParserResult.EmptyInnerLinks)
                                 }
                             }
                             plugin.download.tableLink != null -> {
@@ -147,9 +147,9 @@ class Parser(
             // restrict the document to a certain table
             val table: Element = when {
                 tableLink.idName != null -> doc.getElementById(tableLink.idName)
-                tableLink.className != null -> doc.getElementsByClass(tableLink.className).first()
+                tableLink.className != null -> doc.getElementsByClass(tableLink.className).firstOrNull()
                 else -> doc.getElementsByTag("table").first()
-            }
+            } ?: return emptyList()
 
             // parse all the rows
             val rows = table.select("tr")
@@ -396,7 +396,7 @@ sealed class ParserResult {
     object MissingQuery : ParserResult()
     object MissingCategory : ParserResult()
     object NetworkBodyError : ParserResult()
-    object EmptyInnerLinksError : ParserResult()
+    object EmptyInnerLinks : ParserResult()
     object PluginBuildError : ParserResult()
     object MissingImplementationError : ParserResult()
 

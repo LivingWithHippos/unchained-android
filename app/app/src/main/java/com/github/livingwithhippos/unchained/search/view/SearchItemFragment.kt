@@ -12,6 +12,7 @@ import com.github.livingwithhippos.unchained.plugins.ScrapedItem
 import com.github.livingwithhippos.unchained.search.model.LinkItem
 import com.github.livingwithhippos.unchained.search.model.LinkItemAdapter
 import com.github.livingwithhippos.unchained.search.model.LinkItemListener
+import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -36,6 +37,11 @@ class SearchItemFragment : UnchainedFragment(), LinkItemListener {
     private fun setup() {
         val item: ScrapedItem = args.item
         binding.item = item
+
+        binding.linkCaption.setOnClickListener {
+            if (item.link != null)
+                openExternalWebPage(item.link)
+        }
 
 
         val adapter = LinkItemAdapter(this)

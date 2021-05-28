@@ -21,6 +21,7 @@ import com.github.livingwithhippos.unchained.search.viewmodel.SearchViewModel
 import com.github.livingwithhippos.unchained.utilities.PLUGINS_URL
 import com.github.livingwithhippos.unchained.utilities.extension.hideKeyboard
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
+import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -116,6 +117,10 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
                         binding.loadingCircle.visibility = View.VISIBLE
                     }
                     is ParserResult.SearchFinished -> {
+                        binding.loadingCircle.visibility = View.INVISIBLE
+                    }
+                    is ParserResult.EmptyInnerLinks -> {
+                        context?.showToast(R.string.no_links)
                         binding.loadingCircle.visibility = View.INVISIBLE
                     }
                     else -> {
