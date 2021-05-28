@@ -25,6 +25,7 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.model.AuthenticationState
+import com.github.livingwithhippos.unchained.data.repositoy.PluginRepository.Companion.TYPE_UNCHAINED
 import com.github.livingwithhippos.unchained.data.service.ForegroundTorrentService
 import com.github.livingwithhippos.unchained.data.service.ForegroundTorrentService.Companion.KEY_TORRENT_ID
 import com.github.livingwithhippos.unchained.databinding.ActivityMainBinding
@@ -230,7 +231,7 @@ class MainActivity : AppCompatActivity() {
                         //clicked on a torrent file or a magnet link or .unchained file
                         SCHEME_MAGNET, SCHEME_CONTENT, SCHEME_FILE -> {
                             // check if it's a search plugin
-                            if (data.path?.endsWith(".unchained") == true) {
+                            if (data.path?.endsWith(TYPE_UNCHAINED) == true) {
                                 addSearchPlugin(data)
                             } else
                             // it's a magnet/torrent, check auth state before loading it

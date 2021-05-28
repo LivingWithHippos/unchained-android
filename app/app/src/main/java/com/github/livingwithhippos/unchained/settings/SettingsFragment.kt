@@ -75,6 +75,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 val removedPlugins = viewModel.removeExternalPlugins(requireContext())
                 if (removedPlugins >= 0)
                     context?.showToast(getString(R.string.plugin_removed, removedPlugins))
+                else
+                    context?.showToast(getString(R.string.error))
             }
             else -> return super.onPreferenceTreeClick(preference)
         }

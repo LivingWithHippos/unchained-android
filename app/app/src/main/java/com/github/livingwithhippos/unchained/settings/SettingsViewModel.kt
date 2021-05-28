@@ -4,15 +4,15 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.livingwithhippos.unchained.data.repositoy.HostsRepository
-import com.github.livingwithhippos.unchained.data.repositoy.PluginRepository.Companion.TYPE_UNCHAINED
+import com.github.livingwithhippos.unchained.data.repositoy.PluginRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
-    private val hostsRepository: HostsRepository
+    private val hostsRepository: HostsRepository,
+    private val pluginRepository: PluginRepository
 ) : ViewModel() {
 
     fun updateRegexps() {
@@ -22,21 +22,6 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    fun removeExternalPlugins(context: Context): Int {
-        return try {
-            val plugins = context.filesDir.listFiles { _, name ->
-                name.endsWith(TYPE_UNCHAINED)
-            }
+    fun removeExternalPlugins(context: Context): Int = pluginRepository.removeExternalPlugins(context)
 
-            plugins?.forEach {
-                it.delete()
-            }
-
-            plugins?.size ?: -1
-
-        } catch (e: SecurityException) {
-            Timber.d("Security exception deleting plugins files: ${e.message}")
-            -1
-        }
-    }
 }

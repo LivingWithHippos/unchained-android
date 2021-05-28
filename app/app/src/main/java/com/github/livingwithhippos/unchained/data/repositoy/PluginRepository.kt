@@ -52,7 +52,7 @@ class PluginRepository @Inject constructor(
          */
 
         context.fileList().filter {
-            it.endsWith(".unchained")
+            it.endsWith(TYPE_UNCHAINED)
         }.forEach {
             context.openFileInput(it).bufferedReader().use { reader ->
                 try {
@@ -68,6 +68,24 @@ class PluginRepository @Inject constructor(
         }
 
         plugins
+    }
+
+    fun removeExternalPlugins(context: Context): Int {
+        return try {
+            val plugins = context.filesDir.listFiles { _, name ->
+                name.endsWith(TYPE_UNCHAINED)
+            }
+
+            plugins?.forEach {
+                it.delete()
+            }
+
+            plugins?.size ?: -1
+
+        } catch (e: SecurityException) {
+            Timber.d("Security exception deleting plugins files: ${e.message}")
+            -1
+        }
     }
 
     companion object {
