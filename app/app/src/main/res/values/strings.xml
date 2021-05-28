@@ -458,4 +458,7 @@
     <string name="delete_plugins">Delete external plugins</string>
     <string name="delete_plugins_summary">Remove all the plugins installed by the user</string>
     <string name="plugin_removed">%1$d plugin/s removed</string>
+    <string name="plugin_install_error_newer">The plugin is already installed with a newer version</string>
+    <string name="plugin_install_installed">Plugin installed</string>
+    <string name="plugin_install_not_installed">Plugin not installed</string>
 </resources>

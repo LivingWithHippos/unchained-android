@@ -1,6 +1,7 @@
 package com.github.livingwithhippos.unchained.start.viewmodel
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
@@ -13,9 +14,11 @@ import com.github.livingwithhippos.unchained.data.model.User
 import com.github.livingwithhippos.unchained.data.repositoy.AuthenticationRepository
 import com.github.livingwithhippos.unchained.data.repositoy.CredentialsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.HostsRepository
+import com.github.livingwithhippos.unchained.data.repositoy.PluginRepository
 import com.github.livingwithhippos.unchained.data.repositoy.UserRepository
 import com.github.livingwithhippos.unchained.data.repositoy.VariousApiRepository
 import com.github.livingwithhippos.unchained.lists.view.ListsTabFragment
+import com.github.livingwithhippos.unchained.plugins.model.Plugin
 import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.PRIVATE_TOKEN
 import com.github.livingwithhippos.unchained.utilities.extension.isMagnet
@@ -25,6 +28,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.io.File
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 import javax.inject.Inject
@@ -40,7 +44,8 @@ class MainActivityViewModel @Inject constructor(
     private val credentialRepository: CredentialsRepository,
     private val userRepository: UserRepository,
     private val variousApiRepository: VariousApiRepository,
-    private val hostsRepository: HostsRepository
+    private val hostsRepository: HostsRepository,
+    private val pluginRepository: PluginRepository,
 ) : ViewModel() {
 
     val authenticationState = MutableLiveData<Event<AuthenticationState>>()
@@ -273,6 +278,64 @@ class MainActivityViewModel @Inject constructor(
 
     fun isTokenRefreshing(): Boolean {
         return savedStateHandle.get<Boolean>(KEY_REFRESHING_TOKEN) ?: false
+    }
+
+    fun addPlugin(context: Context, data: Uri) {
+        // check if the plugin is already installed/a newer version.
+        viewModelScope.launch {
+            val filename = data.path?.split("/")?.last()
+            val tempPlugin = pluginRepository.readPassedPlugin(context, data)
+            if (filename != null && tempPlugin != null) {
+                val file = File(context.filesDir, filename)
+                // check if we' re overwriting a plugin
+                if (file.exists()) {
+                    val existingPlugin: Plugin? =
+                        pluginRepository.getExternalPlugin(context, filename)
+                    // corrupted file probably, remove and write the new one
+                    if (existingPlugin == null) {
+                        file.delete()
+                        val installed = pluginRepository.addExternalPlugin(context, data)
+                        if (installed)
+                            messageLiveData.postEvent(R.string.plugin_install_installed)
+                        else
+                            messageLiveData.postEvent(R.string.plugin_install_not_installed)
+                    } else {
+                        // is it the same plugin?
+                        if (existingPlugin.name == tempPlugin.name) {
+                            // is the version newer?
+                            if (existingPlugin.version < tempPlugin.version) {
+                                file.delete()
+                                val installed = pluginRepository.addExternalPlugin(context, data)
+                                if (installed)
+                                    messageLiveData.postEvent(R.string.plugin_install_installed)
+                                else
+                                    messageLiveData.postEvent(R.string.plugin_install_not_installed)
+                            } else {
+                                // installed plugin is newer
+                                messageLiveData.postEvent(R.string.plugin_install_error_newer)
+                            }
+                        } else {
+                            // same file name for different plugins
+                            val installed = pluginRepository.addExternalPlugin(context, data,
+                                "_$filename"
+                            )
+                            if (installed)
+                                messageLiveData.postEvent(R.string.plugin_install_installed)
+                            else
+                                messageLiveData.postEvent(R.string.plugin_install_not_installed)
+                        }
+                    }
+                } else {
+                    val installed = pluginRepository.addExternalPlugin(context, data)
+                    if (installed)
+                        messageLiveData.postEvent(R.string.plugin_install_installed)
+                    else
+                        messageLiveData.postEvent(R.string.plugin_install_not_installed)
+                }
+            } else {
+                messageLiveData.postEvent(R.string.plugin_install_not_installed)
+            }
+        }
     }
 
     companion object {

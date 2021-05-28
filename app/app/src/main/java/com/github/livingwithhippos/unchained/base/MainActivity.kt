@@ -308,19 +308,7 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun addSearchPlugin(data: Uri) {
-        try {
-            applicationContext.contentResolver.openInputStream(data)?.use { inputStream ->
-                val buffer: ByteArray = inputStream.readBytes()
-                val filename = data.path?.split("/")?.last()
-                if (filename != null)
-                    openFileOutput(filename, Context.MODE_PRIVATE).use {
-                        it.write(buffer)
-                    }
-            }
-        } catch (exception: IOException) {
-            Timber.e("Error loading the file ${data.path}: ${exception.message}")
-            applicationContext.showToast(R.string.error_loading_file)
-        }
+        viewModel.addPlugin(applicationContext, data)
     }
 
 
