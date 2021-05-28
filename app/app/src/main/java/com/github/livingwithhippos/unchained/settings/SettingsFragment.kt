@@ -24,7 +24,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
     @Inject
     lateinit var preferences: SharedPreferences
 
-    private val viewModel: SettingsViewmodel by viewModels()
+    private val viewModel: SettingsViewModel by viewModels()
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.settings, rootKey)
