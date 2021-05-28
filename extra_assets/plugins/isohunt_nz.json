@@ -19,21 +19,23 @@
     "no_category": "${url}/torrents/?iht=0&ihq=${query}"
   },
   "download": {
-    "magnet": {
-      "regex": "https://mylink\\.cx/\\?url=(magnet[^\"]+)",
-      "group": 1,
-      "slug_type": "complete"
-    },
     "internal": {
+      "link": {
+        "regex":   "href=\"(/torrent_details/[^\"]+)",
+        "group": 1,
+        "slug_type": "append_url"
+      }
+    },
+    "regexes": {
       "name": {
         "regex":  "href=\"/torrent_details/[^>]+>([^<]+)",
         "group": 1,
         "slug_type": "complete"
       },
-      "link": {
-        "regex":   "href=\"(/torrent_details/[^\"]+)",
+      "magnet": {
+        "regex": "https://mylink\\.cx/\\?url=(magnet[^\"]+)",
         "group": 1,
-        "slug_type": "append_url"
+        "slug_type": "complete"
       }
     }
   }

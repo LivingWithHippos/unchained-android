@@ -37,8 +37,7 @@ data class Plugin(
         parcel.readParcelable(SupportedCategories::class.java.classLoader)!!,
         parcel.readParcelable(PluginSearch::class.java.classLoader)!!,
         parcel.readParcelable(PluginDownload::class.java.classLoader)!!
-    ) {
-    }
+    )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeDouble(engineVersion)
@@ -137,8 +136,7 @@ data class PluginSearch(
         parcel.readString(),
         parcel.readString() ?: "",
         parcel.readValue(Int::class.java.classLoader) as? Int
-    ) {
-    }
+    )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(urlCategory)
@@ -163,28 +161,23 @@ data class PluginSearch(
 
 @JsonClass(generateAdapter = true)
 data class PluginDownload(
-    @Json(name = "magnet")
-    val magnet: CustomRegex?,
-    @Json(name = "torrent")
-    val torrent: List<CustomRegex>?,
     @Json(name = "internal")
     val internalLink: InternalLink?,
     @Json(name = "table_direct")
-    val tableLink: TableLink?
+    val tableLink: TableDirect?,
+    @Json(name = "regexes")
+    val regexes: PluginRegexes
 ): Parcelable {
     constructor(parcel: Parcel) : this(
-        parcel.readParcelable(CustomRegex::class.java.classLoader),
-        parcel.createTypedArrayList(CustomRegex),
         parcel.readParcelable(InternalLink::class.java.classLoader),
-        parcel.readParcelable(TableLink::class.java.classLoader)
-    ) {
-    }
+        parcel.readParcelable(TableDirect::class.java.classLoader),
+        parcel.readParcelable(PluginRegexes::class.java.classLoader)!!
+    )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeParcelable(magnet, flags)
-        parcel.writeTypedList(torrent)
         parcel.writeParcelable(internalLink, flags)
         parcel.writeParcelable(tableLink, flags)
+        parcel.writeParcelable(regexes, flags)
     }
 
     override fun describeContents(): Int {
@@ -218,8 +211,7 @@ data class CustomRegex(
         parcel.readInt(),
         parcel.readString() ?: "",
         parcel.readString()
-    ) {
-    }
+    )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(regex)
@@ -245,19 +237,14 @@ data class CustomRegex(
 
 @JsonClass(generateAdapter = true)
 data class InternalLink(
-    @Json(name = "name")
-    val name: CustomRegex,
     @Json(name = "link")
     val link: CustomRegex
 ): Parcelable {
     constructor(parcel: Parcel) : this(
-        parcel.readParcelable(CustomRegex::class.java.classLoader)!!,
         parcel.readParcelable(CustomRegex::class.java.classLoader)!!
-    ) {
-    }
+    )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeParcelable(name, flags)
         parcel.writeParcelable(link, flags)
     }
 
@@ -276,77 +263,82 @@ data class InternalLink(
     }
 }
 
+@JsonClass(generateAdapter = true)
+data class Internal(
+    @Json(name = "link")
+    val link: CustomRegex
+)
 
 @JsonClass(generateAdapter = true)
-data class TableLink(
+data class TableDirect(
     @Json(name = "class")
     val className: String?,
     @Json(name = "id")
     val idName: String?,
-    @Json(name = "name_column")
-    val nameColumn: Int,
-    @Json(name = "name_regex")
-    val nameRegex: CustomRegex,
-    @Json(name = "seeders_column")
-    val seedersColumn: Int?,
-    @Json(name = "seeders_regex")
-    val seedersRegex: CustomRegex?,
-    @Json(name = "leechers_column")
-    val leechersColumn: Int?,
-    @Json(name = "leechers_regex")
-    val leechersRegex: CustomRegex?,
-    @Json(name = "size_column")
-    val sizeColumn: Int?,
-    @Json(name = "size_regex")
-    val sizeRegex: CustomRegex?,
-    @Json(name = "magnet_column")
-    val magnetColumn: Int?,
-    @Json(name = "magnet_regex")
-    val magnetRegex: CustomRegex?,
-    @Json(name = "torrent_column")
-    val torrentColumn: Int?,
-    @Json(name = "torrent_regex")
-    val torrentRegex: CustomRegex?,
-    @Json(name = "details_column")
-    val detailsColumn: Int?,
-    @Json(name = "details_regex")
-    val detailsRegex: CustomRegex?
+    @Json(name = "columns")
+    val columns: Columns
 ): Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString(),
         parcel.readString(),
-        parcel.readInt(),
-        parcel.readParcelable(CustomRegex::class.java.classLoader)!!,
-        parcel.readValue(Int::class.java.classLoader) as? Int,
-        parcel.readParcelable(CustomRegex::class.java.classLoader),
-        parcel.readValue(Int::class.java.classLoader) as? Int,
-        parcel.readParcelable(CustomRegex::class.java.classLoader),
-        parcel.readValue(Int::class.java.classLoader) as? Int,
-        parcel.readParcelable(CustomRegex::class.java.classLoader),
-        parcel.readValue(Int::class.java.classLoader) as? Int,
-        parcel.readParcelable(CustomRegex::class.java.classLoader),
-        parcel.readValue(Int::class.java.classLoader) as? Int,
-        parcel.readParcelable(CustomRegex::class.java.classLoader),
-        parcel.readValue(Int::class.java.classLoader) as? Int,
-        parcel.readParcelable(CustomRegex::class.java.classLoader)
+        parcel.readParcelable(Columns::class.java.classLoader)!!
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(className)
         parcel.writeString(idName)
-        parcel.writeInt(nameColumn)
+        parcel.writeParcelable(columns, flags)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<TableDirect> {
+        override fun createFromParcel(parcel: Parcel): TableDirect {
+            return TableDirect(parcel)
+        }
+
+        override fun newArray(size: Int): Array<TableDirect?> {
+            return arrayOfNulls(size)
+        }
+    }
+}
+
+@JsonClass(generateAdapter = true)
+data class PluginRegexes(
+    @Json(name = "name")
+    val nameRegex: CustomRegex,
+    @Json(name = "seeders")
+    val seedersRegex: CustomRegex?,
+    @Json(name = "leechers")
+    val leechersRegex: CustomRegex?,
+    @Json(name = "size")
+    val sizeRegex: CustomRegex?,
+    @Json(name = "magnet")
+    val magnetRegex: CustomRegex?,
+    @Json(name = "torrents")
+    val torrentRegexes: List<CustomRegex>?,
+    @Json(name = "details")
+    val detailsRegex: CustomRegex?
+): Parcelable {
+    constructor(parcel: Parcel) : this(
+        parcel.readParcelable(CustomRegex::class.java.classLoader)!!,
+        parcel.readParcelable(CustomRegex::class.java.classLoader),
+        parcel.readParcelable(CustomRegex::class.java.classLoader),
+        parcel.readParcelable(CustomRegex::class.java.classLoader),
+        parcel.readParcelable(CustomRegex::class.java.classLoader),
+        parcel.createTypedArrayList(CustomRegex),
+        parcel.readParcelable(CustomRegex::class.java.classLoader)
+    )
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeParcelable(nameRegex, flags)
-        parcel.writeValue(seedersColumn)
         parcel.writeParcelable(seedersRegex, flags)
-        parcel.writeValue(leechersColumn)
         parcel.writeParcelable(leechersRegex, flags)
-        parcel.writeValue(sizeColumn)
         parcel.writeParcelable(sizeRegex, flags)
-        parcel.writeValue(magnetColumn)
         parcel.writeParcelable(magnetRegex, flags)
-        parcel.writeValue(torrentColumn)
-        parcel.writeParcelable(torrentRegex, flags)
-        parcel.writeValue(detailsColumn)
+        parcel.writeTypedList(torrentRegexes)
         parcel.writeParcelable(detailsRegex, flags)
     }
 
@@ -354,12 +346,66 @@ data class TableLink(
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<TableLink> {
-        override fun createFromParcel(parcel: Parcel): TableLink {
-            return TableLink(parcel)
+    companion object CREATOR : Parcelable.Creator<PluginRegexes> {
+        override fun createFromParcel(parcel: Parcel): PluginRegexes {
+            return PluginRegexes(parcel)
         }
 
-        override fun newArray(size: Int): Array<TableLink?> {
+        override fun newArray(size: Int): Array<PluginRegexes?> {
+            return arrayOfNulls(size)
+        }
+    }
+}
+
+
+@JsonClass(generateAdapter = true)
+data class Columns(
+    @Json(name = "name_column")
+    val nameColumn: Int,
+    @Json(name = "seeders_column")
+    val seedersColumn: Int?,
+    @Json(name = "leechers_column")
+    val leechersColumn: Int?,
+    @Json(name = "size_column")
+    val sizeColumn: Int?,
+    @Json(name = "magnet_column")
+    val magnetColumn: Int?,
+    @Json(name = "torrent_column")
+    val torrentColumn: Int?,
+    @Json(name = "details_column")
+    val detailsColumn: Int?
+): Parcelable {
+    constructor(parcel: Parcel) : this(
+        parcel.readInt(),
+        parcel.readValue(Int::class.java.classLoader) as? Int,
+        parcel.readValue(Int::class.java.classLoader) as? Int,
+        parcel.readValue(Int::class.java.classLoader) as? Int,
+        parcel.readValue(Int::class.java.classLoader) as? Int,
+        parcel.readValue(Int::class.java.classLoader) as? Int,
+        parcel.readValue(Int::class.java.classLoader) as? Int
+    ) {
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeInt(nameColumn)
+        parcel.writeValue(seedersColumn)
+        parcel.writeValue(leechersColumn)
+        parcel.writeValue(sizeColumn)
+        parcel.writeValue(magnetColumn)
+        parcel.writeValue(torrentColumn)
+        parcel.writeValue(detailsColumn)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<Columns> {
+        override fun createFromParcel(parcel: Parcel): Columns {
+            return Columns(parcel)
+        }
+
+        override fun newArray(size: Int): Array<Columns?> {
             return arrayOfNulls(size)
         }
     }

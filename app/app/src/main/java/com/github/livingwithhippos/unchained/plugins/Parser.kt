@@ -6,7 +6,8 @@ import android.text.Spanned
 import androidx.core.text.HtmlCompat
 import com.github.livingwithhippos.unchained.plugins.model.CustomRegex
 import com.github.livingwithhippos.unchained.plugins.model.Plugin
-import com.github.livingwithhippos.unchained.plugins.model.TableLink
+import com.github.livingwithhippos.unchained.plugins.model.PluginRegexes
+import com.github.livingwithhippos.unchained.plugins.model.TableDirect
 import com.github.livingwithhippos.unchained.utilities.extension.removeWebFormatting
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
@@ -69,15 +70,15 @@ class Parser(
                                         val s = getSource(link)
                                         val name = cleanName(
                                             parseSingle(
-                                                plugin.download.internalLink.name,
+                                                plugin.download.regexes.nameRegex,
                                                 s,
                                                 plugin.url
                                             ) ?: ""
                                         )
                                         // parse magnets
-                                        val magnets = if (plugin.download.magnet != null)
+                                        val magnets = if (plugin.download.regexes.magnetRegex != null)
                                             parseList(
-                                                plugin.download.magnet,
+                                                plugin.download.regexes.magnetRegex,
                                                 s,
                                                 plugin.url
                                             ).map { it.removeWebFormatting() }
@@ -85,13 +86,10 @@ class Parser(
                                             emptyList()
                                         // parse torrents
                                         val torrents = mutableListOf<String>()
-                                        if (plugin.download.torrent != null) {
-                                            for (torrentRegex in plugin.download.torrent) {
+                                        if (plugin.download.regexes.torrentRegexes != null) {
                                                 torrents.addAll(
-                                                    parseList(torrentRegex, s, plugin.url)
+                                                    parseList(plugin.download.regexes.torrentRegexes, s, plugin.url)
                                                 )
-
-                                            }
                                         }
 
                                         // emit results once at time to avoid updating the list all at once
@@ -116,6 +114,7 @@ class Parser(
                                     ParserResult.Results(
                                         parseTable(
                                             plugin.download.tableLink,
+                                            plugin.download.regexes,
                                             source,
                                             plugin.url
                                         )
@@ -131,7 +130,8 @@ class Parser(
         }
 
     private fun parseTable(
-        tableLink: TableLink,
+        tableLink: TableDirect,
+        regexes: PluginRegexes,
         source: String,
         baseUrl: String,
     ): List<ScrapedItem> {
@@ -159,55 +159,55 @@ class Parser(
                 val name =
                     cleanName(
                         parseSingle(
-                            tableLink.nameRegex,
-                            columns[tableLink.nameColumn].html(),
+                            regexes.nameRegex,
+                            columns[tableLink.columns.nameColumn].html(),
                             baseUrl
                         ) ?: ""
                     )
 
                 var details: String? = null
-                if (tableLink.detailsRegex != null && tableLink.detailsColumn != null)
+                if (tableLink.columns.detailsColumn != null)
                     details = parseSingle(
-                        tableLink.detailsRegex,
-                        columns[tableLink.detailsColumn].html(),
+                        regexes.detailsRegex,
+                        columns[tableLink.columns.detailsColumn].html(),
                         baseUrl
                     )
                 var seeders: String? = null
-                if (tableLink.seedersColumn != null && tableLink.seedersRegex != null)
+                if (tableLink.columns.seedersColumn != null)
                     seeders = parseSingle(
-                        tableLink.seedersRegex,
-                        columns[tableLink.seedersColumn].html(),
+                        regexes.seedersRegex,
+                        columns[tableLink.columns.seedersColumn ].html(),
                         baseUrl
                     )
                 var leechers: String? = null
-                if (tableLink.leechersColumn != null && tableLink.leechersRegex != null)
+                if (tableLink.columns.leechersColumn != null)
                     leechers = parseSingle(
-                        tableLink.leechersRegex,
-                        columns[tableLink.leechersColumn].html(),
+                        regexes.leechersRegex,
+                        columns[tableLink.columns.leechersColumn].html(),
                         baseUrl
                     )
                 var size: String? = null
-                if (tableLink.sizeColumn != null && tableLink.sizeRegex != null)
+                if (tableLink.columns.sizeColumn != null)
                     size = parseSingle(
-                        tableLink.sizeRegex,
-                        columns[tableLink.sizeColumn].html(),
+                        regexes.sizeRegex,
+                        columns[tableLink.columns.sizeColumn].html(),
                         baseUrl
                     )
                 var magnets: List<String> = emptyList()
-                if (tableLink.magnetRegex != null && tableLink.magnetColumn != null)
+                if (tableLink.columns.magnetColumn != null)
                     magnets = parseList(
-                        tableLink.magnetRegex,
-                        columns[tableLink.magnetColumn].html(),
+                        regexes.magnetRegex,
+                        columns[tableLink.columns.magnetColumn].html(),
                         baseUrl
                     ).map {
                         // this function cleans links from html codes such as %3A, %3F etc.
                         it.removeWebFormatting()
                     }
                 var torrents: List<String> = emptyList()
-                if (tableLink.torrentRegex != null && tableLink.torrentColumn != null)
+                if (tableLink.columns.torrentColumn != null)
                     torrents = parseList(
-                        tableLink.torrentRegex,
-                        columns[tableLink.torrentColumn].html(),
+                        regexes.torrentRegexes,
+                        columns[tableLink.columns.torrentColumn ].html(),
                         baseUrl
                     )
 
@@ -267,7 +267,9 @@ class Parser(
      * @param url
      * @return
      */
-    private fun parseSingle(customRegex: CustomRegex, source: String, url: String): String? {
+    private fun parseSingle(customRegex: CustomRegex?, source: String, url: String): String? {
+        if (customRegex == null)
+            return null
         val regex: Regex = Regex(customRegex.regex, RegexOption.DOT_MATCHES_ALL)
         val match = regex.find(source)?.groupValues?.get(customRegex.group) ?: return null
         return when (customRegex.slugType) {
@@ -298,36 +300,52 @@ class Parser(
      * @return
      */
     private fun parseList(
-        customRegex: CustomRegex,
+        customRegexes: List<CustomRegex>?,
         source: String,
         url: String
     ): List<String> {
-        val regex: Regex = customRegex.regex.toRegex()
-        val matches = regex.findAll(source)
+        if (customRegexes.isNullOrEmpty())
+            return emptyList()
         val results = mutableListOf<String>()
-        for (match in matches) {
-            val result: String = match.groupValues[customRegex.group]
-            if (result.isNotBlank())
-                results.add(
-                    when (customRegex.slugType) {
-                        "append_url" -> {
-                            if (url.endsWith("/") && result.startsWith("/"))
-                                url.removeSuffix("/") + result
-                            else
-                                url + result
+        for (customRegex in customRegexes) {
+            val regex: Regex = customRegex.regex.toRegex()
+            val matches = regex.findAll(source)
+            for (match in matches) {
+                val result: String = match.groupValues[customRegex.group]
+                if (result.isNotBlank())
+                    results.add(
+                        when (customRegex.slugType) {
+                            "append_url" -> {
+                                if (url.endsWith("/") && result.startsWith("/"))
+                                    url.removeSuffix("/") + result
+                                else
+                                    url + result
+                            }
+                            "append_other" -> {
+                                if (customRegex.other!!.endsWith("/") && result.startsWith("/"))
+                                    customRegex.other.removeSuffix("/") + result
+                                else
+                                    customRegex.other + result
+                            }
+                            "complete" -> result
+                            else -> result
                         }
-                        "append_other" -> {
-                            if (customRegex.other!!.endsWith("/") && result.startsWith("/"))
-                                customRegex.other.removeSuffix("/") + result
-                            else
-                                customRegex.other + result
-                        }
-                        "complete" -> result
-                        else -> result
-                    }
-                )
+                    )
+            }
+
         }
+
         return results
+    }
+
+    private fun parseList(
+        customRegex: CustomRegex?,
+        source: String,
+        url: String
+    ): List<String> {
+        return if (customRegex != null)
+            parseList(listOf(customRegex), source, url)
+        else emptyList()
     }
 
     private fun getCategory(plugin: Plugin, category: String): String? {

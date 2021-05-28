@@ -3,54 +3,53 @@
   "version": 1.0,
   "url": "https://zooqle.com",
   "name": "Zooqle",
-  "description": "Parser for my zooqle.com",
+  "description": "Parser for zooqle.com",
   "supported_categories": {
-  "all": "None"
+    "all": "None"
   },
   "search": {
     "no_category": "${url}/search\\?pg={page}&q=${query}",
     "page_start": 1
   },
   "download": {
-    "magnet": {
-      "regex": "href=\"(magnet:\\?xt=urn:btih:[^\"]+)",
-      "group": 1,
-      "slug_type": "complete"
-    },
-    "table_direct":{
+    "table_direct": {
       "class": "table-torrents",
-      "name_column" : 1,
-      "name_regex": {
+      "columns": {
+        "name_column": 1,
+        "seeders_column": 5,
+        "leechers_column": 5,
+        "size_column": 3,
+        "magnet_column": 1,
+        "details_column": 1
+      }
+    },
+    "regexes" : {
+      "name": {
         "regex": "<a[^>]+>(.*)(?<!</a>)</a>",
         "group": 1,
         "slug_type": "complete"
       },
-      "magnet_column": 2,
-      "magnet_regex": {
+      "magnet": {
         "regex": "href=\"(magnet:\\?xt=urn:btih:[^\"]+)",
         "group": 1,
         "slug_type": "complete"
       },
-      "seeders_column": 5,
-      "seeders_regex": {
+      "seeders": {
         "regex": "Seeders:\\s*(\\d+)",
         "group": 1,
         "slug_type": "complete"
       },
-      "leechers_column": 5,
-      "leechers_regex": {
+      "leechers": {
         "regex": "Leechers:\\s*(\\d+)",
         "group": 1,
         "slug_type": "complete"
       },
-      "size_column": 3,
-      "size_regex": {
+      "size": {
         "regex": "([\\d.]+\\s*[A-Za-z]+)\\s*</div>",
         "group": 1,
         "slug_type": "complete"
       },
-      "details_column": 1,
-      "details_regex": {
+      "details": {
         "regex": "href=\"(/[^\"]+)",
         "group": 1,
         "slug_type": "append_url"

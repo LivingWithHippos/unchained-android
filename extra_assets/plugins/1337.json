@@ -19,29 +19,31 @@
     "page_start": 1
   },
   "download": {
-    "magnet": {
-      "regex": "href=\"(magnet:\\?xt=urn:btih:[^\"]+)",
-      "group": 1,
-      "slug_type": "complete"
-    },
-    "torrent": [
-      {
-      "regex": "(https?://itorrents\\.org/torrent/[^\\.]+\\.torrent)",
-      "group": 1,
-      "slug_type": "complete"
-    }
-    ],
     "internal": {
-      "name": {
-        "regex":  "box-info-heading clearfix\"><h1>([^<]+)</h1>",
-        "group": 1,
-        "slug_type": "complete"
-      },
       "link": {
-        "regex":   "href=\"(/torrent/[^\"]+)",
+        "regex": "href=\"(/torrent/[^\"]+)",
         "group": 1,
         "slug_type": "append_url"
       }
+    },
+    "regexes": {
+      "name": {
+        "regex": "box-info-heading clearfix\"><h1>([^<]+)</h1>",
+        "group": 1,
+        "slug_type": "complete"
+      },
+      "magnet": {
+        "regex": "href=\"(magnet:\\?xt=urn:btih:[^\"]+)",
+        "group": 1,
+        "slug_type": "complete"
+      },
+      "torrents": [
+        {
+          "regex": "(https?://itorrents\\.org/torrent/[^\\.]+\\.torrent)",
+          "group": 1,
+          "slug_type": "complete"
+        }
+      ]
     }
   }
 }

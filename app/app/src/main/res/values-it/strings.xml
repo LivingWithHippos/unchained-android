@@ -246,7 +246,7 @@
     <string name="category_books">Libri</string>
     <string name="open_github">Apri Github</string>
     <string name="search_plugins">Plugins di ricerca</string>
-    <string name="plugin_description_message">In questa schermata potrai cercare file torrent e magnet. A parte i plugin disponibili di base, optrai installarne altri da internet con estesione \'.unchained\', scaricali e poi aprili con questa app. Cerca nella repository ufficiale di Github per iniziale.</string>
+    <string name="plugin_description_message">In questa schermata potrai cercare file torrent e magnet. A parte i plugin di base disponibili, potrai installarne altri da internet con estesione \'.unchained\', scaricali e poi aprili con questa app. Cerca nella repository ufficiale di Github per iniziale.</string>
     <string name="get_search_plugins">Ottieni plugins di ricerca</string>
     <string name="delete_plugins">Rimuovi plugins esterni</string>
     <string name="delete_plugins_summary">Rimuovi tutti i plugin installati dall\'utente</string>
