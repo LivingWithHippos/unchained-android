@@ -1,5 +1,7 @@
 package com.github.livingwithhippos.unchained.search.view
 
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,7 +19,9 @@ import com.github.livingwithhippos.unchained.plugins.model.Plugin
 import com.github.livingwithhippos.unchained.search.model.SearchItemAdapter
 import com.github.livingwithhippos.unchained.search.model.SearchItemListener
 import com.github.livingwithhippos.unchained.search.viewmodel.SearchViewModel
+import com.github.livingwithhippos.unchained.utilities.PLUGINS_URL
 import com.github.livingwithhippos.unchained.utilities.extension.hideKeyboard
+import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -46,6 +50,7 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
     }
 
     private fun setup() {
+        showDialogIfNeeded()
         // setup the plugin dropdown
         val pluginAdapter = ArrayAdapter(requireContext(), R.layout.plugin_list_item, arrayListOf<String>())
         (binding.pluginPicker.editText as? AutoCompleteTextView)?.setAdapter(pluginAdapter)
@@ -118,6 +123,28 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
                     }
                 }
             }
+        }
+    }
+
+    private fun showDialogIfNeeded() {
+        if (viewModel.isDialogNeeded()) {
+            val alertDialog: AlertDialog? = activity?.let {
+                val builder = AlertDialog.Builder(it)
+                builder.apply {
+                    setTitle(R.string.search_plugins)
+                    setMessage(R.string.plugin_description_message)
+                    setPositiveButton(R.string.open_github) { dialog, id ->
+                        viewModel.setDialogNeeded(false)
+                        // User clicked OK button
+                        openExternalWebPage(PLUGINS_URL)
+                    }
+                    setNegativeButton(R.string.close) { dialog, id ->
+                        viewModel.setDialogNeeded(false)
+                    }
+                }
+                builder.create()
+            }
+            alertDialog?.show()
         }
     }
 

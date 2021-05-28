@@ -93,12 +93,23 @@ class SearchViewModel @Inject constructor(
     }
 
     fun getLastSelectedPlugin(): String {
-        return preferences.getString(KEY__LAST_SELECTED_PLUGIN, "") ?: ""
+        return preferences.getString(KEY_LAST_SELECTED_PLUGIN, "") ?: ""
     }
 
     fun setLastSelectedPlugin(name: String) {
         with(preferences.edit()) {
-            putString(KEY__LAST_SELECTED_PLUGIN, name)
+            putString(KEY_LAST_SELECTED_PLUGIN, name)
+            apply()
+        }
+    }
+
+    fun isDialogNeeded(): Boolean {
+        return preferences.getBoolean(KEY_PLUGIN_DIALOG_NEEDED, true)
+    }
+
+    fun setDialogNeeded(needed: Boolean) {
+        with(preferences.edit()) {
+            putBoolean(KEY_PLUGIN_DIALOG_NEEDED, needed)
             apply()
         }
     }
@@ -106,6 +117,7 @@ class SearchViewModel @Inject constructor(
     companion object {
         const val KEY_RESULTS = "results_key"
         const val KEY_PLUGINS = "plugins_key"
-        const val KEY__LAST_SELECTED_PLUGIN = "plugin_last_selected_key"
+        const val KEY_LAST_SELECTED_PLUGIN = "plugin_last_selected_key"
+        const val KEY_PLUGIN_DIALOG_NEEDED = "plugin_dialog_needed_key"
     }
 }

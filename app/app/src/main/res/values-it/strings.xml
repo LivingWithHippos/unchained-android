@@ -235,4 +235,16 @@
     <string name="plugin">Plugin</string>
     <string name="magnet">Magnet</string>
     <string name="error_loading_file">Errore caricamento file</string>
+    <string name="category">Categoria</string>
+    <string name="category_all">Tutto</string>
+    <string name="category_anime">Anime</string>
+    <string name="category_software">Software</string>
+    <string name="category_games">Giochi</string>
+    <string name="category_movies">Film</string>
+    <string name="category_music">Musica</string>
+    <string name="category_tv">Serie TV</string>
+    <string name="category_books">Libri</string>
+    <string name="open_github">Apri Github</string>
+    <string name="search_plugins">Plugins di ricerca</string>
+    <string name="plugin_description_message">In questa schermata potrai cercare file torrent e magnet. A parte i plugin disponibili di base, optrai installarne altri da internet con estesione \'.unchained\', scaricali e poi aprili con questa app. Cerca nella repository ufficiale di Github per iniziale.</string>
 </resources>
