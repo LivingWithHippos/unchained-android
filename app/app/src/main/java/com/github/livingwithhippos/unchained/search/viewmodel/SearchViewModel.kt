@@ -49,12 +49,17 @@ class SearchViewModel @Inject constructor(
             job?.cancelIfActive()
             job = parser.completeSearch(plugin, query, category, page)
                 .onEach {
-                    if (it is ParserResult.SingleResult) {
-                        results.add(it.value)
-                        parsingLiveData.value = ParserResult.Results(results)
-                        saveSearchResults(results)
-                    } else {
-                        parsingLiveData.value = it
+                    when(it) {
+                        is ParserResult.SingleResult ->{
+                            results.add(it.value)
+                            parsingLiveData.value = ParserResult.Results(results)
+                            saveSearchResults(results)
+                        }
+                        is ParserResult.Results -> {
+                            parsingLiveData.value = it
+                            saveSearchResults(it.values)
+                        }
+                        else -> parsingLiveData.value = it
                     }
                 }
                 .launchIn(viewModelScope)
