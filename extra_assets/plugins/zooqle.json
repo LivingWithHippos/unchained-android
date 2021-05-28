@@ -19,7 +19,7 @@
         "seeders_column": 5,
         "leechers_column": 5,
         "size_column": 3,
-        "magnet_column": 1,
+        "magnet_column": 2,
         "details_column": 1
       }
     },
