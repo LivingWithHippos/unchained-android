@@ -254,4 +254,13 @@
     <string name="plugin_install_error_newer">Il plugin ha già un versione più recente installata</string>
     <string name="plugin_install_installed">Plugin installato</string>
     <string name="plugin_install_not_installed">Plugin non installato</string>
+    <string name="no_links">Nessun link</string>
+    <plurals name="magnet_format">
+        <item quantity="one">%d magnet</item>
+        <item quantity="other">%d magnets</item>
+    </plurals>
+    <plurals name="torrent_format">
+        <item quantity="one">%d torrent</item>
+        <item quantity="other">%d torrents</item>
+    </plurals>
 </resources>

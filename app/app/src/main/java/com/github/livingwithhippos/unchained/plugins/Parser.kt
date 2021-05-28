@@ -19,6 +19,7 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import timber.log.Timber
+import java.net.SocketTimeoutException
 
 class Parser(
     val dohClient: DnsOverHttps
@@ -76,20 +77,25 @@ class Parser(
                                             ) ?: ""
                                         )
                                         // parse magnets
-                                        val magnets = if (plugin.download.regexes.magnetRegex != null)
-                                            parseList(
-                                                plugin.download.regexes.magnetRegex,
-                                                s,
-                                                plugin.url
-                                            ).map { it.removeWebFormatting() }
-                                        else
-                                            emptyList()
+                                        val magnets =
+                                            if (plugin.download.regexes.magnetRegex != null)
+                                                parseList(
+                                                    plugin.download.regexes.magnetRegex,
+                                                    s,
+                                                    plugin.url
+                                                ).map { it.removeWebFormatting() }
+                                            else
+                                                emptyList()
                                         // parse torrents
                                         val torrents = mutableListOf<String>()
                                         if (plugin.download.regexes.torrentRegexes != null) {
-                                                torrents.addAll(
-                                                    parseList(plugin.download.regexes.torrentRegexes, s, plugin.url)
+                                            torrents.addAll(
+                                                parseList(
+                                                    plugin.download.regexes.torrentRegexes,
+                                                    s,
+                                                    plugin.url
                                                 )
+                                            )
                                         }
 
                                         // emit results once at time to avoid updating the list all at once
@@ -176,7 +182,7 @@ class Parser(
                 if (tableLink.columns.seedersColumn != null)
                     seeders = parseSingle(
                         regexes.seedersRegex,
-                        columns[tableLink.columns.seedersColumn ].html(),
+                        columns[tableLink.columns.seedersColumn].html(),
                         baseUrl
                     )
                 var leechers: String? = null
@@ -207,7 +213,7 @@ class Parser(
                 if (tableLink.columns.torrentColumn != null)
                     torrents = parseList(
                         regexes.torrentRegexes,
-                        columns[tableLink.columns.torrentColumn ].html(),
+                        columns[tableLink.columns.torrentColumn].html(),
                         baseUrl
                     )
 
@@ -237,8 +243,13 @@ class Parser(
 
         // todo: check if this works and add a custom agent
         // todo: return the complete Response to let the caller check the return code
-        dohClient.client.newCall(request).execute().use { response: Response ->
-            response.body?.string() ?: ""
+        try {
+            dohClient.client.newCall(request).execute().use { response: Response ->
+                response.body?.string() ?: ""
+            }
+        } catch (e: SocketTimeoutException) {
+            Timber.e("Error getting source while parsing link: ${e.message} ")
+            ""
         }
     }
 
@@ -306,7 +317,7 @@ class Parser(
     ): List<String> {
         if (customRegexes.isNullOrEmpty())
             return emptyList()
-        val results = mutableListOf<String>()
+        val results = mutableSetOf<String>()
         for (customRegex in customRegexes) {
             val regex: Regex = customRegex.regex.toRegex()
             val matches = regex.findAll(source)
@@ -335,7 +346,7 @@ class Parser(
 
         }
 
-        return results
+        return results.toList()
     }
 
     private fun parseList(

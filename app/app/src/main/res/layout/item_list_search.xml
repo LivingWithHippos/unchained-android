@@ -44,22 +44,54 @@
                 android:maxLines="3"
                 android:ellipsize="middle"
                 android:layout_marginEnd="5dp"
-                app:layout_constraintBottom_toTopOf="@+id/tvSize"
+                app:layout_constraintBottom_toTopOf="@+id/linksLayout"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/tvSize"
-                style="@style/TextAppearance.UnchainedTheme.Caption"
-                android:layout_width="wrap_content"
+
+            <LinearLayout
+                android:id="@+id/linksLayout"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@{`M:` + item.magnets.size() + ` T:` + item.torrents.size(), default=`M:3 T:1`  }"
-                android:textColor="?attr/colorOnSurfaceVariant"
+                android:orientation="horizontal"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/tvName"
                 app:layout_constraintTop_toBottomOf="@+id/tvName"
-                />
+                >
+
+
+                <TextView
+                    android:id="@+id/tvMagnet"
+                    style="@style/TextAppearance.UnchainedTheme.Caption"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="5dp"
+                    android:text= "@{@plurals/magnet_format(item.magnets.size(), item.magnets.size()), default=`1 magnet`}"
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    android:visibility="@{item.magnets.size() == 0 ? View.GONE : View.VISIBLE}"
+                    />
+
+                <TextView
+                    android:id="@+id/tvTorrent"
+                    style="@style/TextAppearance.UnchainedTheme.Caption"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text= "@{@plurals/torrent_format(item.torrents.size(), item.torrents.size()), default=`2 torrents`}"
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    android:visibility="@{item.torrents.size() == 0 ? View.GONE : View.VISIBLE}"
+                    />
+
+                <TextView
+                    android:id="@+id/tvNoLinks"
+                    style="@style/TextAppearance.UnchainedTheme.Caption"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text= "@string/no_links"
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    android:visibility="@{item.torrents.size() == 0 &amp;&amp; item.magnets.size() == 0? View.VISIBLE : View.GONE}"
+                    />
+            </LinearLayout>
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
