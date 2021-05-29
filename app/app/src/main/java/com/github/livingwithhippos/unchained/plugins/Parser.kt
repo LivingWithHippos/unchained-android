@@ -239,9 +239,10 @@ class Parser(
     private suspend fun getSource(url: String): String = withContext(Dispatchers.IO) {
         val request: Request = Request.Builder()
             .url(url)
+            .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36")
             .build()
 
-        // todo: check if this works and add a custom agent
+        // todo: check if this works
         // todo: return the complete Response to let the caller check the return code
         try {
             dohClient.client.newCall(request).execute().use { response: Response ->
