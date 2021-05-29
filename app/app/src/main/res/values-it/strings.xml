@@ -205,6 +205,7 @@
         <item quantity="one">%d seeder</item>
         <item quantity="other">%d seeders</item>
     </plurals>
+    <string name="seeders_string_format">seeder/s: %s</string>
     <string name="download_complete">Download completato</string>
     <string name="unknown_status">Stato sconosciuto</string>
     <string name="downloading_torrent_format">%1$d torrent in download</string>
@@ -231,4 +232,42 @@
     <string name="folder">Cartella</string>
     <string name="files_list">Lista files</string>
     <string name="error_loading_folder">Errore durante il caricamento dei files</string>
+    <string name="search_files">Cerca Files</string>
+    <string name="plugin">Plugin</string>
+    <string name="magnet">Magnet</string>
+    <string name="error_loading_file">Errore caricamento file</string>
+    <string name="category">Categoria</string>
+    <string name="category_all">Tutto</string>
+    <string name="category_anime">Anime</string>
+    <string name="category_software">Software</string>
+    <string name="category_games">Giochi</string>
+    <string name="category_movies">Film</string>
+    <string name="category_music">Musica</string>
+    <string name="category_tv">Serie TV</string>
+    <string name="category_books">Libri</string>
+    <string name="open_github">Apri Github</string>
+    <string name="search_plugins">Plugins di ricerca</string>
+    <string name="plugin_description_message">In questa schermata potrai cercare file torrent e magnet. A parte i plugin di base disponibili, potrai installarne altri da internet con estesione \'.unchained\', scaricali e poi aprili con questa app. Cerca nella repository ufficiale di Github per iniziale.</string>
+    <string name="get_search_plugins">Ottieni plugins di ricerca</string>
+    <string name="delete_plugins">Rimuovi plugins esterni</string>
+    <string name="delete_plugins_summary">Rimuovi tutti i plugin installati dall\'utente</string>
+    <string name="plugin_removed">%1$d plugin rimosso/i</string>
+    <string name="plugin_install_error_newer">Il plugin ha già un versione più recente installata</string>
+    <string name="plugin_install_installed">Plugin installato</string>
+    <string name="plugin_install_not_installed">Plugin non installato</string>
+    <string name="no_links">Nessun link</string>
+    <plurals name="magnet_format">
+        <item quantity="one">%d magnet</item>
+        <item quantity="other">%d magnets</item>
+    </plurals>
+    <plurals name="torrent_format">
+        <item quantity="one">%d torrent</item>
+        <item quantity="other">%d torrents</item>
+    </plurals>
+    <plurals name="links_format">
+        <item quantity="one">%d link</item>
+        <item quantity="other">%d links</item>
+    </plurals>
+    <string name="size_format">dimensione: %s</string>
+    <string name="leechers_string_format">leecher/s: %s</string>
 </resources>

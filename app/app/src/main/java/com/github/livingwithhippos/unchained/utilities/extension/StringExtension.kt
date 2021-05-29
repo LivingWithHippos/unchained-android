@@ -17,6 +17,16 @@ import java.util.regex.Pattern
 fun String.isWebUrl(): Boolean =
     Patterns.WEB_URL.matcher(this).matches()
 
+fun String.removeWebFormatting(): String {
+    return this.replace("%3A", ":")
+        .replace("%3F", "?")
+        .replace("%3D", "=")
+        .replace("%26", "&")
+        .replace("%2B", "+")
+        .replace("%25", "%")
+
+}
+
 /**
  * check if a String is a magnet link
  */

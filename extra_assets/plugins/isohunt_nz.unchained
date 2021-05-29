@@ -1,0 +1,42 @@
+{
+  "engine_version": 1.0,
+  "version": 1.0,
+  "url": "https://isohunt.nz",
+  "name": "Isohunt",
+  "description": "Parser for my https://isohunt.nz",
+  "supported_categories": {
+    "all": "0",
+    "anime": "1",
+    "software": "2",
+    "games": "3",
+    "movies": "5",
+    "music": "6",
+    "tv": "8",
+    "books": "9"
+  },
+  "search": {
+    "category": "${url}/torrents/?iht=${category}&ihq=${query}",
+    "no_category": "${url}/torrents/?iht=0&ihq=${query}"
+  },
+  "download": {
+    "internal": {
+      "link": {
+        "regex":   "href=\"(/torrent_details/[^\"]+)",
+        "group": 1,
+        "slug_type": "append_url"
+      }
+    },
+    "regexes": {
+      "name": {
+        "regex":  "href=\"/torrent_details/[^>]+>([^<]+)",
+        "group": 1,
+        "slug_type": "complete"
+      },
+      "magnet": {
+        "regex": "https://mylink\\.cx/\\?url=(magnet[^\"]+)",
+        "group": 1,
+        "slug_type": "complete"
+      }
+    }
+  }
+}

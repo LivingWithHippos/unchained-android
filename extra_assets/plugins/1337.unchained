@@ -1,0 +1,49 @@
+{
+  "engine_version": 1.0,
+  "version": 1.0,
+  "url": "https://1337x.to",
+  "name": "1337x",
+  "description": "Parser for 1337x.to",
+  "supported_categories": {
+    "all": "None",
+    "anime": "Anime",
+    "software": "Applications",
+    "games": "Games",
+    "movies": "Movies",
+    "music": "Music",
+    "tv": "TV"
+  },
+  "search": {
+    "category": "${url}/category-search/${query}/${category}/${page}/",
+    "no_category": "${url}/search/${query}/${page}/",
+    "page_start": 1
+  },
+  "download": {
+    "internal": {
+      "link": {
+        "regex": "href=\"(/torrent/[^\"]+)",
+        "group": 1,
+        "slug_type": "append_url"
+      }
+    },
+    "regexes": {
+      "name": {
+        "regex": "box-info-heading clearfix\"><h1>([^<]+)</h1>",
+        "group": 1,
+        "slug_type": "complete"
+      },
+      "magnet": {
+        "regex": "href=\"(magnet:\\?xt=urn:btih:[^\"]+)",
+        "group": 1,
+        "slug_type": "complete"
+      },
+      "torrents": [
+        {
+          "regex": "(https?://itorrents\\.org/torrent/[^\\.]+\\.torrent)",
+          "group": 1,
+          "slug_type": "complete"
+        }
+      ]
+    }
+  }
+}

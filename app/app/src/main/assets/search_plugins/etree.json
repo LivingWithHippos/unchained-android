@@ -1,0 +1,35 @@
+{
+  "engine_version": 1.0,
+  "version": 1.0,
+  "url": "https://bt.etree.org/",
+  "name": "etree",
+  "description": "Parser for bt.etree.org",
+  "supported_categories": {
+    "all": "None"
+  },
+  "search": {
+    "no_category": "${url}?searchzzzz=${query}"
+  },
+  "download": {
+    "internal": {
+      "link": {
+        "regex": "href=\"(details\\.php\\?torrentId=\\d+)\"",
+        "group": 1,
+        "slug_type": "append_url"
+      }
+    },
+    "regexes": {
+      "name": {
+        "regex": "<title>bt\\.etree\\.org \\| Community Tracker - Details for torrent ([^>]+)</title>",
+        "group": 1,
+        "slug_type": "complete"
+      },
+      "torrents": [
+        {
+          "regex": "href=\"(download\\.php/\\d+/[^\"]+)\">",
+          "group": 1,
+          "slug_type": "append_url"
+        }]
+    }
+  }
+}

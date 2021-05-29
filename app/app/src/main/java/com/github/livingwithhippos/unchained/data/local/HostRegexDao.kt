@@ -33,7 +33,7 @@ interface HostRegexDao {
     suspend fun deleteAll()
 
     @Query("DELETE FROM host_regex WHERE host_regex.type = $REGEX_TYPE_HOST")
-    fun deleteAllHosts()
+    suspend fun deleteAllHosts()
 
     @Query("DELETE FROM host_regex WHERE host_regex.type = $REGEX_TYPE_FOLDER")
     suspend fun deleteAllFolders()

@@ -204,6 +204,7 @@
         <item quantity="one">%d seeder</item>
         <item quantity="other">%d seeders</item>
     </plurals>
+    <string name="seeders_string_format">seeder/s: %s</string>
     <string name="torrent_in_progress_format">%1$d%% - %2$.2f Mo/s</string>
     <string name="download_complete">Téléchargement terminé</string>
     <string name="unknown_status">État inconnu</string>
@@ -231,4 +232,42 @@
     <string name="folder">Fichier</string>
     <string name="files_list">Liste des fichiers</string>
     <string name="error_loading_folder">Certains liens n\'ont pas pu être chargés</string>
+    <string name="search_files">Recherche de fichiers</string>
+    <string name="plugin">Plugin</string>
+    <string name="magnet">Magnet</string>
+    <string name="error_loading_file">Aucun fichier chargé</string>
+    <string name="category">catégorie</string>
+    <string name="category_all">tous</string>
+    <string name="category_anime">Anime</string>
+    <string name="category_software">Logiciel</string>
+    <string name="category_games">Jeux vidéo</string>
+    <string name="category_movies">Films</string>
+    <string name="category_music">Musique</string>
+    <string name="category_tv">Série télévisée</string>
+    <string name="category_books">Livres</string>
+    <string name="open_github">Ouvrir Github</string>
+    <string name="plugin_description_message">Sur cet écran, vous pourrez rechercher des fichiers torrent et magnet. Outre les plugins de base disponibles, vous en trouverez d\'autres sur Internet avec l\'extension \'.unchained\', téléchargez-les et ouvrez-les avec cette application. Essayez le dépôt officiel de GitHub pour commencer.</string>
+    <string name="search_plugins">Plugins de recherche</string>
+    <string name="get_search_plugins">Obtenir des plugins de recherche</string>
+    <string name="delete_plugins">Supprimer les plugins externes</string>
+    <string name="delete_plugins_summary">Supprimer tous les plugins installés par l\'utilisateur</string>
+    <string name="plugin_removed">%1$d plugin/s supprimé</string>
+    <string name="plugin_install_installed">Plugin installé</string>
+    <string name="plugin_install_not_installed">Plugin non installé</string>
+    <string name="plugin_install_error_newer">Le plugin est déjà installé avec une version plus récente</string>
+    <string name="no_links">Aucun lien</string>
+    <plurals name="magnet_format">
+        <item quantity="one">%d magnet</item>
+        <item quantity="other">%d magnets</item>
+    </plurals>
+    <plurals name="torrent_format">
+        <item quantity="one">%d torrent</item>
+        <item quantity="other">%d torrents</item>
+    </plurals>
+    <plurals name="links_format">
+        <item quantity="one">%d lien</item>
+        <item quantity="other">%d liens</item>
+    </plurals>
+    <string name="size_format">taille: %s</string>
+    <string name="leechers_string_format">leecher/s: %s</string>
 </resources>

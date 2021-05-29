@@ -45,6 +45,20 @@
     </PreferenceCategory>
 
     <PreferenceCategory
+        android:title="@string/search_plugins">
+
+        <Preference
+            app:key="open_github_plugins"
+            app:title="@string/get_search_plugins" />
+
+        <Preference
+            app:key="delete_external_plugins"
+            app:title="@string/delete_plugins"
+            app:summary="@string/delete_plugins_summary"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
         android:title="@string/title_various">
 
         <SwitchPreference

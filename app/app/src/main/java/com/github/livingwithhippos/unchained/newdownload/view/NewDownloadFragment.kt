@@ -1,14 +1,12 @@
 package com.github.livingwithhippos.unchained.newdownload.view
 
 import android.app.DownloadManager
-import android.content.ContentResolver
 import android.content.ContentResolver.SCHEME_CONTENT
 import android.content.ContentResolver.SCHEME_FILE
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
-import android.os.ParcelFileDescriptor
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -36,14 +34,15 @@ import com.github.livingwithhippos.unchained.utilities.SCHEME_MAGNET
 import com.github.livingwithhippos.unchained.utilities.extension.getApiErrorMessage
 import com.github.livingwithhippos.unchained.utilities.extension.getClipboardText
 import com.github.livingwithhippos.unchained.utilities.extension.isMagnet
+import com.github.livingwithhippos.unchained.utilities.extension.isTorrent
 import com.github.livingwithhippos.unchained.utilities.extension.isWebUrl
 import com.github.livingwithhippos.unchained.utilities.extension.runRippleAnimation
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Job
 import timber.log.Timber
 import java.io.File
-import java.io.FileDescriptor
-import java.io.FileInputStream
+import java.io.IOException
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
@@ -60,11 +59,22 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
 
     private val args: NewDownloadFragmentArgs by navArgs()
 
+    private var _binding: NewDownloadFragmentBinding? = null
+    val downloadBinding get() = _binding!!
+
+    // used to simulate a debounce effect while typing on the search bar
+    var queryJob: Job? = null
+
+    override fun onDestroyView() {
+        _binding = null
+        super.onDestroyView()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val downloadBinding = NewDownloadFragmentBinding.inflate(inflater, container, false)
+        _binding = NewDownloadFragmentBinding.inflate(inflater, container, false)
 
         downloadBinding.listener = this
 
@@ -78,12 +88,12 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
             findNavController().navigate(action)
         })
 
-        viewModel.folderLiveData.observe(viewLifecycleOwner, EventObserver {  folder ->
+        viewModel.folderLiveData.observe(viewLifecycleOwner, EventObserver { folder ->
 
             val action =
                 NewDownloadFragmentDirections.actionNewDownloadDestToFolderListFragment(
-                    folder=folder,
-                    torrent= null
+                    folder = folder,
+                    torrent = null
                 )
             findNavController().navigate(action)
         })
@@ -105,6 +115,22 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
             if (authState == AuthenticationState.AUTHENTICATED) {
                 val link: String = downloadBinding.tiLink.text.toString().trim()
                 when {
+                    // this must be before the link.isWebUrl() check
+                    link.isTorrent() -> {
+                        context?.showToast(R.string.loading_torrent)
+                        downloadBinding.bUnrestrict.isEnabled = false
+                        downloadBinding.bLoadTorrent.isEnabled = false
+                        /**
+                         * DownloadManager does not support insecure (https) links anymore
+                         * to add support for it, follow these instructions
+                         * [https://stackoverflow.com/a/50834600]
+                         */
+                        val secureLink = if (link.startsWith("http://")) link.replaceFirst(
+                            "http:",
+                            "https:"
+                        ) else link
+                        downloadTorrent(Uri.parse(secureLink))
+                    }
                     link.isWebUrl() -> {
                         context?.showToast(R.string.loading_host_link)
                         downloadBinding.bUnrestrict.isEnabled = false
@@ -145,7 +171,7 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
         downloadBinding.bPasteLink.setOnClickListener {
             val pasteText = getClipboardText()
 
-            if (pasteText.isWebUrl() || pasteText.isMagnet())
+            if (pasteText.isWebUrl() || pasteText.isMagnet() || pasteText.isTorrent())
                 downloadBinding.tiLink.setText(pasteText, TextView.BufferType.EDITABLE)
             else
                 context?.showToast(R.string.invalid_url)
@@ -179,23 +205,19 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
                 }
                 SCHEME_CONTENT, SCHEME_FILE -> {
                     context?.showToast(R.string.loading_torrent_file)
-                    loadTorrent(requireContext().contentResolver, link)
+                    loadTorrent(link)
                 }
                 SCHEME_HTTP, SCHEME_HTTPS -> {
-                    if (link.toString().endsWith(".torrent")) {
-                        context?.showToast(R.string.loading_torrent_file)
-                        downloadTorrent(link)
-                    } else {
+                    if (!link.toString().endsWith(".torrent"))
                         context?.showToast(R.string.loading_host_link)
-                        // same as torrent
-                        // set as text input text
-                        downloadBinding.tiLink.setText(
-                            link.toString(),
-                            TextView.BufferType.EDITABLE
-                        )
-                        // simulate button click
-                        downloadBinding.bUnrestrict.performClick()
-                    }
+
+                    // set as text input text
+                    downloadBinding.tiLink.setText(
+                        link.toString(),
+                        TextView.BufferType.EDITABLE
+                    )
+                    // simulate button click
+                    downloadBinding.bUnrestrict.performClick()
                 }
             }
         })
@@ -207,7 +229,7 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
                     requireContext().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS),
                     fileName
                 )
-                loadTorrent(requireContext().contentResolver, torrentFile.toUri())
+                loadTorrent(torrentFile.toUri())
             })
 
         viewModel.networkExceptionLiveData.observe(viewLifecycleOwner, EventObserver { exception ->
@@ -277,7 +299,7 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
     private val getTorrent: ActivityResultLauncher<String> =
         registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
             if (uri != null) {
-                loadTorrent(requireContext().contentResolver, uri)
+                loadTorrent(uri)
             } else {
                 context?.showToast(R.string.error_loading_torrent)
             }
@@ -291,20 +313,19 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
             context?.showToast(R.string.premium_needed)
     }
 
-    private fun loadTorrent(contentResolver: ContentResolver, uri: Uri) {
+    private fun loadTorrent(uri: Uri) {
         // https://developer.android.com/training/data-storage/shared/documents-files#open
-        val parcelFileDescriptor: ParcelFileDescriptor? =
-            contentResolver.openFileDescriptor(uri, "r")
-        if (parcelFileDescriptor != null) {
-            val fileDescriptor: FileDescriptor = parcelFileDescriptor.fileDescriptor
-            val fileInputStream = FileInputStream(fileDescriptor)
-            val buffer: ByteArray = fileInputStream.readBytes()
-            fileInputStream.close()
-            viewModel.fetchUploadedTorrent(buffer)
-        } else {
-            Timber.e("Torrent conversion: Error getting parcelFileDescriptor -> null")
+        try {
+            requireContext().contentResolver.openInputStream(uri)?.use { inputStream ->
+                val buffer: ByteArray = inputStream.readBytes()
+                viewModel.fetchUploadedTorrent(buffer)
+            }
+        } catch (exception: IOException) {
+            Timber.e("Torrent conversion: Error getting the file: ${exception.message}")
+            downloadBinding.bUnrestrict.isEnabled = true
+            downloadBinding.bLoadTorrent.isEnabled = true
+            requireContext().showToast(R.string.error_loading_torrent)
         }
-
     }
 
     private fun downloadTorrent(uri: Uri) {

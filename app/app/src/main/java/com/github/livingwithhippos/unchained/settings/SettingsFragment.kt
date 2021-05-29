@@ -9,6 +9,7 @@ import androidx.preference.PreferenceFragmentCompat
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.utilities.FEEDBACK_URL
 import com.github.livingwithhippos.unchained.utilities.GPLV3_URL
+import com.github.livingwithhippos.unchained.utilities.PLUGINS_URL
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
@@ -23,7 +24,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
     @Inject
     lateinit var preferences: SharedPreferences
 
-    private val viewModel: SettingsViewmodel by viewModels()
+    private val viewModel: SettingsViewModel by viewModels()
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.settings, rootKey)
@@ -62,18 +63,20 @@ class SettingsFragment : PreferenceFragmentCompat() {
         when (preference?.key) {
             "feedback" -> openExternalWebPage(FEEDBACK_URL)
             "license" -> openExternalWebPage(GPLV3_URL)
-            "credits" -> {
-                openCreditsDialog()
-            }
-            "terms" -> {
-                openTermsDialog()
-            }
-            "privacy" -> {
-                openPrivacyDialog()
-            }
+            "credits" -> openCreditsDialog()
+            "terms" -> openTermsDialog()
+            "privacy" -> openPrivacyDialog()
             "update_regexps" -> {
                 viewModel.updateRegexps()
                 context?.showToast(R.string.updating_link_matcher)
+            }
+            "open_github_plugins" -> openExternalWebPage(PLUGINS_URL)
+            "delete_external_plugins" -> {
+                val removedPlugins = viewModel.removeExternalPlugins(requireContext())
+                if (removedPlugins >= 0)
+                    context?.showToast(getString(R.string.plugin_removed, removedPlugins))
+                else
+                    context?.showToast(getString(R.string.error))
             }
             else -> return super.onPreferenceTreeClick(preference)
         }

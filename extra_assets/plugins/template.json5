@@ -1,0 +1,158 @@
+/**
+* UNCHAINED FOR ANDROID SEARCH PLUGIN
+* This file is a JSON5
+* Comments need to be removed before renaming this file to your_plugin.unchained
+* You can try a json validator like https://jsonlint.com/ to check the validity of the file.
+*/
+{
+  /**
+   * The engine for which this plugin was developed
+   * used to check compatibility with the current plugin system.
+   * Minor versions will be compatible (e.g 1.1, 1.2, 1.3),
+   * Major versions will not be compatible (e.g. 2, 3)
+  */
+  "engine_version": 1.0,
+  // the current plugin version. Used to check for updates
+  "version": 1.0,
+  // basic url used to replace {url}, WITHOUT trailing /
+  "url": "https://myurl.com",
+  // plugin/website name which will be shown to the user
+  "name": "My Site",
+  // optional plugin description, may contain author, links etc. Optional
+  "description": "Parser for my site",
+  // optional author name
+  "author": "Author name",
+  /**
+  * basic categories system. Will be used to implement a generic
+  * categories search system.
+  * If the service does not support categories leave only the "all" value with whatever you want
+  * and remove "category" under " search"
+  */
+  "supported_categories": {
+    "all": "None",
+    "anime": "Anime",
+    "software": "Applications",
+    "games": "Games",
+    "movies": "Movies",
+    "music": "Music",
+    "tv": "TV",
+    "books": "books"
+  },
+  /**
+  * Urls used to query the service.
+  * The slugs ${url},${query}, ${category}, ${page} are currently supported
+  * to build the link dynamically.
+  *
+  * "url_category": url used to search with categories
+  * "url_no_category": url used to search without categories, optional
+  * "page_start": starting page number, usually 0 or 1. Optional if the search does not support pages
+  */
+  "search": {
+    "category": "${url}/category-search/${query}/${category}/${page}/",
+    "no_category": "${url}/search/${query}/${page}/",
+    "page_start": 0
+  },
+  /**
+  * "download" will be used to get links from the "search" urls
+  *
+  */
+  "download": {
+    // "internal" is one of the parsing methods.
+    // the links are retrieved from the search page and one by one opened and parsed
+    "internal": {
+      // "link" is the regex to parse the page link to parse further
+      "link": {
+        "regex": "href=\"(/torrent/[^\"]+)",
+        "group": 1,
+        "slug_type": "append_url",
+        "other": "https://other_url.com"
+      }
+    },
+    // "table_direct" is one of the parsing methods.
+    // parse directly from an html table in the search page
+    // usable when torrent/magnet links are directly on the table's rows
+    "table_direct": {
+      // Used to recognize the table. Both are optional and exclusive.
+      // If both are missing the first table in the document will be parsed.
+      "class": "table-class",
+      "id": "table-id",
+      // these are the indexes of the columns with the data. Columns start at zero.
+      // Name is the only one not optional, but at least one between torrent and magnet is needed.
+      // all regexes are optional, if missing the whole text in the corresponding cell will be taken
+      "columns": {
+        "name_column": 0,
+        "seeders_column": 1,
+        "leechers_column": 2,
+        "size_column": 3,
+        "magnet_column": 4,
+        "torrent_column": 5,
+        // details is the link to the single item's page
+        "details_column": 6
+      }
+    },
+    /**
+    regexes is the collection of regexes available for whatever parsing method you're using
+    you need at least name and one between magnet or torrent
+    */
+    "regexes": {
+      "name": {
+        "regex": "href=\"(/torrent/[^\"]+)",
+        "group": 1,
+        "slug_type": "append_url",
+        "other": "https://other_url.com"
+      },
+      "seeders": {
+        "regex": "href=\"(/torrent/[^\"]+)",
+        "group": 1,
+        "slug_type": "append_url",
+        "other": "https://other_url.com"
+      },
+      "leechers": {
+        "regex": "href=\"(/torrent/[^\"]+)",
+        "group": 1,
+        "slug_type": "append_url",
+        "other": "https://other_url.com"
+      },
+      "size": {
+        "regex": "href=\"(/torrent/[^\"]+)",
+        "group": 1,
+        "slug_type": "append_url",
+        "other": "https://other_url.com"
+      },
+      // "magnet" is the link to the magnet, it's a java regex. The magnet needs to be inside parenthesis (magnet:...)
+      // it is optional if you use the .torrent links in the page
+      "magnet": {
+        // these is the regex structure used for all the regexs in this template
+        // java regex for the torrent link (direct links only).
+        // At the moment it has the dot matches all option enabled by default for regexes that do not return a list (like magnets and torrents)
+        "regex": "href=\"(magnet:\\?xt=urn:btih:[^\"]+)",
+        // group in the regexs. Use at least 1. Starts from 1.
+        "group": 1,
+        // is the link complete (www.xyz.com) or does it need to be filled (/hello.com -> www.xyz.com/hello.com)
+        // valid values: append_url, append_other, complete. You'd generally use complete for magnets.
+        "slug_type": "append_url",
+        // if slug_type is append_other this needs to be present
+        "other": "https://other_url.com"
+      },
+      // "torrent" is the array with the regex structure used to parse the torrent, it's a java regex. The link needs to be inside parenthesis (https://...torrent)
+      // only direct links to .torrent files are supported, copy and paste one manually in the new download screen and try to unrestrict it to check if it works
+      // if you don't use this you need the magnet object to get some results.
+      // at the moment http links get redirected to https. If the site does not support https avoid adding it, or open an issue on Github if you REALLY need it.
+      // this is an array so even for a single regex you'll need the square brackets -> torrent: [{...}]
+      "torrents": [
+        {
+          "regex": "(https?://torrentsite1\\.org/torrent/[^\\.]+.torrent)",
+          "group": 1,
+          "slug_type": "complete",
+          "other": "https://other_url.com"
+        }
+      ],
+      "details": {
+        "regex": "href=\"(/torrent/[^\"]+)",
+        "group": 1,
+        "slug_type": "append_url",
+        "other": "https://other_url.com"
+      }
+    }
+  }
+}

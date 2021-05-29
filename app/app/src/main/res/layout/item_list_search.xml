@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="item"
+            type="com.github.livingwithhippos.unchained.plugins.ScrapedItem" />
+
+        <variable
+            name="listener"
+            type="com.github.livingwithhippos.unchained.search.model.SearchItemListener" />
+    </data>
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cvScrapedItem"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:padding="10dp"
+        android:checkable="false"
+        android:focusable="true"
+        android:onClick="@{() -> listener.onClick(item)}"
+        android:layout_gravity="center_horizontal"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="3dp" >
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="20dp">
+
+
+            <TextView
+                android:id="@+id/tvName"
+                style="@style/TextAppearance.UnchainedTheme.Body1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@{item.name.trim(), default=`File Name`}"
+                android:textSize="14sp"
+                android:maxLines="3"
+                android:ellipsize="middle"
+                android:layout_marginEnd="5dp"
+                app:layout_constraintBottom_toTopOf="@+id/linksLayout"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <LinearLayout
+                android:id="@+id/linksLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/tvName"
+                app:layout_constraintTop_toBottomOf="@+id/tvName"
+                >
+
+
+                <TextView
+                    android:id="@+id/tvLinks"
+                    style="@style/TextAppearance.UnchainedTheme.Caption"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:text= "@{@plurals/links_format(item.magnets.size()+item.torrents.size(), item.magnets.size()+item.torrents.size()), default=`2 links`}"
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    android:visibility="@{item.magnets.size() == 0 ? View.GONE : View.VISIBLE}"
+                    />
+
+                <TextView
+                    android:id="@+id/tvSeeders"
+                    style="@style/TextAppearance.UnchainedTheme.Caption"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="5dp"
+                    android:text= "@{String.format(@string/seeders_short_format, item.seeders), default=`S: 16`}"
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    android:visibility="@{item.seeders == null ? View.GONE : View.VISIBLE}"
+                    />
+
+                <TextView
+                    android:id="@+id/tvLeechers"
+                    style="@style/TextAppearance.UnchainedTheme.Caption"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:text= "@{String.format(@string/leechers_short_format, item.leechers), default=`L: 4`}"
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    android:visibility="@{item.leechers == null ? View.GONE : View.VISIBLE}"
+                    />
+
+                <TextView
+                    android:id="@+id/tvSize"
+                    style="@style/TextAppearance.UnchainedTheme.Caption"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text= "@{item.size, default=`3.4 GB`}"
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    android:visibility="@{item.size == null ? View.GONE : View.VISIBLE}"
+                    />
+
+            </LinearLayout>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+</layout>
