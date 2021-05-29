@@ -26,12 +26,21 @@ class PluginRepository @Inject constructor(
     suspend fun getPlugins(context: Context): List<Plugin> = withContext(Dispatchers.IO) {
 
         /**
-         * get local json files from the assets folder
+         * get local .json and .unchained files from the search_plugin folder in the assets folder
          */
         val jsonFiles = assetsManager.searchFiles(TYPE_JSON, PLUGIN_FOLDER)
+        val unchainedFiles = assetsManager.searchFiles(TYPE_UNCHAINED, PLUGIN_FOLDER)
         val plugins = mutableListOf<Plugin>()
 
         for (json in jsonFiles) {
+
+            val plugin: Plugin? = getPluginFromPath(context, json)
+
+            if (plugin != null)
+                plugins.add(plugin)
+        }
+
+        for (json in unchainedFiles) {
 
             val plugin: Plugin? = getPluginFromPath(context, json)
 
