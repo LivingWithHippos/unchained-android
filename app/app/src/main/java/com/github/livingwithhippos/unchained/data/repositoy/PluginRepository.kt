@@ -62,7 +62,7 @@ class PluginRepository @Inject constructor(
         plugins
     }
 
-    fun getPluginFromJSON(context: Context, json: String): Plugin? {
+    private fun getPluginFromJSON(json: String): Plugin? {
         return try {
             pluginAdapter.fromJson(json)
         } catch (ex: Exception) {
@@ -71,7 +71,7 @@ class PluginRepository @Inject constructor(
         }
     }
 
-    fun getPluginFromPath(context: Context, json: String): Plugin? {
+    private fun getPluginFromPath(context: Context, json: String): Plugin? {
         return try {
             val pluginJSON = context.assets.open(json)
                 .bufferedReader()
@@ -86,7 +86,7 @@ class PluginRepository @Inject constructor(
 
     fun getExternalPlugin(context: Context, filename: String): Plugin? {
         val file = File(context.filesDir, filename)
-        return getPluginFromJSON(context, file.readText())
+        return getPluginFromJSON(file.readText())
     }
 
     fun removeExternalPlugins(context: Context): Int {
@@ -148,7 +148,7 @@ class PluginRepository @Inject constructor(
 
             context.contentResolver.openInputStream(data)?.use { inputStream ->
                 val json = inputStream.bufferedReader().readText()
-                return@withContext getPluginFromJSON(context, json)
+                return@withContext getPluginFromJSON(json)
             }
         }
 
