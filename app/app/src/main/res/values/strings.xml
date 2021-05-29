@@ -411,6 +411,7 @@
         <item quantity="one">%d seeder</item>
         <item quantity="other">%d seeders</item>
     </plurals>
+    <string name="seeders_string_format">seeder/s: %s</string>
     <string name="torrent_in_progress_format">%1$d%% - %2$.2f MB/s</string>
     <string name="download_complete">Download complete</string>
     <string name="unknown_status">Unknown Status</string>
@@ -477,4 +478,6 @@
     </plurals>
     <string name="seeders_short_format" translatable="false">S: %s</string>
     <string name="leechers_short_format" translatable="false">L: %s</string>
+    <string name="size_format">size: %s</string>
+    <string name="leechers_string_format">leecher/s: %s</string>
 </resources>
