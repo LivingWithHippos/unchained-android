@@ -44,42 +44,30 @@
                 <data
                     android:host="*"
                     android:pathPattern=".*\\.unchained"
-                    android:scheme="file" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
+                    android:scheme="file"
+                    />
 
                 <data
                     android:host="*"
                     android:pathPattern=".*\\.unchained"
                     android:scheme="content" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
                     android:host="*"
                     android:mimeType="*/*"
                     android:pathPattern=".*\\.unchained"
                     android:scheme="content" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
                     android:host="*"
                     android:mimeType="*/*"
                     android:pathPattern=".*\\.unchained"
                     android:scheme="file" />
+
+                <data
+                    android:host="*"
+                    android:pathPattern=".*\\.unchained"
+                   />
             </intent-filter>
             <!-- Shamelessly copied from LibreTorrent-->
             <intent-filter>

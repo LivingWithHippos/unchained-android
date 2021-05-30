@@ -130,8 +130,12 @@ class PluginRepository @Inject constructor(
         return names
     }
 
-    suspend fun addExternalPlugin(context: Context, data: Uri, customFileName: String? = null): Boolean = withContext(Dispatchers.IO) {
-        val filename = customFileName ?: data.path?.split("/")?.last()
+    suspend fun addExternalPlugin(
+        context: Context,
+        data: Uri,
+        customFileName: String? = null
+    ): Boolean = withContext(Dispatchers.IO) {
+        val filename = customFileName ?: data.path?.replace("%2F", "/")?.split("/")?.last()
         if (filename != null) {
             // save the file locally
             return@withContext try {
@@ -150,19 +154,42 @@ class PluginRepository @Inject constructor(
         return@withContext true
     }
 
-    suspend fun readPassedPlugin(context: Context, data: Uri): Plugin? = withContext(Dispatchers.IO) {
+    suspend fun addExternalPlugin(context: Context, source: String): Boolean =
+        withContext(Dispatchers.IO) {
 
-        val filename = data.path?.split("/")?.last()
-        if (filename != null) {
+            val plugin: Plugin? = getPluginFromJSON(source)
 
-            context.contentResolver.openInputStream(data)?.use { inputStream ->
-                val json = inputStream.bufferedReader().readText()
-                return@withContext getPluginFromJSON(json)
-            }
+            if (plugin != null) {
+                val filename = plugin.name + TYPE_UNCHAINED
+                try {
+                    context.openFileOutput(filename, Context.MODE_PRIVATE).use {
+                        val buffer: ByteArray = source.toByteArray()
+                        it.write(buffer)
+                    }
+                    return@withContext true
+
+                } catch (exception: IOException) {
+                    Timber.e("Error adding the plugin ${filename}: ${exception.message}")
+                    false
+                }
+            } else
+                return@withContext false
         }
 
-        null
-    }
+    suspend fun readPassedPlugin(context: Context, data: Uri): Plugin? =
+        withContext(Dispatchers.IO) {
+
+            val filename = data.path?.split("/")?.last()
+            if (filename != null) {
+
+                context.contentResolver.openInputStream(data)?.use { inputStream ->
+                    val json = inputStream.bufferedReader().readText()
+                    return@withContext getPluginFromJSON(json)
+                }
+            }
+
+            null
+        }
 
     companion object {
         const val PLUGIN_FOLDER = "search_plugins"

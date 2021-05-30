@@ -222,14 +222,18 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
             }
         })
 
-        activityViewModel.downloadedTorrentLiveData.observe(
+        activityViewModel.downloadedFileLiveData.observe(
             viewLifecycleOwner,
             EventObserver { fileName ->
-                val torrentFile = File(
-                    requireContext().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS),
-                    fileName
-                )
-                loadTorrent(torrentFile.toUri())
+                when {
+                    fileName.endsWith(".torrent") -> {
+                        val torrentFile = File(
+                            requireContext().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS),
+                            fileName
+                        )
+                        loadTorrent(torrentFile.toUri())
+                    }
+                }
             })
 
         viewModel.networkExceptionLiveData.observe(viewLifecycleOwner, EventObserver { exception ->

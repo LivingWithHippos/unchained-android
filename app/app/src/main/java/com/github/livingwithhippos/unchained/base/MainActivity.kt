@@ -11,6 +11,7 @@ import android.content.IntentFilter
 import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
@@ -41,8 +42,6 @@ import com.github.livingwithhippos.unchained.utilities.extension.setupWithNavCon
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
-import java.io.IOException
 import javax.inject.Inject
 
 
@@ -66,7 +65,16 @@ class MainActivity : AppCompatActivity() {
     private val downloadReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             intent?.let {
-                viewModel.checkDownload(it.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1))
+                viewModel.checkTorrentDownload(
+                    it.getLongExtra(
+                        DownloadManager.EXTRA_DOWNLOAD_ID,
+                        -1
+                    )
+                )
+                viewModel.checkPluginDownload(
+                    applicationContext,
+                    it.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
+                )
             }
         }
     }
@@ -158,18 +166,26 @@ class MainActivity : AppCompatActivity() {
         )
 
         viewModel.linkLiveData.observe(this, EventObserver { link ->
-            // check the authentication
-            //todo: replace all these with a simple call and just elaborate the returned error in case
-            viewModel.authenticationState.observeOnce(this, { auth ->
-                when (auth.peekContent()) {
-                    // same as a received magnet
-                    AuthenticationState.AUTHENTICATED -> processLinkIntent(link)
-                    AuthenticationState.AUTHENTICATED_NO_PREMIUM -> baseContext.showToast(
-                        R.string.premium_needed
-                    )
-                    else -> showToast(R.string.please_login)
+            when {
+                link.endsWith(TYPE_UNCHAINED) -> {
+                    downloadPlugin(link)
                 }
-            })
+                else -> {
+                    // check the authentication
+                    //todo: replace all these with a simple call and just elaborate the returned error in case
+                    viewModel.authenticationState.observeOnce(this, { auth ->
+                        when (auth.peekContent()) {
+                            // same as a received magnet
+                            AuthenticationState.AUTHENTICATED -> processLinkIntent(link)
+                            AuthenticationState.AUTHENTICATED_NO_PREMIUM -> baseContext.showToast(
+                                R.string.premium_needed
+                            )
+                            else -> showToast(R.string.please_login)
+                        }
+                    })
+                }
+            }
+
         })
 
         // monitor if the torrent notification service needs to be started. It monitor the preference change itself
@@ -187,6 +203,23 @@ class MainActivity : AppCompatActivity() {
         viewModel.messageLiveData.observe(this, EventObserver {
             showToast(it, length = Toast.LENGTH_LONG)
         })
+
+    }
+
+    private fun downloadPlugin(link: String) {
+        val pluginName = link.replace("%2F", "/").split("/").last()
+        val manager =
+            applicationContext.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+        val request: DownloadManager.Request = DownloadManager.Request(Uri.parse(link))
+            .setTitle(getString(R.string.unchained_plugin_download))
+            .setDescription(getString(R.string.temporary_plugin_download))
+            .setDestinationInExternalFilesDir(
+                applicationContext,
+                Environment.DIRECTORY_DOWNLOADS,
+                pluginName
+            )
+        val downloadID = manager.enqueue(request)
+        viewModel.setPluginDownload(downloadID, pluginName)
 
     }
 

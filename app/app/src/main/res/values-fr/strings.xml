@@ -157,7 +157,9 @@
     <string name="loading_magnet_link">Chargement du lien du magnet…</string>
     <string name="loading_torrent_file">Chargement du fichier torrent…</string>
     <string name="unchained_torrent_download">Téléchargement de torrents Unchained</string>
+    <string name="unchained_plugin_download">Téléchargement de plugin Unchained</string>
     <string name="temporary_torrent_download">Téléchargement temporaire d’un fichier torrent</string>
+    <string name="temporary_plugin_download">Téléchargement temporaire d’un fichier plugin</string>
     <string name="error_loading_dialog">Erreur lors du chargement de la fenêtre, veuillez la rouvrir.</string>
     <string name="title_theme_preference">Thème</string>
     <string name="automatic">Automatique</string>

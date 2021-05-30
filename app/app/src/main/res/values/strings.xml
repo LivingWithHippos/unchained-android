@@ -362,7 +362,9 @@
     <string name="loading_magnet_link">Loading magnet link…</string>
     <string name="loading_torrent_file">Loading torrent file…</string>
     <string name="unchained_torrent_download">Unchained Torrent Download</string>
+    <string name="unchained_plugin_download">Unchained Plugin Download</string>
     <string name="temporary_torrent_download">Temporary download of a torrent file</string>
+    <string name="temporary_plugin_download">Temporary download of a plugin file</string>
     <string name="error_loading_dialog">Error loading the dialog, please reopen it.</string>
     <string name="title_theme_preference">Theme</string>
     <string name="automatic">Automatic</string>

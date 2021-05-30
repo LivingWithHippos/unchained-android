@@ -3,6 +3,7 @@ package com.github.livingwithhippos.unchained.start.viewmodel
 import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
+import android.os.Environment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -15,6 +16,7 @@ import com.github.livingwithhippos.unchained.data.repositoy.AuthenticationReposi
 import com.github.livingwithhippos.unchained.data.repositoy.CredentialsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.HostsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.PluginRepository
+import com.github.livingwithhippos.unchained.data.repositoy.PluginRepository.Companion.TYPE_UNCHAINED
 import com.github.livingwithhippos.unchained.data.repositoy.UserRepository
 import com.github.livingwithhippos.unchained.data.repositoy.VariousApiRepository
 import com.github.livingwithhippos.unchained.lists.view.ListsTabFragment
@@ -28,6 +30,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.io.File
 import java.util.regex.Matcher
 import java.util.regex.Pattern
@@ -54,7 +57,7 @@ class MainActivityViewModel @Inject constructor(
 
     val externalLinkLiveData = MutableLiveData<Event<Uri>>()
 
-    val downloadedTorrentLiveData = MutableLiveData<Event<String>>()
+    val downloadedFileLiveData = MutableLiveData<Event<String>>()
 
     val notificationTorrentLiveData = MutableLiveData<Event<String>>()
 
@@ -203,12 +206,55 @@ class MainActivityViewModel @Inject constructor(
         savedStateHandle.set(KEY_TORRENT_PATH, filePath)
     }
 
-    fun checkDownload(downloadID: Long) {
-        val id = savedStateHandle.get<Long>(KEY_TORRENT_DOWNLOAD_ID)
-        if (id == downloadID) {
+
+    fun setPluginDownload(downloadID: Long, filePath: String) {
+        savedStateHandle.set(KEY_PLUGIN_DOWNLOAD_ID, downloadID)
+        savedStateHandle.set(KEY_PLUGIN_PATH, filePath)
+    }
+
+    fun checkTorrentDownload(downloadID: Long) {
+        val torrentID = savedStateHandle.get<Long>(KEY_TORRENT_DOWNLOAD_ID)
+        if (torrentID == downloadID) {
             val fileName = savedStateHandle.get<String>(KEY_TORRENT_PATH)
             if (fileName != null)
-                downloadedTorrentLiveData.postEvent(fileName)
+                downloadedFileLiveData.postEvent(fileName)
+        }
+    }
+
+    fun checkPluginDownload(context: Context, downloadID: Long) {
+        val pluginID = savedStateHandle.get<Long>(KEY_PLUGIN_DOWNLOAD_ID)
+        if (pluginID == downloadID) {
+            val fileName = savedStateHandle.get<String>(KEY_PLUGIN_PATH)
+            if (fileName != null) {
+                viewModelScope.launch {
+
+                    val pluginFile = File(
+                        context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS),
+                        fileName
+                    )
+
+                    var installed = false
+
+                    if (pluginFile.exists()) {
+                        pluginFile.bufferedReader().use { reader ->
+                            try {
+                                val source = reader.readText()
+                                installed = pluginRepository.addExternalPlugin(context, source)
+                            } catch (ex: Exception) {
+                                Timber.e("Error reading file in path $fileName, exception ${ex.message}")
+                            }
+                        }
+                    }
+
+                    if (installed)
+                        messageLiveData.postEvent(R.string.plugin_install_installed)
+                    else
+                        messageLiveData.postEvent(R.string.plugin_install_not_installed)
+
+
+                }
+            }
+
         }
     }
 
@@ -234,11 +280,20 @@ class MainActivityViewModel @Inject constructor(
         }
     }
 
+
     fun downloadSupportedLink(link: String) {
         viewModelScope.launch {
             when {
                 link.isMagnet() -> linkLiveData.postEvent(link)
                 link.isTorrent() -> linkLiveData.postEvent(link)
+                link.endsWith(TYPE_UNCHAINED) -> {
+                    // only accept github links for now
+                    val newLink = convertGithubToRaw(link)
+                    if (newLink != null)
+                        linkLiveData.postEvent(newLink)
+                    else
+                        messageLiveData.postEvent(R.string.invalid_url)
+                }
                 else -> {
                     var matchFound = false
                     // check the hosts regexs
@@ -265,6 +320,31 @@ class MainActivityViewModel @Inject constructor(
                         messageLiveData.postEvent(R.string.host_match_not_found)
                 }
             }
+        }
+    }
+
+    private fun convertGithubToRaw(github: String): String? {
+        val username = "([^/]+)"
+        val repo = "([^/]+)"
+        val type = "(tree|blob)"
+        val branch = "([^/]+)"
+        val path = "(.+)"
+        when {
+            github.startsWith("https://www.github.com") || github.startsWith("https://github.com") -> {
+                val tmp = "https?://(www.)?github.com/$username/$repo/$type/$branch/$path"
+                val regex =
+                    "https?://(www.)?github.com/$username/$repo/$type/$branch/$path".toRegex()
+                val match: MatchResult = regex.find(github) ?: return null
+                return "https://raw.githubusercontent.com/" +
+                        match.groupValues[2] + "/" +
+                        match.groupValues[3] + "/" +
+                        match.groupValues[5] + "/" +
+                        match.groupValues[6]
+            }
+            github.startsWith("https://raw.githubusercontent.com") -> {
+                return github
+            }
+            else -> return null
         }
     }
 
@@ -316,7 +396,8 @@ class MainActivityViewModel @Inject constructor(
                             }
                         } else {
                             // same file name for different plugins
-                            val installed = pluginRepository.addExternalPlugin(context, data,
+                            val installed = pluginRepository.addExternalPlugin(
+                                context, data,
                                 "_$filename"
                             )
                             if (installed)
@@ -341,6 +422,8 @@ class MainActivityViewModel @Inject constructor(
     companion object {
         const val KEY_TORRENT_DOWNLOAD_ID = "torrent_download_id_key"
         const val KEY_TORRENT_PATH = "torrent_path_key"
+        const val KEY_PLUGIN_DOWNLOAD_ID = "plugin_download_id_key"
+        const val KEY_PLUGIN_PATH = "plugin_path_key"
         const val KEY_LAST_BACK_PRESS = "last_back_press_key"
         const val KEY_REFRESHING_TOKEN = "refreshing_token_key"
     }
