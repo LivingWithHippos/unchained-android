@@ -69,46 +69,9 @@ class Parser(
                                     for (link in innerSource) {
                                         // parse every page linked to the results
                                         val s = getSource(link)
-                                        val name = cleanName(
-                                            parseSingle(
-                                                plugin.download.regexes.nameRegex,
-                                                s,
-                                                plugin.url
-                                            ) ?: ""
-                                        )
-                                        // parse magnets
-                                        val magnets =
-                                            if (plugin.download.regexes.magnetRegex != null)
-                                                parseList(
-                                                    plugin.download.regexes.magnetRegex,
-                                                    s,
-                                                    plugin.url
-                                                ).map { it.removeWebFormatting() }
-                                            else
-                                                emptyList()
-                                        // parse torrents
-                                        val torrents = mutableListOf<String>()
-                                        if (plugin.download.regexes.torrentRegexes != null) {
-                                            torrents.addAll(
-                                                parseList(
-                                                    plugin.download.regexes.torrentRegexes,
-                                                    s,
-                                                    plugin.url
-                                                )
-                                            )
-                                        }
+                                        val scrapedItem = parseInnerLink(plugin.download.regexes, s,link, plugin.url)
 
-                                        // emit results once at time to avoid updating the list all at once
-                                        emit(
-                                            ParserResult.SingleResult(
-                                                ScrapedItem(
-                                                    name = name,
-                                                    link = link,
-                                                    magnets = magnets,
-                                                    torrents = torrents
-                                                )
-                                            )
-                                        )
+                                        emit(ParserResult.SingleResult(scrapedItem))
                                     }
                                     emit(ParserResult.SearchFinished)
                                 } else {
@@ -134,6 +97,69 @@ class Parser(
                 }
             }
         }
+
+    private fun parseInnerLink(
+        regexes: PluginRegexes,
+        source: String,
+        link: String,
+        baseUrl: String
+    ): ScrapedItem {
+
+        val name = cleanName(
+            parseSingle(
+                regexes.nameRegex,
+                source,
+                baseUrl
+            ) ?: ""
+        )
+        // parse magnets
+        val magnets =
+            if (regexes.magnetRegex != null)
+                parseList(
+                    regexes.magnetRegex,
+                    source,
+                    baseUrl
+                ).map { it.removeWebFormatting() }
+            else
+                emptyList()
+        // parse torrents
+        val torrents = mutableListOf<String>()
+        if (regexes.torrentRegexes != null) {
+            torrents.addAll(
+                parseList(
+                    regexes.torrentRegexes,
+                    source,
+                    baseUrl
+                )
+            )
+        }
+
+        val seeders = parseSingle(
+            regexes.seedersRegex,
+            source,
+            baseUrl
+        )
+        val leechers = parseSingle(
+            regexes.leechersRegex,
+            source,
+            baseUrl
+        )
+        val size = parseSingle(
+            regexes.sizeRegex,
+            source,
+            baseUrl
+        )
+
+        return ScrapedItem(
+            name = name,
+            link = link,
+            seeders = seeders,
+            leechers = leechers,
+            size = size,
+            magnets = magnets,
+            torrents = torrents
+        )
+    }
 
     private fun parseTable(
         tableLink: TableDirect,

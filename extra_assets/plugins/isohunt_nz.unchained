@@ -36,6 +36,21 @@
         "regex": "https://mylink\\.cx/\\?url=(magnet[^\"]+)",
         "group": 1,
         "slug_type": "complete"
+      },
+      "seeders": {
+        "regex": "class=\"seeds\">\\s*(\\d+)\\s*</span>",
+        "group": 1,
+        "slug_type": "complete"
+      },
+      "size": {
+        "regex": "<p class=\"text-lg mb2\">Size&nbsp;([^&]+)&nbsp;",
+        "group": 1,
+        "slug_type": "complete"
+      },
+      "leechers": {
+        "regex": "class=\"leechs\">\\s*(\\d+)\\s*</span>",
+        "group": 1,
+        "slug_type": "complete"
       }
     }
   }

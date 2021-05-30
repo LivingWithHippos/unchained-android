@@ -37,6 +37,21 @@
         "group": 1,
         "slug_type": "complete"
       },
+      "seeders": {
+        "regex": "class=\"seeds\">\\s*(\\d+)\\s*</span>",
+        "group": 1,
+        "slug_type": "complete"
+      },
+      "leechers": {
+        "regex": "class=\"leeches\">\\s*(\\d+)\\s*</span>",
+        "group": 1,
+        "slug_type": "complete"
+      },
+      "size": {
+        "regex": "Total\\s*size</strong>\\s*<span>([^>]+)</span>",
+        "group": 1,
+        "slug_type": "complete"
+      },
       "torrents": [
         {
           "regex": "(https?://itorrents\\.org/torrent/[^\\.]+\\.torrent)",
