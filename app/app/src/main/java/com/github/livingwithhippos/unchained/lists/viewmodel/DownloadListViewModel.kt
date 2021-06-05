@@ -139,13 +139,24 @@ class DownloadListViewModel @Inject constructor(
     fun deleteAllDownloads() {
         viewModelScope.launch {
 
+            deletedDownloadLiveData.postEvent(0)
+
             val token = credentialsRepository.getToken()
+            val completeDownloadList = mutableListOf<DownloadItem>()
             do {
                 val downloads = downloadRepository.getDownloads(token, 0,1, 50)
-                downloads.forEach {
-                    downloadRepository.deleteDownload(token, it.id)
-                }
+                completeDownloadList.addAll(downloads)
             } while (downloads.size >= 50 )
+
+
+            // post a message every 10% of the deletion progress if there are more than 10 items
+            val progressIndicator: Int = if (completeDownloadList.size/10 < 15) 15 else completeDownloadList.size/10
+
+            completeDownloadList.forEachIndexed { index, item ->
+                downloadRepository.deleteDownload(token, item.id)
+                if ((index+1) % progressIndicator == 0)
+                    deletedDownloadLiveData.postEvent(index+1)
+            }
 
             deletedDownloadLiveData.postEvent(DOWNLOADS_DELETED_ALL)
         }
@@ -167,12 +178,12 @@ class DownloadListViewModel @Inject constructor(
 
     companion object {
         const val KEY_SELECTED_TAB = "selected_tab_key"
-        const val TORRENT_NOT_DELETED = -1
-        const val TORRENT_DELETED = 1
-        const val TORRENTS_DELETED_ALL = 2
-        const val DOWNLOAD_NOT_DELETED = -1
-        const val DOWNLOAD_DELETED = 1
-        const val DOWNLOADS_DELETED_ALL = 2
+        const val TORRENT_NOT_DELETED = -3
+        const val TORRENT_DELETED = -1
+        const val TORRENTS_DELETED_ALL = -2
+        const val DOWNLOAD_NOT_DELETED = -3
+        const val DOWNLOAD_DELETED = -1
+        const val DOWNLOADS_DELETED_ALL = -2
     }
 
 }

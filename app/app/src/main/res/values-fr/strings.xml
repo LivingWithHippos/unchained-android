@@ -277,4 +277,6 @@
     <string name="delete_all_torrents_message">Êtes-vous sûr de vouloir supprimer tous vos torrents ? Cette action ne peut être annulée.</string>
     <string name="downloads_removed">Téléchargements supprimés</string>
     <string name="torrents_removed">Torrents supprimés</string>
+    <string name="removing_torrents">Suppression des torrents…</string>
+    <string name="removing_downloads">Suppression des téléchargements…</string>
 </resources>

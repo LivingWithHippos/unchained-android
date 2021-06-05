@@ -486,5 +486,7 @@
     <string name="delete_all_downloads_message">Are you sure you want to delete all your downloads? This action cannot be undone.</string>
     <string name="delete_all_torrents_message">Are you sure you want to delete all your torrents? This action cannot be undone.</string>
     <string name="torrents_removed">Torrents removed</string>
+    <string name="removing_torrents">Removing torrents…</string>
     <string name="downloads_removed">Downloads removed</string>
+    <string name="removing_downloads">Removing downloads…</string>
 </resources>

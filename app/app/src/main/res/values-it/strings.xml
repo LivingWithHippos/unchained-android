@@ -277,4 +277,6 @@
     <string name="delete_all_torrents_message">Sei sicuro di voler cancellare tutti i torrent? Questa azione non è annullabile.</string>
     <string name="torrents_removed">Torrent rimossi</string>
     <string name="downloads_removed">Download rimossi</string>
+    <string name="removing_torrents">Rimuovendo torrents…</string>
+    <string name="removing_downloads">Rimuovendo downloads…</string>
 </resources>

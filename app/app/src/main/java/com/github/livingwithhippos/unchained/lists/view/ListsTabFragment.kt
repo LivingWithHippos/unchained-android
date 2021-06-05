@@ -213,6 +213,12 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
                         torrentAdapter.submitData(PagingData.empty())
                     }
                 }
+                0 -> {
+                    context?.showToast(R.string.removing_torrents)
+                }
+                else -> {
+                    torrentAdapter.refresh()
+                }
             }
         })
 
@@ -279,6 +285,12 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
                         downloadAdapter.refresh()
                         downloadAdapter.submitData(PagingData.empty())
                     }
+                }
+                0 -> {
+                    context?.showToast(R.string.removing_downloads)
+                }
+                else -> {
+                    downloadAdapter.refresh()
                 }
             }
         })
