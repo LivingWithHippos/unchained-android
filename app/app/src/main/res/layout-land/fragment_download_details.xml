@@ -221,6 +221,24 @@
                     app:layout_constraintEnd_toEndOf="@+id/bCopy"
                     app:layout_constraintStart_toStartOf="@+id/bCopy"
                     app:layout_constraintTop_toTopOf="@id/bLoadStreams" />
+
+                <Button
+                    android:id="@+id/bDownloadFile"
+                    style="@style/Widget.MaterialComponents.Button.Icon"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:minLines="3"
+                    android:onClick="@{() -> listener.onDownloadClick(details.download, details.filename)}"
+                    android:text="@string/download"
+                    app:icon="@drawable/icon_download"
+                    app:layout_constraintBottom_toBottomOf="@id/bStreamBrowser"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toEndOf="@id/bStreamBrowser"
+                    app:layout_constraintTop_toTopOf="@id/bStreamBrowser"
+                    app:layout_constraintVertical_bias="0.0" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.recyclerview.widget.RecyclerView

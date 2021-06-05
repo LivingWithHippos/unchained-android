@@ -227,15 +227,30 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:layout_marginEnd="20dp"
+                android:layout_marginEnd="10dp"
                 android:onClick="@{() -> listener.onBrowserStreamsClick(details.id)}"
                 android:text="@string/open_browser_stream"
                 android:minLines="3"
                 android:visibility="@{details.streamable == 1 ? View.VISIBLE : View.GONE, default=visible}"
                 app:icon="@drawable/icon_browser_stream"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/bLoadStreams"
+                app:layout_constraintEnd_toStartOf="@id/bDownloadFile"
                 app:layout_constraintTop_toBottomOf="@id/bOpenWith" />
+
+            <Button
+                android:id="@+id/bDownloadFile"
+                style="@style/Widget.MaterialComponents.Button.Icon"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginStart="10dp"
+                android:onClick="@{() -> listener.onDownloadClick(details.download, details.filename)}"
+                android:text="@string/download"
+                android:minLines="3"
+                app:icon="@drawable/icon_download"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/bStreamBrowser"
+                app:layout_constraintTop_toTopOf="@id/bStreamBrowser"
+                app:layout_constraintBottom_toBottomOf="@id/bStreamBrowser"  />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.recyclerview.widget.RecyclerView
