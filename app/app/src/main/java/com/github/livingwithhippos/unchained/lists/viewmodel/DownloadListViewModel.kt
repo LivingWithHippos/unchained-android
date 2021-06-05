@@ -102,9 +102,10 @@ class DownloadListViewModel @Inject constructor(
             when (deleted) {
                 is Either.Left -> {
                     errorsLiveData.postEvent(listOf(deleted.value))
+                    deletedTorrentLiveData.postEvent(TORRENT_NOT_DELETED)
                 }
                 is Either.Right -> {
-                    deletedTorrentLiveData.postEvent(204)
+                    deletedTorrentLiveData.postEvent(TORRENT_DELETED)
                 }
             }
         }
@@ -115,9 +116,9 @@ class DownloadListViewModel @Inject constructor(
             val token = credentialsRepository.getToken()
             val deleted = downloadRepository.deleteDownload(token, id)
             if (deleted == null)
-                deletedDownloadLiveData.postEvent(-1)
+                deletedDownloadLiveData.postEvent(DOWNLOAD_NOT_DELETED)
             else
-                deletedDownloadLiveData.postEvent(1)
+                deletedDownloadLiveData.postEvent(DOWNLOAD_DELETED)
         }
     }
 
@@ -135,8 +136,54 @@ class DownloadListViewModel @Inject constructor(
             queryLiveData.postValue(query?.trim() ?: "")
     }
 
+    fun deleteAllDownloads() {
+        viewModelScope.launch {
+
+            deletedDownloadLiveData.postEvent(0)
+
+            val token = credentialsRepository.getToken()
+            val completeDownloadList = mutableListOf<DownloadItem>()
+            do {
+                val downloads = downloadRepository.getDownloads(token, 0,1, 50)
+                completeDownloadList.addAll(downloads)
+            } while (downloads.size >= 50 )
+
+
+            // post a message every 10% of the deletion progress if there are more than 10 items
+            val progressIndicator: Int = if (completeDownloadList.size/10 < 15) 15 else completeDownloadList.size/10
+
+            completeDownloadList.forEachIndexed { index, item ->
+                downloadRepository.deleteDownload(token, item.id)
+                if ((index+1) % progressIndicator == 0)
+                    deletedDownloadLiveData.postEvent(index+1)
+            }
+
+            deletedDownloadLiveData.postEvent(DOWNLOADS_DELETED_ALL)
+        }
+    }
+
+    fun deleteAllTorrents() {
+        viewModelScope.launch {
+            val token = credentialsRepository.getToken()
+            do {
+                val torrents = torrentsRepository.getTorrentsList(token, 0, 1, 50)
+                torrents.forEach {
+                    torrentsRepository.deleteTorrent(token, it.id)
+                }
+            } while (torrents.size >= 50 )
+
+            deletedTorrentLiveData.postEvent(TORRENTS_DELETED_ALL)
+        }
+    }
+
     companion object {
         const val KEY_SELECTED_TAB = "selected_tab_key"
+        const val TORRENT_NOT_DELETED = -3
+        const val TORRENT_DELETED = -1
+        const val TORRENTS_DELETED_ALL = -2
+        const val DOWNLOAD_NOT_DELETED = -3
+        const val DOWNLOAD_DELETED = -1
+        const val DOWNLOADS_DELETED_ALL = -2
     }
 
 }

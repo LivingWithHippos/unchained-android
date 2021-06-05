@@ -170,7 +170,7 @@
     <string name="night_theme">Mode nuit</string>
     <string name="title_aspect">Proportions</string>
     <string name="delete">Supprimer</string>
-    <string name="torrent_deleted">Torrent retiré</string>
+    <string name="torrent_removed">Torrent retiré</string>
     <string name="open">Ouvrir</string>
     <string name="content_description_delete_torrent_item">Supprimer le torrent</string>
     <string name="content_description_delete_download_item">Supprimer le téléchargement</string>
@@ -272,4 +272,11 @@
     </plurals>
     <string name="size_format">taille: %s</string>
     <string name="leechers_string_format">leecher/s: %s</string>
+    <string name="delete_all">Supprimer tout</string>
+    <string name="delete_all_downloads_message">Êtes-vous sûr de vouloir supprimer tous vos téléchargements ? Cette action ne peut être annulée.</string>
+    <string name="delete_all_torrents_message">Êtes-vous sûr de vouloir supprimer tous vos torrents ? Cette action ne peut être annulée.</string>
+    <string name="downloads_removed">Téléchargements supprimés</string>
+    <string name="torrents_removed">Torrents supprimés</string>
+    <string name="removing_torrents">Suppression des torrents…</string>
+    <string name="removing_downloads">Suppression des téléchargements…</string>
 </resources>

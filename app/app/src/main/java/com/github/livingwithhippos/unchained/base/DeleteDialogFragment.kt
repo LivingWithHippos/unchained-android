@@ -30,7 +30,7 @@ class DeleteDialogFragment : DialogFragment() {
 
             builder.setView(view)
                 .setTitle(R.string.confirm_removal)
-                .setNeutralButton(resources.getString(R.string.close)) { dialog, _ ->
+                .setNeutralButton(getString(R.string.close)) { dialog, _ ->
                     dialog.cancel()
                 }
             // Create the AlertDialog object and return it

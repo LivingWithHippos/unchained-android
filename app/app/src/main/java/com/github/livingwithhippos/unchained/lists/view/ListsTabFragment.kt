@@ -24,13 +24,19 @@ import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.data.model.EmptyBodyError
 import com.github.livingwithhippos.unchained.data.model.NetworkError
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
-import com.github.livingwithhippos.unchained.databinding.FragmentFolderListBinding
 import com.github.livingwithhippos.unchained.databinding.FragmentTabListsBinding
 import com.github.livingwithhippos.unchained.lists.viewmodel.DownloadListViewModel
+import com.github.livingwithhippos.unchained.lists.viewmodel.DownloadListViewModel.Companion.DOWNLOADS_DELETED_ALL
+import com.github.livingwithhippos.unchained.lists.viewmodel.DownloadListViewModel.Companion.DOWNLOAD_DELETED
+import com.github.livingwithhippos.unchained.lists.viewmodel.DownloadListViewModel.Companion.DOWNLOAD_NOT_DELETED
+import com.github.livingwithhippos.unchained.lists.viewmodel.DownloadListViewModel.Companion.TORRENTS_DELETED_ALL
+import com.github.livingwithhippos.unchained.lists.viewmodel.DownloadListViewModel.Companion.TORRENT_DELETED
+import com.github.livingwithhippos.unchained.lists.viewmodel.DownloadListViewModel.Companion.TORRENT_NOT_DELETED
 import com.github.livingwithhippos.unchained.utilities.EventObserver
 import com.github.livingwithhippos.unchained.utilities.extension.getApiErrorMessage
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.github.livingwithhippos.unchained.utilities.extension.verticalScrollToPosition
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayout
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
@@ -192,8 +198,28 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
 
 
         viewModel.deletedTorrentLiveData.observe(viewLifecycleOwner, EventObserver {
-            context?.showToast(R.string.torrent_deleted)
-            torrentAdapter.refresh()
+            when (it) {
+                TORRENT_NOT_DELETED -> {
+                }
+                TORRENT_DELETED -> {
+                    context?.showToast(R.string.torrent_removed)
+                    torrentAdapter.refresh()
+                }
+                TORRENTS_DELETED_ALL -> {
+                    context?.showToast(R.string.torrents_removed)
+                    lifecycleScope.launch {
+                        // if we don't refresh the cached copy of the last result will be restored on the first list redraw
+                        torrentAdapter.refresh()
+                        torrentAdapter.submitData(PagingData.empty())
+                    }
+                }
+                0 -> {
+                    context?.showToast(R.string.removing_torrents)
+                }
+                else -> {
+                    torrentAdapter.refresh()
+                }
+            }
         })
 
         activityViewModel.listStateLiveData.observe(viewLifecycleOwner, EventObserver {
@@ -245,8 +271,28 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
         }
 
         viewModel.deletedDownloadLiveData.observe(viewLifecycleOwner, EventObserver {
-            context?.showToast(R.string.download_removed)
-            downloadAdapter.refresh()
+            when (it) {
+                DOWNLOAD_NOT_DELETED -> {
+                }
+                DOWNLOAD_DELETED -> {
+                    context?.showToast(R.string.download_removed)
+                    downloadAdapter.refresh()
+                }
+                DOWNLOADS_DELETED_ALL -> {
+                    context?.showToast(R.string.downloads_removed)
+                    lifecycleScope.launch {
+                        // if we don't refresh the cached copy of the last result will be restored on the first list redraw
+                        downloadAdapter.refresh()
+                        downloadAdapter.submitData(PagingData.empty())
+                    }
+                }
+                0 -> {
+                    context?.showToast(R.string.removing_downloads)
+                }
+                else -> {
+                    downloadAdapter.refresh()
+                }
+            }
         })
 
         viewModel.errorsLiveData.observe(viewLifecycleOwner, EventObserver {
@@ -325,8 +371,33 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
             R.id.search -> {
                 true
             }
+            R.id.delete_all -> {
+                showDeleteAllDialog(viewModel.getSelectedTab())
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun showDeleteAllDialog(selectedTab: Int) {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(getString(R.string.delete_all))
+            .setMessage(
+                if (selectedTab == TAB_DOWNLOADS)
+                    getString(R.string.delete_all_downloads_message)
+                else
+                    getString(R.string.delete_all_torrents_message)
+            )
+            .setNegativeButton(getString(R.string.decline)) { _, _ ->
+            }
+            .setPositiveButton(getString(R.string.accept)) { _, _ ->
+                if (selectedTab == TAB_DOWNLOADS)
+                    viewModel.deleteAllDownloads()
+                else
+                    viewModel.deleteAllTorrents()
+            }
+            .show()
+
     }
 
     override fun onClick(item: DownloadItem) {
@@ -349,10 +420,13 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
             when (item.status) {
                 "downloaded" -> {
                     if (item.links.size > 1) {
-                        val action = ListsTabFragmentDirections.actionListTabsDestToFolderListFragment2(folder = null, torrent = item)
+                        val action =
+                            ListsTabFragmentDirections.actionListTabsDestToFolderListFragment2(
+                                folder = null,
+                                torrent = item
+                            )
                         findNavController().navigate(action)
-                    }
-                    else
+                    } else
                         viewModel.downloadTorrent(item)
                 }
                 // open the torrent details fragment
