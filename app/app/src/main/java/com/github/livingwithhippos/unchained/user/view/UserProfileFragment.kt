@@ -66,16 +66,16 @@ class UserProfileFragment : UnchainedFragment() {
                 }
 
                 MaterialAlertDialogBuilder(requireContext())
-                    .setTitle(resources.getString(R.string.referral))
-                    .setMessage(resources.getString(R.string.referral_proposal))
-                    .setNegativeButton(resources.getString(R.string.decline)) { _, _ ->
+                    .setTitle(getString(R.string.referral))
+                    .setMessage(getString(R.string.referral_proposal))
+                    .setNegativeButton(getString(R.string.decline)) { _, _ ->
                         with(preferences.edit()) {
                             putBoolean(KEY_REFERRAL_USE, false)
                             apply()
                         }
                         openExternalWebPage(ACCOUNT_LINK)
                     }
-                    .setPositiveButton(resources.getString(R.string.accept)) { _, _ ->
+                    .setPositiveButton(getString(R.string.accept)) { _, _ ->
                         with(preferences.edit()) {
                             putBoolean(KEY_REFERRAL_USE, true)
                             apply()

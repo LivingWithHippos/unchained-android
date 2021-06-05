@@ -95,7 +95,7 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
 
         viewModel.deletedTorrentLiveData.observe(viewLifecycleOwner, EventObserver {
             // todo: check returned value (it)
-            activity?.baseContext?.showToast(R.string.torrent_deleted)
+            activity?.baseContext?.showToast(R.string.torrent_removed)
             // if deleted go back
             activity?.onBackPressed()
             activityViewModel.setListState(ListsTabFragment.ListState.UPDATE_TORRENT)

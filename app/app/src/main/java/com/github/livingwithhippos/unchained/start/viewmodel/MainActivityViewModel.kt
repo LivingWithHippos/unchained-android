@@ -331,7 +331,6 @@ class MainActivityViewModel @Inject constructor(
         val path = "(.+)"
         when {
             github.startsWith("https://www.github.com") || github.startsWith("https://github.com") -> {
-                val tmp = "https?://(www.)?github.com/$username/$repo/$type/$branch/$path"
                 val regex =
                     "https?://(www.)?github.com/$username/$repo/$type/$branch/$path".toRegex()
                 val match: MatchResult = regex.find(github) ?: return null
