@@ -6,10 +6,14 @@ on:
   push:
     branches:
       - master
-      
+
+ defaults:
+  run:
+    working-directory: ~/unchained-android/app
+
 jobs:
   test:
-    name: Run Unit Tests
+    name: Run Tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -29,7 +33,6 @@ jobs:
               app/build/reports/
               app/build/test-results/
   build:
-    working-directory: ~/unchained-android/app
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the code
