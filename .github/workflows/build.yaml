@@ -1,0 +1,52 @@
+name: Build
+on:
+  # Trigger on every pull request and on push
+  # to the `main` branch.
+  pull_request:
+  push:
+    branches:
+      - master
+      
+jobs:
+  test:
+    name: Run Unit Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup JDK
+        uses: actions/setup-java@v2
+        with:
+            distribution: 'zulu'
+            java-version: 15
+      - name: Run tests
+        run: ./gradlew lint test
+      - name: save test reports
+        uses: actions/upload-artifact@v2
+        with:
+            name: reports
+            path: |
+              app/build/reports/
+              app/build/test-results/
+  build:
+    working-directory: ~/unchained-android/app
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v2
+      - name: Setup JDK
+        uses: actions/setup-java@v2
+        with:
+            distribution: 'zulu'
+            java-version: 15
+      - name: Retrieve keystore for apk signing
+        run: echo $ENCODED_KEYSTORE | base64 --decode > ~/unchained-android/app/release.pfk
+        run: echo 'export KEYSTORE=~/unchained-android/app/release.pfk' >> $BASH_ENV
+      - name: Build the app
+        run: ./gradlew clean assembleRelease --stacktrace
+      - name: save apk
+        uses: actions/upload-artifact@v2
+        with:
+            name: release apk
+            path: app/build/outputs/apk/release
+
