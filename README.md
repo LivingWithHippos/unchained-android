@@ -4,7 +4,7 @@
 
 # Unchained for Android
 
-[![License](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)    [![Kotlin Version](https://img.shields.io/badge/kotlin-1.4.10-blue)](http://kotlinlang.org/) [![Android Studio](https://img.shields.io/badge/Android%20Studio-4.1%2B-brightgreen)](https://developer.android.com/studio)    [![API](https://img.shields.io/badge/API-22%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=22)    [![CircleCI](https://circleci.com/gh/LivingWithHippos/Keter-Escape/tree/master.svg?style=shield)](https://circleci.com/gh/LivingWithHippos/unchained-android/tree/master)    [![Play Store](https://img.shields.io/badge/play%20store-available-brightgreen)](https://play.google.com/store/apps/details?id=com.github.livingwithhippos.unchained) [![translated](https://localization.professiona.li/widgets/unchained-for-android/-/strings/svg-badge.svg)](https://localization.professiona.li/engage/unchained-for-android/)
+[![License](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)    [![Kotlin Version](https://img.shields.io/badge/kotlin-1.4.10-blue)](http://kotlinlang.org/) [![Android Studio](https://img.shields.io/badge/Android%20Studio-4.1%2B-brightgreen)](https://developer.android.com/studio)    [![API](https://img.shields.io/badge/API-22%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=22)    [![Build Status](https://img.shields.io/github/workflow/status/LivingWithHippos/unchained-android/Build)](https://github.com/LivingWithHippos/unchained-android/actions)    [![Play Store](https://img.shields.io/badge/play%20store-available-brightgreen)](https://play.google.com/store/apps/details?id=com.github.livingwithhippos.unchained) [![translated](https://localization.professiona.li/widgets/unchained-for-android/-/strings/svg-badge.svg)](https://localization.professiona.li/engage/unchained-for-android/)
 
 
 
@@ -44,7 +44,7 @@ You can take a look at the project [here](https://github.com/LivingWithHippos/un
 You have multiple options to install Unchained for Android:
 
 1. Get the [latest published release](https://github.com/LivingWithHippos/unchained-android/releases) from GitHub
-2. Get the [latest build artifacts](https://app.circleci.com/pipelines/github/LivingWithHippos/unchained-android?branch=master) from CircleCI: expand the desired pipeline item ⇒ select "build" ⇒ select the "artifacts" tab
+2. Get the [latest build artifacts](https://github.com/LivingWithHippos/unchained-android/actions) from Github Actions: click on the latest working workflow and scroll to the bottom of the summary section, extract the apk from the apk.zip file 
 3. Get the [Play Store release](https://play.google.com/store/apps/details?id=com.github.livingwithhippos.unchained)
 
 ### Developing and Contributing :writing_hand:
