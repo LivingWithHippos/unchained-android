@@ -26,6 +26,7 @@ jobs:
         run: ./gradlew lint test
       - name: save test reports
         uses: actions/upload-artifact@v2
+        # artifacts are zipped together in the end
         with:
             name: reports
             path: /home/runner/work/unchained-android/unchained-android/app/app/build/reports/
@@ -46,6 +47,9 @@ jobs:
       - name: Build the app
         env:
             KEYSTORE: /home/runner/work/unchained-android/unchained-android/app/release.pfk
+            KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+            KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+            KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: ./gradlew clean assembleRelease --stacktrace
       - name: save apk
         uses: actions/upload-artifact@v2
