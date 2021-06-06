@@ -213,15 +213,15 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         val manager =
             requireContext().getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
         val request: DownloadManager.Request = DownloadManager.Request(Uri.parse(link))
-            .setTitle(getString(R.string.app_name))
-            .setDescription(fileName)
+            .setTitle(fileName)
+            .setDescription(getString(R.string.app_name))
             .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
             .setDestinationInExternalPublicDir(
                 Environment.DIRECTORY_DOWNLOADS,
                 fileName
             )
 
-        val downloadID = manager.enqueue(request)
+        manager.enqueue(request)
     }
 
     override fun onShareClick(url: String) {
