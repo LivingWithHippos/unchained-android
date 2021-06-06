@@ -6,11 +6,9 @@ on:
   push:
     branches:
       - master
-
- defaults:
+defaults:
   run:
     working-directory: ~/unchained-android/app
-
 jobs:
   test:
     name: Run Tests
