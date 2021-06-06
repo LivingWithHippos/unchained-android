@@ -42,7 +42,7 @@
     <string name="speed_format_mb">%1$.1f MB/s</string>
     <string name="selected_file_size_format">%1$d MB / %2$d MB selezionati</string>
     <string name="torrent_status_format">Stato: %1$s</string>
-    <string name="load_streams">Carica i media</string>
+    <string name="load_streams">Carica media</string>
     <string name="quality">Qualità</string>
     <string name="links">Links</string>
     <string name="add_private_token_message">Puoi anche usare il tuo codice API privato da https://real-debrid.com/apitoken che ti permetterà di utilizzare tutte le funzionalità incluso lo streaming.</string>

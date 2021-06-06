@@ -215,13 +215,21 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         val request: DownloadManager.Request = DownloadManager.Request(Uri.parse(link))
             .setTitle(getString(R.string.app_name))
             .setDescription(fileName)
-            .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
+            .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
             .setDestinationInExternalPublicDir(
                 Environment.DIRECTORY_DOWNLOADS,
                 fileName
             )
 
         val downloadID = manager.enqueue(request)
+    }
+
+    override fun onShareClick(url: String) {
+        val shareIntent = Intent(Intent.ACTION_SEND)
+        shareIntent.type = "text/plain"
+        val shareLink = url
+        shareIntent.putExtra(Intent.EXTRA_TEXT, shareLink)
+        startActivity(Intent.createChooser(shareIntent, getString(R.string.share_with)))
     }
 }
 
@@ -232,4 +240,5 @@ interface DownloadDetailsListener {
     fun onLoadStreamsClick(id: String)
     fun onBrowserStreamsClick(id: String)
     fun onDownloadClick(link: String, fileName: String)
+    fun onShareClick(url: String)
 }
