@@ -42,6 +42,7 @@ jobs:
             java-version: 15
       - name: Retrieve keystore for apk signing
         run: echo $ENCODED_KEYSTORE | base64 --decode > ~/unchained-android/app/release.pfk
+      - name: Add keystore variables to env
         run: echo 'export KEYSTORE=~/unchained-android/app/release.pfk' >> $BASH_ENV
       - name: Build the app
         run: ./gradlew clean assembleRelease --stacktrace
