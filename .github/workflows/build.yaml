@@ -15,7 +15,7 @@ jobs:
     name: Run Tests
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: checkout
         uses: actions/checkout@v2
       - name: Setup JDK
         uses: actions/setup-java@v2
@@ -28,13 +28,11 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
             name: reports
-            path: |
-              /home/runner/work/unchained-android/unchained-android/app/app/build/reports/lint-results.html
-              /home/runner/work/unchained-android/unchained-android/app/app/build/reports/lint-results.xml
+            path: /home/runner/work/unchained-android/unchained-android/app/app/build/reports/
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout the code
+      - name: checkout the code
         uses: actions/checkout@v2
       - name: Setup JDK
         uses: actions/setup-java@v2
@@ -53,5 +51,5 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
             name: release apk
-            path: app/build/outputs/apk/release
+            path: /home/runner/work/unchained-android/unchained-android/app/app/build/outputs/apk/release
 
