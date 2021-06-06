@@ -15,11 +15,11 @@ jobs:
     name: Run Tests
     runs-on: ubuntu-latest
     steps:
-      - name: checkout
+      - name: Checkout
         uses: actions/checkout@v2
       - name: Run tests
         run: ./gradlew lint test
-      - name: save test reports
+      - name: Save test reports
         uses: actions/upload-artifact@v2
         # artifacts are zipped together in the end
         with:
@@ -28,12 +28,14 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: checkout the code
+      - name: Checkout
         uses: actions/checkout@v2
       - name: Retrieve keystore for apk signing
         env:
             ENCODED_KEYSTORE: ${{ secrets.KEYSTORE }}
         run: echo "$ENCODED_KEYSTORE" | base64 --decode > /home/runner/work/unchained-android/unchained-android/app/release.pfk
+      - name: Copy plugins
+        run: cp /home/runner/work/unchained-android/unchained-android/extra_assets/plugins/*.unchained /home/runner/work/unchained-android/unchained-android/app/app/src/main/assets
       - name: Build the app
         env:
             KEYSTORE: /home/runner/work/unchained-android/unchained-android/app/release.pfk
@@ -41,7 +43,7 @@ jobs:
             KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
             KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: ./gradlew clean assembleRelease --stacktrace
-      - name: save apk
+      - name: Save apk
         uses: actions/upload-artifact@v2
         with:
             name: apk
