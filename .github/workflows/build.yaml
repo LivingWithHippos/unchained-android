@@ -8,7 +8,7 @@ on:
       - master
 defaults:
   run:
-    working-directory: /home/runner/work/unchained-android/unchained-android/app
+    working-directory: ~/work/unchained-android/unchained-android/app
 jobs:
   test:
     name: Run Tests
@@ -21,8 +21,6 @@ jobs:
         with:
             distribution: 'zulu'
             java-version: 15
-      - name: Check files
-        run: ls
       - name: Check path
         run: pwd
       - name: Run tests
@@ -32,8 +30,8 @@ jobs:
         with:
             name: reports
             path: |
-              build/reports/
-              build/test-results/
+              app/build/reports/
+              app/build/test-results/
   build:
     runs-on: ubuntu-latest
     steps:
