@@ -62,7 +62,7 @@
                 android:focusable="true"
                 app:cardCornerRadius="10dp"
                 app:cardElevation="5dp"
-                app:layout_constraintBottom_toTopOf="@id/clButtonsLayout"
+                app:layout_constraintBottom_toTopOf="@id/buttonsLayout"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tvName">
@@ -135,107 +135,220 @@
                         app:layout_constraintTop_toBottomOf="@id/ivHosterPic" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
-            </com.google.android.material.card.MaterialCardView>
+            </com.google.android.material.card.MaterialCardView> <com.google.android.flexbox.FlexboxLayout
+            android:id="@+id/buttonsLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            app:alignItems="flex_start"
+            app:flexWrap="wrap"
+            app:justifyContent="space_around"
+            app:layout_constraintBottom_toTopOf="@id/rvAlternativeList"
+            app:layout_constraintEnd_toEndOf="@id/cvDetails"
+            app:layout_constraintStart_toStartOf="@id/cvDetails"
+            app:layout_constraintTop_toBottomOf="@id/cvDetails">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/clButtonsLayout"
-                android:layout_width="0dp"
+            <LinearLayout
+                android:layout_width="@dimen/fab_download_details_width"
                 android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="@id/cvDetails"
-                app:layout_constraintStart_toStartOf="@id/cvDetails"
-                app:layout_constraintTop_toBottomOf="@id/cvDetails">
+                android:gravity="center"
+                android:orientation="vertical"
+                android:layout_marginBottom="10dp">
 
-                <Button
-                    android:id="@+id/bOpen"
-                    style="@style/Widget.MaterialComponents.Button.Icon"
-                    android:layout_width="0dp"
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/fabShareLink"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginEnd="10dp"
-                    android:minLines="3"
+                    android:clickable="true"
+                    android:contentDescription="@string/share"
+                    android:focusable="true"
+                    android:onClick="@{() -> listener.onShareClick(details.download)}"
+                    app:srcCompat="@drawable/icon_share" />
+
+                <TextView
+                    style="@style/TextAppearance.UnchainedTheme.Body2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"
+                    android:text="@string/share"
+                    android:textAlignment="center" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="@dimen/fab_download_details_width"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:layout_marginBottom="10dp">
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/fabOpenLink"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:contentDescription="@string/open_link"
+                    android:focusable="true"
                     android:onClick="@{() -> listener.onOpenClick(details.download)}"
-                    android:text="@string/open_link"
-                    app:icon="@drawable/icon_open_external"
-                    app:layout_constraintBottom_toTopOf="@id/bLoadStreams"
-                    app:layout_constraintEnd_toStartOf="@id/bCopy"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:srcCompat="@drawable/icon_open_external" />
 
-                <Button
-                    android:id="@+id/bCopy"
-                    style="@style/Widget.MaterialComponents.Button.Icon"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_marginEnd="10dp"
-                    android:onClick="@{() -> listener.onCopyClick(details.download)}"
-                    android:text="@string/copy_link"
-                    app:icon="@drawable/icon_copy"
-                    app:layout_constraintBottom_toBottomOf="@id/bOpen"
-                    app:layout_constraintEnd_toStartOf="@id/bOpenWith"
-                    app:layout_constraintStart_toEndOf="@id/bOpen"
-                    app:layout_constraintTop_toTopOf="@id/bOpen" />
-
-                <Button
-                    android:id="@+id/bOpenWith"
-                    style="@style/Widget.MaterialComponents.Button.Icon"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_marginEnd="10dp"
-                    android:enabled="@{yatseInstalled ? true : false, default=true}"
-                    android:onClick="@{() -> listener.onOpenWith(details.download)}"
-                    android:text="@string/yatse"
-                    android:visibility="@{details.streamable == 1 ? View.VISIBLE : View.GONE, default=visible}"
-                    app:icon="@drawable/icon_remote"
-                    app:layout_constraintBottom_toBottomOf="@id/bOpen"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/bCopy"
-                    app:layout_constraintTop_toTopOf="@id/bOpen" />
-
-                <Button
-                    android:id="@+id/bLoadStreams"
-                    style="@style/Widget.MaterialComponents.Button.Icon"
-                    android:layout_width="0dp"
+                <TextView
+                    style="@style/TextAppearance.UnchainedTheme.Body2"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:enabled="@{stream == null &amp;&amp; (details.alternative == null || details.alternative.size == 0)? true : false, default = true}"
-                    android:minLines="3"
-                    android:onClick="@{() -> listener.onLoadStreamsClick(details.id)}"
-                    android:text="@string/load_streams"
-                    android:visibility="@{details.streamable == 1 ? View.VISIBLE : View.GONE, default=visible}"
-                    app:icon="@drawable/icon_play_outline"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="@id/bOpen"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/bOpen" />
+                    android:focusable="false"
+                    android:text="@string/open"
+                    android:textAlignment="center" />
+            </LinearLayout>
 
-                <Button
-                    android:id="@+id/bStreamBrowser"
-                    style="@style/Widget.MaterialComponents.Button.Icon"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:minLines="3"
+            <LinearLayout
+                android:layout_width="@dimen/fab_download_details_width"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:layout_marginBottom="10dp">
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/fabCopyLink"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:contentDescription="@string/copy_link"
+                    android:focusable="true"
+                    android:onClick="@{() -> listener.onCopyClick(details.download)}"
+                    app:srcCompat="@drawable/icon_copy" />
+
+                <TextView
+                    style="@style/TextAppearance.UnchainedTheme.Body2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"
+                    android:text="@string/copy"
+                    android:textAlignment="center" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="@dimen/fab_download_details_width"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:layout_marginBottom="10dp">
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/fabDownloadLink"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:contentDescription="@string/download"
+                    android:focusable="true"
+                    android:onClick="@{() -> listener.onDownloadClick(details.download, details.filename)}"
+                    app:srcCompat="@drawable/icon_download" />
+
+                <TextView
+                    style="@style/TextAppearance.UnchainedTheme.Body2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"
+                    android:text="@string/download"
+                    android:textAlignment="center" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="@dimen/fab_download_details_width"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:visibility="@{details.streamable == 1 &amp;&amp; yatseInstalled ? View.VISIBLE : View.GONE, default=visible}"
+                android:layout_marginBottom="10dp">
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/fabOpenViaApp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:contentDescription="@string/yatse"
+                    android:focusable="true"
+                    android:onClick="@{() -> listener.onOpenWith(details.download)}"
+                    app:srcCompat="@drawable/icon_remote" />
+
+                <TextView
+                    style="@style/TextAppearance.UnchainedTheme.Body2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"
+                    android:text="@string/yatse"
+                    android:textAlignment="center" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="@dimen/fab_download_details_width"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:visibility="@{details.streamable == 1 ? View.VISIBLE : View.GONE, default=visible}"
+                android:layout_marginBottom="10dp">
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/fabLoadStreams"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:contentDescription="@string/load_streams"
+                    android:enabled="@{stream == null &amp;&amp; (details.alternative == null || details.alternative.size == 0)? true : false, default = true}"
+                    android:focusable="true"
+                    android:onClick="@{() -> listener.onLoadStreamsClick(details.id)}"
+                    app:srcCompat="@drawable/icon_play_outline" />
+
+                <TextView
+                    style="@style/TextAppearance.UnchainedTheme.Body2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"
+                    android:text="@string/load_streams"
+                    android:textAlignment="center" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="@dimen/fab_download_details_width"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:visibility="@{details.streamable == 1 ? View.VISIBLE : View.GONE, default=visible}"
+                android:layout_marginBottom="10dp">
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/fabStreamBrowser"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:contentDescription="@string/open_browser_stream"
+                    android:focusable="true"
                     android:onClick="@{() -> listener.onBrowserStreamsClick(details.id)}"
+                    app:srcCompat="@drawable/icon_browser_stream" />
+
+                <TextView
+                    style="@style/TextAppearance.UnchainedTheme.Body2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"
                     android:text="@string/open_browser_stream"
-                    android:visibility="@{details.streamable == 1 ? View.VISIBLE : View.GONE, default=visible}"
-                    app:icon="@drawable/icon_browser_stream"
-                    app:layout_constraintBottom_toBottomOf="@+id/bLoadStreams"
-                    app:layout_constraintEnd_toEndOf="@+id/bCopy"
-                    app:layout_constraintStart_toStartOf="@+id/bCopy"
-                    app:layout_constraintTop_toTopOf="@id/bLoadStreams" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                    android:textAlignment="center" />
+            </LinearLayout>
+
+        </com.google.android.flexbox.FlexboxLayout>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvAlternativeList"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="10dp"
                 android:scrollbars="vertical"
                 android:visibility="@{(details.alternative != null &amp;&amp; details.alternative.size()>0)||(stream != null) ?  View.VISIBLE : View.GONE, default=visible}"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/clButtonsLayout"
+                app:layout_constraintTop_toBottomOf="@id/buttonsLayout"
                 tools:listitem="@layout/item_alternative_download" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

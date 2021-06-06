@@ -1,10 +1,14 @@
 package com.github.livingwithhippos.unchained.downloaddetails.view
 
 import android.annotation.SuppressLint
+import android.app.DownloadManager
 import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -147,14 +151,6 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                 dialog.show(parentFragmentManager, "DeleteDialogFragment")
                 true
             }
-            R.id.share -> {
-                val shareIntent = Intent(Intent.ACTION_SEND)
-                shareIntent.type = "text/plain"
-                val shareLink = args.details.download
-                shareIntent.putExtra(Intent.EXTRA_TEXT, shareLink)
-                startActivity(Intent.createChooser(shareIntent, getString(R.string.share_with)))
-                true
-            }
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -211,6 +207,30 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
     override fun onBrowserStreamsClick(id: String) {
         openExternalWebPage(RD_STREAMING_URL + id)
     }
+
+    override fun onDownloadClick(link: String, fileName: String) {
+
+        val manager =
+            requireContext().getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+        val request: DownloadManager.Request = DownloadManager.Request(Uri.parse(link))
+            .setTitle(fileName)
+            .setDescription(getString(R.string.app_name))
+            .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+            .setDestinationInExternalPublicDir(
+                Environment.DIRECTORY_DOWNLOADS,
+                fileName
+            )
+
+        manager.enqueue(request)
+    }
+
+    override fun onShareClick(url: String) {
+        val shareIntent = Intent(Intent.ACTION_SEND)
+        shareIntent.type = "text/plain"
+        val shareLink = url
+        shareIntent.putExtra(Intent.EXTRA_TEXT, shareLink)
+        startActivity(Intent.createChooser(shareIntent, getString(R.string.share_with)))
+    }
 }
 
 interface DownloadDetailsListener {
@@ -219,4 +239,6 @@ interface DownloadDetailsListener {
     fun onOpenWith(url: String)
     fun onLoadStreamsClick(id: String)
     fun onBrowserStreamsClick(id: String)
+    fun onDownloadClick(link: String, fileName: String)
+    fun onShareClick(url: String)
 }

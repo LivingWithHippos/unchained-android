@@ -44,7 +44,7 @@
     <string name="speed_format_kb" translatable="false">%1$.1f Ko/s</string>
     <string name="speed_format_mb" translatable="false">%1$.1f Mo/s</string>
     <string name="speed_error">Erreur en récupérant la vitesse de téléchargement</string>
-    <string name="load_streams">Chargement des liens du stream</string>
+    <string name="load_streams">Chargement des streams</string>
     <string name="quality">Qualité</string>
     <string name="links">Liens</string>
     <string name="add_private_token_message">Vous pouvez également utiliser votre jeton d’API privé depuis https://real-debrid.com/apitoken qui vous permettra d’utiliser toutes les fonctionnalités comme le streaming.</string>

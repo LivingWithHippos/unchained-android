@@ -44,7 +44,7 @@
     <string name="speed_format_kb">%1$.1f KB/s</string>
     <string name="speed_format_mb">%1$.1f MB/s</string>
     <string name="speed_error">Error getting the download speed</string>
-    <string name="load_streams">Load stream links</string>
+    <string name="load_streams">Load streams</string>
     <string name="apple" translatable="false">Apple</string>
     <string name="dash" translatable="false">Dash</string>
     <string name="liveMP4" translatable="false">Live MP4</string>
