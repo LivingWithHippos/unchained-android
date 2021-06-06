@@ -73,12 +73,13 @@
             app:layout_constraintBottom_toTopOf="@id/llList"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@id/categoryPicker"
-            android:hint="@string/plugin">
+            >
 
             <AutoCompleteTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="none"
+                android:hint="@string/plugin"
                 />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -93,12 +94,13 @@
             app:layout_constraintBottom_toBottomOf="@id/pluginPicker"
             app:layout_constraintStart_toEndOf="@id/pluginPicker"
             app:layout_constraintEnd_toEndOf="parent"
-            android:hint="@string/category">
+            >
 
             <AutoCompleteTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="none"
+                android:hint="@string/category"
                 />
 
         </com.google.android.material.textfield.TextInputLayout>

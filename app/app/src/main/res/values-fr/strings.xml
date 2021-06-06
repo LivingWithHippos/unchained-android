@@ -32,17 +32,17 @@
     <string name="copy_link">Copier le lien</string>
     <string name="link_copied">Lien copié</string>
     <string name="streaming">Streaming</string>
-    <string name="megabytes_short" translatable="false">Mo</string>
-    <string name="file_size_format" translatable="false">%1$d Mo</string>
-    <string name="file_size_format_kb" translatable="false">%1$.2f Ko</string>
-    <string name="file_size_format_mb" translatable="false">%1$.2f Mo</string>
-    <string name="file_size_format_gb" translatable="false">%1$.2f Go</string>
+    <string name="megabytes_short">Mo</string>
+    <string name="file_size_format">%1$d Mo</string>
+    <string name="file_size_format_kb">%1$.2f Ko</string>
+    <string name="file_size_format_mb">%1$.2f Mo</string>
+    <string name="file_size_format_gb">%1$.2f Go</string>
     <string name="selected_file_size_format">%1$d Mo / %2$d Mo sélectionné</string>
     <string name="size_error">Erreur lors de la récupération de la taille du fichier</string>
     <string name="torrent_status_format">État : %1$s</string>
-    <string name="speed_format_b" translatable="false">%1$d b/s</string>
-    <string name="speed_format_kb" translatable="false">%1$.1f Ko/s</string>
-    <string name="speed_format_mb" translatable="false">%1$.1f Mo/s</string>
+    <string name="speed_format_b">%1$d b/s</string>
+    <string name="speed_format_kb">%1$.1f Ko/s</string>
+    <string name="speed_format_mb">%1$.1f Mo/s</string>
     <string name="speed_error">Erreur en récupérant la vitesse de téléchargement</string>
     <string name="load_streams">Chargement des streams</string>
     <string name="quality">Qualité</string>
