@@ -8,6 +8,7 @@ on:
       - master
 defaults:
   run:
+  # github does not appreciate ~ as home indicator. Prefer the full path.
     working-directory: /home/runner/work/unchained-android/unchained-android/app
 jobs:
   test:
@@ -41,9 +42,9 @@ jobs:
             distribution: 'zulu'
             java-version: 15
       - name: Retrieve keystore for apk signing
-        run: echo $ENCODED_KEYSTORE | base64 --decode > ~/work/unchained-android/unchained-android/app/release.pfk
+        run: echo $ENCODED_KEYSTORE | base64 --decode > /home/runner/.keystore/release.pfk
       - name: Add keystore variables to env
-        run: echo 'export KEYSTORE=~/work/unchained-android/unchained-android/app/release.pfk' >> $BASH_ENV
+        run: echo 'export KEYSTORE=/home/runner/.keystore/release.pfk' >> $BASH_ENV
       - name: Build the app
         run: ./gradlew clean assembleRelease --stacktrace
       - name: save apk
