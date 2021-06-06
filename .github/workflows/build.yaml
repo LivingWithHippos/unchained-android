@@ -29,8 +29,8 @@ jobs:
         with:
             name: reports
             path: |
-              /home/runner/work/unchained-android/unchained-android/app/app/build/reports
-              /home/runner/work/unchained-android/unchained-android/app/app/build/test-results
+              /home/runner/work/unchained-android/unchained-android/app/app/build/reports/lint-results.html
+              /home/runner/work/unchained-android/unchained-android/app/app/build/reports/lint-results.xml
   build:
     runs-on: ubuntu-latest
     steps:
@@ -44,10 +44,10 @@ jobs:
       - name: Retrieve keystore for apk signing
         env:
             ENCODED_KEYSTORE: ${{ secrets.KEYSTORE }}
-        run: echo "$ENCODED_KEYSTORE" | base64 --decode > /home/runner/.keystore/release.pfk
+        run: echo "$ENCODED_KEYSTORE" | base64 --decode > /home/runner/work/unchained-android/unchained-android/app/release.pfk
       - name: Build the app
         env:
-            KEYSTORE: /home/runner/.keystore/release.pfk
+            KEYSTORE: /home/runner/work/unchained-android/unchained-android/app/release.pfk
         run: ./gradlew clean assembleRelease --stacktrace
       - name: save apk
         uses: actions/upload-artifact@v2
