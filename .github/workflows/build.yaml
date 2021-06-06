@@ -6,6 +6,9 @@ on:
   push:
     branches:
       - master
+defaults:
+  run:
+    working-directory: /home/runner/work/unchained-android/unchained-android/app
 jobs:
   test:
     name: Run Tests
@@ -23,7 +26,6 @@ jobs:
       - name: Check path
         run: pwd
       - name: Run tests
-        working-directory: ~/work/unchained-android/unchained-android/app
         run: ./gradlew lint test
       - name: save test reports
         uses: actions/upload-artifact@v2
