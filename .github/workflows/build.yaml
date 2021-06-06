@@ -17,29 +17,19 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v2
-      - name: Setup JDK
-        uses: actions/setup-java@v2
-        with:
-            distribution: 'zulu'
-            java-version: 15
       - name: Run tests
         run: ./gradlew lint test
       - name: save test reports
         uses: actions/upload-artifact@v2
         # artifacts are zipped together in the end
         with:
-            name: reports
+            name: test-report
             path: /home/runner/work/unchained-android/unchained-android/app/app/build/reports/
   build:
     runs-on: ubuntu-latest
     steps:
       - name: checkout the code
         uses: actions/checkout@v2
-      - name: Setup JDK
-        uses: actions/setup-java@v2
-        with:
-            distribution: 'zulu'
-            java-version: 15
       - name: Retrieve keystore for apk signing
         env:
             ENCODED_KEYSTORE: ${{ secrets.KEYSTORE }}
@@ -54,6 +44,6 @@ jobs:
       - name: save apk
         uses: actions/upload-artifact@v2
         with:
-            name: release apk
-            path: /home/runner/work/unchained-android/unchained-android/app/app/build/outputs/apk/release
+            name: apk
+            path: /home/runner/work/unchained-android/unchained-android/app/app/build/outputs/apk/release/*.apk
 
