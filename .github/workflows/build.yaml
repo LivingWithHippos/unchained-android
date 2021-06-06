@@ -42,10 +42,10 @@ jobs:
             distribution: 'zulu'
             java-version: 15
       - name: Retrieve keystore for apk signing
-        run: echo ${{ secrets.ENCODED_KEYSTORE }} | base64 --decode > /home/runner/.keystore/release.pfk
-      - name: Add keystore variables to env
-        run: echo 'export KEYSTORE=/home/runner/.keystore/release.pfk' >> $BASH_ENV
+        run: echo "${{ secrets.ENCODED_KEYSTORE }}" | base64 --decode > /home/runner/.keystore/release.pfk
       - name: Build the app
+        env:
+            KEYSTORE: /home/runner/.keystore/release.pfk
         run: ./gradlew clean assembleRelease --stacktrace
       - name: save apk
         uses: actions/upload-artifact@v2
