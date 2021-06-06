@@ -2,14 +2,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     >
-
-    <item
-        android:id="@+id/share"
-        android:contentDescription="@string/content_description_share_download"
-        android:icon="@drawable/icon_share"
-        android:title="@string/share"
-        app:showAsAction="ifRoom" />
-
     <item
         android:id="@+id/delete"
         android:contentDescription="@string/content_description_delete_download_item"

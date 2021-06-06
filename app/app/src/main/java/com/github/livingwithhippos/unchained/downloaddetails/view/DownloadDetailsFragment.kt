@@ -151,14 +151,6 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                 dialog.show(parentFragmentManager, "DeleteDialogFragment")
                 true
             }
-            R.id.share -> {
-                val shareIntent = Intent(Intent.ACTION_SEND)
-                shareIntent.type = "text/plain"
-                val shareLink = args.details.download
-                shareIntent.putExtra(Intent.EXTRA_TEXT, shareLink)
-                startActivity(Intent.createChooser(shareIntent, getString(R.string.share_with)))
-                true
-            }
             else -> super.onOptionsItemSelected(item)
         }
     }
