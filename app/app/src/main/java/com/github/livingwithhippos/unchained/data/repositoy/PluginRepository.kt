@@ -146,7 +146,7 @@ class PluginRepository @Inject constructor(
                     }
                 }
                 true
-            } catch (exception: IOException) {
+            } catch (exception: Exception) {
                 Timber.e("Error loading the file ${data.path}: ${exception.message}")
                 false
             }
@@ -182,9 +182,13 @@ class PluginRepository @Inject constructor(
             val filename = data.path?.split("/")?.last()
             if (filename != null) {
 
-                context.contentResolver.openInputStream(data)?.use { inputStream ->
-                    val json = inputStream.bufferedReader().readText()
-                    return@withContext getPluginFromJSON(json)
+                try {
+                    context.contentResolver.openInputStream(data)?.use { inputStream ->
+                        val json = inputStream.bufferedReader().readText()
+                        return@withContext getPluginFromJSON(json)
+                    }
+                } catch (exception: Exception) {
+                    Timber.e("Error adding the plugin ${filename}: ${exception.message}")
                 }
             }
 

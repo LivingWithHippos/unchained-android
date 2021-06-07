@@ -324,8 +324,19 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
                 val buffer: ByteArray = inputStream.readBytes()
                 viewModel.fetchUploadedTorrent(buffer)
             }
-        } catch (exception: IOException) {
-            Timber.e("Torrent conversion: Error getting the file: ${exception.message}")
+        } catch (exception: Exception) {
+            when (exception) {
+                is IOException -> {
+                    Timber.e("Torrent conversion: IOException error getting the file: ${exception.message}")
+                }
+                is java.io.FileNotFoundException -> {
+                    Timber.e("Torrent conversion: file not found: ${exception.message}")
+                }
+                else -> {
+                    Timber.e("Torrent conversion: Other error getting the file: ${exception.message}")
+
+                }
+            }
             downloadBinding.bUnrestrict.isEnabled = true
             downloadBinding.bLoadTorrent.isEnabled = true
             requireContext().showToast(R.string.error_loading_torrent)
