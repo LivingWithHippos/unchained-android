@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import androidx.fragment.app.viewModels
@@ -13,8 +14,8 @@ import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.databinding.FragmentSearchBinding
 import com.github.livingwithhippos.unchained.plugins.ParserResult
-import com.github.livingwithhippos.unchained.plugins.model.ScrapedItem
 import com.github.livingwithhippos.unchained.plugins.model.Plugin
+import com.github.livingwithhippos.unchained.plugins.model.ScrapedItem
 import com.github.livingwithhippos.unchained.search.model.SearchItemAdapter
 import com.github.livingwithhippos.unchained.search.model.SearchItemListener
 import com.github.livingwithhippos.unchained.search.viewmodel.SearchViewModel
@@ -96,37 +97,52 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
         if (lastResults.isNotEmpty())
             adapter.submitList(lastResults)
 
+        // search option
+        binding.tiSearch.setOnEditorActionListener { v, actionId, event ->
+            return@setOnEditorActionListener when (actionId) {
+                EditorInfo.IME_ACTION_SEARCH -> {
+                    performSearch(adapter)
+                    true
+                }
+                else -> false
+            }
+        }
+
         // search button listener
         binding.tfSearch.setEndIconOnClickListener {
-            it.hideKeyboard()
-            viewModel.completeSearch(
-                query = binding.tiSearch.text.toString(),
-                pluginName = getSelectedPluginName(),
-                category = getSelectedCategory()
-            ).observe(viewLifecycleOwner) { result ->
-                when (result) {
-                    is ParserResult.SingleResult -> {
-                        adapter.submitList(listOf(result.value))
-                        adapter.notifyDataSetChanged()
-                    }
-                    is ParserResult.Results -> {
-                        adapter.submitList(result.values)
-                        adapter.notifyDataSetChanged()
-                    }
-                    is ParserResult.SearchStarted -> {
-                        binding.loadingCircle.visibility = View.VISIBLE
-                    }
-                    is ParserResult.SearchFinished -> {
-                        binding.loadingCircle.visibility = View.INVISIBLE
-                    }
-                    is ParserResult.EmptyInnerLinks -> {
-                        context?.showToast(R.string.no_links)
-                        binding.loadingCircle.visibility = View.INVISIBLE
-                    }
-                    else -> {
-                        Timber.d(result.toString())
-                        binding.loadingCircle.visibility = View.INVISIBLE
-                    }
+            performSearch(adapter)
+        }
+    }
+
+    private fun performSearch(adapter: SearchItemAdapter) {
+        binding.tfSearch.hideKeyboard()
+        viewModel.completeSearch(
+            query = binding.tiSearch.text.toString(),
+            pluginName = getSelectedPluginName(),
+            category = getSelectedCategory()
+        ).observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is ParserResult.SingleResult -> {
+                    adapter.submitList(listOf(result.value))
+                    adapter.notifyDataSetChanged()
+                }
+                is ParserResult.Results -> {
+                    adapter.submitList(result.values)
+                    adapter.notifyDataSetChanged()
+                }
+                is ParserResult.SearchStarted -> {
+                    binding.loadingCircle.visibility = View.VISIBLE
+                }
+                is ParserResult.SearchFinished -> {
+                    binding.loadingCircle.visibility = View.INVISIBLE
+                }
+                is ParserResult.EmptyInnerLinks -> {
+                    context?.showToast(R.string.no_links)
+                    binding.loadingCircle.visibility = View.INVISIBLE
+                }
+                else -> {
+                    Timber.d(result.toString())
+                    binding.loadingCircle.visibility = View.INVISIBLE
                 }
             }
         }

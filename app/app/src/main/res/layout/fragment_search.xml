@@ -43,7 +43,9 @@
                 android:id="@+id/tiSearch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:singleLine="true" />
+                android:singleLine="true"
+                android:imeOptions="actionSearch"
+                />
 
         </com.google.android.material.textfield.TextInputLayout>
 
