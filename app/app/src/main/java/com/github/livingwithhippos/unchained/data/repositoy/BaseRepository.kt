@@ -9,6 +9,8 @@ import com.github.livingwithhippos.unchained.data.model.NetworkResponse
 import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkException
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import retrofit2.Response
 import timber.log.Timber
 import java.io.IOException
@@ -25,8 +27,12 @@ open class BaseRepository {
         .adapter(APIError::class.java)
 
     suspend fun <T : Any> safeApiCall(call: suspend () -> Response<T>, errorMessage: String): T? {
+        val result: NetworkResponse<T> = try {
+            safeApiResult(call, errorMessage)
+        } catch (e: Exception) {
+            NetworkResponse.Error(e)
+        }
 
-        val result: NetworkResponse<T> = safeApiResult(call, errorMessage)
         var data: T? = null
 
         when (result) {
@@ -60,24 +66,29 @@ open class BaseRepository {
     suspend fun <T : Any> eitherApiResult(
         call: suspend () -> Response<T>,
         errorMessage: String
-    ): Either<UnchainedNetworkException, T> {
-        val response = call.invoke()
+    ): Either<UnchainedNetworkException, T> = withContext(Dispatchers.IO) {
+        val response: Response<T> = try {
+            call.invoke()
+        } catch (e: Exception) {
+            return@withContext Either.Left(NetworkError(-1, errorMessage))
+        }
+
         if (response.isSuccessful) {
             val body = response.body()
-            return if (body != null)
+            return@withContext if (body != null)
                 Either.Right(body)
             else
                 Either.Left(EmptyBodyError(response.code()))
         } else {
             try {
                 val error: APIError? = jsonAdapter.fromJson(response.errorBody()!!.string())
-                return if (error != null)
+                return@withContext if (error != null)
                     Either.Left(error)
                 else
                     Either.Left(ApiConversionError(-1))
             } catch (e: IOException) {
                 // todo: analyze error to return code
-                return Either.Left(NetworkError(-1, errorMessage))
+                return@withContext Either.Left(NetworkError(-1, errorMessage))
             }
         }
     }
