@@ -12,5 +12,6 @@ class HostsApiHelperImpl @Inject constructor(private val hostsApi: HostsApi) :
 
     override suspend fun getHostsRegex(): Response<List<String>> = hostsApi.getHostsRegex()
 
-    override suspend fun getHostsFoldersRegex(): Response<List<String>> = hostsApi.getHostsFoldersRegex()
+    override suspend fun getHostsFoldersRegex(): Response<List<String>> =
+        hostsApi.getHostsFoldersRegex()
 }

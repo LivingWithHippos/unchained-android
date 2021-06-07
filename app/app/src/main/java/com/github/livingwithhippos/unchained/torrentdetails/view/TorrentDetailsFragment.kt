@@ -155,7 +155,11 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
 
     override fun onDownloadClick(item: TorrentItem) {
         if (item.links.size > 1) {
-            val action = TorrentDetailsFragmentDirections.actionTorrentDetailsDestToTorrentListFragment(folder = null, torrent = item)
+            val action =
+                TorrentDetailsFragmentDirections.actionTorrentDetailsDestToTorrentListFragment(
+                    folder = null,
+                    torrent = item
+                )
             findNavController().navigate(action)
         } else {
             viewModel.downloadTorrent()

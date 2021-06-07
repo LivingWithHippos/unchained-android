@@ -21,7 +21,8 @@ const val MAGNET_PATTERN: String = "magnet:\\?xt=urn:btih:[a-zA-Z0-9]{32}"
 const val TORRENT_PATTERN: String = "https?://[^\\s]{7,}.torrent"
 
 const val FEEDBACK_URL = "https://github.com/LivingWithHippos/unchained-android"
-const val PLUGINS_URL = "https://github.com/LivingWithHippos/unchained-android/tree/master/extra_assets/plugins"
+const val PLUGINS_URL =
+    "https://github.com/LivingWithHippos/unchained-android/tree/master/extra_assets/plugins"
 const val GPLV3_URL = "https://www.gnu.org/licenses/gpl-3.0.en.html"
 
 const val SCHEME_MAGNET = "magnet"

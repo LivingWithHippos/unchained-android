@@ -22,8 +22,7 @@ data class ScrapedItem(
         parcel.readString(),
         parcel.createStringArrayList() ?: emptyList(),
         parcel.createStringArrayList() ?: emptyList()
-    ) {
-    }
+    )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(name)

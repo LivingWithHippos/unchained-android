@@ -26,7 +26,7 @@ data class Plugin(
     val search: PluginSearch,
     @Json(name = "download")
     val download: PluginDownload
-): Parcelable {
+) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readDouble(),
         parcel.readDouble(),
@@ -84,7 +84,7 @@ data class SupportedCategories(
     val tv: String?,
     @Json(name = "books")
     val books: String?
-): Parcelable {
+) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString() ?: "",
         parcel.readString(),
@@ -94,8 +94,7 @@ data class SupportedCategories(
         parcel.readString(),
         parcel.readString(),
         parcel.readString()
-    ) {
-    }
+    )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(all)
@@ -131,7 +130,7 @@ data class PluginSearch(
     val urlNoCategory: String,
     @Json(name = "page_start")
     val pageStart: Int? = 1
-): Parcelable {
+) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString(),
         parcel.readString() ?: "",
@@ -167,7 +166,7 @@ data class PluginDownload(
     val tableLink: TableDirect?,
     @Json(name = "regexes")
     val regexes: PluginRegexes
-): Parcelable {
+) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readParcelable(InternalLink::class.java.classLoader),
         parcel.readParcelable(TableDirect::class.java.classLoader),
@@ -205,7 +204,7 @@ data class CustomRegex(
     val slugType: String,
     @Json(name = "other")
     val other: String?
-): Parcelable {
+) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString() ?: "",
         parcel.readInt(),
@@ -239,7 +238,7 @@ data class CustomRegex(
 data class InternalLink(
     @Json(name = "link")
     val link: CustomRegex
-): Parcelable {
+) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readParcelable(CustomRegex::class.java.classLoader)!!
     )
@@ -277,7 +276,7 @@ data class TableDirect(
     val idName: String?,
     @Json(name = "columns")
     val columns: Columns
-): Parcelable {
+) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString(),
         parcel.readString(),
@@ -321,7 +320,7 @@ data class PluginRegexes(
     val torrentRegexes: List<CustomRegex>?,
     @Json(name = "details")
     val detailsRegex: CustomRegex?
-): Parcelable {
+) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readParcelable(CustomRegex::class.java.classLoader)!!,
         parcel.readParcelable(CustomRegex::class.java.classLoader),
@@ -374,7 +373,7 @@ data class Columns(
     val torrentColumn: Int?,
     @Json(name = "details_column")
     val detailsColumn: Int?
-): Parcelable {
+) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readInt(),
         parcel.readValue(Int::class.java.classLoader) as? Int,
@@ -383,8 +382,7 @@ data class Columns(
         parcel.readValue(Int::class.java.classLoader) as? Int,
         parcel.readValue(Int::class.java.classLoader) as? Int,
         parcel.readValue(Int::class.java.classLoader) as? Int
-    ) {
-    }
+    )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeInt(nameColumn)

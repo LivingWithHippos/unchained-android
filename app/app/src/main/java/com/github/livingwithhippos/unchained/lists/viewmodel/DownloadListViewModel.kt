@@ -144,18 +144,19 @@ class DownloadListViewModel @Inject constructor(
             val token = credentialsRepository.getToken()
             val completeDownloadList = mutableListOf<DownloadItem>()
             do {
-                val downloads = downloadRepository.getDownloads(token, 0,1, 50)
+                val downloads = downloadRepository.getDownloads(token, 0, 1, 50)
                 completeDownloadList.addAll(downloads)
-            } while (downloads.size >= 50 )
+            } while (downloads.size >= 50)
 
 
             // post a message every 10% of the deletion progress if there are more than 10 items
-            val progressIndicator: Int = if (completeDownloadList.size/10 < 15) 15 else completeDownloadList.size/10
+            val progressIndicator: Int =
+                if (completeDownloadList.size / 10 < 15) 15 else completeDownloadList.size / 10
 
             completeDownloadList.forEachIndexed { index, item ->
                 downloadRepository.deleteDownload(token, item.id)
-                if ((index+1) % progressIndicator == 0)
-                    deletedDownloadLiveData.postEvent(index+1)
+                if ((index + 1) % progressIndicator == 0)
+                    deletedDownloadLiveData.postEvent(index + 1)
             }
 
             deletedDownloadLiveData.postEvent(DOWNLOADS_DELETED_ALL)
@@ -170,7 +171,7 @@ class DownloadListViewModel @Inject constructor(
                 torrents.forEach {
                     torrentsRepository.deleteTorrent(token, it.id)
                 }
-            } while (torrents.size >= 50 )
+            } while (torrents.size >= 50)
 
             deletedTorrentLiveData.postEvent(TORRENTS_DELETED_ALL)
         }

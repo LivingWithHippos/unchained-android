@@ -22,6 +22,7 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    fun removeExternalPlugins(context: Context): Int = pluginRepository.removeExternalPlugins(context)
+    fun removeExternalPlugins(context: Context): Int =
+        pluginRepository.removeExternalPlugins(context)
 
 }

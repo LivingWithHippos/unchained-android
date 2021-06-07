@@ -1,4 +1,3 @@
-
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.github.livingwithhippos.unchained.data.model.TorrentItem

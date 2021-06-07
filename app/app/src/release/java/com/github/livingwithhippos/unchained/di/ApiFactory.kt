@@ -75,7 +75,7 @@ object ApiFactory {
             .scheme("https")
             .host("mozilla.cloudflare-dns.com")
             .addPathSegment("dns-query")
-            .build();
+            .build()
 
         return DnsOverHttps.Builder()
             .client(okHttpClient)

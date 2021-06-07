@@ -9,7 +9,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.github.livingwithhippos.unchained.data.model.*
+import com.github.livingwithhippos.unchained.data.model.APIError
+import com.github.livingwithhippos.unchained.data.model.ApiConversionError
+import com.github.livingwithhippos.unchained.data.model.DownloadItem
+import com.github.livingwithhippos.unchained.data.model.EmptyBodyError
+import com.github.livingwithhippos.unchained.data.model.NetworkError
 import com.github.livingwithhippos.unchained.databinding.FragmentFolderListBinding
 import com.github.livingwithhippos.unchained.folderlist.model.FolderItemAdapter
 import com.github.livingwithhippos.unchained.folderlist.viewmodel.FolderListViewModel
@@ -52,7 +56,8 @@ class FolderListFragment : Fragment(), DownloadListListener {
         viewModel.folderLiveData.observe(viewLifecycleOwner) {
             it.getContentIfNotHandled()?.let { files ->
                 adapter.submitList(files.sortedBy { item ->
-                    item.filename }
+                    item.filename
+                }
                 )
                 adapter.notifyDataSetChanged()
             }
@@ -61,7 +66,7 @@ class FolderListFragment : Fragment(), DownloadListListener {
         // observe errors
         viewModel.errorsLiveData.observe(viewLifecycleOwner) {
             it.getContentIfNotHandled()?.let { exception ->
-                when(exception){
+                when (exception) {
                     is APIError -> {
                         // val error = requireContext().getApiErrorMessage(exception.errorCode)
                         // requireContext().showToast(error)

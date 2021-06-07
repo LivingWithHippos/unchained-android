@@ -1,8 +1,6 @@
 package com.github.livingwithhippos.unchained.data.repositoy
 
 import arrow.core.Either
-import arrow.core.left
-import arrow.core.right
 import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkException
 import com.github.livingwithhippos.unchained.data.remote.UnrestrictApiHelper
@@ -67,8 +65,13 @@ class UnrestrictRepository @Inject constructor(private val unrestrictApiHelper: 
             errorMessage = "Error Fetching Unrestricted Folders Info"
         )
 
-        return when(folderResponse) {
-            is Either.Right -> getUnrestrictedLinkList(token, folderResponse.value, password, remote)
+        return when (folderResponse) {
+            is Either.Right -> getUnrestrictedLinkList(
+                token,
+                folderResponse.value,
+                password,
+                remote
+            )
             is Either.Left -> listOf(Either.Left(folderResponse.value))
         }
     }

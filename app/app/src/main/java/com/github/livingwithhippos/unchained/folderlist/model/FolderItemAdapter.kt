@@ -6,7 +6,7 @@ import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.lists.view.DownloadListListener
 import com.github.livingwithhippos.unchained.utilities.DataBindingAdapter
 
-class FolderItemAdapter (listener: DownloadListListener) :
+class FolderItemAdapter(listener: DownloadListListener) :
     DataBindingAdapter<DownloadItem, DownloadListListener>(
         DiffCallback(), listener
     ) {

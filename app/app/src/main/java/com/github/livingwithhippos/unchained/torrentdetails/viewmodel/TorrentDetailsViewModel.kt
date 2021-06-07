@@ -76,7 +76,8 @@ class TorrentDetailsViewModel @Inject constructor(
                 if (links != null) {
                     val items = unrestrictRepository.getUnrestrictedLinkList(token, links)
 
-                    val values = items.filterIsInstance<Either.Right<DownloadItem>>().map { it.value }
+                    val values =
+                        items.filterIsInstance<Either.Right<DownloadItem>>().map { it.value }
                     val errors = items.filterIsInstance<Either.Left<UnchainedNetworkException>>()
                         .map { it.value }
 

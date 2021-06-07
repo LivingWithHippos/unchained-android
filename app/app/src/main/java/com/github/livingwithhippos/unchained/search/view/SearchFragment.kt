@@ -98,7 +98,7 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
             adapter.submitList(lastResults)
 
         // search option
-        binding.tiSearch.setOnEditorActionListener { v, actionId, event ->
+        binding.tiSearch.setOnEditorActionListener { _, actionId, _ ->
             return@setOnEditorActionListener when (actionId) {
                 EditorInfo.IME_ACTION_SEARCH -> {
                     performSearch(adapter)

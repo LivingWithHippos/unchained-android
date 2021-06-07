@@ -37,7 +37,7 @@ interface UnchainedNetworkException
  *
  */
 fun UnchainedNetworkException.printError() {
-    when(this){
+    when (this) {
         is APIError -> Timber.d(errorMap[this.errorCode ?: -1])
         is EmptyBodyError -> Timber.d("Empty Body error, return code: ${this.returnCode}")
         is NetworkError -> Timber.d("Network error, message: ${this.message}")

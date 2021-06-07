@@ -73,13 +73,13 @@ class FolderListViewModel @Inject constructor(
                     unrestrictRepository.getEitherUnrestrictedLink(token, link)) {
                     is Either.Left -> {
                         errorsLiveData.postEvent(file.value)
-                        progressLiveData.postValue((index+1)*100/links.size)
+                        progressLiveData.postValue((index + 1) * 100 / links.size)
                     }
                     is Either.Right -> {
                         hitList.add(file.value)
                         folderLiveData.postEvent(hitList)
                         setRetrievedLinks(hitList.size)
-                        progressLiveData.postValue((index+1)*100/links.size)
+                        progressLiveData.postValue((index + 1) * 100 / links.size)
                     }
                 }
             }

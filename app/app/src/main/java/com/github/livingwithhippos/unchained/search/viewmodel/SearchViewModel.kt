@@ -10,8 +10,8 @@ import androidx.lifecycle.viewModelScope
 import com.github.livingwithhippos.unchained.data.repositoy.PluginRepository
 import com.github.livingwithhippos.unchained.plugins.Parser
 import com.github.livingwithhippos.unchained.plugins.ParserResult
-import com.github.livingwithhippos.unchained.plugins.model.ScrapedItem
 import com.github.livingwithhippos.unchained.plugins.model.Plugin
+import com.github.livingwithhippos.unchained.plugins.model.ScrapedItem
 import com.github.livingwithhippos.unchained.utilities.extension.cancelIfActive
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -49,8 +49,8 @@ class SearchViewModel @Inject constructor(
             job?.cancelIfActive()
             job = parser.completeSearch(plugin, query, category, page)
                 .onEach {
-                    when(it) {
-                        is ParserResult.SingleResult ->{
+                    when (it) {
+                        is ParserResult.SingleResult -> {
                             results.add(it.value)
                             parsingLiveData.value = ParserResult.Results(results)
                             saveSearchResults(results)
