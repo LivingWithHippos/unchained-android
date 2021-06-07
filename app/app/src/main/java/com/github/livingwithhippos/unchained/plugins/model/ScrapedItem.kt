@@ -2,7 +2,9 @@ package com.github.livingwithhippos.unchained.plugins.model
 
 import android.os.Parcel
 import android.os.Parcelable
+import androidx.annotation.Keep
 
+@Keep
 data class ScrapedItem(
     val name: String,
     val link: String?,
