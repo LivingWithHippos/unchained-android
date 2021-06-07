@@ -10,7 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.github.livingwithhippos.unchained.data.repositoy.PluginRepository
 import com.github.livingwithhippos.unchained.plugins.Parser
 import com.github.livingwithhippos.unchained.plugins.ParserResult
-import com.github.livingwithhippos.unchained.plugins.ScrapedItem
+import com.github.livingwithhippos.unchained.plugins.model.ScrapedItem
 import com.github.livingwithhippos.unchained.plugins.model.Plugin
 import com.github.livingwithhippos.unchained.utilities.extension.cancelIfActive
 import dagger.hilt.android.lifecycle.HiltViewModel

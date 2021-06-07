@@ -2,7 +2,7 @@ package com.github.livingwithhippos.unchained.search.model
 
 import androidx.recyclerview.widget.DiffUtil
 import com.github.livingwithhippos.unchained.R
-import com.github.livingwithhippos.unchained.plugins.ScrapedItem
+import com.github.livingwithhippos.unchained.plugins.model.ScrapedItem
 import com.github.livingwithhippos.unchained.utilities.DataBindingAdapter
 
 class SearchItemAdapter(listener: SearchItemListener) :

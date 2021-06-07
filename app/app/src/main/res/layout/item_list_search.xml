@@ -9,7 +9,7 @@
 
         <variable
             name="item"
-            type="com.github.livingwithhippos.unchained.plugins.ScrapedItem" />
+            type="com.github.livingwithhippos.unchained.plugins.model.ScrapedItem" />
 
         <variable
             name="listener"

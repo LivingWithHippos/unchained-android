@@ -1,12 +1,11 @@
 package com.github.livingwithhippos.unchained.plugins
 
-import android.os.Parcel
-import android.os.Parcelable
 import android.text.Spanned
 import androidx.core.text.HtmlCompat
 import com.github.livingwithhippos.unchained.plugins.model.CustomRegex
 import com.github.livingwithhippos.unchained.plugins.model.Plugin
 import com.github.livingwithhippos.unchained.plugins.model.PluginRegexes
+import com.github.livingwithhippos.unchained.plugins.model.ScrapedItem
 import com.github.livingwithhippos.unchained.plugins.model.TableDirect
 import com.github.livingwithhippos.unchained.utilities.extension.removeWebFormatting
 import kotlinx.coroutines.Dispatchers
@@ -69,7 +68,12 @@ class Parser(
                                     for (link in innerSource) {
                                         // parse every page linked to the results
                                         val s = getSource(link)
-                                        val scrapedItem = parseInnerLink(plugin.download.regexes, s,link, plugin.url)
+                                        val scrapedItem = parseInnerLink(
+                                            plugin.download.regexes,
+                                            s,
+                                            link,
+                                            plugin.url
+                                        )
 
                                         emit(ParserResult.SingleResult(scrapedItem))
                                     }
@@ -173,7 +177,8 @@ class Parser(
             // restrict the document to a certain table
             val table: Element = when {
                 tableLink.idName != null -> doc.getElementById(tableLink.idName)
-                tableLink.className != null -> doc.getElementsByClass(tableLink.className).firstOrNull()
+                tableLink.className != null -> doc.getElementsByClass(tableLink.className)
+                    .firstOrNull()
                 else -> doc.getElementsByTag("table").first()
             } ?: return emptyList()
 
@@ -265,7 +270,10 @@ class Parser(
     private suspend fun getSource(url: String): String = withContext(Dispatchers.IO) {
         val request: Request = Request.Builder()
             .url(url)
-            .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36")
+            .header(
+                "User-Agent",
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36"
+            )
             .build()
 
         // todo: check if this works
@@ -434,49 +442,4 @@ sealed class ParserResult {
     // results
     data class Results(val values: List<ScrapedItem>) : ParserResult()
     data class SingleResult(val value: ScrapedItem) : ParserResult()
-}
-
-data class ScrapedItem(
-    val name: String,
-    val link: String?,
-    val seeders: String? = null,
-    val leechers: String? = null,
-    val size: String? = null,
-    val magnets: List<String>,
-    val torrents: List<String>
-) : Parcelable {
-    constructor(parcel: Parcel) : this(
-        parcel.readString() ?: "",
-        parcel.readString(),
-        parcel.readString(),
-        parcel.readString(),
-        parcel.readString(),
-        parcel.createStringArrayList() ?: emptyList(),
-        parcel.createStringArrayList() ?: emptyList()
-    ) {
-    }
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(name)
-        parcel.writeString(link)
-        parcel.writeString(seeders)
-        parcel.writeString(leechers)
-        parcel.writeString(size)
-        parcel.writeStringList(magnets)
-        parcel.writeStringList(torrents)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<ScrapedItem> {
-        override fun createFromParcel(parcel: Parcel): ScrapedItem {
-            return ScrapedItem(parcel)
-        }
-
-        override fun newArray(size: Int): Array<ScrapedItem?> {
-            return arrayOfNulls(size)
-        }
-    }
 }
