@@ -20,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.forEach
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
@@ -42,6 +43,8 @@ import com.github.livingwithhippos.unchained.utilities.extension.setupWithNavCon
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
@@ -306,22 +309,27 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun processTorrentNotificationIntent(torrentID: String) {
-        // simulate click on new download tab
-        val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_nav_view)
-        if (bottomNav.selectedItemId != R.id.navigation_new_download) {
-            //todo: check how to double click
-            bottomNav.selectedItemId = R.id.navigation_new_download
-        }
+        doubleClickBottomItem(R.id.navigation_new_download)
         viewModel.addTorrentId(torrentID)
     }
 
     private fun processLinkIntent(uri: Uri) {
-        // simulate click on new download tab
-        val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_nav_view)
-        if (bottomNav.selectedItemId != R.id.navigation_new_download) {
-            bottomNav.selectedItemId = R.id.navigation_new_download
-        }
+        doubleClickBottomItem(R.id.navigation_new_download)
         viewModel.addLink(uri)
+    }
+
+    private fun doubleClickBottomItem(destinationID: Int) {
+        // simulate click on a bottom bar option
+        val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_nav_view)
+        // if the tab was already selected, a single tap will bring us back to the first fragment of its navigation xml. Otherwise, simulate another click after a delay
+
+        lifecycleScope.launch {
+            if (bottomNav.selectedItemId != destinationID) {
+                bottomNav.selectedItemId = destinationID
+            }
+            delay(100)
+            bottomNav.selectedItemId = destinationID
+        }
     }
 
     private fun processLinkIntent(link: String) = processLinkIntent(Uri.parse(link))
@@ -332,11 +340,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun openAuthentication() {
-        val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_nav_view)
-        // note: the [BottomNavManager] also has a selectItem() method but this should work for every bottom menu
-        if (bottomNav.selectedItemId != R.id.navigation_home) {
-            bottomNav.selectedItemId = R.id.navigation_home
-        }
+        doubleClickBottomItem(R.id.navigation_home)
     }
 
 
