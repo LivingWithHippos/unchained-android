@@ -19,14 +19,15 @@ They provide high speeds without premium accounts for a lot of services like Meg
 
 You can take a look at the project [here](https://github.com/LivingWithHippos/unchained-android/projects/1) for general status.
 
-- [x] login with a temporary open-source token (it has some API limitation)
-- [x] login with permanent [private API key](https://real-debrid.com/apitoken)
+- [x] login with a temporary open-source token (it has some API limitations)
+- [x] login with permanent [private API key](https://real-debrid.com/apitoken) (recommended)
 - [x] user info
-- [x] dark mode
+- [x] themes support
 - [x] unrestrict links
 - [x] magnets support
 - [x] torrent support
-- [x] streaming links (needs a player that supports streaming like vlc)
+- [x] streaming support (needs a player that supports streaming like vlc)
+- [x] search magnet and torrents
 
 ### Screenshots :iphone:
 
@@ -53,9 +54,11 @@ At the moment, the app is under heavy development under Android Studio beta. PRs
 
 This app is written in Kotlin and uses the following architectures/patterns/libraries:
 
-MVVM architectural pattern, Dagger-Hilt for dependency injection, Data Binding for managing ui-data relations, Navigation, Moshi, Retrofit, OkHTTP, Room, Coroutines, Livedata, Glide
+MVVM architectural pattern, Dagger-Hilt for dependency injection, Data Binding for managing ui-data relations, Navigation, Moshi, Retrofit, OkHTTP, Room, Coroutines, Livedata, Coil
 
 The app is available in English and Italian, you can contribute to those or add a new language [here](https://localization.professiona.li/engage/unchained-for-android/) (much appreciated)
+
+There's a work in progress [wiki page](https://github.com/LivingWithHippos/unchained-android/wiki/Search-Engine) for creating search plugins.
 
 ### Donate :coffee:
 
