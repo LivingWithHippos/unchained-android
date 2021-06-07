@@ -44,7 +44,7 @@ You can take a look at the project [here](https://github.com/LivingWithHippos/un
 You have multiple options to install Unchained for Android:
 
 1. Get the [latest published release](https://github.com/LivingWithHippos/unchained-android/releases) from GitHub
-2. Get the [latest build artifacts](https://github.com/LivingWithHippos/unchained-android/actions) from Github Actions: click on the latest working workflow and scroll to the bottom of the summary section, extract the apk from the apk.zip file 
+2. Get the latest build's zipped apk (possibly unstable) from [this link](https://nightly.link/LivingWithHippos/unchained-android/workflows/build.yaml/master) (master branch only) or from one of the [Actions](https://github.com/LivingWithHippos/unchained-android/actions) (you need to be logged in Github): click on the latest working workflow and scroll to the bottom of the summary section, extract the apk and install it
 3. Get the [Play Store release](https://play.google.com/store/apps/details?id=com.github.livingwithhippos.unchained)
 
 ### Developing and Contributing :writing_hand:
