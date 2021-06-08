@@ -57,22 +57,14 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
     //todo: rename viewModel/fragment to ListTab or DownloadLists
     private val viewModel: DownloadListViewModel by viewModels()
 
-    private var _binding: FragmentTabListsBinding? = null
-    val binding get() = _binding!!
-
     // used to simulate a debounce effect while typing on the search bar
     var queryJob: Job? = null
-
-    override fun onDestroyView() {
-        _binding = null
-        super.onDestroyView()
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentTabListsBinding.inflate(inflater, container, false)
+        val binding: FragmentTabListsBinding = FragmentTabListsBinding.inflate(inflater, container, false)
 
         val downloadAdapter = DownloadListPagingAdapter(this)
         val torrentAdapter = TorrentListPagingAdapter(this)
@@ -96,6 +88,7 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
             lifecycleScope.launch {
                 downloadAdapter.submitData(it)
                 // stop the refresh animation if playing
+                // fixme: lots of crashes here because binding is null. Check if the commit removing "val binding get() = _binding!!" worked
                 if (binding.srLayout.isRefreshing) {
                     binding.srLayout.isRefreshing = false
                     // scroll to top if we were refreshing
