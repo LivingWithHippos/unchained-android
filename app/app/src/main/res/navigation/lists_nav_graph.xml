@@ -28,7 +28,7 @@
             app:destination="@id/torrent_details_dest" />
         <action
             android:id="@+id/action_list_tabs_dest_to_folderListFragment2"
-            app:destination="@id/folderListFragment2" />
+            app:destination="@id/folderListFragment" />
     </fragment>
 
     <fragment
@@ -41,14 +41,19 @@
             app:argType="string" />
         <action
             android:id="@+id/action_torrentDetails_to_download_details_dest"
-            app:destination="@id/download_details_dest" />
+            app:destination="@id/download_details_dest"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
         <action
-            android:id="@+id/action_torrent_details_dest_to_torrentListFragment"
-            app:destination="@id/folderListFragment2" />
+            android:id="@+id/action_torrent_details_to_torrent_folder"
+            app:destination="@id/folderListFragment" />
     </fragment>
     <fragment
-        android:id="@+id/folderListFragment2"
+        android:id="@+id/folderListFragment"
         android:name="com.github.livingwithhippos.unchained.folderlist.view.FolderListFragment"
+        android:label="@string/folder"
         tools:layout="@layout/fragment_folder_list">
         <argument
             android:name="folder"

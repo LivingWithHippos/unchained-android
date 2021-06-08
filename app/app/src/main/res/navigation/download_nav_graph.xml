@@ -8,7 +8,7 @@
         android:id="@+id/new_download_dest"
         android:name="com.github.livingwithhippos.unchained.newdownload.view.NewDownloadFragment"
         android:label="@string/new_download"
-        tools:layout="@layout/new_download_fragment" >
+        tools:layout="@layout/new_download_fragment">
         <action
             android:id="@+id/actionUnrestrictDownloadToDetailsFragment"
             app:destination="@id/download_details_dest"
@@ -25,9 +25,9 @@
             app:popExitAnim="@anim/slide_out_right" />
         <argument
             android:name="link"
+            android:defaultValue="@null"
             app:argType="string"
-            app:nullable="true"
-            android:defaultValue="@null" />
+            app:nullable="true" />
         <action
             android:id="@+id/action_new_download_dest_to_folderListFragment"
             app:destination="@id/folderListFragment" />
@@ -36,15 +36,16 @@
         android:id="@+id/download_details_dest"
         android:name="com.github.livingwithhippos.unchained.downloaddetails.view.DownloadDetailsFragment"
         android:label="@string/details"
-        tools:layout="@layout/fragment_download_details"  >
-        <argument android:name="details"
+        tools:layout="@layout/fragment_download_details">
+        <argument
+            android:name="details"
             app:argType="com.github.livingwithhippos.unchained.data.model.DownloadItem" />
     </fragment>
     <fragment
         android:id="@+id/torrent_details_dest"
         android:name="com.github.livingwithhippos.unchained.torrentdetails.view.TorrentDetailsFragment"
         android:label="@string/details"
-        tools:layout="@layout/fragment_torrent_details" >
+        tools:layout="@layout/fragment_torrent_details">
         <argument
             android:name="torrentID"
             app:argType="string" />
@@ -55,12 +56,15 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_torrent_details_to_torrent_folder"
+            app:destination="@id/folderListFragment" />
     </fragment>
     <fragment
         android:id="@+id/folderListFragment"
         android:name="com.github.livingwithhippos.unchained.folderlist.view.FolderListFragment"
         android:label="@string/folder"
-        tools:layout="@layout/fragment_folder_list" >
+        tools:layout="@layout/fragment_folder_list">
         <argument
             android:name="folder"
             app:argType="string"
