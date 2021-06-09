@@ -490,4 +490,6 @@
     <string name="downloads_removed">Downloads removed</string>
     <string name="removing_downloads">Removing downloads…</string>
     <string name="version">Version</string>
+    <string name="download_started">Download started, check the notification bar</string>
+    <string name="download_not_started">Error during download initialization</string>
 </resources>

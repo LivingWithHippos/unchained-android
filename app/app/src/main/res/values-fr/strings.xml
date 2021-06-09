@@ -280,4 +280,6 @@
     <string name="removing_torrents">Suppression des torrents…</string>
     <string name="removing_downloads">Suppression des téléchargements…</string>
     <string name="version">Version</string>
+    <string name="download_started">Le téléchargement a commencé, vérifiez la barre de notification</string>
+    <string name="download_not_started">Erreur lors de l\'initialisation du téléchargement</string>
 </resources>

@@ -9,6 +9,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -36,6 +37,7 @@ import com.github.livingwithhippos.unchained.utilities.extension.openExternalWeb
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 
 /**
@@ -221,7 +223,14 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                 fileName
             )
 
-        manager.enqueue(request)
+        try {
+            val id = manager.enqueue(request)
+            context?.showToast(R.string.download_started)
+        } catch (e: Exception) {
+            Timber.e("Error starting download of ${fileName}, exception ${e.message}")
+            context?.showToast(R.string.download_not_started)
+        }
+
     }
 
     override fun onShareClick(url: String) {
