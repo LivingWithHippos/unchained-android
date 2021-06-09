@@ -1,5 +1,6 @@
 package com.github.livingwithhippos.unchained.downloaddetails.view
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.DownloadManager
 import android.content.ComponentName
@@ -7,15 +8,16 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
@@ -212,6 +214,24 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
 
     override fun onDownloadClick(link: String, fileName: String) {
 
+        when (Build.VERSION.SDK_INT) {
+            22 -> {
+                downloadFile(link, fileName)
+            }
+            in 23..28 -> {
+                requestPermissionLauncher.launch(
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+                )
+            }
+            else -> {
+                downloadFile(link, fileName)
+            }
+
+        }
+
+    }
+
+    private fun downloadFile(link: String, fileName: String) {
         val manager =
             requireContext().getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
         val request: DownloadManager.Request = DownloadManager.Request(Uri.parse(link))
@@ -230,8 +250,21 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
             Timber.e("Error starting download of ${fileName}, exception ${e.message}")
             context?.showToast(R.string.download_not_started)
         }
-
     }
+
+    private val requestPermissionLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted: Boolean ->
+            if (isGranted) {
+                val link = args.details.download
+                val fileName = args.details.filename
+                downloadFile(link, fileName)
+            } else {
+                context?.showToast(R.string.needs_download_permission)
+            }
+        }
+
 
     override fun onShareClick(url: String) {
         val shareIntent = Intent(Intent.ACTION_SEND)

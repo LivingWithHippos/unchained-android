@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.github.livingwithhippos.unchained"
-    android:installLocation="auto"
-    >
+    android:installLocation="auto">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.VIBRATE" />
-
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28" />
 
     <!-- https://developer.android.com/training/basics/intents/package-visibility -->
     <queries>
@@ -46,8 +47,7 @@
                 <data
                     android:host="*"
                     android:pathPattern=".*\\.unchained"
-                    android:scheme="file"
-                    />
+                    android:scheme="file" />
 
                 <data
                     android:host="*"
@@ -68,8 +68,7 @@
 
                 <data
                     android:host="*"
-                    android:pathPattern=".*\\.unchained"
-                   />
+                    android:pathPattern=".*\\.unchained" />
             </intent-filter>
             <!-- Shamelessly copied from LibreTorrent-->
             <intent-filter>

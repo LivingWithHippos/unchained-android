@@ -282,4 +282,5 @@
     <string name="version">Versione</string>
     <string name="download_started">Download iniziato, controlla la barra delle notifiche</string>
     <string name="download_not_started">Errore durante l\'inizializzazione del download</string>
+    <string name="needs_download_permission">"Unchained ha bisogno dei permessi di accesso alla memoria per scaricare direttamente i file "</string>
 </resources>

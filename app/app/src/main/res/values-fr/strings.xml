@@ -282,4 +282,5 @@
     <string name="version">Version</string>
     <string name="download_started">Le téléchargement a commencé, vérifiez la barre de notification</string>
     <string name="download_not_started">Erreur lors de l\'initialisation du téléchargement</string>
+    <string name="needs_download_permission">Unchained a besoin de l\'autorisation de stockage pour télécharger directement des fichiers.</string>
 </resources>

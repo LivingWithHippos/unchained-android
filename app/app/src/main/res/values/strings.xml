@@ -492,4 +492,5 @@
     <string name="version">Version</string>
     <string name="download_started">Download started, check the notification bar</string>
     <string name="download_not_started">Error during download initialization</string>
+    <string name="needs_download_permission">Unchained needs the storage permission to download files directly</string>
 </resources>
