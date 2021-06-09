@@ -1,32 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
     <PreferenceCategory
-        android:title="@string/title_aspect"
-        android:summary="@string/restart_to_apply">
+        android:summary="@string/restart_to_apply"
+        android:title="@string/title_aspect">
 
         <DropDownPreference
-            android:key="current_theme"
-            android:title="@string/title_theme_preference"
+            android:defaultValue="original"
             android:entries="@array/themes"
             android:entryValues="@array/theme_values"
-            android:defaultValue="original"
-            app:useSimpleSummaryProvider="true"/>
+            android:key="current_theme"
+            android:title="@string/title_theme_preference"
+            app:useSimpleSummaryProvider="true" />
 
         <DropDownPreference
-            android:key="day_night_theme"
-            android:title="@string/night_theme"
+            android:defaultValue="auto"
             android:entries="@array/night_mode"
             android:entryValues="@array/night_mode_values"
-            android:defaultValue="auto"
-            app:useSimpleSummaryProvider="true"/>
+            android:key="day_night_theme"
+            android:title="@string/night_theme"
+            app:useSimpleSummaryProvider="true" />
 
     </PreferenceCategory>
 
-    <PreferenceCategory
-        android:title="@string/title_debugging">
+    <PreferenceCategory android:title="@string/title_debugging">
 
         <Preference
             app:key="update_regexps"
@@ -34,18 +33,16 @@
 
     </PreferenceCategory>
 
-    <PreferenceCategory
-        android:title="@string/notifications">
+    <PreferenceCategory android:title="@string/notifications">
 
         <SwitchPreference
+            android:defaultValue="false"
             app:key="notification_torrent_key"
-            app:title="@string/enable_torrent_monitoring_title"
-            android:defaultValue="false"/>
+            app:title="@string/enable_torrent_monitoring_title" />
 
     </PreferenceCategory>
 
-    <PreferenceCategory
-        android:title="@string/search_plugins">
+    <PreferenceCategory android:title="@string/search_plugins">
 
         <Preference
             app:key="open_github_plugins"
@@ -53,41 +50,46 @@
 
         <Preference
             app:key="delete_external_plugins"
-            app:title="@string/delete_plugins"
-            app:summary="@string/delete_plugins_summary"/>
+            app:summary="@string/delete_plugins_summary"
+            app:title="@string/delete_plugins" />
 
     </PreferenceCategory>
 
-    <PreferenceCategory
-        android:title="@string/title_various">
+    <PreferenceCategory android:title="@string/title_various">
 
         <SwitchPreference
+            android:defaultValue="false"
             app:key="use_referral_key"
             app:summary="@string/referral_summary"
-            app:title="@string/referral"
-            android:defaultValue="false"/>
+            app:title="@string/referral" />
 
         <Preference
             app:key="feedback"
             app:summary="@string/feedback_summary"
             app:title="@string/feedback_title" />
 
-    <Preference
-        app:key="credits"
-        app:title="@string/credits_title" />
+        <Preference
+            app:key="credits"
+            app:title="@string/credits_title" />
 
-    <Preference
-        app:key="license"
-        app:summary="@string/license_gpl"
-        app:title="@string/license_title" />
+        <Preference
+            app:key="license"
+            app:summary="@string/license_gpl"
+            app:title="@string/license_title" />
 
-    <Preference
-        app:key="terms"
-        app:title="@string/terms_title" />
+        <Preference
+            app:key="terms"
+            app:title="@string/terms_title" />
 
-    <Preference
-        app:key="privacy"
-        app:title="@string/privacy_policy_title" />
+        <Preference
+            app:key="privacy"
+            app:title="@string/privacy_policy_title" />
+
+
+        <Preference
+            app:key="version"
+            app:title="@string/version"
+            app:summary="4.2.5-beta" />
 
     </PreferenceCategory>
 

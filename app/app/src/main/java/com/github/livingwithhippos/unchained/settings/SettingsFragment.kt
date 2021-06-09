@@ -49,6 +49,17 @@ class SettingsFragment : PreferenceFragmentCompat() {
             }
             true
         }
+
+        setupVersion()
+    }
+
+    private fun setupVersion() {
+
+        val pi = context?.packageManager?.getPackageInfo(requireContext().packageName, 0)
+        val version = pi?.versionName
+        val versionPreference = findPreference<Preference>(KEY_APP_VERSION)
+        versionPreference?.summary = version
+
     }
 
     private fun setNightMode(nightMode: String) {
@@ -106,6 +117,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         const val KEY_TORRENT_NOTIFICATIONS = "notification_torrent_key"
         const val KEY_REFERRAL_ASKED = "referral_asked_key"
         const val KEY_REFERRAL_USE = "use_referral_key"
+        const val KEY_APP_VERSION = "app_version_key"
         const val THEME_AUTO = "auto"
         const val THEME_NIGHT = "night"
         const val THEME_DAY = "day"

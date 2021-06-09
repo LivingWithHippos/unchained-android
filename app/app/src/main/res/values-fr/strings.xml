@@ -279,4 +279,5 @@
     <string name="torrents_removed">Torrents supprimés</string>
     <string name="removing_torrents">Suppression des torrents…</string>
     <string name="removing_downloads">Suppression des téléchargements…</string>
+    <string name="version">Version</string>
 </resources>

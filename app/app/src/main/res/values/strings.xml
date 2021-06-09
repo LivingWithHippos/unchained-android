@@ -489,4 +489,5 @@
     <string name="removing_torrents">Removing torrents…</string>
     <string name="downloads_removed">Downloads removed</string>
     <string name="removing_downloads">Removing downloads…</string>
+    <string name="version">Version</string>
 </resources>
