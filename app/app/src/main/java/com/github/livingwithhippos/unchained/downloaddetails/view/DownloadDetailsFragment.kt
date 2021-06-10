@@ -61,7 +61,6 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
 
         detailsBinding.details = args.details
         detailsBinding.listener = this
-        detailsBinding.yatseInstalled = isYatseInstalled()
 
         // set up streams and alternative (e.g. for youtube) links list
         val alternativeAdapter = AlternativeDownloadAdapter(this)
@@ -169,33 +168,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
     }
 
     override fun onOpenWith(url: String) {
-
-        val yatseIntent = Intent().apply {
-            action = "org.leetzone.android.yatsewidget.ACTION_MEDIA_PLAYURI"
-            component = ComponentName(
-                "org.leetzone.android.yatsewidgetfree",
-                "org.leetzone.android.yatsewidget.service.core.YatseCommandService"
-            )
-            putExtra("org.leetzone.android.yatsewidget.EXTRA_STRING_PARAMS", url)
-        }
-
-        // we already check once if it is installed, but this also takes care if yatse get uninstalled while this fragment is active
-        if (isYatseInstalled()) {
-            try {
-                ContextCompat.startForegroundService(requireContext(), yatseIntent)
-            } catch (e: IllegalStateException) {
-                context?.showToast(R.string.limitations)
-            }
-        } else
-            context?.showToast(R.string.app_not_installed)
-    }
-
-    //already added the query
-    @SuppressLint("QueryPermissionsNeeded")
-    private fun isYatseInstalled(): Boolean {
-        return context?.packageManager
-            ?.getInstalledPackages(PackageManager.GET_META_DATA)
-            ?.firstOrNull { it.packageName == "org.leetzone.android.yatsewidgetfree" } != null
+        viewModel.openUrlOnKodi(url)
     }
 
     override fun onLoadStreamsClick(id: String) {
@@ -244,7 +217,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
             )
 
         try {
-            val id = manager.enqueue(request)
+            manager.enqueue(request)
             context?.showToast(R.string.download_started)
         } catch (e: Exception) {
             Timber.e("Error starting download of ${fileName}, exception ${e.message}")

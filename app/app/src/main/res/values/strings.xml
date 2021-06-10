@@ -399,7 +399,7 @@
     <string name="limitations">Error: your phone is limiting background activity.</string>
     <string name="open_link_format">Open %1$s link</string>
     <string name="copy_link_format">Copy %1$s link </string>
-    <string name="open_with_format">Open %1$s with Yatse</string>
+    <string name="open_with_format">Open %1$s with Kodi</string>
     <string name="yatse" translatable="false">Yatse</string>
     <string name="loading_host_link">Loading host link</string>
     <string name="title_debugging">Debug</string>

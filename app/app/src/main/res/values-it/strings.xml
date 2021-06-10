@@ -193,7 +193,7 @@
     <string name="limitations">Errore: il tuo telefono sta limitando le attività in background.</string>
     <string name="open_link_format">Apri link %1$s</string>
     <string name="copy_link_format">Copia link %1$s</string>
-    <string name="open_with_format">Apri %1$s con Yatse</string>
+    <string name="open_with_format">Apri %1$s con Kodi</string>
     <string name="loading_host_link">Caricando link hosting</string>
     <string name="title_debugging">Debug</string>
     <string name="update_regexps">Aggiorna riconoscimento link hosts</string>

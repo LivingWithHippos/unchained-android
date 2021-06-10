@@ -193,7 +193,7 @@
     <string name="limitations">Erreur : votre téléphone limite l’activité d’arrière-plan.</string>
     <string name="open_link_format">Ouvrir le lien %1$s</string>
     <string name="copy_link_format">Copier le lien %1$s</string>
-    <string name="open_with_format">Ouvrir %1$s avec Yatse</string>
+    <string name="open_with_format">Ouvrir %1$s avec Kodi</string>
     <string name="loading_host_link">Chargement du lien de l’hôte</string>
     <string name="title_debugging">Debug</string>
     <string name="update_regexps">Mets à jour les hôtes du link matcher </string>

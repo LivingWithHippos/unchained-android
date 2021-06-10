@@ -16,10 +16,6 @@
             type="com.github.livingwithhippos.unchained.data.model.Stream" />
 
         <variable
-            name="yatseInstalled"
-            type="Boolean" />
-
-        <variable
             name="listener"
             type="com.github.livingwithhippos.unchained.downloaddetails.view.DownloadDetailsListener" />
     </data>
@@ -271,7 +267,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:orientation="vertical"
-                    android:visibility="@{details.streamable == 1 &amp;&amp; yatseInstalled ? View.VISIBLE : View.GONE, default=visible}"
+                    android:visibility="@{details.streamable == 1 ? View.VISIBLE : View.GONE, default=visible}"
                     android:layout_marginBottom="10dp">
 
                     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -279,7 +275,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:clickable="true"
-                        android:contentDescription="@string/yatse"
+                        android:contentDescription="@string/kodi"
                         android:focusable="true"
                         android:onClick="@{() -> listener.onOpenWith(details.download)}"
                         app:srcCompat="@drawable/icon_remote" />
@@ -289,7 +285,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:focusable="false"
-                        android:text="@string/yatse"
+                        android:text="@string/kodi"
                         android:textAlignment="center" />
                 </LinearLayout>
 
