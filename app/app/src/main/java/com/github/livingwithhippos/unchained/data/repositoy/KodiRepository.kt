@@ -3,6 +3,7 @@ package com.github.livingwithhippos.unchained.data.repositoy
 import com.github.livingwithhippos.unchained.data.model.KodiItem
 import com.github.livingwithhippos.unchained.data.model.KodiOpenRequest
 import com.github.livingwithhippos.unchained.data.model.KodiParams
+import com.github.livingwithhippos.unchained.data.model.KodiResponse
 import com.github.livingwithhippos.unchained.data.remote.KodiApi
 import com.github.livingwithhippos.unchained.data.remote.KodiApiHelper
 import com.github.livingwithhippos.unchained.data.remote.KodiApiHelperImpl
@@ -27,10 +28,13 @@ class KodiRepository @Inject constructor(
         return provideRetrofit(baseUrl).create(KodiApi::class.java)
     }
 
-    private fun provideApiHelper(baseUrl: String): KodiApiHelper =
-        KodiApiHelperImpl(provideApi(baseUrl))
+    private fun provideApiHelper(baseUrl: String): KodiApiHelper {
+        val apiHelper = KodiApiHelperImpl(provideApi(baseUrl))
+        return apiHelper
+    }
 
-    suspend fun openUrl(baseUrl: String, url: String) {
+
+    suspend fun openUrl(baseUrl: String, url: String): KodiResponse? {
 
         val kodiApiHelper: KodiApiHelper = provideApiHelper(baseUrl)
 

@@ -3,7 +3,6 @@ package com.github.livingwithhippos.unchained.data.remote
 import com.github.livingwithhippos.unchained.data.model.KodiOpenRequest
 import com.github.livingwithhippos.unchained.data.model.KodiResponse
 import retrofit2.Response
-import javax.inject.Inject
 
 
 class KodiApiHelperImpl(private val kodiApi: KodiApi) : KodiApiHelper {
