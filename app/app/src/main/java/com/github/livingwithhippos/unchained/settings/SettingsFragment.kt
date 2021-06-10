@@ -57,7 +57,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         val pi = context?.packageManager?.getPackageInfo(requireContext().packageName, 0)
         val version = pi?.versionName
-        val versionPreference = findPreference<Preference>(KEY_APP_VERSION)
+        val versionPreference = findPreference<Preference>("app_version")
         versionPreference?.summary = version
 
     }
