@@ -2,7 +2,9 @@ package com.github.livingwithhippos.unchained.settings
 
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.text.method.DigitsKeyListener
 import androidx.fragment.app.viewModels
+import androidx.preference.EditTextPreference
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
@@ -50,7 +52,22 @@ class SettingsFragment : PreferenceFragmentCompat() {
             true
         }
 
+        setupKodi()
+
         setupVersion()
+    }
+
+    private fun setupKodi() {
+        val ipPreference = findPreference<EditTextPreference>("kodi_ip_address")
+        val portPreference = findPreference<EditTextPreference>("kodi_port")
+
+        ipPreference?.setOnBindEditTextListener {
+            it.keyListener = DigitsKeyListener.getInstance("0123456789.")
+        }
+        portPreference?.setOnBindEditTextListener {
+            it.keyListener = DigitsKeyListener.getInstance("0123456789")
+        }
+
     }
 
     private fun setupVersion() {
@@ -82,6 +99,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 context?.showToast(R.string.updating_link_matcher)
             }
             "open_github_plugins" -> openExternalWebPage(PLUGINS_URL)
+            "test_kodi" -> testKodiConnection()
             "delete_external_plugins" -> {
                 val removedPlugins = viewModel.removeExternalPlugins(requireContext())
                 if (removedPlugins >= 0)
@@ -93,6 +111,24 @@ class SettingsFragment : PreferenceFragmentCompat() {
         }
 
         return true
+    }
+
+    private fun testKodiConnection() {
+        val ipPreference = findPreference<EditTextPreference>("kodi_ip_address")
+        val portPreference = findPreference<EditTextPreference>("kodi_port")
+        val usernamePreference = findPreference<EditTextPreference>("kodi_username")
+        val passwordPreference = findPreference<EditTextPreference>("kodi_password")
+
+        val ip = ipPreference?.text
+        val port = portPreference?.text
+        val username = usernamePreference?.text
+        val password = passwordPreference?.text
+
+        if (ip.isNullOrBlank() || port.isNullOrBlank())
+            context?.showToast(R.string.kodi_credentials_incomplete)
+        else {
+
+        }
     }
 
     private fun openCreditsDialog() {
