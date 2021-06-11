@@ -34,7 +34,7 @@
     <fragment
         android:id="@+id/torrent_details_dest"
         android:name="com.github.livingwithhippos.unchained.torrentdetails.view.TorrentDetailsFragment"
-        android:label="@string/details"
+        android:label="@string/torrent"
         tools:layout="@layout/fragment_torrent_details">
         <!-- check: changes here need to be ported to the [download_nav_graph.xml] file -->
         <argument
