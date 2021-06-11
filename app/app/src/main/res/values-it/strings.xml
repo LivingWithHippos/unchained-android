@@ -283,4 +283,13 @@
     <string name="download_started">Download iniziato, controlla la barra delle notifiche</string>
     <string name="download_not_started">Errore durante l\'inizializzazione del download</string>
     <string name="needs_download_permission">"Unchained ha bisogno dei permessi di accesso alla memoria per scaricare direttamente i file "</string>
+    <string name="test_connection">Testa la connessione</string>
+    <string name="kodi_credentials_incomplete">Almeno l\'IP e la porta sono richiesti per Kodi</string>
+    <string name="ip_address">Indirizzo IP</string>
+    <string name="port">Porta</string>
+    <string name="username">Utente</string>
+    <string name="password">Password</string>
+    <string name="kodi_connection_successful">Connessione a Kodi riuscita</string>
+    <string name="kodi_connection_error">Errore di connessione a Kodi</string>
+    <string name="port_range_error">La porta deve essere compresa tra 1 e 65535</string>
 </resources>
