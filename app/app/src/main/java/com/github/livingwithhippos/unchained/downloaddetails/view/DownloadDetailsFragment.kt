@@ -143,6 +143,9 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                 is DownloadDetailsMessage.KodiSuccess -> {
                     context?.showToast(R.string.kodi_connection_successful)
                 }
+                DownloadDetailsMessage.KodiMissingCredentials -> {
+                    context?.showToast(R.string.kodi_configure_credentials)
+                }
                 null -> {}
             }
         }

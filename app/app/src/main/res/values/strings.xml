@@ -503,4 +503,5 @@
     <string name="kodi_connection_successful">Kodi connection successful</string>
     <string name="kodi_connection_error">Kodi connection error</string>
     <string name="port_range_error">Port must be between 1 and 65535</string>
+    <string name="kodi_configure_credentials">Plase configure Kodi in the app settings</string>
 </resources>

@@ -292,4 +292,5 @@
     <string name="kodi_connection_successful">Connexion à Kodi réussie</string>
     <string name="kodi_connection_error">Erreur de connexion à Kodi</string>
     <string name="port_range_error">Le port doit être compris entre 1 et 65535</string>
+    <string name="kodi_configure_credentials">Veuillez configurer Kodi dans les paramètres de l\'application</string>
 </resources>

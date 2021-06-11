@@ -68,6 +68,8 @@ class DownloadDetailsViewModel @Inject constructor(
                 else
                     messageLiveData.postEvent(DownloadDetailsMessage.KodiError)
             }
+        } else {
+            messageLiveData.postEvent(DownloadDetailsMessage.KodiMissingCredentials)
         }
     }
 }
@@ -75,4 +77,5 @@ class DownloadDetailsViewModel @Inject constructor(
 sealed class DownloadDetailsMessage() {
     object KodiError: DownloadDetailsMessage()
     object KodiSuccess: DownloadDetailsMessage()
+    object KodiMissingCredentials: DownloadDetailsMessage()
 }
