@@ -93,7 +93,7 @@
                 android:layout_height="50dp"
                 android:backgroundTint="@android:color/transparent"
                 android:contentDescription="@{@string/open_with_format(item.mimeType)}"
-                android:onClick="@{()->listener.onOpenWith(item.download)}"
+                android:onClick="@{()->listener.onOpenWithKodi(item.download)}"
                 android:src="@drawable/icon_remote"
                 app:tint="?attr/colorPrimary"
                 app:layout_constraintBottom_toBottomOf="parent"

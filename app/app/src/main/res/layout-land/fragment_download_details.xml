@@ -263,7 +263,7 @@
                     android:clickable="true"
                     android:contentDescription="@string/kodi"
                     android:focusable="true"
-                    android:onClick="@{() -> listener.onOpenWith(details.download)}"
+                    android:onClick="@{() -> listener.onOpenWithKodi(details.download)}"
                     app:srcCompat="@drawable/icon_remote" />
 
                 <TextView

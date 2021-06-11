@@ -180,7 +180,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         openExternalWebPage(url)
     }
 
-    override fun onOpenWith(url: String) {
+    override fun onOpenWithKodi(url: String) {
         viewModel.openUrlOnKodi(url)
     }
 
@@ -264,7 +264,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
 interface DownloadDetailsListener {
     fun onCopyClick(text: String)
     fun onOpenClick(url: String)
-    fun onOpenWith(url: String)
+    fun onOpenWithKodi(url: String)
     fun onLoadStreamsClick(id: String)
     fun onBrowserStreamsClick(id: String)
     fun onDownloadClick(link: String, fileName: String)
