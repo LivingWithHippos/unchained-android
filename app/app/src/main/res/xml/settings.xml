@@ -25,14 +25,6 @@
 
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="@string/title_debugging">
-
-        <Preference
-            app:key="update_regexps"
-            app:title="@string/update_regexps" />
-
-    </PreferenceCategory>
-
     <PreferenceCategory android:title="@string/notifications">
 
         <SwitchPreference
@@ -55,7 +47,54 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory android:title="@string/kodi">
+
+        <Preference
+            app:key="kodi_remote_control_info"
+            app:summary="@string/enable_kodi_control"
+            app:title="@string/kodi_remote_control" />
+
+        <EditTextPreference
+            android:defaultValue="192.168.1.7"
+            android:key="kodi_ip_address"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="@string/ip_address" />
+
+        <EditTextPreference
+            android:defaultValue="8080"
+            android:key="kodi_port"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="@string/port" />
+
+        <EditTextPreference
+            android:defaultValue="kodi"
+            android:key="kodi_username"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:summary="@string/only_if_auth"
+            android:title="@string/username" />
+
+        <EditTextPreference
+            android:defaultValue=""
+            android:key="kodi_password"
+            android:inputType="textVisiblePassword"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:summary="@string/only_if_auth"
+            android:title="@string/password" />
+
+        <Preference
+            app:key="test_kodi"
+            app:title="@string/test_connection" />
+    </PreferenceCategory>
+
     <PreferenceCategory android:title="@string/title_various">
+
+        <Preference
+            app:key="update_regexps"
+            app:title="@string/update_regexps" />
 
         <SwitchPreference
             android:defaultValue="false"
@@ -87,9 +126,9 @@
 
 
         <Preference
-            app:key="version"
+            app:key="app_version"
             app:title="@string/version"
-            app:summary="4.2.5-beta" />
+            app:summary="4.2.3-beta" />
 
     </PreferenceCategory>
 

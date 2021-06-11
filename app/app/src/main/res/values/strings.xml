@@ -399,7 +399,7 @@
     <string name="limitations">Error: your phone is limiting background activity.</string>
     <string name="open_link_format">Open %1$s link</string>
     <string name="copy_link_format">Copy %1$s link </string>
-    <string name="open_with_format">Open %1$s with Yatse</string>
+    <string name="open_with_format">Open %1$s with Kodi</string>
     <string name="yatse" translatable="false">Yatse</string>
     <string name="loading_host_link">Loading host link</string>
     <string name="title_debugging">Debug</string>
@@ -493,4 +493,18 @@
     <string name="download_started">Download started, check the notification bar</string>
     <string name="download_not_started">Error during download initialization</string>
     <string name="needs_download_permission">Unchained needs the storage permission to download files directly</string>
+    <string name="kodi" translatable="false">Kodi</string>
+    <string name="test_connection">Test the connection</string>
+    <string name="kodi_credentials_incomplete">At least IP and port are required for Kodi</string>
+    <string name="ip_address">IP address</string>
+    <string name="port">Port</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="kodi_connection_successful">Kodi connection successful</string>
+    <string name="kodi_connection_error">Kodi connection error</string>
+    <string name="port_range_error">Port must be between 1 and 65535</string>
+    <string name="kodi_configure_credentials">Please configure Kodi in the app settings</string>
+    <string name="kodi_remote_control">Kodi remote control</string>
+    <string name="enable_kodi_control">Read here for instructions on how to set up Kodi for remote control (usually enabled in system->services->control). After that complete the required fields below</string>
+    <string name="only_if_auth">Required only if the authentication is enabled in Kodi</string>
 </resources>

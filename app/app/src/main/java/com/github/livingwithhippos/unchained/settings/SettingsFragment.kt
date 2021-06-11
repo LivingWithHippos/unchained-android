@@ -2,7 +2,12 @@ package com.github.livingwithhippos.unchained.settings
 
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.text.method.DigitsKeyListener
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.preference.EditTextPreference
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
@@ -50,14 +55,66 @@ class SettingsFragment : PreferenceFragmentCompat() {
             true
         }
 
+        setupKodi()
+
         setupVersion()
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+
+        viewModel.kodiLiveData.observe(viewLifecycleOwner) {
+            when (it.getContentIfNotHandled()) {
+                true -> {
+                    context?.showToast(R.string.kodi_connection_successful)
+                }
+                false -> {
+                    context?.showToast(R.string.kodi_connection_error)
+                }
+                null -> {
+                }
+            }
+        }
+
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    private fun setupKodi() {
+
+        findPreference<Preference>("kodi_remote_control_info")?.setOnPreferenceClickListener {
+            openExternalWebPage("https://kodi.wiki/view/Settings/Services/Control")
+        }
+        val ipPreference = findPreference<EditTextPreference>("kodi_ip_address")
+        val portPreference = findPreference<EditTextPreference>("kodi_port")
+
+        // todo: aside from ips are domains accepted? remove this in that case
+        ipPreference?.setOnBindEditTextListener {
+            it.keyListener = DigitsKeyListener.getInstance("0123456789.")
+        }
+        portPreference?.setOnBindEditTextListener {
+            it.keyListener = DigitsKeyListener.getInstance("0123456789")
+        }
+
+        portPreference?.setOnPreferenceChangeListener { _, newValue ->
+            val portVal: Int? = newValue.toString().toIntOrNull()
+            if (portVal != null && portVal > 0 && portVal <= 65535) {
+                true
+            } else {
+                context?.showToast(R.string.port_range_error)
+                false
+            }
+        }
+
     }
 
     private fun setupVersion() {
 
         val pi = context?.packageManager?.getPackageInfo(requireContext().packageName, 0)
         val version = pi?.versionName
-        val versionPreference = findPreference<Preference>(KEY_APP_VERSION)
+        val versionPreference = findPreference<Preference>("app_version")
         versionPreference?.summary = version
 
     }
@@ -82,6 +139,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 context?.showToast(R.string.updating_link_matcher)
             }
             "open_github_plugins" -> openExternalWebPage(PLUGINS_URL)
+            "test_kodi" -> testKodiConnection()
             "delete_external_plugins" -> {
                 val removedPlugins = viewModel.removeExternalPlugins(requireContext())
                 if (removedPlugins >= 0)
@@ -93,6 +151,24 @@ class SettingsFragment : PreferenceFragmentCompat() {
         }
 
         return true
+    }
+
+    private fun testKodiConnection() {
+        val ipPreference = findPreference<EditTextPreference>("kodi_ip_address")
+        val portPreference = findPreference<EditTextPreference>("kodi_port")
+        val usernamePreference = findPreference<EditTextPreference>("kodi_username")
+        val passwordPreference = findPreference<EditTextPreference>("kodi_password")
+
+        val ip = ipPreference?.text
+        val port = portPreference?.text?.toIntOrNull() ?: -1
+        val username = usernamePreference?.text
+        val password = passwordPreference?.text
+
+        if (ip.isNullOrBlank() || port <= 0)
+            context?.showToast(R.string.kodi_credentials_incomplete)
+        else {
+            viewModel.testKodi(ip, port, username, password)
+        }
     }
 
     private fun openCreditsDialog() {
