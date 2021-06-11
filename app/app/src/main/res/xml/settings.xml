@@ -49,6 +49,11 @@
 
     <PreferenceCategory android:title="@string/kodi">
 
+        <Preference
+            app:key="kodi_remote_control_info"
+            app:summary="@string/enable_kodi_control"
+            app:title="@string/kodi_remote_control" />
+
         <EditTextPreference
             android:defaultValue="192.168.1.7"
             android:key="kodi_ip_address"
@@ -68,6 +73,7 @@
             android:key="kodi_username"
             android:selectAllOnFocus="true"
             android:singleLine="true"
+            android:summary="@string/only_if_auth"
             android:title="@string/username" />
 
         <EditTextPreference
@@ -76,6 +82,7 @@
             android:inputType="textVisiblePassword"
             android:selectAllOnFocus="true"
             android:singleLine="true"
+            android:summary="@string/only_if_auth"
             android:title="@string/password" />
 
         <Preference

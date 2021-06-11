@@ -293,4 +293,7 @@
     <string name="kodi_connection_error">Errore di connessione a Kodi</string>
     <string name="port_range_error">La porta deve essere compresa tra 1 e 65535</string>
     <string name="kodi_configure_credentials">Configura Kodi nelle impostazioni dell\'app</string>
+    <string name="enable_kodi_control">Leggi qui le istruzioni su come impostare Kodi per il controllo remoto (di solito in system->services->control). Poi completa i campi richiesti qui sotto</string>
+    <string name="only_if_auth">Richiesto solo se l\'autenticazione è abilitata in Kodi</string>
+    <string name="kodi_remote_control">Controllo remoto per Kodi</string>
 </resources>

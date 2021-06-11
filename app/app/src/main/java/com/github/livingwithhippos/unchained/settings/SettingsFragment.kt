@@ -18,7 +18,6 @@ import com.github.livingwithhippos.unchained.utilities.PLUGINS_URL
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -75,7 +74,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 false -> {
                     context?.showToast(R.string.kodi_connection_error)
                 }
-                null -> {}
+                null -> {
+                }
             }
         }
 
@@ -83,6 +83,10 @@ class SettingsFragment : PreferenceFragmentCompat() {
     }
 
     private fun setupKodi() {
+
+        findPreference<Preference>("kodi_remote_control_info")?.setOnPreferenceClickListener {
+            openExternalWebPage("https://kodi.wiki/view/Settings/Services/Control")
+        }
         val ipPreference = findPreference<EditTextPreference>("kodi_ip_address")
         val portPreference = findPreference<EditTextPreference>("kodi_port")
 
@@ -96,7 +100,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         portPreference?.setOnPreferenceChangeListener { _, newValue ->
             val portVal: Int? = newValue.toString().toIntOrNull()
-            if (portVal!= null && portVal>0 && portVal <= 65535 ) {
+            if (portVal != null && portVal > 0 && portVal <= 65535) {
                 true
             } else {
                 context?.showToast(R.string.port_range_error)

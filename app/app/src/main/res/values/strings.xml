@@ -503,5 +503,8 @@
     <string name="kodi_connection_successful">Kodi connection successful</string>
     <string name="kodi_connection_error">Kodi connection error</string>
     <string name="port_range_error">Port must be between 1 and 65535</string>
-    <string name="kodi_configure_credentials">Plase configure Kodi in the app settings</string>
+    <string name="kodi_configure_credentials">Please configure Kodi in the app settings</string>
+    <string name="kodi_remote_control">Kodi remote control</string>
+    <string name="enable_kodi_control">Read here for instructions on how to set up Kodi for remote control (usually enabled in system->services->control). After that complete the required fields below</string>
+    <string name="only_if_auth">Required only if the authentication is enabled in Kodi</string>
 </resources>
