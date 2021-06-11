@@ -34,9 +34,9 @@ class KodiRepository @Inject constructor(
     }
 
 
-    suspend fun openUrl(baseUrl: String, url: String): KodiResponse? {
+    suspend fun openUrl(baseUrl: String, port: Int, url: String): KodiResponse? {
 
-        val kodiApiHelper: KodiApiHelper = provideApiHelper(baseUrl)
+        val kodiApiHelper: KodiApiHelper = provideApiHelper("http://$baseUrl:$port/")
 
         val kodiResponse = safeApiCall(
             call = {

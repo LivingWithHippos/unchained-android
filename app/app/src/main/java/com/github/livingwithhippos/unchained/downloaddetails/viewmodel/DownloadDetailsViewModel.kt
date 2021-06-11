@@ -55,13 +55,13 @@ class DownloadDetailsViewModel @Inject constructor(
     fun openUrlOnKodi(url: String) {
 
         val ip: String? = preferences.getString("kodi_ip_address", "")
-        val port: String? = preferences.getString("kodi_port", "")
+        val port: Int = preferences.getString("kodi_port", null)?.toIntOrNull() ?: -1
         val username: String? = preferences.getString("kodi_username", "")
         val password: String? = preferences.getString("kodi_password", "")
 
-        if (!ip.isNullOrBlank() && !port.isNullOrBlank()) {
+        if (!ip.isNullOrBlank() && port > 0) {
             viewModelScope.launch {
-                kodiRepository.openUrl("http://$ip:$port/", url)
+                kodiRepository.openUrl(ip, port, url)
             }
         }
     }
