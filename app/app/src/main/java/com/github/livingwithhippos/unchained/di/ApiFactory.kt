@@ -1,5 +1,6 @@
 package com.github.livingwithhippos.unchained.di
 
+import com.github.livingwithhippos.unchained.BuildConfig
 import com.github.livingwithhippos.unchained.data.model.EmptyBodyInterceptor
 import com.github.livingwithhippos.unchained.data.remote.AuthApiHelper
 import com.github.livingwithhippos.unchained.data.remote.AuthApiHelperImpl
@@ -49,27 +50,26 @@ import javax.inject.Singleton
 @Module
 object ApiFactory {
 
-    /*********************************/
-    // N.B. all updates to this code //
-    // also need to be ported to the //
-    // release build flavor version. //
-    /*********************************/
-
     @Provides
     @Singleton
     fun provideOkHttpClient(): OkHttpClient {
-        val logInterceptor: HttpLoggingInterceptor = HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BODY
-        }
+        if (BuildConfig.DEBUG) {
+            val logInterceptor: HttpLoggingInterceptor = HttpLoggingInterceptor().apply {
+                level = HttpLoggingInterceptor.Level.BODY
+            }
 
-        return OkHttpClient().newBuilder()
-            // logs all the calls, removed in the release channel
-            .addInterceptor(logInterceptor)
+            return OkHttpClient().newBuilder()
+                // logs all the calls, removed in the release channel
+                .addInterceptor(logInterceptor)
+                // avoid issues with empty bodies on delete/put and 20x return codes
+                .addInterceptor(EmptyBodyInterceptor)
+                .build()
+        } else return OkHttpClient()
+            .newBuilder()
             // avoid issues with empty bodies on delete/put and 20x return codes
             .addInterceptor(EmptyBodyInterceptor)
             .build()
     }
-
 
     /**
      * examples: [https://github.com/square/okhttp/blob/master/okhttp-dnsoverhttps/src/test/java/okhttp3/dnsoverhttps/DohProviders.java]
@@ -84,7 +84,7 @@ object ApiFactory {
             .scheme("https")
             .host("mozilla.cloudflare-dns.com")
             .addPathSegment("dns-query")
-            .build();
+            .build()
 
         return DnsOverHttps.Builder()
             .client(okHttpClient)
@@ -107,7 +107,7 @@ object ApiFactory {
     @ApiRetrofit
     fun apiRetrofit(okHttpClient: OkHttpClient): Retrofit {
         val moshi = Moshi.Builder()
-            .addLast(KotlinJsonAdapterFactory())
+            .add(KotlinJsonAdapterFactory())
             .build()
 
         return Retrofit.Builder()
@@ -217,12 +217,6 @@ object ApiFactory {
 
     @Provides
     @Singleton
-    fun provideParser(dohClient: DnsOverHttps): Parser =
-        Parser(dohClient)
+    fun provideParser(dohClient: DnsOverHttps): Parser = Parser(dohClient)
 
-    /*********************************/
-    // N.B. all updates to this code //
-    // also need to be ported to the //
-    // release build flavor version. //
-    /*********************************/
 }
