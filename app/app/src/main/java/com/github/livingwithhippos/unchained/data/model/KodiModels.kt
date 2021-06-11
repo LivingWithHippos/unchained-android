@@ -27,10 +27,12 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class KodiOpenRequest(
-    @Json(name = "id")
-    val id: Int = 616,
     @Json(name = "jsonrpc")
     val jsonRPC: String = "2.0",
+    @Json(name = "id")
+    val id: Int = 616,
+    @Json(name = "method")
+    val method: String = "Player.Open",
     @Json(name = "params")
     val params: KodiParams
 )
