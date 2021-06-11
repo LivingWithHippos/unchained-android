@@ -9,7 +9,6 @@ import okhttp3.Response
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
 import okio.ByteString
-import timber.log.Timber
 import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
@@ -20,32 +19,34 @@ class KodiSocket @Inject constructor(private val client: OkHttpClient) {
             .url(url)
             .build()
 
-        val webSocket = client.newWebSocket(request, object : WebSocketListener() {
+        client.newWebSocket(request, object : WebSocketListener() {
 
             override fun onOpen(webSocket: WebSocket, response: Response) {
                 super.onOpen(webSocket, response)
-                Timber.d("Aperto canale ${response.body}")
                 trySend(WebSocketEvents.ConnectionOpened)
             }
 
             override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
                 super.onMessage(webSocket, bytes)
-                Timber.d("Binary messagge received ${bytes}")
+                trySend(WebSocketEvents.BinaryMessageReceived(bytes))
             }
 
             override fun onMessage(webSocket: WebSocket, text: String) {
                 super.onMessage(webSocket, text)
-                Timber.d("Messagge received ${text}")
+                trySend(WebSocketEvents.MessageReceived(text))
             }
 
             override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
                 super.onFailure(webSocket, t, response)
-                trySend(WebSocketEvents.ConnectionError(t.message ?: response?.message ?: "Failure using the websocket for url $url"))
+                trySend(
+                    WebSocketEvents.ConnectionError(
+                        t.message ?: response?.message ?: "Failure using the websocket for url $url"
+                    )
+                )
             }
 
             override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
                 super.onClosed(webSocket, code, reason)
-                Timber.d("Connection close")
                 trySend(WebSocketEvents.ConnectionClosed)
             }
         }
@@ -57,4 +58,6 @@ sealed class WebSocketEvents {
     object ConnectionOpened : WebSocketEvents()
     object ConnectionClosed : WebSocketEvents()
     data class ConnectionError(val error: String) : WebSocketEvents()
+    data class MessageReceived(val message: String) : WebSocketEvents()
+    data class BinaryMessageReceived(val message: ByteString) : WebSocketEvents()
 }
