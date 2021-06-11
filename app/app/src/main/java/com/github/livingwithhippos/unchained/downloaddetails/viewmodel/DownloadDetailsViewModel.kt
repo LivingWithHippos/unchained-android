@@ -30,6 +30,7 @@ class DownloadDetailsViewModel @Inject constructor(
 
     val streamLiveData = MutableLiveData<Stream?>()
     val deletedDownloadLiveData = MutableLiveData<Event<Int>>()
+    val messageLiveData = MutableLiveData<Event<DownloadDetailsMessage>>()
 
     fun fetchStreamingInfo(id: String) {
         viewModelScope.launch {
@@ -61,8 +62,17 @@ class DownloadDetailsViewModel @Inject constructor(
 
         if (!ip.isNullOrBlank() && port > 0) {
             viewModelScope.launch {
-                kodiRepository.openUrl(ip, port, url)
+                val response = kodiRepository.openUrl(ip, port, url, username, password)
+                if (response!=null)
+                    messageLiveData.postEvent(DownloadDetailsMessage.KodiSuccess)
+                else
+                    messageLiveData.postEvent(DownloadDetailsMessage.KodiError)
             }
         }
     }
+}
+
+sealed class DownloadDetailsMessage() {
+    object KodiError: DownloadDetailsMessage()
+    object KodiSuccess: DownloadDetailsMessage()
 }

@@ -7,9 +7,9 @@ import retrofit2.Response
 
 
 class KodiApiHelperImpl(private val kodiApi: KodiApi) : KodiApiHelper {
-    override suspend fun openUrl(request: KodiRequest): Response<KodiResponse> =
-        kodiApi.openUrl(request)
+    override suspend fun openUrl(request: KodiRequest, auth: String?): Response<KodiResponse> =
+        kodiApi.openUrl(request, auth)
 
-    override suspend fun getVolume(request: KodiRequest): Response<KodiGenericResponse>  =
-        kodiApi.getVolume(request)
+    override suspend fun getVolume(request: KodiRequest, auth: String?): Response<KodiGenericResponse>  =
+        kodiApi.getVolume(request, auth)
 }

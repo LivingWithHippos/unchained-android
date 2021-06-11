@@ -1,9 +1,10 @@
 package com.github.livingwithhippos.unchained.data.repositoy
 
+import android.util.Base64
 import com.github.livingwithhippos.unchained.data.model.KodiGenericResponse
 import com.github.livingwithhippos.unchained.data.model.KodiItem
-import com.github.livingwithhippos.unchained.data.model.KodiRequest
 import com.github.livingwithhippos.unchained.data.model.KodiParams
+import com.github.livingwithhippos.unchained.data.model.KodiRequest
 import com.github.livingwithhippos.unchained.data.model.KodiResponse
 import com.github.livingwithhippos.unchained.data.remote.KodiApi
 import com.github.livingwithhippos.unchained.data.remote.KodiApiHelper
@@ -12,7 +13,6 @@ import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import timber.log.Timber
-import java.lang.Exception
 import javax.inject.Inject
 
 class KodiRepository @Inject constructor(
@@ -36,19 +36,24 @@ class KodiRepository @Inject constructor(
         return apiHelper
     }
 
-    suspend fun getVolume(baseUrl: String, port: Int): KodiGenericResponse? {
+    suspend fun getVolume(
+        baseUrl: String,
+        port: Int,
+        username: String? = null,
+        password: String? = null
+    ): KodiGenericResponse? {
         try {
             val kodiApiHelper: KodiApiHelper = provideApiHelper("http://$baseUrl:$port/")
-
             val kodiResponse = safeApiCall(
                 call = {
                     kodiApiHelper.getVolume(
-                        KodiRequest(
+                        request = KodiRequest(
                             method = "Application.GetProperties",
                             params = KodiParams(
                                 properties = listOf("volume")
                             )
-                        )
+                        ),
+                        auth = encodeAuthentication(username, password)
                     )
                 },
                 errorMessage = "Error getting Kodi volume"
@@ -62,26 +67,45 @@ class KodiRepository @Inject constructor(
     }
 
 
-    suspend fun openUrl(baseUrl: String, port: Int, url: String): KodiResponse? {
+    suspend fun openUrl(
+        baseUrl: String,
+        port: Int,
+        url: String,
+        username: String? = null,
+        password: String? = null
+    ): KodiResponse? {
 
+        try {
         val kodiApiHelper: KodiApiHelper = provideApiHelper("http://$baseUrl:$port/")
 
         val kodiResponse = safeApiCall(
             call = {
                 kodiApiHelper.openUrl(
-                    KodiRequest(
+                    request = KodiRequest(
                         method = "Player.Open",
                         params = KodiParams(
                             item = KodiItem(
                                 fileUrl = url
                             )
                         )
-                    )
+                    ),
+                    auth = encodeAuthentication(username, password)
                 )
             },
             errorMessage = "Error Sending url to Kodi"
         )
 
         return kodiResponse
+        } catch (e: Exception) {
+            Timber.e(e)
+            return null
+        }
+    }
+
+    private fun encodeAuthentication(username: String?, password: String?): String? {
+        return if (!username.isNullOrBlank() && !password.isNullOrBlank()) {
+            "Basic " + Base64.encodeToString("$username:$password".toByteArray(), Base64.DEFAULT).trim()
+        } else null
+
     }
 }

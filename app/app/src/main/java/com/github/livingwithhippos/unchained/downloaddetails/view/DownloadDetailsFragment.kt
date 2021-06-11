@@ -30,6 +30,7 @@ import com.github.livingwithhippos.unchained.data.model.Alternative
 import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.databinding.FragmentDownloadDetailsBinding
 import com.github.livingwithhippos.unchained.downloaddetails.model.AlternativeDownloadAdapter
+import com.github.livingwithhippos.unchained.downloaddetails.viewmodel.DownloadDetailsMessage
 import com.github.livingwithhippos.unchained.downloaddetails.viewmodel.DownloadDetailsViewModel
 import com.github.livingwithhippos.unchained.lists.view.ListsTabFragment
 import com.github.livingwithhippos.unchained.utilities.EventObserver
@@ -132,6 +133,18 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
             // the delete operation is observed from the viewModel
             if (bundle.getBoolean("deleteConfirmation"))
                 viewModel.deleteDownload(args.details.id)
+        }
+
+        viewModel.messageLiveData.observe(viewLifecycleOwner) {
+            when(it.getContentIfNotHandled()) {
+                is DownloadDetailsMessage.KodiError -> {
+                    context?.showToast(R.string.kodi_connection_error)
+                }
+                is DownloadDetailsMessage.KodiSuccess -> {
+                    context?.showToast(R.string.kodi_connection_successful)
+                }
+                null -> {}
+            }
         }
 
         return detailsBinding.root

@@ -35,7 +35,7 @@ class SettingsViewModel @Inject constructor(
 
     fun testKodi(ip: String, port: Int, username: String?, password: String?) {
         viewModelScope.launch {
-            val response = kodiRepository.getVolume(ip, port)
+            val response = kodiRepository.getVolume(ip, port, username, password)
             kodiLiveData.postEvent(response!=null)
         }
     }
