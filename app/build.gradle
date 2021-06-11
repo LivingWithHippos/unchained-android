@@ -2,7 +2,7 @@
 buildscript {
     ext.kotlin_version = '1.5.10'
     ext.hilt_version = '2.36'
-    ext.spotless_version = '5.6.1'
+    ext.ktlint_gradle_version = '10.1.0'
     ext.nav_version = "2.3.5"
 
     repositories {
@@ -22,7 +22,7 @@ buildscript {
 }
 
 plugins {
-    id 'com.diffplug.spotless' version "$spotless_version"
+    id 'org.jlleitschuh.gradle.ktlint' version "$ktlint_gradle_version"
 }
 
 allprojects {
@@ -33,15 +33,8 @@ allprojects {
 }
 
 subprojects {
-    apply plugin: 'com.diffplug.spotless'
-    spotless {
-        kotlin {
-            target '**/*.kt'
-            targetExclude("$buildDir/**/*.kt")
-            targetExclude('bin/**/*.kt')
-
-            ktlint()
-            licenseHeaderFile rootProject.file('spotless/copyright.kt')
-        }
+    apply plugin: "org.jlleitschuh.gradle.ktlint"
+    ktlint {
+        debug = true
     }
 }
