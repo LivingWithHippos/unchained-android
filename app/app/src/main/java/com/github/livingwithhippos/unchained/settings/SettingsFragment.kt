@@ -3,6 +3,9 @@ package com.github.livingwithhippos.unchained.settings
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.method.DigitsKeyListener
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.preference.EditTextPreference
 import androidx.preference.ListPreference
@@ -15,6 +18,7 @@ import com.github.livingwithhippos.unchained.utilities.PLUGINS_URL
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -57,15 +61,47 @@ class SettingsFragment : PreferenceFragmentCompat() {
         setupVersion()
     }
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+
+        viewModel.kodiLiveData.observe(viewLifecycleOwner) {
+            when (it.getContentIfNotHandled()) {
+                true -> {
+                    context?.showToast(R.string.kodi_connection_successful)
+                }
+                false -> {
+                    context?.showToast(R.string.kodi_connection_error)
+                }
+                null -> {}
+            }
+        }
+
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
     private fun setupKodi() {
         val ipPreference = findPreference<EditTextPreference>("kodi_ip_address")
         val portPreference = findPreference<EditTextPreference>("kodi_port")
 
+        // todo: aside from ips are domains accepted? remove this in that case
         ipPreference?.setOnBindEditTextListener {
             it.keyListener = DigitsKeyListener.getInstance("0123456789.")
         }
         portPreference?.setOnBindEditTextListener {
             it.keyListener = DigitsKeyListener.getInstance("0123456789")
+        }
+
+        portPreference?.setOnPreferenceChangeListener { _, newValue ->
+            val portVal: Int? = newValue.toString().toIntOrNull()
+            if (portVal!= null && portVal>0 && portVal <= 65535 ) {
+                true
+            } else {
+                context?.showToast(R.string.port_range_error)
+                false
+            }
         }
 
     }
@@ -120,14 +156,14 @@ class SettingsFragment : PreferenceFragmentCompat() {
         val passwordPreference = findPreference<EditTextPreference>("kodi_password")
 
         val ip = ipPreference?.text
-        val port = portPreference?.text
+        val port = portPreference?.text?.toIntOrNull() ?: -1
         val username = usernamePreference?.text
         val password = passwordPreference?.text
 
-        if (ip.isNullOrBlank() || port.isNullOrBlank())
+        if (ip.isNullOrBlank() || port <= 0)
             context?.showToast(R.string.kodi_credentials_incomplete)
         else {
-
+            viewModel.testKodi(ip, port, username, password)
         }
     }
 

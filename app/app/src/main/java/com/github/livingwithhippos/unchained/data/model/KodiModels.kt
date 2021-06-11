@@ -26,13 +26,13 @@ import com.squareup.moshi.JsonClass
  */
 
 @JsonClass(generateAdapter = true)
-data class KodiOpenRequest(
+data class KodiRequest(
     @Json(name = "jsonrpc")
     val jsonRPC: String = "2.0",
     @Json(name = "id")
     val id: Int = 616,
     @Json(name = "method")
-    val method: String = "Player.Open",
+    val method: String,
     @Json(name = "params")
     val params: KodiParams
 )
@@ -40,7 +40,9 @@ data class KodiOpenRequest(
 @JsonClass(generateAdapter = true)
 data class KodiParams(
     @Json(name = "item")
-    val item: KodiItem
+    val item: KodiItem? = null,
+    @Json(name = "properties")
+    val properties: List<String>? = null
 )
 
 @JsonClass(generateAdapter = true)
@@ -57,6 +59,16 @@ data class KodiResponse(
     val jsonrpc: String,
     @Json(name = "result")
     val result: String
+)
+
+@JsonClass(generateAdapter = true)
+data class KodiGenericResponse(
+    @Json(name = "id")
+    val id: Int,
+    @Json(name = "jsonrpc")
+    val jsonrpc: String,
+    @Json(name = "result")
+    val result: Any
 )
 
 @JsonClass(generateAdapter = true)
