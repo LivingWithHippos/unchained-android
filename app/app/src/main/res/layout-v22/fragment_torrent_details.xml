@@ -70,7 +70,7 @@
                     style="@style/TextAppearance.UnchainedTheme.Overline"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/status"
+                    android:text="@string/rd_status"
                     app:layout_constraintBottom_toTopOf="@+id/tvStatus"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -208,17 +208,18 @@
         <Button
             android:id="@+id/bDownload"
             style="@style/Widget.MaterialComponents.Button.Icon"
-            android:layout_width="150dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="@{() -> listener.onDownloadClick(torrent)}"
-            android:layout_marginBottom="20dp"
-            android:text="@string/download"
-            android:minLines="3"
-            android:visibility="@{torrent.status.equalsIgnoreCase(`downloaded`) ? View.VISIBLE : View.GONE}"
             android:layout_gravity="center_horizontal"
-            app:icon="@drawable/icon_download"
-            app:layout_constraintStart_toStartOf="@id/cvDetails"
+            android:layout_marginBottom="20dp"
+            android:minWidth="150dp"
+            android:minLines="3"
+            android:onClick="@{() -> listener.onDownloadClick(torrent)}"
+            android:text="@string/open"
+            android:visibility="@{torrent.status.equalsIgnoreCase(`downloaded`) ? View.VISIBLE : View.GONE}"
+            app:icon="@drawable/icon_open_external"
             app:layout_constraintEnd_toStartOf="@id/bCopy"
+            app:layout_constraintStart_toStartOf="@id/cvDetails"
             app:layout_constraintTop_toBottomOf="@id/cvDetails" />
 
 
