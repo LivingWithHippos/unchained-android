@@ -48,7 +48,7 @@ object DatabaseModule {
         override fun migrate(database: SupportSQLiteDatabase) {
             database.execSQL(
                 "CREATE TABLE `host_regex` (`regex` TEXT NOT NULL, " +
-                        "PRIMARY KEY(`regex`))"
+                    "PRIMARY KEY(`regex`))"
             )
         }
     }
@@ -58,5 +58,4 @@ object DatabaseModule {
             database.execSQL("ALTER TABLE host_regex ADD COLUMN type INTEGER NOT NULL DEFAULT $REGEX_TYPE_HOST")
         }
     }
-
 }

@@ -5,9 +5,9 @@ import com.github.livingwithhippos.unchained.data.model.EmptyBodyInterceptor
 import com.github.livingwithhippos.unchained.data.remote.AuthApiHelper
 import com.github.livingwithhippos.unchained.data.remote.AuthApiHelperImpl
 import com.github.livingwithhippos.unchained.data.remote.AuthenticationApi
+import com.github.livingwithhippos.unchained.data.remote.DownloadApi
 import com.github.livingwithhippos.unchained.data.remote.DownloadApiHelper
 import com.github.livingwithhippos.unchained.data.remote.DownloadApiHelperImpl
-import com.github.livingwithhippos.unchained.data.remote.DownloadsApi
 import com.github.livingwithhippos.unchained.data.remote.HostsApi
 import com.github.livingwithhippos.unchained.data.remote.HostsApiHelper
 import com.github.livingwithhippos.unchained.data.remote.HostsApiHelperImpl
@@ -178,8 +178,8 @@ object ApiFactory {
     // download api injection
     @Provides
     @Singleton
-    fun provideDownloadsApi(@ApiRetrofit retrofit: Retrofit): DownloadsApi {
-        return retrofit.create(DownloadsApi::class.java)
+    fun provideDownloadsApi(@ApiRetrofit retrofit: Retrofit): DownloadApi {
+        return retrofit.create(DownloadApi::class.java)
     }
 
     @Provides
@@ -218,5 +218,4 @@ object ApiFactory {
     @Provides
     @Singleton
     fun provideParser(dohClient: DnsOverHttps): Parser = Parser(dohClient)
-
 }

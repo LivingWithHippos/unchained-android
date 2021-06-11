@@ -5,7 +5,7 @@ package com.github.livingwithhippos.unchained.data.model
  * T and U will be used as return types
  */
 
-//todo: add loading class
+// todo: add loading class
 /**
  * Sealed classes representing all the possible network responses
  */

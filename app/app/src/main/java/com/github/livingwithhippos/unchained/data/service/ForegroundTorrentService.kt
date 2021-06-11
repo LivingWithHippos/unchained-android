@@ -57,7 +57,6 @@ class ForegroundTorrentService : LifecycleService() {
 
     private var updateTiming = UPDATE_TIMING_SHORT
 
-
     override fun onBind(intent: Intent): IBinder {
         super.onBind(intent)
         return torrentBinder
@@ -83,20 +82,22 @@ class ForegroundTorrentService : LifecycleService() {
     }
 
     private fun startForegroundService() {
-        torrentsLiveData.observe(this, { list ->
+        torrentsLiveData.observe(
+            this,
+            { list ->
 
-            // the torrents we were observing
-            val oldTorrentsIDs: Set<String> =
-                preferences.getStringSet(KEY_OBSERVED_TORRENTS, emptySet()) as Set<String>
-            // their updated status
-            val newLoadingTorrents =
-                list.filter { torrent -> loadingStatusList.contains(torrent.status) }
-            // the torrent whose status is not a loading one anymore.
-            val finishedTorrents = list
-                // They are in our old list
-                .filter { oldTorrentsIDs.contains(it.id) }
-                // They aren't in our new loading list
-                .filter { !newLoadingTorrents.map { newT -> newT.id }.contains(it.id) }
+                // the torrents we were observing
+                val oldTorrentsIDs: Set<String> =
+                    preferences.getStringSet(KEY_OBSERVED_TORRENTS, emptySet()) as Set<String>
+                // their updated status
+                val newLoadingTorrents =
+                    list.filter { torrent -> loadingStatusList.contains(torrent.status) }
+                // the torrent whose status is not a loading one anymore.
+                val finishedTorrents = list
+                    // They are in our old list
+                    .filter { oldTorrentsIDs.contains(it.id) }
+                    // They aren't in our new loading list
+                    .filter { !newLoadingTorrents.map { newT -> newT.id }.contains(it.id) }
             /*
             // the new torrents to add to the notification system
             val unwatchedTorrents = newLoadingTorrents.filter { !oldTorrentsIDs.contains(it.id) }
@@ -108,33 +109,32 @@ class ForegroundTorrentService : LifecycleService() {
             }
              */
 
-            // update the torrents id to observe
-            val newIDs = mutableSetOf<String>()
-            newIDs.addAll(newLoadingTorrents.map { it.id })
-            with(preferences.edit()) {
-                putStringSet(KEY_OBSERVED_TORRENTS, newIDs)
-                apply()
+                // update the torrents id to observe
+                val newIDs = mutableSetOf<String>()
+                newIDs.addAll(newLoadingTorrents.map { it.id })
+                with(preferences.edit()) {
+                    putStringSet(KEY_OBSERVED_TORRENTS, newIDs)
+                    apply()
+                }
+                updateTiming = if (newIDs.isEmpty())
+                    UPDATE_TIMING_LONG
+                else
+                    UPDATE_TIMING_SHORT
+
+                // let's first operate as if all the needed torrents were always in the list
+
+                // update the notifications for torrents in one of the loading statuses
+                updateNotification(newLoadingTorrents)
+                // update the notifications for torrents in one of the finished statuses
+                finishedTorrents.forEach { torrent ->
+                    completeNotification(torrent)
+                }
+                if (finishedTorrents.isNotEmpty())
+                    applicationContext.vibrate()
             }
-            updateTiming = if (newIDs.isEmpty())
-                UPDATE_TIMING_LONG
-            else
-                UPDATE_TIMING_SHORT
-
-            // let's first operate as if all the needed torrents were always in the list
-
-            // update the notifications for torrents in one of the loading statuses
-            updateNotification(newLoadingTorrents)
-            // update the notifications for torrents in one of the finished statuses
-            finishedTorrents.forEach { torrent ->
-                completeNotification(torrent)
-            }
-            if (finishedTorrents.isNotEmpty())
-                applicationContext.vibrate()
-
-        })
+        )
 
         startForeground(SUMMARY_ID, summaryBuilder.build())
-
 
         preferences.registerOnSharedPreferenceChangeListener { sharedPreferences, key ->
             if (key == SettingsFragment.KEY_TORRENT_NOTIFICATIONS) {
@@ -143,7 +143,6 @@ class ForegroundTorrentService : LifecycleService() {
                     stopTorrentService()
             }
         }
-
     }
 
     private fun startMonitoring() {
@@ -189,7 +188,6 @@ class ForegroundTorrentService : LifecycleService() {
                     .setProgress(0, 0, false)
             }
 
-
             val resultIntent = Intent(this, MainActivity::class.java).apply {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 putExtra(KEY_TORRENT_ID, torrent.id)
@@ -223,7 +221,6 @@ class ForegroundTorrentService : LifecycleService() {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             putExtra(KEY_TORRENT_ID, item.id)
         }
-
 
         val resultPendingIntent: PendingIntent? = TaskStackBuilder.create(this).run {
             // Add the intent, which inflates the back stack

@@ -7,7 +7,7 @@ import android.os.Build
 import android.util.Patterns
 import com.github.livingwithhippos.unchained.utilities.MAGNET_PATTERN
 import com.github.livingwithhippos.unchained.utilities.TORRENT_PATTERN
-import java.util.*
+import java.util.Date
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
@@ -24,7 +24,6 @@ fun String.removeWebFormatting(): String {
         .replace("%26", "&")
         .replace("%2B", "+")
         .replace("%25", "%")
-
 }
 
 /**
@@ -58,9 +57,8 @@ fun String.toCustomDate(datePattern: String = "yyyy-MM-dd'T'hh:mm:ss"): String {
         val date: Date = originalDate.parse(this)
         val localDate: DateFormat = SimpleDateFormat.getDateTimeInstance()
         return localDate.format(date)
-
     } else {
-        //todo: use a more robust option
+        // todo: use a more robust option
         return this
     }
 }

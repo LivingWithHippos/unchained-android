@@ -40,7 +40,8 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentSearchBinding.inflate(inflater, container, false)
@@ -61,15 +62,15 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
             pluginAdapter.clear()
             pluginAdapter.addAll(plugins.map { it.name })
 
-            if (binding.pluginPicker.editText?.text.toString().isBlank()
-                && plugins.isNotEmpty()
+            if (binding.pluginPicker.editText?.text.toString().isBlank() &&
+                plugins.isNotEmpty()
             ) {
                 // load the latest selected plugin or the first one available
                 val lastPlugin: String = viewModel.getLastSelectedPlugin()
                 val selectedPlugin: Plugin =
                     plugins.firstOrNull { it.name == lastPlugin } ?: plugins.first()
 
-                //todo: record the item used in the preferences and reselect it at setup time
+                // todo: record the item used in the preferences and reselect it at setup time
                 (binding.pluginPicker.editText as? AutoCompleteTextView)?.setText(
                     selectedPlugin.name,
                     false
@@ -169,7 +170,6 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
             alertDialog?.show()
         }
     }
-
 
     fun setupCategory(plugin: Plugin) {
         val choices = mutableListOf<String>()

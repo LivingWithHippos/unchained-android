@@ -80,4 +80,3 @@ val loadingStatusList = listOf(
     "compressing",
     "uploading"
 )
-

@@ -12,7 +12,6 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import timber.log.Timber
 import javax.inject.Inject
 
-
 class TorrentsRepository @Inject constructor(private val torrentApiHelper: TorrentApiHelper) :
     BaseRepository() {
 
@@ -40,7 +39,6 @@ class TorrentsRepository @Inject constructor(private val torrentApiHelper: Torre
         )
 
         return torrentResponse
-
     }
 
     suspend fun addTorrent(
@@ -86,7 +84,6 @@ class TorrentsRepository @Inject constructor(private val torrentApiHelper: Torre
         )
 
         return torrentResponse
-
     }
 
     suspend fun getTorrentsList(
@@ -111,7 +108,6 @@ class TorrentsRepository @Inject constructor(private val torrentApiHelper: Torre
         )
 
         return torrentsResponse ?: emptyList()
-
     }
 
     suspend fun selectFiles(
@@ -121,7 +117,7 @@ class TorrentsRepository @Inject constructor(private val torrentApiHelper: Torre
     ) {
 
         Timber.d("Selecting files for torrent: $id")
-        //this call has no return type
+        // this call has no return type
         safeApiCall(
             call = {
                 torrentApiHelper.selectFiles(
@@ -132,7 +128,6 @@ class TorrentsRepository @Inject constructor(private val torrentApiHelper: Torre
             },
             errorMessage = "Error Selecting Torrent Files"
         )
-
     }
 
     suspend fun deleteTorrent(token: String, id: String): Either<UnchainedNetworkException, Unit> {

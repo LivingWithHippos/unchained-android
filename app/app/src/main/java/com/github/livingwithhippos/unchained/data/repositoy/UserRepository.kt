@@ -4,7 +4,6 @@ import com.github.livingwithhippos.unchained.data.model.User
 import com.github.livingwithhippos.unchained.data.remote.UserApiHelper
 import javax.inject.Inject
 
-
 class UserRepository @Inject constructor(private val userApiHelper: UserApiHelper) :
     BaseRepository() {
 
@@ -16,7 +15,5 @@ class UserRepository @Inject constructor(private val userApiHelper: UserApiHelpe
         )
 
         return userResponse
-
     }
-
 }

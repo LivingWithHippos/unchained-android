@@ -21,7 +21,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-
 const val REFERRAL_LINK = "http://real-debrid.com/?id=78841"
 const val PREMIUM_LINK = "https://real-debrid.com/premium"
 const val ACCOUNT_LINK = "https://real-debrid.com/account"
@@ -39,7 +38,8 @@ class UserProfileFragment : UnchainedFragment() {
     lateinit var preferences: SharedPreferences
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
@@ -47,14 +47,17 @@ class UserProfileFragment : UnchainedFragment() {
 
         viewModel.fetchUserInfo()
 
-        viewModel.userLiveData.observe(viewLifecycleOwner, {
-            if (it != null) {
-                userBinding.user = it
-                lifecycleScope.launch {
-                    userBinding.privateToken = activityViewModel.isTokenPrivate()
+        viewModel.userLiveData.observe(
+            viewLifecycleOwner,
+            {
+                if (it != null) {
+                    userBinding.user = it
+                    lifecycleScope.launch {
+                        userBinding.privateToken = activityViewModel.isTokenPrivate()
+                    }
                 }
             }
-        })
+        )
 
         userBinding.bAccount.setOnClickListener {
             // if we never asked, show a dialog
@@ -91,21 +94,24 @@ class UserProfileFragment : UnchainedFragment() {
             }
         }
 
-        activityViewModel.authenticationState.observe(viewLifecycleOwner, {
-            // it's possible to use peek with findNavController().currentDestination to avoid launching the navigate(action) twice (it crashes)
-            // val destination = findNavController().currentDestination
-            // val destinationId = findNavController().currentDestination?.id
-            when (it.peekContent()) {
-                // back to authentication fragment
-                AuthenticationState.UNAUTHENTICATED -> {
-                    val action = UserProfileFragmentDirections.actionUserToAuthentication()
-                    findNavController().navigate(action)
-                }
-                //do nothing for now, add other states later
-                else -> {
+        activityViewModel.authenticationState.observe(
+            viewLifecycleOwner,
+            {
+                // it's possible to use peek with findNavController().currentDestination to avoid launching the navigate(action) twice (it crashes)
+                // val destination = findNavController().currentDestination
+                // val destinationId = findNavController().currentDestination?.id
+                when (it.peekContent()) {
+                    // back to authentication fragment
+                    AuthenticationState.UNAUTHENTICATED -> {
+                        val action = UserProfileFragmentDirections.actionUserToAuthentication()
+                        findNavController().navigate(action)
+                    }
+                    // do nothing for now, add other states later
+                    else -> {
+                    }
                 }
             }
-        })
+        )
 
         userBinding.bLogout.setOnClickListener {
             activityViewModel.logout()

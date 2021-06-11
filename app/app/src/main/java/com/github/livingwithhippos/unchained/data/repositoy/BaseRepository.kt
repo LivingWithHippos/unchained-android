@@ -21,7 +21,7 @@ import java.io.IOException
  */
 open class BaseRepository {
 
-    //todo: inject this
+    // todo: inject this
     private val jsonAdapter: JsonAdapter<APIError> = Moshi.Builder()
         .build()
         .adapter(APIError::class.java)

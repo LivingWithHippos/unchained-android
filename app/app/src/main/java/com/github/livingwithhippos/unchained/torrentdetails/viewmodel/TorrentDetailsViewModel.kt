@@ -32,7 +32,6 @@ class TorrentDetailsViewModel @Inject constructor(
     val downloadLiveData = MutableLiveData<Event<DownloadItem?>>()
     val errorsLiveData = MutableLiveData<Event<List<UnchainedNetworkException>>>()
 
-
     fun fetchTorrentDetails(torrentID: String) {
         viewModelScope.launch {
             val token = getToken()
@@ -42,7 +41,6 @@ class TorrentDetailsViewModel @Inject constructor(
             if (torrentData?.status == "waiting_files_selection")
                 torrentsRepository.selectFiles(token, torrentID)
         }
-
     }
 
     private suspend fun getToken(): String {

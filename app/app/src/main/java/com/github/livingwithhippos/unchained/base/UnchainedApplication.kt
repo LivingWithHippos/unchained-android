@@ -17,7 +17,6 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
-
 /**
  * Entry point for the Dagger-Hilt injection.
  * Deletes incomplete credentials from the db on start

@@ -18,7 +18,6 @@ class AuthenticationRepository @Inject constructor(private val apiHelper: AuthAp
         )
 
         return authResponse
-
     }
 
     suspend fun getSecrets(code: String): Secrets? {
@@ -29,7 +28,6 @@ class AuthenticationRepository @Inject constructor(private val apiHelper: AuthAp
         )
 
         return secretResponse
-
     }
 
     suspend fun getToken(clientId: String, clientSecret: String, code: String): Token? {
@@ -46,7 +44,6 @@ class AuthenticationRepository @Inject constructor(private val apiHelper: AuthAp
         )
 
         return tokenResponse
-
     }
 
     /**

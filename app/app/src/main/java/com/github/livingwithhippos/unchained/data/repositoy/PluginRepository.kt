@@ -17,8 +17,7 @@ class PluginRepository @Inject constructor(
     private val assetsManager: AssetsManager
 ) {
 
-
-    //todo: inject
+    // todo: inject
     private val pluginAdapter: JsonAdapter<Plugin> = Moshi.Builder()
         .build()
         .adapter(Plugin::class.java)
@@ -64,8 +63,6 @@ class PluginRepository @Inject constructor(
                     Timber.e("Error reading file in path $it, exception ${ex.message}")
                 }
             }
-
-
         }
 
         plugins
@@ -109,7 +106,6 @@ class PluginRepository @Inject constructor(
             }
 
             plugins?.size ?: -1
-
         } catch (e: SecurityException) {
             Timber.d("Security exception deleting plugins files: ${e.message}")
             -1
@@ -167,9 +163,8 @@ class PluginRepository @Inject constructor(
                         it.write(buffer)
                     }
                     return@withContext true
-
                 } catch (exception: IOException) {
-                    Timber.e("Error adding the plugin ${filename}: ${exception.message}")
+                    Timber.e("Error adding the plugin $filename: ${exception.message}")
                     false
                 }
             } else
@@ -188,7 +183,7 @@ class PluginRepository @Inject constructor(
                         return@withContext getPluginFromJSON(json)
                     }
                 } catch (exception: Exception) {
-                    Timber.e("Error adding the plugin ${filename}: ${exception.message}")
+                    Timber.e("Error adding the plugin $filename: ${exception.message}")
                 }
             }
 

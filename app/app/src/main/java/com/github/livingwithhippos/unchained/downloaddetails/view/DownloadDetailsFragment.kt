@@ -1,12 +1,9 @@
 package com.github.livingwithhippos.unchained.downloaddetails.view
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.app.DownloadManager
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -18,7 +15,6 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -42,7 +38,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-
 /**
  * A simple [UnchainedFragment] subclass.
  * It is capable of showing the details of a [DownloadItem]
@@ -55,7 +50,8 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
     private val args: DownloadDetailsFragmentArgs by navArgs()
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         val detailsBinding = FragmentDownloadDetailsBinding.inflate(inflater, container, false)
@@ -71,63 +67,69 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
             alternativeAdapter.submitList(args.details.alternative)
         }
 
-        viewModel.streamLiveData.observe(viewLifecycleOwner, {
-            if (it != null) {
-                detailsBinding.stream = it
+        viewModel.streamLiveData.observe(
+            viewLifecycleOwner,
+            {
+                if (it != null) {
+                    detailsBinding.stream = it
 
-                val streams = mutableListOf<Alternative>()
-                // parameter mimetype gets shown as the name and "streaming" as title in the list, the other params don't matter
-                streams.add(
-                    Alternative(
-                        "h264WebM",
-                        "h264WebM",
-                        it.h264WebM.link,
-                        getString(R.string.h264_webm),
-                        getString(R.string.streaming)
+                    val streams = mutableListOf<Alternative>()
+                    // parameter mimetype gets shown as the name and "streaming" as title in the list, the other params don't matter
+                    streams.add(
+                        Alternative(
+                            "h264WebM",
+                            "h264WebM",
+                            it.h264WebM.link,
+                            getString(R.string.h264_webm),
+                            getString(R.string.streaming)
+                        )
                     )
-                )
-                streams.add(
-                    Alternative(
-                        "liveMP4",
-                        "liveMP4",
-                        it.liveMP4.link,
-                        getString(R.string.liveMP4),
-                        getString(R.string.streaming)
+                    streams.add(
+                        Alternative(
+                            "liveMP4",
+                            "liveMP4",
+                            it.liveMP4.link,
+                            getString(R.string.liveMP4),
+                            getString(R.string.streaming)
+                        )
                     )
-                )
-                streams.add(
-                    Alternative(
-                        "apple",
-                        "apple",
-                        it.apple.link,
-                        getString(R.string.apple),
-                        getString(R.string.streaming)
+                    streams.add(
+                        Alternative(
+                            "apple",
+                            "apple",
+                            it.apple.link,
+                            getString(R.string.apple),
+                            getString(R.string.streaming)
+                        )
                     )
-                )
-                streams.add(
-                    Alternative(
-                        "dash",
-                        "dash",
-                        it.dash.link,
-                        getString(R.string.dash),
-                        getString(R.string.streaming)
+                    streams.add(
+                        Alternative(
+                            "dash",
+                            "dash",
+                            it.dash.link,
+                            getString(R.string.dash),
+                            getString(R.string.streaming)
+                        )
                     )
-                )
 
-                if (!args.details.alternative.isNullOrEmpty())
-                    streams.addAll(args.details.alternative!!)
+                    if (!args.details.alternative.isNullOrEmpty())
+                        streams.addAll(args.details.alternative!!)
 
-                alternativeAdapter.submitList(streams)
+                    alternativeAdapter.submitList(streams)
+                }
             }
-        })
+        )
 
-        viewModel.deletedDownloadLiveData.observe(viewLifecycleOwner, EventObserver {
-            // todo: check returned value (it)
-            activity?.baseContext?.showToast(R.string.download_removed)
-            // if deleted go back
-            activity?.onBackPressed()
-            activityViewModel.setListState(ListsTabFragment.ListState.UPDATE_DOWNLOAD)
-        })
+        viewModel.deletedDownloadLiveData.observe(
+            viewLifecycleOwner,
+            EventObserver {
+                // todo: check returned value (it)
+                activity?.baseContext?.showToast(R.string.download_removed)
+                // if deleted go back
+                activity?.onBackPressed()
+                activityViewModel.setListState(ListsTabFragment.ListState.UPDATE_DOWNLOAD)
+            }
+        )
 
         setFragmentResultListener("deleteActionKey") { _, bundle ->
             // the delete operation is observed from the viewModel
@@ -136,7 +138,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         }
 
         viewModel.messageLiveData.observe(viewLifecycleOwner) {
-            when(it.getContentIfNotHandled()) {
+            when (it.getContentIfNotHandled()) {
                 is DownloadDetailsMessage.KodiError -> {
                     context?.showToast(R.string.kodi_connection_error)
                 }
@@ -193,7 +195,6 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                 viewModel.fetchStreamingInfo(id)
             } else
                 context?.showToast(R.string.api_needs_private_token)
-
         }
     }
 
@@ -215,9 +216,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
             else -> {
                 downloadFile(link, fileName)
             }
-
         }
-
     }
 
     private fun downloadFile(link: String, fileName: String) {
@@ -236,7 +235,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
             manager.enqueue(request)
             context?.showToast(R.string.download_started)
         } catch (e: Exception) {
-            Timber.e("Error starting download of ${fileName}, exception ${e.message}")
+            Timber.e("Error starting download of $fileName, exception ${e.message}")
             context?.showToast(R.string.download_not_started)
         }
     }
@@ -253,7 +252,6 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                 context?.showToast(R.string.needs_download_permission)
             }
         }
-
 
     override fun onShareClick(url: String) {
         val shareIntent = Intent(Intent.ACTION_SEND)

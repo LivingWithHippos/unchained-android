@@ -82,7 +82,6 @@ class MainActivityViewModel @Inject constructor(
                 .getAllCredentials()
                 .filter { it.accessToken != null && it.clientId != null && it.clientSecret != null && it.deviceCode.isNotBlank() && it.refreshToken != null }
 
-
             if (completeCredentials.isNotEmpty()) {
 
                 // step #1: test for private API token
@@ -111,12 +110,10 @@ class MainActivityViewModel @Inject constructor(
                         }
                     }
                 }
-
             }
 
             // pass whatever user was retrieved, or null if none was found
             userLiveData.postValue(user)
-
         }
     }
 
@@ -155,10 +152,9 @@ class MainActivityViewModel @Inject constructor(
         viewModelScope.launch {
             credentialRepository.getFirstCredentials()?.let {
                 if (it.refreshToken != null && it.refreshToken != PRIVATE_TOKEN) {
-                    //setUnauthenticated()
+                    // setUnauthenticated()
                     variousApiRepository.disableToken(it.accessToken!!)
                 }
-
             }
         }
     }
@@ -206,7 +202,6 @@ class MainActivityViewModel @Inject constructor(
         savedStateHandle.set(KEY_TORRENT_PATH, filePath)
     }
 
-
     fun setPluginDownload(downloadID: Long, filePath: String) {
         savedStateHandle.set(KEY_PLUGIN_DOWNLOAD_ID, downloadID)
         savedStateHandle.set(KEY_PLUGIN_PATH, filePath)
@@ -250,15 +245,12 @@ class MainActivityViewModel @Inject constructor(
                         messageLiveData.postEvent(R.string.plugin_install_installed)
                     else
                         messageLiveData.postEvent(R.string.plugin_install_not_installed)
-
-
                 }
             }
-
         }
     }
 
-    //todo: move this stuff to a shared navigationViewModel
+    // todo: move this stuff to a shared navigationViewModel
     fun setListState(state: ListsTabFragment.ListState) {
         listStateLiveData.postEvent(state)
     }
@@ -279,7 +271,6 @@ class MainActivityViewModel @Inject constructor(
             refreshToken()
         }
     }
-
 
     fun downloadSupportedLink(link: String) {
         viewModelScope.launch {
@@ -335,10 +326,10 @@ class MainActivityViewModel @Inject constructor(
                     "https?://(www.)?github.com/$username/$repo/$type/$branch/$path".toRegex()
                 val match: MatchResult = regex.find(github) ?: return null
                 return "https://raw.githubusercontent.com/" +
-                        match.groupValues[2] + "/" +
-                        match.groupValues[3] + "/" +
-                        match.groupValues[5] + "/" +
-                        match.groupValues[6]
+                    match.groupValues[2] + "/" +
+                    match.groupValues[3] + "/" +
+                    match.groupValues[5] + "/" +
+                    match.groupValues[6]
             }
             github.startsWith("https://raw.githubusercontent.com") -> {
                 return github
@@ -426,5 +417,4 @@ class MainActivityViewModel @Inject constructor(
         const val KEY_LAST_BACK_PRESS = "last_back_press_key"
         const val KEY_REFRESHING_TOKEN = "refreshing_token_key"
     }
-
 }

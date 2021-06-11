@@ -3,7 +3,7 @@ package com.github.livingwithhippos.unchained.data.model
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
-//fixme: the key is variable, the same as HostStatus.name, find out how to model that @Json(name = ?)
+// fixme: the key is variable, the same as HostStatus.name, find out how to model that @Json(name = ?)
 @JsonClass(generateAdapter = true)
 data class Host(
     @Json(name = "id")

@@ -63,7 +63,7 @@ class DownloadDetailsViewModel @Inject constructor(
         if (!ip.isNullOrBlank() && port > 0) {
             viewModelScope.launch {
                 val response = kodiRepository.openUrl(ip, port, url, username, password)
-                if (response!=null)
+                if (response != null)
                     messageLiveData.postEvent(DownloadDetailsMessage.KodiSuccess)
                 else
                     messageLiveData.postEvent(DownloadDetailsMessage.KodiError)
@@ -75,7 +75,7 @@ class DownloadDetailsViewModel @Inject constructor(
 }
 
 sealed class DownloadDetailsMessage() {
-    object KodiError: DownloadDetailsMessage()
-    object KodiSuccess: DownloadDetailsMessage()
-    object KodiMissingCredentials: DownloadDetailsMessage()
+    object KodiError : DownloadDetailsMessage()
+    object KodiSuccess : DownloadDetailsMessage()
+    object KodiMissingCredentials : DownloadDetailsMessage()
 }

@@ -10,7 +10,6 @@ import java.util.regex.Pattern
 import java.util.regex.PatternSyntaxException
 import javax.inject.Inject
 
-
 class HostsRepository @Inject constructor(
     private val hostsApiHelper: HostsApiHelper,
     private val hostRegexDao: HostRegexDao
@@ -25,7 +24,6 @@ class HostsRepository @Inject constructor(
         )
 
         return hostResponse
-
     }
 
     /**
@@ -86,7 +84,6 @@ class HostsRepository @Inject constructor(
             regexps.addAll(CUSTOM_REGEXPS.map { HostRegex(it) })
 
         return regexps
-
     }
 
     /**
@@ -102,7 +99,6 @@ class HostsRepository @Inject constructor(
         } else
             return emptyList()
     }
-
 
     /**
      * Gets the regexps to filter supported hosts from the db if any, otherwise tries to update them from the network
@@ -122,7 +118,6 @@ class HostsRepository @Inject constructor(
             regexps.addAll(CUSTOM_FOLDER_REGEXPS.map { HostRegex(it) })
 
         return regexps
-
     }
 
     /**
@@ -171,6 +166,5 @@ class HostsRepository @Inject constructor(
 
         // if any of the converted folder regexps are wrong, we can add these to the db manually
         val CUSTOM_FOLDER_REGEXPS = emptyArray<String>()
-
     }
 }

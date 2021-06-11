@@ -17,5 +17,4 @@ abstract class UnchaineDB : RoomDatabase() {
 
     abstract fun credentialsDao(): CredentialsDao
     abstract fun hostRegexDao(): HostRegexDao
-
 }

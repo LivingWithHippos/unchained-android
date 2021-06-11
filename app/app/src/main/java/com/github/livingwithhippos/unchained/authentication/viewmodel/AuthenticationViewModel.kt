@@ -37,7 +37,7 @@ class AuthenticationViewModel @Inject constructor(
     val tokenLiveData = MutableLiveData<Event<Token?>>()
     val userLiveData = MutableLiveData<Event<User?>>()
 
-    //todo: here we should check if we already have credentials and if they work, and pass those
+    // todo: here we should check if we already have credentials and if they work, and pass those
     fun fetchAuthenticationInfo() {
         viewModelScope.launch {
             val authData = authRepository.getVerificationCode()
@@ -71,7 +71,6 @@ class AuthenticationViewModel @Inject constructor(
                     fetchAuthenticationInfo()
             }
         }
-
     }
 
     fun fetchToken(clientId: String, deviceCode: String, clientSecret: String) {
@@ -81,7 +80,6 @@ class AuthenticationViewModel @Inject constructor(
             if (tokenData?.accessToken != null) {
                 // i need only a set of credentials in my application
                 credentialRepository.deleteAllOpenSourceCredentials()
-
             }
         }
     }

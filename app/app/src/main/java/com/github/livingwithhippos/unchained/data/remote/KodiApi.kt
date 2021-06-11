@@ -6,7 +6,6 @@ import com.github.livingwithhippos.unchained.data.model.KodiResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.Header
-import retrofit2.http.Headers
 import retrofit2.http.POST
 
 interface KodiApi {
@@ -24,5 +23,4 @@ interface KodiApi {
         @Header("Authorization") auth: String? = null,
         @Header("Content-Type") contentType: String = "application/json"
     ): Response<KodiGenericResponse>
-
 }

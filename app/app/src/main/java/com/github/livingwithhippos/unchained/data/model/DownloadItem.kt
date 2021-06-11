@@ -33,7 +33,6 @@ import com.squareup.moshi.JsonClass
 ]
 */
 
-
 @JsonClass(generateAdapter = true)
 data class DownloadItem(
     @Json(name = "id")
@@ -112,7 +111,6 @@ data class DownloadItem(
             return arrayOfNulls(size)
         }
     }
-
 }
 
 @JsonClass(generateAdapter = true)
@@ -142,7 +140,6 @@ data class Alternative(
         parcel.writeString(download)
         parcel.writeString(mimeType)
         parcel.writeString(quality)
-
     }
 
     override fun describeContents(): Int {

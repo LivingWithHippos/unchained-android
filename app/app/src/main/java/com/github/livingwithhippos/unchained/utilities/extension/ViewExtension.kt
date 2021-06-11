@@ -222,7 +222,7 @@ fun TextView.setTextFromSpan(spannableStringBuilder: SpannableStringBuilder?) {
  * @param delay: the delay after which the animation is started
  */
 fun View.runRippleAnimation(delay: Long = 300) {
-    //todo: test if this works for things beside buttons
+    // todo: test if this works for things beside buttons
     if (background is RippleDrawable) {
         postDelayed(
             {
@@ -235,7 +235,6 @@ fun View.runRippleAnimation(delay: Long = 300) {
         )
     }
 }
-
 
 /**
  * Smoothly scrolls to an item position in a RecyclerView.
@@ -289,7 +288,7 @@ fun View.showSnackbar(
  * @param callback: the function to be called
  * @param item: the item to be returned to the callback
  */
-//todo: rename to setBindingOnTorrentLongClickListener
+// todo: rename to setBindingOnTorrentLongClickListener
 @BindingAdapter("onLongClickListener", "cardTorrentItem")
 fun CardView.setBindingOnLongClickListener(listener: TorrentListListener, item: TorrentItem) {
     this.setOnLongClickListener {

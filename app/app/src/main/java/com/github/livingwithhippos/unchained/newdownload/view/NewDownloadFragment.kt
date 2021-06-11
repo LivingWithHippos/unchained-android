@@ -71,42 +71,52 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = NewDownloadFragmentBinding.inflate(inflater, container, false)
 
         downloadBinding.listener = this
 
-        viewModel.linkLiveData.observe(viewLifecycleOwner, EventObserver { linkDetails ->
-            // new download item, alert the list fragment that it needs updating
-            activityViewModel.setListState(ListsTabFragment.ListState.UPDATE_DOWNLOAD)
-            val action =
-                NewDownloadFragmentDirections.actionUnrestrictDownloadToDetailsFragment(
-                    linkDetails
-                )
-            findNavController().navigate(action)
-        })
+        viewModel.linkLiveData.observe(
+            viewLifecycleOwner,
+            EventObserver { linkDetails ->
+                // new download item, alert the list fragment that it needs updating
+                activityViewModel.setListState(ListsTabFragment.ListState.UPDATE_DOWNLOAD)
+                val action =
+                    NewDownloadFragmentDirections.actionUnrestrictDownloadToDetailsFragment(
+                        linkDetails
+                    )
+                findNavController().navigate(action)
+            }
+        )
 
-        viewModel.folderLiveData.observe(viewLifecycleOwner, EventObserver { folder ->
+        viewModel.folderLiveData.observe(
+            viewLifecycleOwner,
+            EventObserver { folder ->
 
-            val action =
-                NewDownloadFragmentDirections.actionNewDownloadDestToFolderListFragment(
-                    folder = folder,
-                    torrent = null
-                )
-            findNavController().navigate(action)
-        })
+                val action =
+                    NewDownloadFragmentDirections.actionNewDownloadDestToFolderListFragment(
+                        folder = folder,
+                        torrent = null
+                    )
+                findNavController().navigate(action)
+            }
+        )
 
-        viewModel.torrentLiveData.observe(viewLifecycleOwner, EventObserver { torrent ->
-            // new torrent item, alert the list fragment that it needs updating
-            activityViewModel.setListState(ListsTabFragment.ListState.UPDATE_TORRENT)
-            val action =
-                NewDownloadFragmentDirections.actionNewDownloadDestToTorrentDetailsFragment(
-                    torrent.id
-                )
-            findNavController().navigate(action)
-        })
+        viewModel.torrentLiveData.observe(
+            viewLifecycleOwner,
+            EventObserver { torrent ->
+                // new torrent item, alert the list fragment that it needs updating
+                activityViewModel.setListState(ListsTabFragment.ListState.UPDATE_TORRENT)
+                val action =
+                    NewDownloadFragmentDirections.actionNewDownloadDestToTorrentDetailsFragment(
+                        torrent.id
+                    )
+                findNavController().navigate(action)
+            }
+        )
 
         // add the unrestrict button listener
         downloadBinding.bUnrestrict.setOnClickListener {
@@ -163,7 +173,6 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
                         context?.showToast(R.string.invalid_url)
                     }
                 }
-
             } else
                 context?.showToast(R.string.premium_needed)
         }
@@ -191,36 +200,39 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
 
         // we don't need to update the list fragment because when opened externally it gets loaded for the first time anyway
         // this will change when we'll be able to use the already loaded activity instead of creating a new one
-        activityViewModel.externalLinkLiveData.observe(viewLifecycleOwner, EventObserver { link ->
-            when (link.scheme) {
-                SCHEME_MAGNET -> {
-                    context?.showToast(R.string.loading_magnet_link)
-                    // set as text input text
-                    downloadBinding.tiLink.setText(
-                        link.toString(),
-                        TextView.BufferType.EDITABLE
-                    )
-                    // simulate button click
-                    downloadBinding.bUnrestrict.performClick()
-                }
-                SCHEME_CONTENT, SCHEME_FILE -> {
-                    context?.showToast(R.string.loading_torrent_file)
-                    loadTorrent(link)
-                }
-                SCHEME_HTTP, SCHEME_HTTPS -> {
-                    if (!link.toString().endsWith(".torrent"))
-                        context?.showToast(R.string.loading_host_link)
+        activityViewModel.externalLinkLiveData.observe(
+            viewLifecycleOwner,
+            EventObserver { link ->
+                when (link.scheme) {
+                    SCHEME_MAGNET -> {
+                        context?.showToast(R.string.loading_magnet_link)
+                        // set as text input text
+                        downloadBinding.tiLink.setText(
+                            link.toString(),
+                            TextView.BufferType.EDITABLE
+                        )
+                        // simulate button click
+                        downloadBinding.bUnrestrict.performClick()
+                    }
+                    SCHEME_CONTENT, SCHEME_FILE -> {
+                        context?.showToast(R.string.loading_torrent_file)
+                        loadTorrent(link)
+                    }
+                    SCHEME_HTTP, SCHEME_HTTPS -> {
+                        if (!link.toString().endsWith(".torrent"))
+                            context?.showToast(R.string.loading_host_link)
 
-                    // set as text input text
-                    downloadBinding.tiLink.setText(
-                        link.toString(),
-                        TextView.BufferType.EDITABLE
-                    )
-                    // simulate button click
-                    downloadBinding.bUnrestrict.performClick()
+                        // set as text input text
+                        downloadBinding.tiLink.setText(
+                            link.toString(),
+                            TextView.BufferType.EDITABLE
+                        )
+                        // simulate button click
+                        downloadBinding.bUnrestrict.performClick()
+                    }
                 }
             }
-        })
+        )
 
         activityViewModel.downloadedFileLiveData.observe(
             viewLifecycleOwner,
@@ -234,58 +246,62 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
                         loadTorrent(torrentFile.toUri())
                     }
                 }
-            })
+            }
+        )
 
-        viewModel.networkExceptionLiveData.observe(viewLifecycleOwner, EventObserver { exception ->
+        viewModel.networkExceptionLiveData.observe(
+            viewLifecycleOwner,
+            EventObserver { exception ->
 
-            // re-enable the buttons to allow the user to take new actions
-            downloadBinding.bUnrestrict.isEnabled = true
-            downloadBinding.bLoadTorrent.isEnabled = true
+                // re-enable the buttons to allow the user to take new actions
+                downloadBinding.bUnrestrict.isEnabled = true
+                downloadBinding.bLoadTorrent.isEnabled = true
 
-            when (exception) {
-                is APIError -> {
-                    // error codes outside the known range will return unknown error
-                    val errorCode = exception.errorCode ?: -2
-                    // manage the api error result
-                    when (exception.errorCode) {
-                        -1, 1 -> context?.let {
-                            it.showToast(it.getApiErrorMessage(errorCode))
-                        }
-                        // since here we monitor new downloads, use a less generic, custom message
-                        2 -> context?.showToast(R.string.unsupported_hoster)
-                        in 3..7 -> context?.let {
-                            it.showToast(it.getApiErrorMessage(errorCode))
-                        }
-                        8 -> {
-                            // try refreshing the token
-                            context?.let {
+                when (exception) {
+                    is APIError -> {
+                        // error codes outside the known range will return unknown error
+                        val errorCode = exception.errorCode ?: -2
+                        // manage the api error result
+                        when (exception.errorCode) {
+                            -1, 1 -> context?.let {
                                 it.showToast(it.getApiErrorMessage(errorCode))
                             }
-                            activityViewModel.setBadToken()
-                            context?.showToast(R.string.refreshing_token)
-                        }
-                        in 9..15 -> {
-                            context?.let {
+                            // since here we monitor new downloads, use a less generic, custom message
+                            2 -> context?.showToast(R.string.unsupported_hoster)
+                            in 3..7 -> context?.let {
                                 it.showToast(it.getApiErrorMessage(errorCode))
                             }
-                            activityViewModel.setUnauthenticated()
-                        }
-                        else -> {
-                            context?.let {
-                                it.showToast(it.getApiErrorMessage(errorCode))
+                            8 -> {
+                                // try refreshing the token
+                                context?.let {
+                                    it.showToast(it.getApiErrorMessage(errorCode))
+                                }
+                                activityViewModel.setBadToken()
+                                context?.showToast(R.string.refreshing_token)
+                            }
+                            in 9..15 -> {
+                                context?.let {
+                                    it.showToast(it.getApiErrorMessage(errorCode))
+                                }
+                                activityViewModel.setUnauthenticated()
+                            }
+                            else -> {
+                                context?.let {
+                                    it.showToast(it.getApiErrorMessage(errorCode))
+                                }
                             }
                         }
                     }
-                }
-                is EmptyBodyError -> {
-                    // call successful, fit to singular api case
-                }
-                is NetworkError -> {
-                    // todo: alert the user according to the different network error
-                    context?.showToast(R.string.network_error)
+                    is EmptyBodyError -> {
+                        // call successful, fit to singular api case
+                    }
+                    is NetworkError -> {
+                        // todo: alert the user according to the different network error
+                        context?.showToast(R.string.network_error)
+                    }
                 }
             }
-        })
+        )
 
         activityViewModel.notificationTorrentLiveData.observe(
             viewLifecycleOwner,
@@ -295,7 +311,8 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
                         torrentID
                     )
                 findNavController().navigate(action)
-            })
+            }
+        )
 
         return downloadBinding.root
     }
@@ -334,7 +351,6 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
                 }
                 else -> {
                     Timber.e("Torrent conversion: Other error getting the file: ${exception.message}")
-
                 }
             }
             downloadBinding.bUnrestrict.isEnabled = true
@@ -361,7 +377,6 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
             val downloadID = manager.enqueue(request)
             activityViewModel.setDownload(downloadID, torrentName)
         }
-
     }
 }
 

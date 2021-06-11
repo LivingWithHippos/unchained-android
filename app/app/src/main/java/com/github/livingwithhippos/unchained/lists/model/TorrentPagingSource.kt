@@ -50,5 +50,4 @@ class TorrentPagingSource(
             state.closestPageToPosition(anchorPosition)?.prevKey
         }
     }
-
 }

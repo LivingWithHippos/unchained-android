@@ -66,7 +66,6 @@ class KodiRepository @Inject constructor(
         }
     }
 
-
     suspend fun openUrl(
         baseUrl: String,
         port: Int,
@@ -76,26 +75,26 @@ class KodiRepository @Inject constructor(
     ): KodiResponse? {
 
         try {
-        val kodiApiHelper: KodiApiHelper = provideApiHelper("http://$baseUrl:$port/")
+            val kodiApiHelper: KodiApiHelper = provideApiHelper("http://$baseUrl:$port/")
 
-        val kodiResponse = safeApiCall(
-            call = {
-                kodiApiHelper.openUrl(
-                    request = KodiRequest(
-                        method = "Player.Open",
-                        params = KodiParams(
-                            item = KodiItem(
-                                fileUrl = url
+            val kodiResponse = safeApiCall(
+                call = {
+                    kodiApiHelper.openUrl(
+                        request = KodiRequest(
+                            method = "Player.Open",
+                            params = KodiParams(
+                                item = KodiItem(
+                                    fileUrl = url
+                                )
                             )
-                        )
-                    ),
-                    auth = encodeAuthentication(username, password)
-                )
-            },
-            errorMessage = "Error Sending url to Kodi"
-        )
+                        ),
+                        auth = encodeAuthentication(username, password)
+                    )
+                },
+                errorMessage = "Error Sending url to Kodi"
+            )
 
-        return kodiResponse
+            return kodiResponse
         } catch (e: Exception) {
             Timber.e(e)
             return null
@@ -106,6 +105,5 @@ class KodiRepository @Inject constructor(
         return if (!username.isNullOrBlank() && !password.isNullOrBlank()) {
             "Basic " + Base64.encodeToString("$username:$password".toByteArray(), Base64.DEFAULT).trim()
         } else null
-
     }
 }

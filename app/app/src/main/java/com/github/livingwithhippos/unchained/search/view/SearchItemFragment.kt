@@ -15,7 +15,6 @@ import com.github.livingwithhippos.unchained.search.model.LinkItemListener
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import dagger.hilt.android.AndroidEntryPoint
 
-
 @AndroidEntryPoint
 class SearchItemFragment : UnchainedFragment(), LinkItemListener {
 
@@ -25,7 +24,8 @@ class SearchItemFragment : UnchainedFragment(), LinkItemListener {
     private val args: SearchItemFragmentArgs by navArgs()
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentSearchItemBinding.inflate(inflater, container, false)
@@ -43,7 +43,6 @@ class SearchItemFragment : UnchainedFragment(), LinkItemListener {
                 openExternalWebPage(item.link)
         }
 
-
         val adapter = LinkItemAdapter(this)
         binding.linkList.adapter = adapter
 
@@ -55,7 +54,6 @@ class SearchItemFragment : UnchainedFragment(), LinkItemListener {
             links.add(LinkItem(getString(R.string.torrent), it))
         }
         adapter.submitList(links)
-
     }
 
     override fun onClick(item: LinkItem) {

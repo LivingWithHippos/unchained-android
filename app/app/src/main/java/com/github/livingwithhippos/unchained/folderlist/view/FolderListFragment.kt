@@ -21,7 +21,6 @@ import com.github.livingwithhippos.unchained.lists.view.DownloadListListener
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
-
 @AndroidEntryPoint
 class FolderListFragment : Fragment(), DownloadListListener {
 
@@ -37,7 +36,8 @@ class FolderListFragment : Fragment(), DownloadListListener {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentFolderListBinding.inflate(inflater, container, false)
@@ -55,9 +55,10 @@ class FolderListFragment : Fragment(), DownloadListListener {
         // todo: add more sorting methodds, dinamically chosen by the user
         viewModel.folderLiveData.observe(viewLifecycleOwner) {
             it.getContentIfNotHandled()?.let { files ->
-                adapter.submitList(files.sortedBy { item ->
-                    item.filename
-                }
+                adapter.submitList(
+                    files.sortedBy { item ->
+                        item.filename
+                    }
                 )
                 adapter.notifyDataSetChanged()
             }
@@ -87,11 +88,10 @@ class FolderListFragment : Fragment(), DownloadListListener {
         // load all the links
         if (args.folder != null)
             viewModel.retrieveFolderFileList(args.folder!!)
-        else
-            if (args.torrent != null) {
-                binding.tvTitle.text = args.torrent!!.filename
-                viewModel.retrieveTorrentFileList(args.torrent!!)
-            }
+        else if (args.torrent != null) {
+            binding.tvTitle.text = args.torrent!!.filename
+            viewModel.retrieveTorrentFileList(args.torrent!!)
+        }
 
         // observe the search bar for changes
         binding.tiFilter.addTextChangedListener {
@@ -104,7 +104,6 @@ class FolderListFragment : Fragment(), DownloadListListener {
             adapter.submitList(list)
             adapter.notifyDataSetChanged()
         }
-
     }
 
     override fun onClick(item: DownloadItem) {

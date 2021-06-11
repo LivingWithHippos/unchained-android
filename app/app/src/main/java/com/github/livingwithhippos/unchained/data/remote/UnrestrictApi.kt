@@ -42,7 +42,6 @@ interface UnrestrictApi {
         @Field("remote") remote: Int? = null
     ): Response<DownloadItem>
 
-
     /**
      * Unrestrict a folder link and get a new list of link
      *
@@ -56,5 +55,4 @@ interface UnrestrictApi {
         @Header("Authorization") token: String,
         @Field("link") link: String
     ): Response<List<String>>
-
 }

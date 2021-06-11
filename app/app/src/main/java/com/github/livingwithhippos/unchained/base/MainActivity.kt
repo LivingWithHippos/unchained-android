@@ -1,6 +1,5 @@
 package com.github.livingwithhippos.unchained.base
 
-
 import android.app.DownloadManager
 import android.content.BroadcastReceiver
 import android.content.ContentResolver.SCHEME_CONTENT
@@ -46,7 +45,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-
 
 /**
  * A [AppCompatActivity] subclass.
@@ -108,49 +106,52 @@ class MainActivity : AppCompatActivity() {
         )
 
         // manage the authentication state
-        viewModel.authenticationState.observe(this, { state ->
-            when (state.peekContent()) {
-                // go to login fragment
-                AuthenticationState.UNAUTHENTICATED -> {
-                    openAuthentication()
-                    disableBottomNavItems(
-                        R.id.navigation_new_download,
-                        R.id.navigation_lists,
-                        R.id.navigation_search
-                    )
-                    viewModel.setTokenRefreshing(false)
-                }
-                // refresh the token.
-                AuthenticationState.BAD_TOKEN -> {
-                    if (!viewModel.isTokenRefreshing()) {
-                        viewModel.refreshToken()
-                        viewModel.setTokenRefreshing(true)
-                    } else {
-                        viewModel.setUnauthenticated()
+        viewModel.authenticationState.observe(
+            this,
+            { state ->
+                when (state.peekContent()) {
+                    // go to login fragment
+                    AuthenticationState.UNAUTHENTICATED -> {
+                        openAuthentication()
+                        disableBottomNavItems(
+                            R.id.navigation_new_download,
+                            R.id.navigation_lists,
+                            R.id.navigation_search
+                        )
+                        viewModel.setTokenRefreshing(false)
                     }
-                }
-                // go to login fragment and show another error message
-                AuthenticationState.ACCOUNT_LOCKED -> {
-                    openAuthentication()
-                    disableBottomNavItems(
-                        R.id.navigation_new_download,
-                        R.id.navigation_lists,
-                        R.id.navigation_search
-                    )
-                    viewModel.setTokenRefreshing(false)
-                }
-                // do nothing
-                AuthenticationState.AUTHENTICATED, AuthenticationState.AUTHENTICATED_NO_PREMIUM -> {
-                    enableAllBottomNavItems()
-                    // start the notification system if enabled
-                    if (preferences.getBoolean(KEY_TORRENT_NOTIFICATIONS, false)) {
-                        val notificationIntent = Intent(this, ForegroundTorrentService::class.java)
-                        ContextCompat.startForegroundService(this, notificationIntent)
+                    // refresh the token.
+                    AuthenticationState.BAD_TOKEN -> {
+                        if (!viewModel.isTokenRefreshing()) {
+                            viewModel.refreshToken()
+                            viewModel.setTokenRefreshing(true)
+                        } else {
+                            viewModel.setUnauthenticated()
+                        }
                     }
-                    viewModel.setTokenRefreshing(false)
+                    // go to login fragment and show another error message
+                    AuthenticationState.ACCOUNT_LOCKED -> {
+                        openAuthentication()
+                        disableBottomNavItems(
+                            R.id.navigation_new_download,
+                            R.id.navigation_lists,
+                            R.id.navigation_search
+                        )
+                        viewModel.setTokenRefreshing(false)
+                    }
+                    // do nothing
+                    AuthenticationState.AUTHENTICATED, AuthenticationState.AUTHENTICATED_NO_PREMIUM -> {
+                        enableAllBottomNavItems()
+                        // start the notification system if enabled
+                        if (preferences.getBoolean(KEY_TORRENT_NOTIFICATIONS, false)) {
+                            val notificationIntent = Intent(this, ForegroundTorrentService::class.java)
+                            ContextCompat.startForegroundService(this, notificationIntent)
+                        }
+                        viewModel.setTokenRefreshing(false)
+                    }
                 }
             }
-        })
+        )
 
         disableBottomNavItems(
             R.id.navigation_new_download,
@@ -168,28 +169,33 @@ class MainActivity : AppCompatActivity() {
             IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
         )
 
-        viewModel.linkLiveData.observe(this, EventObserver { link ->
-            when {
-                link.endsWith(TYPE_UNCHAINED) -> {
-                    downloadPlugin(link)
-                }
-                else -> {
-                    // check the authentication
-                    //todo: replace all these with a simple call and just elaborate the returned error in case
-                    viewModel.authenticationState.observeOnce(this, { auth ->
-                        when (auth.peekContent()) {
-                            // same as a received magnet
-                            AuthenticationState.AUTHENTICATED -> processLinkIntent(link)
-                            AuthenticationState.AUTHENTICATED_NO_PREMIUM -> baseContext.showToast(
-                                R.string.premium_needed
-                            )
-                            else -> showToast(R.string.please_login)
-                        }
-                    })
+        viewModel.linkLiveData.observe(
+            this,
+            EventObserver { link ->
+                when {
+                    link.endsWith(TYPE_UNCHAINED) -> {
+                        downloadPlugin(link)
+                    }
+                    else -> {
+                        // check the authentication
+                        // todo: replace all these with a simple call and just elaborate the returned error in case
+                        viewModel.authenticationState.observeOnce(
+                            this,
+                            { auth ->
+                                when (auth.peekContent()) {
+                                    // same as a received magnet
+                                    AuthenticationState.AUTHENTICATED -> processLinkIntent(link)
+                                    AuthenticationState.AUTHENTICATED_NO_PREMIUM -> baseContext.showToast(
+                                        R.string.premium_needed
+                                    )
+                                    else -> showToast(R.string.please_login)
+                                }
+                            }
+                        )
+                    }
                 }
             }
-
-        })
+        )
 
         // monitor if the torrent notification service needs to be started. It monitor the preference change itself
         // for the shutting down part
@@ -203,10 +209,12 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        viewModel.messageLiveData.observe(this, EventObserver {
-            showToast(it, length = Toast.LENGTH_LONG)
-        })
-
+        viewModel.messageLiveData.observe(
+            this,
+            EventObserver {
+                showToast(it, length = Toast.LENGTH_LONG)
+            }
+        )
     }
 
     private fun downloadPlugin(link: String) {
@@ -223,7 +231,6 @@ class MainActivity : AppCompatActivity() {
             )
         val downloadID = manager.enqueue(request)
         viewModel.setPluginDownload(downloadID, pluginName)
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -254,7 +261,6 @@ class MainActivity : AppCompatActivity() {
                     intent.getStringExtra(Intent.EXTRA_TEXT)?.let { text ->
                         viewModel.downloadSupportedLink(text)
                     }
-
             }
             Intent.ACTION_VIEW -> {
                 /* Implicit intent with path to torrent file or magnet link */
@@ -264,22 +270,25 @@ class MainActivity : AppCompatActivity() {
                 if (data != null) {
 
                     when (data.scheme) {
-                        //clicked on a torrent file or a magnet link or .unchained file
+                        // clicked on a torrent file or a magnet link or .unchained file
                         SCHEME_MAGNET, SCHEME_CONTENT, SCHEME_FILE -> {
                             // check if it's a search plugin
                             if (data.path?.endsWith(TYPE_UNCHAINED) == true) {
                                 addSearchPlugin(data)
                             } else
                             // it's a magnet/torrent, check auth state before loading it
-                                viewModel.authenticationState.observeOnce(this, { auth ->
-                                    when (auth.peekContent()) {
-                                        AuthenticationState.AUTHENTICATED -> processLinkIntent(data)
-                                        AuthenticationState.AUTHENTICATED_NO_PREMIUM -> baseContext.showToast(
-                                            R.string.premium_needed_torrent
-                                        )
-                                        else -> showToast(R.string.please_login)
+                                viewModel.authenticationState.observeOnce(
+                                    this,
+                                    { auth ->
+                                        when (auth.peekContent()) {
+                                            AuthenticationState.AUTHENTICATED -> processLinkIntent(data)
+                                            AuthenticationState.AUTHENTICATED_NO_PREMIUM -> baseContext.showToast(
+                                                R.string.premium_needed_torrent
+                                            )
+                                            else -> showToast(R.string.please_login)
+                                        }
                                     }
-                                })
+                                )
                         }
                         SCHEME_HTTP, SCHEME_HTTPS -> {
                             showToast("You activated the http/s scheme somehow")
@@ -291,14 +300,16 @@ class MainActivity : AppCompatActivity() {
                 // could be because of the tap on a notification
                 intent.getStringExtra(KEY_TORRENT_ID)?.let { id ->
 
-                    viewModel.authenticationState.observeOnce(this, { auth ->
-                        if (auth.peekContent() == AuthenticationState.AUTHENTICATED || auth.peekContent() == AuthenticationState.AUTHENTICATED_NO_PREMIUM)
-                            processTorrentNotificationIntent(id)
-                    })
+                    viewModel.authenticationState.observeOnce(
+                        this,
+                        { auth ->
+                            if (auth.peekContent() == AuthenticationState.AUTHENTICATED || auth.peekContent() == AuthenticationState.AUTHENTICATED_NO_PREMIUM)
+                                processTorrentNotificationIntent(id)
+                        }
+                    )
                 }
             }
             else -> {
-
             }
         }
     }
@@ -343,11 +354,9 @@ class MainActivity : AppCompatActivity() {
         doubleClickBottomItem(R.id.navigation_home)
     }
 
-
     private fun addSearchPlugin(data: Uri) {
         viewModel.addPlugin(applicationContext, data)
     }
-
 
     // the standard menu items to disable are those for the download/torrent lists and the new download one
     private fun disableBottomNavItems(vararg itemsIDs: Int) {
@@ -387,9 +396,12 @@ class MainActivity : AppCompatActivity() {
         )
 
         // Whenever the selected controller changes, setup the action bar.
-        controller.observe(this, { navController ->
-            setupActionBarWithNavController(navController, appBarConfiguration)
-        })
+        controller.observe(
+            this,
+            { navController ->
+                setupActionBarWithNavController(navController, appBarConfiguration)
+            }
+        )
         currentNavController = controller
     }
 
@@ -400,7 +412,6 @@ class MainActivity : AppCompatActivity() {
         // BottomNavigationBar with Navigation
         setupBottomNavigationBar()
     }
-
 
     override fun onBackPressed() {
         // if the user is pressing back on an "exiting"fragment, show a toast alerting him and wait for him to press back again for confirmation
@@ -413,11 +424,11 @@ class MainActivity : AppCompatActivity() {
             // check if we're pressing back from the user or authentication fragment
             if (currentDestination?.id == R.id.user_dest || currentDestination?.id == R.id.authentication_dest) {
                 // check the destination for the back action
-                if (previousDestination == null
-                    || previousDestination.destination.id == R.id.authentication_dest
-                    || previousDestination.destination.id == R.id.start_dest
-                    || previousDestination.destination.id == R.id.user_dest
-                    || previousDestination.destination.id == R.id.search_dest
+                if (previousDestination == null ||
+                    previousDestination.destination.id == R.id.authentication_dest ||
+                    previousDestination.destination.id == R.id.start_dest ||
+                    previousDestination.destination.id == R.id.user_dest ||
+                    previousDestination.destination.id == R.id.search_dest
                 ) {
                     // check if it has been 2 seconds since the last time we pressed back
                     val pressedTime = System.currentTimeMillis()
@@ -440,9 +451,7 @@ class MainActivity : AppCompatActivity() {
             super.onBackPressed()
     }
 
-
     companion object {
         private const val EXIT_WAIT_TIME = 2000L
     }
-
 }

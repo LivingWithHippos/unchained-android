@@ -1,6 +1,5 @@
 package com.github.livingwithhippos.unchained.user.viewmodel
 
-
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -28,5 +27,4 @@ class UserProfileViewModel @Inject constructor(
             userLiveData.postValue(user)
         }
     }
-
 }

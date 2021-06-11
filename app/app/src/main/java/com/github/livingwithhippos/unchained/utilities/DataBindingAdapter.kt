@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.github.livingwithhippos.unchained.BR
 
-//todo: test implementing class with Nothing as generic value to avoid passing listeners
+// todo: test implementing class with Nothing as generic value to avoid passing listeners
 /**
  * A [ListAdapter] subclass.
  * Allows for a generic list of items with data binding and an optional listener.
@@ -54,7 +54,6 @@ abstract class DataBindingPagingAdapter<T : Any, U>(
         if (repoItem != null) {
             holder.bind(repoItem, listener)
         }
-
     }
 }
 

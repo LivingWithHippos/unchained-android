@@ -19,7 +19,7 @@ class SettingsActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_settings)
 
-        //todo: restore MainActivity fragment on back press
+        // todo: restore MainActivity fragment on back press
         setSupportActionBar(findViewById(R.id.emptyAppBar))
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
@@ -31,7 +31,6 @@ class SettingsActivity : AppCompatActivity() {
         // no bottom app bar, change the color of the navigation bar from the primary one
         val surfaceColor = getThemeColor(R.attr.colorSurface)
         setNavigationBarColor(surfaceColor)
-
     }
 
     override fun onSupportNavigateUp(): Boolean {

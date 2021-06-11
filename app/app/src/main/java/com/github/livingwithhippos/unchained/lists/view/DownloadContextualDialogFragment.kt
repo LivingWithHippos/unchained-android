@@ -28,7 +28,6 @@ class DownloadContextualDialogFragment : DialogFragment {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let {
 
-
             // Use the Builder class for convenient dialog construction
             val builder = MaterialAlertDialogBuilder(it)
 

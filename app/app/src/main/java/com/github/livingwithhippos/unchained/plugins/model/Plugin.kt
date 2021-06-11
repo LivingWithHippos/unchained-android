@@ -5,7 +5,6 @@ import android.os.Parcelable
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
-
 @JsonClass(generateAdapter = true)
 data class Plugin(
     @Json(name = "engine_version")
@@ -355,7 +354,6 @@ data class PluginRegexes(
         }
     }
 }
-
 
 @JsonClass(generateAdapter = true)
 data class Columns(

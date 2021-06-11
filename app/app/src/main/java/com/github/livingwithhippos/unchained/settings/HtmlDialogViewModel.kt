@@ -34,6 +34,4 @@ class HtmlDialogViewModel @Inject constructor(
         const val KEY_TITLE = "title_key"
         const val KEY_MESSAGE = "message_key"
     }
-
 }
-

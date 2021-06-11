@@ -89,5 +89,4 @@ interface TorrentsApi {
         @Header("Authorization") token: String,
         @Path("id") id: String,
     ): Response<Unit>
-
 }

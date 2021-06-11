@@ -107,7 +107,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 false
             }
         }
-
     }
 
     private fun setupVersion() {
@@ -116,7 +115,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
         val version = pi?.versionName
         val versionPreference = findPreference<Preference>("app_version")
         versionPreference?.summary = version
-
     }
 
     private fun setNightMode(nightMode: String) {
@@ -124,7 +122,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
             putString(KEY_DAY_NIGHT, nightMode)
             apply()
         }
-
     }
 
     override fun onPreferenceTreeClick(preference: Preference?): Boolean {

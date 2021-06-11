@@ -42,7 +42,7 @@ class CredentialsRepository @Inject constructor(private val credentialsDao: Cred
         return credentials
             // return private credentials first
             .firstOrNull { it.refreshToken == PRIVATE_TOKEN }
-        // open source credentials second
+            // open source credentials second
             ?: credentials.firstOrNull()
     }
 
@@ -51,5 +51,4 @@ class CredentialsRepository @Inject constructor(private val credentialsDao: Cred
 
     suspend fun getFirstPrivateCredentials(): Credentials? = credentialsDao.getCompleteCredentials()
         .firstOrNull { it.accessToken != null && it.refreshToken == PRIVATE_TOKEN }
-
 }

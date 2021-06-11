@@ -1,6 +1,5 @@
 package com.github.livingwithhippos.unchained.lists.viewmodel
 
-
 import TorrentPagingSource
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -148,7 +147,6 @@ class DownloadListViewModel @Inject constructor(
                 completeDownloadList.addAll(downloads)
             } while (downloads.size >= 50)
 
-
             // post a message every 10% of the deletion progress if there are more than 10 items
             val progressIndicator: Int =
                 if (completeDownloadList.size / 10 < 15) 15 else completeDownloadList.size / 10
@@ -186,5 +184,4 @@ class DownloadListViewModel @Inject constructor(
         const val DOWNLOAD_DELETED = -1
         const val DOWNLOADS_DELETED_ALL = -2
     }
-
 }

@@ -19,7 +19,6 @@ class DownloadRepository @Inject constructor(private val downloadApiHelper: Down
         )
 
         return downloadResponse ?: emptyList()
-
     }
 
     suspend fun deleteDownload(token: String, id: String): Unit? {
@@ -36,5 +35,4 @@ class DownloadRepository @Inject constructor(private val downloadApiHelper: Down
 
         return response
     }
-
 }

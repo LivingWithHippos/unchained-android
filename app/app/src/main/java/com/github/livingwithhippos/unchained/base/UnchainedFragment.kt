@@ -11,5 +11,4 @@ abstract class UnchainedFragment : Fragment() {
 
     // activity viewModel. To be used for alerting of expired token or missing network
     val activityViewModel: MainActivityViewModel by activityViewModels()
-
 }

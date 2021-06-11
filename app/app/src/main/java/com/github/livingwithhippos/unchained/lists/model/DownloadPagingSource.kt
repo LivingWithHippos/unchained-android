@@ -10,7 +10,6 @@ import java.io.IOException
 
 private const val DOWNLOAD_STARTING_PAGE_INDEX = 1
 
-
 class DownloadPagingSource(
     private val downloadRepository: DownloadRepository,
     private val credentialsRepository: CredentialsRepository,
@@ -52,6 +51,4 @@ class DownloadPagingSource(
             state.closestPageToPosition(anchorPosition)?.prevKey
         }
     }
-
-
 }

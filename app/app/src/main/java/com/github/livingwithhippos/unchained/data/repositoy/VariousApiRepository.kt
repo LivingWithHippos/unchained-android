@@ -19,5 +19,4 @@ class VariousApiRepository @Inject constructor(private val variousApiHelper: Var
 
         return response
     }
-
 }

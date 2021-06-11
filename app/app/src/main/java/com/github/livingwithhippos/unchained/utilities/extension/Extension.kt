@@ -27,8 +27,7 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Observer
 import com.github.livingwithhippos.unchained.R
 import timber.log.Timber
-import java.util.*
-
+import java.util.Locale
 
 /**
  * Show a toast message
@@ -104,14 +103,11 @@ fun Fragment.openExternalWebPage(url: String, showErrorToast: Boolean = true): B
         val webIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
         startActivity(webIntent)
         return true
-    } else
-        if (showErrorToast)
-            context?.showToast(R.string.invalid_url)
-
+    } else if (showErrorToast)
+        context?.showToast(R.string.invalid_url)
 
     return false
 }
-
 
 /**
  * this function can be used to create a new context with a particular locale.
@@ -175,16 +171,19 @@ fun <T> LiveData<T>.observeOnce(
     observer: Observer<T>,
     untilNotNull: Boolean = false
 ) {
-    observe(lifecycleOwner, object : Observer<T> {
-        override fun onChanged(t: T?) {
-            observer.onChanged(t)
-            if (untilNotNull) {
-                if (t != null)
+    observe(
+        lifecycleOwner,
+        object : Observer<T> {
+            override fun onChanged(t: T?) {
+                observer.onChanged(t)
+                if (untilNotNull) {
+                    if (t != null)
+                        removeObserver(this)
+                } else
                     removeObserver(this)
-            } else
-                removeObserver(this)
+            }
         }
-    })
+    )
 }
 
 fun AppCompatActivity.setCustomTheme(theme: String) {
@@ -198,7 +197,8 @@ fun AppCompatActivity.setCustomTheme(theme: String) {
 fun AppCompatActivity.setNavigationBarColor(color: Int, alpha: Int = 0) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
         val newColor = Color.argb(
-            alpha, Color.red(color), Color.green(color), Color.blue(
+            alpha, Color.red(color), Color.green(color),
+            Color.blue(
                 color
             )
         )
@@ -228,9 +228,7 @@ fun AppCompatActivity.setNavigationBarColor(color: Int, alpha: Int = 0) {
             @SuppressLint("InlinedApi")
             window.decorView.systemUiVisibility =
                 window.decorView.systemUiVisibility and View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR.inv()
-
     }
-
 }
 
 fun Context.getApiErrorMessage(errorCode: Int?): String {
@@ -273,7 +271,6 @@ fun Context.getApiErrorMessage(errorCode: Int?): String {
         else -> getString(R.string.unknown_error)
     }
 }
-
 
 fun Context.getStatusTranslation(status: String): String {
     return when (status) {

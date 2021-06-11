@@ -30,7 +30,6 @@ class HtmlDialogFragment : DialogFragment {
 
     constructor() : super()
 
-
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let {
 

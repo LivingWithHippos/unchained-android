@@ -186,7 +186,6 @@ class Parser(
             val rows = table.select("tr")
             val skipHead = table.select("thead").size > 0
 
-
             for (index in 0 until rows.size) {
                 if (skipHead && index == 0)
                     continue
@@ -260,7 +259,6 @@ class Parser(
                     )
                 )
             }
-
         } catch (exception: NullPointerException) {
             Timber.d("Some not nullable values were null: ${exception.message}")
         }
@@ -336,7 +334,6 @@ class Parser(
         }
     }
 
-
     /**
      * Parse a list of results from a source with a [CustomRegex]
      *
@@ -378,7 +375,6 @@ class Parser(
                         }
                     )
             }
-
         }
 
         return results.toList()

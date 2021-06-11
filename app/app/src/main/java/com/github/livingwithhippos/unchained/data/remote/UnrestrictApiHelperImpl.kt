@@ -18,5 +18,4 @@ class UnrestrictApiHelperImpl @Inject constructor(private val unrestrictApi: Unr
         token: String,
         link: String
     ): Response<List<String>> = unrestrictApi.getUnrestrictedFolder(token, link)
-
 }

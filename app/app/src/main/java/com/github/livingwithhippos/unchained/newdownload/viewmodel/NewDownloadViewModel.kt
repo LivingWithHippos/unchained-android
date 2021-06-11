@@ -73,8 +73,8 @@ class NewDownloadViewModel @Inject constructor(
                     torrentsRepository.addMagnet(token, magnet, availableHosts.first().host)
                 if (addedMagnet != null) {
                     // todo: add custom selection of files, this queues all the files
-                    //todo: add checks for already chosen torrent/magnet (if possible), otherwise we get multiple downloads
-                    //todo: get file info and check if it has already been downloaded before doing a select files
+                    // todo: add checks for already chosen torrent/magnet (if possible), otherwise we get multiple downloads
+                    // todo: get file info and check if it has already been downloaded before doing a select files
                     torrentLiveData.postEvent(addedMagnet)
                 }
             }
@@ -91,7 +91,7 @@ class NewDownloadViewModel @Inject constructor(
                 val uploadedTorrent =
                     torrentsRepository.addTorrent(token, binaryTorrent, availableHosts.first().host)
                 if (uploadedTorrent != null) {
-                    //todo: add checks for already chosen torrent/magnet (if possible), otherwise we get multiple downloads
+                    // todo: add checks for already chosen torrent/magnet (if possible), otherwise we get multiple downloads
                     torrentLiveData.postEvent(uploadedTorrent)
                 }
             }

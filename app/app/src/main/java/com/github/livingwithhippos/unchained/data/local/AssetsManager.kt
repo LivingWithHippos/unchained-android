@@ -21,7 +21,6 @@ class AssetsManager @Inject constructor(
         return appContext.assets.list(path).isNullOrEmpty()
     }
 
-
     /**
      * Returns a list of paths of the files with a certain extension in a certain folder
      *
@@ -54,5 +53,4 @@ class AssetsManager @Inject constructor(
 
         return results
     }
-
 }

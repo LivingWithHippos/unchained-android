@@ -69,8 +69,10 @@ class FolderListViewModel @Inject constructor(
             val hitList = mutableListOf<DownloadItem>()
 
             links.forEachIndexed { index, link ->
-                when (val file =
-                    unrestrictRepository.getEitherUnrestrictedLink(token, link)) {
+                when (
+                    val file =
+                        unrestrictRepository.getEitherUnrestrictedLink(token, link)
+                ) {
                     is Either.Left -> {
                         errorsLiveData.postEvent(file.value)
                         progressLiveData.postValue((index + 1) * 100 / links.size)
@@ -89,7 +91,6 @@ class FolderListViewModel @Inject constructor(
                 folderLiveData.postEvent(it.peekContent())
             }
         }
-
     }
 
     fun setRetrievedLinks(links: Int) {

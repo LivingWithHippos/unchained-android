@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.livingwithhippos.unchained.data.model.KodiGenericResponse
 import com.github.livingwithhippos.unchained.data.repositoy.HostsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.KodiRepository
 import com.github.livingwithhippos.unchained.data.repositoy.PluginRepository
@@ -36,8 +35,7 @@ class SettingsViewModel @Inject constructor(
     fun testKodi(ip: String, port: Int, username: String?, password: String?) {
         viewModelScope.launch {
             val response = kodiRepository.getVolume(ip, port, username, password)
-            kodiLiveData.postEvent(response!=null)
+            kodiLiveData.postEvent(response != null)
         }
     }
-
 }

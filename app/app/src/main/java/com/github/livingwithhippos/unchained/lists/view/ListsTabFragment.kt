@@ -54,14 +54,15 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
         UPDATE_TORRENT, UPDATE_DOWNLOAD, READY
     }
 
-    //todo: rename viewModel/fragment to ListTab or DownloadLists
+    // todo: rename viewModel/fragment to ListTab or DownloadLists
     private val viewModel: DownloadListViewModel by viewModels()
 
     // used to simulate a debounce effect while typing on the search bar
     var queryJob: Job? = null
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         val binding: FragmentTabListsBinding = FragmentTabListsBinding.inflate(inflater, container, false)
@@ -113,22 +114,25 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
         }
 
         // checks the authentication state. Needed to avoid automatic API calls before the authentication process is finished
-        activityViewModel.authenticationState.observe(viewLifecycleOwner, {
-            when (it.peekContent()) {
-                AuthenticationState.AUTHENTICATED, AuthenticationState.AUTHENTICATED_NO_PREMIUM -> {
-                    // register observers if not already registered
-                    if (!viewModel.downloadsLiveData.hasActiveObservers())
-                        viewModel.downloadsLiveData.observe(viewLifecycleOwner, downloadObserver)
-                    if (!viewModel.torrentsLiveData.hasActiveObservers())
-                        viewModel.torrentsLiveData.observe(viewLifecycleOwner, torrentObserver)
-                }
-                else -> {
-                    // remove observers if present
-                    viewModel.downloadsLiveData.removeObserver(downloadObserver)
-                    viewModel.torrentsLiveData.removeObserver(torrentObserver)
+        activityViewModel.authenticationState.observe(
+            viewLifecycleOwner,
+            {
+                when (it.peekContent()) {
+                    AuthenticationState.AUTHENTICATED, AuthenticationState.AUTHENTICATED_NO_PREMIUM -> {
+                        // register observers if not already registered
+                        if (!viewModel.downloadsLiveData.hasActiveObservers())
+                            viewModel.downloadsLiveData.observe(viewLifecycleOwner, downloadObserver)
+                        if (!viewModel.torrentsLiveData.hasActiveObservers())
+                            viewModel.torrentsLiveData.observe(viewLifecycleOwner, torrentObserver)
+                    }
+                    else -> {
+                        // remove observers if present
+                        viewModel.downloadsLiveData.removeObserver(downloadObserver)
+                        viewModel.torrentsLiveData.removeObserver(torrentObserver)
+                    }
                 }
             }
-        })
+        )
 
         binding.tabs.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
 
@@ -158,7 +162,6 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
                         }
                     }
                 }
-
             }
 
             override fun onTabReselected(tab: TabLayout.Tab?) {
@@ -178,64 +181,71 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
             }
         })
 
-        viewModel.downloadItemLiveData.observe(viewLifecycleOwner, EventObserver { links ->
-            if (!links.isNullOrEmpty()) {
-                // switch to download tab
-                binding.tabs.getTabAt(TAB_DOWNLOADS)?.select()
-                // simulate list refresh
-                binding.srLayout.isRefreshing = true
-                // refresh items, when returned they'll stop the animation
-                downloadAdapter.refresh()
+        viewModel.downloadItemLiveData.observe(
+            viewLifecycleOwner,
+            EventObserver { links ->
+                if (!links.isNullOrEmpty()) {
+                    // switch to download tab
+                    binding.tabs.getTabAt(TAB_DOWNLOADS)?.select()
+                    // simulate list refresh
+                    binding.srLayout.isRefreshing = true
+                    // refresh items, when returned they'll stop the animation
+                    downloadAdapter.refresh()
+                }
             }
-        })
+        )
 
-
-        viewModel.deletedTorrentLiveData.observe(viewLifecycleOwner, EventObserver {
-            when (it) {
-                TORRENT_NOT_DELETED -> {
-                }
-                TORRENT_DELETED -> {
-                    context?.showToast(R.string.torrent_removed)
-                    torrentAdapter.refresh()
-                }
-                TORRENTS_DELETED_ALL -> {
-                    context?.showToast(R.string.torrents_removed)
-                    lifecycleScope.launch {
-                        // if we don't refresh the cached copy of the last result will be restored on the first list redraw
+        viewModel.deletedTorrentLiveData.observe(
+            viewLifecycleOwner,
+            EventObserver {
+                when (it) {
+                    TORRENT_NOT_DELETED -> {
+                    }
+                    TORRENT_DELETED -> {
+                        context?.showToast(R.string.torrent_removed)
                         torrentAdapter.refresh()
-                        torrentAdapter.submitData(PagingData.empty())
                     }
-                }
-                0 -> {
-                    context?.showToast(R.string.removing_torrents)
-                }
-                else -> {
-                    torrentAdapter.refresh()
-                }
-            }
-        })
-
-        activityViewModel.listStateLiveData.observe(viewLifecycleOwner, EventObserver {
-            when (it) {
-                ListState.UPDATE_DOWNLOAD -> {
-                    lifecycleScope.launch {
-                        delay(300L)
-                        downloadAdapter.refresh()
-                        delayedListScrolling(binding.rvDownloadList)
+                    TORRENTS_DELETED_ALL -> {
+                        context?.showToast(R.string.torrents_removed)
+                        lifecycleScope.launch {
+                            // if we don't refresh the cached copy of the last result will be restored on the first list redraw
+                            torrentAdapter.refresh()
+                            torrentAdapter.submitData(PagingData.empty())
+                        }
                     }
-                }
-                ListState.UPDATE_TORRENT -> {
-                    lifecycleScope.launch {
-                        delay(300L)
+                    0 -> {
+                        context?.showToast(R.string.removing_torrents)
+                    }
+                    else -> {
                         torrentAdapter.refresh()
-                        delayedListScrolling(binding.rvTorrentList)
                     }
                 }
-                ListState.READY -> {
+            }
+        )
+
+        activityViewModel.listStateLiveData.observe(
+            viewLifecycleOwner,
+            EventObserver {
+                when (it) {
+                    ListState.UPDATE_DOWNLOAD -> {
+                        lifecycleScope.launch {
+                            delay(300L)
+                            downloadAdapter.refresh()
+                            delayedListScrolling(binding.rvDownloadList)
+                        }
+                    }
+                    ListState.UPDATE_TORRENT -> {
+                        lifecycleScope.launch {
+                            delay(300L)
+                            torrentAdapter.refresh()
+                            delayedListScrolling(binding.rvTorrentList)
+                        }
+                    }
+                    ListState.READY -> {
+                    }
                 }
             }
-        })
-
+        )
 
         setFragmentResultListener("downloadActionKey") { _, bundle ->
             bundle.getString("deletedDownloadKey")?.let {
@@ -263,57 +273,63 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
             }
         }
 
-        viewModel.deletedDownloadLiveData.observe(viewLifecycleOwner, EventObserver {
-            when (it) {
-                DOWNLOAD_NOT_DELETED -> {
-                }
-                DOWNLOAD_DELETED -> {
-                    context?.showToast(R.string.download_removed)
-                    downloadAdapter.refresh()
-                }
-                DOWNLOADS_DELETED_ALL -> {
-                    context?.showToast(R.string.downloads_removed)
-                    lifecycleScope.launch {
-                        // if we don't refresh the cached copy of the last result will be restored on the first list redraw
+        viewModel.deletedDownloadLiveData.observe(
+            viewLifecycleOwner,
+            EventObserver {
+                when (it) {
+                    DOWNLOAD_NOT_DELETED -> {
+                    }
+                    DOWNLOAD_DELETED -> {
+                        context?.showToast(R.string.download_removed)
                         downloadAdapter.refresh()
-                        downloadAdapter.submitData(PagingData.empty())
+                    }
+                    DOWNLOADS_DELETED_ALL -> {
+                        context?.showToast(R.string.downloads_removed)
+                        lifecycleScope.launch {
+                            // if we don't refresh the cached copy of the last result will be restored on the first list redraw
+                            downloadAdapter.refresh()
+                            downloadAdapter.submitData(PagingData.empty())
+                        }
+                    }
+                    0 -> {
+                        context?.showToast(R.string.removing_downloads)
+                    }
+                    else -> {
+                        downloadAdapter.refresh()
                     }
                 }
-                0 -> {
-                    context?.showToast(R.string.removing_downloads)
-                }
-                else -> {
-                    downloadAdapter.refresh()
-                }
             }
-        })
+        )
 
-        viewModel.errorsLiveData.observe(viewLifecycleOwner, EventObserver {
-            for (error in it) {
-                when (error) {
-                    is APIError -> {
-                        context?.let { c ->
-                            c.showToast(c.getApiErrorMessage(error.errorCode))
-                        }
-                        when (error.errorCode) {
-                            8 -> {
-                                //bad token, try refreshing it
-                                activityViewModel.setBadToken()
-                                context?.showToast(R.string.refreshing_token)
+        viewModel.errorsLiveData.observe(
+            viewLifecycleOwner,
+            EventObserver {
+                for (error in it) {
+                    when (error) {
+                        is APIError -> {
+                            context?.let { c ->
+                                c.showToast(c.getApiErrorMessage(error.errorCode))
+                            }
+                            when (error.errorCode) {
+                                8 -> {
+                                    // bad token, try refreshing it
+                                    activityViewModel.setBadToken()
+                                    context?.showToast(R.string.refreshing_token)
+                                }
                             }
                         }
-                    }
-                    is EmptyBodyError -> {
-                    }
-                    is NetworkError -> {
-                        context?.showToast(R.string.network_error)
-                    }
-                    is ApiConversionError -> {
-                        context?.showToast(R.string.parsing_error)
+                        is EmptyBodyError -> {
+                        }
+                        is NetworkError -> {
+                            context?.showToast(R.string.network_error)
+                        }
+                        is ApiConversionError -> {
+                            context?.showToast(R.string.parsing_error)
+                        }
                     }
                 }
             }
-        })
+        )
 
         // without this the lists won't get initialized
         viewModel.setListFilter("")
@@ -354,9 +370,7 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
                 }
                 return true
             }
-
         })
-
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -390,7 +404,6 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
                     viewModel.deleteAllTorrents()
             }
             .show()
-
     }
 
     override fun onClick(item: DownloadItem) {
@@ -451,5 +464,4 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
         const val TAB_DOWNLOADS = 0
         const val TAB_TORRENTS = 1
     }
-
 }
