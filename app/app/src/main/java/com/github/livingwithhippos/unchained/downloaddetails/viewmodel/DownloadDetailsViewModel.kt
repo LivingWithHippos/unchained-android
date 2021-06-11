@@ -61,7 +61,7 @@ class DownloadDetailsViewModel @Inject constructor(
 
         if (!ip.isNullOrBlank() && !port.isNullOrBlank()) {
             viewModelScope.launch {
-                kodiRepository.openUrl("$ip:$port", url)
+                kodiRepository.openUrl("http://$ip:$port/", url)
             }
         }
     }
