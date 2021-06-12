@@ -1,9 +1,7 @@
 package com.github.livingwithhippos.unchained
 
-
 /**
  * This file is used to avoid errors with `gradlew lint test`
  *
  */
-class BypassLintErrorTest {
-}
+object TestJunit5
