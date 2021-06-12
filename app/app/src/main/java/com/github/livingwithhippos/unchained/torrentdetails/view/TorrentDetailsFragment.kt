@@ -173,7 +173,8 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
         if (item.links.size > 1) {
             val action = TorrentDetailsFragmentDirections.actionTorrentDetailsToTorrentFolder(
                 folder = null,
-                torrent = item
+                torrent = item,
+                linkList = null
             )
             findNavController().navigate(action)
         } else {
