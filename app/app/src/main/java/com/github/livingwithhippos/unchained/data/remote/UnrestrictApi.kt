@@ -1,11 +1,16 @@
 package com.github.livingwithhippos.unchained.data.remote
 
 import com.github.livingwithhippos.unchained.data.model.DownloadItem
+import com.github.livingwithhippos.unchained.data.model.UploadedTorrent
+import okhttp3.RequestBody
 import retrofit2.Response
+import retrofit2.http.Body
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.Header
 import retrofit2.http.POST
+import retrofit2.http.PUT
+import retrofit2.http.Query
 
 /*
 {
@@ -54,5 +59,11 @@ interface UnrestrictApi {
     suspend fun getUnrestrictedFolder(
         @Header("Authorization") token: String,
         @Field("link") link: String
+    ): Response<List<String>>
+
+    @PUT("unrestrict/containerFile")
+    suspend fun uploadContainer(
+        @Header("Authorization") token: String,
+        @Body container: RequestBody
     ): Response<List<String>>
 }
