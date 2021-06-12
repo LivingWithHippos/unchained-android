@@ -1,11 +1,14 @@
 package com.github.livingwithhippos.unchained.data.remote
 
 import com.github.livingwithhippos.unchained.data.model.DownloadItem
+import okhttp3.RequestBody
 import retrofit2.Response
+import retrofit2.http.Body
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.Header
 import retrofit2.http.POST
+import retrofit2.http.PUT
 
 /*
 {
@@ -52,6 +55,33 @@ interface UnrestrictApi {
     @FormUrlEncoded
     @POST("unrestrict/folder")
     suspend fun getUnrestrictedFolder(
+        @Header("Authorization") token: String,
+        @Field("link") link: String
+    ): Response<List<String>>
+
+    /**
+     * Upload a container
+     *
+     * @param token the authentication token
+     * @param container the container file in binary form
+     * @return the list of the links in the container. Not unrestricted.
+     */
+    @PUT("unrestrict/containerFile")
+    suspend fun uploadContainer(
+        @Header("Authorization") token: String,
+        @Body container: RequestBody
+    ): Response<List<String>>
+
+    /**
+     * Unrestrict a folder link and get a new list of link
+     *
+     * @param token the authentication token
+     * @param link the http link to the container file
+     * @return the list of the links in the container. Not unrestricted.
+     */
+    @FormUrlEncoded
+    @POST("unrestrict/folder")
+    suspend fun getContainerLinks(
         @Header("Authorization") token: String,
         @Field("link") link: String
     ): Response<List<String>>

@@ -78,6 +78,10 @@
         <action
             android:id="@+id/action_folderListFragment_to_download_details_dest"
             app:destination="@id/download_details_dest" />
+        <argument
+            android:name="linkList"
+            app:argType="string[]"
+            app:nullable="true" />
     </fragment>
 
 </navigation>

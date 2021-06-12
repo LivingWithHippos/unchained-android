@@ -82,6 +82,7 @@
     <string name="streamable">Streamable</string>
     <string name="open_stream">Open stream</string>
     <string name="upload_torrent_description">Upload a .torrent file from your local memory</string>
+    <string name="upload_file_description">Upload a .torrent file or a RSDF, CCF, CCF3, DLC container from your phone</string>
     <string name="details">Details</string>
     <string name="file_id_format">ID: %1$s</string>
     <string name="file_type_format">Type: %1$s</string>
@@ -509,4 +510,6 @@
     <string name="only_if_auth">Required only if the authentication is enabled in Kodi</string>
     <string name="rd_status">Real Debrid status</string>
     <string name="show_kodi">Show Kodi button</string>
+    <string name="container">Container</string>
+    <string name="error_parsing_container">Error parsing the container</string>
 </resources>

@@ -25,6 +25,7 @@ import com.github.livingwithhippos.unchained.data.model.EmptyBodyError
 import com.github.livingwithhippos.unchained.data.model.NetworkError
 import com.github.livingwithhippos.unchained.databinding.NewDownloadFragmentBinding
 import com.github.livingwithhippos.unchained.lists.view.ListsTabFragment
+import com.github.livingwithhippos.unchained.newdownload.viewmodel.Link
 import com.github.livingwithhippos.unchained.newdownload.viewmodel.NewDownloadViewModel
 import com.github.livingwithhippos.unchained.utilities.EventObserver
 import com.github.livingwithhippos.unchained.utilities.REMOTE_TRAFFIC_ON
@@ -33,6 +34,7 @@ import com.github.livingwithhippos.unchained.utilities.SCHEME_HTTPS
 import com.github.livingwithhippos.unchained.utilities.SCHEME_MAGNET
 import com.github.livingwithhippos.unchained.utilities.extension.getApiErrorMessage
 import com.github.livingwithhippos.unchained.utilities.extension.getClipboardText
+import com.github.livingwithhippos.unchained.utilities.extension.isContainer
 import com.github.livingwithhippos.unchained.utilities.extension.isMagnet
 import com.github.livingwithhippos.unchained.utilities.extension.isTorrent
 import com.github.livingwithhippos.unchained.utilities.extension.isWebUrl
@@ -99,7 +101,8 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
                 val action =
                     NewDownloadFragmentDirections.actionNewDownloadDestToFolderListFragment(
                         folder = folder,
-                        torrent = null
+                        torrent = null,
+                        linkList = null
                     )
                 findNavController().navigate(action)
             }
@@ -115,6 +118,28 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
                         torrent.id
                     )
                 findNavController().navigate(action)
+            }
+        )
+
+        viewModel.containerLiveData.observe(
+            viewLifecycleOwner,
+            EventObserver { link ->
+                when (link) {
+                    is Link.Container -> {
+                        val action =
+                            NewDownloadFragmentDirections.actionNewDownloadDestToFolderListFragment(
+                                linkList = link.links.toTypedArray(),
+                                folder = null,
+                                torrent = null
+                            )
+                        findNavController().navigate(action)
+                    }
+                    is Link.RetrievalError -> {
+                        context?.showToast(R.string.error_parsing_container)
+                    }
+                    else -> {
+                    }
+                }
             }
         )
 
@@ -168,6 +193,9 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
                     }
                     link.isBlank() -> {
                         context?.showToast(R.string.please_insert_url)
+                    }
+                    link.isContainer() -> {
+                        viewModel.unrestrictContainer(link)
                     }
                     else -> {
                         context?.showToast(R.string.invalid_url)
@@ -317,19 +345,36 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
         return downloadBinding.root
     }
 
-    private val getTorrent: ActivityResultLauncher<String> =
+    private val torrentPicker: ActivityResultLauncher<String> =
         registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
             if (uri != null) {
                 loadTorrent(uri)
             } else {
-                context?.showToast(R.string.error_loading_torrent)
+                context?.showToast(R.string.error_loading_file)
+            }
+        }
+
+    private val containerPicker: ActivityResultLauncher<String> =
+        registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+            if (uri != null) {
+                loadContainer(uri)
+            } else {
+                context?.showToast(R.string.error_loading_file)
             }
         }
 
     override fun onLoadTorrentClick() {
         val authState = activityViewModel.authenticationState.value?.peekContent()
         if (authState == AuthenticationState.AUTHENTICATED)
-            getTorrent.launch("application/x-bittorrent")
+            torrentPicker.launch("application/x-bittorrent")
+        else
+            context?.showToast(R.string.premium_needed)
+    }
+
+    override fun onLoadContainerClick() {
+        val authState = activityViewModel.authenticationState.value?.peekContent()
+        if (authState == AuthenticationState.AUTHENTICATED)
+            containerPicker.launch("*/*")
         else
             context?.showToast(R.string.premium_needed)
     }
@@ -359,6 +404,30 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
         }
     }
 
+    private fun loadContainer(uri: Uri) {
+        try {
+            requireContext().contentResolver.openInputStream(uri)?.use { inputStream ->
+                val buffer: ByteArray = inputStream.readBytes()
+                viewModel.uploadContainer(buffer)
+            }
+        } catch (exception: Exception) {
+            when (exception) {
+                is IOException -> {
+                    Timber.e("Container conversion: IOException error getting the file: ${exception.message}")
+                }
+                is java.io.FileNotFoundException -> {
+                    Timber.e("Container conversion: file not found: ${exception.message}")
+                }
+                else -> {
+                    Timber.e("Container conversion: Other error getting the file: ${exception.message}")
+                }
+            }
+            downloadBinding.bUnrestrict.isEnabled = true
+            downloadBinding.bLoadTorrent.isEnabled = true
+            requireContext().showToast(R.string.error_loading_file)
+        }
+    }
+
     private fun downloadTorrent(uri: Uri) {
         val nameRegex = "/([^/]+.torrent)\$"
         val m: Matcher = Pattern.compile(nameRegex).matcher(uri.toString())
@@ -382,4 +451,5 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
 
 interface NewDownloadListener {
     fun onLoadTorrentClick()
+    fun onLoadContainerClick()
 }

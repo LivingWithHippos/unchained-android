@@ -37,6 +37,7 @@ class NewDownloadViewModel @Inject constructor(
     val folderLiveData = MutableLiveData<Event<String>>()
     val torrentLiveData = MutableLiveData<Event<UploadedTorrent>>()
     val networkExceptionLiveData = MutableLiveData<Event<UnchainedNetworkException>>()
+    val containerLiveData = MutableLiveData<Event<Link>>()
 
     fun fetchUnrestrictedLink(link: String, password: String?, remote: Int? = null) {
         viewModelScope.launch {
@@ -59,6 +60,28 @@ class NewDownloadViewModel @Inject constructor(
                     is Either.Right -> linkLiveData.postEvent(response.value)
                 }
             }
+        }
+    }
+
+    fun uploadContainer(container: ByteArray) {
+        viewModelScope.launch {
+            val token = getToken()
+            val fileList = unrestrictRepository.uploadContainer(token, container)
+            if (fileList != null)
+                containerLiveData.postEvent(Link.Container(fileList))
+            else
+                containerLiveData.postEvent(Link.RetrievalError)
+        }
+    }
+
+    fun unrestrictContainer(link: String) {
+        viewModelScope.launch {
+            val token = credentialsRepository.getToken()
+            val links = unrestrictRepository.getContainerLinks(token, link)
+            if (links != null)
+                containerLiveData.postEvent(Link.Container(links))
+            else
+                containerLiveData.postEvent(Link.RetrievalError)
         }
     }
 
@@ -111,4 +134,6 @@ sealed class Link {
     data class Folder(val link: String) : Link()
     data class Magnet(val link: String) : Link()
     data class Torrent(val link: String) : Link()
+    data class Container(val links: List<String>) : Link()
+    object RetrievalError : Link()
 }

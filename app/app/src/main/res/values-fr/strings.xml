@@ -298,4 +298,7 @@
     <string name="kodi_remote_control">Télécommande pour Kodi</string>
     <string name="rd_status">Statut de Real Debrid</string>
     <string name="show_kodi">Afficher le bouton de Kodi</string>
+    <string name="container">Container</string>
+    <string name="error_parsing_container">Erreur d\'analyse du conteneur</string>
+    <string name="upload_file_description">Téléchargez un fichier .torrent ou un conteneur RSDF, CCF, CCF3 ou DLC depuis votre téléphone.</string>
 </resources>

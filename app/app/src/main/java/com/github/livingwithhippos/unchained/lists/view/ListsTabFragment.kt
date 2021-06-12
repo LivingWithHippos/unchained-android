@@ -429,7 +429,8 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
                         val action =
                             ListsTabFragmentDirections.actionListTabsDestToFolderListFragment2(
                                 folder = null,
-                                torrent = item
+                                torrent = item,
+                                linkList = null
                             )
                         findNavController().navigate(action)
                     } else
