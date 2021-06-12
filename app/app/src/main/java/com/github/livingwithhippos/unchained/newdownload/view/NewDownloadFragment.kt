@@ -34,6 +34,7 @@ import com.github.livingwithhippos.unchained.utilities.SCHEME_HTTPS
 import com.github.livingwithhippos.unchained.utilities.SCHEME_MAGNET
 import com.github.livingwithhippos.unchained.utilities.extension.getApiErrorMessage
 import com.github.livingwithhippos.unchained.utilities.extension.getClipboardText
+import com.github.livingwithhippos.unchained.utilities.extension.isContainer
 import com.github.livingwithhippos.unchained.utilities.extension.isMagnet
 import com.github.livingwithhippos.unchained.utilities.extension.isTorrent
 import com.github.livingwithhippos.unchained.utilities.extension.isWebUrl
@@ -192,6 +193,9 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
                     }
                     link.isBlank() -> {
                         context?.showToast(R.string.please_insert_url)
+                    }
+                    link.isContainer() -> {
+                        viewModel.unrestrictContainer(link)
                     }
                     else -> {
                         context?.showToast(R.string.invalid_url)

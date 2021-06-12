@@ -121,4 +121,22 @@ class UnrestrictRepository @Inject constructor(private val unrestrictApiHelper: 
 
         return uploadResponse
     }
+
+    suspend fun getContainerLinks(
+        token: String,
+        link: String
+    ): List<String>? {
+
+        val containerResponse = safeApiCall(
+            call = {
+                unrestrictApiHelper.getContainerLinks(
+                    token = "Bearer $token",
+                    link = link
+                )
+            },
+            errorMessage = "Error getting container files"
+        )
+
+        return containerResponse
+    }
 }

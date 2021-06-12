@@ -20,5 +20,11 @@ class UnrestrictApiHelperImpl @Inject constructor(private val unrestrictApi: Unr
         link: String
     ): Response<List<String>> = unrestrictApi.getUnrestrictedFolder(token, link)
 
-    override suspend fun uploadContainer(token: String, container: RequestBody): Response<List<String>> = unrestrictApi.uploadContainer(token, container)
+    override suspend fun uploadContainer(
+        token: String,
+        container: RequestBody
+    ): Response<List<String>> = unrestrictApi.uploadContainer(token, container)
+
+    override suspend fun getContainerLinks(token: String, link: String): Response<List<String>> =
+        unrestrictApi.getContainerLinks(token, link)
 }

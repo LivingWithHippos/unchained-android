@@ -22,4 +22,9 @@ interface UnrestrictApiHelper {
         token: String,
         container: RequestBody
     ): Response<List<String>>
+
+    suspend fun getContainerLinks(
+        token: String,
+        link: String
+    ): Response<List<String>>
 }

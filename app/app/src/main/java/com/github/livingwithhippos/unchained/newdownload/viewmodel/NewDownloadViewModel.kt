@@ -74,6 +74,17 @@ class NewDownloadViewModel @Inject constructor(
         }
     }
 
+    fun unrestrictContainer(link: String) {
+        viewModelScope.launch {
+            val token = credentialsRepository.getToken()
+            val links = unrestrictRepository.getContainerLinks(token, link)
+            if (links != null)
+                containerLiveData.postEvent(Link.Container(links))
+            else
+                containerLiveData.postEvent(Link.RetrievalError)
+        }
+    }
+
     fun fetchAddedMagnet(magnet: String) {
         viewModelScope.launch {
             val token = getToken()
