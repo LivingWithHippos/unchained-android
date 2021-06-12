@@ -72,6 +72,10 @@ class DownloadDetailsViewModel @Inject constructor(
             messageLiveData.postEvent(DownloadDetailsMessage.KodiMissingCredentials)
         }
     }
+
+    fun getKodiPreference(): Boolean {
+        return preferences.getBoolean("show_kodi", true)
+    }
 }
 
 sealed class DownloadDetailsMessage() {

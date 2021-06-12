@@ -67,6 +67,8 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
             alternativeAdapter.submitList(args.details.alternative)
         }
 
+        detailsBinding.showKodi = viewModel.getKodiPreference()
+
         viewModel.streamLiveData.observe(
             viewLifecycleOwner,
             {

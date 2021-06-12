@@ -54,6 +54,11 @@
             app:summary="@string/enable_kodi_control"
             app:title="@string/kodi_remote_control" />
 
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="show_kodi"
+            android:title="@string/show_kodi" />
+
         <EditTextPreference
             android:defaultValue="192.168.1.7"
             android:key="kodi_ip_address"

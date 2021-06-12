@@ -16,6 +16,10 @@
             type="com.github.livingwithhippos.unchained.data.model.Stream" />
 
         <variable
+            name="showKodi"
+            type="Boolean" />
+
+        <variable
             name="listener"
             type="com.github.livingwithhippos.unchained.downloaddetails.view.DownloadDetailsListener" />
     </data>
@@ -253,7 +257,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:visibility="@{details.streamable == 1 ? View.VISIBLE : View.GONE, default=visible}"
+                android:visibility="@{details.streamable == 1 &amp;&amp; showKodi == true? View.VISIBLE : View.GONE, default=visible}"
                 android:layout_marginBottom="10dp">
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
