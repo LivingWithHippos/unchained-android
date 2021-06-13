@@ -87,7 +87,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:checked="false"
-            android:text="@string/filter_size"
+            android:text="@string/only_big_files"
             app:layout_constraintBottom_toTopOf="@+id/llList"
             app:layout_constraintEnd_toStartOf="@+id/cbFilterType"
             app:layout_constraintStart_toStartOf="@id/tfFilter"

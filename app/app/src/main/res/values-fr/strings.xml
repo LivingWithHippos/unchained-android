@@ -299,6 +299,8 @@
     <string name="rd_status">Statut de Real Debrid</string>
     <string name="show_kodi">Afficher le bouton de Kodi</string>
     <string name="filter_type">Uniquement les fichiers multimédia (avi, etc.)</string>
-    <string name="filter_size"><![CDATA[Seulement les gros fichiers (>10 Mo)]]></string>
+    <string name="only_big_files">Seulement les gros fichiers</string>
     <string name="sort">Trier</string>
+    <string name="file_size_filter">Filtre pour la taille des fichiers</string>
+    <string name="file_size_filter_description">Taille minimale en Mo pour l\'option \"Seulement les gros fichiers\" dans l\'écran des dossiers</string>
 </resources>

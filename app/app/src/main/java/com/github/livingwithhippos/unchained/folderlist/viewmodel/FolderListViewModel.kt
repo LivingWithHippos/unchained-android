@@ -1,5 +1,6 @@
 package com.github.livingwithhippos.unchained.folderlist.viewmodel
 
+import android.content.SharedPreferences
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -10,7 +11,6 @@ import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkException
 import com.github.livingwithhippos.unchained.data.repositoy.CredentialsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.DownloadRepository
-import com.github.livingwithhippos.unchained.data.repositoy.TorrentsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.UnrestrictRepository
 import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.postEvent
@@ -23,10 +23,10 @@ import javax.inject.Inject
 @HiltViewModel
 class FolderListViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
+    private val preferences: SharedPreferences,
     private val unrestrictRepository: UnrestrictRepository,
     private val credentialsRepository: CredentialsRepository,
-    private val downloadRepository: DownloadRepository,
-    private val torrentsRepository: TorrentsRepository,
+    private val downloadRepository: DownloadRepository
 ) : ViewModel() {
 
     val folderLiveData = MutableLiveData<Event<List<DownloadItem>>>()
@@ -120,6 +120,12 @@ class FolderListViewModel @Inject constructor(
             delay(500)
             queryLiveData.postValue(query?.trim() ?: "")
         }
+    }
+
+    fun getMinFileSize(): Long {
+        val minMBString = preferences.getString("filter_size_mb", "10")
+        val minMB: Long = minMBString?.toLongOrNull() ?: 10
+        return minMB * 1024 * 1024
     }
 
     companion object {

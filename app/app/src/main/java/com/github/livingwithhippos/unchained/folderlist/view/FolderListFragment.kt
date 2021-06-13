@@ -187,7 +187,7 @@ class FolderListFragment : Fragment(), DownloadListListener {
                 customizedList.clear()
                 customizedList.addAll(
                     items.filter {
-                        it.fileSize > MAX_SIZE_BYTE
+                        it.fileSize > viewModel.getMinFileSize()
                     }
                 )
             }
@@ -224,14 +224,14 @@ class FolderListFragment : Fragment(), DownloadListListener {
             }
             TAG_SORT_SIZE_DESC -> {
                 adapter.submitList(
-                    customizedList.sortedBy { item ->
+                    customizedList.sortedByDescending { item ->
                         item.fileSize
                     }
                 )
             }
             TAG_SORT_SIZE_ASC -> {
                 adapter.submitList(
-                    customizedList.sortedByDescending { item ->
+                    customizedList.sortedBy { item ->
                         item.fileSize
                     }
                 )
@@ -246,7 +246,7 @@ class FolderListFragment : Fragment(), DownloadListListener {
         }
         adapter.notifyDataSetChanged()
         lifecycleScope.launch {
-            delay(150)
+            delay(100)
             binding.rvFolderList.layoutManager?.verticalScrollToPosition(
                 requireContext(),
                 position = 0
@@ -265,8 +265,6 @@ class FolderListFragment : Fragment(), DownloadListListener {
     }
 
     companion object {
-        // 10 MB
-        const val MAX_SIZE_BYTE = (1024 * 1024) * 10
         const val TAG_SORT_AZ = "sort_az_tag"
         const val TAG_SORT_ZA = "sort_za_tag"
         const val TAG_SORT_SIZE_ASC = "sort_size_asc_tag"

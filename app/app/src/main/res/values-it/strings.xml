@@ -299,6 +299,8 @@
     <string name="rd_status">Stato Real Debrid</string>
     <string name="show_kodi">Mostra pulsante Kodi</string>
     <string name="filter_type">Solo media (avi etc.)</string>
-    <string name="filter_size"><![CDATA[Solo file grandi (>10 MB)]]></string>
+    <string name="only_big_files">Solo file grandi</string>
     <string name="sort">Ordina</string>
+    <string name="file_size_filter">Filtro per la dimensione dei file</string>
+    <string name="file_size_filter_description">Dimensione minima in MB per l\'opzione \"Solo file grandi\" nella schermata cartella</string>
 </resources>
