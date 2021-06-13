@@ -26,7 +26,7 @@
         android:clickable="false"
         android:focusable="true"
         app:cardCornerRadius="10dp"
-        app:cardElevation="3dp" >
+        app:cardElevation="3dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -52,12 +52,34 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="@{item.mimeType, default=`video mp4`}"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/bOpen"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintHorizontal_chainStyle="spread"
-                app:layout_constraintStart_toStartOf="@id/streamingOverline1"
+                app:layout_constraintBottom_toTopOf="@id/iconsLayout"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/streamingOverline1" />
+
+
+            <com.google.android.flexbox.FlexboxLayout
+                android:id="@+id/iconsLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                app:alignItems="flex_start"
+                app:flexWrap="wrap"
+                app:justifyContent="space_around"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvTitle">
+
+            <ImageButton
+                android:id="@+id/bShare"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:contentDescription="@string/content_description_share_download"
+                android:backgroundTint="@android:color/transparent"
+                android:onClick="@{()->listener.onShareClick(item.download)}"
+                android:src="@drawable/icon_share"
+                app:tint="?attr/colorPrimary" />
 
             <ImageButton
                 android:id="@+id/bOpen"
@@ -67,11 +89,7 @@
                 android:contentDescription="@{@string/open_link_format(item.mimeType)}"
                 android:onClick="@{()->listener.onOpenClick(item.download)}"
                 android:src="@drawable/icon_open_external"
-                app:tint="?attr/colorPrimary"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/bCopy"
-                app:layout_constraintStart_toEndOf="@+id/tvTitle"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:tint="?attr/colorPrimary" />
 
             <ImageButton
                 android:id="@+id/bCopy"
@@ -81,27 +99,19 @@
                 android:contentDescription="@{@string/copy_link_format(item.mimeType)}"
                 android:onClick="@{()->listener.onCopyClick(item.download)}"
                 android:src="@drawable/icon_copy"
-                app:tint="?attr/colorPrimary"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/bOpenWith"
-                app:layout_constraintStart_toEndOf="@+id/bOpen"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:tint="?attr/colorPrimary" />
 
-            <ImageButton
-                android:id="@+id/bOpenWith"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:backgroundTint="@android:color/transparent"
-                android:contentDescription="@{@string/open_with_format(item.mimeType)}"
-                android:onClick="@{()->listener.onOpenWithKodi(item.download)}"
-                android:src="@drawable/icon_remote"
-                app:tint="?attr/colorPrimary"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/bCopy"
-                app:layout_constraintTop_toTopOf="parent" />
+                <ImageButton
+                    android:id="@+id/bKodi"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:backgroundTint="@android:color/transparent"
+                    android:contentDescription="@{@string/open_with_format(item.mimeType)}"
+                    android:onClick="@{()->listener.onOpenWithKodi(item.download)}"
+                    android:src="@drawable/icon_remote"
+                    app:tint="?attr/colorPrimary" />
 
-
+            </com.google.android.flexbox.FlexboxLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
 </layout>
