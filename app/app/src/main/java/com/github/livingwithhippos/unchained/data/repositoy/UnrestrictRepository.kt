@@ -3,8 +3,12 @@ package com.github.livingwithhippos.unchained.data.repositoy
 import arrow.core.Either
 import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkException
+import com.github.livingwithhippos.unchained.data.model.UploadedTorrent
 import com.github.livingwithhippos.unchained.data.remote.UnrestrictApiHelper
 import kotlinx.coroutines.delay
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import javax.inject.Inject
 
 class UnrestrictRepository @Inject constructor(private val unrestrictApiHelper: UnrestrictApiHelper) :
@@ -92,5 +96,47 @@ class UnrestrictRepository @Inject constructor(private val unrestrictApiHelper: 
         )
 
         return folderResponse
+    }
+
+    suspend fun uploadContainer(
+        token: String,
+        container: ByteArray
+    ): List<String>? {
+
+        val requestBody: RequestBody = container.toRequestBody(
+            "application/octet-stream".toMediaTypeOrNull(),
+            0,
+            container.size
+        )
+
+        val uploadResponse = safeApiCall(
+            call = {
+                unrestrictApiHelper.uploadContainer(
+                    token = "Bearer $token",
+                    container = requestBody
+                )
+            },
+            errorMessage = "Error Uploading Container"
+        )
+
+        return uploadResponse
+    }
+
+    suspend fun getContainerLinks(
+        token: String,
+        link: String
+    ): List<String>? {
+
+        val containerResponse = safeApiCall(
+            call = {
+                unrestrictApiHelper.getContainerLinks(
+                    token = "Bearer $token",
+                    link = link
+                )
+            },
+            errorMessage = "Error getting container files"
+        )
+
+        return containerResponse
     }
 }

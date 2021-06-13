@@ -5,6 +5,7 @@ import android.icu.text.DateFormat
 import android.icu.text.SimpleDateFormat
 import android.os.Build
 import android.util.Patterns
+import com.github.livingwithhippos.unchained.utilities.CONTAINER_PATTERN
 import com.github.livingwithhippos.unchained.utilities.MAGNET_PATTERN
 import com.github.livingwithhippos.unchained.utilities.TORRENT_PATTERN
 import java.util.Date
@@ -44,6 +45,16 @@ fun String?.isTorrent(): Boolean {
         return false
     val m: Matcher = Pattern.compile(TORRENT_PATTERN).matcher(this)
     return m.matches()
+}
+
+/**
+ * check if a String is a container link
+ */
+fun String?.isContainer(): Boolean {
+    if (this == null)
+        return false
+    val m: Matcher = Pattern.compile(CONTAINER_PATTERN).matcher(this)
+    return m.lookingAt()
 }
 
 /**

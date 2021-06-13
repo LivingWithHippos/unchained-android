@@ -18,7 +18,8 @@ const val REMOTE_TRAFFIC_OFF: Int = 0
 const val REMOTE_TRAFFIC_ON: Int = 1
 
 const val MAGNET_PATTERN: String = "magnet:\\?xt=urn:btih:[a-zA-Z0-9]{32}"
-const val TORRENT_PATTERN: String = "https?://[^\\s]{7,}.torrent"
+const val TORRENT_PATTERN: String = "https?://[^\\s]{7,}\\.torrent"
+const val CONTAINER_PATTERN: String = "https?://[^\\s]{7,}\\.(rsdf|ccf3|ccf|dlc)"
 
 const val FEEDBACK_URL = "https://github.com/LivingWithHippos/unchained-android"
 const val PLUGINS_URL =

@@ -49,46 +49,42 @@ class FolderListViewModel @Inject constructor(
 
             when (filesList) {
                 is Either.Left -> errorsLiveData.postEvent(filesList.value)
-                is Either.Right -> retrieveFiles(token, filesList.value)
+                is Either.Right -> retrieveFiles(filesList.value)
             }
         }
     }
 
-    fun retrieveTorrentFileList(item: TorrentItem) {
+    fun retrieveFiles(links: List<String>) {
         viewModelScope.launch {
+
             val token = credentialsRepository.getToken()
+            // either first time or there were some errors, re-download
+            if (links.size != getRetrievedLinks()) {
 
-            retrieveFiles(token, item.links)
-        }
-    }
+                val hitList = mutableListOf<DownloadItem>()
 
-    private suspend fun retrieveFiles(token: String, links: List<String>) {
-        // either first time or there were some errors, re-download
-        if (links.size != getRetrievedLinks()) {
-
-            val hitList = mutableListOf<DownloadItem>()
-
-            links.forEachIndexed { index, link ->
-                when (
-                    val file =
-                        unrestrictRepository.getEitherUnrestrictedLink(token, link)
-                ) {
-                    is Either.Left -> {
-                        errorsLiveData.postEvent(file.value)
-                        progressLiveData.postValue((index + 1) * 100 / links.size)
-                    }
-                    is Either.Right -> {
-                        hitList.add(file.value)
-                        folderLiveData.postEvent(hitList)
-                        setRetrievedLinks(hitList.size)
-                        progressLiveData.postValue((index + 1) * 100 / links.size)
+                links.forEachIndexed { index, link ->
+                    when (
+                        val file =
+                            unrestrictRepository.getEitherUnrestrictedLink(token, link)
+                    ) {
+                        is Either.Left -> {
+                            errorsLiveData.postEvent(file.value)
+                            progressLiveData.postValue((index + 1) * 100 / links.size)
+                        }
+                        is Either.Right -> {
+                            hitList.add(file.value)
+                            folderLiveData.postEvent(hitList)
+                            setRetrievedLinks(hitList.size)
+                            progressLiveData.postValue((index + 1) * 100 / links.size)
+                        }
                     }
                 }
-            }
-        } else {
-            // I already downloaded all the files, repost the last value
-            folderLiveData.value?.let {
-                folderLiveData.postEvent(it.peekContent())
+            } else {
+                // I already downloaded all the files, repost the last value
+                folderLiveData.value?.let {
+                    folderLiveData.postEvent(it.peekContent())
+                }
             }
         }
     }

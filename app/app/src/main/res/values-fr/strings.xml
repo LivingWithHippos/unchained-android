@@ -303,4 +303,7 @@
     <string name="sort">Trier</string>
     <string name="file_size_filter">Filtre pour la taille des fichiers</string>
     <string name="file_size_filter_description">Taille minimale en Mo pour l\'option \"Seulement les gros fichiers\" dans l\'écran des dossiers</string>
+    <string name="container">Container</string>
+    <string name="error_parsing_container">Erreur d\'analyse du conteneur</string>
+    <string name="upload_file_description">Téléchargez un fichier .torrent ou un conteneur RSDF, CCF, CCF3 ou DLC depuis votre téléphone.</string>
 </resources>

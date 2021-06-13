@@ -1,6 +1,7 @@
 package com.github.livingwithhippos.unchained.data.remote
 
 import com.github.livingwithhippos.unchained.data.model.DownloadItem
+import okhttp3.RequestBody
 import retrofit2.Response
 import javax.inject.Inject
 
@@ -18,4 +19,12 @@ class UnrestrictApiHelperImpl @Inject constructor(private val unrestrictApi: Unr
         token: String,
         link: String
     ): Response<List<String>> = unrestrictApi.getUnrestrictedFolder(token, link)
+
+    override suspend fun uploadContainer(
+        token: String,
+        container: RequestBody
+    ): Response<List<String>> = unrestrictApi.uploadContainer(token, container)
+
+    override suspend fun getContainerLinks(token: String, link: String): Response<List<String>> =
+        unrestrictApi.getContainerLinks(token, link)
 }

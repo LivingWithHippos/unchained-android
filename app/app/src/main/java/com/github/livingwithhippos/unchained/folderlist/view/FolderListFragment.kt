@@ -94,7 +94,9 @@ class FolderListFragment : Fragment(), DownloadListListener {
             viewModel.retrieveFolderFileList(args.folder!!)
         else if (args.torrent != null) {
             binding.tvTitle.text = args.torrent!!.filename
-            viewModel.retrieveTorrentFileList(args.torrent!!)
+            viewModel.retrieveFiles(args.torrent!!.links)
+        } else if (args.linkList != null) {
+            viewModel.retrieveFiles(args.linkList!!.toList())
         }
 
         // observe the search bar for changes

@@ -112,13 +112,15 @@ class MainActivity : AppCompatActivity() {
                 when (state.peekContent()) {
                     // go to login fragment
                     AuthenticationState.UNAUTHENTICATED -> {
-                        openAuthentication()
-                        disableBottomNavItems(
-                            R.id.navigation_new_download,
-                            R.id.navigation_lists,
-                            R.id.navigation_search
-                        )
-                        viewModel.setTokenRefreshing(false)
+                        lifecycleScope.launch {
+                            disableBottomNavItems(
+                                R.id.navigation_new_download,
+                                R.id.navigation_lists,
+                                R.id.navigation_search
+                            )
+                            doubleClickBottomItem(R.id.navigation_home)
+                            viewModel.setTokenRefreshing(false)
+                        }
                     }
                     // refresh the token.
                     AuthenticationState.BAD_TOKEN -> {
@@ -131,22 +133,19 @@ class MainActivity : AppCompatActivity() {
                     }
                     // go to login fragment and show another error message
                     AuthenticationState.ACCOUNT_LOCKED -> {
-                        openAuthentication()
-                        disableBottomNavItems(
-                            R.id.navigation_new_download,
-                            R.id.navigation_lists,
-                            R.id.navigation_search
-                        )
-                        viewModel.setTokenRefreshing(false)
+                        lifecycleScope.launch {
+                            disableBottomNavItems(
+                                R.id.navigation_new_download,
+                                R.id.navigation_lists,
+                                R.id.navigation_search
+                            )
+                            doubleClickBottomItem(R.id.navigation_home)
+                            viewModel.setTokenRefreshing(false)
+                        }
                     }
                     // do nothing
                     AuthenticationState.AUTHENTICATED, AuthenticationState.AUTHENTICATED_NO_PREMIUM -> {
                         enableAllBottomNavItems()
-                        // start the notification system if enabled
-                        if (preferences.getBoolean(KEY_TORRENT_NOTIFICATIONS, false)) {
-                            val notificationIntent = Intent(this, ForegroundTorrentService::class.java)
-                            ContextCompat.startForegroundService(this, notificationIntent)
-                        }
                         viewModel.setTokenRefreshing(false)
                     }
                 }
@@ -215,6 +214,12 @@ class MainActivity : AppCompatActivity() {
                 showToast(it, length = Toast.LENGTH_LONG)
             }
         )
+
+        // start the notification system if enabled
+        if (preferences.getBoolean(KEY_TORRENT_NOTIFICATIONS, false)) {
+            val notificationIntent = Intent(this, ForegroundTorrentService::class.java)
+            ContextCompat.startForegroundService(this, notificationIntent)
+        }
     }
 
     private fun downloadPlugin(link: String) {
@@ -281,7 +286,9 @@ class MainActivity : AppCompatActivity() {
                                     this,
                                     { auth ->
                                         when (auth.peekContent()) {
-                                            AuthenticationState.AUTHENTICATED -> processLinkIntent(data)
+                                            AuthenticationState.AUTHENTICATED -> processLinkIntent(
+                                                data
+                                            )
                                             AuthenticationState.AUTHENTICATED_NO_PREMIUM -> baseContext.showToast(
                                                 R.string.premium_needed_torrent
                                             )
@@ -320,27 +327,29 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun processTorrentNotificationIntent(torrentID: String) {
-        doubleClickBottomItem(R.id.navigation_new_download)
-        viewModel.addTorrentId(torrentID)
+        lifecycleScope.launch {
+            doubleClickBottomItem(R.id.navigation_new_download)
+            viewModel.addTorrentId(torrentID)
+        }
     }
 
     private fun processLinkIntent(uri: Uri) {
-        doubleClickBottomItem(R.id.navigation_new_download)
-        viewModel.addLink(uri)
+        lifecycleScope.launch {
+            doubleClickBottomItem(R.id.navigation_new_download)
+            viewModel.addLink(uri)
+        }
     }
 
-    private fun doubleClickBottomItem(destinationID: Int) {
+    suspend fun doubleClickBottomItem(destinationID: Int) {
         // simulate click on a bottom bar option
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_nav_view)
-        // if the tab was already selected, a single tap will bring us back to the first fragment of its navigation xml. Otherwise, simulate another click after a delay
 
-        lifecycleScope.launch {
-            if (bottomNav.selectedItemId != destinationID) {
-                bottomNav.selectedItemId = destinationID
-            }
-            delay(100)
+        // if the tab was already selected, a single tap will bring us back to the first fragment of its navigation xml. Otherwise, simulate another click after a delay
+        if (bottomNav.selectedItemId != destinationID) {
             bottomNav.selectedItemId = destinationID
         }
+        delay(100)
+        bottomNav.selectedItemId = destinationID
     }
 
     private fun processLinkIntent(link: String) = processLinkIntent(Uri.parse(link))
@@ -348,10 +357,6 @@ class MainActivity : AppCompatActivity() {
     private fun openSettings() {
         val intent = Intent(this, SettingsActivity::class.java)
         startActivity(intent)
-    }
-
-    private fun openAuthentication() {
-        doubleClickBottomItem(R.id.navigation_home)
     }
 
     private fun addSearchPlugin(data: Uri) {
