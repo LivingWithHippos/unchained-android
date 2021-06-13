@@ -8,6 +8,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.github.livingwithhippos.unchained.R
@@ -20,7 +21,10 @@ import com.github.livingwithhippos.unchained.databinding.FragmentFolderListBindi
 import com.github.livingwithhippos.unchained.folderlist.model.FolderItemAdapter
 import com.github.livingwithhippos.unchained.folderlist.viewmodel.FolderListViewModel
 import com.github.livingwithhippos.unchained.lists.view.DownloadListListener
+import com.github.livingwithhippos.unchained.utilities.extension.verticalScrollToPosition
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -110,7 +114,6 @@ class FolderListFragment : Fragment(), DownloadListListener {
         }
 
         binding.sortingButton.setOnClickListener {
-            val tag = it.tag
             // every click changes to the next state
             when (it.tag) {
                 TAG_SORT_AZ -> {
@@ -125,6 +128,24 @@ class FolderListFragment : Fragment(), DownloadListListener {
                 TAG_SORT_ZA -> {
                     binding.sortingButton.background = ResourcesCompat.getDrawable(
                         resources,
+                        R.drawable.icon_sort_size_desc,
+                        requireContext().theme
+                    )
+                    it.tag = TAG_SORT_SIZE_DESC
+                    updateList(adapter, sort = TAG_SORT_SIZE_DESC)
+                }
+                TAG_SORT_SIZE_DESC -> {
+                    binding.sortingButton.background = ResourcesCompat.getDrawable(
+                        resources,
+                        R.drawable.icon_sort_size_asc,
+                        requireContext().theme
+                    )
+                    it.tag = TAG_SORT_SIZE_ASC
+                    updateList(adapter, sort = TAG_SORT_SIZE_ASC)
+                }
+                TAG_SORT_SIZE_ASC -> {
+                    binding.sortingButton.background = ResourcesCompat.getDrawable(
+                        resources,
                         R.drawable.icon_sort_az,
                         requireContext().theme
                     )
@@ -132,6 +153,12 @@ class FolderListFragment : Fragment(), DownloadListListener {
                     updateList(adapter, sort = TAG_SORT_AZ)
                 }
                 else -> {
+                    binding.sortingButton.background = ResourcesCompat.getDrawable(
+                        resources,
+                        R.drawable.icon_sort_az,
+                        requireContext().theme
+                    )
+                    it.tag = TAG_SORT_AZ
                     updateList(adapter, sort = TAG_SORT_AZ)
                 }
             }
@@ -195,6 +222,20 @@ class FolderListFragment : Fragment(), DownloadListListener {
                     }
                 )
             }
+            TAG_SORT_SIZE_DESC -> {
+                adapter.submitList(
+                    customizedList.sortedBy { item ->
+                        item.fileSize
+                    }
+                )
+            }
+            TAG_SORT_SIZE_ASC -> {
+                adapter.submitList(
+                    customizedList.sortedByDescending { item ->
+                        item.fileSize
+                    }
+                )
+            }
             else -> {
                 adapter.submitList(
                     customizedList.sortedBy { item ->
@@ -203,8 +244,14 @@ class FolderListFragment : Fragment(), DownloadListListener {
                 )
             }
         }
-
         adapter.notifyDataSetChanged()
+        lifecycleScope.launch {
+            delay(150)
+            binding.rvFolderList.layoutManager?.verticalScrollToPosition(
+                requireContext(),
+                position = 0
+            )
+        }
     }
 
     override fun onClick(item: DownloadItem) {
@@ -222,5 +269,7 @@ class FolderListFragment : Fragment(), DownloadListListener {
         const val MAX_SIZE_BYTE = (1024 * 1024) * 10
         const val TAG_SORT_AZ = "sort_az_tag"
         const val TAG_SORT_ZA = "sort_za_tag"
+        const val TAG_SORT_SIZE_ASC = "sort_size_asc_tag"
+        const val TAG_SORT_SIZE_DESC = "sort_size_desc_tag"
     }
 }
