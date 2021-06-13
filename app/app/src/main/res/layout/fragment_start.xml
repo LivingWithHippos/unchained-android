@@ -6,6 +6,7 @@
     android:layout_gravity="center"
     android:gravity="center"
     android:orientation="vertical"
+    android:backgroundTint="?attr/colorPrimarySurface"
     tools:context=".start.view.StartFragment">
 
 </LinearLayout>

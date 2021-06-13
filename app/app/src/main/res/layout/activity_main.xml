@@ -8,6 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".base.MainActivity"
+        android:backgroundTint="?attr/colorPrimarySurface"
         android:orientation="vertical">
 
         <com.google.android.material.appbar.AppBarLayout
