@@ -510,5 +510,5 @@
     <string name="rd_status">Real Debrid status</string>
     <string name="show_kodi">Show Kodi button</string>
     <string name="filter_size"><![CDATA[Only big files (>10 MB)]]></string>
-    <string name="filter_type">Only media files</string>
+    <string name="filter_type">Only media files (avi etc.)</string>
 </resources>

@@ -298,4 +298,6 @@
     <string name="kodi_remote_control">Télécommande pour Kodi</string>
     <string name="rd_status">Statut de Real Debrid</string>
     <string name="show_kodi">Afficher le bouton de Kodi</string>
+    <string name="filter_type">Uniquement les fichiers multimédia (avi, etc.)</string>
+    <string name="filter_size"><![CDATA[Seulement les gros fichiers (>10 Mo)]]></string>
 </resources>

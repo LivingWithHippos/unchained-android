@@ -298,4 +298,6 @@
     <string name="kodi_remote_control">Controllo remoto per Kodi</string>
     <string name="rd_status">Stato Real Debrid</string>
     <string name="show_kodi">Mostra pulsante Kodi</string>
+    <string name="filter_type">Solo media (avi etc.)</string>
+    <string name="filter_size"><![CDATA[Solo file grandi (>10 MB)]]></string>
 </resources>
