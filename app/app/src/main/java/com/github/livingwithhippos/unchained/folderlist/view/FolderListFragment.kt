@@ -35,6 +35,8 @@ class FolderListFragment : Fragment(), DownloadListListener {
         super.onDestroyView()
     }
 
+    private val mediaRegex = "\\.(webm|avi|mkv|ogg|MTS|M2TS|TS|mov|wmv|mp4|m4p|m4v|mp2|mpe|mpv|mpg|mpeg|m2v|3gp)$".toRegex()
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -55,12 +57,7 @@ class FolderListFragment : Fragment(), DownloadListListener {
         // todo: add more sorting methodds, dinamically chosen by the user
         viewModel.folderLiveData.observe(viewLifecycleOwner) {
             it.getContentIfNotHandled()?.let { files ->
-                adapter.submitList(
-                    files.sortedBy { item ->
-                        item.filename
-                    }
-                )
-                adapter.notifyDataSetChanged()
+                updateList(adapter, list = files)
             }
         }
 
@@ -98,12 +95,62 @@ class FolderListFragment : Fragment(), DownloadListListener {
             viewModel.filterList(it?.toString())
         }
         viewModel.queryLiveData.observe(viewLifecycleOwner) {
-            val list = viewModel.folderLiveData.value?.peekContent()?.filter { item ->
-                item.filename.contains(it)
-            }
-            adapter.submitList(list)
-            adapter.notifyDataSetChanged()
+            updateList(adapter, query = it)
         }
+
+        binding.cbFilterSize.setOnCheckedChangeListener { _, isChecked ->
+            updateList(adapter, size = isChecked)
+        }
+
+        binding.cbFilterType.setOnCheckedChangeListener { _, isChecked ->
+            updateList(adapter, type = isChecked)
+        }
+    }
+
+    private fun updateList(
+        adapter: FolderItemAdapter,
+        list: List<DownloadItem>? = null,
+        size: Boolean? = null,
+        type: Boolean? = null,
+        query: String? = null
+    ) {
+        val items: List<DownloadItem>? = list ?: viewModel.folderLiveData.value?.peekContent()
+        val filterSize: Boolean = size ?: binding.cbFilterSize.isChecked
+        val filterType: Boolean = type ?: binding.cbFilterType.isChecked
+        val filterQuery: String? = query ?: viewModel.queryLiveData.value
+
+        val customizedList = mutableListOf<DownloadItem>()
+
+        if (!items.isNullOrEmpty()) {
+            customizedList.addAll(items)
+            if (filterSize) {
+                customizedList.clear()
+                customizedList.addAll(
+                    items.filter {
+                        it.fileSize > MAX_SIZE_BYTE
+                    }
+                )
+            }
+            if (filterType) {
+                val temp = customizedList.filter {
+                    mediaRegex.find(it.filename) != null
+                }
+                customizedList.clear()
+                customizedList.addAll(temp)
+            }
+            if (!filterQuery.isNullOrBlank()) {
+                val temp = customizedList.filter { item ->
+                    item.filename.contains(filterQuery)
+                }
+                customizedList.clear()
+                customizedList.addAll(temp)
+            }
+        }
+        // if I get passed an empty list I need to empty the list (shouldn't be possible in this particular fragment)
+        adapter.submitList(customizedList.sortedBy { item ->
+            item.filename
+        })
+        adapter.notifyDataSetChanged()
     }
 
     override fun onClick(item: DownloadItem) {
@@ -114,5 +161,10 @@ class FolderListFragment : Fragment(), DownloadListListener {
 
     override fun onLongClick(item: DownloadItem) {
         // do nothing for now
+    }
+
+    companion object {
+        // 10 MB
+        const val MAX_SIZE_BYTE = (1024*1024)*10
     }
 }
