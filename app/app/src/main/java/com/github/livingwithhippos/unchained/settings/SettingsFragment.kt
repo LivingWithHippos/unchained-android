@@ -55,6 +55,10 @@ class SettingsFragment : PreferenceFragmentCompat() {
             true
         }
 
+        findPreference<EditTextPreference>("filter_size_mb")?.setOnBindEditTextListener {
+            it.keyListener = DigitsKeyListener.getInstance("0123456789")
+        }
+
         setupKodi()
 
         setupVersion()

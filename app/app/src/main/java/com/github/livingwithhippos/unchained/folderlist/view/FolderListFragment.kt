@@ -4,9 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.github.livingwithhippos.unchained.R
@@ -19,7 +21,10 @@ import com.github.livingwithhippos.unchained.databinding.FragmentFolderListBindi
 import com.github.livingwithhippos.unchained.folderlist.model.FolderItemAdapter
 import com.github.livingwithhippos.unchained.folderlist.viewmodel.FolderListViewModel
 import com.github.livingwithhippos.unchained.lists.view.DownloadListListener
+import com.github.livingwithhippos.unchained.utilities.extension.verticalScrollToPosition
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -35,6 +40,9 @@ class FolderListFragment : Fragment(), DownloadListListener {
         _binding = null
         super.onDestroyView()
     }
+
+    private val mediaRegex =
+        "\\.(webm|avi|mkv|ogg|MTS|M2TS|TS|mov|wmv|mp4|m4p|m4v|mp2|mpe|mpv|mpg|mpeg|m2v|3gp)$".toRegex()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -56,12 +64,7 @@ class FolderListFragment : Fragment(), DownloadListListener {
         // todo: add more sorting methodds, dinamically chosen by the user
         viewModel.folderLiveData.observe(viewLifecycleOwner) {
             it.getContentIfNotHandled()?.let { files ->
-                adapter.submitList(
-                    files.sortedBy { item ->
-                        item.filename
-                    }
-                )
-                adapter.notifyDataSetChanged()
+                updateList(adapter, list = files)
             }
         }
 
@@ -101,11 +104,155 @@ class FolderListFragment : Fragment(), DownloadListListener {
             viewModel.filterList(it?.toString())
         }
         viewModel.queryLiveData.observe(viewLifecycleOwner) {
-            val list = viewModel.folderLiveData.value?.peekContent()?.filter { item ->
-                item.filename.contains(it)
+            updateList(adapter, query = it)
+        }
+
+        binding.cbFilterSize.setOnCheckedChangeListener { _, isChecked ->
+            updateList(adapter, size = isChecked)
+        }
+
+        binding.cbFilterType.setOnCheckedChangeListener { _, isChecked ->
+            updateList(adapter, type = isChecked)
+        }
+
+        binding.sortingButton.setOnClickListener {
+            // every click changes to the next state
+            when (it.tag) {
+                TAG_SORT_AZ -> {
+                    binding.sortingButton.background = ResourcesCompat.getDrawable(
+                        resources,
+                        R.drawable.icon_sort_za,
+                        requireContext().theme
+                    )
+                    it.tag = TAG_SORT_ZA
+                    updateList(adapter, sort = TAG_SORT_ZA)
+                }
+                TAG_SORT_ZA -> {
+                    binding.sortingButton.background = ResourcesCompat.getDrawable(
+                        resources,
+                        R.drawable.icon_sort_size_desc,
+                        requireContext().theme
+                    )
+                    it.tag = TAG_SORT_SIZE_DESC
+                    updateList(adapter, sort = TAG_SORT_SIZE_DESC)
+                }
+                TAG_SORT_SIZE_DESC -> {
+                    binding.sortingButton.background = ResourcesCompat.getDrawable(
+                        resources,
+                        R.drawable.icon_sort_size_asc,
+                        requireContext().theme
+                    )
+                    it.tag = TAG_SORT_SIZE_ASC
+                    updateList(adapter, sort = TAG_SORT_SIZE_ASC)
+                }
+                TAG_SORT_SIZE_ASC -> {
+                    binding.sortingButton.background = ResourcesCompat.getDrawable(
+                        resources,
+                        R.drawable.icon_sort_az,
+                        requireContext().theme
+                    )
+                    it.tag = TAG_SORT_AZ
+                    updateList(adapter, sort = TAG_SORT_AZ)
+                }
+                else -> {
+                    binding.sortingButton.background = ResourcesCompat.getDrawable(
+                        resources,
+                        R.drawable.icon_sort_az,
+                        requireContext().theme
+                    )
+                    it.tag = TAG_SORT_AZ
+                    updateList(adapter, sort = TAG_SORT_AZ)
+                }
             }
-            adapter.submitList(list)
-            adapter.notifyDataSetChanged()
+        }
+    }
+
+    private fun updateList(
+        adapter: FolderItemAdapter,
+        list: List<DownloadItem>? = null,
+        size: Boolean? = null,
+        type: Boolean? = null,
+        query: String? = null,
+        sort: String? = null
+    ) {
+        val items: List<DownloadItem>? = list ?: viewModel.folderLiveData.value?.peekContent()
+        val filterSize: Boolean = size ?: binding.cbFilterSize.isChecked
+        val filterType: Boolean = type ?: binding.cbFilterType.isChecked
+        val filterQuery: String? = query ?: viewModel.queryLiveData.value
+        val sortTag: String = sort ?: binding.sortingButton.tag.toString()
+
+        val customizedList = mutableListOf<DownloadItem>()
+
+        if (!items.isNullOrEmpty()) {
+            customizedList.addAll(items)
+            if (filterSize) {
+                customizedList.clear()
+                customizedList.addAll(
+                    items.filter {
+                        it.fileSize > viewModel.getMinFileSize()
+                    }
+                )
+            }
+            if (filterType) {
+                val temp = customizedList.filter {
+                    mediaRegex.find(it.filename) != null
+                }
+                customizedList.clear()
+                customizedList.addAll(temp)
+            }
+            if (!filterQuery.isNullOrBlank()) {
+                val temp = customizedList.filter { item ->
+                    item.filename.contains(filterQuery)
+                }
+                customizedList.clear()
+                customizedList.addAll(temp)
+            }
+        }
+        // if I get passed an empty list I need to empty the list (shouldn't be possible in this particular fragment)
+        when (sortTag) {
+            TAG_SORT_AZ -> {
+                adapter.submitList(
+                    customizedList.sortedBy { item ->
+                        item.filename
+                    }
+                )
+            }
+            TAG_SORT_ZA -> {
+                adapter.submitList(
+                    customizedList.sortedByDescending { item ->
+                        item.filename
+                    }
+                )
+            }
+            TAG_SORT_SIZE_DESC -> {
+                adapter.submitList(
+                    customizedList.sortedByDescending { item ->
+                        item.fileSize
+                    }
+                )
+            }
+            TAG_SORT_SIZE_ASC -> {
+                adapter.submitList(
+                    customizedList.sortedBy { item ->
+                        item.fileSize
+                    }
+                )
+            }
+            else -> {
+                adapter.submitList(
+                    customizedList.sortedBy { item ->
+                        item.filename
+                    }
+                )
+            }
+        }
+        adapter.notifyDataSetChanged()
+        lifecycleScope.launch {
+            delay(100)
+            binding.rvFolderList.layoutManager?.verticalScrollToPosition(
+                requireContext(),
+                position = 0
+            )
         }
     }
 
@@ -117,5 +264,12 @@ class FolderListFragment : Fragment(), DownloadListListener {
 
     override fun onLongClick(item: DownloadItem) {
         // do nothing for now
+    }
+
+    companion object {
+        const val TAG_SORT_AZ = "sort_az_tag"
+        const val TAG_SORT_ZA = "sort_za_tag"
+        const val TAG_SORT_SIZE_ASC = "sort_size_asc_tag"
+        const val TAG_SORT_SIZE_DESC = "sort_size_desc_tag"
     }
 }

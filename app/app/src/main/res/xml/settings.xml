@@ -101,6 +101,15 @@
             app:key="update_regexps"
             app:title="@string/update_regexps" />
 
+        <EditTextPreference
+            android:defaultValue="10"
+            android:key="filter_size_mb"
+            android:inputType="number"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="@string/file_size_filter"
+            android:summary="@string/file_size_filter_description" />
+
         <SwitchPreference
             android:defaultValue="false"
             app:key="use_referral_key"

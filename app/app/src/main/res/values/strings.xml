@@ -510,6 +510,11 @@
     <string name="only_if_auth">Required only if the authentication is enabled in Kodi</string>
     <string name="rd_status">Real Debrid status</string>
     <string name="show_kodi">Show Kodi button</string>
+    <string name="only_big_files">Only big files</string>
+    <string name="filter_type">Only media files (avi etc.)</string>
+    <string name="sort">Sort</string>
+    <string name="file_size_filter">Filter for the files size</string>
+    <string name="file_size_filter_description">Minimum size in MB for the \"Only big files\" option in the folder screen</string>
     <string name="container">Container</string>
     <string name="error_parsing_container">Error parsing the container</string>
 </resources>

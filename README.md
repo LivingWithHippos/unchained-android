@@ -73,6 +73,7 @@ Send me a Bitcoin? Aha ha, just kidding.. unless..? (bitcoin:32XF4QYSnkHfQ8h37dT
 ### Credits :crown:
 
 Logo and symbols inspired by [minimal logo design set](https://www.rawpixel.com/image/843352/minimal-logo-designs-set) offered by [rawpixel.com](https://www.rawpixel.com)
+Icons by [Fluent UI](https://www.svgrepo.com/collection/fluent-ui-icons-outlined/) offered by [SVG Repo](https://www.svgrepo.com/)
  
 ### Thanks, Mr. Unchained :muscle:
 
