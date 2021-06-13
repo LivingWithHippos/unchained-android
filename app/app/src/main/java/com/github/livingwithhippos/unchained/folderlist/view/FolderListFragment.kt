@@ -4,11 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.model.APIError
 import com.github.livingwithhippos.unchained.data.model.ApiConversionError
 import com.github.livingwithhippos.unchained.data.model.DownloadItem
@@ -35,7 +37,8 @@ class FolderListFragment : Fragment(), DownloadListListener {
         super.onDestroyView()
     }
 
-    private val mediaRegex = "\\.(webm|avi|mkv|ogg|MTS|M2TS|TS|mov|wmv|mp4|m4p|m4v|mp2|mpe|mpv|mpg|mpeg|m2v|3gp)$".toRegex()
+    private val mediaRegex =
+        "\\.(webm|avi|mkv|ogg|MTS|M2TS|TS|mov|wmv|mp4|m4p|m4v|mp2|mpe|mpv|mpg|mpeg|m2v|3gp)$".toRegex()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -105,6 +108,34 @@ class FolderListFragment : Fragment(), DownloadListListener {
         binding.cbFilterType.setOnCheckedChangeListener { _, isChecked ->
             updateList(adapter, type = isChecked)
         }
+
+        binding.sortingButton.setOnClickListener {
+            val tag = it.tag
+            // every click changes to the next state
+            when (it.tag) {
+                TAG_SORT_AZ -> {
+                    binding.sortingButton.background = ResourcesCompat.getDrawable(
+                        resources,
+                        R.drawable.icon_sort_za,
+                        requireContext().theme
+                    )
+                    it.tag = TAG_SORT_ZA
+                    updateList(adapter, sort = TAG_SORT_ZA)
+                }
+                TAG_SORT_ZA -> {
+                    binding.sortingButton.background = ResourcesCompat.getDrawable(
+                        resources,
+                        R.drawable.icon_sort_az,
+                        requireContext().theme
+                    )
+                    it.tag = TAG_SORT_AZ
+                    updateList(adapter, sort = TAG_SORT_AZ)
+                }
+                else -> {
+                    updateList(adapter, sort = TAG_SORT_AZ)
+                }
+            }
+        }
     }
 
     private fun updateList(
@@ -112,12 +143,14 @@ class FolderListFragment : Fragment(), DownloadListListener {
         list: List<DownloadItem>? = null,
         size: Boolean? = null,
         type: Boolean? = null,
-        query: String? = null
+        query: String? = null,
+        sort: String? = null
     ) {
         val items: List<DownloadItem>? = list ?: viewModel.folderLiveData.value?.peekContent()
         val filterSize: Boolean = size ?: binding.cbFilterSize.isChecked
         val filterType: Boolean = type ?: binding.cbFilterType.isChecked
         val filterQuery: String? = query ?: viewModel.queryLiveData.value
+        val sortTag: String = sort ?: binding.sortingButton.tag.toString()
 
         val customizedList = mutableListOf<DownloadItem>()
 
@@ -147,9 +180,30 @@ class FolderListFragment : Fragment(), DownloadListListener {
             }
         }
         // if I get passed an empty list I need to empty the list (shouldn't be possible in this particular fragment)
-        adapter.submitList(customizedList.sortedBy { item ->
-            item.filename
-        })
+        when (sortTag) {
+            TAG_SORT_AZ -> {
+                adapter.submitList(
+                    customizedList.sortedBy { item ->
+                        item.filename
+                    }
+                )
+            }
+            TAG_SORT_ZA -> {
+                adapter.submitList(
+                    customizedList.sortedByDescending { item ->
+                        item.filename
+                    }
+                )
+            }
+            else -> {
+                adapter.submitList(
+                    customizedList.sortedBy { item ->
+                        item.filename
+                    }
+                )
+            }
+        }
+
         adapter.notifyDataSetChanged()
     }
 
@@ -165,6 +219,8 @@ class FolderListFragment : Fragment(), DownloadListListener {
 
     companion object {
         // 10 MB
-        const val MAX_SIZE_BYTE = (1024*1024)*10
+        const val MAX_SIZE_BYTE = (1024 * 1024) * 10
+        const val TAG_SORT_AZ = "sort_az_tag"
+        const val TAG_SORT_ZA = "sort_za_tag"
     }
 }

@@ -20,9 +20,24 @@
             android:maxLines="3"
             android:text="@string/files_list"
             app:layout_constraintBottom_toTopOf="@+id/tfFilter"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/loadingCircle"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/loadingCircle"
+            style="@style/Widget.MaterialComponents.CircularProgressIndicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:indeterminate="false"
+            app:indicatorColor="?attr/colorPrimary"
+            app:layout_constraintBottom_toBottomOf="@id/tvTitle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tvTitle"
+            app:layout_constraintTop_toTopOf="@id/tvTitle"
+            app:trackCornerRadius="20dp" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tfFilter"
@@ -36,11 +51,11 @@
             android:importantForAutofill="no"
             app:endIconMode="clear_text"
             app:layout_constraintBottom_toTopOf="@+id/cbFilterSize"
-            app:layout_constraintEnd_toStartOf="@+id/loadingCircle"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvTitle"
+            app:layout_constraintEnd_toStartOf="@id/sortingButton"
             app:layout_constraintVertical_chainStyle="packed"
             app:startIconDrawable="@drawable/icon_search">
 
@@ -52,21 +67,20 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.progressindicator.CircularProgressIndicator
-            android:id="@+id/loadingCircle"
-            style="@style/Widget.MaterialComponents.CircularProgressIndicator"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
+
+        <ImageButton
+            android:id="@+id/sortingButton"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginStart="10dp"
             android:layout_marginEnd="20dp"
-            android:indeterminate="false"
-            app:indicatorColor="?attr/colorPrimary"
+            android:contentDescription="@string/sort"
+            android:background="@drawable/icon_sort_az"
+            android:tag="sort_az_tag"
             app:layout_constraintBottom_toBottomOf="@id/tfFilter"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/tfFilter"
-            app:layout_constraintTop_toTopOf="@id/tfFilter"
-            app:trackCornerRadius="20dp" />
-
+            app:layout_constraintStart_toEndOf="@+id/tfFilter"
+            app:layout_constraintTop_toTopOf="@id/tfFilter" />
 
         <CheckBox
             android:id="@+id/cbFilterSize"

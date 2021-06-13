@@ -511,4 +511,5 @@
     <string name="show_kodi">Show Kodi button</string>
     <string name="filter_size"><![CDATA[Only big files (>10 MB)]]></string>
     <string name="filter_type">Only media files (avi etc.)</string>
+    <string name="sort">Sort</string>
 </resources>

@@ -300,4 +300,5 @@
     <string name="show_kodi">Afficher le bouton de Kodi</string>
     <string name="filter_type">Uniquement les fichiers multimédia (avi, etc.)</string>
     <string name="filter_size"><![CDATA[Seulement les gros fichiers (>10 Mo)]]></string>
+    <string name="sort">Trier</string>
 </resources>
