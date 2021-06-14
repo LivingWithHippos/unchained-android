@@ -49,12 +49,11 @@
 
             <TextView
                 android:id="@+id/tvName"
-                style="@style/TextAppearance.UnchainedTheme.Body1"
+                style="@style/TextAppearance.UnchainedTheme.Body2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@{item.filename, default=`File Name`}"
-                android:textSize="14sp"
-                android:maxLines="3"
+                android:text="@{item.filename, default=`Big.Buck.Bunny.BDRip.S01E16.End.Of.The.Buckening.720p.WEB-DL.`}"
+                android:maxLines="4"
                 android:ellipsize="middle"
                 android:layout_marginEnd="5dp"
                 app:layout_constraintBottom_toTopOf="@+id/tvSize"
