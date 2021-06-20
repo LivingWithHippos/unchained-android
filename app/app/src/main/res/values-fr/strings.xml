@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="loading_auth_link">Chargement de l’authentification…</string>
     <string name="please_visit">Veuillez vous rendre à\u0020</string>
     <string name="link">Lien</string>
@@ -202,9 +202,9 @@
     <string name="network_error">Erreur réseau</string>
     <string name="torrent_channel_description">Canal de notification pour l’état du téléchargement des torrents</string>
     <string name="torrent_in_progress">Téléchargement du torrent en cours</string>
-    <plurals name="seeders_format">
+    <plurals name="seeders_format" tools:ignore="UnusedQuantity">
         <item quantity="one">%d seeder</item>
-        <item quantity="other">%d seeders</item>
+        <item quantity="many">%d seeders</item>
     </plurals>
     <string name="seeders_string_format">seeder/s: %s</string>
     <string name="torrent_in_progress_format">%1$d%% - %2$.2f Mo/s</string>
@@ -306,4 +306,5 @@
     <string name="container">Container</string>
     <string name="error_parsing_container">Erreur d\'analyse du conteneur</string>
     <string name="upload_file_description">Téléchargez un fichier .torrent ou un conteneur RSDF, CCF, CCF3 ou DLC depuis votre téléphone.</string>
+    <string name="loading_container_file">Chargement du conteneur...</string>
 </resources>

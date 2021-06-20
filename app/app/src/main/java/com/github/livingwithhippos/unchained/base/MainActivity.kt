@@ -33,6 +33,7 @@ import com.github.livingwithhippos.unchained.databinding.ActivityMainBinding
 import com.github.livingwithhippos.unchained.settings.SettingsActivity
 import com.github.livingwithhippos.unchained.settings.SettingsFragment.Companion.KEY_TORRENT_NOTIFICATIONS
 import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewModel
+import com.github.livingwithhippos.unchained.utilities.CONTAINER_EXTENSION_PATTERN
 import com.github.livingwithhippos.unchained.utilities.EventObserver
 import com.github.livingwithhippos.unchained.utilities.SCHEME_HTTP
 import com.github.livingwithhippos.unchained.utilities.SCHEME_HTTPS
@@ -44,6 +45,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -261,12 +263,14 @@ class MainActivity : AppCompatActivity() {
     private fun getIntentData() {
 
         when (intent?.action) {
+            // shared text link
             Intent.ACTION_SEND -> {
                 if (intent.type == "text/plain")
                     intent.getStringExtra(Intent.EXTRA_TEXT)?.let { text ->
                         viewModel.downloadSupportedLink(text)
                     }
             }
+            // files clicked
             Intent.ACTION_VIEW -> {
                 /* Implicit intent with path to torrent file or magnet link */
 
@@ -277,25 +281,28 @@ class MainActivity : AppCompatActivity() {
                     when (data.scheme) {
                         // clicked on a torrent file or a magnet link or .unchained file
                         SCHEME_MAGNET, SCHEME_CONTENT, SCHEME_FILE -> {
-                            // check if it's a search plugin
-                            if (data.path?.endsWith(TYPE_UNCHAINED) == true) {
-                                addSearchPlugin(data)
-                            } else
-                            // it's a magnet/torrent, check auth state before loading it
-                                viewModel.authenticationState.observeOnce(
-                                    this,
-                                    { auth ->
-                                        when (auth.peekContent()) {
-                                            AuthenticationState.AUTHENTICATED -> processLinkIntent(
-                                                data
-                                            )
-                                            AuthenticationState.AUTHENTICATED_NO_PREMIUM -> baseContext.showToast(
-                                                R.string.premium_needed_torrent
-                                            )
-                                            else -> showToast(R.string.please_login)
+                            when {
+                                // check if it's a search plugin
+                                data.path?.endsWith(TYPE_UNCHAINED) == true -> addSearchPlugin(data)
+                                else -> {
+                                    // it's a magnet/torrent, check auth state before loading it
+                                    viewModel.authenticationState.observeOnce(
+                                        this,
+                                        { auth ->
+                                            when (auth.peekContent()) {
+                                                AuthenticationState.AUTHENTICATED -> processLinkIntent(
+                                                    data
+                                                )
+                                                AuthenticationState.AUTHENTICATED_NO_PREMIUM -> baseContext.showToast(
+                                                    R.string.premium_needed_torrent
+                                                )
+                                                else -> showToast(R.string.please_login)
+                                            }
                                         }
-                                    }
-                                )
+                                    )
+                                }
+
+                            }
                         }
                         SCHEME_HTTP, SCHEME_HTTPS -> {
                             showToast("You activated the http/s scheme somehow")

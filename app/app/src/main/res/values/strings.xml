@@ -517,4 +517,5 @@
     <string name="file_size_filter_description">Minimum size in MB for the \"Only big files\" option in the folder screen</string>
     <string name="container">Container</string>
     <string name="error_parsing_container">Error parsing the container</string>
+    <string name="loading_container_file">Loading container file…</string>
 </resources>

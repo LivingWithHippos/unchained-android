@@ -50,7 +50,7 @@ fun String?.isTorrent(): Boolean {
 /**
  * check if a String is a container link
  */
-fun String?.isContainer(): Boolean {
+fun String?.isContainerWebLink(): Boolean {
     if (this == null)
         return false
     val m: Matcher = Pattern.compile(CONTAINER_PATTERN).matcher(this)

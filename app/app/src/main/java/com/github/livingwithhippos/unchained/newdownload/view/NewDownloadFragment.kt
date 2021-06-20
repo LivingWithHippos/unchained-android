@@ -27,6 +27,7 @@ import com.github.livingwithhippos.unchained.databinding.NewDownloadFragmentBind
 import com.github.livingwithhippos.unchained.lists.view.ListsTabFragment
 import com.github.livingwithhippos.unchained.newdownload.viewmodel.Link
 import com.github.livingwithhippos.unchained.newdownload.viewmodel.NewDownloadViewModel
+import com.github.livingwithhippos.unchained.utilities.CONTAINER_EXTENSION_PATTERN
 import com.github.livingwithhippos.unchained.utilities.EventObserver
 import com.github.livingwithhippos.unchained.utilities.REMOTE_TRAFFIC_ON
 import com.github.livingwithhippos.unchained.utilities.SCHEME_HTTP
@@ -34,7 +35,7 @@ import com.github.livingwithhippos.unchained.utilities.SCHEME_HTTPS
 import com.github.livingwithhippos.unchained.utilities.SCHEME_MAGNET
 import com.github.livingwithhippos.unchained.utilities.extension.getApiErrorMessage
 import com.github.livingwithhippos.unchained.utilities.extension.getClipboardText
-import com.github.livingwithhippos.unchained.utilities.extension.isContainer
+import com.github.livingwithhippos.unchained.utilities.extension.isContainerWebLink
 import com.github.livingwithhippos.unchained.utilities.extension.isMagnet
 import com.github.livingwithhippos.unchained.utilities.extension.isTorrent
 import com.github.livingwithhippos.unchained.utilities.extension.isWebUrl
@@ -194,7 +195,7 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
                     link.isBlank() -> {
                         context?.showToast(R.string.please_insert_url)
                     }
-                    link.isContainer() -> {
+                    link.isContainerWebLink() -> {
                         viewModel.unrestrictContainer(link)
                     }
                     else -> {
@@ -243,8 +244,19 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
                         downloadBinding.bUnrestrict.performClick()
                     }
                     SCHEME_CONTENT, SCHEME_FILE -> {
-                        context?.showToast(R.string.loading_torrent_file)
-                        loadTorrent(link)
+                        when {
+                            // check if it's a container
+                            CONTAINER_EXTENSION_PATTERN.toRegex().matches(link.path ?: "") -> {
+                                context?.showToast(R.string.loading_container_file)
+                                loadContainer(link)
+
+                            }
+                            link.path?.endsWith(".torrent") == true -> {
+                                context?.showToast(R.string.loading_torrent_file)
+                                loadTorrent(link)
+                            }
+                            else -> Timber.e("Unsupported content/file passed to NewDownloadFragment")
+                        }
                     }
                     SCHEME_HTTP, SCHEME_HTTPS -> {
                         if (!link.toString().endsWith(".torrent"))
