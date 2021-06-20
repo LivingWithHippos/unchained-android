@@ -1,8 +1,8 @@
 apply plugin: 'com.android.application'
+apply plugin: 'dagger.hilt.android.plugin'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: "androidx.navigation.safeargs.kotlin"
-apply plugin: 'dagger.hilt.android.plugin'
 
 def keyPropertiesFile = rootProject.file("signingkey.properties")
 def keyProperties = new Properties()
@@ -154,7 +154,7 @@ dependencies {
     def constraintlayout_version = '2.0.4'
     def coroutines_version = "1.5.0"
     def flexbox_version = "3.0.0"
-    def fragment_version = '1.3.4'
+    def fragment_version = '1.3.5'
     def jsoup_version = '1.13.1'
     def lifecycle_version = "2.3.1"
     def material_version = '1.3.0'
