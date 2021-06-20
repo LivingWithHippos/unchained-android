@@ -205,6 +205,7 @@
     <plurals name="seeders_format" tools:ignore="UnusedQuantity">
         <item quantity="one">%d seeder</item>
         <item quantity="many">%d seeders</item>
+        <item quantity="other">%d seeders</item>
     </plurals>
     <string name="seeders_string_format">seeder/s: %s</string>
     <string name="torrent_in_progress_format">%1$d%% - %2$.2f Mo/s</string>
@@ -258,17 +259,20 @@
     <string name="plugin_install_not_installed">Plugin non installé</string>
     <string name="plugin_install_error_newer">Le plugin est déjà installé avec une version plus récente</string>
     <string name="no_links">Aucun lien</string>
-    <plurals name="magnet_format">
+    <plurals name="magnet_format" tools:ignore="UnusedQuantity">
         <item quantity="one">%d magnet</item>
         <item quantity="other">%d magnets</item>
+        <item quantity="many">%d magnets</item>
     </plurals>
-    <plurals name="torrent_format">
+    <plurals name="torrent_format" tools:ignore="UnusedQuantity">
         <item quantity="one">%d torrent</item>
         <item quantity="other">%d torrents</item>
+        <item quantity="many">%d torrents</item>
     </plurals>
-    <plurals name="links_format">
+    <plurals name="links_format" tools:ignore="UnusedQuantity">
         <item quantity="one">%d lien</item>
         <item quantity="other">%d liens</item>
+        <item quantity="many">%d liens</item>
     </plurals>
     <string name="size_format">taille: %s</string>
     <string name="leechers_string_format">leecher/s: %s</string>
@@ -306,5 +310,5 @@
     <string name="container">Container</string>
     <string name="error_parsing_container">Erreur d\'analyse du conteneur</string>
     <string name="upload_file_description">Téléchargez un fichier .torrent ou un conteneur RSDF, CCF, CCF3 ou DLC depuis votre téléphone.</string>
-    <string name="loading_container_file">Chargement du conteneur...</string>
+    <string name="loading_container_file">Chargement du conteneur…</string>
 </resources>
