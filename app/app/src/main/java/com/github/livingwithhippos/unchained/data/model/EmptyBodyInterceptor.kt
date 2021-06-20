@@ -14,7 +14,7 @@ object EmptyBodyInterceptor : Interceptor {
                 return response
             }
 
-            if ((response.body?.contentLength() ?: -1) >= 0) {
+            if ((response.peekBody(20).contentLength()) >= 0) {
                 return response.newBuilder().code(200).build()
             }
 
