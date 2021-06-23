@@ -8,33 +8,23 @@ import okhttp3.ResponseBody.Companion.toResponseBody
 object EmptyBodyInterceptor : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
-        try {
-            val response = chain.proceed(chain.request())
-            if (!response.isSuccessful || response.code.let { it != 204 && it != 205 }) {
-                return response
-            }
-
-            if ((response.peekBody(20).contentLength()) >= 0) {
-                return response.newBuilder().code(200).build()
-            }
-
-            // optionally we could return a new JSON item with the original code in it
-            // val emptyBody = "{original_code: ${response.code} }".toResponseBody("application/json".toMediaType())
-            val emptyBody = "".toResponseBody("text/plain".toMediaType())
-
+        val response = chain.proceed(chain.request())
+        if (!response.isSuccessful || response.code.let { it != 204 && it != 205 }) {
             return response
-                .newBuilder()
-                .code(200)
-                .body(emptyBody)
-                .build()
-        } catch (e: Exception) {
-            val emptyBody = "".toResponseBody("text/plain".toMediaType())
-
-            return Response.Builder()
-                // Sorry, I'm a teapot
-                .code(418)
-                .body(emptyBody)
-                .build()
         }
+
+        if ((response.peekBody(20).contentLength()) >= 0) {
+            return response.newBuilder().code(200).build()
+        }
+
+        // optionally we could return a new JSON item with the original code in it
+        // val emptyBody = "{original_code: ${response.code} }".toResponseBody("application/json".toMediaType())
+        val emptyBody = "".toResponseBody("text/plain".toMediaType())
+
+        return response
+            .newBuilder()
+            .code(200)
+            .body(emptyBody)
+            .build()
     }
 }

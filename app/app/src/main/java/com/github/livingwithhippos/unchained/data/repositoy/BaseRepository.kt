@@ -51,13 +51,17 @@ open class BaseRepository {
         call: suspend () -> Response<T>,
         errorMessage: String
     ): NetworkResponse<T> {
-        val response = call.invoke()
-        if (response.isSuccessful) {
-            val body = response.body()
-            if (body != null)
-                return NetworkResponse.Success(body)
-            else
-                return NetworkResponse.SuccessEmptyBody(response.code())
+        try {
+            val response: Response<T> = call.invoke()
+            if (response.isSuccessful) {
+                val body = response.body()
+                return if (body != null)
+                    NetworkResponse.Success(body)
+                else
+                    NetworkResponse.SuccessEmptyBody(response.code())
+            }
+        } catch (e: Exception) {
+            NetworkResponse.Error(e)
         }
 
         return NetworkResponse.Error(IOException("Error Occurred while getting api result, error : $errorMessage"))
