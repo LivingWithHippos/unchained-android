@@ -57,7 +57,7 @@ class MainActivityViewModel @Inject constructor(
 
     val authenticationState = MutableLiveData<Event<AuthenticationState>>()
 
-    val userLiveData = MutableLiveData<User>()
+    val userLiveData = MutableLiveData<User?>()
 
     val externalLinkLiveData = MutableLiveData<Event<Uri>>()
 
@@ -77,9 +77,6 @@ class MainActivityViewModel @Inject constructor(
 
     private var refreshJob: Job? = null
 
-    // fixme: this is here because userLiveData.postValue(user) is throwing an unsafe error
-    //  but auto-correcting it changes the value of val authenticationState = MutableLiveData<Event<AuthenticationState>>() to a nullable one
-    @SuppressLint("NullSafeMutableLiveData")
     fun fetchFirstWorkingCredentials() {
         viewModelScope.launch {
 
