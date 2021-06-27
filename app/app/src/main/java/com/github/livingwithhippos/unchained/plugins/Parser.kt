@@ -21,7 +21,7 @@ import timber.log.Timber
 import java.net.SocketTimeoutException
 
 class Parser(
-    val dohClient: DnsOverHttps
+    private val dohClient: DnsOverHttps
 ) {
 
     private fun isPluginSupported(plugin: Plugin): Boolean {
@@ -192,72 +192,80 @@ class Parser(
 
                 // parse the cells according to the selected plugin
                 val columns = rows[index].select("td")
-                val name =
-                    cleanName(
-                        parseSingle(
-                            regexes.nameRegex,
-                            columns[tableLink.columns.nameColumn].html(),
-                            baseUrl
-                        ) ?: ""
-                    )
-
+                var name: String? = null
                 var details: String? = null
-                if (tableLink.columns.detailsColumn != null)
-                    details = parseSingle(
-                        regexes.detailsRegex,
-                        columns[tableLink.columns.detailsColumn].html(),
-                        baseUrl
-                    )
                 var seeders: String? = null
-                if (tableLink.columns.seedersColumn != null)
-                    seeders = parseSingle(
-                        regexes.seedersRegex,
-                        columns[tableLink.columns.seedersColumn].html(),
-                        baseUrl
-                    )
                 var leechers: String? = null
-                if (tableLink.columns.leechersColumn != null)
-                    leechers = parseSingle(
-                        regexes.leechersRegex,
-                        columns[tableLink.columns.leechersColumn].html(),
-                        baseUrl
-                    )
                 var size: String? = null
-                if (tableLink.columns.sizeColumn != null)
-                    size = parseSingle(
-                        regexes.sizeRegex,
-                        columns[tableLink.columns.sizeColumn].html(),
-                        baseUrl
-                    )
                 var magnets: List<String> = emptyList()
-                if (tableLink.columns.magnetColumn != null)
-                    magnets = parseList(
-                        regexes.magnetRegex,
-                        columns[tableLink.columns.magnetColumn].html(),
-                        baseUrl
-                    ).map {
-                        // this function cleans links from html codes such as %3A, %3F etc.
-                        it.removeWebFormatting()
-                    }
                 var torrents: List<String> = emptyList()
-                if (tableLink.columns.torrentColumn != null)
-                    torrents = parseList(
-                        regexes.torrentRegexes,
-                        columns[tableLink.columns.torrentColumn].html(),
-                        baseUrl
-                    )
+                try {
+                    name =
+                        cleanName(
+                            parseSingle(
+                                regexes.nameRegex,
+                                columns[tableLink.columns.nameColumn].html(),
+                                baseUrl
+                            ) ?: ""
+                        )
 
-                tableItems.add(
-                    ScrapedItem(
-                        name = name,
-                        link = details,
-                        seeders = seeders,
-                        leechers = leechers,
-                        size = size,
-                        magnets = magnets,
-                        torrents = torrents
+                    if (tableLink.columns.detailsColumn != null)
+                        details = parseSingle(
+                            regexes.detailsRegex,
+                            columns[tableLink.columns.detailsColumn].html(),
+                            baseUrl
+                        )
+                    if (tableLink.columns.seedersColumn != null)
+                        seeders = parseSingle(
+                            regexes.seedersRegex,
+                            columns[tableLink.columns.seedersColumn].html(),
+                            baseUrl
+                        )
+                    if (tableLink.columns.leechersColumn != null)
+                        leechers = parseSingle(
+                            regexes.leechersRegex,
+                            columns[tableLink.columns.leechersColumn].html(),
+                            baseUrl
+                        )
+                    if (tableLink.columns.sizeColumn != null)
+                        size = parseSingle(
+                            regexes.sizeRegex,
+                            columns[tableLink.columns.sizeColumn].html(),
+                            baseUrl
+                        )
+                    if (tableLink.columns.magnetColumn != null)
+                        magnets = parseList(
+                            regexes.magnetRegex,
+                            columns[tableLink.columns.magnetColumn].html(),
+                            baseUrl
+                        ).map {
+                            // this function cleans links from html codes such as %3A, %3F etc.
+                            it.removeWebFormatting()
+                        }
+                    if (tableLink.columns.torrentColumn != null)
+                        torrents = parseList(
+                            regexes.torrentRegexes,
+                            columns[tableLink.columns.torrentColumn].html(),
+                            baseUrl
+                        )
+
+
+                } catch (e: IndexOutOfBoundsException) {
+                    Timber.d("skipping row")
+                }
+
+                if (name != null && (magnets.isNotEmpty() || torrents.isNotEmpty()))
+                    tableItems.add(
+                        ScrapedItem(
+                            name = name,
+                            link = details,
+                            seeders = seeders,
+                            leechers = leechers,
+                            size = size,
+                            magnets = magnets,
+                            torrents = torrents
+                        )
                     )
-                )
             }
         } catch (exception: NullPointerException) {
             Timber.d("Some not nullable values were null: ${exception.message}")
