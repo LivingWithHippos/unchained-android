@@ -2,7 +2,11 @@ package com.github.livingwithhippos.unchained.start.viewmodel
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkCapabilities
 import android.net.Uri
+import android.os.Build
 import android.os.Environment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
@@ -53,7 +57,7 @@ class MainActivityViewModel @Inject constructor(
 
     val authenticationState = MutableLiveData<Event<AuthenticationState>>()
 
-    val userLiveData = MutableLiveData<User>()
+    val userLiveData = MutableLiveData<User?>()
 
     val externalLinkLiveData = MutableLiveData<Event<Uri>>()
 
@@ -63,6 +67,9 @@ class MainActivityViewModel @Inject constructor(
 
     val listStateLiveData = MutableLiveData<Event<ListsTabFragment.ListState>>()
 
+    val connectivityLiveData = MutableLiveData<Boolean>()
+    // val currentNetworkLiveData = MutableLiveData<Network?>()
+
     // todo: use a better name to reflect the difference between this and externalLinkLiveData
     val linkLiveData = MutableLiveData<Event<String>>()
 
@@ -70,9 +77,6 @@ class MainActivityViewModel @Inject constructor(
 
     private var refreshJob: Job? = null
 
-    // fixme: this is here because userLiveData.postValue(user) is throwing an unsafe error
-    //  but auto-correcting it changes the value of val authenticationState = MutableLiveData<Event<AuthenticationState>>() to a nullable one
-    @SuppressLint("NullSafeMutableLiveData")
     fun fetchFirstWorkingCredentials() {
         viewModelScope.launch {
 
@@ -326,10 +330,10 @@ class MainActivityViewModel @Inject constructor(
                     "https?://(www.)?github.com/$username/$repo/$type/$branch/$path".toRegex()
                 val match: MatchResult = regex.find(github) ?: return null
                 return "https://raw.githubusercontent.com/" +
-                    match.groupValues[2] + "/" +
-                    match.groupValues[3] + "/" +
-                    match.groupValues[5] + "/" +
-                    match.groupValues[6]
+                        match.groupValues[2] + "/" +
+                        match.groupValues[3] + "/" +
+                        match.groupValues[5] + "/" +
+                        match.groupValues[6]
             }
             github.startsWith("https://raw.githubusercontent.com") -> {
                 return github
@@ -406,6 +410,50 @@ class MainActivityViewModel @Inject constructor(
             } else {
                 messageLiveData.postEvent(R.string.plugin_install_not_installed)
             }
+        }
+    }
+
+    private val networkCallback: ConnectivityManager.NetworkCallback =
+        object : ConnectivityManager.NetworkCallback() {
+            override fun onAvailable(network: Network) {
+                // currentNetworkLiveData.postValue(network)
+                connectivityLiveData.postValue(true)
+            }
+
+            override fun onLost(network: Network) {
+                Timber.e(
+                    "The application no longer has a default network. The last default network was %s",
+                    network
+                )
+                //currentNetworkLiveData.postValue(null)
+                connectivityLiveData.postValue(false)
+            }
+        }
+
+    fun setupConnectivityCheck(context: Context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            val connectivityManager =
+                context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            connectivityManager.registerDefaultNetworkCallback(networkCallback)
+        } else {
+            checkConnectivity(context)
+        }
+    }
+
+    fun checkConnectivity(context: Context) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+            val connectivityManager =
+                context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            var isConnected = false
+            val networks = connectivityManager.allNetworks
+            for (net in networks) {
+                val netInfo = connectivityManager.getNetworkCapabilities(net)
+                if (netInfo != null && netInfo.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)) {
+                    isConnected = true
+                    break
+                }
+            }
+            connectivityLiveData.postValue(isConnected)
         }
     }
 

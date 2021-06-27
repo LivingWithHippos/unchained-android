@@ -307,4 +307,5 @@
     <string name="error_parsing_container">Errore di analisi del contenitore</string>
     <string name="upload_file_description">Carica un file .torrent o un contenitore RSDF, CCF, CCF3, DLC dal tuo telefono</string>
     <string name="loading_container_file">Caricamento del contenitore…</string>
+    <string name="no_network_connection">Nessuna connessione a internet</string>
 </resources>
