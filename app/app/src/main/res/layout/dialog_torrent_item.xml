@@ -15,6 +15,11 @@
             type="com.github.livingwithhippos.unchained.data.model.TorrentItem" />
     </data>
 
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
     <FrameLayout
         android:id="@+id/rooLayout"
         android:layout_width="match_parent"
@@ -89,5 +94,7 @@
         </LinearLayout>
 
     </FrameLayout>
+
+    </androidx.core.widget.NestedScrollView>
 
 </layout>
