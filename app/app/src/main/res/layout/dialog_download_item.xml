@@ -9,8 +9,16 @@
             name="deleteConfirmation"
             type="Boolean"
             />
+
+        <variable
+            name="download"
+            type="com.github.livingwithhippos.unchained.data.model.DownloadItem"
+            />
     </data>
 
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
     <FrameLayout
         android:id="@+id/rooLayout"
         android:layout_width="match_parent"
@@ -87,4 +95,5 @@
 
     </FrameLayout>
 
+    </androidx.core.widget.NestedScrollView>
 </layout>

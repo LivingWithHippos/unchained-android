@@ -425,14 +425,22 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
         val authState = activityViewModel.authenticationState.value?.peekContent()
         if (authState == AuthenticationState.AUTHENTICATED) {
             val action = ListsTabFragmentDirections.actionListsTabToDownloadDetails(item)
-            findNavController().navigate(action)
+            var loop = 0
+            val controller = findNavController()
+            lifecycleScope.launch {
+                while (loop++ < 20 && controller.currentDestination?.id != R.id.list_tabs_dest) {
+                    delay(100)
+                }
+                if (controller.currentDestination?.id == R.id.list_tabs_dest)
+                    controller.navigate(action)
+            }
         } else
             context?.showToast(R.string.premium_needed)
     }
 
     override fun onLongClick(item: DownloadItem) {
-        val dialog = DownloadContextualDialogFragment(item)
-        dialog.show(parentFragmentManager, "DownloadContextualDialogFragment")
+        val action = ListsTabFragmentDirections.actionListTabsDestToDownloadContextualDialogFragment(item)
+        findNavController().navigate(action)
     }
 
     override fun onClick(item: TorrentItem) {

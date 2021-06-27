@@ -7,23 +7,17 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.navArgs
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.databinding.DialogDownloadItemBinding
 import com.github.livingwithhippos.unchained.lists.viewmodel.DownloadDialogViewModel
+import com.github.livingwithhippos.unchained.newdownload.view.NewDownloadFragmentArgs
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
-class DownloadContextualDialogFragment : DialogFragment {
+class DownloadContextualDialogFragment : DialogFragment() {
 
-    private var item: DownloadItem? = null
-
-    val viewModel: DownloadDialogViewModel by viewModels()
-
-    constructor(item: DownloadItem) : super() {
-        this.item = item
-    }
-
-    constructor() : super()
+    private val args: DownloadContextualDialogFragmentArgs by navArgs()
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let {
@@ -37,56 +31,40 @@ class DownloadContextualDialogFragment : DialogFragment {
             val binding = DialogDownloadItemBinding.inflate(inflater)
             // don't show the delete confirmation at start
             binding.deleteConfirmation = false
-
-            var title = ""
-            item?.let { item ->
-                title = item.filename
-                viewModel.setItem(item)
-            }
-
-            if (item == null) {
-                item = viewModel.getItem()
-                title = item?.filename ?: ""
-            }
+            binding.download = args.download
 
             binding.bDelete.setOnClickListener {
                 binding.deleteConfirmation = true
             }
 
             binding.bConfirmDelete.setOnClickListener {
-                item?.let { download ->
-                    setFragmentResult(
-                        "downloadActionKey",
-                        bundleOf("deletedDownloadKey" to download.id)
-                    )
-                    dismiss()
-                }
+                // partial workaround for navigation related crash
+                dismiss()
+                setFragmentResult(
+                    "downloadActionKey",
+                    bundleOf("deletedDownloadKey" to args.download.id)
+                )
             }
 
             binding.bOpen.setOnClickListener {
-
-                item?.let { download ->
-                    setFragmentResult(
-                        "downloadActionKey",
-                        bundleOf("openedDownloadItem" to download)
-                    )
-                    dismiss()
-                }
+                dismiss()
+                setFragmentResult(
+                    "downloadActionKey",
+                    bundleOf("openedDownloadItem" to args.download)
+                )
             }
 
             binding.bShare.setOnClickListener {
-                item?.let { item ->
-                    val shareIntent = Intent(Intent.ACTION_SEND)
-                    shareIntent.type = "text/plain"
-                    val shareLink = item.download
-                    shareIntent.putExtra(Intent.EXTRA_TEXT, shareLink)
-                    startActivity(Intent.createChooser(shareIntent, getString(R.string.share_with)))
-                    dismiss()
-                }
+                val shareIntent = Intent(Intent.ACTION_SEND)
+                shareIntent.type = "text/plain"
+                val shareLink = args.download.download
+                shareIntent.putExtra(Intent.EXTRA_TEXT, shareLink)
+                startActivity(Intent.createChooser(shareIntent, getString(R.string.share_with)))
+                dismiss()
             }
 
             builder.setView(binding.root)
-                .setTitle(title)
+                .setTitle(args.download.filename)
                 .setNeutralButton(getString(R.string.close)) { dialog, _ ->
                     dialog.cancel()
                 }
