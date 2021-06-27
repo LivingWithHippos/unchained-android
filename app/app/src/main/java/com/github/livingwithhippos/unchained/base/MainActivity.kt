@@ -33,7 +33,6 @@ import com.github.livingwithhippos.unchained.databinding.ActivityMainBinding
 import com.github.livingwithhippos.unchained.settings.SettingsActivity
 import com.github.livingwithhippos.unchained.settings.SettingsFragment.Companion.KEY_TORRENT_NOTIFICATIONS
 import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewModel
-import com.github.livingwithhippos.unchained.utilities.CONTAINER_EXTENSION_PATTERN
 import com.github.livingwithhippos.unchained.utilities.EventObserver
 import com.github.livingwithhippos.unchained.utilities.SCHEME_HTTP
 import com.github.livingwithhippos.unchained.utilities.SCHEME_HTTPS
@@ -222,6 +221,17 @@ class MainActivity : AppCompatActivity() {
             val notificationIntent = Intent(this, ForegroundTorrentService::class.java)
             ContextCompat.startForegroundService(this, notificationIntent)
         }
+
+
+        viewModel.connectivityLiveData.observe(this, {
+            if (it) {
+                Timber.d("connection enabled")
+            } else {
+                Timber.e("connection disabled")
+                applicationContext.showToast(R.string.no_network_connection)
+            }
+        })
+        viewModel.setupConnectivityCheck(applicationContext)
     }
 
     private fun downloadPlugin(link: String) {
