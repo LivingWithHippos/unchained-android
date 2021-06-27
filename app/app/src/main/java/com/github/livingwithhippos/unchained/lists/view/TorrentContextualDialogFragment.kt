@@ -5,24 +5,14 @@ import android.os.Bundle
 import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.setFragmentResult
-import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.navArgs
 import com.github.livingwithhippos.unchained.R
-import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.databinding.DialogTorrentItemBinding
-import com.github.livingwithhippos.unchained.lists.viewmodel.TorrentDialogViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
-class TorrentContextualDialogFragment : DialogFragment {
+class TorrentContextualDialogFragment : DialogFragment() {
 
-    private var item: TorrentItem? = null
-
-    val viewModel: TorrentDialogViewModel by viewModels()
-
-    constructor(item: TorrentItem) : super() {
-        this.item = item
-    }
-
-    constructor() : super()
+    private val args: TorrentContextualDialogFragmentArgs by navArgs()
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let {
@@ -37,53 +27,41 @@ class TorrentContextualDialogFragment : DialogFragment {
             // don't show the delete confirmation at start
             binding.deleteConfirmation = false
 
-            var title = ""
-            item?.let { item ->
-                title = item.filename
-                viewModel.setItem(item)
-            }
-
-            if (item == null) {
-                item = viewModel.getItem()
-                title = item?.filename ?: ""
-            }
+            binding.torrent = args.torrent
 
             binding.bDelete.setOnClickListener {
                 binding.deleteConfirmation = true
             }
 
             binding.bConfirmDelete.setOnClickListener {
-                item?.let { torrent ->
-                    setFragmentResult(
-                        "torrentActionKey",
-                        bundleOf("deletedTorrentKey" to torrent.id)
-                    )
-                    dismiss()
-                }
+                // note: if you call dismiss() after the setFragmentResult() the navigation
+                // happens too quickly while this fragment is still on the navigation stack
+                // and it will crash the app
+                dismiss()
+                setFragmentResult(
+                    "torrentActionKey",
+                    bundleOf("deletedTorrentKey" to args.torrent.id)
+                )
             }
 
             binding.bOpen.setOnClickListener {
-                item?.let { torrent ->
-                    setFragmentResult(
-                        "torrentActionKey",
-                        bundleOf("openedTorrentItem" to torrent.id)
-                    )
-                    dismiss()
-                }
+                dismiss()
+                setFragmentResult(
+                    "torrentActionKey",
+                    bundleOf("openedTorrentItem" to args.torrent.id)
+                )
             }
 
             binding.bDownload.setOnClickListener {
-                item?.let { torrent ->
-                    setFragmentResult(
-                        "torrentActionKey",
-                        bundleOf("downloadedTorrentItem" to torrent)
-                    )
-                    dismiss()
-                }
+                dismiss()
+                setFragmentResult(
+                    "torrentActionKey",
+                    bundleOf("downloadedTorrentItem" to args.torrent)
+                )
             }
 
             builder.setView(binding.root)
-                .setTitle(title)
+                .setTitle(args.torrent.filename)
                 .setNeutralButton(getString(R.string.close)) { dialog, _ ->
                     dialog.cancel()
                 }

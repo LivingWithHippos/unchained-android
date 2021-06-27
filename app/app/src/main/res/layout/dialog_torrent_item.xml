@@ -3,73 +3,78 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
         <import type="android.view.View" />
 
         <variable
             name="deleteConfirmation"
-            type="Boolean"
-            />
+            type="Boolean" />
+
+        <variable
+            name="torrent"
+            type="com.github.livingwithhippos.unchained.data.model.TorrentItem" />
     </data>
 
     <FrameLayout
         android:id="@+id/rooLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="10dp" >
+        android:layout_marginBottom="10dp">
 
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:visibility="@{deleteConfirmation == true ? View.GONE : View.VISIBLE}" >
-
-        <Button
-            android:id="@+id/bOpen"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:minWidth="150dp"
-            android:text="@string/open"
-            app:icon="@drawable/icon_open"
-            style="@style/Widget.MaterialComponents.Button.Icon" />
-
-        <Button
-            android:id="@+id/bDownload"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:minWidth="150dp"
-            android:text="@string/download"
-            app:icon="@drawable/icon_download"
-            style="@style/Widget.MaterialComponents.Button.Icon" />
-
-        <Button
-            android:id="@+id/bDelete"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:minWidth="150dp"
-            android:text="@string/remove"
-            app:icon="@drawable/icon_delete"
-            style="@style/Widget.Unchained.Button.Icon.Secondary" />
-    </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
             android:gravity="center"
-            android:visibility="@{deleteConfirmation == true ? View.VISIBLE : View.GONE}" >
+            android:orientation="vertical"
+            android:visibility="@{deleteConfirmation == true ? View.GONE : View.VISIBLE}">
+
+            <Button
+                android:id="@+id/bOpen"
+                style="@style/Widget.MaterialComponents.Button.Icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:minWidth="150dp"
+                android:text="@string/open"
+                app:icon="@drawable/icon_open" />
+
+            <Button
+                android:id="@+id/bDownload"
+                style="@style/Widget.MaterialComponents.Button.Icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:minWidth="150dp"
+                android:text="@string/download"
+                android:visibility="@{torrent.status.equalsIgnoreCase(`downloaded`) ? View.VISIBLE: View.GONE }"
+                app:icon="@drawable/icon_download" />
+
+            <Button
+                android:id="@+id/bDelete"
+                style="@style/Widget.Unchained.Button.Icon.Secondary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:minWidth="150dp"
+                android:text="@string/remove"
+                app:icon="@drawable/icon_delete" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="@{deleteConfirmation == true ? View.VISIBLE : View.GONE}">
 
             <TextView
                 android:id="@+id/tvConfirmDelete"
+                style="@style/TextAppearance.UnchainedTheme.Body1"
                 android:layout_width="250dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:text="@string/confirm_torrent_removal_description"
-                style="@style/TextAppearance.UnchainedTheme.Body1"/>
+                android:text="@string/confirm_torrent_removal_description" />
 
             <Button
                 android:id="@+id/bConfirmDelete"
@@ -79,7 +84,7 @@
                 android:layout_marginTop="15dp"
                 android:minWidth="150dp"
                 android:text="@string/yes_remove"
-                app:icon="@drawable/icon_delete"/>
+                app:icon="@drawable/icon_delete" />
 
         </LinearLayout>
 

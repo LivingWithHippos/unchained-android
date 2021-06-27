@@ -29,6 +29,9 @@
         <action
             android:id="@+id/action_list_tabs_dest_to_folderListFragment2"
             app:destination="@id/folderListFragment" />
+        <action
+            android:id="@+id/action_list_tabs_dest_to_torrentContextualDialogFragment"
+            app:destination="@id/torrentContextualDialogFragment" />
     </fragment>
 
     <fragment
@@ -73,4 +76,14 @@
             app:argType="string[]"
             app:nullable="true" />
     </fragment>
+    <dialog
+        android:id="@+id/torrentContextualDialogFragment"
+        android:name="com.github.livingwithhippos.unchained.lists.view.TorrentContextualDialogFragment"
+        android:label="TorrentContextualDialogFragment"
+        tools:layout="@layout/dialog_torrent_item" >
+        <argument
+            android:name="torrent"
+            app:argType="com.github.livingwithhippos.unchained.data.model.TorrentItem"
+            app:nullable="false" />
+    </dialog>
 </navigation>

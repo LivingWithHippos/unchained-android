@@ -65,7 +65,8 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val binding: FragmentTabListsBinding = FragmentTabListsBinding.inflate(inflater, container, false)
+        val binding: FragmentTabListsBinding =
+            FragmentTabListsBinding.inflate(inflater, container, false)
 
         val downloadAdapter = DownloadListPagingAdapter(this)
         val torrentAdapter = TorrentListPagingAdapter(this)
@@ -121,7 +122,10 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
                     AuthenticationState.AUTHENTICATED, AuthenticationState.AUTHENTICATED_NO_PREMIUM -> {
                         // register observers if not already registered
                         if (!viewModel.downloadsLiveData.hasActiveObservers())
-                            viewModel.downloadsLiveData.observe(viewLifecycleOwner, downloadObserver)
+                            viewModel.downloadsLiveData.observe(
+                                viewLifecycleOwner,
+                                downloadObserver
+                            )
                         if (!viewModel.torrentsLiveData.hasActiveObservers())
                             viewModel.torrentsLiveData.observe(viewLifecycleOwner, torrentObserver)
                     }
@@ -264,7 +268,18 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
                 val authState = activityViewModel.authenticationState.value?.peekContent()
                 if (authState == AuthenticationState.AUTHENTICATED) {
                     val action = ListsTabFragmentDirections.actionListsTabToTorrentDetails(it)
-                    findNavController().navigate(action)
+
+                    // workaround to avoid issues when the dialog still hasn't been popped from the navigation stack
+                    val controller = findNavController()
+                    var loop = 0
+                    lifecycleScope.launch {
+                        while (loop++ < 20 && controller.currentDestination?.id != R.id.list_tabs_dest) {
+                            delay(100)
+                        }
+                        if (controller.currentDestination?.id == R.id.list_tabs_dest)
+                            controller.navigate(action)
+                    }
+
                 } else
                     context?.showToast(R.string.premium_needed)
             }
@@ -439,7 +454,16 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
                 // open the torrent details fragment
                 else -> {
                     val action = ListsTabFragmentDirections.actionListsTabToTorrentDetails(item.id)
-                    findNavController().navigate(action)
+                    var loop = 0
+
+                    val controller = findNavController()
+                    lifecycleScope.launch {
+                        while (loop++ < 20 && controller.currentDestination?.id != R.id.list_tabs_dest) {
+                            delay(100)
+                        }
+                        if (controller.currentDestination?.id == R.id.list_tabs_dest)
+                            controller.navigate(action)
+                    }
                 }
             }
         } else
@@ -447,8 +471,9 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
     }
 
     override fun onLongClick(item: TorrentItem) {
-        val dialog = TorrentContextualDialogFragment(item)
-        dialog.show(parentFragmentManager, "TorrentContextualDialogFragment")
+        val action =
+            ListsTabFragmentDirections.actionListTabsDestToTorrentContextualDialogFragment(item)
+        findNavController().navigate(action)
     }
 
     private fun delayedListScrolling(recyclerView: RecyclerView, delay: Long = 300) {
