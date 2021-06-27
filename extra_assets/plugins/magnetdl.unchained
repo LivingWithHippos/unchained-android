@@ -1,0 +1,60 @@
+{
+  "engine_version": 1.0,
+  "version": 1.0,
+  "url": "https://www.magnetdl.com",
+  "name": "MagnetDL",
+  "description": "Parser for MagnetDL",
+  "author": "Invictaz",
+  "supported_categories": {
+    "all": "None"
+  },
+  "search": {
+    "no_category": "${url}/search/?m=1&q=${query}",
+    "page_start": 1
+  },
+  "download": {
+    "table_direct": {
+      "class": "download",
+      "columns": {
+        "name_column": 1,
+        "seeders_column": 6,
+        "leechers_column": 7,
+        "size_column": 5,
+        "magnet_column": 0,
+        "details_column": 1
+      }
+    },
+    "regexes": {
+      "name": {
+        "regex": "title=\"([^\"]+)",
+        "group": 1,
+        "slug_type": "complete"
+      },
+      "seeders": {
+        "regex": "(\\d*)",
+        "group": 1,
+        "slug_type": "complete"
+      },
+      "leechers": {
+        "regex": "(\\d*)",
+        "group": 1,
+        "slug_type": "complete"
+      },
+      "size": {
+        "regex": "([\\w\\s.]*)",
+        "group": 1,
+        "slug_type": "complete"
+      },
+      "magnet": {
+        "regex": "href=\"(magnet:\\?xt=urn:btih:[^\"]+)",
+        "group": 1,
+        "slug_type": "complete"
+      },
+      "details": {
+        "regex": "href=\"(/file/[^\"]+)",
+        "group": 1,
+        "slug_type": "append_url"
+      }
+    }
+  }
+}
