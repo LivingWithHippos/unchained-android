@@ -62,12 +62,11 @@
             android:visibility="@{selectedTab == 0 ? (selectedDownloads > 0 ? View.VISIBLE : View.GONE) : (selectedTorrents > 0 ? View.VISIBLE : View.GONE)}">
 
             <CheckBox
-                android:id="@+id/checkBox"
+                android:id="@+id/cbSelectAll"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:buttonTint="?attr/colorSecondary"
-                android:checked="true"
-                android:clickable="false"
+                android:checked="false"
                 android:text="@{selectedTab == 0 ? selectedDownloads.toString() :  selectedTorrents.toString(), default=`2`}" />
 
             <ImageButton

@@ -159,6 +159,21 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
             }
         }
 
+        binding.cbSelectAll.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked) {
+                if (binding.tabs.selectedTabPosition == TAB_DOWNLOADS) {
+                    downloadTracker.setItemsSelected(downloadAdapter.snapshot().items, true)
+                } else {
+                    torrentTracker.setItemsSelected(torrentAdapter.snapshot().items, true)
+                }
+            } else {
+                if (binding.tabs.selectedTabPosition == TAB_DOWNLOADS) {
+                    downloadTracker.clearSelection()
+                } else {
+                    torrentTracker.clearSelection()
+                }
+            }
+        }
 
         binding.srLayout.setOnRefreshListener {
             when (binding.tabs.selectedTabPosition) {
