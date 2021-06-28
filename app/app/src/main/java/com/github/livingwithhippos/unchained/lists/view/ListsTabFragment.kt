@@ -1,7 +1,11 @@
 package com.github.livingwithhippos.unchained.lists.view
 
+import android.app.DownloadManager
+import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -49,6 +53,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 /**
  * A simple [UnchainedFragment] subclass.
@@ -146,12 +151,34 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
                     val shareLinks = downloadTracker.selection.joinToString("\n") { it.download }
                     shareIntent.putExtra(Intent.EXTRA_TEXT, shareLinks)
                     startActivity(Intent.createChooser(shareIntent, getString(R.string.share_with)))
-                } else {
                 }
             }
 
             override fun downloadSelectedItems() {
                 if (binding.tabs.selectedTabPosition == TAB_DOWNLOADS) {
+                    var downloadStarted = false
+                    val manager =
+                        requireContext().getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+                    downloadTracker.selection.forEach { item ->
+                        val request: DownloadManager.Request = DownloadManager.Request(Uri.parse(item.download))
+                            .setTitle(item.filename)
+                            .setDescription(getString(R.string.app_name))
+                            .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                            .setDestinationInExternalPublicDir(
+                                Environment.DIRECTORY_DOWNLOADS,
+                                item.filename
+                            )
+
+                        try {
+                            manager.enqueue(request)
+                            downloadStarted = true
+                        } catch (e: Exception) {
+                            Timber.e("Error starting download of ${item.filename}, exception ${e.message}")
+                            context?.showToast(getString(R.string.download_not_started_format, item.filename))
+                        }
+                    }
+                    if (downloadStarted)
+                        context?.showToast(R.string.download_started)
 
                 } else {
                     viewModel.downloadItems(torrentTracker.selection.toList())
@@ -159,7 +186,7 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
             }
         }
 
-        binding.cbSelectAll.setOnCheckedChangeListener { buttonView, isChecked ->
+        binding.cbSelectAll.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 if (binding.tabs.selectedTabPosition == TAB_DOWNLOADS) {
                     downloadTracker.setItemsSelected(downloadAdapter.snapshot().items, true)
