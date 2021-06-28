@@ -309,4 +309,5 @@
     <string name="loading_container_file">Caricamento del contenitore…</string>
     <string name="no_network_connection">Nessuna connessione a internet</string>
     <string name="download_not_started_format">Errore nell\'inizializzazione del download di %s</string>
+    <string name="download_all">Scarica Tutto</string>
 </resources>
