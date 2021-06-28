@@ -30,16 +30,8 @@ import timber.log.Timber
 @AndroidEntryPoint
 class FolderListFragment : Fragment(), DownloadListListener {
 
-    private var _binding: FragmentFolderListBinding? = null
-    val binding get() = _binding!!
-
     private val viewModel: FolderListViewModel by viewModels()
     private val args: FolderListFragmentArgs by navArgs()
-
-    override fun onDestroyView() {
-        _binding = null
-        super.onDestroyView()
-    }
 
     private val mediaRegex =
         "\\.(webm|avi|mkv|ogg|MTS|M2TS|TS|mov|wmv|mp4|m4p|m4v|mp2|mpe|mpv|mpg|mpeg|m2v|3gp)$".toRegex()
@@ -49,13 +41,13 @@ class FolderListFragment : Fragment(), DownloadListListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentFolderListBinding.inflate(inflater, container, false)
+        val binding = FragmentFolderListBinding.inflate(inflater, container, false)
 
-        setup()
+        setup(binding)
         return binding.root
     }
 
-    private fun setup() {
+    private fun setup(binding: FragmentFolderListBinding) {
 
         val adapter = FolderItemAdapter(this)
         binding.rvFolderList.adapter = adapter
@@ -64,7 +56,7 @@ class FolderListFragment : Fragment(), DownloadListListener {
         // todo: add more sorting methodds, dinamically chosen by the user
         viewModel.folderLiveData.observe(viewLifecycleOwner) {
             it.getContentIfNotHandled()?.let { files ->
-                updateList(adapter, list = files)
+                updateList(binding, adapter, list = files)
             }
         }
 
@@ -104,15 +96,15 @@ class FolderListFragment : Fragment(), DownloadListListener {
             viewModel.filterList(it?.toString())
         }
         viewModel.queryLiveData.observe(viewLifecycleOwner) {
-            updateList(adapter, query = it)
+            updateList(binding, adapter, query = it)
         }
 
         binding.cbFilterSize.setOnCheckedChangeListener { _, isChecked ->
-            updateList(adapter, size = isChecked)
+            updateList(binding, adapter, size = isChecked)
         }
 
         binding.cbFilterType.setOnCheckedChangeListener { _, isChecked ->
-            updateList(adapter, type = isChecked)
+            updateList(binding, adapter, type = isChecked)
         }
 
         binding.sortingButton.setOnClickListener {
@@ -125,7 +117,7 @@ class FolderListFragment : Fragment(), DownloadListListener {
                         requireContext().theme
                     )
                     it.tag = TAG_SORT_ZA
-                    updateList(adapter, sort = TAG_SORT_ZA)
+                    updateList(binding, adapter, sort = TAG_SORT_ZA)
                 }
                 TAG_SORT_ZA -> {
                     binding.sortingButton.background = ResourcesCompat.getDrawable(
@@ -134,7 +126,7 @@ class FolderListFragment : Fragment(), DownloadListListener {
                         requireContext().theme
                     )
                     it.tag = TAG_SORT_SIZE_DESC
-                    updateList(adapter, sort = TAG_SORT_SIZE_DESC)
+                    updateList(binding, adapter, sort = TAG_SORT_SIZE_DESC)
                 }
                 TAG_SORT_SIZE_DESC -> {
                     binding.sortingButton.background = ResourcesCompat.getDrawable(
@@ -143,7 +135,7 @@ class FolderListFragment : Fragment(), DownloadListListener {
                         requireContext().theme
                     )
                     it.tag = TAG_SORT_SIZE_ASC
-                    updateList(adapter, sort = TAG_SORT_SIZE_ASC)
+                    updateList(binding, adapter, sort = TAG_SORT_SIZE_ASC)
                 }
                 TAG_SORT_SIZE_ASC -> {
                     binding.sortingButton.background = ResourcesCompat.getDrawable(
@@ -152,7 +144,7 @@ class FolderListFragment : Fragment(), DownloadListListener {
                         requireContext().theme
                     )
                     it.tag = TAG_SORT_AZ
-                    updateList(adapter, sort = TAG_SORT_AZ)
+                    updateList(binding, adapter, sort = TAG_SORT_AZ)
                 }
                 else -> {
                     binding.sortingButton.background = ResourcesCompat.getDrawable(
@@ -161,13 +153,14 @@ class FolderListFragment : Fragment(), DownloadListListener {
                         requireContext().theme
                     )
                     it.tag = TAG_SORT_AZ
-                    updateList(adapter, sort = TAG_SORT_AZ)
+                    updateList(binding, adapter, sort = TAG_SORT_AZ)
                 }
             }
         }
     }
 
     private fun updateList(
+        binding: FragmentFolderListBinding,
         adapter: FolderItemAdapter,
         list: List<DownloadItem>? = null,
         size: Boolean? = null,
