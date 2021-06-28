@@ -175,13 +175,34 @@ class DownloadListViewModel @Inject constructor(
         }
     }
 
+    fun deleteTorrents(torrents: List<TorrentItem>) {
+        viewModelScope.launch {
+            val token = credentialsRepository.getToken()
+            torrents.forEach {
+                torrentsRepository.deleteTorrent(token, it.id)
+            }
+            if (torrents.size > 1)
+                deletedTorrentLiveData.postEvent(TORRENTS_DELETED)
+            else
+                deletedTorrentLiveData.postEvent(TORRENT_DELETED)
+        }
+    }
+
+    fun downloadItems(torrents: List<TorrentItem>) {
+        torrents.forEach {
+            downloadTorrent(it)
+        }
+    }
+
     companion object {
         const val KEY_SELECTED_TAB = "selected_tab_key"
-        const val TORRENT_NOT_DELETED = -3
         const val TORRENT_DELETED = -1
-        const val TORRENTS_DELETED_ALL = -2
-        const val DOWNLOAD_NOT_DELETED = -3
+        const val TORRENTS_DELETED = -2
+        const val TORRENTS_DELETED_ALL = -3
+        const val TORRENT_NOT_DELETED = -4
         const val DOWNLOAD_DELETED = -1
-        const val DOWNLOADS_DELETED_ALL = -2
+        const val DOWNLOADS_DELETED = -2
+        const val DOWNLOADS_DELETED_ALL = -3
+        const val DOWNLOAD_NOT_DELETED = -4
     }
 }

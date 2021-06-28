@@ -519,4 +519,14 @@
     <string name="error_parsing_container">Error parsing the container</string>
     <string name="loading_container_file">Loading container file…</string>
     <string name="no_network_connection">No network connection</string>
+    <plurals name="selected_downloads_format">
+        <item quantity="zero">No download selected</item>
+        <item quantity="one">1 download selected</item>
+        <item quantity="other">%d downloads selected</item>
+    </plurals>
+    <plurals name="selected_torrents_format">
+        <item quantity="zero">No torrent selected</item>
+        <item quantity="one">1 torrent selected</item>
+        <item quantity="other">%d torrents selected</item>
+    </plurals>
 </resources>
