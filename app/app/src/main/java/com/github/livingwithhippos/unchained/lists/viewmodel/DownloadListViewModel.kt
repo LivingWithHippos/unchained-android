@@ -189,7 +189,8 @@ class DownloadListViewModel @Inject constructor(
     }
 
     fun downloadItems(torrents: List<TorrentItem>) {
-        torrents.forEach {
+        torrents.filter { it.status == "downloaded" }
+            .forEach {
             downloadTorrent(it)
         }
     }
