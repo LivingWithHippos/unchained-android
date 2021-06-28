@@ -1,7 +1,14 @@
 package com.github.livingwithhippos.unchained.folderlist.view
 
+import android.app.DownloadManager
+import android.content.Context
+import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.res.ResourcesCompat
@@ -21,6 +28,7 @@ import com.github.livingwithhippos.unchained.databinding.FragmentFolderListBindi
 import com.github.livingwithhippos.unchained.folderlist.model.FolderItemAdapter
 import com.github.livingwithhippos.unchained.folderlist.viewmodel.FolderListViewModel
 import com.github.livingwithhippos.unchained.lists.view.DownloadListListener
+import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.github.livingwithhippos.unchained.utilities.extension.verticalScrollToPosition
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
@@ -35,6 +43,63 @@ class FolderListFragment : Fragment(), DownloadListListener {
 
     private val mediaRegex =
         "\\.(webm|avi|mkv|ogg|MTS|M2TS|TS|mov|wmv|mp4|m4p|m4v|mp2|mpe|mpv|mpg|mpeg|m2v|3gp)$".toRegex()
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.folder_bar, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.download_all -> {
+                downloadAll()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun downloadAll() {
+        val downloads: List<DownloadItem>? = viewModel.folderLiveData.value?.peekContent()
+        if (!downloads.isNullOrEmpty()) {
+            var downloadStarted = false
+            val manager =
+                requireContext().getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+            downloads.forEach {
+                val request: DownloadManager.Request =
+                    DownloadManager.Request(Uri.parse(it.download))
+                        .setTitle(it.filename)
+                        .setDescription(getString(R.string.app_name))
+                        .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                        .setDestinationInExternalPublicDir(
+                            Environment.DIRECTORY_DOWNLOADS,
+                            it.filename
+                        )
+
+                try {
+                    manager.enqueue(request)
+                    downloadStarted = true
+                } catch (e: Exception) {
+                    Timber.e("Error starting download of ${it.filename}, exception ${e.message}")
+                    context?.showToast(
+                        getString(
+                            R.string.download_not_started_format,
+                            it.filename
+                        )
+                    )
+                }
+            }
+
+            if (downloadStarted)
+                context?.showToast(R.string.download_started)
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -79,6 +144,14 @@ class FolderListFragment : Fragment(), DownloadListListener {
         // update the progress bar
         viewModel.progressLiveData.observe(viewLifecycleOwner) {
             binding.loadingCircle.progress = it
+            if (it >= 100) {
+                binding.bDownloadAll.visibility = View.VISIBLE
+                binding.loadingCircle.visibility = View.GONE
+            }
+        }
+
+        binding.bDownloadAll.setOnClickListener {
+            downloadAll()
         }
 
         // load all the links
