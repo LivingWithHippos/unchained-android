@@ -167,11 +167,13 @@
                 android:layout_weight="1"
                 android:minWidth="170dp"
                 android:minLines="2"
+                android:layout_marginEnd="10dp"
                 android:onClick="@{() -> listener.onLoadTorrentClick()}"
                 android:text="@string/torrent"
-                app:layout_constraintBottom_toTopOf="@id/bLoadContainer"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/bLoadContainer"
                 app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintHorizontal_chainStyle="packed"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvUploadTorrent" />
 
@@ -180,15 +182,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:layout_marginStart="10dp"
                 android:minWidth="170dp"
                 android:minLines="2"
                 android:onClick="@{() -> listener.onLoadContainerClick()}"
                 android:text="@string/container"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toBottomOf="@+id/bLoadTorrent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/bLoadTorrent" />
+                app:layout_constraintStart_toEndOf="@id/bLoadTorrent"
+                app:layout_constraintTop_toTopOf="@+id/bLoadTorrent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 </layout>

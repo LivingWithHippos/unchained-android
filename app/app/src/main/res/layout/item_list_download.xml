@@ -8,6 +8,10 @@
         <import type="android.view.View" />
 
         <variable
+            name="isSelected"
+            type="Boolean" />
+
+        <variable
             name="item"
             type="com.github.livingwithhippos.unchained.data.model.DownloadItem" />
 
@@ -20,14 +24,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="12dp"
         android:layout_marginEnd="20dp"
         android:padding="10dp"
         android:checkable="false"
         android:focusable="true"
         android:onClick="@{() -> listener.onClick(item)}"
-        app:onDownloadLongClickListener="@{listener}"
-        app:cardDownloadItem="@{item}"
         android:layout_gravity="center_horizontal"
         app:cardCornerRadius="10dp"
         app:cardElevation="3dp" >
@@ -35,13 +37,32 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="20dp">
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingEnd="10dp"
+            android:paddingStart="0dp" >
+
+
+        <View
+                android:id="@+id/selectionIndicator"
+                android:layout_width="10dp"
+                android:layout_height="0dp"
+                android:backgroundTint="?attr/colorOnSurfaceVariant"
+                android:background="@drawable/rectangle"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:visibility="@{isSelected ? View.VISIBLE : View.GONE}"
+                app:layout_constraintEnd_toStartOf="@id/tvTitle"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
             <TextView
                 android:id="@+id/tvTitle"
                 style="@style/TextAppearance.UnchainedTheme.Overline"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
                 android:text="@{item.streamable == 1 ? @string/streaming : @string/download, default=`Download`}"
                 app:layout_constraintBottom_toTopOf="@+id/tvName"
                 app:layout_constraintStart_toStartOf="parent"
