@@ -8,7 +8,6 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.view.ActionMode
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
@@ -31,6 +30,7 @@ import com.github.livingwithhippos.unchained.data.model.NetworkError
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.databinding.FragmentTabListsBinding
 import com.github.livingwithhippos.unchained.lists.viewmodel.DownloadListViewModel
+import com.github.livingwithhippos.unchained.lists.viewmodel.DownloadListViewModel.Companion.DOWNLOADS_DELETED
 import com.github.livingwithhippos.unchained.lists.viewmodel.DownloadListViewModel.Companion.DOWNLOADS_DELETED_ALL
 import com.github.livingwithhippos.unchained.lists.viewmodel.DownloadListViewModel.Companion.DOWNLOAD_DELETED
 import com.github.livingwithhippos.unchained.lists.viewmodel.DownloadListViewModel.Companion.DOWNLOAD_NOT_DELETED
@@ -49,7 +49,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 /**
  * A simple [UnchainedFragment] subclass.
@@ -77,7 +76,9 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
         val binding: FragmentTabListsBinding =
             FragmentTabListsBinding.inflate(inflater, container, false)
 
-        binding.selectedItems = 0
+        binding.selectedDownloads = 0
+        binding.selectedTorrents = 0
+        binding.selectedTab = 0
 
         val downloadAdapter = DownloadListPagingAdapter(this)
         val torrentAdapter = TorrentListPagingAdapter(this)
@@ -85,7 +86,8 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
         binding.rvDownloadList.adapter = downloadAdapter
         binding.rvTorrentList.adapter = torrentAdapter
 
-        val tracker: SelectionTracker<TorrentItem> = SelectionTracker.Builder(
+        // torrent list selection  tracker
+        val torrentTracker: SelectionTracker<TorrentItem> = SelectionTracker.Builder(
             "torrentListSelection",
             binding.rvTorrentList,
             TorrentKeyProvider(torrentAdapter),
@@ -95,28 +97,55 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
             SelectionPredicates.createSelectAnything()
         ).build()
 
-        torrentAdapter.tracker = tracker
+        torrentAdapter.tracker = torrentTracker
 
-        tracker.addObserver(
+        torrentTracker.addObserver(
             object : SelectionTracker.SelectionObserver<TorrentItem>() {
                 override fun onSelectionChanged() {
                     super.onSelectionChanged()
-                    binding.selectedItems = tracker.selection.size()
+                    binding.selectedTorrents = torrentTracker.selection.size()
                 }
             })
 
-        binding.listener = object: SelectedItemsButtonsListener {
+
+        // download list selection  tracker
+        val downloadTracker: SelectionTracker<DownloadItem> = SelectionTracker.Builder(
+            "downloadListSelection",
+            binding.rvDownloadList,
+            DownloadKeyProvider(downloadAdapter),
+            DataBindingDetailsLookup(binding.rvDownloadList),
+            StorageStrategy.createParcelableStorage(DownloadItem::class.java)
+        ).withSelectionPredicate(
+            SelectionPredicates.createSelectAnything()
+        ).build()
+
+        downloadAdapter.tracker = downloadTracker
+
+        downloadTracker.addObserver(
+            object : SelectionTracker.SelectionObserver<DownloadItem>() {
+                override fun onSelectionChanged() {
+                    super.onSelectionChanged()
+                    binding.selectedDownloads = downloadTracker.selection.size()
+                }
+            })
+
+        // listener for selection buttons
+        binding.listener = object : SelectedItemsButtonsListener {
             override fun deleteSelectedItems() {
                 if (binding.tabs.selectedTabPosition == TAB_DOWNLOADS) {
-
+                    viewModel.deleteDownloads(downloadTracker.selection.toList())
                 } else {
-                    viewModel.deleteTorrents(tracker.selection.toList())
+                    viewModel.deleteTorrents(torrentTracker.selection.toList())
                 }
             }
 
             override fun shareSelectedItems() {
                 if (binding.tabs.selectedTabPosition == TAB_DOWNLOADS) {
-
+                    val shareIntent = Intent(Intent.ACTION_SEND)
+                    shareIntent.type = "text/plain"
+                    val shareLinks = downloadTracker.selection.joinToString("\n") { it.download }
+                    shareIntent.putExtra(Intent.EXTRA_TEXT, shareLinks)
+                    startActivity(Intent.createChooser(shareIntent, getString(R.string.share_with)))
                 } else {
                 }
             }
@@ -125,7 +154,7 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
                 if (binding.tabs.selectedTabPosition == TAB_DOWNLOADS) {
 
                 } else {
-                    viewModel.downloadItems(tracker.selection.toList())
+                    viewModel.downloadItems(torrentTracker.selection.toList())
                 }
             }
         }
@@ -199,6 +228,8 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
 
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 tab?.let {
+
+                    binding.selectedTab = it.position
 
                     when (it.position) {
                         TAB_DOWNLOADS -> {
@@ -359,6 +390,10 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
                         context?.showToast(R.string.download_removed)
                         downloadAdapter.refresh()
                     }
+                    DOWNLOADS_DELETED -> {
+                        context?.showToast(R.string.downloads_removed)
+                        downloadAdapter.refresh()
+                    }
                     DOWNLOADS_DELETED_ALL -> {
                         context?.showToast(R.string.downloads_removed)
                         lifecycleScope.launch {
@@ -500,7 +535,8 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
     }
 
     override fun onLongClick(item: DownloadItem) {
-        val action = ListsTabFragmentDirections.actionListTabsDestToDownloadContextualDialogFragment(item)
+        val action =
+            ListsTabFragmentDirections.actionListTabsDestToDownloadContextualDialogFragment(item)
         findNavController().navigate(action)
     }
 

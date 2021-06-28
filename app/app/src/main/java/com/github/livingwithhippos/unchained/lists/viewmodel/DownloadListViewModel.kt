@@ -194,6 +194,19 @@ class DownloadListViewModel @Inject constructor(
         }
     }
 
+    fun deleteDownloads(downloads: List<DownloadItem>) {
+        viewModelScope.launch {
+            val token = credentialsRepository.getToken()
+            downloads.forEach {
+                downloadRepository.deleteDownload(token, it.id)
+            }
+            if (downloads.size > 1)
+                deletedDownloadLiveData.postEvent(DOWNLOADS_DELETED)
+            else
+                deletedDownloadLiveData.postEvent(DOWNLOAD_DELETED)
+        }
+    }
+
     companion object {
         const val KEY_SELECTED_TAB = "selected_tab_key"
         const val TORRENT_DELETED = -1

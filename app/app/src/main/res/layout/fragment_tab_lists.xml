@@ -8,7 +8,15 @@
         <import type="android.view.View" />
 
         <variable
-            name="selectedItems"
+            name="selectedTorrents"
+            type="Integer" />
+
+        <variable
+            name="selectedDownloads"
+            type="Integer" />
+
+        <variable
+            name="selectedTab"
             type="Integer" />
 
         <variable
@@ -46,41 +54,29 @@
             android:id="@+id/llMultiSelection"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:gravity="center"
+            android:orientation="horizontal"
             android:paddingStart="10dp"
-            android:paddingEnd="10dp"
             android:paddingTop="10dp"
-            android:visibility="@{selectedItems > 0 ? View.VISIBLE : View.GONE}">
+            android:paddingEnd="10dp"
+            android:visibility="@{selectedTab == 0 ? (selectedDownloads > 0 ? View.VISIBLE : View.GONE) : (selectedTorrents > 0 ? View.VISIBLE : View.GONE)}">
 
             <CheckBox
                 android:id="@+id/checkBox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:buttonTint="?attr/colorSecondary"
                 android:checked="true"
                 android:clickable="false"
-                android:buttonTint="?attr/colorSecondary"
-                android:text="@{selectedItems.toString(), default=`2`}" />
-
-
-            <ImageButton
-                android:id="@+id/bShareSelected"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginStart="10dp"
-                android:contentDescription="@string/share"
-                android:backgroundTint="@android:color/transparent"
-                android:onClick="@{() -> listener.shareSelectedItems()}"
-                android:src="@drawable/icon_share"
-                app:tint="?attr/colorSecondary" />
+                android:text="@{selectedTab == 0 ? selectedDownloads.toString() :  selectedTorrents.toString(), default=`2`}" />
 
             <ImageButton
                 android:id="@+id/bDeleteSelected"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginStart="10dp"
-                android:contentDescription="@string/delete"
                 android:backgroundTint="@android:color/transparent"
+                android:contentDescription="@string/delete"
                 android:onClick="@{() -> listener.deleteSelectedItems()}"
                 android:src="@drawable/icon_delete"
                 app:tint="?attr/colorSecondary" />
@@ -90,12 +86,24 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginStart="10dp"
-                android:contentDescription="@string/download"
                 android:backgroundTint="@android:color/transparent"
+                android:contentDescription="@string/download"
                 android:onClick="@{() -> listener.downloadSelectedItems()}"
                 android:src="@drawable/icon_download"
                 app:tint="?attr/colorSecondary" />
 
+
+            <ImageButton
+                android:id="@+id/bShareSelected"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="10dp"
+                android:backgroundTint="@android:color/transparent"
+                android:contentDescription="@string/share"
+                android:onClick="@{() -> listener.shareSelectedItems()}"
+                android:src="@drawable/icon_share"
+                app:tint="?attr/colorSecondary"
+                android:visibility="@{selectedTab == 0 ? View.VISIBLE : View.GONE}"/>
 
 
         </LinearLayout>
