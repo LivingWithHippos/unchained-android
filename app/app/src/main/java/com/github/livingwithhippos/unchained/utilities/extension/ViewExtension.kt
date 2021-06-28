@@ -288,20 +288,6 @@ fun View.showSnackbar(
  * @param callback: the function to be called
  * @param item: the item to be returned to the callback
  */
-// todo: rename to setBindingOnTorrentLongClickListener
-@BindingAdapter("onLongClickListener", "cardTorrentItem")
-fun CardView.setBindingOnLongClickListener(listener: TorrentListListener, item: TorrentItem) {
-    this.setOnLongClickListener {
-        listener.onLongClick(item)
-        true
-    }
-}
-
-/**
- * set a function to be called on [CardView] long click
- * @param callback: the function to be called
- * @param item: the item to be returned to the callback
- */
 @BindingAdapter("onDownloadLongClickListener", "cardDownloadItem")
 fun CardView.setBindingOnDownloadLongClickListener(
     listener: DownloadListListener,

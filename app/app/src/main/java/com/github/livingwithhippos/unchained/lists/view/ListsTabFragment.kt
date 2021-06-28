@@ -7,6 +7,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.view.ActionMode
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
@@ -14,6 +15,9 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.PagingData
+import androidx.recyclerview.selection.SelectionPredicates
+import androidx.recyclerview.selection.SelectionTracker
+import androidx.recyclerview.selection.StorageStrategy
 import androidx.recyclerview.widget.RecyclerView
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
@@ -32,6 +36,7 @@ import com.github.livingwithhippos.unchained.lists.viewmodel.DownloadListViewMod
 import com.github.livingwithhippos.unchained.lists.viewmodel.DownloadListViewModel.Companion.TORRENTS_DELETED_ALL
 import com.github.livingwithhippos.unchained.lists.viewmodel.DownloadListViewModel.Companion.TORRENT_DELETED
 import com.github.livingwithhippos.unchained.lists.viewmodel.DownloadListViewModel.Companion.TORRENT_NOT_DELETED
+import com.github.livingwithhippos.unchained.utilities.DataBindingDetailsLookup
 import com.github.livingwithhippos.unchained.utilities.EventObserver
 import com.github.livingwithhippos.unchained.utilities.extension.getApiErrorMessage
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
@@ -60,6 +65,7 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
     // used to simulate a debounce effect while typing on the search bar
     var queryJob: Job? = null
 
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -73,6 +79,19 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
 
         binding.rvDownloadList.adapter = downloadAdapter
         binding.rvTorrentList.adapter = torrentAdapter
+
+        val tracker: SelectionTracker<TorrentItem> = SelectionTracker.Builder(
+            "torrentListSelection",
+            binding.rvTorrentList,
+            TorrentKeyProvider(torrentAdapter),
+            DataBindingDetailsLookup(binding.rvTorrentList),
+            StorageStrategy.createParcelableStorage(TorrentItem::class.java)
+        ).withSelectionPredicate(
+            SelectionPredicates.createSelectAnything()
+        ).build()
+
+        torrentAdapter.tracker = tracker
+
 
         binding.srLayout.setOnRefreshListener {
             when (binding.tabs.selectedTabPosition) {
@@ -478,11 +497,13 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
             context?.showToast(R.string.premium_needed)
     }
 
+    /*
     override fun onLongClick(item: TorrentItem) {
         val action =
             ListsTabFragmentDirections.actionListTabsDestToTorrentContextualDialogFragment(item)
         findNavController().navigate(action)
     }
+     */
 
     private fun delayedListScrolling(recyclerView: RecyclerView, delay: Long = 300) {
         recyclerView.layoutManager?.let {
