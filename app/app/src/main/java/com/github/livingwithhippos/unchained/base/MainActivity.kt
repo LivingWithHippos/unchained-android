@@ -37,6 +37,7 @@ import com.github.livingwithhippos.unchained.utilities.EventObserver
 import com.github.livingwithhippos.unchained.utilities.SCHEME_HTTP
 import com.github.livingwithhippos.unchained.utilities.SCHEME_HTTPS
 import com.github.livingwithhippos.unchained.utilities.SCHEME_MAGNET
+import com.github.livingwithhippos.unchained.utilities.extension.downloadFile
 import com.github.livingwithhippos.unchained.utilities.extension.observeOnce
 import com.github.livingwithhippos.unchained.utilities.extension.setupWithNavController
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
@@ -236,18 +237,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun downloadPlugin(link: String) {
         val pluginName = link.replace("%2F", "/").split("/").last()
-        val manager =
-            applicationContext.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-        val request: DownloadManager.Request = DownloadManager.Request(Uri.parse(link))
-            .setTitle(getString(R.string.unchained_plugin_download))
-            .setDescription(getString(R.string.temporary_plugin_download))
-            .setDestinationInExternalFilesDir(
-                applicationContext,
-                Environment.DIRECTORY_DOWNLOADS,
-                pluginName
-            )
-        val downloadID = manager.enqueue(request)
-        viewModel.setPluginDownload(downloadID, pluginName)
+        val downloadID = applicationContext.downloadFile(link,getString(R.string.unchained_plugin_download),pluginName)
+        if (downloadID != null)
+            viewModel.setPluginDownload(downloadID, pluginName)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

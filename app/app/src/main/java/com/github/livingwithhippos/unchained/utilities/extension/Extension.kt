@@ -2,6 +2,7 @@ package com.github.livingwithhippos.unchained.utilities.extension
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.DownloadManager
 import android.content.ClipData
 import android.content.ClipDescription.MIMETYPE_TEXT_PLAIN
 import android.content.ClipboardManager
@@ -13,6 +14,7 @@ import android.content.res.Resources
 import android.graphics.Color
 import android.net.Uri
 import android.os.Build
+import android.os.Environment
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.util.TypedValue
@@ -89,6 +91,37 @@ fun Fragment.getClipboardText(): String {
         Timber.d("Clipboard was empty or did not contain any text mime type.")
     }
     return text
+}
+
+/**
+ * Download a file in the public download folder
+ *
+ * @param link the http link
+ * @param title the title to show on the notification
+ * @param fileName the name to give to the downloaded file, title will be used if this is null
+ * @param showErrorToast show a toast if there is a download error
+ * @return a Long identifying the download or null if an error has occurred
+ */
+fun Context.downloadFile(link: String, title: String, fileName: String?=null, showErrorToast: Boolean = true): Long? {
+    var downloadID: Long? = null
+    val manager = this.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+        val request: DownloadManager.Request = DownloadManager.Request(Uri.parse(link))
+            .setTitle(title)
+            .setDescription(getString(R.string.app_name))
+            .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+            .setDestinationInExternalPublicDir(
+                Environment.DIRECTORY_DOWNLOADS,
+                fileName ?: title
+            )
+
+        try {
+            downloadID = manager.enqueue(request)
+        } catch (e: Exception) {
+            Timber.e("Error starting download of ${link}, exception ${e.message}")
+            if (showErrorToast)
+                this.showToast(getString(R.string.download_not_started_format, title))
+        }
+    return downloadID
 }
 
 /**
