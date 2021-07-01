@@ -61,6 +61,7 @@
             android:paddingEnd="10dp"
             android:visibility="@{selectedTab == 0 ? (selectedDownloads > 0 ? View.VISIBLE : View.GONE) : (selectedTorrents > 0 ? View.VISIBLE : View.GONE)}">
 
+
             <CheckBox
                 android:id="@+id/cbSelectAll"
                 android:layout_width="wrap_content"
@@ -91,7 +92,6 @@
                 android:src="@drawable/icon_download"
                 app:tint="?attr/colorSecondary" />
 
-
             <ImageButton
                 android:id="@+id/bShareSelected"
                 android:layout_width="50dp"
@@ -103,6 +103,44 @@
                 android:src="@drawable/icon_share"
                 app:tint="?attr/colorSecondary"
                 android:visibility="@{selectedTab == 0 ? View.VISIBLE : View.GONE}"/>
+
+            <FrameLayout
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:padding="8dp"
+                android:layout_marginStart="15dp" >
+
+                <ImageButton
+                    android:id="@+id/downloadSortingButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/icon_sort_az"
+                    android:backgroundTint="?attr/colorSecondary"
+                    android:contentDescription="@string/sort"
+                    android:tag="sort_az_tag"
+                    android:onClick="@{() -> listener.orderList()}"
+                    app:layout_constraintBottom_toBottomOf="@id/tfFilter"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/tfFilter"
+                    app:layout_constraintTop_toTopOf="@id/tfFilter"
+                    android:visibility="@{selectedTab == 0 ? View.VISIBLE : View.GONE}"/>
+
+                <ImageButton
+                    android:id="@+id/torrentSortingButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/icon_sort_az"
+                    android:backgroundTint="?attr/colorSecondary"
+                    android:contentDescription="@string/sort"
+                    android:tag="sort_az_tag"
+                    android:onClick="@{() -> listener.orderList()}"
+                    app:layout_constraintBottom_toBottomOf="@id/tfFilter"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/tfFilter"
+                    app:layout_constraintTop_toTopOf="@id/tfFilter"
+                    android:visibility="@{selectedTab == 1 ? View.VISIBLE : View.GONE}"/>
+
+            </FrameLayout>
 
 
         </LinearLayout>

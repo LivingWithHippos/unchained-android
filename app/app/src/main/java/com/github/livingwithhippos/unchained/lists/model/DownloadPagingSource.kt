@@ -5,6 +5,7 @@ import androidx.paging.PagingState
 import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.data.repositoy.CredentialsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.DownloadRepository
+import com.github.livingwithhippos.unchained.folderlist.view.FolderListFragment
 import retrofit2.HttpException
 import java.io.IOException
 
@@ -14,6 +15,7 @@ class DownloadPagingSource(
     private val downloadRepository: DownloadRepository,
     private val credentialsRepository: CredentialsRepository,
     private val query: String,
+    private val sort: String?,
 ) : PagingSource<Int, DownloadItem>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, DownloadItem> {
@@ -23,12 +25,34 @@ class DownloadPagingSource(
             throw IllegalArgumentException("Error loading token: $token")
 
         return try {
-            val response =
-                if (query.isBlank())
-                    downloadRepository.getDownloads(token, null, page, params.loadSize)
-                else
-                    downloadRepository.getDownloads(token, null, page, params.loadSize)
-                        .filter { it.filename.contains(query, ignoreCase = true) }
+            var response = downloadRepository.getDownloads(token, null, page, params.loadSize)
+            if (query.isNotBlank())
+                response = response.filter { it.filename.contains(query, ignoreCase = true) }
+            when (sort) {
+                FolderListFragment.TAG_DEFAULT_SORT -> {}
+                FolderListFragment.TAG_SORT_AZ -> {
+                    response = response.sortedBy { item ->
+                        item.filename
+                    }
+                }
+                FolderListFragment.TAG_SORT_ZA -> {
+                    response = response.sortedByDescending { item ->
+                        item.filename
+                    }
+                }
+                FolderListFragment.TAG_SORT_SIZE_DESC -> {
+                    response = response.sortedByDescending { item ->
+                        item.fileSize
+                    }
+                }
+                FolderListFragment.TAG_SORT_SIZE_ASC -> {
+                    response = response.sortedBy { item ->
+                        item.fileSize
+                    }
+                }
+                else -> {}
+            }
+
 
             LoadResult.Page(
                 data = response,

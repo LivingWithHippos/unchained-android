@@ -12,7 +12,9 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import androidx.appcompat.widget.SearchView
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -33,6 +35,7 @@ import com.github.livingwithhippos.unchained.data.model.EmptyBodyError
 import com.github.livingwithhippos.unchained.data.model.NetworkError
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.databinding.FragmentTabListsBinding
+import com.github.livingwithhippos.unchained.folderlist.view.FolderListFragment
 import com.github.livingwithhippos.unchained.lists.viewmodel.DownloadListViewModel
 import com.github.livingwithhippos.unchained.lists.viewmodel.DownloadListViewModel.Companion.DOWNLOADS_DELETED
 import com.github.livingwithhippos.unchained.lists.viewmodel.DownloadListViewModel.Companion.DOWNLOADS_DELETED_ALL
@@ -113,7 +116,7 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
             })
 
 
-        // download list selection  tracker
+        // download list selection tracker
         val downloadTracker: SelectionTracker<DownloadItem> = SelectionTracker.Builder(
             "downloadListSelection",
             binding.rvDownloadList,
@@ -160,21 +163,27 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
                     val manager =
                         requireContext().getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
                     downloadTracker.selection.forEach { item ->
-                        val request: DownloadManager.Request = DownloadManager.Request(Uri.parse(item.download))
-                            .setTitle(item.filename)
-                            .setDescription(getString(R.string.app_name))
-                            .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-                            .setDestinationInExternalPublicDir(
-                                Environment.DIRECTORY_DOWNLOADS,
-                                item.filename
-                            )
+                        val request: DownloadManager.Request =
+                            DownloadManager.Request(Uri.parse(item.download))
+                                .setTitle(item.filename)
+                                .setDescription(getString(R.string.app_name))
+                                .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                                .setDestinationInExternalPublicDir(
+                                    Environment.DIRECTORY_DOWNLOADS,
+                                    item.filename
+                                )
 
                         try {
                             manager.enqueue(request)
                             downloadStarted = true
                         } catch (e: Exception) {
                             Timber.e("Error starting download of ${item.filename}, exception ${e.message}")
-                            context?.showToast(getString(R.string.download_not_started_format, item.filename))
+                            context?.showToast(
+                                getString(
+                                    R.string.download_not_started_format,
+                                    item.filename
+                                )
+                            )
                         }
                     }
                     if (downloadStarted)
@@ -184,8 +193,21 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
                     viewModel.downloadItems(torrentTracker.selection.toList())
                 }
             }
-        }
 
+            override fun orderList() {
+                if (binding.tabs.selectedTabPosition == TAB_DOWNLOADS) {
+                    val currentTag = binding.downloadSortingButton.tag.toString()
+                    changeSortIcon(binding.downloadSortingButton, currentTag)
+                    viewModel.setListSorting(currentTag)
+                } else {
+                    val currentTag = binding.torrentSortingButton.tag.toString()
+                    changeSortIcon(binding.torrentSortingButton, currentTag)
+                    viewModel.setListSorting(currentTag)
+                }
+            }
+
+        }
+        
         binding.cbSelectAll.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 if (binding.tabs.selectedTabPosition == TAB_DOWNLOADS) {
@@ -212,6 +234,8 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
                 }
             }
         }
+
+        viewModel.setupLists()
 
         // observers created to be easily added and removed. Pass the retrieved list to the adapter and removes the loading icon from the swipe layout
         val downloadObserver = Observer<PagingData<DownloadItem>> {
@@ -249,8 +273,8 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
                 when (it.peekContent()) {
                     AuthenticationState.AUTHENTICATED, AuthenticationState.AUTHENTICATED_NO_PREMIUM -> {
                         // register observers if not already registered
-                        if (!viewModel.downloadsLiveData.hasActiveObservers())
-                            viewModel.downloadsLiveData.observe(
+                        if (!viewModel.downloadsMediatorLiveData.hasActiveObservers())
+                            viewModel.downloadsMediatorLiveData.observe(
                                 viewLifecycleOwner,
                                 downloadObserver
                             )
@@ -259,13 +283,14 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
                     }
                     else -> {
                         // remove observers if present
-                        viewModel.downloadsLiveData.removeObserver(downloadObserver)
+                        viewModel.downloadsMediatorLiveData.removeObserver(downloadObserver)
                         viewModel.torrentsLiveData.removeObserver(torrentObserver)
                     }
                 }
             }
         )
 
+        // observe the click on one of the two tabs
         binding.tabs.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
 
             override fun onTabSelected(tab: TabLayout.Tab?) {
@@ -278,8 +303,8 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
                             viewModel.setSelectedTab(TAB_DOWNLOADS)
                             binding.rvTorrentList.visibility = View.GONE
                             binding.rvDownloadList.visibility = View.VISIBLE
-                            if (!viewModel.downloadsLiveData.hasActiveObservers())
-                                viewModel.downloadsLiveData.observe(
+                            if (!viewModel.downloadsMediatorLiveData.hasActiveObservers())
+                                viewModel.downloadsMediatorLiveData.observe(
                                     viewLifecycleOwner,
                                     downloadObserver
                                 )
@@ -299,14 +324,14 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
             }
 
             override fun onTabReselected(tab: TabLayout.Tab?) {
-                // either do nothing or refresh
+                // either do nothing or go to top
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {
                 // remove observer
                 when (tab?.position) {
                     TAB_DOWNLOADS -> {
-                        viewModel.downloadsLiveData.removeObserver(downloadObserver)
+                        viewModel.downloadsMediatorLiveData.removeObserver(downloadObserver)
                     }
                     TAB_TORRENTS -> {
                         viewModel.torrentsLiveData.removeObserver(torrentObserver)
@@ -315,6 +340,7 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
             }
         })
 
+        // observe if some new download items have been generated and change tab/refresh if so
         viewModel.downloadItemLiveData.observe(
             viewLifecycleOwner,
             EventObserver { links ->
@@ -329,6 +355,7 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
             }
         )
 
+        // show a message when torrent are being removed
         viewModel.deletedTorrentLiveData.observe(
             viewLifecycleOwner,
             EventObserver {
@@ -361,6 +388,7 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
             }
         )
 
+        // react to lists statuses
         activityViewModel.listStateLiveData.observe(
             viewLifecycleOwner,
             EventObserver {
@@ -385,6 +413,8 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
             }
         )
 
+        // react to dialog clicks
+        // todo: remove since long press dialogs have been replace with multi select
         setFragmentResultListener("downloadActionKey") { _, bundle ->
             bundle.getString("deletedDownloadKey")?.let {
                 viewModel.deleteDownload(it)
@@ -393,7 +423,6 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
                 onClick(it)
             }
         }
-
         setFragmentResultListener("torrentActionKey") { _, bundle ->
             bundle.getString("deletedTorrentKey")?.let {
                 viewModel.deleteTorrent(it)
@@ -422,6 +451,7 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
             }
         }
 
+        // show a message when downloads are being removed
         viewModel.deletedDownloadLiveData.observe(
             viewLifecycleOwner,
             EventObserver {
@@ -454,6 +484,7 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
             }
         )
 
+        // react to errors messages
         viewModel.errorsLiveData.observe(
             viewLifecycleOwner,
             EventObserver {
@@ -490,6 +521,59 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
         binding.tabs.getTabAt(viewModel.getSelectedTab())?.select()
 
         return binding.root
+    }
+
+    private fun changeSortIcon(sortingButton: ImageButton, currentTag: Any) {
+        when (currentTag) {
+            FolderListFragment.TAG_DEFAULT_SORT -> {
+                sortingButton.background = ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.icon_sort_az,
+                    requireContext().theme
+                )
+                sortingButton.tag = FolderListFragment.TAG_SORT_AZ
+            }
+            FolderListFragment.TAG_SORT_AZ -> {
+                sortingButton.background = ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.icon_sort_za,
+                    requireContext().theme
+                )
+                sortingButton.tag = FolderListFragment.TAG_SORT_ZA
+            }
+            FolderListFragment.TAG_SORT_ZA -> {
+                sortingButton.background = ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.icon_sort_size_desc,
+                    requireContext().theme
+                )
+                sortingButton.tag = FolderListFragment.TAG_SORT_SIZE_DESC
+            }
+            FolderListFragment.TAG_SORT_SIZE_DESC -> {
+                sortingButton.background = ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.icon_sort_size_asc,
+                    requireContext().theme
+                )
+                sortingButton.tag = FolderListFragment.TAG_SORT_SIZE_ASC
+            }
+            FolderListFragment.TAG_SORT_SIZE_ASC -> {
+                sortingButton.background = ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.icon_sort_az,
+                    requireContext().theme
+                )
+                sortingButton.tag = FolderListFragment.TAG_SORT_AZ
+            }
+            else -> {
+                sortingButton.background = ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.icon_sort_default,
+                    requireContext().theme
+                )
+                sortingButton.tag = FolderListFragment.TAG_DEFAULT_SORT
+            }
+        }
     }
 
     // menu-related functions
@@ -645,4 +729,5 @@ interface SelectedItemsButtonsListener {
     fun deleteSelectedItems()
     fun shareSelectedItems()
     fun downloadSelectedItems()
+    fun orderList()
 }

@@ -2,6 +2,7 @@ package com.github.livingwithhippos.unchained.lists.viewmodel
 
 import TorrentPagingSource
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.Transformations
@@ -43,14 +44,24 @@ class DownloadListViewModel @Inject constructor(
 
     // stores the last query value
     private val queryLiveData = MutableLiveData<String>()
+    // stores the last sorting value
+    private val sortingLiveData = MutableLiveData<String>()
 
-    // items are filtered returning only if their names contain the query
-    val downloadsLiveData: LiveData<PagingData<DownloadItem>> =
-        Transformations.switchMap(queryLiveData) { query: String ->
+    val downloadsMediatorLiveData: MediatorLiveData<PagingData<DownloadItem>> = MediatorLiveData()
+
+    fun setupLists() {
+        // items are filtered and sorted
+        downloadsMediatorLiveData.addSource(queryLiveData) { query ->
             Pager(PagingConfig(pageSize = 50, initialLoadSize = 100)) {
-                DownloadPagingSource(downloadRepository, credentialsRepository, query)
+                DownloadPagingSource(downloadRepository, credentialsRepository, query, sortingLiveData.value)
             }.liveData.cachedIn(viewModelScope)
         }
+        downloadsMediatorLiveData.addSource(sortingLiveData) { sort ->
+            Pager(PagingConfig(pageSize = 50, initialLoadSize = 100)) {
+                DownloadPagingSource(downloadRepository, credentialsRepository, queryLiveData.value ?: "", sort)
+            }.liveData.cachedIn(viewModelScope)
+        }
+    }
 
     val torrentsLiveData: LiveData<PagingData<TorrentItem>> =
         Transformations.switchMap(queryLiveData) { query: String ->
@@ -133,6 +144,11 @@ class DownloadListViewModel @Inject constructor(
         // Avoid updating the lists if the query hasn't changed. We don't check for cases but we could
         if (queryLiveData.value != query)
             queryLiveData.postValue(query?.trim() ?: "")
+    }
+
+    fun setListSorting(sort: String) {
+        if (sortingLiveData.value != sort)
+            sortingLiveData.postValue(sort)
     }
 
     fun deleteAllDownloads() {
