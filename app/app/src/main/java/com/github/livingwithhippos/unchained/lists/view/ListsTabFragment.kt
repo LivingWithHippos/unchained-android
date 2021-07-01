@@ -560,10 +560,10 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
             FolderListFragment.TAG_SORT_SIZE_ASC -> {
                 sortingButton.background = ResourcesCompat.getDrawable(
                     resources,
-                    R.drawable.icon_sort_az,
+                    R.drawable.icon_sort_default,
                     requireContext().theme
                 )
-                sortingButton.tag = FolderListFragment.TAG_SORT_AZ
+                sortingButton.tag = FolderListFragment.TAG_DEFAULT_SORT
             }
             else -> {
                 sortingButton.background = ResourcesCompat.getDrawable(
