@@ -235,8 +235,6 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
             }
         }
 
-        viewModel.setupLists()
-
         // observers created to be easily added and removed. Pass the retrieved list to the adapter and removes the loading icon from the swipe layout
         val downloadObserver = Observer<PagingData<DownloadItem>> {
             lifecycleScope.launch {
@@ -272,19 +270,19 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
             {
                 when (it.peekContent()) {
                     AuthenticationState.AUTHENTICATED, AuthenticationState.AUTHENTICATED_NO_PREMIUM -> {
-                        // register observers if not already registered
+                        // register observers if there aren't any
                         if (!viewModel.downloadsMediatorLiveData.hasActiveObservers())
                             viewModel.downloadsMediatorLiveData.observe(
-                                viewLifecycleOwner,
-                                downloadObserver
-                            )
+                                viewLifecycleOwner) {
+                                it.observe(viewLifecycleOwner, downloadObserver)
+                            }
                         if (!viewModel.torrentsLiveData.hasActiveObservers())
                             viewModel.torrentsLiveData.observe(viewLifecycleOwner, torrentObserver)
                     }
                     else -> {
                         // remove observers if present
-                        viewModel.downloadsMediatorLiveData.removeObserver(downloadObserver)
-                        viewModel.torrentsLiveData.removeObserver(torrentObserver)
+                        // viewModel.downloadsMediatorLiveData.removeObserver(downloadObserver)
+                        // viewModel.torrentsLiveData.removeObserver(torrentObserver)
                     }
                 }
             }
@@ -303,21 +301,11 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
                             viewModel.setSelectedTab(TAB_DOWNLOADS)
                             binding.rvTorrentList.visibility = View.GONE
                             binding.rvDownloadList.visibility = View.VISIBLE
-                            if (!viewModel.downloadsMediatorLiveData.hasActiveObservers())
-                                viewModel.downloadsMediatorLiveData.observe(
-                                    viewLifecycleOwner,
-                                    downloadObserver
-                                )
                         }
                         TAB_TORRENTS -> {
                             viewModel.setSelectedTab(TAB_TORRENTS)
                             binding.rvTorrentList.visibility = View.VISIBLE
                             binding.rvDownloadList.visibility = View.GONE
-                            if (!viewModel.torrentsLiveData.hasActiveObservers())
-                                viewModel.torrentsLiveData.observe(
-                                    viewLifecycleOwner,
-                                    torrentObserver
-                                )
                         }
                     }
                 }
@@ -331,10 +319,10 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
                 // remove observer
                 when (tab?.position) {
                     TAB_DOWNLOADS -> {
-                        viewModel.downloadsMediatorLiveData.removeObserver(downloadObserver)
+                        // viewModel.downloadsMediatorLiveData.removeObserver(downloadObserver)
                     }
                     TAB_TORRENTS -> {
-                        viewModel.torrentsLiveData.removeObserver(torrentObserver)
+                        // viewModel.torrentsLiveData.removeObserver(torrentObserver)
                     }
                 }
             }

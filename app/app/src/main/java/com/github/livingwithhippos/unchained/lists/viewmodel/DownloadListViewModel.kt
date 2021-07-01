@@ -47,19 +47,23 @@ class DownloadListViewModel @Inject constructor(
     // stores the last sorting value
     private val sortingLiveData = MutableLiveData<String>()
 
-    val downloadsMediatorLiveData: MediatorLiveData<PagingData<DownloadItem>> = MediatorLiveData()
+    val downloadsMediatorLiveData: MediatorLiveData<LiveData<PagingData<DownloadItem>>> = MediatorLiveData()
 
-    fun setupLists() {
+    init {
         // items are filtered and sorted
         downloadsMediatorLiveData.addSource(queryLiveData) { query ->
+            downloadsMediatorLiveData.postValue(
             Pager(PagingConfig(pageSize = 50, initialLoadSize = 100)) {
                 DownloadPagingSource(downloadRepository, credentialsRepository, query, sortingLiveData.value)
             }.liveData.cachedIn(viewModelScope)
+            )
         }
         downloadsMediatorLiveData.addSource(sortingLiveData) { sort ->
+            downloadsMediatorLiveData.postValue(
             Pager(PagingConfig(pageSize = 50, initialLoadSize = 100)) {
                 DownloadPagingSource(downloadRepository, credentialsRepository, queryLiveData.value ?: "", sort)
             }.liveData.cachedIn(viewModelScope)
+            )
         }
     }
 
