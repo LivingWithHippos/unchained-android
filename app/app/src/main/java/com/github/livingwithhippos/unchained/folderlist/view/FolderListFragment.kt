@@ -118,7 +118,6 @@ class FolderListFragment : Fragment(), DownloadListListener {
         binding.rvFolderList.adapter = adapter
 
         // observe the list loading status
-        // todo: add more sorting methodds, dinamically chosen by the user
         viewModel.folderLiveData.observe(viewLifecycleOwner) {
             it.getContentIfNotHandled()?.let { files ->
                 updateList(binding, adapter, list = files)
@@ -183,6 +182,15 @@ class FolderListFragment : Fragment(), DownloadListListener {
         binding.sortingButton.setOnClickListener {
             // every click changes to the next state
             when (it.tag) {
+                TAG_DEFAULT_SORT -> {
+                    binding.sortingButton.background = ResourcesCompat.getDrawable(
+                        resources,
+                        R.drawable.icon_sort_az,
+                        requireContext().theme
+                    )
+                    it.tag = TAG_SORT_AZ
+                    updateList(binding, adapter, sort = TAG_SORT_AZ)
+                }
                 TAG_SORT_AZ -> {
                     binding.sortingButton.background = ResourcesCompat.getDrawable(
                         resources,
@@ -213,20 +221,20 @@ class FolderListFragment : Fragment(), DownloadListListener {
                 TAG_SORT_SIZE_ASC -> {
                     binding.sortingButton.background = ResourcesCompat.getDrawable(
                         resources,
-                        R.drawable.icon_sort_az,
+                        R.drawable.icon_sort_default,
                         requireContext().theme
                     )
-                    it.tag = TAG_SORT_AZ
-                    updateList(binding, adapter, sort = TAG_SORT_AZ)
+                    it.tag = TAG_DEFAULT_SORT
+                    updateList(binding, adapter, sort = TAG_DEFAULT_SORT)
                 }
                 else -> {
                     binding.sortingButton.background = ResourcesCompat.getDrawable(
                         resources,
-                        R.drawable.icon_sort_az,
+                        R.drawable.icon_sort_default,
                         requireContext().theme
                     )
-                    it.tag = TAG_SORT_AZ
-                    updateList(binding, adapter, sort = TAG_SORT_AZ)
+                    it.tag = TAG_DEFAULT_SORT
+                    updateList(binding, adapter, sort = TAG_DEFAULT_SORT)
                 }
             }
         }
@@ -276,6 +284,9 @@ class FolderListFragment : Fragment(), DownloadListListener {
         }
         // if I get passed an empty list I need to empty the list (shouldn't be possible in this particular fragment)
         when (sortTag) {
+            TAG_DEFAULT_SORT -> {
+                adapter.submitList( customizedList )
+            }
             TAG_SORT_AZ -> {
                 adapter.submitList(
                     customizedList.sortedBy { item ->
@@ -333,6 +344,7 @@ class FolderListFragment : Fragment(), DownloadListListener {
     }
 
     companion object {
+        const val TAG_DEFAULT_SORT = "sort_default_tag"
         const val TAG_SORT_AZ = "sort_az_tag"
         const val TAG_SORT_ZA = "sort_za_tag"
         const val TAG_SORT_SIZE_ASC = "sort_size_asc_tag"
