@@ -72,12 +72,12 @@ class FolderListFragment : Fragment(), DownloadListListener {
             val manager =
                 requireContext().getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
             downloads.forEach {
-                val downloadQueued = manager.downloadFile(
+                val queuedDownload = manager.downloadFile(
                     it.download,
                     it.filename,
                     getString(R.string.app_name)
                 )
-                when (downloadQueued) {
+                when (queuedDownload) {
                     is Either.Left -> {
                         context?.showToast(
                             getString(

@@ -28,7 +28,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Observer
 import arrow.core.Either
-import arrow.core.left
 import com.github.livingwithhippos.unchained.R
 import timber.log.Timber
 import java.util.*
@@ -100,67 +99,58 @@ fun Fragment.getClipboardText(): String {
  *
  * @param link the http link
  * @param title the title to show on the notification
- * @param fileName the name to give to the downloaded file, title will be used if this is null
- * @param showErrorToast show a toast if there is a download error
- * @return a Long identifying the download or null if an error has occurred
- */
-fun Context.downloadFile(
-    link: String,
-    title: String,
-    fileName: String? = null,
-    showErrorToast: Boolean = true
-): Long? {
-    var downloadID: Long? = null
-    val manager = this.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-    val request: DownloadManager.Request = DownloadManager.Request(Uri.parse(link))
-        .setTitle(title)
-        .setDescription(getString(R.string.app_name))
-        .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-        .setDestinationInExternalPublicDir(
-            Environment.DIRECTORY_DOWNLOADS,
-            fileName ?: title
-        )
-
-    try {
-        downloadID = manager.enqueue(request)
-    } catch (e: Exception) {
-        Timber.e("Error starting download of ${link}, exception ${e.message}")
-        if (showErrorToast)
-            this.showToast(getString(R.string.download_not_started_format, title))
-    }
-    return downloadID
-}
-
-/**
- * Download a file in the public download folder
- *
- * @param link the http link
- * @param title the title to show on the notification
  * @param description the title to show on the notification
  * @param fileName the name to give to the downloaded file, title will be used if this is null
+ * @param directory the public directory destination. Defaults to the Downloads directory
  * @return a Long identifying the download or null if an error has occurred
  */
 fun DownloadManager.downloadFile(
     link: String,
     title: String,
     description: String,
-    fileName: String = title
+    fileName: String = title,
+    directory: String = Environment.DIRECTORY_DOWNLOADS
+): Either<Exception, Long> = this.downloadFile(
+    Uri.parse(link),
+    title,
+    description,
+    fileName,
+    directory
+)
+
+// todo: move extensions to own file base on dependencies, for example for these ones Either is needed
+/**
+ * Download a file in the public download folder
+ *
+ * @param uri the file Uri
+ * @param title the title to show on the notification
+ * @param description the title to show on the notification
+ * @param fileName the name to give to the downloaded file, title will be used if this is null
+ * @param directory the public directory destination. Defaults to the Downloads directory
+ * @return a Long identifying the download or null if an error has occurred
+ */
+fun DownloadManager.downloadFile(
+    uri: Uri,
+    title: String,
+    description: String,
+    fileName: String = title,
+    directory: String = Environment.DIRECTORY_DOWNLOADS
 ): Either<Exception, Long> {
-    val request: DownloadManager.Request = DownloadManager.Request(Uri.parse(link))
+    val request: DownloadManager.Request = DownloadManager.Request(uri)
         .setTitle(title)
         .setDescription(description)
         .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
         .setDestinationInExternalPublicDir(
-            Environment.DIRECTORY_DOWNLOADS,
+            directory,
             fileName
         )
 
-    try {
+    return try {
         val downloadID = this.enqueue(request)
-        return Either.Right(downloadID)
+        Either.Right(downloadID)
     } catch (e: Exception) {
-        Timber.e("Error starting download of ${link}, exception ${e.message}")
-        return Either.Left(e)
+        Timber.e("Error starting download of ${uri.path}, exception ${e.message}")
+        Either.Left(e)
     }
 }
 
