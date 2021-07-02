@@ -125,6 +125,23 @@ fun Context.downloadFile(link: String, title: String, fileName: String?=null, sh
 }
 
 /**
+ * Return the Uri from a downloaded file id returned by the download manager
+ *
+ * @param id the file id
+ * @return the file Uri or null if the id wasn't found or the download wasn't successful
+ */
+fun Context.getDownloadedFileUri(id: Long): Uri? {
+    val manager = this.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+    val cursor = manager.query(DownloadManager.Query().setFilterById(id))
+    if (cursor.moveToFirst()) {
+        val columnIndex: Int = cursor.getColumnIndex(DownloadManager.COLUMN_STATUS)
+        if (cursor.getInt(columnIndex)==DownloadManager.STATUS_SUCCESSFUL)
+                return Uri.parse(cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI)))
+    }
+    return null
+}
+
+/**
  * Open an url from available apps
  * @param url: the url to be opened
  * @param showErrorToast: set to true if an error toast should be displayed

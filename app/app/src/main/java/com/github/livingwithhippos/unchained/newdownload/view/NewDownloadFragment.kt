@@ -35,6 +35,7 @@ import com.github.livingwithhippos.unchained.utilities.SCHEME_HTTPS
 import com.github.livingwithhippos.unchained.utilities.SCHEME_MAGNET
 import com.github.livingwithhippos.unchained.utilities.extension.getApiErrorMessage
 import com.github.livingwithhippos.unchained.utilities.extension.getClipboardText
+import com.github.livingwithhippos.unchained.utilities.extension.getDownloadedFileUri
 import com.github.livingwithhippos.unchained.utilities.extension.isContainerWebLink
 import com.github.livingwithhippos.unchained.utilities.extension.isMagnet
 import com.github.livingwithhippos.unchained.utilities.extension.isTorrent
@@ -276,16 +277,12 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
 
         activityViewModel.downloadedFileLiveData.observe(
             viewLifecycleOwner,
-            EventObserver { fileName ->
-                when {
-                    fileName.endsWith(".torrent") -> {
-                        val torrentFile = File(
-                            requireContext().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS),
-                            fileName
-                        )
-                        loadTorrent(torrentFile.toUri())
-                    }
-                }
+            EventObserver { fileID ->
+                val uri = requireContext().getDownloadedFileUri(fileID)
+                // no need to recheck the extension since it was checked on download
+                // if (uri?.path?.endsWith(".torrent") == true)
+                if (uri?.path != null)
+                    loadTorrent(uri)
             }
         )
 
@@ -456,7 +453,7 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
                     torrentName
                 )
             val downloadID = manager.enqueue(request)
-            activityViewModel.setDownload(downloadID, torrentName)
+            activityViewModel.setDownload(downloadID)
         }
     }
 }
