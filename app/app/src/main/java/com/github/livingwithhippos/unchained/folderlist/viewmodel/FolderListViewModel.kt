@@ -5,13 +5,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import arrow.core.Either
 import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkException
 import com.github.livingwithhippos.unchained.data.repositoy.CredentialsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.DownloadRepository
 import com.github.livingwithhippos.unchained.data.repositoy.UnrestrictRepository
+import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.postEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -44,12 +44,12 @@ class FolderListViewModel @Inject constructor(
         viewModelScope.launch {
             val token = credentialsRepository.getToken()
 
-            val filesList: Either<UnchainedNetworkException, List<String>> =
+            val filesList: EitherResult<UnchainedNetworkException, List<String>> =
                 unrestrictRepository.getEitherFolderLinks(token, folderLink)
 
             when (filesList) {
-                is Either.Left -> errorsLiveData.postEvent(filesList.value)
-                is Either.Right -> retrieveFiles(filesList.value)
+                is EitherResult.Failure -> errorsLiveData.postEvent(filesList.failure)
+                is EitherResult.Success -> retrieveFiles(filesList.success)
             }
         }
     }
@@ -68,12 +68,12 @@ class FolderListViewModel @Inject constructor(
                         val file =
                             unrestrictRepository.getEitherUnrestrictedLink(token, link)
                     ) {
-                        is Either.Left -> {
-                            errorsLiveData.postEvent(file.value)
+                        is EitherResult.Failure -> {
+                            errorsLiveData.postEvent(file.failure)
                             progressLiveData.postValue((index + 1) * 100 / links.size)
                         }
-                        is Either.Right -> {
-                            hitList.add(file.value)
+                        is EitherResult.Success -> {
+                            hitList.add(file.success)
                             folderLiveData.postEvent(hitList)
                             setRetrievedLinks(hitList.size)
                             progressLiveData.postValue((index + 1) * 100 / links.size)

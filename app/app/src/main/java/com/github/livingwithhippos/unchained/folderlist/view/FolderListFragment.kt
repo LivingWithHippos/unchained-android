@@ -16,7 +16,6 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import arrow.core.Either
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.model.APIError
 import com.github.livingwithhippos.unchained.data.model.ApiConversionError
@@ -27,6 +26,7 @@ import com.github.livingwithhippos.unchained.databinding.FragmentFolderListBindi
 import com.github.livingwithhippos.unchained.folderlist.model.FolderItemAdapter
 import com.github.livingwithhippos.unchained.folderlist.viewmodel.FolderListViewModel
 import com.github.livingwithhippos.unchained.lists.view.DownloadListListener
+import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.extension.downloadFile
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.github.livingwithhippos.unchained.utilities.extension.verticalScrollToPosition
@@ -78,7 +78,7 @@ class FolderListFragment : Fragment(), DownloadListListener {
                     getString(R.string.app_name)
                 )
                 when (queuedDownload) {
-                    is Either.Left -> {
+                    is EitherResult.Failure -> {
                         context?.showToast(
                             getString(
                                 R.string.download_not_started_format,
@@ -86,7 +86,7 @@ class FolderListFragment : Fragment(), DownloadListListener {
                             )
                         )
                     }
-                    is Either.Right -> {
+                    is EitherResult.Success -> {
                         downloadStarted = true
                     }
                 }

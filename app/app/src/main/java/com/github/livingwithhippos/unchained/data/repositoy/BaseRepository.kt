@@ -1,12 +1,12 @@
 package com.github.livingwithhippos.unchained.data.repositoy
 
-import arrow.core.Either
 import com.github.livingwithhippos.unchained.data.model.APIError
 import com.github.livingwithhippos.unchained.data.model.ApiConversionError
 import com.github.livingwithhippos.unchained.data.model.EmptyBodyError
 import com.github.livingwithhippos.unchained.data.model.NetworkError
 import com.github.livingwithhippos.unchained.data.model.NetworkResponse
 import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkException
+import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import kotlinx.coroutines.Dispatchers
@@ -70,29 +70,29 @@ open class BaseRepository {
     suspend fun <T : Any> eitherApiResult(
         call: suspend () -> Response<T>,
         errorMessage: String
-    ): Either<UnchainedNetworkException, T> = withContext(Dispatchers.IO) {
+    ): EitherResult<UnchainedNetworkException, T> = withContext(Dispatchers.IO) {
         val response: Response<T> = try {
             call.invoke()
         } catch (e: Exception) {
-            return@withContext Either.Left(NetworkError(-1, errorMessage))
+            return@withContext EitherResult.Failure(NetworkError(-1, errorMessage))
         }
 
         if (response.isSuccessful) {
             val body = response.body()
             return@withContext if (body != null)
-                Either.Right(body)
+                EitherResult.Success(body)
             else
-                Either.Left(EmptyBodyError(response.code()))
+                EitherResult.Failure(EmptyBodyError(response.code()))
         } else {
             try {
                 val error: APIError? = jsonAdapter.fromJson(response.errorBody()!!.string())
                 return@withContext if (error != null)
-                    Either.Left(error)
+                    EitherResult.Failure(error)
                 else
-                    Either.Left(ApiConversionError(-1))
+                    EitherResult.Failure(ApiConversionError(-1))
             } catch (e: IOException) {
                 // todo: analyze error to return code
-                return@withContext Either.Left(NetworkError(-1, errorMessage))
+                return@withContext EitherResult.Failure(NetworkError(-1, errorMessage))
             }
         }
     }

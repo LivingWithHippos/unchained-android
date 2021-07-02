@@ -3,7 +3,6 @@ package com.github.livingwithhippos.unchained.newdownload.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import arrow.core.Either
 import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkException
 import com.github.livingwithhippos.unchained.data.model.UploadedTorrent
@@ -11,6 +10,7 @@ import com.github.livingwithhippos.unchained.data.repositoy.CredentialsRepositor
 import com.github.livingwithhippos.unchained.data.repositoy.HostsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.TorrentsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.UnrestrictRepository
+import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.postEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -56,8 +56,8 @@ class NewDownloadViewModel @Inject constructor(
                 val response =
                     unrestrictRepository.getEitherUnrestrictedLink(token, link, password, remote)
                 when (response) {
-                    is Either.Left -> networkExceptionLiveData.postEvent(response.value)
-                    is Either.Right -> linkLiveData.postEvent(response.value)
+                    is EitherResult.Failure -> networkExceptionLiveData.postEvent(response.failure)
+                    is EitherResult.Success -> linkLiveData.postEvent(response.success)
                 }
             }
         }

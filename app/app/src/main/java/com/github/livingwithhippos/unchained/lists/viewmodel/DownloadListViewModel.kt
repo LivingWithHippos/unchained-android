@@ -12,7 +12,6 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.liveData
-import arrow.core.Either
 import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkException
@@ -22,6 +21,7 @@ import com.github.livingwithhippos.unchained.data.repositoy.TorrentsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.UnrestrictRepository
 import com.github.livingwithhippos.unchained.lists.model.DownloadPagingSource
 import com.github.livingwithhippos.unchained.lists.view.ListsTabFragment.Companion.TAB_DOWNLOADS
+import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.postEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -70,9 +70,9 @@ class DownloadListViewModel @Inject constructor(
         viewModelScope.launch {
             val token = credentialsRepository.getToken()
             val items = unrestrictRepository.getUnrestrictedLinkList(token, torrent.links)
-            val values = items.filterIsInstance<Either.Right<DownloadItem>>().map { it.value }
+            val values = items.filterIsInstance<EitherResult.Success<DownloadItem>>().map { it.success }
             val errors =
-                items.filterIsInstance<Either.Left<UnchainedNetworkException>>().map { it.value }
+                items.filterIsInstance<EitherResult.Failure<UnchainedNetworkException>>().map { it.failure }
 
             downloadItemLiveData.postEvent(values)
             if (errors.isNotEmpty())
@@ -84,9 +84,9 @@ class DownloadListViewModel @Inject constructor(
         viewModelScope.launch {
             val token = credentialsRepository.getToken()
             val items = unrestrictRepository.getUnrestrictedLinkList(token, torrent.links)
-            val values = items.filterIsInstance<Either.Right<DownloadItem>>().map { it.value }
+            val values = items.filterIsInstance<EitherResult.Success<DownloadItem>>().map { it.success }
             val errors =
-                items.filterIsInstance<Either.Left<UnchainedNetworkException>>().map { it.value }
+                items.filterIsInstance<EitherResult.Failure<UnchainedNetworkException>>().map { it.failure }
 
             downloadItemLiveData.postEvent(values)
             if (errors.isNotEmpty())
@@ -99,11 +99,11 @@ class DownloadListViewModel @Inject constructor(
             val token = credentialsRepository.getToken()
             val deleted = torrentsRepository.deleteTorrent(token, id)
             when (deleted) {
-                is Either.Left -> {
-                    errorsLiveData.postEvent(listOf(deleted.value))
+                is EitherResult.Failure -> {
+                    errorsLiveData.postEvent(listOf(deleted.failure))
                     deletedTorrentLiveData.postEvent(TORRENT_NOT_DELETED)
                 }
-                is Either.Right -> {
+                is EitherResult.Success -> {
                     deletedTorrentLiveData.postEvent(TORRENT_DELETED)
                 }
             }

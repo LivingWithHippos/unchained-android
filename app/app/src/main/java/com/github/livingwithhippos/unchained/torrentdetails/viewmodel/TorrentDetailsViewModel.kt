@@ -3,13 +3,13 @@ package com.github.livingwithhippos.unchained.torrentdetails.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import arrow.core.Either
 import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkException
 import com.github.livingwithhippos.unchained.data.repositoy.CredentialsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.TorrentsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.UnrestrictRepository
+import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.postEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -56,10 +56,10 @@ class TorrentDetailsViewModel @Inject constructor(
             val token = getToken()
             val deleted = torrentsRepository.deleteTorrent(token, id)
             when (deleted) {
-                is Either.Left -> {
-                    errorsLiveData.postEvent(listOf(deleted.value))
+                is EitherResult.Failure -> {
+                    errorsLiveData.postEvent(listOf(deleted.failure))
                 }
-                is Either.Right -> {
+                is EitherResult.Success -> {
                     deletedTorrentLiveData.postEvent(204)
                 }
             }
@@ -75,9 +75,11 @@ class TorrentDetailsViewModel @Inject constructor(
                     val items = unrestrictRepository.getUnrestrictedLinkList(token, links)
 
                     val values =
-                        items.filterIsInstance<Either.Right<DownloadItem>>().map { it.value }
-                    val errors = items.filterIsInstance<Either.Left<UnchainedNetworkException>>()
-                        .map { it.value }
+                        items.filterIsInstance<EitherResult.Success<DownloadItem>>()
+                            .map { it.success }
+                    val errors =
+                        items.filterIsInstance<EitherResult.Failure<UnchainedNetworkException>>()
+                            .map { it.failure }
 
                     // since the torrent want to open a download details page we oen only the first link
                     downloadLiveData.postEvent(values.firstOrNull())

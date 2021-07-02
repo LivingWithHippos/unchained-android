@@ -1,10 +1,9 @@
 package com.github.livingwithhippos.unchained.data.repositoy
 
-import arrow.core.Either
 import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkException
-import com.github.livingwithhippos.unchained.data.model.UploadedTorrent
 import com.github.livingwithhippos.unchained.data.remote.UnrestrictApiHelper
+import com.github.livingwithhippos.unchained.utilities.EitherResult
 import kotlinx.coroutines.delay
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
@@ -19,7 +18,7 @@ class UnrestrictRepository @Inject constructor(private val unrestrictApiHelper: 
         link: String,
         password: String? = null,
         remote: Int? = null
-    ): Either<UnchainedNetworkException, DownloadItem> {
+    ): EitherResult<UnchainedNetworkException, DownloadItem> {
 
         val linkResponse = eitherApiResult(
             call = {
@@ -42,8 +41,8 @@ class UnrestrictRepository @Inject constructor(private val unrestrictApiHelper: 
         password: String? = null,
         remote: Int? = null,
         callDelay: Long = 100
-    ): List<Either<UnchainedNetworkException, DownloadItem>> {
-        val unrestrictedLinks = mutableListOf<Either<UnchainedNetworkException, DownloadItem>>()
+    ): List<EitherResult<UnchainedNetworkException, DownloadItem>> {
+        val unrestrictedLinks = mutableListOf<EitherResult<UnchainedNetworkException, DownloadItem>>()
         linksList.forEach {
             unrestrictedLinks.add(getEitherUnrestrictedLink(token, it, password, remote))
             // just to be on the safe side...
@@ -57,9 +56,9 @@ class UnrestrictRepository @Inject constructor(private val unrestrictApiHelper: 
         link: String,
         password: String? = null,
         remote: Int? = null
-    ): List<Either<UnchainedNetworkException, DownloadItem>> {
+    ): List<EitherResult<UnchainedNetworkException, DownloadItem>> {
 
-        val folderResponse: Either<UnchainedNetworkException, List<String>> = eitherApiResult(
+        val folderResponse: EitherResult<UnchainedNetworkException, List<String>> = eitherApiResult(
             call = {
                 unrestrictApiHelper.getUnrestrictedFolder(
                     token = "Bearer $token",
@@ -70,22 +69,22 @@ class UnrestrictRepository @Inject constructor(private val unrestrictApiHelper: 
         )
 
         return when (folderResponse) {
-            is Either.Right -> getUnrestrictedLinkList(
+            is EitherResult.Success -> getUnrestrictedLinkList(
                 token,
-                folderResponse.value,
+                folderResponse.success,
                 password,
                 remote
             )
-            is Either.Left -> listOf(Either.Left(folderResponse.value))
+            is EitherResult.Failure -> listOf(EitherResult.Failure(folderResponse.failure))
         }
     }
 
     suspend fun getEitherFolderLinks(
         token: String,
         link: String
-    ): Either<UnchainedNetworkException, List<String>> {
+    ): EitherResult<UnchainedNetworkException, List<String>> {
 
-        val folderResponse: Either<UnchainedNetworkException, List<String>> = eitherApiResult(
+        val folderResponse: EitherResult<UnchainedNetworkException, List<String>> = eitherApiResult(
             call = {
                 unrestrictApiHelper.getUnrestrictedFolder(
                     token = "Bearer $token",

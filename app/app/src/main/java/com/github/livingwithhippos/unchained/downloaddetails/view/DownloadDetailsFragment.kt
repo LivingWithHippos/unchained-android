@@ -19,7 +19,6 @@ import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
-import arrow.core.Either
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.DeleteDialogFragment
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
@@ -30,6 +29,7 @@ import com.github.livingwithhippos.unchained.downloaddetails.model.AlternativeDo
 import com.github.livingwithhippos.unchained.downloaddetails.viewmodel.DownloadDetailsMessage
 import com.github.livingwithhippos.unchained.downloaddetails.viewmodel.DownloadDetailsViewModel
 import com.github.livingwithhippos.unchained.lists.view.ListsTabFragment
+import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.EventObserver
 import com.github.livingwithhippos.unchained.utilities.RD_STREAMING_URL
 import com.github.livingwithhippos.unchained.utilities.extension.copyToClipboard
@@ -232,10 +232,10 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
             description = getString(R.string.app_name)
         )
         when (queuedDownload) {
-            is Either.Left -> {
+            is EitherResult.Failure -> {
                 context?.showToast(R.string.download_not_started)
             }
-            is Either.Right -> {
+            is EitherResult.Success -> {
                 context?.showToast(R.string.download_started)
             }
         }
