@@ -2,9 +2,7 @@ package com.github.livingwithhippos.unchained.folderlist.view
 
 import android.app.DownloadManager
 import android.content.Context
-import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -18,6 +16,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import arrow.core.Either
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.model.APIError
 import com.github.livingwithhippos.unchained.data.model.ApiConversionError
@@ -28,6 +27,7 @@ import com.github.livingwithhippos.unchained.databinding.FragmentFolderListBindi
 import com.github.livingwithhippos.unchained.folderlist.model.FolderItemAdapter
 import com.github.livingwithhippos.unchained.folderlist.viewmodel.FolderListViewModel
 import com.github.livingwithhippos.unchained.lists.view.DownloadListListener
+import com.github.livingwithhippos.unchained.utilities.extension.downloadFile
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.github.livingwithhippos.unchained.utilities.extension.verticalScrollToPosition
 import dagger.hilt.android.AndroidEntryPoint
@@ -72,27 +72,23 @@ class FolderListFragment : Fragment(), DownloadListListener {
             val manager =
                 requireContext().getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
             downloads.forEach {
-                val request: DownloadManager.Request =
-                    DownloadManager.Request(Uri.parse(it.download))
-                        .setTitle(it.filename)
-                        .setDescription(getString(R.string.app_name))
-                        .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-                        .setDestinationInExternalPublicDir(
-                            Environment.DIRECTORY_DOWNLOADS,
-                            it.filename
+                val downloadQueued = manager.downloadFile(
+                    it.download,
+                    it.filename,
+                    getString(R.string.app_name)
+                )
+                when (downloadQueued) {
+                    is Either.Left -> {
+                        context?.showToast(
+                            getString(
+                                R.string.download_not_started_format,
+                                it.filename
+                            )
                         )
-
-                try {
-                    manager.enqueue(request)
-                    downloadStarted = true
-                } catch (e: Exception) {
-                    Timber.e("Error starting download of ${it.filename}, exception ${e.message}")
-                    context?.showToast(
-                        getString(
-                            R.string.download_not_started_format,
-                            it.filename
-                        )
-                    )
+                    }
+                    is Either.Right -> {
+                        downloadStarted = true
+                    }
                 }
             }
 
@@ -285,7 +281,7 @@ class FolderListFragment : Fragment(), DownloadListListener {
         // if I get passed an empty list I need to empty the list (shouldn't be possible in this particular fragment)
         when (sortTag) {
             TAG_DEFAULT_SORT -> {
-                adapter.submitList( customizedList )
+                adapter.submitList(customizedList)
             }
             TAG_SORT_AZ -> {
                 adapter.submitList(
