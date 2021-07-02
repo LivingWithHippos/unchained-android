@@ -27,9 +27,10 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Observer
+import arrow.core.Either
 import com.github.livingwithhippos.unchained.R
 import timber.log.Timber
-import java.util.Locale
+import java.util.*
 
 /**
  * Show a toast message
@@ -98,30 +99,76 @@ fun Fragment.getClipboardText(): String {
  *
  * @param link the http link
  * @param title the title to show on the notification
+ * @param description the title to show on the notification
  * @param fileName the name to give to the downloaded file, title will be used if this is null
- * @param showErrorToast show a toast if there is a download error
+ * @param directory the public directory destination. Defaults to the Downloads directory
  * @return a Long identifying the download or null if an error has occurred
  */
-fun Context.downloadFile(link: String, title: String, fileName: String?=null, showErrorToast: Boolean = true): Long? {
-    var downloadID: Long? = null
-    val manager = this.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-        val request: DownloadManager.Request = DownloadManager.Request(Uri.parse(link))
-            .setTitle(title)
-            .setDescription(getString(R.string.app_name))
-            .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-            .setDestinationInExternalPublicDir(
-                Environment.DIRECTORY_DOWNLOADS,
-                fileName ?: title
-            )
+fun DownloadManager.downloadFile(
+    link: String,
+    title: String,
+    description: String,
+    fileName: String = title,
+    directory: String = Environment.DIRECTORY_DOWNLOADS
+): Either<Exception, Long> = this.downloadFile(
+    Uri.parse(link),
+    title,
+    description,
+    fileName,
+    directory
+)
 
-        try {
-            downloadID = manager.enqueue(request)
-        } catch (e: Exception) {
-            Timber.e("Error starting download of ${link}, exception ${e.message}")
-            if (showErrorToast)
-                this.showToast(getString(R.string.download_not_started_format, title))
-        }
-    return downloadID
+// todo: move extensions to own file base on dependencies, for example for these ones Either is needed
+/**
+ * Download a file in the public download folder
+ *
+ * @param uri the file Uri
+ * @param title the title to show on the notification
+ * @param description the title to show on the notification
+ * @param fileName the name to give to the downloaded file, title will be used if this is null
+ * @param directory the public directory destination. Defaults to the Downloads directory
+ * @return a Long identifying the download or null if an error has occurred
+ */
+fun DownloadManager.downloadFile(
+    uri: Uri,
+    title: String,
+    description: String,
+    fileName: String = title,
+    directory: String = Environment.DIRECTORY_DOWNLOADS
+): Either<Exception, Long> {
+    val request: DownloadManager.Request = DownloadManager.Request(uri)
+        .setTitle(title)
+        .setDescription(description)
+        .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+        .setDestinationInExternalPublicDir(
+            directory,
+            fileName
+        )
+
+    return try {
+        val downloadID = this.enqueue(request)
+        Either.Right(downloadID)
+    } catch (e: Exception) {
+        Timber.e("Error starting download of ${uri.path}, exception ${e.message}")
+        Either.Left(e)
+    }
+}
+
+/**
+ * Return the Uri from a downloaded file id returned by the download manager
+ *
+ * @param id the file id
+ * @return the file Uri or null if the id wasn't found or the download wasn't successful
+ */
+fun Context.getDownloadedFileUri(id: Long): Uri? {
+    val manager = this.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+    val cursor = manager.query(DownloadManager.Query().setFilterById(id))
+    if (cursor.moveToFirst()) {
+        val columnIndex: Int = cursor.getColumnIndex(DownloadManager.COLUMN_STATUS)
+        if (cursor.getInt(columnIndex) == DownloadManager.STATUS_SUCCESSFUL)
+            return Uri.parse(cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI)))
+    }
+    return null
 }
 
 /**

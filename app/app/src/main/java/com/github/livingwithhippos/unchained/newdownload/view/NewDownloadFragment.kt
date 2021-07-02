@@ -17,6 +17,7 @@ import androidx.core.net.toUri
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import arrow.core.Either
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.data.model.APIError
@@ -33,8 +34,10 @@ import com.github.livingwithhippos.unchained.utilities.REMOTE_TRAFFIC_ON
 import com.github.livingwithhippos.unchained.utilities.SCHEME_HTTP
 import com.github.livingwithhippos.unchained.utilities.SCHEME_HTTPS
 import com.github.livingwithhippos.unchained.utilities.SCHEME_MAGNET
+import com.github.livingwithhippos.unchained.utilities.extension.downloadFile
 import com.github.livingwithhippos.unchained.utilities.extension.getApiErrorMessage
 import com.github.livingwithhippos.unchained.utilities.extension.getClipboardText
+import com.github.livingwithhippos.unchained.utilities.extension.getDownloadedFileUri
 import com.github.livingwithhippos.unchained.utilities.extension.isContainerWebLink
 import com.github.livingwithhippos.unchained.utilities.extension.isMagnet
 import com.github.livingwithhippos.unchained.utilities.extension.isTorrent
@@ -276,16 +279,12 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
 
         activityViewModel.downloadedFileLiveData.observe(
             viewLifecycleOwner,
-            EventObserver { fileName ->
-                when {
-                    fileName.endsWith(".torrent") -> {
-                        val torrentFile = File(
-                            requireContext().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS),
-                            fileName
-                        )
-                        loadTorrent(torrentFile.toUri())
-                    }
-                }
+            EventObserver { fileID ->
+                val uri = requireContext().getDownloadedFileUri(fileID)
+                // no need to recheck the extension since it was checked on download
+                // if (uri?.path?.endsWith(".torrent") == true)
+                if (uri?.path != null)
+                    loadTorrent(uri)
             }
         )
 
@@ -447,16 +446,25 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
         if (!torrentName.isNullOrBlank() && context != null) {
             val manager =
                 requireContext().getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-            val request: DownloadManager.Request = DownloadManager.Request(uri)
-                .setTitle(getString(R.string.unchained_torrent_download))
-                .setDescription(getString(R.string.temporary_torrent_download))
-                .setDestinationInExternalFilesDir(
-                    requireContext(),
-                    Environment.DIRECTORY_DOWNLOADS,
-                    torrentName
-                )
-            val downloadID = manager.enqueue(request)
-            activityViewModel.setDownload(downloadID, torrentName)
+            val queuedDownload = manager.downloadFile(
+                uri = uri,
+                title = getString(R.string.unchained_torrent_download),
+                description = getString(R.string.temporary_torrent_download),
+                fileName = torrentName
+            )
+            when (queuedDownload) {
+                is Either.Left -> {
+                    requireContext().showToast(
+                        getString(
+                            R.string.download_not_started_format,
+                            torrentName
+                        )
+                    )
+                }
+                is Either.Right -> {
+                    activityViewModel.setDownload(queuedDownload.value)
+                }
+            }
         }
     }
 }

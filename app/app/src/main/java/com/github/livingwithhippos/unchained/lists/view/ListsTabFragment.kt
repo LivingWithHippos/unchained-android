@@ -23,6 +23,7 @@ import androidx.recyclerview.selection.SelectionPredicates
 import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.selection.StorageStrategy
 import androidx.recyclerview.widget.RecyclerView
+import arrow.core.Either
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.data.model.APIError
@@ -44,6 +45,7 @@ import com.github.livingwithhippos.unchained.lists.viewmodel.DownloadListViewMod
 import com.github.livingwithhippos.unchained.lists.viewmodel.DownloadListViewModel.Companion.TORRENT_NOT_DELETED
 import com.github.livingwithhippos.unchained.utilities.DataBindingDetailsLookup
 import com.github.livingwithhippos.unchained.utilities.EventObserver
+import com.github.livingwithhippos.unchained.utilities.extension.downloadFile
 import com.github.livingwithhippos.unchained.utilities.extension.getApiErrorMessage
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.github.livingwithhippos.unchained.utilities.extension.verticalScrollToPosition
@@ -160,21 +162,18 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
                     val manager =
                         requireContext().getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
                     downloadTracker.selection.forEach { item ->
-                        val request: DownloadManager.Request = DownloadManager.Request(Uri.parse(item.download))
-                            .setTitle(item.filename)
-                            .setDescription(getString(R.string.app_name))
-                            .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-                            .setDestinationInExternalPublicDir(
-                                Environment.DIRECTORY_DOWNLOADS,
-                                item.filename
-                            )
-
-                        try {
-                            manager.enqueue(request)
-                            downloadStarted = true
-                        } catch (e: Exception) {
-                            Timber.e("Error starting download of ${item.filename}, exception ${e.message}")
-                            context?.showToast(getString(R.string.download_not_started_format, item.filename))
+                        val queuedDownload = manager.downloadFile(
+                            item.download,
+                            item.filename,
+                            getString(R.string.app_name),
+                        )
+                        when (queuedDownload) {
+                            is Either.Left -> {
+                                context?.showToast(getString(R.string.download_not_started_format, item.filename))
+                            }
+                            is Either.Right -> {
+                                downloadStarted = true
+                            }
                         }
                     }
                     if (downloadStarted)

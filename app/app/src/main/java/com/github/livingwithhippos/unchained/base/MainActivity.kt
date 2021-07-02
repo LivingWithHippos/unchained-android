@@ -24,6 +24,7 @@ import androidx.navigation.NavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
+import arrow.core.Either
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.model.AuthenticationState
 import com.github.livingwithhippos.unchained.data.repositoy.PluginRepository.Companion.TYPE_UNCHAINED
@@ -237,9 +238,27 @@ class MainActivity : AppCompatActivity() {
 
     private fun downloadPlugin(link: String) {
         val pluginName = link.replace("%2F", "/").split("/").last()
-        val downloadID = applicationContext.downloadFile(link,getString(R.string.unchained_plugin_download),pluginName)
-        if (downloadID != null)
-            viewModel.setPluginDownload(downloadID, pluginName)
+        val manager =
+            applicationContext.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+        val queuedDownload = manager.downloadFile(
+            link = link,
+            title = getString(R.string.unchained_plugin_download),
+            description = getString(R.string.temporary_plugin_download),
+            fileName = pluginName
+        )
+        when (queuedDownload) {
+            is Either.Left -> {
+                applicationContext.showToast(
+                    getString(
+                        R.string.download_not_started_format,
+                        pluginName
+                    )
+                )
+            }
+            is Either.Right -> {
+                viewModel.setPluginDownload(queuedDownload.value)
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

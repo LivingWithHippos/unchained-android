@@ -27,6 +27,7 @@ import com.github.livingwithhippos.unchained.lists.view.ListsTabFragment
 import com.github.livingwithhippos.unchained.plugins.model.Plugin
 import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.PRIVATE_TOKEN
+import com.github.livingwithhippos.unchained.utilities.extension.getDownloadedFileUri
 import com.github.livingwithhippos.unchained.utilities.extension.isMagnet
 import com.github.livingwithhippos.unchained.utilities.extension.isTorrent
 import com.github.livingwithhippos.unchained.utilities.postEvent
@@ -61,7 +62,7 @@ class MainActivityViewModel @Inject constructor(
 
     val externalLinkLiveData = MutableLiveData<Event<Uri>>()
 
-    val downloadedFileLiveData = MutableLiveData<Event<String>>()
+    val downloadedFileLiveData = MutableLiveData<Event<Long>>()
 
     val notificationTorrentLiveData = MutableLiveData<Event<String>>()
 
@@ -201,36 +202,30 @@ class MainActivityViewModel @Inject constructor(
         externalLinkLiveData.postEvent(uri)
     }
 
-    fun setDownload(downloadID: Long, filePath: String) {
+    fun setDownload(downloadID: Long) {
         savedStateHandle.set(KEY_TORRENT_DOWNLOAD_ID, downloadID)
-        savedStateHandle.set(KEY_TORRENT_PATH, filePath)
     }
 
-    fun setPluginDownload(downloadID: Long, filePath: String) {
+    fun setPluginDownload(downloadID: Long) {
         savedStateHandle.set(KEY_PLUGIN_DOWNLOAD_ID, downloadID)
-        savedStateHandle.set(KEY_PLUGIN_PATH, filePath)
     }
 
     fun checkTorrentDownload(downloadID: Long) {
         val torrentID = savedStateHandle.get<Long>(KEY_TORRENT_DOWNLOAD_ID)
-        if (torrentID == downloadID) {
-            val fileName = savedStateHandle.get<String>(KEY_TORRENT_PATH)
-            if (fileName != null)
-                downloadedFileLiveData.postEvent(fileName)
-        }
+        if (torrentID == downloadID)
+            downloadedFileLiveData.postEvent(torrentID)
     }
 
     fun checkPluginDownload(context: Context, downloadID: Long) {
         val pluginID = savedStateHandle.get<Long>(KEY_PLUGIN_DOWNLOAD_ID)
         if (pluginID == downloadID) {
-            val fileName = savedStateHandle.get<String>(KEY_PLUGIN_PATH)
-            if (fileName != null) {
+
+            val uri = context.getDownloadedFileUri(pluginID)
+            // no need to recheck the extension since it was checked on download
+            if (uri?.path != null) {
                 viewModelScope.launch {
 
-                    val pluginFile = File(
-                        context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS),
-                        fileName
-                    )
+                    val pluginFile = File(uri.path!!)
 
                     var installed = false
 
@@ -240,7 +235,7 @@ class MainActivityViewModel @Inject constructor(
                                 val source = reader.readText()
                                 installed = pluginRepository.addExternalPlugin(context, source)
                             } catch (ex: Exception) {
-                                Timber.e("Error reading file in path $fileName, exception ${ex.message}")
+                                Timber.e("Error reading file in path ${uri.path}, exception ${ex.message}")
                             }
                         }
                     }
@@ -459,9 +454,7 @@ class MainActivityViewModel @Inject constructor(
 
     companion object {
         const val KEY_TORRENT_DOWNLOAD_ID = "torrent_download_id_key"
-        const val KEY_TORRENT_PATH = "torrent_path_key"
         const val KEY_PLUGIN_DOWNLOAD_ID = "plugin_download_id_key"
-        const val KEY_PLUGIN_PATH = "plugin_path_key"
         const val KEY_LAST_BACK_PRESS = "last_back_press_key"
         const val KEY_REFRESHING_TOKEN = "refreshing_token_key"
     }

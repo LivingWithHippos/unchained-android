@@ -19,6 +19,7 @@ import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
+import arrow.core.Either
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.DeleteDialogFragment
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
@@ -32,6 +33,7 @@ import com.github.livingwithhippos.unchained.lists.view.ListsTabFragment
 import com.github.livingwithhippos.unchained.utilities.EventObserver
 import com.github.livingwithhippos.unchained.utilities.RD_STREAMING_URL
 import com.github.livingwithhippos.unchained.utilities.extension.copyToClipboard
+import com.github.livingwithhippos.unchained.utilities.extension.downloadFile
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
@@ -224,21 +226,18 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
     private fun downloadFile(link: String, fileName: String) {
         val manager =
             requireContext().getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-        val request: DownloadManager.Request = DownloadManager.Request(Uri.parse(link))
-            .setTitle(fileName)
-            .setDescription(getString(R.string.app_name))
-            .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-            .setDestinationInExternalPublicDir(
-                Environment.DIRECTORY_DOWNLOADS,
-                fileName
-            )
-
-        try {
-            manager.enqueue(request)
-            context?.showToast(R.string.download_started)
-        } catch (e: Exception) {
-            Timber.e("Error starting download of $fileName, exception ${e.message}")
-            context?.showToast(R.string.download_not_started)
+        val queuedDownload = manager.downloadFile(
+            link = link,
+            title = fileName,
+            description = getString(R.string.app_name)
+        )
+        when (queuedDownload) {
+            is Either.Left -> {
+                context?.showToast(R.string.download_not_started)
+            }
+            is Either.Right -> {
+                context?.showToast(R.string.download_started)
+            }
         }
     }
 
