@@ -50,14 +50,14 @@ android {
     }
 
     signingConfigs {
-        // works for both local and CI builds
+        // use local file if available or Environment variables (for CI)
         release {
             if (keyPropertiesFile.exists()) {
-                // windows
+                // windows file path
                 storeFile file(keyProperties['releaseStoreFile'])
-                // linux
+                // linux file path
                 // storeFile file("/home/user/.keystore/release.pfk")
-                // shared
+                // shared properties
                 storePassword keyProperties['releaseStorePassword']
                 keyAlias keyProperties['keyAlias']
                 keyPassword keyProperties['releaseStorePassword']
@@ -87,10 +87,13 @@ android {
             versionNameSuffix "-dev"
             applicationIdSuffix ".debug"
             signingConfig signingConfigs.debug
+
             if (apiPropertiesFile.exists()) {
+                buildConfigField("String", "ACRA_URL", apiProperties['ACRA_URL'])
                 buildConfigField("String", "ACRA_LOGIN", apiProperties['ACRA_LOGIN'])
                 buildConfigField("String", "ACRA_PASSWORD", apiProperties['ACRA_PASSWORD'])
             } else {
+                buildConfigField("String", "ACRA_URL", "\""+System.getenv("ACRA_URL")+"\"")
                 buildConfigField("String", "ACRA_LOGIN", "\""+System.getenv("ACRA_LOGIN")+"\"")
                 buildConfigField("String", "ACRA_PASSWORD", "\""+System.getenv("ACRA_PASSWORD")+"\"")
             }
@@ -98,6 +101,7 @@ android {
 
         release {
 
+            buildConfigField("String", "ACRA_URL", "\"" + "not for production" + "\"")
             buildConfigField("String", "ACRA_LOGIN", "\"" + "not for production" + "\"")
             buildConfigField("String", "ACRA_PASSWORD", "\"" + "not for production" + "\"")
 

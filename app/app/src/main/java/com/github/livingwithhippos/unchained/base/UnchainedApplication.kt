@@ -68,7 +68,7 @@ class UnchainedApplication : Application() {
                 reportFormat = StringFormat.JSON
                 httpSender {
                     //required. Https recommended
-                    uri = "https://acrarium.professiona.li/report"
+                    uri = BuildConfig.ACRA_URL
                     //optional. Enables http basic auth
                     basicAuthLogin = BuildConfig.ACRA_LOGIN
                     //required if above set
