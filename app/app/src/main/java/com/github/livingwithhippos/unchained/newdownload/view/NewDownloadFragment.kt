@@ -65,9 +65,6 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
     private var _binding: NewDownloadFragmentBinding? = null
     val downloadBinding get() = _binding!!
 
-    // used to simulate a debounce effect while typing on the search bar
-    var queryJob: Job? = null
-
     override fun onDestroyView() {
         _binding = null
         super.onDestroyView()

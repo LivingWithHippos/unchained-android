@@ -29,29 +29,22 @@ import timber.log.Timber
 @AndroidEntryPoint
 class SearchFragment : UnchainedFragment(), SearchItemListener {
 
-    private var _binding: FragmentSearchBinding? = null
-    val binding get() = _binding!!
-
     private val viewModel: SearchViewModel by viewModels()
 
-    override fun onDestroyView() {
-        _binding = null
-        super.onDestroyView()
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentSearchBinding.inflate(inflater, container, false)
+        val binding = FragmentSearchBinding.inflate(inflater, container, false)
 
-        setup()
+        setup(binding)
 
         return binding.root
     }
 
-    private fun setup() {
+    private fun setup(binding: FragmentSearchBinding) {
         showDialogIfNeeded()
         // setup the plugin dropdown
         val pluginAdapter =
@@ -62,7 +55,9 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
             pluginAdapter.clear()
             pluginAdapter.addAll(plugins.map { it.name })
 
-            if (binding.pluginPicker.editText?.text.toString().isBlank() &&
+            val pluginPickerView = binding.pluginPicker.editText as? AutoCompleteTextView
+            val categoryPickerView = binding.categoryPicker.editText as? AutoCompleteTextView
+            if (pluginPickerView?.text.toString().isBlank() &&
                 plugins.isNotEmpty()
             ) {
                 // load the latest selected plugin or the first one available
@@ -75,14 +70,14 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
                     selectedPlugin.name,
                     false
                 )
-                setupCategory(plugins.first())
+                setupCategory(categoryPickerView, plugins.first())
             }
 
             // update the categories dropdown when the selected plugins change
-            (binding.pluginPicker.editText as? AutoCompleteTextView)?.setOnItemClickListener { _, _, position, _ ->
+            pluginPickerView?.setOnItemClickListener { _, _, position, _ ->
                 val selection: String? = pluginAdapter.getItem(position)
                 if (selection != null) {
-                    setupCategory(plugins.first { it.name == selection })
+                    setupCategory(categoryPickerView, plugins.first { it.name == selection })
                     viewModel.setLastSelectedPlugin(plugins.first { it.name == selection }.name)
                 }
             }
@@ -102,7 +97,7 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
         binding.tiSearch.setOnEditorActionListener { _, actionId, _ ->
             return@setOnEditorActionListener when (actionId) {
                 EditorInfo.IME_ACTION_SEARCH -> {
-                    performSearch(adapter)
+                    performSearch(binding, adapter)
                     true
                 }
                 else -> false
@@ -111,16 +106,16 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
 
         // search button listener
         binding.tfSearch.setEndIconOnClickListener {
-            performSearch(adapter)
+            performSearch(binding, adapter)
         }
     }
 
-    private fun performSearch(adapter: SearchItemAdapter) {
+    private fun performSearch(binding: FragmentSearchBinding, adapter: SearchItemAdapter) {
         binding.tfSearch.hideKeyboard()
         viewModel.completeSearch(
             query = binding.tiSearch.text.toString(),
-            pluginName = getSelectedPluginName(),
-            category = getSelectedCategory()
+            pluginName = binding.pluginPicker.editText?.text.toString(),
+            category = getSelectedCategory(binding.categoryPicker.editText?.text.toString())
         ).observe(viewLifecycleOwner) { result ->
             when (result) {
                 is ParserResult.SingleResult -> {
@@ -171,7 +166,7 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
         }
     }
 
-    fun setupCategory(plugin: Plugin) {
+    private fun setupCategory(autoCompleteView: AutoCompleteTextView?, plugin: Plugin) {
         val choices = mutableListOf<String>()
         choices.add(getString(R.string.category_all))
         if (plugin.supportedCategories.anime != null)
@@ -190,16 +185,16 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
             choices.add(getString(R.string.category_books))
 
         val adapter = ArrayAdapter(requireContext(), R.layout.plugin_list_item, choices)
-        (binding.categoryPicker.editText as? AutoCompleteTextView)?.setAdapter(adapter)
+        autoCompleteView?.setAdapter(adapter)
 
-        (binding.categoryPicker.editText as? AutoCompleteTextView)?.setText(
+        autoCompleteView?.setText(
             choices.first(),
             false
         )
     }
 
-    private fun getSelectedCategory(): String? {
-        return when (binding.categoryPicker.editText?.text.toString()) {
+    private fun getSelectedCategory(pickerText: String): String? {
+        return when (pickerText) {
             getString(R.string.category_all) -> {
                 // "all"
                 // searches on "all" will just be redirected to the no_category search
@@ -214,15 +209,6 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
             getString(R.string.category_tv) -> "books"
             else -> null
         }
-    }
-
-    private fun getSelectedPluginName(): String {
-        return binding.pluginPicker.editText?.text.toString()
-    }
-
-    private fun getSelectedPlugin(): Plugin? {
-        return viewModel.getPlugins()
-            .firstOrNull { it.name == getSelectedPluginName() }
     }
 
     override fun onClick(item: ScrapedItem) {
