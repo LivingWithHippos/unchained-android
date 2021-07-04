@@ -67,17 +67,17 @@ class UnchainedApplication : Application() {
                 buildConfigClass = BuildConfig::class.java
                 reportFormat = StringFormat.JSON
                 httpSender {
-                    //required. Https recommended
+                    // required. Https recommended
                     uri = BuildConfig.ACRA_URL
-                    //optional. Enables http basic auth
+                    // optional. Enables http basic auth
                     basicAuthLogin = BuildConfig.ACRA_LOGIN
-                    //required if above set
+                    // required if above set
                     basicAuthPassword = BuildConfig.ACRA_PASSWORD
                     // defaults to POST
                     httpMethod = HttpSender.Method.POST
-                    //defaults to false. Recommended if your backend supports it
+                    // defaults to false. Recommended if your backend supports it
                     compress = true
-                    //defaults to all
+                    // defaults to all
                     tlsProtocols = arrayOf(TLS.V1_3, TLS.V1_2)
                 }
                 toast {
