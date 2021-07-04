@@ -223,15 +223,17 @@ class MainActivity : AppCompatActivity() {
             ContextCompat.startForegroundService(this, notificationIntent)
         }
 
-
-        viewModel.connectivityLiveData.observe(this, {
-            if (it) {
-                Timber.d("connection enabled")
-            } else {
-                Timber.e("connection disabled")
-                applicationContext.showToast(R.string.no_network_connection)
+        viewModel.connectivityLiveData.observe(
+            this,
+            {
+                if (it) {
+                    Timber.d("connection enabled")
+                } else {
+                    Timber.e("connection disabled")
+                    applicationContext.showToast(R.string.no_network_connection)
+                }
             }
-        })
+        )
         viewModel.setupConnectivityCheck(applicationContext)
     }
 
@@ -321,7 +323,6 @@ class MainActivity : AppCompatActivity() {
                                         }
                                     )
                                 }
-
                             }
                         }
                         SCHEME_HTTP, SCHEME_HTTPS -> {

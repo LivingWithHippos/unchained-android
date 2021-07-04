@@ -249,7 +249,6 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
                             CONTAINER_EXTENSION_PATTERN.toRegex().matches(link.path ?: "") -> {
                                 context?.showToast(R.string.loading_container_file)
                                 loadContainer(link)
-
                             }
                             link.path?.endsWith(".torrent") == true -> {
                                 context?.showToast(R.string.loading_torrent_file)

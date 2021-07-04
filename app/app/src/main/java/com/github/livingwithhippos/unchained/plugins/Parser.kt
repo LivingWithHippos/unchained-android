@@ -248,8 +248,6 @@ class Parser(
                             columns[tableLink.columns.torrentColumn].html(),
                             baseUrl
                         )
-
-
                 } catch (e: IndexOutOfBoundsException) {
                     Timber.d("skipping row")
                 }
