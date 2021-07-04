@@ -573,12 +573,6 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
             context?.showToast(R.string.premium_needed)
     }
 
-    override fun onLongClick(item: DownloadItem) {
-        val action =
-            ListsTabFragmentDirections.actionListTabsDestToDownloadContextualDialogFragment(item)
-        findNavController().navigate(action)
-    }
-
     override fun onClick(item: TorrentItem) {
         val authState = activityViewModel.authenticationState.value?.peekContent()
         if (authState == AuthenticationState.AUTHENTICATED) {
@@ -613,14 +607,6 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
         } else
             context?.showToast(R.string.premium_needed)
     }
-
-    /*
-    override fun onLongClick(item: TorrentItem) {
-        val action =
-            ListsTabFragmentDirections.actionListTabsDestToTorrentContextualDialogFragment(item)
-        findNavController().navigate(action)
-    }
-     */
 
     private fun delayedListScrolling(recyclerView: RecyclerView, delay: Long = 300) {
         recyclerView.layoutManager?.let {

@@ -334,10 +334,6 @@ class FolderListFragment : Fragment(), DownloadListListener {
         findNavController().navigate(action)
     }
 
-    override fun onLongClick(item: DownloadItem) {
-        // do nothing for now
-    }
-
     companion object {
         const val TAG_DEFAULT_SORT = "sort_default_tag"
         const val TAG_SORT_AZ = "sort_az_tag"
