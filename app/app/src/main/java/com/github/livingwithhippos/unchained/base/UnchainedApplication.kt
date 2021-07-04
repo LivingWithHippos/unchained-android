@@ -15,6 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.acra.config.httpSender
+import org.acra.config.toast
 import org.acra.data.StringFormat
 import org.acra.ktx.initAcra
 import org.acra.security.TLS
@@ -78,6 +79,9 @@ class UnchainedApplication : Application() {
                     compress = true
                     //defaults to all
                     tlsProtocols = arrayOf(TLS.V1_3, TLS.V1_2)
+                }
+                toast {
+                    text = getString(R.string.sending_crash_report)
                 }
             }
         }

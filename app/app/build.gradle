@@ -260,6 +260,7 @@ dependencies {
 
     // acra
     implementation "ch.acra:acra-http:$acra_version"
+    implementation "ch.acra:acra-toast:$acra_version"
 }
 
 kapt {

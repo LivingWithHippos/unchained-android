@@ -314,4 +314,5 @@
     <string name="no_network_connection">Pas de connexion réseau</string>
     <string name="download_not_started_format">Erreur d\'initialisation du téléchargement de %s</string>
     <string name="download_all">Télécharger Tout</string>
+    <string name="sending_crash_report">Unchained vient de planter.\nJ\'envoie un rapport de panne…</string>
 </resources>
