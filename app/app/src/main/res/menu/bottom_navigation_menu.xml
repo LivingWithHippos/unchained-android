@@ -14,7 +14,7 @@
         android:id="@+id/navigation_lists"
         android:enabled="true"
         android:icon="@drawable/icon_lists"
-        android:title="@string/lists" />
+        android:title="@string/downloads" />
     <item
         android:id="@+id/navigation_search"
         android:enabled="true"

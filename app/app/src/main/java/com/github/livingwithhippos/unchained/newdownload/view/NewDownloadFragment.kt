@@ -156,6 +156,7 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
                         context?.showToast(R.string.loading_torrent)
                         downloadBinding.bUnrestrict.isEnabled = false
                         downloadBinding.bLoadTorrent.isEnabled = false
+                        downloadBinding.bLoadContainer.isEnabled = false
                         /**
                          * DownloadManager does not support insecure (https) links anymore
                          * to add support for it, follow these instructions
@@ -171,6 +172,7 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
                         context?.showToast(R.string.loading_host_link)
                         downloadBinding.bUnrestrict.isEnabled = false
                         downloadBinding.bLoadTorrent.isEnabled = false
+                        downloadBinding.bLoadContainer.isEnabled = false
 
                         var password: String? = downloadBinding.tePassword.text.toString()
                         // we don't pass the password if it is blank.
@@ -190,6 +192,7 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
                         context?.showToast(R.string.loading_magnet_link)
                         downloadBinding.bUnrestrict.isEnabled = false
                         downloadBinding.bLoadTorrent.isEnabled = false
+                        downloadBinding.bLoadContainer.isEnabled = false
                         viewModel.fetchAddedMagnet(link)
                     }
                     link.isBlank() -> {
@@ -291,6 +294,7 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
                 // re-enable the buttons to allow the user to take new actions
                 downloadBinding.bUnrestrict.isEnabled = true
                 downloadBinding.bLoadTorrent.isEnabled = true
+                downloadBinding.bLoadContainer.isEnabled = true
 
                 when (exception) {
                     is APIError -> {
@@ -407,6 +411,7 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
             }
             downloadBinding.bUnrestrict.isEnabled = true
             downloadBinding.bLoadTorrent.isEnabled = true
+            downloadBinding.bLoadContainer.isEnabled = true
             requireContext().showToast(R.string.error_loading_torrent)
         }
     }
@@ -431,6 +436,7 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
             }
             downloadBinding.bUnrestrict.isEnabled = true
             downloadBinding.bLoadTorrent.isEnabled = true
+            downloadBinding.bLoadContainer.isEnabled = true
             requireContext().showToast(R.string.error_loading_file)
         }
     }

@@ -18,7 +18,7 @@
     <fragment
         android:id="@+id/list_tabs_dest"
         android:name="com.github.livingwithhippos.unchained.lists.view.ListsTabFragment"
-        android:label="@string/lists"
+        android:label="@string/downloads"
         tools:layout="@layout/fragment_tab_lists">
         <action
             android:id="@+id/action_listsTab_to_downloadDetails"
@@ -29,6 +29,9 @@
         <action
             android:id="@+id/action_list_tabs_dest_to_folderListFragment2"
             app:destination="@id/folderListFragment" />
+        <action
+            android:id="@+id/action_list_tabs_dest_to_newDownloadFragment"
+            app:destination="@id/newDownloadFragment" />
     </fragment>
 
     <fragment
@@ -36,7 +39,6 @@
         android:name="com.github.livingwithhippos.unchained.torrentdetails.view.TorrentDetailsFragment"
         android:label="@string/torrent"
         tools:layout="@layout/fragment_torrent_details">
-        <!-- check: changes here need to be ported to the [download_nav_graph.xml] file -->
         <argument
             android:name="torrentID"
             app:argType="string" />
@@ -72,5 +74,36 @@
             android:name="linkList"
             app:argType="string[]"
             app:nullable="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/newDownloadFragment"
+        android:name="com.github.livingwithhippos.unchained.newdownload.view.NewDownloadFragment"
+        android:label="@string/new_download"
+        tools:layout="@layout/new_download_fragment">
+        <argument
+            android:name="link"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true" />
+        <action
+            android:id="@+id/action_new_download_dest_to_folderListFragment"
+            app:destination="@id/folderListFragment"
+            app:popUpTo="@id/list_tabs_dest" />
+        <action
+            android:id="@+id/actionUnrestrictDownloadToDetailsFragment"
+            app:destination="@id/download_details_dest"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"
+            app:popUpTo="@id/list_tabs_dest" />
+        <action
+            android:id="@+id/action_new_download_dest_to_torrentDetailsFragment"
+            app:destination="@id/torrent_details_dest"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"
+            app:popUpTo="@id/list_tabs_dest" />
     </fragment>
 </navigation>

@@ -22,6 +22,7 @@ import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.selection.StorageStrategy
 import androidx.recyclerview.widget.RecyclerView
 import com.github.livingwithhippos.unchained.R
+import com.github.livingwithhippos.unchained.authentication.view.AuthenticationFragmentDirections
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.data.model.APIError
 import com.github.livingwithhippos.unchained.data.model.ApiConversionError
@@ -481,7 +482,12 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
             }
         )
 
-        // without this the lists won't get initialized
+        binding.fabNewDownload.setOnClickListener {
+            val action = ListsTabFragmentDirections.actionListTabsDestToNewDownloadFragment()
+            findNavController().navigate(action)
+        }
+
+        // starts the Transformations.switchMap(queryLiveData) which otherwise won't trigger the Paging request
         viewModel.setListFilter("")
 
         binding.tabs.getTabAt(viewModel.getSelectedTab())?.select()
