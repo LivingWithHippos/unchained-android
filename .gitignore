@@ -92,3 +92,4 @@ app/signingkey.properties
 app/app/src/main/assets/search_plugins/1337.json
 app/app/src/main/assets/search_plugins/isohunt_nz.json
 app/app/src/main/assets/search_plugins/zooqle.json
+app/apikey.properties

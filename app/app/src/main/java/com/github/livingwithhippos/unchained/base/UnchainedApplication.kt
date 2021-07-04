@@ -14,6 +14,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import org.acra.config.httpSender
+import org.acra.data.StringFormat
+import org.acra.ktx.initAcra
+import org.acra.security.TLS
+import org.acra.sender.HttpSender
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -48,6 +53,33 @@ class UnchainedApplication : Application() {
 
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
+        }
+    }
+
+    override fun attachBaseContext(base: Context) {
+        super.attachBaseContext(base)
+
+        // add error report for debug builds
+        if (BuildConfig.DEBUG) {
+            initAcra {
+                //core configuration:
+                buildConfigClass = BuildConfig::class.java
+                reportFormat = StringFormat.JSON
+                httpSender {
+                    //required. Https recommended
+                    uri = "https://acrarium.professiona.li/report"
+                    //optional. Enables http basic auth
+                    basicAuthLogin = BuildConfig.ACRA_LOGIN
+                    //required if above set
+                    basicAuthPassword = BuildConfig.ACRA_PASSWORD
+                    // defaults to POST
+                    httpMethod = HttpSender.Method.POST
+                    //defaults to false. Recommended if your backend supports it
+                    compress = true
+                    //defaults to all
+                    tlsProtocols = arrayOf(TLS.V1_3, TLS.V1_2)
+                }
+            }
         }
     }
 

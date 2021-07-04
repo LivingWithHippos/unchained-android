@@ -10,6 +10,12 @@ if (keyPropertiesFile.exists()) {
     keyProperties.load(new FileInputStream(keyPropertiesFile))
 }
 
+def apiPropertiesFile = rootProject.file("apikey.properties")
+def apiProperties = new Properties()
+if (apiPropertiesFile.exists()) {
+    apiProperties.load(new FileInputStream(apiPropertiesFile))
+}
+
 android {
 
     compileSdkVersion 30
@@ -44,29 +50,24 @@ android {
     }
 
     signingConfigs {
-        //used by circleci
+        // works for both local and CI builds
         release {
-            storeFile file(System.getenv("KEYSTORE") ?: "release.pfk")
-            storePassword System.getenv("KEYSTORE_PASSWORD")
-            keyAlias System.getenv("KEY_ALIAS")
-            keyPassword System.getenv("KEY_PASSWORD")
+            if (keyPropertiesFile.exists()) {
+                // windows
+                storeFile file(keyProperties['releaseStoreFile'])
+                // linux
+                // storeFile file("/home/user/.keystore/release.pfk")
+                // shared
+                storePassword keyProperties['releaseStorePassword']
+                keyAlias keyProperties['keyAlias']
+                keyPassword keyProperties['releaseStorePassword']
+            } else {
+                storeFile file(System.getenv("KEYSTORE") ?: "release.pfk")
+                storePassword System.getenv("KEYSTORE_PASSWORD")
+                keyAlias System.getenv("KEY_ALIAS")
+                keyPassword System.getenv("KEY_PASSWORD")
+            }
         }
-
-        /**
-         * used with a local file
-         * needs to be commented out otherwise circleci will try to process this, fail to find the storeFile and crash
-         * this also need a signingkey.properties file in the root directory
-         local {
-         // windows
-         // storeFile file(keyProperties['releaseStoreFile'])
-         // linux
-         storeFile file("/home/user/.keystore/release.pfk")
-         // shared
-         storePassword keyProperties['releaseStorePassword']
-         keyAlias keyProperties['keyAlias']
-         keyPassword keyProperties['releaseStorePassword']
-         }
-         */
     }
 
     buildTypes {
@@ -86,9 +87,19 @@ android {
             versionNameSuffix "-dev"
             applicationIdSuffix ".debug"
             signingConfig signingConfigs.debug
+            if (apiPropertiesFile.exists()) {
+                buildConfigField("String", "ACRA_LOGIN", apiProperties['ACRA_LOGIN'])
+                buildConfigField("String", "ACRA_PASSWORD", apiProperties['ACRA_PASSWORD'])
+            } else {
+                buildConfigField("String", "ACRA_LOGIN", System.getenv("ACRA_LOGIN"))
+                buildConfigField("String", "ACRA_PASSWORD", System.getenv("ACRA_PASSWORD"))
+            }
         }
 
         release {
+
+            buildConfigField("String", "ACRA_LOGIN", "\"" + "not for production" + "\"")
+            buildConfigField("String", "ACRA_PASSWORD", "\"" + "not for production" + "\"")
 
             signingConfig signingConfigs.release
 
@@ -148,6 +159,7 @@ clean.mustRunAfter copyPlugins
 dependencies {
 
     // def leakcanary_version = '2.4'
+    def acra_version = "5.8.3"
     def androidx_core_version = "1.5.0"
     def appcompat_version = "1.3.0"
     // def arrow_version = "0.13.2"
@@ -246,6 +258,8 @@ dependencies {
     // leak canary
     // debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakcanary_version"
 
+    // acra
+    implementation "ch.acra:acra-http:$acra_version"
 }
 
 kapt {
