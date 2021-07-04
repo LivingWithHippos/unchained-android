@@ -70,9 +70,11 @@ class DownloadListViewModel @Inject constructor(
         viewModelScope.launch {
             val token = credentialsRepository.getToken()
             val items = unrestrictRepository.getUnrestrictedLinkList(token, torrent.links)
-            val values = items.filterIsInstance<EitherResult.Success<DownloadItem>>().map { it.success }
+            val values =
+                items.filterIsInstance<EitherResult.Success<DownloadItem>>().map { it.success }
             val errors =
-                items.filterIsInstance<EitherResult.Failure<UnchainedNetworkException>>().map { it.failure }
+                items.filterIsInstance<EitherResult.Failure<UnchainedNetworkException>>()
+                    .map { it.failure }
 
             downloadItemLiveData.postEvent(values)
             if (errors.isNotEmpty())
@@ -84,9 +86,11 @@ class DownloadListViewModel @Inject constructor(
         viewModelScope.launch {
             val token = credentialsRepository.getToken()
             val items = unrestrictRepository.getUnrestrictedLinkList(token, torrent.links)
-            val values = items.filterIsInstance<EitherResult.Success<DownloadItem>>().map { it.success }
+            val values =
+                items.filterIsInstance<EitherResult.Success<DownloadItem>>().map { it.success }
             val errors =
-                items.filterIsInstance<EitherResult.Failure<UnchainedNetworkException>>().map { it.failure }
+                items.filterIsInstance<EitherResult.Failure<UnchainedNetworkException>>()
+                    .map { it.failure }
 
             downloadItemLiveData.postEvent(values)
             if (errors.isNotEmpty())
@@ -191,8 +195,8 @@ class DownloadListViewModel @Inject constructor(
     fun downloadItems(torrents: List<TorrentItem>) {
         torrents.filter { it.status == "downloaded" }
             .forEach {
-            downloadTorrent(it)
-        }
+                downloadTorrent(it)
+            }
     }
 
     fun deleteDownloads(downloads: List<DownloadItem>) {

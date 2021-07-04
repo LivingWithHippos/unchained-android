@@ -103,7 +103,8 @@ class KodiRepository @Inject constructor(
 
     private fun encodeAuthentication(username: String?, password: String?): String? {
         return if (!username.isNullOrBlank() && !password.isNullOrBlank()) {
-            "Basic " + Base64.encodeToString("$username:$password".toByteArray(), Base64.DEFAULT).trim()
+            "Basic " + Base64.encodeToString("$username:$password".toByteArray(), Base64.DEFAULT)
+                .trim()
         } else null
     }
 }

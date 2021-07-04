@@ -3,9 +3,7 @@ package com.github.livingwithhippos.unchained.lists.view
 import android.app.DownloadManager
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -55,7 +53,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 /**
  * A simple [UnchainedFragment] subclass.
@@ -73,7 +70,6 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
 
     // used to simulate a debounce effect while typing on the search bar
     var queryJob: Job? = null
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -113,7 +109,6 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
                     binding.selectedTorrents = torrentTracker.selection.size()
                 }
             })
-
 
         // download list selection  tracker
         val downloadTracker: SelectionTracker<DownloadItem> = SelectionTracker.Builder(
@@ -169,7 +164,12 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
                         )
                         when (queuedDownload) {
                             is EitherResult.Failure -> {
-                                context?.showToast(getString(R.string.download_not_started_format, item.filename))
+                                context?.showToast(
+                                    getString(
+                                        R.string.download_not_started_format,
+                                        item.filename
+                                    )
+                                )
                             }
                             is EitherResult.Success -> {
                                 downloadStarted = true
@@ -178,7 +178,6 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
                     }
                     if (downloadStarted)
                         context?.showToast(R.string.download_started)
-
                 } else {
                     viewModel.downloadItems(torrentTracker.selection.toList())
                 }
@@ -412,7 +411,6 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
                         if (controller.currentDestination?.id == R.id.list_tabs_dest)
                             controller.navigate(action)
                     }
-
                 } else
                     context?.showToast(R.string.premium_needed)
             }

@@ -1,13 +1,11 @@
 package com.github.livingwithhippos.unchained.start.viewmodel
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Build
-import android.os.Environment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -324,11 +322,7 @@ class MainActivityViewModel @Inject constructor(
                 val regex =
                     "https?://(www.)?github.com/$username/$repo/$type/$branch/$path".toRegex()
                 val match: MatchResult = regex.find(github) ?: return null
-                return "https://raw.githubusercontent.com/" +
-                        match.groupValues[2] + "/" +
-                        match.groupValues[3] + "/" +
-                        match.groupValues[5] + "/" +
-                        match.groupValues[6]
+                return "https://raw.githubusercontent.com/" + match.groupValues[2] + "/" + match.groupValues[3] + "/" + match.groupValues[5] + "/" + match.groupValues[6]
             }
             github.startsWith("https://raw.githubusercontent.com") -> {
                 return github
@@ -420,7 +414,7 @@ class MainActivityViewModel @Inject constructor(
                     "The application no longer has a default network. The last default network was %s",
                     network
                 )
-                //currentNetworkLiveData.postValue(null)
+                // currentNetworkLiveData.postValue(null)
                 connectivityLiveData.postValue(false)
             }
         }

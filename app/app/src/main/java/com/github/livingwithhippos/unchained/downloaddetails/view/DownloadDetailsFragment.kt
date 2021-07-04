@@ -4,10 +4,8 @@ import android.Manifest
 import android.app.DownloadManager
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Environment
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -38,7 +36,6 @@ import com.github.livingwithhippos.unchained.utilities.extension.openExternalWeb
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 /**
  * A simple [UnchainedFragment] subclass.
@@ -152,7 +149,8 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                 DownloadDetailsMessage.KodiMissingCredentials -> {
                     context?.showToast(R.string.kodi_configure_credentials)
                 }
-                null -> {}
+                null -> {
+                }
             }
         }
 

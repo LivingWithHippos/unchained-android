@@ -98,16 +98,16 @@ class ForegroundTorrentService : LifecycleService() {
                     .filter { oldTorrentsIDs.contains(it.id) }
                     // They aren't in our new loading list
                     .filter { !newLoadingTorrents.map { newT -> newT.id }.contains(it.id) }
-            /*
-            // the new torrents to add to the notification system
-            val unwatchedTorrents = newLoadingTorrents.filter { !oldTorrentsIDs.contains(it.id) }
-            // the torrents not in our updated list anymore. These needs to be retrieved and analyzed singularly.
-            // Shouldn't happen often since there is a limit on how many active torrents you can have in real debrid
-            // and we retrieve the last 30 torrents every time
-            val missingTorrents = oldTorrentsIDs.filter { id ->
-                !list.map { it.id }.contains(id)
-            }
-             */
+                /*
+                // the new torrents to add to the notification system
+                val unwatchedTorrents = newLoadingTorrents.filter { !oldTorrentsIDs.contains(it.id) }
+                // the torrents not in our updated list anymore. These needs to be retrieved and analyzed singularly.
+                // Shouldn't happen often since there is a limit on how many active torrents you can have in real debrid
+                // and we retrieve the last 30 torrents every time
+                val missingTorrents = oldTorrentsIDs.filter { id ->
+                    !list.map { it.id }.contains(id)
+                }
+                 */
 
                 // update the torrents id to observe
                 val newIDs = mutableSetOf<String>()

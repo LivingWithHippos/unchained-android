@@ -1,11 +1,9 @@
 package com.github.livingwithhippos.unchained.lists.view
 
 import androidx.recyclerview.selection.ItemKeyProvider
-import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.widget.DiffUtil
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
-import com.github.livingwithhippos.unchained.utilities.DataBindingPagingAdapter
 import com.github.livingwithhippos.unchained.utilities.DataBindingPagingTrackedAdapter
 
 class TorrentListPagingAdapter(listener: TorrentListListener) :

@@ -38,7 +38,8 @@ class StartFragment : UnchainedFragment() {
                 else {
                     // todo: check if null could be because of missing network connectivity
                     activityViewModel.setUnauthenticated()
-                    val action = StartFragmentDirections.actionStartFragmentToAuthenticationFragment()
+                    val action =
+                        StartFragmentDirections.actionStartFragmentToAuthenticationFragment()
                     findNavController().navigate(action)
                 }
             }

@@ -108,7 +108,9 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
                         // these will stop the api calls to the secret endpoint in the viewModel
                         viewModel.setAuthState(AuthenticationState.AUTHENTICATED)
                     }
-                    AuthenticationState.UNAUTHENTICATED -> viewModel.setAuthState(AuthenticationState.UNAUTHENTICATED)
+                    AuthenticationState.UNAUTHENTICATED -> viewModel.setAuthState(
+                        AuthenticationState.UNAUTHENTICATED
+                    )
                     AuthenticationState.BAD_TOKEN -> viewModel.setAuthState(AuthenticationState.BAD_TOKEN)
                     AuthenticationState.ACCOUNT_LOCKED -> viewModel.setAuthState(AuthenticationState.ACCOUNT_LOCKED)
                     AuthenticationState.AUTHENTICATED_NO_PREMIUM -> {

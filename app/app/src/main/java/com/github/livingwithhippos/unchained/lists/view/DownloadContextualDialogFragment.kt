@@ -6,13 +6,9 @@ import android.os.Bundle
 import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.setFragmentResult
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import com.github.livingwithhippos.unchained.R
-import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.databinding.DialogDownloadItemBinding
-import com.github.livingwithhippos.unchained.lists.viewmodel.DownloadDialogViewModel
-import com.github.livingwithhippos.unchained.newdownload.view.NewDownloadFragmentArgs
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class DownloadContextualDialogFragment : DialogFragment() {

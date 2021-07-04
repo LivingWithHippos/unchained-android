@@ -42,7 +42,8 @@ class UnrestrictRepository @Inject constructor(private val unrestrictApiHelper: 
         remote: Int? = null,
         callDelay: Long = 100
     ): List<EitherResult<UnchainedNetworkException, DownloadItem>> {
-        val unrestrictedLinks = mutableListOf<EitherResult<UnchainedNetworkException, DownloadItem>>()
+        val unrestrictedLinks =
+            mutableListOf<EitherResult<UnchainedNetworkException, DownloadItem>>()
         linksList.forEach {
             unrestrictedLinks.add(getEitherUnrestrictedLink(token, it, password, remote))
             // just to be on the safe side...

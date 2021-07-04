@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.github.livingwithhippos.unchained.BR
-import com.github.livingwithhippos.unchained.data.model.TorrentItem
 
 // todo: test implementing class with Nothing as generic value to avoid passing listeners
 /**
@@ -72,7 +71,6 @@ class DataBindingViewHolder<T, U>(private val binding: ViewDataBinding) :
     }
 }
 
-
 /**
  * A [PagingDataAdapter] subclass.
  * Allows for a generic list of items with data binding and Paging support and an optional listener.
@@ -85,7 +83,10 @@ abstract class DataBindingPagingTrackedAdapter<T : Any, U>(
 
     var tracker: SelectionTracker<T>? = null
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DataBindingTrackedViewHolder<T, U> {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): DataBindingTrackedViewHolder<T, U> {
         val layoutInflater = LayoutInflater.from(parent.context)
         val binding =
             DataBindingUtil.inflate<ViewDataBinding>(layoutInflater, viewType, parent, false)
