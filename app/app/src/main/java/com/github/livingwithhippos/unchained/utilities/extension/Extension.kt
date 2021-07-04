@@ -27,8 +27,8 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Observer
-import arrow.core.Either
 import com.github.livingwithhippos.unchained.R
+import com.github.livingwithhippos.unchained.utilities.EitherResult
 import timber.log.Timber
 import java.util.*
 
@@ -110,7 +110,7 @@ fun DownloadManager.downloadFile(
     description: String,
     fileName: String = title,
     directory: String = Environment.DIRECTORY_DOWNLOADS
-): Either<Exception, Long> = this.downloadFile(
+): EitherResult<Exception, Long> = this.downloadFile(
     Uri.parse(link),
     title,
     description,
@@ -135,7 +135,7 @@ fun DownloadManager.downloadFile(
     description: String,
     fileName: String = title,
     directory: String = Environment.DIRECTORY_DOWNLOADS
-): Either<Exception, Long> {
+): EitherResult<Exception, Long> {
     val request: DownloadManager.Request = DownloadManager.Request(uri)
         .setTitle(title)
         .setDescription(description)
@@ -147,10 +147,10 @@ fun DownloadManager.downloadFile(
 
     return try {
         val downloadID = this.enqueue(request)
-        Either.Right(downloadID)
+        EitherResult.Success(downloadID)
     } catch (e: Exception) {
         Timber.e("Error starting download of ${uri.path}, exception ${e.message}")
-        Either.Left(e)
+        EitherResult.Failure(e)
     }
 }
 

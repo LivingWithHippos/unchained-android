@@ -1,11 +1,11 @@
 package com.github.livingwithhippos.unchained.data.repositoy
 
-import arrow.core.Either
 import com.github.livingwithhippos.unchained.data.model.AvailableHost
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkException
 import com.github.livingwithhippos.unchained.data.model.UploadedTorrent
 import com.github.livingwithhippos.unchained.data.remote.TorrentApiHelper
+import com.github.livingwithhippos.unchained.utilities.EitherResult
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -130,7 +130,10 @@ class TorrentsRepository @Inject constructor(private val torrentApiHelper: Torre
         )
     }
 
-    suspend fun deleteTorrent(token: String, id: String): Either<UnchainedNetworkException, Unit> {
+    suspend fun deleteTorrent(
+        token: String,
+        id: String
+    ): EitherResult<UnchainedNetworkException, Unit> {
 
         val response = eitherApiResult(
             call = {

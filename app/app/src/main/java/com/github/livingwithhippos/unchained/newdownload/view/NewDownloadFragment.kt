@@ -6,18 +6,15 @@ import android.content.ContentResolver.SCHEME_FILE
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.net.toUri
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import arrow.core.Either
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.data.model.APIError
@@ -29,6 +26,7 @@ import com.github.livingwithhippos.unchained.lists.view.ListsTabFragment
 import com.github.livingwithhippos.unchained.newdownload.viewmodel.Link
 import com.github.livingwithhippos.unchained.newdownload.viewmodel.NewDownloadViewModel
 import com.github.livingwithhippos.unchained.utilities.CONTAINER_EXTENSION_PATTERN
+import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.EventObserver
 import com.github.livingwithhippos.unchained.utilities.REMOTE_TRAFFIC_ON
 import com.github.livingwithhippos.unchained.utilities.SCHEME_HTTP
@@ -47,7 +45,6 @@ import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import timber.log.Timber
-import java.io.File
 import java.io.IOException
 import java.util.regex.Matcher
 import java.util.regex.Pattern
@@ -453,7 +450,7 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
                 fileName = torrentName
             )
             when (queuedDownload) {
-                is Either.Left -> {
+                is EitherResult.Failure -> {
                     requireContext().showToast(
                         getString(
                             R.string.download_not_started_format,
@@ -461,8 +458,8 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
                         )
                     )
                 }
-                is Either.Right -> {
-                    activityViewModel.setDownload(queuedDownload.value)
+                is EitherResult.Success -> {
+                    activityViewModel.setDownload(queuedDownload.success)
                 }
             }
         }

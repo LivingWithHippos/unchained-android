@@ -23,7 +23,6 @@ import androidx.recyclerview.selection.SelectionPredicates
 import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.selection.StorageStrategy
 import androidx.recyclerview.widget.RecyclerView
-import arrow.core.Either
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.data.model.APIError
@@ -44,6 +43,7 @@ import com.github.livingwithhippos.unchained.lists.viewmodel.DownloadListViewMod
 import com.github.livingwithhippos.unchained.lists.viewmodel.DownloadListViewModel.Companion.TORRENT_DELETED
 import com.github.livingwithhippos.unchained.lists.viewmodel.DownloadListViewModel.Companion.TORRENT_NOT_DELETED
 import com.github.livingwithhippos.unchained.utilities.DataBindingDetailsLookup
+import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.EventObserver
 import com.github.livingwithhippos.unchained.utilities.extension.downloadFile
 import com.github.livingwithhippos.unchained.utilities.extension.getApiErrorMessage
@@ -168,10 +168,10 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
                             getString(R.string.app_name),
                         )
                         when (queuedDownload) {
-                            is Either.Left -> {
+                            is EitherResult.Failure -> {
                                 context?.showToast(getString(R.string.download_not_started_format, item.filename))
                             }
-                            is Either.Right -> {
+                            is EitherResult.Success -> {
                                 downloadStarted = true
                             }
                         }

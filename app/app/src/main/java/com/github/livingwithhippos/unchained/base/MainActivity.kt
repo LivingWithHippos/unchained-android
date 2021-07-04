@@ -24,7 +24,6 @@ import androidx.navigation.NavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
-import arrow.core.Either
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.model.AuthenticationState
 import com.github.livingwithhippos.unchained.data.repositoy.PluginRepository.Companion.TYPE_UNCHAINED
@@ -34,6 +33,7 @@ import com.github.livingwithhippos.unchained.databinding.ActivityMainBinding
 import com.github.livingwithhippos.unchained.settings.SettingsActivity
 import com.github.livingwithhippos.unchained.settings.SettingsFragment.Companion.KEY_TORRENT_NOTIFICATIONS
 import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewModel
+import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.EventObserver
 import com.github.livingwithhippos.unchained.utilities.SCHEME_HTTP
 import com.github.livingwithhippos.unchained.utilities.SCHEME_HTTPS
@@ -247,7 +247,7 @@ class MainActivity : AppCompatActivity() {
             fileName = pluginName
         )
         when (queuedDownload) {
-            is Either.Left -> {
+            is EitherResult.Failure -> {
                 applicationContext.showToast(
                     getString(
                         R.string.download_not_started_format,
@@ -255,8 +255,8 @@ class MainActivity : AppCompatActivity() {
                     )
                 )
             }
-            is Either.Right -> {
-                viewModel.setPluginDownload(queuedDownload.value)
+            is EitherResult.Success -> {
+                viewModel.setPluginDownload(queuedDownload.success)
             }
         }
     }
