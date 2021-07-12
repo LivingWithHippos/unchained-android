@@ -31,7 +31,6 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
 
     private val viewModel: SearchViewModel by viewModels()
 
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

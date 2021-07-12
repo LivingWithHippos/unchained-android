@@ -48,4 +48,3 @@ class DownloadKeyProvider(private val adapter: DownloadListPagingAdapter) :
         return adapter.getPosition(key.id)
     }
 }
-

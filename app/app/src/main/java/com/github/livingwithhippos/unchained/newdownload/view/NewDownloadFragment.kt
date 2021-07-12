@@ -43,7 +43,6 @@ import com.github.livingwithhippos.unchained.utilities.extension.isWebUrl
 import com.github.livingwithhippos.unchained.utilities.extension.runRippleAnimation
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Job
 import timber.log.Timber
 import java.io.IOException
 import java.util.regex.Matcher
@@ -95,7 +94,8 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
         viewModel.folderLiveData.observe(
             viewLifecycleOwner,
             EventObserver { folder ->
-
+                // new folder list, alert the list fragment that it needs updating
+                activityViewModel.setListState(ListsTabFragment.ListState.UPDATE_DOWNLOAD)
                 val action =
                     NewDownloadFragmentDirections.actionNewDownloadDestToFolderListFragment(
                         folder = folder,
@@ -124,6 +124,8 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
             EventObserver { link ->
                 when (link) {
                     is Link.Container -> {
+                        // new container, alert the list fragment that it needs updating
+                        activityViewModel.setListState(ListsTabFragment.ListState.UPDATE_DOWNLOAD)
                         val action =
                             NewDownloadFragmentDirections.actionNewDownloadDestToFolderListFragment(
                                 linkList = link.links.toTypedArray(),
