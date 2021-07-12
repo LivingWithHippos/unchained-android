@@ -18,9 +18,6 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class SearchItemFragment : UnchainedFragment(), LinkItemListener {
 
-    private var _binding: FragmentSearchItemBinding? = null
-    val binding get() = _binding!!
-
     private val args: SearchItemFragmentArgs by navArgs()
 
     override fun onCreateView(
@@ -28,13 +25,13 @@ class SearchItemFragment : UnchainedFragment(), LinkItemListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentSearchItemBinding.inflate(inflater, container, false)
+        val binding = FragmentSearchItemBinding.inflate(inflater, container, false)
 
-        setup()
+        setup(binding)
         return binding.root
     }
 
-    private fun setup() {
+    private fun setup(binding: FragmentSearchItemBinding) {
         val item: ScrapedItem = args.item
         binding.item = item
 

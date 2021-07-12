@@ -217,7 +217,6 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
             lifecycleScope.launch {
                 downloadAdapter.submitData(it)
                 // stop the refresh animation if playing
-                // fixme: lots of crashes here because binding is null. Check if the commit removing "val binding get() = _binding!!" worked
                 if (binding.srLayout.isRefreshing) {
                     binding.srLayout.isRefreshing = false
                     // scroll to top if we were refreshing
