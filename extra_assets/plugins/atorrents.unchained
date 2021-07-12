@@ -1,0 +1,55 @@
+{
+  "engine_version": 1.2,
+  "version": 1.0,
+  "url": "https://atorrents.com",
+  "name": "Atorrents",
+  "description": "Parser for atorrents.com",
+  "supported_categories": {
+    "all": "None"
+  },
+  "search": {
+    "no_category": "${url}/search/${query}?page=${page}",
+    "page_start": 1
+  },
+  "download": {
+    "table_indirect": {
+      "class": "table-striped",
+      "columns": {
+        "details_column": 0
+      }
+    },
+    "regexes": {
+      "details": {
+        "regex": "href=\"(/[^\"]{14,})",
+        "group": 1,
+        "slug_type": "append_url"
+      },
+      "name": {
+        "regex": "class=\"h4 font-weight-bold\">([^<]+)",
+        "group": 1,
+        "slug_type": "complete"
+      },
+      "seeders": {
+        "regex": "class=\"se\">([^<]+)",
+        "group": 1,
+        "slug_type": "complete"
+      },
+      "leechers": {
+        "regex": "class=\"le\">([^<]+)",
+        "group": 1,
+        "slug_type": "complete"
+      },
+      "magnet": {
+        "regex": "href=\"https://www\\.google\\.com/search\\?q=([^\"]{30,})",
+        "group": 1,
+        "slug_type": "append_other",
+        "other": "magnet:?xt=urn:btih:"
+      },
+      "size": {
+        "regex": "Size:\\s*([^<]+)",
+        "group": 1,
+        "slug_type": "complete"
+      }
+    }
+  }
+}
