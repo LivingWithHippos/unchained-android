@@ -40,7 +40,6 @@ import com.github.livingwithhippos.unchained.utilities.extension.isContainerWebL
 import com.github.livingwithhippos.unchained.utilities.extension.isMagnet
 import com.github.livingwithhippos.unchained.utilities.extension.isTorrent
 import com.github.livingwithhippos.unchained.utilities.extension.isWebUrl
-import com.github.livingwithhippos.unchained.utilities.extension.runRippleAnimation
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber

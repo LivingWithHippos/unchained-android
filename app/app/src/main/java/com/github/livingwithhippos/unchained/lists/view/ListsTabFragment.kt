@@ -40,7 +40,6 @@ import com.github.livingwithhippos.unchained.lists.viewmodel.DownloadListViewMod
 import com.github.livingwithhippos.unchained.lists.viewmodel.DownloadListViewModel.Companion.TORRENTS_DELETED_ALL
 import com.github.livingwithhippos.unchained.lists.viewmodel.DownloadListViewModel.Companion.TORRENT_DELETED
 import com.github.livingwithhippos.unchained.lists.viewmodel.DownloadListViewModel.Companion.TORRENT_NOT_DELETED
-import com.github.livingwithhippos.unchained.newdownload.view.NewDownloadFragmentDirections
 import com.github.livingwithhippos.unchained.utilities.DataBindingDetailsLookup
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.EventObserver
@@ -498,8 +497,8 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
             EventObserver { uri ->
                 val action = ListsTabFragmentDirections.actionListTabsDestToNewDownloadFragment(externalUri = uri)
                 findNavController().navigate(action)
-            })
-
+            }
+        )
         // a file has been downloaded, usually a torrent, and needs to be unrestricted
         activityViewModel.downloadedFileLiveData.observe(
             viewLifecycleOwner,
