@@ -100,16 +100,25 @@ class Parser(
                                 emit(ParserResult.SearchFinished)
                             }
                             plugin.download.indirectTableLink != null -> {
-                                emit(
-                                    ParserResult.Results(
-                                        parseIndirectTable(
-                                            plugin.download.indirectTableLink,
-                                            plugin.download.regexes,
-                                            source,
-                                            plugin.url
-                                        )
-                                    )
+                                emit(ParserResult.SearchStarted(-1))
+                                val links = parseIndirectTable(
+                                    plugin.download.indirectTableLink,
+                                    plugin.download.regexes,
+                                    source,
+                                    plugin.url
                                 )
+                                emit(ParserResult.SearchStarted(links.size))
+                                links.forEach {
+
+                                    val itemSource = getSource(it)
+                                    val scrapedItem = parseInnerLink(
+                                        plugin.download.regexes,
+                                        itemSource,
+                                        it,
+                                        plugin.url
+                                    )
+                                    emit(ParserResult.SingleResult(scrapedItem))
+                                }
                                 emit(ParserResult.SearchFinished)
                             }
                             else -> emit(ParserResult.MissingImplementationError)
@@ -124,8 +133,8 @@ class Parser(
         regexes: PluginRegexes,
         source: String,
         baseUrl: String
-    ): List<ScrapedItem> {
-        val tableItems = mutableListOf<ScrapedItem>()
+    ): List<String> {
+        val tableLinks = mutableListOf<String>()
         val doc: Document = Jsoup.parse(source)
         try {
             // restrict the document to a certain table
@@ -140,8 +149,6 @@ class Parser(
             val rows = table.select("tr")
             val head = if (table.select("thead").size > 0) 1 else 0
 
-            val links = mutableListOf<String>()
-
             for (index in head until rows.size) {
                 // parse the cells according to the selected plugin
                 val columns = rows[index].select("td")
@@ -152,28 +159,16 @@ class Parser(
                         baseUrl
                     )
                     if (details != null)
-                        links.add(details)
+                        tableLinks.add(details)
                 } catch (e: IndexOutOfBoundsException) {
                     Timber.d("skipping row")
                 }
-            }
-
-            links.forEach {
-                val itemSource = getSource(it)
-                tableItems.add(
-                    parseInnerLink(
-                        regexes,
-                        itemSource,
-                        it,
-                        baseUrl
-                        )
-                )
             }
         } catch (exception: NullPointerException) {
             Timber.d("Some not nullable values were null: ${exception.message}")
         }
 
-        return tableItems
+        return tableLinks
     }
 
     private fun parseInnerLink(
@@ -247,7 +242,6 @@ class Parser(
     ): List<ScrapedItem> {
         val tableItems = mutableListOf<ScrapedItem>()
         val doc: Document = Jsoup.parse(source)
-        Timber.e(doc.toString())
         try {
             // restrict the document to a certain table
             val table: Element = when {
