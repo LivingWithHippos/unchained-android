@@ -11,7 +11,7 @@
    * Minor versions will be compatible (e.g 1.1, 1.2, 1.3),
    * Major versions will not be compatible (e.g. 2, 3)
   */
-  "engine_version": 1.0,
+  "engine_version": 1.2,
   // the current plugin version. Used to check for updates
   "version": 1.0,
   // basic url used to replace {url}, WITHOUT trailing /
@@ -90,9 +90,25 @@
         "details_column": 6
       }
     },
+    // "table_indirect" is one of the parsing methods.
+    // parse the page links from an html table in the search page, then does a second pass
+    // on those pages to retrieve the links
+    // usable when page links are in a table rows but torrent/magnet links aren't
+    "table_indirect": {
+      // Used to recognize the table. Both are optional and exclusive.
+      // If both are missing the first table in the document will be parsed.
+      "class": "table-class",
+      "id": "table-id",
+      // these are the indexes of the columns with the data. Columns start at zero.
+      // with table_indirect only details_column is used (and required)
+      // all the regexes will be applied to the detail page retrieved with this
+     "columns": {
+        "details_column": 6
+      }
+    },
     /**
     regexes is the collection of regexes available for whatever parsing method you're using
-    you need at least name and one between magnet or torrent
+    you need at least name and one between magnet or torrent.
     */
     "regexes": {
       "name": {

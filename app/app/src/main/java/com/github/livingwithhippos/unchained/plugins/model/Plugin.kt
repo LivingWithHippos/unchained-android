@@ -160,21 +160,25 @@ data class PluginSearch(
 @JsonClass(generateAdapter = true)
 data class PluginDownload(
     @Json(name = "internal")
-    val internalLink: InternalLink?,
+    val internalParser: InternalParser?,
     @Json(name = "table_direct")
-    val tableLink: TableDirect?,
+    val tableLink: TableParser?,
+    @Json(name = "table_indirect")
+    val indirectTableLink: TableParser?,
     @Json(name = "regexes")
     val regexes: PluginRegexes
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
-        parcel.readParcelable(InternalLink::class.java.classLoader),
-        parcel.readParcelable(TableDirect::class.java.classLoader),
+        parcel.readParcelable(InternalParser::class.java.classLoader),
+        parcel.readParcelable(TableParser::class.java.classLoader),
+        parcel.readParcelable(TableParser::class.java.classLoader),
         parcel.readParcelable(PluginRegexes::class.java.classLoader)!!
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeParcelable(internalLink, flags)
+        parcel.writeParcelable(internalParser, flags)
         parcel.writeParcelable(tableLink, flags)
+        parcel.writeParcelable(indirectTableLink, flags)
         parcel.writeParcelable(regexes, flags)
     }
 
@@ -234,7 +238,7 @@ data class CustomRegex(
 }
 
 @JsonClass(generateAdapter = true)
-data class InternalLink(
+data class InternalParser(
     @Json(name = "link")
     val link: CustomRegex
 ) : Parcelable {
@@ -250,12 +254,12 @@ data class InternalLink(
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<InternalLink> {
-        override fun createFromParcel(parcel: Parcel): InternalLink {
-            return InternalLink(parcel)
+    companion object CREATOR : Parcelable.Creator<InternalParser> {
+        override fun createFromParcel(parcel: Parcel): InternalParser {
+            return InternalParser(parcel)
         }
 
-        override fun newArray(size: Int): Array<InternalLink?> {
+        override fun newArray(size: Int): Array<InternalParser?> {
             return arrayOfNulls(size)
         }
     }
@@ -268,7 +272,7 @@ data class Internal(
 )
 
 @JsonClass(generateAdapter = true)
-data class TableDirect(
+data class TableParser(
     @Json(name = "class")
     val className: String?,
     @Json(name = "id")
@@ -292,12 +296,12 @@ data class TableDirect(
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<TableDirect> {
-        override fun createFromParcel(parcel: Parcel): TableDirect {
-            return TableDirect(parcel)
+    companion object CREATOR : Parcelable.Creator<TableParser> {
+        override fun createFromParcel(parcel: Parcel): TableParser {
+            return TableParser(parcel)
         }
 
-        override fun newArray(size: Int): Array<TableDirect?> {
+        override fun newArray(size: Int): Array<TableParser?> {
             return arrayOfNulls(size)
         }
     }
@@ -358,7 +362,7 @@ data class PluginRegexes(
 @JsonClass(generateAdapter = true)
 data class Columns(
     @Json(name = "name_column")
-    val nameColumn: Int,
+    val nameColumn: Int?,
     @Json(name = "seeders_column")
     val seedersColumn: Int?,
     @Json(name = "leechers_column")
@@ -373,7 +377,7 @@ data class Columns(
     val detailsColumn: Int?
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
-        parcel.readInt(),
+        parcel.readValue(Int::class.java.classLoader) as? Int,
         parcel.readValue(Int::class.java.classLoader) as? Int,
         parcel.readValue(Int::class.java.classLoader) as? Int,
         parcel.readValue(Int::class.java.classLoader) as? Int,
@@ -383,7 +387,7 @@ data class Columns(
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeInt(nameColumn)
+        parcel.writeValue(nameColumn)
         parcel.writeValue(seedersColumn)
         parcel.writeValue(leechersColumn)
         parcel.writeValue(sizeColumn)

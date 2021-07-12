@@ -6,7 +6,7 @@ import com.github.livingwithhippos.unchained.plugins.model.CustomRegex
 import com.github.livingwithhippos.unchained.plugins.model.Plugin
 import com.github.livingwithhippos.unchained.plugins.model.PluginRegexes
 import com.github.livingwithhippos.unchained.plugins.model.ScrapedItem
-import com.github.livingwithhippos.unchained.plugins.model.TableDirect
+import com.github.livingwithhippos.unchained.plugins.model.TableParser
 import com.github.livingwithhippos.unchained.utilities.extension.removeWebFormatting
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
@@ -25,7 +25,7 @@ class Parser(
 ) {
 
     private fun isPluginSupported(plugin: Plugin): Boolean {
-        return plugin.engineVersion.toInt() == PLUGIN_ENGINE_VERSION.toInt()
+        return plugin.engineVersion.toInt() == PLUGIN_ENGINE_VERSION.toInt() && PLUGIN_ENGINE_VERSION >= plugin.engineVersion
     }
 
     fun completeSearch(plugin: Plugin, query: String, category: String? = null, page: Int = 1) =
@@ -59,10 +59,14 @@ class Parser(
                          * Parsing data with the internal link mechanism
                          */
                         when {
-                            plugin.download.internalLink != null -> {
+                            plugin.download.internalParser != null -> {
                                 emit(ParserResult.SearchStarted(-1))
                                 val innerSource: List<String> =
-                                    parseList(plugin.download.internalLink.link, source, plugin.url)
+                                    parseList(
+                                        plugin.download.internalParser.link,
+                                        source,
+                                        plugin.url
+                                    )
                                 emit(ParserResult.SearchStarted(innerSource.size))
                                 if (innerSource.isNotEmpty()) {
                                     for (link in innerSource) {
@@ -95,12 +99,82 @@ class Parser(
                                 )
                                 emit(ParserResult.SearchFinished)
                             }
+                            plugin.download.indirectTableLink != null -> {
+                                emit(
+                                    ParserResult.Results(
+                                        parseIndirectTable(
+                                            plugin.download.indirectTableLink,
+                                            plugin.download.regexes,
+                                            source,
+                                            plugin.url
+                                        )
+                                    )
+                                )
+                                emit(ParserResult.SearchFinished)
+                            }
                             else -> emit(ParserResult.MissingImplementationError)
                         }
                     }
                 }
             }
         }
+
+    private suspend fun parseIndirectTable(
+        tableParser: TableParser,
+        regexes: PluginRegexes,
+        source: String,
+        baseUrl: String
+    ): List<ScrapedItem> {
+        val tableItems = mutableListOf<ScrapedItem>()
+        val doc: Document = Jsoup.parse(source)
+        try {
+            // restrict the document to a certain table
+            val table: Element = when {
+                tableParser.idName != null -> doc.getElementById(tableParser.idName)
+                tableParser.className != null -> doc.getElementsByClass(tableParser.className)
+                    .firstOrNull()
+                else -> doc.getElementsByTag("table").first()
+            } ?: return emptyList()
+
+            // parse all the rows
+            val rows = table.select("tr")
+            val head = if (table.select("thead").size > 0) 1 else 0
+
+            val links = mutableListOf<String>()
+
+            for (index in head until rows.size) {
+                // parse the cells according to the selected plugin
+                val columns = rows[index].select("td")
+                try {
+                    val details = parseSingle(
+                        regexes.detailsRegex,
+                        columns[tableParser.columns.detailsColumn ?: break].html(),
+                        baseUrl
+                    )
+                    if (details != null)
+                        links.add(details)
+                } catch (e: IndexOutOfBoundsException) {
+                    Timber.d("skipping row")
+                }
+            }
+
+            links.forEach {
+                val itemSource = getSource(it)
+                tableItems.add(
+                    parseInnerLink(
+                        regexes,
+                        itemSource,
+                        it,
+                        baseUrl
+                        )
+                )
+            }
+        } catch (exception: NullPointerException) {
+            Timber.d("Some not nullable values were null: ${exception.message}")
+        }
+
+        return tableItems
+    }
 
     private fun parseInnerLink(
         regexes: PluginRegexes,
@@ -166,13 +240,14 @@ class Parser(
     }
 
     private fun parseTable(
-        tableLink: TableDirect,
+        tableLink: TableParser,
         regexes: PluginRegexes,
         source: String,
         baseUrl: String,
     ): List<ScrapedItem> {
         val tableItems = mutableListOf<ScrapedItem>()
         val doc: Document = Jsoup.parse(source)
+        Timber.e(doc.toString())
         try {
             // restrict the document to a certain table
             val table: Element = when {
@@ -184,12 +259,9 @@ class Parser(
 
             // parse all the rows
             val rows = table.select("tr")
-            val skipHead = table.select("thead").size > 0
+            val head = if (table.select("thead").size > 0) 1 else 0
 
-            for (index in 0 until rows.size) {
-                if (skipHead && index == 0)
-                    continue
-
+            for (index in head until rows.size) {
                 // parse the cells according to the selected plugin
                 val columns = rows[index].select("td")
                 var name: String? = null
@@ -200,14 +272,16 @@ class Parser(
                 var magnets: List<String> = emptyList()
                 var torrents: List<String> = emptyList()
                 try {
-                    name =
-                        cleanName(
-                            parseSingle(
-                                regexes.nameRegex,
-                                columns[tableLink.columns.nameColumn].html(),
-                                baseUrl
-                            ) ?: ""
-                        )
+
+                    if (tableLink.columns.nameColumn != null)
+                        name =
+                            cleanName(
+                                parseSingle(
+                                    regexes.nameRegex,
+                                    columns[tableLink.columns.nameColumn].html(),
+                                    baseUrl
+                                ) ?: ""
+                            )
 
                     if (tableLink.columns.detailsColumn != null)
                         details = parseSingle(
@@ -320,7 +394,7 @@ class Parser(
     private fun parseSingle(customRegex: CustomRegex?, source: String, url: String): String? {
         if (customRegex == null)
             return null
-        val regex: Regex = Regex(customRegex.regex, RegexOption.DOT_MATCHES_ALL)
+        val regex = Regex(customRegex.regex, RegexOption.DOT_MATCHES_ALL)
         val match = regex.find(source)?.groupValues?.get(customRegex.group) ?: return null
         return when (customRegex.slugType) {
             "append_url" -> {
@@ -343,7 +417,7 @@ class Parser(
     /**
      * Parse a list of results from a source with a [CustomRegex]
      *
-     * @param customRegex
+     * @param customRegexes
      * @param source
      * @param url
      * @return
@@ -422,7 +496,13 @@ class Parser(
     }
 
     companion object {
-        const val PLUGIN_ENGINE_VERSION: Double = 1.0
+        /**
+         * CHANGELOG:
+         * 1.0: first version
+         * 1.1: added skipping of empty rows in tables
+         * 1.2: added table_indirect
+         */
+        const val PLUGIN_ENGINE_VERSION: Float = 1.2f
     }
 }
 
