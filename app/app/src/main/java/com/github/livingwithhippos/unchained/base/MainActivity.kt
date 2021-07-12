@@ -95,12 +95,12 @@ class MainActivity : AppCompatActivity() {
             setupBottomNavigationBar()
         } // Else, need to wait for onRestoreInstanceState
 
+        // list of fragments with no back arrow
         appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.authentication_dest,
                 R.id.start_dest,
                 R.id.user_dest,
-                R.id.new_download_dest,
                 R.id.list_tabs_dest,
                 R.id.search_dest
             ),
@@ -116,7 +116,6 @@ class MainActivity : AppCompatActivity() {
                     AuthenticationState.UNAUTHENTICATED -> {
                         lifecycleScope.launch {
                             disableBottomNavItems(
-                                R.id.navigation_new_download,
                                 R.id.navigation_lists,
                                 R.id.navigation_search
                             )
@@ -137,7 +136,6 @@ class MainActivity : AppCompatActivity() {
                     AuthenticationState.ACCOUNT_LOCKED -> {
                         lifecycleScope.launch {
                             disableBottomNavItems(
-                                R.id.navigation_new_download,
                                 R.id.navigation_lists,
                                 R.id.navigation_search
                             )
@@ -155,7 +153,6 @@ class MainActivity : AppCompatActivity() {
         )
 
         disableBottomNavItems(
-            R.id.navigation_new_download,
             R.id.navigation_lists,
             R.id.navigation_search
         )
@@ -356,19 +353,19 @@ class MainActivity : AppCompatActivity() {
 
     private fun processTorrentNotificationIntent(torrentID: String) {
         lifecycleScope.launch {
-            doubleClickBottomItem(R.id.navigation_new_download)
+            doubleClickBottomItem(R.id.navigation_lists)
             viewModel.addTorrentId(torrentID)
         }
     }
 
     private fun processLinkIntent(uri: Uri) {
         lifecycleScope.launch {
-            doubleClickBottomItem(R.id.navigation_new_download)
+            doubleClickBottomItem(R.id.navigation_lists)
             viewModel.addLink(uri)
         }
     }
 
-    suspend fun doubleClickBottomItem(destinationID: Int) {
+    private suspend fun doubleClickBottomItem(destinationID: Int) {
         // simulate click on a bottom bar option
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_nav_view)
 
@@ -415,7 +412,6 @@ class MainActivity : AppCompatActivity() {
 
         val navGraphIds = listOf(
             R.navigation.home_nav_graph,
-            R.navigation.download_nav_graph,
             R.navigation.lists_nav_graph,
             R.navigation.search_nav_graph,
         )

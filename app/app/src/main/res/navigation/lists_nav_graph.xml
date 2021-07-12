@@ -58,7 +58,6 @@
         android:name="com.github.livingwithhippos.unchained.folderlist.view.FolderListFragment"
         android:label="@string/folder"
         tools:layout="@layout/fragment_folder_list">
-        <!-- check: changes here need to be ported to the [download_nav_graph.xml] file -->
         <argument
             android:name="folder"
             app:argType="string"
@@ -80,11 +79,6 @@
         android:name="com.github.livingwithhippos.unchained.newdownload.view.NewDownloadFragment"
         android:label="@string/new_download"
         tools:layout="@layout/new_download_fragment">
-        <argument
-            android:name="link"
-            android:defaultValue="@null"
-            app:argType="string"
-            app:nullable="true" />
         <action
             android:id="@+id/action_new_download_dest_to_folderListFragment"
             app:destination="@id/folderListFragment"
@@ -105,5 +99,10 @@
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right"
             app:popUpTo="@id/list_tabs_dest" />
+        <argument
+            android:name="externalUri"
+            app:argType="android.net.Uri"
+            app:nullable="true"
+            android:defaultValue="@null" />
     </fragment>
 </navigation>

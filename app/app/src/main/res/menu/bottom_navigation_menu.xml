@@ -6,11 +6,6 @@
         android:icon="@drawable/icon_crown"
         android:title="@string/user" />
     <item
-        android:id="@+id/navigation_new_download"
-        android:enabled="true"
-        android:icon="@drawable/icon_arrows"
-        android:title="@string/download" />
-    <item
         android:id="@+id/navigation_lists"
         android:enabled="true"
         android:icon="@drawable/icon_lists"

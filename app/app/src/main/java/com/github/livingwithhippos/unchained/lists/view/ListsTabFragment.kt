@@ -40,11 +40,13 @@ import com.github.livingwithhippos.unchained.lists.viewmodel.DownloadListViewMod
 import com.github.livingwithhippos.unchained.lists.viewmodel.DownloadListViewModel.Companion.TORRENTS_DELETED_ALL
 import com.github.livingwithhippos.unchained.lists.viewmodel.DownloadListViewModel.Companion.TORRENT_DELETED
 import com.github.livingwithhippos.unchained.lists.viewmodel.DownloadListViewModel.Companion.TORRENT_NOT_DELETED
+import com.github.livingwithhippos.unchained.newdownload.view.NewDownloadFragmentDirections
 import com.github.livingwithhippos.unchained.utilities.DataBindingDetailsLookup
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.EventObserver
 import com.github.livingwithhippos.unchained.utilities.extension.downloadFile
 import com.github.livingwithhippos.unchained.utilities.extension.getApiErrorMessage
+import com.github.livingwithhippos.unchained.utilities.extension.getDownloadedFileUri
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.github.livingwithhippos.unchained.utilities.extension.verticalScrollToPosition
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -489,6 +491,37 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
         viewModel.setListFilter("")
 
         binding.tabs.getTabAt(viewModel.getSelectedTab())?.select()
+
+        // an external link has been shared with the app
+        activityViewModel.externalLinkLiveData.observe(
+            viewLifecycleOwner,
+            EventObserver { uri ->
+                val action = ListsTabFragmentDirections.actionListTabsDestToNewDownloadFragment(externalUri = uri)
+                findNavController().navigate(action)
+            })
+
+        // a file has been downloaded, usually a torrent, and needs to be unrestricted
+        activityViewModel.downloadedFileLiveData.observe(
+            viewLifecycleOwner,
+            EventObserver { fileID ->
+                val uri = requireContext().getDownloadedFileUri(fileID)
+                // no need to recheck the extension since it was checked on download
+                // if (uri?.path?.endsWith(".torrent") == true)
+                if (uri?.path != null) {
+                    val action = ListsTabFragmentDirections.actionListTabsDestToNewDownloadFragment(externalUri = uri)
+                    findNavController().navigate(action)
+                }
+            }
+        )
+
+        // a notification has been clicked
+        activityViewModel.notificationTorrentLiveData.observe(
+            viewLifecycleOwner,
+            EventObserver { torrentID ->
+                val action = ListsTabFragmentDirections.actionListsTabToTorrentDetails(torrentID)
+                findNavController().navigate(action)
+            }
+        )
 
         return binding.root
     }
