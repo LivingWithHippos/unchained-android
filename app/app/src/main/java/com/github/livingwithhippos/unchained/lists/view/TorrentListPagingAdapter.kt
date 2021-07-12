@@ -33,7 +33,6 @@ class TorrentListPagingAdapter(listener: TorrentListListener) :
 
 interface TorrentListListener {
     fun onClick(item: TorrentItem)
-    // fun onLongClick(item: TorrentItem)
 }
 
 class TorrentKeyProvider(private val adapter: TorrentListPagingAdapter) :

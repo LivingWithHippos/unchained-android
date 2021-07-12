@@ -36,7 +36,6 @@ class DownloadListPagingAdapter(listener: DownloadListListener) :
 
 interface DownloadListListener {
     fun onClick(item: DownloadItem)
-    fun onLongClick(item: DownloadItem)
 }
 
 class DownloadKeyProvider(private val adapter: DownloadListPagingAdapter) :
@@ -49,4 +48,3 @@ class DownloadKeyProvider(private val adapter: DownloadListPagingAdapter) :
         return adapter.getPosition(key.id)
     }
 }
-

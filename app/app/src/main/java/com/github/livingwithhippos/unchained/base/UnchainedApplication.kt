@@ -63,7 +63,7 @@ class UnchainedApplication : Application() {
         // add error report for debug builds
         if (BuildConfig.DEBUG) {
             initAcra {
-                //core configuration:
+                // core configuration:
                 buildConfigClass = BuildConfig::class.java
                 reportFormat = StringFormat.JSON
                 httpSender {

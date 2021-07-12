@@ -24,15 +24,19 @@
             type="com.github.livingwithhippos.unchained.lists.view.SelectedItemsButtonsListener" />
     </data>
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        >
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/llMultiSelection"
             app:tabMode="fixed">
 
             <com.google.android.material.tabs.TabItem
@@ -59,7 +63,11 @@
             android:paddingStart="10dp"
             android:paddingTop="10dp"
             android:paddingEnd="10dp"
-            android:visibility="@{selectedTab == 0 ? (selectedDownloads > 0 ? View.VISIBLE : View.GONE) : (selectedTorrents > 0 ? View.VISIBLE : View.GONE)}">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tabs"
+            app:layout_constraintBottom_toTopOf="@id/srLayout"
+            android:visibility="@{selectedTab == 0 ? (selectedDownloads > 0 ? View.VISIBLE : View.GONE) : (selectedTorrents > 0 ? View.VISIBLE : View.GONE), default=`visible`}">
 
             <CheckBox
                 android:id="@+id/cbSelectAll"
@@ -111,7 +119,12 @@
             android:id="@+id/srLayout"
             refreshColorTheme="@{true}"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent">
+            android:layout_height="0dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/llMultiSelection"
+            app:layout_constraintBottom_toBottomOf="parent"
+            >
 
             <FrameLayout
                 android:layout_width="match_parent"
@@ -142,6 +155,20 @@
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    </LinearLayout>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabNewDownload"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:contentDescription="@string/new_download"
+            app:srcCompat="@drawable/icon_add" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

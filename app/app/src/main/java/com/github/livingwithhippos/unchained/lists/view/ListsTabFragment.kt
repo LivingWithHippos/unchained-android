@@ -45,6 +45,7 @@ import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.EventObserver
 import com.github.livingwithhippos.unchained.utilities.extension.downloadFile
 import com.github.livingwithhippos.unchained.utilities.extension.getApiErrorMessage
+import com.github.livingwithhippos.unchained.utilities.extension.getDownloadedFileUri
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.github.livingwithhippos.unchained.utilities.extension.verticalScrollToPosition
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -216,7 +217,6 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
             lifecycleScope.launch {
                 downloadAdapter.submitData(it)
                 // stop the refresh animation if playing
-                // fixme: lots of crashes here because binding is null. Check if the commit removing "val binding get() = _binding!!" worked
                 if (binding.srLayout.isRefreshing) {
                     binding.srLayout.isRefreshing = false
                     // scroll to top if we were refreshing
@@ -481,10 +481,46 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
             }
         )
 
-        // without this the lists won't get initialized
+        binding.fabNewDownload.setOnClickListener {
+            val action = ListsTabFragmentDirections.actionListTabsDestToNewDownloadFragment()
+            findNavController().navigate(action)
+        }
+
+        // starts the Transformations.switchMap(queryLiveData) which otherwise won't trigger the Paging request
         viewModel.setListFilter("")
 
         binding.tabs.getTabAt(viewModel.getSelectedTab())?.select()
+
+        // an external link has been shared with the app
+        activityViewModel.externalLinkLiveData.observe(
+            viewLifecycleOwner,
+            EventObserver { uri ->
+                val action = ListsTabFragmentDirections.actionListTabsDestToNewDownloadFragment(externalUri = uri)
+                findNavController().navigate(action)
+            }
+        )
+        // a file has been downloaded, usually a torrent, and needs to be unrestricted
+        activityViewModel.downloadedFileLiveData.observe(
+            viewLifecycleOwner,
+            EventObserver { fileID ->
+                val uri = requireContext().getDownloadedFileUri(fileID)
+                // no need to recheck the extension since it was checked on download
+                // if (uri?.path?.endsWith(".torrent") == true)
+                if (uri?.path != null) {
+                    val action = ListsTabFragmentDirections.actionListTabsDestToNewDownloadFragment(externalUri = uri)
+                    findNavController().navigate(action)
+                }
+            }
+        )
+
+        // a notification has been clicked
+        activityViewModel.notificationTorrentLiveData.observe(
+            viewLifecycleOwner,
+            EventObserver { torrentID ->
+                val action = ListsTabFragmentDirections.actionListsTabToTorrentDetails(torrentID)
+                findNavController().navigate(action)
+            }
+        )
 
         return binding.root
     }
@@ -573,12 +609,6 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
             context?.showToast(R.string.premium_needed)
     }
 
-    override fun onLongClick(item: DownloadItem) {
-        val action =
-            ListsTabFragmentDirections.actionListTabsDestToDownloadContextualDialogFragment(item)
-        findNavController().navigate(action)
-    }
-
     override fun onClick(item: TorrentItem) {
         val authState = activityViewModel.authenticationState.value?.peekContent()
         if (authState == AuthenticationState.AUTHENTICATED) {
@@ -613,14 +643,6 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
         } else
             context?.showToast(R.string.premium_needed)
     }
-
-    /*
-    override fun onLongClick(item: TorrentItem) {
-        val action =
-            ListsTabFragmentDirections.actionListTabsDestToTorrentContextualDialogFragment(item)
-        findNavController().navigate(action)
-    }
-     */
 
     private fun delayedListScrolling(recyclerView: RecyclerView, delay: Long = 300) {
         recyclerView.layoutManager?.let {

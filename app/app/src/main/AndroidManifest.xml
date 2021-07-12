@@ -35,7 +35,6 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <!-- https://developer.android.com/guide/topics/manifest/data-element.html -->
             <!-- Search Plugins -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />

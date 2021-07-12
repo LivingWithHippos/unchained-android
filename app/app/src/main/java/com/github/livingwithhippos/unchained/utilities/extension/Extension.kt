@@ -30,7 +30,7 @@ import androidx.lifecycle.Observer
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import timber.log.Timber
-import java.util.*
+import java.util.Locale
 
 /**
  * Show a toast message

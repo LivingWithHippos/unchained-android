@@ -85,7 +85,7 @@ class ForegroundTorrentService : LifecycleService() {
         torrentsLiveData.observe(
             this,
             { list ->
-
+                // todo: manage removed torrents (right now they just stop updating)
                 // the torrents we were observing
                 val oldTorrentsIDs: Set<String> =
                     preferences.getStringSet(KEY_OBSERVED_TORRENTS, emptySet()) as Set<String>

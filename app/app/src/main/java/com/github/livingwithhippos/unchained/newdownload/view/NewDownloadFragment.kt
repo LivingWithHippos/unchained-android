@@ -40,10 +40,8 @@ import com.github.livingwithhippos.unchained.utilities.extension.isContainerWebL
 import com.github.livingwithhippos.unchained.utilities.extension.isMagnet
 import com.github.livingwithhippos.unchained.utilities.extension.isTorrent
 import com.github.livingwithhippos.unchained.utilities.extension.isWebUrl
-import com.github.livingwithhippos.unchained.utilities.extension.runRippleAnimation
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Job
 import timber.log.Timber
 import java.io.IOException
 import java.util.regex.Matcher
@@ -64,9 +62,6 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
 
     private var _binding: NewDownloadFragmentBinding? = null
     val downloadBinding get() = _binding!!
-
-    // used to simulate a debounce effect while typing on the search bar
-    var queryJob: Job? = null
 
     override fun onDestroyView() {
         _binding = null
@@ -98,7 +93,8 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
         viewModel.folderLiveData.observe(
             viewLifecycleOwner,
             EventObserver { folder ->
-
+                // new folder list, alert the list fragment that it needs updating
+                activityViewModel.setListState(ListsTabFragment.ListState.UPDATE_DOWNLOAD)
                 val action =
                     NewDownloadFragmentDirections.actionNewDownloadDestToFolderListFragment(
                         folder = folder,
@@ -127,6 +123,8 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
             EventObserver { link ->
                 when (link) {
                     is Link.Container -> {
+                        // new container, alert the list fragment that it needs updating
+                        activityViewModel.setListState(ListsTabFragment.ListState.UPDATE_DOWNLOAD)
                         val action =
                             NewDownloadFragmentDirections.actionNewDownloadDestToFolderListFragment(
                                 linkList = link.links.toTypedArray(),
@@ -156,6 +154,7 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
                         context?.showToast(R.string.loading_torrent)
                         downloadBinding.bUnrestrict.isEnabled = false
                         downloadBinding.bLoadTorrent.isEnabled = false
+                        downloadBinding.bLoadContainer.isEnabled = false
                         /**
                          * DownloadManager does not support insecure (https) links anymore
                          * to add support for it, follow these instructions
@@ -171,6 +170,7 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
                         context?.showToast(R.string.loading_host_link)
                         downloadBinding.bUnrestrict.isEnabled = false
                         downloadBinding.bLoadTorrent.isEnabled = false
+                        downloadBinding.bLoadContainer.isEnabled = false
 
                         var password: String? = downloadBinding.tePassword.text.toString()
                         // we don't pass the password if it is blank.
@@ -190,6 +190,7 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
                         context?.showToast(R.string.loading_magnet_link)
                         downloadBinding.bUnrestrict.isEnabled = false
                         downloadBinding.bLoadTorrent.isEnabled = false
+                        downloadBinding.bLoadContainer.isEnabled = false
                         viewModel.fetchAddedMagnet(link)
                     }
                     link.isBlank() -> {
@@ -220,58 +221,50 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
             downloadBinding.tePassword.setText(pasteText, TextView.BufferType.EDITABLE)
         }
 
-        // we must make this value null by default because it's the first fragment of the nav graph
-        if (args.link != null) {
-            downloadBinding.tiLink.setText(args.link, TextView.BufferType.EDITABLE)
-            // run the ripple animation on the unrestrict button
-            downloadBinding.bUnrestrict.runRippleAnimation()
-        }
-
-        // we don't need to update the list fragment because when opened externally it gets loaded for the first time anyway
-        // this will change when we'll be able to use the already loaded activity instead of creating a new one
-        activityViewModel.externalLinkLiveData.observe(
-            viewLifecycleOwner,
-            EventObserver { link ->
-                when (link.scheme) {
-                    SCHEME_MAGNET -> {
-                        context?.showToast(R.string.loading_magnet_link)
-                        // set as text input text
-                        downloadBinding.tiLink.setText(
-                            link.toString(),
-                            TextView.BufferType.EDITABLE
-                        )
-                        // simulate button click
-                        downloadBinding.bUnrestrict.performClick()
-                    }
-                    SCHEME_CONTENT, SCHEME_FILE -> {
-                        when {
-                            // check if it's a container
-                            CONTAINER_EXTENSION_PATTERN.toRegex().matches(link.path ?: "") -> {
-                                context?.showToast(R.string.loading_container_file)
-                                loadContainer(link)
-                            }
-                            link.path?.endsWith(".torrent") == true -> {
-                                context?.showToast(R.string.loading_torrent_file)
-                                loadTorrent(link)
-                            }
-                            else -> Timber.e("Unsupported content/file passed to NewDownloadFragment")
+        args.externalUri?.let { link ->
+            when (link.scheme) {
+                SCHEME_MAGNET -> {
+                    context?.showToast(R.string.loading_magnet_link)
+                    // set as text input text
+                    downloadBinding.tiLink.setText(
+                        link.toString(),
+                        TextView.BufferType.EDITABLE
+                    )
+                    // simulate button click
+                    downloadBinding.bUnrestrict.performClick()
+                }
+                SCHEME_CONTENT, SCHEME_FILE -> {
+                    when {
+                        // check if it's a container
+                        CONTAINER_EXTENSION_PATTERN.toRegex().matches(link.path ?: "") -> {
+                            context?.showToast(R.string.loading_container_file)
+                            loadContainer(link)
                         }
-                    }
-                    SCHEME_HTTP, SCHEME_HTTPS -> {
-                        if (!link.toString().endsWith(".torrent"))
-                            context?.showToast(R.string.loading_host_link)
-
-                        // set as text input text
-                        downloadBinding.tiLink.setText(
-                            link.toString(),
-                            TextView.BufferType.EDITABLE
-                        )
-                        // simulate button click
-                        downloadBinding.bUnrestrict.performClick()
+                        link.path?.endsWith(".torrent") == true -> {
+                            context?.showToast(R.string.loading_torrent_file)
+                            loadTorrent(link)
+                        }
+                        else -> Timber.e("Unsupported content/file passed to NewDownloadFragment")
                     }
                 }
+                SCHEME_HTTP, SCHEME_HTTPS -> {
+                    if (!link.toString().endsWith(".torrent"))
+                        context?.showToast(R.string.loading_host_link)
+
+                    // set as text input text
+                    downloadBinding.tiLink.setText(
+                        link.toString(),
+                        TextView.BufferType.EDITABLE
+                    )
+                    // simulate button click
+                    downloadBinding.bUnrestrict.performClick()
+                }
+                else -> {
+                    // shouldn't trigger
+                    Timber.e("Unknown Uri shared to NewDownloadFragment: ${link.scheme} - ${link.path}")
+                }
             }
-        )
+        }
 
         activityViewModel.downloadedFileLiveData.observe(
             viewLifecycleOwner,
@@ -291,39 +284,31 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
                 // re-enable the buttons to allow the user to take new actions
                 downloadBinding.bUnrestrict.isEnabled = true
                 downloadBinding.bLoadTorrent.isEnabled = true
+                downloadBinding.bLoadContainer.isEnabled = true
 
                 when (exception) {
                     is APIError -> {
                         // error codes outside the known range will return unknown error
                         val errorCode = exception.errorCode ?: -2
+                        val errorMessage = requireContext().getApiErrorMessage(errorCode)
                         // manage the api error result
                         when (exception.errorCode) {
-                            -1, 1 -> context?.let {
-                                it.showToast(it.getApiErrorMessage(errorCode))
-                            }
+                            -1, 1 -> context?.showToast(errorMessage)
                             // since here we monitor new downloads, use a less generic, custom message
                             2 -> context?.showToast(R.string.unsupported_hoster)
-                            in 3..7 -> context?.let {
-                                it.showToast(it.getApiErrorMessage(errorCode))
-                            }
+                            in 3..7 -> context?.showToast(errorMessage)
                             8 -> {
                                 // try refreshing the token
-                                context?.let {
-                                    it.showToast(it.getApiErrorMessage(errorCode))
-                                }
+                                // context?.showToast(errorMessage)
                                 activityViewModel.setBadToken()
                                 context?.showToast(R.string.refreshing_token)
                             }
                             in 9..15 -> {
-                                context?.let {
-                                    it.showToast(it.getApiErrorMessage(errorCode))
-                                }
+                                context?.showToast(errorMessage)
                                 activityViewModel.setUnauthenticated()
                             }
                             else -> {
-                                context?.let {
-                                    it.showToast(it.getApiErrorMessage(errorCode))
-                                }
+                                context?.showToast(errorMessage)
                             }
                         }
                     }
@@ -335,17 +320,6 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
                         context?.showToast(R.string.network_error)
                     }
                 }
-            }
-        )
-
-        activityViewModel.notificationTorrentLiveData.observe(
-            viewLifecycleOwner,
-            EventObserver { torrentID ->
-                val action =
-                    NewDownloadFragmentDirections.actionNewDownloadDestToTorrentDetailsFragment(
-                        torrentID
-                    )
-                findNavController().navigate(action)
             }
         )
 
@@ -407,6 +381,7 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
             }
             downloadBinding.bUnrestrict.isEnabled = true
             downloadBinding.bLoadTorrent.isEnabled = true
+            downloadBinding.bLoadContainer.isEnabled = true
             requireContext().showToast(R.string.error_loading_torrent)
         }
     }
@@ -431,6 +406,7 @@ class NewDownloadFragment : UnchainedFragment(), NewDownloadListener {
             }
             downloadBinding.bUnrestrict.isEnabled = true
             downloadBinding.bLoadTorrent.isEnabled = true
+            downloadBinding.bLoadContainer.isEnabled = true
             requireContext().showToast(R.string.error_loading_file)
         }
     }
