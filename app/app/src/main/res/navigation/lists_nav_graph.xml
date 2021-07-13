@@ -48,7 +48,8 @@
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right" />
+            app:popExitAnim="@anim/slide_out_right"
+            app:popUpTo="@id/list_tabs_dest" />
         <action
             android:id="@+id/action_torrent_details_to_torrent_folder"
             app:destination="@id/folderListFragment" />

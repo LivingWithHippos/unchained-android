@@ -89,6 +89,8 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
         torrentBinding.statusTranslation = statusTranslation
         torrentBinding.listener = this
 
+        var firstTorrentStatus: String? = null
+
         viewModel.torrentLiveData.observe(
             viewLifecycleOwner,
             EventObserver {
@@ -96,6 +98,13 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
                     torrentBinding.torrent = torrent
                     if (loadingStatusList.contains(torrent.status))
                         fetchTorrent()
+                    // save the last retrieved status
+                    if (firstTorrentStatus == null)
+                        firstTorrentStatus = torrent.status
+                    // if the torrent wasn't initially in a downloaded status and reached the downloaded status un-restrict it
+                    // possibly let the user enable this from settings
+                    if (torrent.status == "downloaded" && firstTorrentStatus != "downloaded")
+                        torrentBinding.bDownload.performClick()
                 }
             }
         )
@@ -142,14 +151,10 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
                         is EmptyBodyError -> {
                         }
                         is NetworkError -> {
-                            context?.let { c ->
-                                c.showToast(R.string.network_error)
-                            }
+                            context?.showToast(R.string.network_error)
                         }
                         is ApiConversionError -> {
-                            context?.let { c ->
-                                c.showToast(R.string.parsing_error)
-                            }
+                            context?.showToast(R.string.parsing_error)
                         }
                     }
                 }
@@ -162,7 +167,7 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
     }
 
     // fetch the torrent info every 2 seconds
-    private fun fetchTorrent(delay: Long = 2000) {
+    private fun fetchTorrent(delay: Long = 1000) {
         lifecycleScope.launch {
             delay(delay)
             viewModel.fetchTorrentDetails(args.torrentID)
