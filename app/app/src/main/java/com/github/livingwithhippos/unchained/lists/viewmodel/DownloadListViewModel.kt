@@ -143,11 +143,11 @@ class DownloadListViewModel @Inject constructor(
         viewModelScope.launch {
 
             deletedDownloadLiveData.postEvent(0)
-
+            var page = 1
             val token = credentialsRepository.getToken()
             val completeDownloadList = mutableListOf<DownloadItem>()
             do {
-                val downloads = downloadRepository.getDownloads(token, 0, 1, 50)
+                val downloads = downloadRepository.getDownloads(token, 0, page++, 50)
                 completeDownloadList.addAll(downloads)
             } while (downloads.size >= 50)
 
