@@ -100,7 +100,6 @@
             android:background="@drawable/icon_sort_default"
             android:backgroundTint="?attr/colorOnSurface"
             android:contentDescription="@string/sort"
-            android:tag="sort_default_tag"
             app:layout_constraintBottom_toBottomOf="@id/tfFilter"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/tfFilter"

@@ -148,6 +148,54 @@ class FolderListFragment : Fragment(), DownloadListListener {
             downloadAll()
         }
 
+        // observe the search bar for changes
+        binding.tiFilter.addTextChangedListener {
+            viewModel.filterList(it?.toString())
+        }
+
+        viewModel.queryLiveData.observe(viewLifecycleOwner) {
+            updateList(binding, adapter, query = it)
+        }
+
+        // load size filter button status
+        binding.cbFilterSize.isChecked = viewModel.getFilterSizePreference()
+
+        binding.cbFilterSize.setOnCheckedChangeListener { _, isChecked ->
+            updateList(binding, adapter, size = isChecked)
+            viewModel.setFilterSizePreference(isChecked)
+        }
+
+        // load type filter button status
+        binding.cbFilterType.isChecked = viewModel.getFilterTypePreference()
+
+        binding.cbFilterType.setOnCheckedChangeListener { _, isChecked ->
+            updateList(binding, adapter, type = isChecked)
+            viewModel.setFilterTypePreference(isChecked)
+        }
+
+        // load list sorting status
+        val lastTag = viewModel.getListSortPreference()
+        binding.sortingButton.tag = lastTag
+        binding.sortingButton.background = ResourcesCompat.getDrawable(
+            resources,
+            getSortingDrawable(lastTag),
+            requireContext().theme
+        )
+
+        binding.sortingButton.setOnClickListener {
+            // every click changes to the next state
+            val newTag = getNextSortingTag(it.tag as String)
+            val drawableID = getSortingDrawable(newTag)
+            binding.sortingButton.tag = newTag
+            binding.sortingButton.background = ResourcesCompat.getDrawable(
+                resources,
+                drawableID,
+                requireContext().theme
+            )
+            updateList(binding, adapter, sort = newTag)
+            viewModel.setListSortPreference(newTag)
+        }
+
         // load all the links
         when {
             args.folder != null -> viewModel.retrieveFolderFileList(args.folder!!)
@@ -159,81 +207,27 @@ class FolderListFragment : Fragment(), DownloadListListener {
                 viewModel.retrieveFiles(args.linkList!!.toList())
             }
         }
+    }
 
-        // observe the search bar for changes
-        binding.tiFilter.addTextChangedListener {
-            viewModel.filterList(it?.toString())
+    private fun getSortingDrawable(tag: String): Int {
+        return when (tag) {
+            TAG_DEFAULT_SORT -> R.drawable.icon_sort_default
+            TAG_SORT_AZ -> R.drawable.icon_sort_az
+            TAG_SORT_ZA -> R.drawable.icon_sort_za
+            TAG_SORT_SIZE_DESC -> R.drawable.icon_sort_size_desc
+            TAG_SORT_SIZE_ASC -> R.drawable.icon_sort_size_asc
+            else -> R.drawable.icon_sort_default
         }
-        viewModel.queryLiveData.observe(viewLifecycleOwner) {
-            updateList(binding, adapter, query = it)
-        }
+    }
 
-        binding.cbFilterSize.setOnCheckedChangeListener { _, isChecked ->
-            updateList(binding, adapter, size = isChecked)
-        }
-
-        binding.cbFilterType.setOnCheckedChangeListener { _, isChecked ->
-            updateList(binding, adapter, type = isChecked)
-        }
-
-        binding.sortingButton.setOnClickListener {
-            // every click changes to the next state
-            when (it.tag) {
-                TAG_DEFAULT_SORT -> {
-                    binding.sortingButton.background = ResourcesCompat.getDrawable(
-                        resources,
-                        R.drawable.icon_sort_az,
-                        requireContext().theme
-                    )
-                    it.tag = TAG_SORT_AZ
-                    updateList(binding, adapter, sort = TAG_SORT_AZ)
-                }
-                TAG_SORT_AZ -> {
-                    binding.sortingButton.background = ResourcesCompat.getDrawable(
-                        resources,
-                        R.drawable.icon_sort_za,
-                        requireContext().theme
-                    )
-                    it.tag = TAG_SORT_ZA
-                    updateList(binding, adapter, sort = TAG_SORT_ZA)
-                }
-                TAG_SORT_ZA -> {
-                    binding.sortingButton.background = ResourcesCompat.getDrawable(
-                        resources,
-                        R.drawable.icon_sort_size_desc,
-                        requireContext().theme
-                    )
-                    it.tag = TAG_SORT_SIZE_DESC
-                    updateList(binding, adapter, sort = TAG_SORT_SIZE_DESC)
-                }
-                TAG_SORT_SIZE_DESC -> {
-                    binding.sortingButton.background = ResourcesCompat.getDrawable(
-                        resources,
-                        R.drawable.icon_sort_size_asc,
-                        requireContext().theme
-                    )
-                    it.tag = TAG_SORT_SIZE_ASC
-                    updateList(binding, adapter, sort = TAG_SORT_SIZE_ASC)
-                }
-                TAG_SORT_SIZE_ASC -> {
-                    binding.sortingButton.background = ResourcesCompat.getDrawable(
-                        resources,
-                        R.drawable.icon_sort_default,
-                        requireContext().theme
-                    )
-                    it.tag = TAG_DEFAULT_SORT
-                    updateList(binding, adapter, sort = TAG_DEFAULT_SORT)
-                }
-                else -> {
-                    binding.sortingButton.background = ResourcesCompat.getDrawable(
-                        resources,
-                        R.drawable.icon_sort_default,
-                        requireContext().theme
-                    )
-                    it.tag = TAG_DEFAULT_SORT
-                    updateList(binding, adapter, sort = TAG_DEFAULT_SORT)
-                }
-            }
+    private fun getNextSortingTag(currentTag: String): String {
+        return when (currentTag) {
+            TAG_DEFAULT_SORT -> TAG_SORT_AZ
+            TAG_SORT_AZ -> TAG_SORT_ZA
+            TAG_SORT_ZA -> TAG_SORT_SIZE_DESC
+            TAG_SORT_SIZE_DESC -> TAG_SORT_SIZE_ASC
+            TAG_SORT_SIZE_ASC -> TAG_DEFAULT_SORT
+            else -> TAG_DEFAULT_SORT
         }
     }
 

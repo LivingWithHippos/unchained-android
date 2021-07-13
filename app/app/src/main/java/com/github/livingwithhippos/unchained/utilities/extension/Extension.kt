@@ -177,11 +177,11 @@ fun Context.getDownloadedFileUri(id: Long): Uri? {
 
 fun Uri.getFileName(context: Context): String {
     var fileName = ""
-    when(this.scheme) {
+    when (this.scheme) {
         SCHEME_CONTENT -> {
             val cursor: Cursor? = context.contentResolver.query(this, null, null, null, null)
-            if (cursor!=null && cursor.moveToFirst()) {
-                fileName = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+            if (cursor != null && cursor.moveToFirst()) {
+                fileName = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))
                 cursor.close()
             }
         }

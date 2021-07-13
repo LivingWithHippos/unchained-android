@@ -20,7 +20,6 @@ import androidx.paging.PagingData
 import androidx.recyclerview.selection.SelectionPredicates
 import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.selection.StorageStrategy
-import androidx.recyclerview.widget.RecyclerView
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.data.model.APIError
@@ -43,11 +42,11 @@ import com.github.livingwithhippos.unchained.lists.viewmodel.DownloadListViewMod
 import com.github.livingwithhippos.unchained.utilities.DataBindingDetailsLookup
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.EventObserver
+import com.github.livingwithhippos.unchained.utilities.extension.delayedScrolling
 import com.github.livingwithhippos.unchained.utilities.extension.downloadFile
 import com.github.livingwithhippos.unchained.utilities.extension.getApiErrorMessage
 import com.github.livingwithhippos.unchained.utilities.extension.getDownloadedFileUri
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
-import com.github.livingwithhippos.unchained.utilities.extension.verticalScrollToPosition
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayout
 import dagger.hilt.android.AndroidEntryPoint
@@ -220,7 +219,9 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
                 if (binding.srLayout.isRefreshing) {
                     binding.srLayout.isRefreshing = false
                     // scroll to top if we were refreshing
-                    delayedListScrolling(binding.rvDownloadList)
+                    lifecycleScope.launch {
+                        binding.rvDownloadList.delayedScrolling(requireContext())
+                    }
                 }
                 // delay for notifying the list that the items have changed, otherwise stuff like the status and the progress are not updated until you scroll away and back there
                 delay(300)
@@ -233,7 +234,9 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
                 torrentAdapter.submitData(it)
                 if (binding.srLayout.isRefreshing) {
                     binding.srLayout.isRefreshing = false
-                    delayedListScrolling(binding.rvTorrentList)
+                    lifecycleScope.launch {
+                        binding.rvTorrentList.delayedScrolling(requireContext())
+                    }
                 }
                 delay(300)
                 torrentAdapter.notifyDataSetChanged()
@@ -367,14 +370,18 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
                         lifecycleScope.launch {
                             delay(300L)
                             downloadAdapter.refresh()
-                            delayedListScrolling(binding.rvDownloadList)
+                            lifecycleScope.launch {
+                                binding.rvDownloadList.delayedScrolling(requireContext())
+                            }
                         }
                     }
                     ListState.UPDATE_TORRENT -> {
                         lifecycleScope.launch {
                             delay(300L)
                             torrentAdapter.refresh()
-                            delayedListScrolling(binding.rvTorrentList)
+                            lifecycleScope.launch {
+                                binding.rvTorrentList.delayedScrolling(requireContext())
+                            }
                         }
                     }
                     ListState.READY -> {
@@ -495,7 +502,8 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
         activityViewModel.externalLinkLiveData.observe(
             viewLifecycleOwner,
             EventObserver { uri ->
-                val action = ListsTabFragmentDirections.actionListTabsDestToNewDownloadFragment(externalUri = uri)
+                val action =
+                    ListsTabFragmentDirections.actionListTabsDestToNewDownloadFragment(externalUri = uri)
                 findNavController().navigate(action)
             }
         )
@@ -507,7 +515,9 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
                 // no need to recheck the extension since it was checked on download
                 // if (uri?.path?.endsWith(".torrent") == true)
                 if (uri?.path != null) {
-                    val action = ListsTabFragmentDirections.actionListTabsDestToNewDownloadFragment(externalUri = uri)
+                    val action = ListsTabFragmentDirections.actionListTabsDestToNewDownloadFragment(
+                        externalUri = uri
+                    )
                     findNavController().navigate(action)
                 }
             }
@@ -540,7 +550,7 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
         // listens to the user typing in the search bar
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            // since there is a 500ms delay on new queries, this will help if the user types something and press search in less than half sec. May be unnecessary. The value is checked anyway in the viewmodel to avoid reloading with the same query as the last one.
+            // since there is a 500ms delay on new queries, this will help if the user types something and press search in less than half sec. May be unnecessary. The value is checked anyway in the ViewModel to avoid reloading with the same query as the last one.
             override fun onQueryTextSubmit(query: String?): Boolean {
                 viewModel.setListFilter(query)
                 return true
@@ -642,16 +652,6 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
             }
         } else
             context?.showToast(R.string.premium_needed)
-    }
-
-    private fun delayedListScrolling(recyclerView: RecyclerView, delay: Long = 300) {
-        recyclerView.layoutManager?.let {
-            lifecycleScope.launch {
-                // this delay is needed to activate the scrolling, otherwise it won't work. It probably depends on the device.
-                delay(delay)
-                it.verticalScrollToPosition(requireContext())
-            }
-        }
     }
 
     companion object {

@@ -10,6 +10,7 @@ import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkExceptio
 import com.github.livingwithhippos.unchained.data.repositoy.CredentialsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.DownloadRepository
 import com.github.livingwithhippos.unchained.data.repositoy.UnrestrictRepository
+import com.github.livingwithhippos.unchained.folderlist.view.FolderListFragment
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.postEvent
@@ -88,11 +89,11 @@ class FolderListViewModel @Inject constructor(
         }
     }
 
-    fun setRetrievedLinks(links: Int) {
+    private fun setRetrievedLinks(links: Int) {
         savedStateHandle.set(KEY_RETRIEVED_LINKS, links)
     }
 
-    fun getRetrievedLinks(): Int {
+    private fun getRetrievedLinks(): Int {
         return savedStateHandle.get(KEY_RETRIEVED_LINKS) ?: -1
     }
 
@@ -123,7 +124,43 @@ class FolderListViewModel @Inject constructor(
         return minMB * 1024 * 1024
     }
 
+    fun setFilterSizePreference(enabled: Boolean) {
+        with(preferences.edit()) {
+            putBoolean(KEY_LIST_FILTER_SIZE, enabled)
+            apply()
+        }
+    }
+
+    fun getFilterSizePreference(): Boolean {
+        return preferences.getBoolean(KEY_LIST_FILTER_SIZE, false)
+    }
+
+    fun setFilterTypePreference(enabled: Boolean) {
+        with(preferences.edit()) {
+            putBoolean(KEY_LIST_FILTER_TYPE, enabled)
+            apply()
+        }
+    }
+
+    fun getFilterTypePreference(): Boolean {
+        return preferences.getBoolean(KEY_LIST_FILTER_TYPE, false)
+    }
+
+    fun setListSortPreference(tag: String) {
+        with(preferences.edit()) {
+            putString(KEY_LIST_SORTING, tag)
+            apply()
+        }
+    }
+
+    fun getListSortPreference(): String {
+        return preferences.getString(KEY_LIST_SORTING, FolderListFragment.TAG_DEFAULT_SORT) ?: FolderListFragment.TAG_DEFAULT_SORT
+    }
+
     companion object {
         const val KEY_RETRIEVED_LINKS = "retrieve_links"
+        const val KEY_LIST_FILTER_SIZE = "filter_list_size"
+        const val KEY_LIST_FILTER_TYPE = "filter_list_type"
+        const val KEY_LIST_SORTING = "sort_list_type"
     }
 }

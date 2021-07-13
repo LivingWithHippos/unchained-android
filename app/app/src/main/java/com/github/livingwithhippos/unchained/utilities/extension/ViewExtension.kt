@@ -28,6 +28,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.github.livingwithhippos.unchained.R
 import com.google.android.material.progressindicator.BaseProgressIndicator
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.delay
 
 /**
  * start an animation from the [ImageView] drawable if possible
@@ -253,7 +254,21 @@ fun RecyclerView.LayoutManager.verticalScrollToPosition(
 }
 
 /**
- * Shows a
+ * Scrolls to the top of a list after a delay
+ * The delay is needed if scrolling after updating the list. It probably depends on the device.
+ *
+ * @param context
+ * @param delay
+ */
+suspend fun RecyclerView.delayedScrolling(context: Context, delay: Long = 300) {
+    this.layoutManager?.let {
+        delay(delay)
+        it.verticalScrollToPosition(context)
+    }
+}
+
+/**
+ * Shows a SnackBar
  * @param messageResource: the resource ID of the string to be displayed
  * @param action: an optional function to be executed as action. Supports only the Unit return type.
  * @param actionText String resource to display for the action
@@ -261,7 +276,7 @@ fun RecyclerView.LayoutManager.verticalScrollToPosition(
  * @param length How long to display the message.  Either Snackbar.LENGTH_SHORT,
  *                Snackbar.LENGTH_LONG, or Snackbar.LENGTH_INDEFINITE. Defaults to LENGTH_SHORT
  */
-fun View.showSnackbar(
+fun View.showSnackBar(
     messageResource: Int,
     length: Int = Snackbar.LENGTH_SHORT,
     action: (() -> Unit)? = null,
@@ -307,7 +322,7 @@ fun SwipeRefreshLayout.setRefreshThemeColor(themed: Boolean) {
 fun View.hideKeyboard() {
     context?.let {
         val inputMethodManager =
-            it.getSystemService(android.content.Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+            it.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
         inputMethodManager?.hideSoftInputFromWindow(this.windowToken, 0)
     }
 }
