@@ -274,7 +274,7 @@ class MainActivityViewModel @Inject constructor(
             when {
                 link.isMagnet() -> linkLiveData.postEvent(link)
                 link.isTorrent() -> linkLiveData.postEvent(link)
-                link.endsWith(TYPE_UNCHAINED) -> {
+                link.endsWith(TYPE_UNCHAINED, ignoreCase = true) -> {
                     // only accept github links for now
                     val newLink = convertGithubToRaw(link)
                     if (newLink != null)

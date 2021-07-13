@@ -46,7 +46,7 @@ class AssetsManager @Inject constructor(
             // the path is a file
             if (isFile(newPath)) {
                 // if the name is correct we add it to the list
-                if (newPath.endsWith(fileType))
+                if (newPath.endsWith(fileType, ignoreCase = true))
                     results.add(newPath)
             }
         }

@@ -171,7 +171,7 @@ class MainActivity : AppCompatActivity() {
             this,
             EventObserver { link ->
                 when {
-                    link.endsWith(TYPE_UNCHAINED) -> {
+                    link.endsWith(TYPE_UNCHAINED, ignoreCase = true) -> {
                         downloadPlugin(link)
                     }
                     else -> {
@@ -302,7 +302,7 @@ class MainActivity : AppCompatActivity() {
                         SCHEME_MAGNET, SCHEME_CONTENT, SCHEME_FILE -> {
                             when {
                                 // check if it's a search plugin
-                                data.path?.endsWith(TYPE_UNCHAINED) == true -> addSearchPlugin(data)
+                                data.path?.endsWith(TYPE_UNCHAINED, ignoreCase = true) == true -> addSearchPlugin(data)
                                 else -> {
                                     // it's a magnet/torrent, check auth state before loading it
                                     viewModel.authenticationState.observeOnce(

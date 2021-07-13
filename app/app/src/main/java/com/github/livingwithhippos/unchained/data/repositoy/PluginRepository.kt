@@ -52,7 +52,7 @@ class PluginRepository @Inject constructor(
          */
 
         context.fileList().filter {
-            it.endsWith(TYPE_UNCHAINED)
+            it.endsWith(TYPE_UNCHAINED, ignoreCase = true)
         }.forEach {
             context.openFileInput(it).bufferedReader().use { reader ->
                 try {
@@ -98,7 +98,7 @@ class PluginRepository @Inject constructor(
     fun removeExternalPlugins(context: Context): Int {
         return try {
             val plugins = context.filesDir.listFiles { _, name ->
-                name.endsWith(TYPE_UNCHAINED)
+                name.endsWith(TYPE_UNCHAINED, ignoreCase = true)
             }
 
             plugins?.forEach {
@@ -120,7 +120,7 @@ class PluginRepository @Inject constructor(
         )
         names.addAll(
             context.fileList().filter {
-                it.endsWith(TYPE_UNCHAINED)
+                it.endsWith(TYPE_UNCHAINED, ignoreCase = true)
             }.map { it.split("/").last() }
         )
         return names

@@ -326,7 +326,7 @@ class NewDownloadFragment : UnchainedFragment() {
                             context?.showToast(R.string.loading_container_file)
                             loadContainer(binding, link)
                         }
-                        link.path?.endsWith(".torrent") == true -> {
+                        link.path?.endsWith(".torrent", ignoreCase = true) == true -> {
                             context?.showToast(R.string.loading_torrent_file)
                             loadTorrent(binding, link)
                         }
@@ -334,7 +334,7 @@ class NewDownloadFragment : UnchainedFragment() {
                     }
                 }
                 SCHEME_HTTP, SCHEME_HTTPS -> {
-                    if (!link.toString().endsWith(".torrent"))
+                    if (!link.toString().endsWith(".torrent", ignoreCase = true))
                         context?.showToast(R.string.loading_host_link)
 
                     // set as text input text
