@@ -149,13 +149,15 @@ class FolderListFragment : Fragment(), DownloadListListener {
         }
 
         // load all the links
-        if (args.folder != null)
-            viewModel.retrieveFolderFileList(args.folder!!)
-        else if (args.torrent != null) {
-            binding.tvTitle.text = args.torrent!!.filename
-            viewModel.retrieveFiles(args.torrent!!.links)
-        } else if (args.linkList != null) {
-            viewModel.retrieveFiles(args.linkList!!.toList())
+        when {
+            args.folder != null -> viewModel.retrieveFolderFileList(args.folder!!)
+            args.torrent != null -> {
+                binding.tvTitle.text = args.torrent!!.filename
+                viewModel.retrieveFiles(args.torrent!!.links)
+            }
+            args.linkList != null -> {
+                viewModel.retrieveFiles(args.linkList!!.toList())
+            }
         }
 
         // observe the search bar for changes

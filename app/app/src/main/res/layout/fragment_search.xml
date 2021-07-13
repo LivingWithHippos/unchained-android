@@ -4,12 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <import type="android.view.View" />
-
-        <variable
-            name="listener"
-            type="com.github.livingwithhippos.unchained.newdownload.view.NewDownloadListener" />
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/rootLayout"
@@ -106,8 +101,6 @@
                 />
 
         </com.google.android.material.textfield.TextInputLayout>
-
-
 
         <LinearLayout
             android:id="@+id/llList"

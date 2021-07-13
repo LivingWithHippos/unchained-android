@@ -4,13 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <import type="android.view.View" />
-
-        <variable
-            name="listener"
-            type="com.github.livingwithhippos.unchained.newdownload.view.NewDownloadListener" />
-    </data>
+     </data>
 
 
     <androidx.core.widget.NestedScrollView
@@ -168,7 +163,6 @@
                 android:minWidth="170dp"
                 android:minLines="2"
                 android:layout_marginEnd="10dp"
-                android:onClick="@{() -> listener.onLoadTorrentClick()}"
                 android:text="@string/torrent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/bLoadContainer"
@@ -185,7 +179,6 @@
                 android:layout_marginStart="10dp"
                 android:minWidth="170dp"
                 android:minLines="2"
-                android:onClick="@{() -> listener.onLoadContainerClick()}"
                 android:text="@string/container"
                 app:layout_constraintBottom_toBottomOf="@+id/bLoadTorrent"
                 app:layout_constraintEnd_toEndOf="parent"
