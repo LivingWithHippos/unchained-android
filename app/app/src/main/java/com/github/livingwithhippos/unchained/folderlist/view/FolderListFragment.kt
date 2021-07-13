@@ -27,6 +27,7 @@ import com.github.livingwithhippos.unchained.folderlist.model.FolderItemAdapter
 import com.github.livingwithhippos.unchained.folderlist.viewmodel.FolderListViewModel
 import com.github.livingwithhippos.unchained.lists.view.DownloadListListener
 import com.github.livingwithhippos.unchained.utilities.EitherResult
+import com.github.livingwithhippos.unchained.utilities.extension.delayedScrolling
 import com.github.livingwithhippos.unchained.utilities.extension.downloadFile
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.github.livingwithhippos.unchained.utilities.extension.verticalScrollToPosition
@@ -194,6 +195,9 @@ class FolderListFragment : Fragment(), DownloadListListener {
             )
             updateList(binding, adapter, sort = newTag)
             viewModel.setListSortPreference(newTag)
+            lifecycleScope.launch {
+                binding.rvFolderList.delayedScrolling(requireContext())
+            }
         }
 
         // load all the links
@@ -307,11 +311,7 @@ class FolderListFragment : Fragment(), DownloadListListener {
                 )
             }
             else -> {
-                adapter.submitList(
-                    customizedList.sortedBy { item ->
-                        item.filename
-                    }
-                )
+                adapter.submitList(customizedList)
             }
         }
         adapter.notifyDataSetChanged()

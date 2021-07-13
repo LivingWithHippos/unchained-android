@@ -11,6 +11,7 @@ data class ScrapedItem(
     val seeders: String? = null,
     val leechers: String? = null,
     val size: String? = null,
+    val parsedSize: Double? = null,
     val magnets: List<String>,
     val torrents: List<String>
 ) : Parcelable {
@@ -20,6 +21,7 @@ data class ScrapedItem(
         parcel.readString(),
         parcel.readString(),
         parcel.readString(),
+        parcel.readDouble(),
         parcel.createStringArrayList() ?: emptyList(),
         parcel.createStringArrayList() ?: emptyList()
     )
@@ -30,6 +32,7 @@ data class ScrapedItem(
         parcel.writeString(seeders)
         parcel.writeString(leechers)
         parcel.writeString(size)
+        parcel.writeDouble(parsedSize ?: 0.0)
         parcel.writeStringList(magnets)
         parcel.writeStringList(torrents)
     }

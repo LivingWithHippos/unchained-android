@@ -26,7 +26,7 @@
             app:endIconDrawable="@drawable/icon_search"
             android:focusable="true"
             app:layout_constraintBottom_toTopOf="@+id/pluginPicker"
-            app:layout_constraintEnd_toStartOf="@id/loadingCircle"
+            app:layout_constraintEnd_toStartOf="@id/flLoad"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="parent"
@@ -44,21 +44,39 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
+        <FrameLayout
+            android:id="@+id/flLoad"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tfSearch"
+            app:layout_constraintTop_toTopOf="@id/tfSearch"
+            app:layout_constraintBottom_toBottomOf="@id/tfSearch">
+
+            <ImageButton
+                android:id="@+id/sortingButton"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/icon_sort_default"
+                android:backgroundTint="?attr/colorOnSurface"
+                android:contentDescription="@string/sort"
+                app:layout_constraintBottom_toBottomOf="@id/tfFilter"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/tfFilter"
+                app:layout_constraintTop_toTopOf="@id/tfFilter" />
+
         <com.google.android.material.progressindicator.CircularProgressIndicator
             android:id="@+id/loadingCircle"
             style="@style/Widget.MaterialComponents.CircularProgressIndicator"
             app:indicatorColor="?attr/colorPrimary"
             android:indeterminate="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             app:trackCornerRadius="20dp"
-            android:visibility="invisible"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/tfSearch"
-            app:layout_constraintTop_toTopOf="@id/tfSearch"
-            app:layout_constraintBottom_toBottomOf="@id/tfSearch"/>
+            android:visibility="invisible"/>
 
+        </FrameLayout>
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/pluginPicker"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"

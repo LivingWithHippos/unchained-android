@@ -8,11 +8,14 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.databinding.FragmentSearchBinding
+import com.github.livingwithhippos.unchained.folderlist.view.FolderListFragment
 import com.github.livingwithhippos.unchained.plugins.ParserResult
 import com.github.livingwithhippos.unchained.plugins.model.Plugin
 import com.github.livingwithhippos.unchained.plugins.model.ScrapedItem
@@ -20,10 +23,12 @@ import com.github.livingwithhippos.unchained.search.model.SearchItemAdapter
 import com.github.livingwithhippos.unchained.search.model.SearchItemListener
 import com.github.livingwithhippos.unchained.search.viewmodel.SearchViewModel
 import com.github.livingwithhippos.unchained.utilities.PLUGINS_URL
+import com.github.livingwithhippos.unchained.utilities.extension.delayedScrolling
 import com.github.livingwithhippos.unchained.utilities.extension.hideKeyboard
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -87,10 +92,35 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
         val adapter = SearchItemAdapter(this)
         binding.rvSearchList.adapter = adapter
 
+        val latestTag = viewModel.getListSortPreference()
+        val drawableID = getSortingDrawable(latestTag)
+        binding.sortingButton.tag = latestTag
+        binding.sortingButton.background = ResourcesCompat.getDrawable(
+            resources,
+            drawableID,
+            requireContext().theme
+        )
         // load the latest results if coming back from another fragment
         val lastResults = viewModel.getSearchResults()
         if (lastResults.isNotEmpty())
-            adapter.submitList(lastResults)
+            submitSortedList(latestTag, adapter, lastResults)
+
+        binding.sortingButton.setOnClickListener {
+            // every click changes to the next state
+            val newTag = getNextSortingTag(it.tag as String)
+            val drawableID = getSortingDrawable(newTag)
+            binding.sortingButton.tag = newTag
+            binding.sortingButton.background = ResourcesCompat.getDrawable(
+                resources,
+                drawableID,
+                requireContext().theme
+            )
+            submitSortedList(newTag, adapter, viewModel.getSearchResults())
+            viewModel.setListSortPreference(newTag)
+            lifecycleScope.launch {
+                binding.rvSearchList.delayedScrolling(requireContext())
+            }
+        }
 
         // search option
         binding.tiSearch.setOnEditorActionListener { _, actionId, _ ->
@@ -118,27 +148,96 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
         ).observe(viewLifecycleOwner) { result ->
             when (result) {
                 is ParserResult.SingleResult -> {
-                    adapter.submitList(listOf(result.value))
+                    submitSortedList(binding.sortingButton.tag.toString(), adapter, listOf(result.value))
                     adapter.notifyDataSetChanged()
                 }
                 is ParserResult.Results -> {
-                    adapter.submitList(result.values)
+                    submitSortedList(binding.sortingButton.tag.toString(), adapter, result.values)
                     adapter.notifyDataSetChanged()
                 }
                 is ParserResult.SearchStarted -> {
+                    binding.sortingButton.visibility = View.INVISIBLE
                     binding.loadingCircle.visibility = View.VISIBLE
                 }
                 is ParserResult.SearchFinished -> {
                     binding.loadingCircle.visibility = View.INVISIBLE
+                    binding.sortingButton.visibility = View.VISIBLE
                 }
                 is ParserResult.EmptyInnerLinks -> {
                     context?.showToast(R.string.no_links)
                     binding.loadingCircle.visibility = View.INVISIBLE
+                    binding.sortingButton.visibility = View.VISIBLE
                 }
                 else -> {
                     Timber.d(result.toString())
                     binding.loadingCircle.visibility = View.INVISIBLE
+                    binding.sortingButton.visibility = View.VISIBLE
                 }
+            }
+        }
+    }
+
+    private fun getSortingDrawable(tag: String): Int {
+        return when (tag) {
+            FolderListFragment.TAG_DEFAULT_SORT -> R.drawable.icon_sort_default
+            FolderListFragment.TAG_SORT_AZ -> R.drawable.icon_sort_az
+            FolderListFragment.TAG_SORT_ZA -> R.drawable.icon_sort_za
+            FolderListFragment.TAG_SORT_SIZE_DESC -> R.drawable.icon_sort_size_desc
+            FolderListFragment.TAG_SORT_SIZE_ASC -> R.drawable.icon_sort_size_asc
+            else -> R.drawable.icon_sort_default
+        }
+    }
+
+    private fun getNextSortingTag(currentTag: String): String {
+        return when (currentTag) {
+            FolderListFragment.TAG_DEFAULT_SORT -> FolderListFragment.TAG_SORT_AZ
+            FolderListFragment.TAG_SORT_AZ -> FolderListFragment.TAG_SORT_ZA
+            FolderListFragment.TAG_SORT_ZA -> FolderListFragment.TAG_SORT_SIZE_DESC
+            FolderListFragment.TAG_SORT_SIZE_DESC -> FolderListFragment.TAG_SORT_SIZE_ASC
+            FolderListFragment.TAG_SORT_SIZE_ASC -> FolderListFragment.TAG_DEFAULT_SORT
+            else -> FolderListFragment.TAG_DEFAULT_SORT
+        }
+    }
+
+    private fun submitSortedList(
+        tag: String,
+        adapter: SearchItemAdapter,
+        items: List<ScrapedItem>
+    ) {
+        when (tag) {
+            FolderListFragment.TAG_DEFAULT_SORT -> {
+                adapter.submitList(items)
+            }
+            FolderListFragment.TAG_SORT_AZ -> {
+                adapter.submitList(
+                    items.sortedBy { item ->
+                        item.name
+                    }
+                )
+            }
+            FolderListFragment.TAG_SORT_ZA -> {
+                adapter.submitList(
+                    items.sortedByDescending { item ->
+                        item.name
+                    }
+                )
+            }
+            FolderListFragment.TAG_SORT_SIZE_DESC -> {
+                adapter.submitList(
+                    items.sortedByDescending { item ->
+                        item.parsedSize
+                    }
+                )
+            }
+            FolderListFragment.TAG_SORT_SIZE_ASC -> {
+                adapter.submitList(
+                    items.sortedBy { item ->
+                        item.parsedSize
+                    }
+                )
+            }
+            else -> {
+                adapter.submitList(items)
             }
         }
     }

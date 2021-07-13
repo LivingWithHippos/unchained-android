@@ -8,6 +8,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.livingwithhippos.unchained.data.repositoy.PluginRepository
+import com.github.livingwithhippos.unchained.folderlist.view.FolderListFragment
+import com.github.livingwithhippos.unchained.folderlist.viewmodel.FolderListViewModel
 import com.github.livingwithhippos.unchained.plugins.Parser
 import com.github.livingwithhippos.unchained.plugins.ParserResult
 import com.github.livingwithhippos.unchained.plugins.model.Plugin
@@ -32,7 +34,7 @@ class SearchViewModel @Inject constructor(
     private var job: Job? = null
 
     val pluginLiveData = MutableLiveData<List<Plugin>>()
-    private val parsingLiveData = MutableLiveData<ParserResult>()
+    val parsingLiveData = MutableLiveData<ParserResult>()
 
     fun completeSearch(
         query: String,
@@ -118,6 +120,17 @@ class SearchViewModel @Inject constructor(
             putBoolean(KEY_PLUGIN_DIALOG_NEEDED, needed)
             apply()
         }
+    }
+
+    fun setListSortPreference(tag: String) {
+        with(preferences.edit()) {
+            putString(FolderListViewModel.KEY_LIST_SORTING, tag)
+            apply()
+        }
+    }
+
+    fun getListSortPreference(): String {
+        return preferences.getString(FolderListViewModel.KEY_LIST_SORTING, FolderListFragment.TAG_DEFAULT_SORT) ?: FolderListFragment.TAG_DEFAULT_SORT
     }
 
     companion object {

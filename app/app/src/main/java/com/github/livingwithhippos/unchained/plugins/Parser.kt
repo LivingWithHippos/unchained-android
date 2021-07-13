@@ -18,6 +18,7 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import timber.log.Timber
+import java.lang.NumberFormatException
 import java.net.SocketTimeoutException
 
 class Parser(
@@ -222,6 +223,7 @@ class Parser(
             source,
             baseUrl
         )
+        val parsedSize: Double? = parseCommonSize(size)
 
         return ScrapedItem(
             name = name,
@@ -229,9 +231,31 @@ class Parser(
             seeders = seeders,
             leechers = leechers,
             size = size,
+            parsedSize = parsedSize,
             magnets = magnets,
             torrents = torrents
         )
+    }
+
+    private fun parseCommonSize(size: String?): Double? {
+        try {
+
+            size ?: return null
+
+            val numbers = "[\\d.]+".toRegex().find(size)?.value ?: return null
+
+            val baseSize = numbers.toDouble()
+            if (size.contains("gb", ignoreCase = true)) {
+                return baseSize * 1024 * 1024
+            }
+            if (size.contains("mb", ignoreCase = true)) {
+                return baseSize * 1024
+            }
+            // KiloBytes are already at the size I need
+            return baseSize
+        } catch (e: NumberFormatException) {
+            return null
+        }
     }
 
     private fun parseTable(
@@ -320,6 +344,8 @@ class Parser(
                     Timber.d("skipping row")
                 }
 
+                val parsedSize: Double? = parseCommonSize(size)
+
                 if (name != null && (magnets.isNotEmpty() || torrents.isNotEmpty()))
                     tableItems.add(
                         ScrapedItem(
@@ -328,6 +354,7 @@ class Parser(
                             seeders = seeders,
                             leechers = leechers,
                             size = size,
+                            parsedSize = parsedSize,
                             magnets = magnets,
                             torrents = torrents
                         )
