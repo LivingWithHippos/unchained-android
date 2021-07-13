@@ -167,12 +167,12 @@ dependencies {
     def androidx_core_version = "1.6.0"
     def appcompat_version = "1.3.0"
     // def arrow_version = "0.13.2"
-    def coil_version = '1.2.2'
+    def coil_version = '1.3.0'
     def constraint_layout_version = '2.0.4'
-    def coroutines_version = "1.5.0"
+    def coroutines_version = "1.5.1"
     def flexbox_version = "3.0.0"
     def fragment_version = '1.3.5'
-    def jsoup_version = '1.13.1'
+    def jsoup_version = '1.14.1'
     def lifecycle_version = "2.3.1"
     def material_version = '1.4.0'
     def moshi_version = '1.12.0'
