@@ -6,17 +6,20 @@ import android.app.DownloadManager
 import android.content.ClipData
 import android.content.ClipDescription.MIMETYPE_TEXT_PLAIN
 import android.content.ClipboardManager
+import android.content.ContentResolver.SCHEME_CONTENT
 import android.content.Context
 import android.content.Intent
 import android.content.res.AssetManager
 import android.content.res.Configuration
 import android.content.res.Resources
+import android.database.Cursor
 import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.os.VibrationEffect
 import android.os.Vibrator
+import android.provider.OpenableColumns
 import android.util.TypedValue
 import android.view.View
 import android.view.WindowInsetsController
@@ -168,7 +171,23 @@ fun Context.getDownloadedFileUri(id: Long): Uri? {
         if (cursor.getInt(columnIndex) == DownloadManager.STATUS_SUCCESSFUL)
             return Uri.parse(cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI)))
     }
+    cursor.close()
     return null
+}
+
+fun Uri.getFileName(context: Context): String {
+    var fileName = ""
+    when(this.scheme) {
+        SCHEME_CONTENT -> {
+            val cursor: Cursor? = context.contentResolver.query(this, null, null, null, null)
+            if (cursor!=null && cursor.moveToFirst()) {
+                fileName = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+                cursor.close()
+            }
+        }
+        else -> fileName = this.lastPathSegment ?: ""
+    }
+    return fileName
 }
 
 /**

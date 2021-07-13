@@ -36,6 +36,7 @@ import com.github.livingwithhippos.unchained.utilities.extension.downloadFile
 import com.github.livingwithhippos.unchained.utilities.extension.getApiErrorMessage
 import com.github.livingwithhippos.unchained.utilities.extension.getClipboardText
 import com.github.livingwithhippos.unchained.utilities.extension.getDownloadedFileUri
+import com.github.livingwithhippos.unchained.utilities.extension.getFileName
 import com.github.livingwithhippos.unchained.utilities.extension.isContainerWebLink
 import com.github.livingwithhippos.unchained.utilities.extension.isMagnet
 import com.github.livingwithhippos.unchained.utilities.extension.isTorrent
@@ -270,36 +271,31 @@ class NewDownloadFragment : UnchainedFragment() {
             binding.tePassword.setText(pasteText, TextView.BufferType.EDITABLE)
         }
 
-        val torrentPicker: ActivityResultLauncher<String> =
+        val filePicker: ActivityResultLauncher<String> =
             registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
                 if (uri != null) {
-                    loadTorrent(binding, uri)
-                } else {
-                    context?.showToast(R.string.error_loading_file)
+                    val fileName = uri.getFileName(requireContext())
+                    if (fileName.endsWith(".torrent", ignoreCase = true))
+                        loadTorrent(binding, uri)
+                    else {
+                        if (CONTAINER_EXTENSION_PATTERN.toRegex().containsMatchIn(fileName))
+                            loadContainer(binding, uri)
+                        else
+                            context?.showToast(R.string.unsupported_file)
+                    }
                 }
+                /*
+                * if it's null the user didn't pick a file, no message needed
+                else {
+                context?.showToast(R.string.error_loading_file)
+                }
+                 */
             }
 
-        val containerPicker: ActivityResultLauncher<String> =
-            registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-                if (uri != null) {
-                    loadContainer(binding, uri)
-                } else {
-                    context?.showToast(R.string.error_loading_file)
-                }
-            }
-
-        binding.bLoadTorrent.setOnClickListener {
+        binding.bUploadFile.setOnClickListener {
             val authState = activityViewModel.authenticationState.value?.peekContent()
             if (authState == AuthenticationState.AUTHENTICATED)
-                torrentPicker.launch("application/x-bittorrent")
-            else
-                context?.showToast(R.string.premium_needed)
-        }
-
-        binding.bLoadContainer.setOnClickListener {
-            val authState = activityViewModel.authenticationState.value?.peekContent()
-            if (authState == AuthenticationState.AUTHENTICATED)
-                containerPicker.launch("*/*")
+                filePicker.launch("*/*")
             else
                 context?.showToast(R.string.premium_needed)
         }
@@ -323,11 +319,9 @@ class NewDownloadFragment : UnchainedFragment() {
                     when {
                         // check if it's a container
                         CONTAINER_EXTENSION_PATTERN.toRegex().matches(link.path ?: "") -> {
-                            context?.showToast(R.string.loading_container_file)
                             loadContainer(binding, link)
                         }
                         link.path?.endsWith(".torrent", ignoreCase = true) == true -> {
-                            context?.showToast(R.string.loading_torrent_file)
                             loadTorrent(binding, link)
                         }
                         else -> Timber.e("Unsupported content/file passed to NewDownloadFragment")
@@ -356,6 +350,7 @@ class NewDownloadFragment : UnchainedFragment() {
     private fun loadTorrent(binding: NewDownloadFragmentBinding, uri: Uri) {
         // https://developer.android.com/training/data-storage/shared/documents-files#open
         try {
+            context?.showToast(R.string.loading_torrent_file)
             requireContext().contentResolver.openInputStream(uri)?.use { inputStream ->
                 val buffer: ByteArray = inputStream.readBytes()
                 viewModel.fetchUploadedTorrent(buffer)
@@ -379,12 +374,12 @@ class NewDownloadFragment : UnchainedFragment() {
 
     private fun enableButtons(binding: NewDownloadFragmentBinding, enabled: Boolean = true) {
         binding.bUnrestrict.isEnabled = enabled
-        binding.bLoadTorrent.isEnabled = enabled
-        binding.bLoadContainer.isEnabled = enabled
+        binding.bUploadFile.isEnabled = enabled
     }
 
     private fun loadContainer(binding: NewDownloadFragmentBinding, uri: Uri) {
         try {
+            context?.showToast(R.string.loading_container_file)
             requireContext().contentResolver.openInputStream(uri)?.use { inputStream ->
                 val buffer: ByteArray = inputStream.readBytes()
                 viewModel.uploadContainer(buffer)

@@ -522,4 +522,6 @@
     <string name="no_network_connection">No network connection</string>
     <string name="download_all">Download All</string>
     <string name="sending_crash_report">Unchained just crashed.\nSending crash report…</string>
+    <string name="upload">Upload</string>
+    <string name="unsupported_file">File not supported</string>
 </resources>

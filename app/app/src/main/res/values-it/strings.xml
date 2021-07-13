@@ -311,4 +311,6 @@
     <string name="download_not_started_format">Errore nell\'inizializzazione del download di %s</string>
     <string name="download_all">Scarica Tutto</string>
     <string name="sending_crash_report">Unchained è appena andato in crash. Invio un rapporto…</string>
+    <string name="upload">Carica</string>
+    <string name="unsupported_file">File non supportato</string>
 </resources>

@@ -315,4 +315,6 @@
     <string name="download_not_started_format">Erreur d\'initialisation du téléchargement de %s</string>
     <string name="download_all">Télécharger Tout</string>
     <string name="sending_crash_report">Unchained vient de planter.\nJ\'envoie un rapport de panne…</string>
+    <string name="upload">Upload</string>
+    <string name="unsupported_file">Fichier non supporté</string>
 </resources>
