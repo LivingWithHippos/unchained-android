@@ -267,7 +267,7 @@
         <item quantity="other">%d torrents</item>
     </plurals>
     <plurals name="links_format">
-        <item quantity="one">%d link</item>
+        <item quantity="one">1 link</item>
         <item quantity="other">%d links</item>
     </plurals>
     <plurals name="plugins_version_old_format" >
@@ -286,7 +286,7 @@
     <string name="version">Versione</string>
     <string name="download_started">Download iniziato, controlla la barra delle notifiche</string>
     <string name="download_not_started">Errore durante l\'inizializzazione del download</string>
-    <string name="needs_download_permission">"Unchained ha bisogno dei permessi di accesso alla memoria per scaricare direttamente i file "</string>
+    <string name="needs_download_permission">Unchained ha bisogno dei permessi di accesso alla memoria per scaricare direttamente i file</string>
     <string name="test_connection">Testa la connessione</string>
     <string name="kodi_credentials_incomplete">Almeno l\'IP e la porta sono richiesti per Kodi</string>
     <string name="ip_address">Indirizzo IP</string>
@@ -297,7 +297,7 @@
     <string name="kodi_connection_error">Errore di connessione a Kodi</string>
     <string name="port_range_error">La porta deve essere compresa tra 1 e 65535</string>
     <string name="kodi_configure_credentials">Configura Kodi nelle impostazioni dell\'app</string>
-    <string name="enable_kodi_control">Leggi qui le istruzioni su come impostare Kodi per il controllo remoto (di solito in system->services->control). Poi completa i campi richiesti qui sotto</string>
+    <string name="enable_kodi_control">Leggi qui le istruzioni su come impostare Kodi per il controllo remoto (di solito in system-&gt;services-&gt;control). Poi completa i campi richiesti qui sotto</string>
     <string name="only_if_auth">Richiesto solo se l\'autenticazione è abilitata in Kodi</string>
     <string name="kodi_remote_control">Controllo remoto per Kodi</string>
     <string name="rd_status">Stato Real Debrid</string>
@@ -314,7 +314,8 @@
     <string name="no_network_connection">Nessuna connessione a internet</string>
     <string name="download_not_started_format">Errore nell\'inizializzazione del download di %s</string>
     <string name="download_all">Scarica Tutto</string>
-    <string name="sending_crash_report">Unchained è appena andato in crash. Invio un rapporto…</string>
+    <string name="sending_crash_report">Unchained è appena andato in crash.
+\nInvio un rapporto…</string>
     <string name="upload">Carica</string>
     <string name="unsupported_file">File non supportato</string>
     <string name="hoster">Hosting</string>
