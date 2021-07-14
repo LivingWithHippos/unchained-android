@@ -270,9 +270,8 @@
         <item quantity="many">%d torrents</item>
     </plurals>
     <plurals name="links_format" tools:ignore="UnusedQuantity">
-        <item quantity="one">%d lien</item>
+        <item quantity="one">1 lien</item>
         <item quantity="other">%d liens</item>
-        <item quantity="many">%d liens</item>
     </plurals>
     <plurals name="plugins_version_old_format" tools:ignore="UnusedQuantity">
         <item quantity="one">%d plugin a besoin d\'une mise à jour. Vérifier si une nouvelle version est disponible</item>
@@ -291,7 +290,7 @@
     <string name="version">Version</string>
     <string name="download_started">Le téléchargement a commencé, vérifiez la barre de notification</string>
     <string name="download_not_started">Erreur lors de l\'initialisation du téléchargement</string>
-    <string name="needs_download_permission">Unchained a besoin de l\'autorisation de stockage pour télécharger directement des fichiers.</string>
+    <string name="needs_download_permission">Unchained a besoin de l\'autorisation de stockage pour télécharger directement des fichiers</string>
     <string name="test_connection">Testez la connexion</string>
     <string name="kodi_credentials_incomplete">Au moins l\'IP et le port sont nécessaires pour Kodi</string>
     <string name="ip_address">Adresse IP</string>
@@ -302,8 +301,8 @@
     <string name="kodi_connection_error">Erreur de connexion à Kodi</string>
     <string name="port_range_error">Le port doit être compris entre 1 et 65535</string>
     <string name="kodi_configure_credentials">Veuillez configurer Kodi dans les paramètres de l\'application</string>
-    <string name="enable_kodi_control">Lisez ici les instructions sur la façon de configurer Kodi pour le contrôle à distance (généralement dans système->services->control). Après cela, remplissez les champs obligatoires ci-dessous</string>
-    <string name="only_if_auth">Requis uniquement si l\'authentification est activée dans Kodi.</string>
+    <string name="enable_kodi_control">Lisez ici les instructions sur la façon de configurer Kodi pour le contrôle à distance (généralement dans système-&gt;services-&gt;control). Après cela, remplissez les champs obligatoires ci-dessous</string>
+    <string name="only_if_auth">Requis uniquement si l\'authentification est activée dans Kodi</string>
     <string name="kodi_remote_control">Télécommande pour Kodi</string>
     <string name="rd_status">Statut de Real Debrid</string>
     <string name="show_kodi">Afficher le bouton de Kodi</string>
@@ -314,7 +313,7 @@
     <string name="file_size_filter_description">Taille minimale en Mo pour l\'option \"Seulement les gros fichiers\" dans l\'écran des dossiers</string>
     <string name="container">Container</string>
     <string name="error_parsing_container">Erreur d\'analyse du conteneur</string>
-    <string name="upload_file_description">Téléchargez un fichier .torrent ou un conteneur RSDF, CCF, CCF3 ou DLC depuis votre téléphone.</string>
+    <string name="upload_file_description">Téléchargez un fichier .torrent ou un conteneur RSDF, CCF, CCF3 ou DLC depuis votre téléphone</string>
     <string name="loading_container_file">Chargement du conteneur…</string>
     <string name="no_network_connection">Pas de connexion réseau</string>
     <string name="download_not_started_format">Erreur d\'initialisation du téléchargement de %s</string>
