@@ -672,9 +672,9 @@ class Parser(
          * 1.0: first version
          * 1.1: added skipping of empty rows in tables
          * 1.2: added table_indirect
-         * 2.0: use array for regexes
+         * 2.0: use array for all regexps
          */
-        const val PLUGIN_ENGINE_VERSION: Float = 1.2f
+        const val PLUGIN_ENGINE_VERSION: Float = 2.0f
     }
 }
 
