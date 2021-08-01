@@ -61,7 +61,10 @@
     "internal": {
       // "link" is the regex to parse the page link to parse further
       "link": {
-        // "regex_use" [OPTIONAL, default "first"] can have value "first" (stop on first regex of the regexps group that matches) or "all" (get all the regexps matches)
+        // "regex_use" [OPTIONAL, default "first"] can have value "first"
+        // (stops on the first regex of the regexps group that matches)
+        // or "all" (get all the regexps matches)
+        // if you have a single regex in the regexps array omit this or use single.
         "regex_use": "first",
         // "regexps" is the structure used to get matches from multiple regexps
         "regexps": [
@@ -131,6 +134,7 @@
             "group": 1,
             // is the link complete (www.xyz.com) or does it need to be filled (/hello.com -> www.xyz.com/hello.com)
             // valid values: append_url, append_other, complete. You'd generally use complete for magnets.
+            // default value is complete
             "slug_type": "append_url",
             // if slug_type is append_other this needs to be present
             "other": "https://other_url.com"

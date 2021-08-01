@@ -236,7 +236,7 @@ data class CustomRegex(
     @Json(name = "group")
     val group: Int = 1,
     @Json(name = "slug_type")
-    val slugType: String,
+    val slugType: String = "complete",
     @Json(name = "other")
     val other: String?
 ) : Parcelable {
