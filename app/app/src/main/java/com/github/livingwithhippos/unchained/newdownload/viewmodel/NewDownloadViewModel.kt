@@ -38,6 +38,7 @@ class NewDownloadViewModel @Inject constructor(
     val torrentLiveData = MutableLiveData<Event<UploadedTorrent>>()
     val networkExceptionLiveData = MutableLiveData<Event<UnchainedNetworkException>>()
     val containerLiveData = MutableLiveData<Event<Link>>()
+    val toastLiveData = MutableLiveData<Event<String>>()
 
     fun fetchUnrestrictedLink(link: String, password: String?, remote: Int? = null) {
         viewModelScope.launch {
@@ -126,6 +127,10 @@ class NewDownloadViewModel @Inject constructor(
         if (token.isBlank())
             throw IllegalArgumentException("Loaded token was null or empty: $token")
         return token
+    }
+
+    fun postMessage(message: String) {
+       toastLiveData.postEvent(message)
     }
 }
 
