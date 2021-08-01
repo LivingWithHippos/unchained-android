@@ -1,6 +1,6 @@
 {
-  "engine_version": 1.0,
-  "version": 1.0,
+  "engine_version": 2.0,
+  "version": 2.0,
   "url": "https://1337x.to",
   "name": "1337x",
   "description": "Parser for 1337x.to",
@@ -21,44 +21,77 @@
   "download": {
     "internal": {
       "link": {
-        "regex": "href=\"(/torrent/[^\"]+)",
-        "group": 1,
-        "slug_type": "append_url"
+        "regex_use": "first",
+        "regexps": [
+          {
+            "regex": "href=\"(/torrent/[^\"]+)",
+            "group": 1,
+            "slug_type": "append_url"
+          }
+        ]
       }
     },
     "regexes": {
       "name": {
-        "regex": "box-info-heading clearfix\"><h1>([^<]+)</h1>",
-        "group": 1,
-        "slug_type": "complete"
+        "regex_use": "first",
+        "regexps": [
+          {
+            "regex": "box-info-heading clearfix\"><h1>([^<]+)</h1>",
+            "group": 1,
+            "slug_type": "complete"
+          }
+        ]
       },
       "magnet": {
-        "regex": "href=\"(magnet:\\?xt=urn:btih:[^\"]+)",
-        "group": 1,
-        "slug_type": "complete"
+        "regex_use": "all",
+        "regexps": [
+          {
+            "regex": "href=\"(magnet:\\?xt=urn:btih:[^\"]+)",
+            "group": 1,
+            "slug_type": "complete"
+          }
+        ]
       },
       "seeders": {
-        "regex": "class=\"seeds\">\\s*(\\d+)\\s*</span>",
-        "group": 1,
-        "slug_type": "complete"
+        "regex_use": "first",
+        "regexps": [
+          {
+            "regex": "class=\"seeds\">\\s*(\\d+)\\s*</span>",
+            "group": 1,
+            "slug_type": "complete"
+          }
+        ]
       },
       "leechers": {
-        "regex": "class=\"leeches\">\\s*(\\d+)\\s*</span>",
-        "group": 1,
-        "slug_type": "complete"
+        "regex_use": "first",
+        "regexps": [
+          {
+            "regex": "class=\"leeches\">\\s*(\\d+)\\s*</span>",
+            "group": 1,
+            "slug_type": "complete"
+          }
+        ]
       },
       "size": {
-        "regex": "Total\\s*size</strong>\\s*<span>([^>]+)</span>",
-        "group": 1,
-        "slug_type": "complete"
+        "regex_use": "first",
+        "regexps": [
+          {
+            "regex": "Total\\s*size</strong>\\s*<span>([^>]+)</span>",
+            "group": 1,
+            "slug_type": "complete"
+          }
+        ]
       },
-      "torrents": [
-        {
-          "regex": "(https?://itorrents\\.org/torrent/[^\\.]+\\.torrent)",
-          "group": 1,
-          "slug_type": "complete"
-        }
-      ]
+      "torrents": {
+        "regex_use": "all",
+        "regexps": [
+          {
+            "regex": "(https?://itorrents\\.org/torrent/[^\\.]+\\.torrent)",
+            "group": 1,
+            "slug_type": "complete"
+          }
+        ]
+      }
     }
   }
 }

@@ -1,6 +1,6 @@
 {
-  "engine_version": 1.0,
-  "version": 1.1,
+  "engine_version": 2.0,
+  "version": 2.0,
   "url": "https://www.magnetdl.com",
   "name": "MagnetDL",
   "description": "Parser for MagnetDL",
@@ -26,34 +26,64 @@
     },
     "regexes": {
       "name": {
-        "regex": "title=\"([^\"]+)",
-        "group": 1,
-        "slug_type": "complete"
+        "regex_use": "first",
+        "regexps": [
+          {
+            "regex": "title=\"([^\"]+)",
+            "group": 1,
+            "slug_type": "complete"
+          }
+        ]
       },
       "seeders": {
-        "regex": "(\\d*)",
-        "group": 1,
-        "slug_type": "complete"
+        "regex_use": "first",
+        "regexps": [
+          {
+            "regex": "(\\d*)",
+            "group": 1,
+            "slug_type": "complete"
+          }
+        ]
       },
       "leechers": {
-        "regex": "(\\d*)",
-        "group": 1,
-        "slug_type": "complete"
+        "regex_use": "first",
+        "regexps": [
+          {
+            "regex": "(\\d*)",
+            "group": 1,
+            "slug_type": "complete"
+          }
+        ]
       },
       "size": {
-        "regex": "([\\w\\s.]*)",
-        "group": 1,
-        "slug_type": "complete"
+        "regex_use": "first",
+        "regexps": [
+          {
+            "regex": "([\\w\\s.]*)",
+            "group": 1,
+            "slug_type": "complete"
+          }
+        ]
       },
       "magnet": {
-        "regex": "href=\"(magnet:\\?xt=urn:btih:[^\"]+)",
-        "group": 1,
-        "slug_type": "complete"
+        "regex_use": "all",
+        "regexps": [
+          {
+            "regex": "href=\"(magnet:\\?xt=urn:btih:[^\"]+)",
+            "group": 1,
+            "slug_type": "complete"
+          }
+        ]
       },
       "details": {
-        "regex": "href=\"(/file/[^\"]+)",
-        "group": 1,
-        "slug_type": "append_url"
+        "regex_use": "first",
+        "regexps": [
+          {
+            "regex": "href=\"(/file/[^\"]+)",
+            "group": 1,
+            "slug_type": "append_url"
+          }
+        ]
       }
     }
   }

@@ -202,7 +202,7 @@
         ]
       },
       // this is used to parse hosting sites such as mega, rapidgator etc. No point in adding
-      // sites unsupported by real debrid so only put here those.
+      // sites unsupported by real debrid so only put here those (https://real-debrid.com/compare).
       "hosting": {
         "regex_use": "all",
         "regexps": [

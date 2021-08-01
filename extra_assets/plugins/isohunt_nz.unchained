@@ -1,6 +1,6 @@
 {
-  "engine_version": 1.0,
-  "version": 1.0,
+  "engine_version": 2.0,
+  "version": 2.0,
   "url": "https://isohunt.nz",
   "name": "Isohunt",
   "description": "Parser for my https://isohunt.nz",
@@ -21,36 +21,66 @@
   "download": {
     "internal": {
       "link": {
-        "regex":   "href=\"(/torrent_details/[^\"]+)",
-        "group": 1,
-        "slug_type": "append_url"
+        "regex_use": "all",
+        "regexps": [
+          {
+            "regex": "href=\"(/torrent_details/[^\"]+)",
+            "group": 1,
+            "slug_type": "append_url"
+          }
+        ]
       }
     },
     "regexes": {
       "name": {
-        "regex":  "href=\"/torrent_details/[^>]+>([^<]+)",
-        "group": 1,
-        "slug_type": "complete"
+        "regex_use": "first",
+        "regexps": [
+          {
+            "regex": "href=\"/torrent_details/[^>]+>([^<]+)",
+            "group": 1,
+            "slug_type": "complete"
+          }
+        ]
       },
       "magnet": {
-        "regex": "https://mylink\\.cx/\\?url=(magnet[^\"]+)",
-        "group": 1,
-        "slug_type": "complete"
+        "regex_use": "first",
+        "regexps": [
+          {
+            "regex": "https://mylink\\.cx/\\?url=(magnet[^\"]+)",
+            "group": 1,
+            "slug_type": "complete"
+          }
+        ]
       },
       "seeders": {
-        "regex": "class=\"seeds\">\\s*(\\d+)\\s*</span>",
-        "group": 1,
-        "slug_type": "complete"
+        "regex_use": "first",
+        "regexps": [
+          {
+            "regex": "class=\"seeds\">\\s*(\\d+)\\s*</span>",
+            "group": 1,
+            "slug_type": "complete"
+          }
+        ]
       },
       "size": {
-        "regex": "<p class=\"text-lg mb2\">Size&nbsp;([^&]+)&nbsp;",
-        "group": 1,
-        "slug_type": "complete"
+        "regex_use": "first",
+        "regexps": [
+          {
+            "regex": "<p class=\"text-lg mb2\">Size&nbsp;([^&]+)&nbsp;",
+            "group": 1,
+            "slug_type": "complete"
+          }
+        ]
       },
       "leechers": {
-        "regex": "class=\"leechs\">\\s*(\\d+)\\s*</span>",
-        "group": 1,
-        "slug_type": "complete"
+        "regex_use": "first",
+        "regexps": [
+          {
+            "regex": "class=\"leechs\">\\s*(\\d+)\\s*</span>",
+            "group": 1,
+            "slug_type": "complete"
+          }
+        ]
       }
     }
   }
