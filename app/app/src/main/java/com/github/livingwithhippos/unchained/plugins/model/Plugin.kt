@@ -132,7 +132,7 @@ data class PluginSearch(
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString(),
-        parcel.readString() ?: "",
+        parcel.readString()!!,
         parcel.readValue(Int::class.java.classLoader) as? Int
     )
 
@@ -198,6 +198,38 @@ data class PluginDownload(
 }
 
 @JsonClass(generateAdapter = true)
+data class RegexpsGroup(
+    @Json(name = "regex_use")
+    val regexUse: String = "first",
+    @Json(name = "regexps")
+    val regexps: List<CustomRegex>
+) : Parcelable {
+    constructor(parcel: Parcel) : this(
+        parcel.readString()!!,
+        parcel.createTypedArrayList(CustomRegex)!!
+    )
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(regexUse)
+        parcel.writeTypedList(regexps)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<RegexpsGroup> {
+        override fun createFromParcel(parcel: Parcel): RegexpsGroup {
+            return RegexpsGroup(parcel)
+        }
+
+        override fun newArray(size: Int): Array<RegexpsGroup?> {
+            return arrayOfNulls(size)
+        }
+    }
+}
+
+@JsonClass(generateAdapter = true)
 data class CustomRegex(
     @Json(name = "regex")
     val regex: String,
@@ -240,10 +272,10 @@ data class CustomRegex(
 @JsonClass(generateAdapter = true)
 data class InternalParser(
     @Json(name = "link")
-    val link: CustomRegex
+    val link: RegexpsGroup
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
-        parcel.readParcelable(CustomRegex::class.java.classLoader)!!
+        parcel.readParcelable(RegexpsGroup::class.java.classLoader)!!
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -268,8 +300,30 @@ data class InternalParser(
 @JsonClass(generateAdapter = true)
 data class Internal(
     @Json(name = "link")
-    val link: CustomRegex
-)
+    val link: RegexpsGroup
+): Parcelable {
+    constructor(parcel: Parcel) : this(
+        parcel.readParcelable(RegexpsGroup::class.java.classLoader)!!
+    )
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeParcelable(link, flags)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<Internal> {
+        override fun createFromParcel(parcel: Parcel): Internal {
+            return Internal(parcel)
+        }
+
+        override fun newArray(size: Int): Array<Internal?> {
+            return arrayOfNulls(size)
+        }
+    }
+}
 
 @JsonClass(generateAdapter = true)
 data class TableParser(
@@ -310,29 +364,30 @@ data class TableParser(
 @JsonClass(generateAdapter = true)
 data class PluginRegexes(
     @Json(name = "name")
-    val nameRegex: CustomRegex,
+    val nameRegex: RegexpsGroup,
     @Json(name = "seeders")
-    val seedersRegex: CustomRegex?,
+    val seedersRegex: RegexpsGroup?,
     @Json(name = "leechers")
-    val leechersRegex: CustomRegex?,
+    val leechersRegex: RegexpsGroup?,
     @Json(name = "size")
-    val sizeRegex: CustomRegex?,
+    val sizeRegex: RegexpsGroup?,
     @Json(name = "magnet")
-    val magnetRegex: CustomRegex?,
+    val magnetRegex: RegexpsGroup?,
     @Json(name = "torrents")
-    val torrentRegexes: List<CustomRegex>?,
+    val torrentRegexes: RegexpsGroup?,
     @Json(name = "details")
-    val detailsRegex: CustomRegex?
+    val detailsRegex: RegexpsGroup?
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
-        parcel.readParcelable(CustomRegex::class.java.classLoader)!!,
-        parcel.readParcelable(CustomRegex::class.java.classLoader),
-        parcel.readParcelable(CustomRegex::class.java.classLoader),
-        parcel.readParcelable(CustomRegex::class.java.classLoader),
-        parcel.readParcelable(CustomRegex::class.java.classLoader),
-        parcel.createTypedArrayList(CustomRegex),
-        parcel.readParcelable(CustomRegex::class.java.classLoader)
-    )
+        parcel.readParcelable(RegexpsGroup::class.java.classLoader)!!,
+        parcel.readParcelable(RegexpsGroup::class.java.classLoader),
+        parcel.readParcelable(RegexpsGroup::class.java.classLoader),
+        parcel.readParcelable(RegexpsGroup::class.java.classLoader),
+        parcel.readParcelable(RegexpsGroup::class.java.classLoader),
+        parcel.readParcelable(RegexpsGroup::class.java.classLoader),
+        parcel.readParcelable(RegexpsGroup::class.java.classLoader)
+    ) {
+    }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeParcelable(nameRegex, flags)
@@ -340,7 +395,7 @@ data class PluginRegexes(
         parcel.writeParcelable(leechersRegex, flags)
         parcel.writeParcelable(sizeRegex, flags)
         parcel.writeParcelable(magnetRegex, flags)
-        parcel.writeTypedList(torrentRegexes)
+        parcel.writeParcelable(torrentRegexes, flags)
         parcel.writeParcelable(detailsRegex, flags)
     }
 
@@ -358,6 +413,7 @@ data class PluginRegexes(
         }
     }
 }
+
 
 @JsonClass(generateAdapter = true)
 data class Columns(

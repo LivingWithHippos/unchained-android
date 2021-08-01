@@ -13,38 +13,62 @@
   "download": {
     "internal": {
       "link": {
-        "regex": "href=\"(details\\.php\\?torrentId=\\d+)\"",
-        "group": 1,
-        "slug_type": "append_url"
+        "regexps": [
+          {
+            "regex": "href=\"(details\\.php\\?torrentId=\\d+)\"",
+            "group": 1,
+            "slug_type": "append_url"
+          }
+        ]
       }
     },
     "regexes": {
       "name": {
-        "regex": "<title>bt\\.etree\\.org \\| Community Tracker - Details for torrent ([^>]+)</title>",
-        "group": 1,
-        "slug_type": "complete"
+        "regexps": [
+          {
+            "regex": "<title>bt\\.etree\\.org \\| Community Tracker - Details for torrent ([^>]+)</title>",
+            "group": 1,
+            "slug_type": "complete"
+          }
+        ]
       },
       "seeders": {
-        "regex": "(\\d+)\\s*seeders",
-        "group": 1,
-        "slug_type": "complete"
+        "regexps": [
+          {
+            "regex": "(\\d+)\\s*seeders",
+            "group": 1,
+            "slug_type": "complete"
+          }
+        ]
       },
       "leechers": {
-        "regex": "(\\d+)\\s*leechers",
-        "group": 1,
-        "slug_type": "complete"
+        "regexps": [
+          {
+            "regex": "(\\d+)\\s*leechers",
+            "group": 1,
+            "slug_type": "complete"
+          }
+        ]
       },
       "size": {
-        "regex": "Size</td><td valign=\"top\">([^(]+)",
-        "group": 1,
-        "slug_type": "complete"
+        "regexps": [
+          {
+            "regex": "Size</td><td valign=\"top\">([^(]+)",
+            "group": 1,
+            "slug_type": "complete"
+          }
+        ]
       },
-      "torrents": [
-        {
-          "regex": "href=\"(download\\.php/\\d+/[^\"]+)\">",
-          "group": 1,
-          "slug_type": "append_url"
-        }]
+      "torrents": {
+        "regex_use": "all",
+        "regexps": [
+          {
+            "regex": "href=\"(download\\.php/\\d+/[^\"]+)\">",
+            "group": 1,
+            "slug_type": "append_url"
+          }
+        ]
+      }
     }
   }
 }
