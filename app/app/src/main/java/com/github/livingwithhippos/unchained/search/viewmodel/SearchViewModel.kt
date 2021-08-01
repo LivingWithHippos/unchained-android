@@ -33,7 +33,7 @@ class SearchViewModel @Inject constructor(
     // used to simulate a debounce effect while typing on the search bar
     private var job: Job? = null
 
-    val pluginLiveData = MutableLiveData<Pair<List<Plugin>,Int>>()
+    val pluginLiveData = MutableLiveData<Pair<List<Plugin>, Int>>()
     val parsingLiveData = MutableLiveData<ParserResult>()
 
     fun completeSearch(

@@ -186,7 +186,6 @@ class Parser(
                                 if (!details.isNullOrEmpty())
                                     return@forEach
                             }
-
                         } catch (e: IndexOutOfBoundsException) {
                             Timber.d("skipping row")
                         }
@@ -423,26 +422,32 @@ class Parser(
                             baseUrl
                         )
                     if (tableLink.columns.magnetColumn != null)
-                        magnets.addAll( parseList(
-                            regexes.magnetRegex,
-                            columns[tableLink.columns.magnetColumn].html(),
-                            baseUrl
-                        ).map {
-                            // this function cleans links from html codes such as %3A, %3F etc.
-                            it.removeWebFormatting()
-                        })
+                        magnets.addAll(
+                            parseList(
+                                regexes.magnetRegex,
+                                columns[tableLink.columns.magnetColumn].html(),
+                                baseUrl
+                            ).map {
+                                // this function cleans links from html codes such as %3A, %3F etc.
+                                it.removeWebFormatting()
+                            }
+                        )
                     if (tableLink.columns.torrentColumn != null)
-                        torrents.addAll(parseList(
-                            regexes.torrentRegexes,
-                            columns[tableLink.columns.torrentColumn].html(),
-                            baseUrl
-                        ))
+                        torrents.addAll(
+                            parseList(
+                                regexes.torrentRegexes,
+                                columns[tableLink.columns.torrentColumn].html(),
+                                baseUrl
+                            )
+                        )
                     if (tableLink.columns.hostingColumn != null)
-                        hosting.addAll(parseList(
-                            regexes.hostingRegexes,
-                            columns[tableLink.columns.hostingColumn].html(),
-                            baseUrl
-                        ))
+                        hosting.addAll(
+                            parseList(
+                                regexes.hostingRegexes,
+                                columns[tableLink.columns.hostingColumn].html(),
+                                baseUrl
+                            )
+                        )
                 } catch (e: IndexOutOfBoundsException) {
                     Timber.d("skipping row")
                 }
@@ -617,7 +622,6 @@ class Parser(
 
         return results.toList()
     }
-
 
     private fun parseList(
         regexpsGroup: RegexpsGroup?,
