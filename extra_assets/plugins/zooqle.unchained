@@ -1,6 +1,6 @@
 {
-  "engine_version": 1.0,
-  "version": 1.0,
+  "engine_version": 2.0,
+  "version": 2.0,
   "url": "https://zooqle.com",
   "name": "Zooqle",
   "description": "Parser for zooqle.com",
@@ -23,36 +23,66 @@
         "details_column": 1
       }
     },
-    "regexes" : {
+    "regexes": {
       "name": {
-        "regex": "<a[^>]+>(.*)(?<!</a>)</a>",
-        "group": 1,
-        "slug_type": "complete"
+        "regex_use": "first",
+        "regexps": [
+          {
+            "regex": "<a[^>]+>(.*)(?<!</a>)</a>",
+            "group": 1,
+            "slug_type": "complete"
+          }
+        ]
       },
       "magnet": {
-        "regex": "href=\"(magnet:\\?xt=urn:btih:[^\"]+)",
-        "group": 1,
-        "slug_type": "complete"
+        "regex_use": "all",
+        "regexps": [
+          {
+            "regex": "href=\"(magnet:\\?xt=urn:btih:[^\"]+)",
+            "group": 1,
+            "slug_type": "complete"
+          }
+        ]
       },
       "seeders": {
-        "regex": "Seeders:\\s*(\\d+)",
-        "group": 1,
-        "slug_type": "complete"
+        "regex_use": "first",
+        "regexps": [
+          {
+            "regex": "Seeders:\\s*(\\d+)",
+            "group": 1,
+            "slug_type": "complete"
+          }
+        ]
       },
       "leechers": {
-        "regex": "Leechers:\\s*(\\d+)",
-        "group": 1,
-        "slug_type": "complete"
+        "regex_use": "first",
+        "regexps": [
+          {
+            "regex": "Leechers:\\s*(\\d+)",
+            "group": 1,
+            "slug_type": "complete"
+          }
+        ]
       },
       "size": {
-        "regex": "([\\d.]+\\s*[A-Za-z]+)\\s*</div>",
-        "group": 1,
-        "slug_type": "complete"
+        "regex_use": "first",
+        "regexps": [
+          {
+            "regex": "([\\d.]+\\s*[A-Za-z]+)\\s*</div>",
+            "group": 1,
+            "slug_type": "complete"
+          }
+        ]
       },
       "details": {
-        "regex": "href=\"(/[^\"]+)",
-        "group": 1,
-        "slug_type": "append_url"
+        "regex_use": "first",
+        "regexps": [
+          {
+            "regex": "href=\"(/[^\"]+)",
+            "group": 1,
+            "slug_type": "append_url"
+          }
+        ]
       }
     }
   }

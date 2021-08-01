@@ -60,6 +60,7 @@ class UnchainedApplication : Application() {
     override fun attachBaseContext(base: Context) {
         super.attachBaseContext(base)
 
+        // todo: duplicate file for release mode without this and use debugImplementation instead of implementation to avoid packing acra in release file
         // add error report for debug builds
         if (BuildConfig.DEBUG) {
             initAcra {

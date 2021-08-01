@@ -22,7 +22,7 @@ class PluginRepository @Inject constructor(
         .build()
         .adapter(Plugin::class.java)
 
-    suspend fun getPlugins(context: Context): List<Plugin> = withContext(Dispatchers.IO) {
+    suspend fun getPlugins(context: Context): Pair<List<Plugin>, Int> = withContext(Dispatchers.IO) {
 
         /**
          * get local .json and .unchained files from the search_plugin folder in the assets folder
@@ -31,12 +31,16 @@ class PluginRepository @Inject constructor(
         val unchainedFiles = assetsManager.searchFiles(TYPE_UNCHAINED, PLUGIN_FOLDER)
         val plugins = mutableListOf<Plugin>()
 
+        var errors = 0
+
         for (json in jsonFiles) {
 
             val plugin: Plugin? = getPluginFromPath(context, json)
 
             if (plugin != null)
                 plugins.add(plugin)
+            else
+                errors++
         }
 
         for (json in unchainedFiles) {
@@ -65,7 +69,7 @@ class PluginRepository @Inject constructor(
             }
         }
 
-        plugins
+        Pair(plugins, errors)
     }
 
     private fun getPluginFromJSON(json: String): Plugin? {

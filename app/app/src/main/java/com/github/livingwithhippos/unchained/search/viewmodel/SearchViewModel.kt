@@ -33,7 +33,7 @@ class SearchViewModel @Inject constructor(
     // used to simulate a debounce effect while typing on the search bar
     private var job: Job? = null
 
-    val pluginLiveData = MutableLiveData<List<Plugin>>()
+    val pluginLiveData = MutableLiveData<Pair<List<Plugin>, Int>>()
     val parsingLiveData = MutableLiveData<ParserResult>()
 
     fun completeSearch(
@@ -43,7 +43,7 @@ class SearchViewModel @Inject constructor(
         page: Int = 1
     ): LiveData<ParserResult> {
 
-        val plugin = pluginLiveData.value?.firstOrNull { it.name == pluginName }
+        val plugin = pluginLiveData.value?.first?.firstOrNull { it.name == pluginName }
         if (plugin != null) {
             val results = mutableListOf<ScrapedItem>()
             // empty saved results on new searches
@@ -74,9 +74,10 @@ class SearchViewModel @Inject constructor(
 
     fun fetchPlugins(context: Context) {
         viewModelScope.launch {
-            val plugins = pluginRepository.getPlugins(context)
-            pluginLiveData.postValue(plugins)
-            setPlugins(plugins)
+            val pluginsResult: Pair<List<Plugin>, Int> = pluginRepository.getPlugins(context)
+            // todo: what
+            pluginLiveData.postValue(pluginsResult)
+            setPlugins(pluginsResult.first)
         }
     }
 

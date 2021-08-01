@@ -50,6 +50,9 @@ class SearchItemFragment : UnchainedFragment(), LinkItemListener {
         item.torrents.forEach {
             links.add(LinkItem(getString(R.string.torrent), it))
         }
+        item.hosting.forEach {
+            links.add(LinkItem(getString(R.string.hoster), it))
+        }
         adapter.submitList(links)
     }
 

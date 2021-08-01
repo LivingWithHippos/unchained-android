@@ -270,6 +270,10 @@
         <item quantity="one">%d link</item>
         <item quantity="other">%d links</item>
     </plurals>
+    <plurals name="plugins_version_old_format" >
+        <item quantity="one">1 plugin ha bisogno di un aggiornamento. Controlla se ha una nuova versione</item>
+        <item quantity="other">%d plugin hanno bisogno di un aggiornamento. Controlla se hanno una nuova versione</item>
+    </plurals>
     <string name="size_format">dimensione: %s</string>
     <string name="leechers_string_format">leecher/s: %s</string>
     <string name="delete_all">Cancella tutto</string>
@@ -313,4 +317,5 @@
     <string name="sending_crash_report">Unchained è appena andato in crash. Invio un rapporto…</string>
     <string name="upload">Carica</string>
     <string name="unsupported_file">File non supportato</string>
+    <string name="hoster">Hosting</string>
 </resources>

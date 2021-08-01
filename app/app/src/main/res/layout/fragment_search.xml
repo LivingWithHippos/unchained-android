@@ -4,8 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <import type="android.view.View" />
     </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/rootLayout"
         android:layout_width="match_parent"
@@ -20,27 +22,25 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
+            android:focusable="true"
             android:hint="@string/search"
             android:importantForAutofill="no"
-            app:endIconMode="custom"
             app:endIconDrawable="@drawable/icon_search"
-            android:focusable="true"
+            app:endIconMode="custom"
             app:layout_constraintBottom_toTopOf="@+id/pluginPicker"
             app:layout_constraintEnd_toStartOf="@id/flLoad"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_chainStyle="packed"
-            >
+            app:layout_constraintVertical_chainStyle="packed">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/tiSearch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:singleLine="true"
                 android:imeOptions="actionSearch"
-                />
+                android:singleLine="true" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -48,16 +48,17 @@
             android:id="@+id/flLoad"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
+            android:layout_marginStart="5dp"
+            app:layout_constraintBottom_toBottomOf="@id/tfSearch"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/tfSearch"
-            app:layout_constraintTop_toTopOf="@id/tfSearch"
-            app:layout_constraintBottom_toBottomOf="@id/tfSearch">
+            app:layout_constraintTop_toTopOf="@id/tfSearch">
 
             <ImageButton
                 android:id="@+id/sortingButton"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
+                android:layout_gravity="center"
                 android:background="@drawable/icon_sort_default"
                 android:backgroundTint="?attr/colorOnSurface"
                 android:contentDescription="@string/sort"
@@ -66,36 +67,36 @@
                 app:layout_constraintStart_toEndOf="@+id/tfFilter"
                 app:layout_constraintTop_toTopOf="@id/tfFilter" />
 
-        <com.google.android.material.progressindicator.CircularProgressIndicator
-            android:id="@+id/loadingCircle"
-            style="@style/Widget.MaterialComponents.CircularProgressIndicator"
-            app:indicatorColor="?attr/colorPrimary"
-            android:indeterminate="true"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            app:trackCornerRadius="20dp"
-            android:visibility="invisible"/>
+            <com.google.android.material.progressindicator.CircularProgressIndicator
+                android:id="@+id/loadingCircle"
+                style="@style/Widget.MaterialComponents.CircularProgressIndicator"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:indeterminate="true"
+                android:visibility="invisible"
+                app:indicatorColor="?attr/colorPrimary"
+                app:trackCornerRadius="20dp" />
 
         </FrameLayout>
+
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/pluginPicker"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="5dp"
             android:layout_marginTop="5dp"
-            app:layout_constraintTop_toBottomOf="@id/tfSearch"
+            android:layout_marginEnd="5dp"
             app:layout_constraintBottom_toTopOf="@id/llList"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@id/categoryPicker"
-            >
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tfSearch">
 
             <AutoCompleteTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="none"
                 android:hint="@string/plugin"
-                />
+                android:inputType="none" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -105,18 +106,16 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
-            app:layout_constraintTop_toTopOf="@id/pluginPicker"
             app:layout_constraintBottom_toBottomOf="@id/pluginPicker"
-            app:layout_constraintStart_toEndOf="@id/pluginPicker"
             app:layout_constraintEnd_toEndOf="parent"
-            >
+            app:layout_constraintStart_toEndOf="@id/pluginPicker"
+            app:layout_constraintTop_toTopOf="@id/pluginPicker">
 
             <AutoCompleteTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="none"
                 android:hint="@string/category"
-                />
+                android:inputType="none" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -124,24 +123,23 @@
             android:id="@+id/llList"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:orientation="vertical"
             android:layout_marginTop="5dp"
-            app:layout_constraintTop_toBottomOf="@id/pluginPicker"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" >
+            app:layout_constraintTop_toBottomOf="@id/pluginPicker">
 
             <TextView
                 android:id="@+id/tvError"
                 style="@style/TextAppearance.UnchainedTheme.Overline"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="20dp"
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="5dp"
+                android:layout_marginEnd="20dp"
                 android:text="@string/error"
-                android:visibility="gone"
-                />
+                android:visibility="gone" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvSearchList"
@@ -150,7 +148,7 @@
                 android:layout_gravity="center_horizontal"
                 android:scrollbars="vertical"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:listitem="@layout/item_list_download"/>
+                tools:listitem="@layout/item_list_download" />
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

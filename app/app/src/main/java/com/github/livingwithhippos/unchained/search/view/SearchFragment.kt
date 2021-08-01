@@ -55,7 +55,12 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
             ArrayAdapter(requireContext(), R.layout.plugin_list_item, arrayListOf<String>())
         (binding.pluginPicker.editText as? AutoCompleteTextView)?.setAdapter(pluginAdapter)
 
-        viewModel.pluginLiveData.observe(viewLifecycleOwner) { plugins ->
+        viewModel.pluginLiveData.observe(viewLifecycleOwner) { parsedPlugins ->
+
+            val plugins = parsedPlugins.first
+            if (parsedPlugins.second > 0)
+                requireContext().showToast(resources.getQuantityString(R.plurals.plugins_version_old_format, parsedPlugins.second, parsedPlugins.second))
+
             pluginAdapter.clear()
             pluginAdapter.addAll(plugins.map { it.name })
 
@@ -108,11 +113,11 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
         binding.sortingButton.setOnClickListener {
             // every click changes to the next state
             val newTag = getNextSortingTag(it.tag as String)
-            val drawableID = getSortingDrawable(newTag)
+            val currentDrawableID = getSortingDrawable(newTag)
             binding.sortingButton.tag = newTag
             binding.sortingButton.background = ResourcesCompat.getDrawable(
                 resources,
-                drawableID,
+                currentDrawableID,
                 requireContext().theme
             )
             submitSortedList(newTag, adapter, viewModel.getSearchResults())

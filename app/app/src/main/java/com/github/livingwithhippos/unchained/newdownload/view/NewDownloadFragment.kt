@@ -1,5 +1,6 @@
 package com.github.livingwithhippos.unchained.newdownload.view
 
+import android.annotation.SuppressLint
 import android.app.DownloadManager
 import android.content.ContentResolver.SCHEME_CONTENT
 import android.content.ContentResolver.SCHEME_FILE
@@ -10,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.viewModels
@@ -41,7 +43,6 @@ import com.github.livingwithhippos.unchained.utilities.extension.isContainerWebL
 import com.github.livingwithhippos.unchained.utilities.extension.isMagnet
 import com.github.livingwithhippos.unchained.utilities.extension.isTorrent
 import com.github.livingwithhippos.unchained.utilities.extension.isWebUrl
-import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import java.io.IOException
@@ -134,7 +135,7 @@ class NewDownloadFragment : UnchainedFragment() {
                         findNavController().navigate(action)
                     }
                     is Link.RetrievalError -> {
-                        context?.showToast(R.string.error_parsing_container)
+                        viewModel.postMessage(getString(R.string.error_parsing_container))
                     }
                     else -> {
                     }
@@ -167,21 +168,23 @@ class NewDownloadFragment : UnchainedFragment() {
                         val errorMessage = requireContext().getApiErrorMessage(errorCode)
                         // manage the api error result
                         when (exception.errorCode) {
-                            -1, 1 -> context?.showToast(errorMessage)
+                            -1, 1 -> {
+                                viewModel.postMessage(errorMessage)
+                            }
                             // since here we monitor new downloads, use a less generic, custom message
-                            2 -> context?.showToast(R.string.unsupported_hoster)
-                            in 3..7 -> context?.showToast(errorMessage)
+                            2 -> viewModel.postMessage(getString(R.string.unsupported_hoster))
+                            in 3..7 -> viewModel.postMessage(errorMessage)
                             8 -> {
+                                viewModel.postMessage(getString(R.string.refreshing_token))
                                 // try refreshing the token
                                 activityViewModel.setBadToken()
-                                context?.showToast(R.string.refreshing_token)
                             }
                             in 9..15 -> {
-                                context?.showToast(errorMessage)
+                                viewModel.postMessage(errorMessage)
                                 activityViewModel.setUnauthenticated()
                             }
                             else -> {
-                                context?.showToast(errorMessage)
+                                viewModel.postMessage(errorMessage)
                             }
                         }
                     }
@@ -190,9 +193,22 @@ class NewDownloadFragment : UnchainedFragment() {
                     }
                     is NetworkError -> {
                         // todo: alert the user according to the different network error
-                        context?.showToast(R.string.network_error)
+                        viewModel.postMessage(getString(R.string.network_error))
                     }
                 }
+            }
+        )
+
+
+        @SuppressLint("ShowToast")
+        val currentToast: Toast = Toast.makeText(requireContext(), "", Toast.LENGTH_SHORT)
+
+        viewModel.toastLiveData.observe(
+            viewLifecycleOwner,
+            EventObserver {
+                currentToast.cancel()
+                currentToast.setText(it)
+                currentToast.show()
             }
         )
     }
@@ -207,7 +223,7 @@ class NewDownloadFragment : UnchainedFragment() {
                 when {
                     // this must be before the link.isWebUrl() check
                     link.isTorrent() -> {
-                        context?.showToast(R.string.loading_torrent)
+                        viewModel.postMessage(getString(R.string.loading_torrent))
                         enableButtons(binding, false)
                         /**
                          * DownloadManager does not support insecure (https) links anymore
@@ -221,7 +237,7 @@ class NewDownloadFragment : UnchainedFragment() {
                         downloadTorrent(Uri.parse(secureLink))
                     }
                     link.isWebUrl() -> {
-                        context?.showToast(R.string.loading_host_link)
+                        viewModel.postMessage(getString(R.string.loading_host_link))
                         enableButtons(binding, false)
 
                         var password: String? = binding.tePassword.text.toString()
@@ -239,22 +255,22 @@ class NewDownloadFragment : UnchainedFragment() {
                         )
                     }
                     link.isMagnet() -> {
-                        context?.showToast(R.string.loading_magnet_link)
+                        viewModel.postMessage(getString(R.string.loading_magnet_link))
                         enableButtons(binding, false)
                         viewModel.fetchAddedMagnet(link)
                     }
                     link.isBlank() -> {
-                        context?.showToast(R.string.please_insert_url)
+                        viewModel.postMessage(getString(R.string.please_insert_url))
                     }
                     link.isContainerWebLink() -> {
                         viewModel.unrestrictContainer(link)
                     }
                     else -> {
-                        context?.showToast(R.string.invalid_url)
+                        viewModel.postMessage(getString(R.string.invalid_url))
                     }
                 }
             } else
-                context?.showToast(R.string.premium_needed)
+                viewModel.postMessage(getString(R.string.premium_needed))
         }
 
         binding.bPasteLink.setOnClickListener {
@@ -263,7 +279,7 @@ class NewDownloadFragment : UnchainedFragment() {
             if (pasteText.isWebUrl() || pasteText.isMagnet() || pasteText.isTorrent())
                 binding.tiLink.setText(pasteText, TextView.BufferType.EDITABLE)
             else
-                context?.showToast(R.string.invalid_url)
+                viewModel.postMessage(getString(R.string.invalid_url))
         }
 
         binding.bPastePassword.setOnClickListener {
@@ -281,7 +297,7 @@ class NewDownloadFragment : UnchainedFragment() {
                         if (CONTAINER_EXTENSION_PATTERN.toRegex().containsMatchIn(fileName))
                             loadContainer(binding, uri)
                         else
-                            context?.showToast(R.string.unsupported_file)
+                            viewModel.postMessage(getString(R.string.unsupported_file))
                     }
                 }
                 /*
@@ -297,7 +313,7 @@ class NewDownloadFragment : UnchainedFragment() {
             if (authState == AuthenticationState.AUTHENTICATED)
                 filePicker.launch("*/*")
             else
-                context?.showToast(R.string.premium_needed)
+                viewModel.postMessage(getString(R.string.premium_needed))
         }
     }
 
@@ -306,7 +322,7 @@ class NewDownloadFragment : UnchainedFragment() {
         args.externalUri?.let { link ->
             when (link.scheme) {
                 SCHEME_MAGNET -> {
-                    context?.showToast(R.string.loading_magnet_link)
+                    viewModel.postMessage(getString(R.string.loading_magnet_link))
                     // set as text input text
                     binding.tiLink.setText(
                         link.toString(),
@@ -328,9 +344,6 @@ class NewDownloadFragment : UnchainedFragment() {
                     }
                 }
                 SCHEME_HTTP, SCHEME_HTTPS -> {
-                    if (!link.toString().endsWith(".torrent", ignoreCase = true))
-                        context?.showToast(R.string.loading_host_link)
-
                     // set as text input text
                     binding.tiLink.setText(
                         link.toString(),
@@ -350,7 +363,7 @@ class NewDownloadFragment : UnchainedFragment() {
     private fun loadTorrent(binding: NewDownloadFragmentBinding, uri: Uri) {
         // https://developer.android.com/training/data-storage/shared/documents-files#open
         try {
-            context?.showToast(R.string.loading_torrent_file)
+            viewModel.postMessage(getString(R.string.loading_torrent_file))
             requireContext().contentResolver.openInputStream(uri)?.use { inputStream ->
                 val buffer: ByteArray = inputStream.readBytes()
                 viewModel.fetchUploadedTorrent(buffer)
@@ -368,7 +381,7 @@ class NewDownloadFragment : UnchainedFragment() {
                 }
             }
             enableButtons(binding, true)
-            requireContext().showToast(R.string.error_loading_torrent)
+            viewModel.postMessage(getString(R.string.error_loading_torrent))
         }
     }
 
@@ -379,7 +392,7 @@ class NewDownloadFragment : UnchainedFragment() {
 
     private fun loadContainer(binding: NewDownloadFragmentBinding, uri: Uri) {
         try {
-            context?.showToast(R.string.loading_container_file)
+            viewModel.postMessage(getString(R.string.loading_container_file))
             requireContext().contentResolver.openInputStream(uri)?.use { inputStream ->
                 val buffer: ByteArray = inputStream.readBytes()
                 viewModel.uploadContainer(buffer)
@@ -397,7 +410,7 @@ class NewDownloadFragment : UnchainedFragment() {
                 }
             }
             enableButtons(binding, true)
-            requireContext().showToast(R.string.error_loading_file)
+            viewModel.postMessage(getString(R.string.error_loading_file))
         }
     }
 
@@ -416,12 +429,10 @@ class NewDownloadFragment : UnchainedFragment() {
             )
             when (queuedDownload) {
                 is EitherResult.Failure -> {
-                    requireContext().showToast(
-                        getString(
-                            R.string.download_not_started_format,
-                            torrentName
-                        )
-                    )
+                    viewModel.postMessage(getString(
+                        R.string.download_not_started_format,
+                        torrentName
+                    ))
                 }
                 is EitherResult.Success -> {
                     activityViewModel.setDownload(queuedDownload.success)
