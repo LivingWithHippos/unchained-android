@@ -113,11 +113,11 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
         binding.sortingButton.setOnClickListener {
             // every click changes to the next state
             val newTag = getNextSortingTag(it.tag as String)
-            val drawableID = getSortingDrawable(newTag)
+            val currentDrawableID = getSortingDrawable(newTag)
             binding.sortingButton.tag = newTag
             binding.sortingButton.background = ResourcesCompat.getDrawable(
                 resources,
-                drawableID,
+                currentDrawableID,
                 requireContext().theme
             )
             submitSortedList(newTag, adapter, viewModel.getSearchResults())

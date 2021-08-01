@@ -277,6 +277,7 @@
     <plurals name="plugins_version_old_format" tools:ignore="UnusedQuantity">
         <item quantity="one">%d plugin a besoin d\'une mise à jour. Vérifier si une nouvelle version est disponible</item>
         <item quantity="other">%d plugins ont besoin d\'une mise à jour. Vérifier une nouvelle version</item>
+        <item quantity="many">%d plugins ont besoin d\'une mise à jour. Vérifier une nouvelle version</item>
     </plurals>
     <string name="size_format">taille: %s</string>
     <string name="leechers_string_format">leecher/s: %s</string>
