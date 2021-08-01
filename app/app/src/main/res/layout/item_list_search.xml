@@ -67,9 +67,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
-                    android:text= "@{@plurals/links_format(item.magnets.size()+item.torrents.size(), item.magnets.size()+item.torrents.size()), default=`2 links`}"
+                    android:text= "@{@plurals/links_format(item.magnets.size()+item.torrents.size()+item.hosting.size(), item.magnets.size()+item.torrents.size()+item.hosting.size()), default=`2 links`}"
                     android:textColor="?attr/colorOnSurfaceVariant"
-                    android:visibility="@{item.magnets.size() == 0 ? View.GONE : View.VISIBLE}"
+                    android:visibility="@{item.magnets.size() == 0 &amp;&amp; item.hosting.size() == 0 ? View.GONE : View.VISIBLE}"
                     />
 
                 <TextView

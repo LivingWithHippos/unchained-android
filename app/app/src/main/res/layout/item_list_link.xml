@@ -54,6 +54,7 @@
                 style="@style/TextAppearance.UnchainedTheme.Body1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:maxLines="7"
                 android:text="@{item.link, default=`https://verylonglinkbecauseihavetotestthislinkinmylayoutpreview.com/randomfileletterstomakeitevenmorelong:234gyu234gyu`}"
                 app:layout_constraintStart_toStartOf="@id/type"
                 app:layout_constraintTop_toBottomOf="@id/type"
