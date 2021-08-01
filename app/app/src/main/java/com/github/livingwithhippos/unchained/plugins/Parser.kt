@@ -83,14 +83,17 @@ class Parser(
                                     for (link in innerSource) {
                                         // parse every page linked to the results
                                         val s = getSource(link)
-                                        val scrapedItem = parseInnerLink(
-                                            plugin.download.regexes,
-                                            s,
-                                            link,
-                                            plugin.url
-                                        )
-
-                                        emit(ParserResult.SingleResult(scrapedItem))
+                                        if (s.isNotBlank()) {
+                                            val scrapedItem = parseInnerLink(
+                                                plugin.download.regexes,
+                                                s,
+                                                link,
+                                                plugin.url
+                                            )
+                                            emit(ParserResult.SingleResult(scrapedItem))
+                                        } else {
+                                            emit(ParserResult.SourceError)
+                                        }
                                     }
                                     emit(ParserResult.SearchFinished)
                                 } else {
@@ -122,13 +125,17 @@ class Parser(
                                 links.forEach {
 
                                     val itemSource = getSource(it)
-                                    val scrapedItem = parseInnerLink(
-                                        plugin.download.regexes,
-                                        itemSource,
-                                        it,
-                                        plugin.url
-                                    )
-                                    emit(ParserResult.SingleResult(scrapedItem))
+                                    if (itemSource.isNotBlank()) {
+                                        val scrapedItem = parseInnerLink(
+                                            plugin.download.regexes,
+                                            itemSource,
+                                            it,
+                                            plugin.url
+                                        )
+                                        emit(ParserResult.SingleResult(scrapedItem))
+                                    } else {
+                                        emit(ParserResult.SourceError)
+                                    }
                                 }
                                 emit(ParserResult.SearchFinished)
                             }
@@ -722,4 +729,5 @@ sealed class ParserResult {
     // results
     data class Results(val values: List<ScrapedItem>) : ParserResult()
     data class SingleResult(val value: ScrapedItem) : ParserResult()
+    object SourceError : ParserResult()
 }
