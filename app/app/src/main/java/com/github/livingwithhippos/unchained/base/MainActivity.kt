@@ -176,20 +176,13 @@ class MainActivity : AppCompatActivity() {
                     }
                     else -> {
                         // check the authentication
-                        // todo: replace all these with a simple call and just elaborate the returned error in case
-                        viewModel.authenticationState.observeOnce(
-                            this,
-                            { auth ->
-                                when (auth.peekContent()) {
-                                    // same as a received magnet
-                                    AuthenticationState.AUTHENTICATED -> processLinkIntent(link)
-                                    AuthenticationState.AUTHENTICATED_NO_PREMIUM -> baseContext.showToast(
-                                        R.string.premium_needed
-                                    )
-                                    else -> showToast(R.string.please_login)
-                                }
-                            }
-                        )
+                        when (viewModel.authenticationState.value?.peekContent()) {
+                            AuthenticationState.AUTHENTICATED -> processLinkIntent(link)
+                            AuthenticationState.AUTHENTICATED_NO_PREMIUM -> baseContext.showToast(
+                                R.string.premium_needed
+                            )
+                            else -> showToast(R.string.please_login)
+                        }
                     }
                 }
             }
