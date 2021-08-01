@@ -251,6 +251,23 @@ class Parser(
             }
         }
 
+        // parse hosting websites links
+        val hosting = mutableListOf<String>()
+        regexes.hostingRegexes?.regexps?.forEach { regex ->
+            hosting.addAll(
+                parseList(
+                    regex,
+                    source,
+                    baseUrl
+                )
+            )
+
+            if (regexes.hostingRegexes.regexUse == "first") {
+                if (torrents.isNotEmpty())
+                    return@forEach
+            }
+        }
+
         var seeders: String? = null
         // todo: move to function
         regexes.seedersRegex?.regexps?.forEach { regex ->
@@ -304,7 +321,8 @@ class Parser(
             size = size,
             parsedSize = parsedSize,
             magnets = magnets,
-            torrents = torrents
+            torrents = torrents,
+            hosting = hosting,
         )
     }
 
@@ -360,6 +378,7 @@ class Parser(
                 var size: String? = null
                 var magnets: List<String> = emptyList()
                 var torrents: List<String> = emptyList()
+                var hosting: List<String> = emptyList()
                 try {
 
                     if (tableLink.columns.nameColumn != null)
@@ -411,6 +430,12 @@ class Parser(
                             columns[tableLink.columns.torrentColumn].html(),
                             baseUrl
                         )
+                    if (tableLink.columns.hostingColumn != null)
+                        hosting = parseList(
+                            regexes.hostingRegexes,
+                            columns[tableLink.columns.hostingColumn].html(),
+                            baseUrl
+                        )
                 } catch (e: IndexOutOfBoundsException) {
                     Timber.d("skipping row")
                 }
@@ -427,7 +452,8 @@ class Parser(
                             size = size,
                             parsedSize = parsedSize,
                             magnets = magnets,
-                            torrents = torrents
+                            torrents = torrents,
+                            hosting = hosting,
                         )
                     )
             }

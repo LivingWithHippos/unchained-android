@@ -13,15 +13,17 @@ data class ScrapedItem(
     val size: String? = null,
     val parsedSize: Double? = null,
     val magnets: List<String>,
-    val torrents: List<String>
+    val torrents: List<String>,
+    val hosting: List<String>,
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
-        parcel.readString() ?: "",
+        parcel.readString()!!,
         parcel.readString(),
         parcel.readString(),
         parcel.readString(),
         parcel.readString(),
         parcel.readDouble(),
+        parcel.createStringArrayList() ?: emptyList(),
         parcel.createStringArrayList() ?: emptyList(),
         parcel.createStringArrayList() ?: emptyList()
     )
@@ -35,6 +37,7 @@ data class ScrapedItem(
         parcel.writeDouble(parsedSize ?: 0.0)
         parcel.writeStringList(magnets)
         parcel.writeStringList(torrents)
+        parcel.writeStringList(hosting)
     }
 
     override fun describeContents(): Int {

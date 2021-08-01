@@ -375,11 +375,14 @@ data class PluginRegexes(
     val magnetRegex: RegexpsGroup?,
     @Json(name = "torrents")
     val torrentRegexes: RegexpsGroup?,
+    @Json(name = "hosting")
+    val hostingRegexes: RegexpsGroup?,
     @Json(name = "details")
     val detailsRegex: RegexpsGroup?
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readParcelable(RegexpsGroup::class.java.classLoader)!!,
+        parcel.readParcelable(RegexpsGroup::class.java.classLoader),
         parcel.readParcelable(RegexpsGroup::class.java.classLoader),
         parcel.readParcelable(RegexpsGroup::class.java.classLoader),
         parcel.readParcelable(RegexpsGroup::class.java.classLoader),
@@ -396,6 +399,7 @@ data class PluginRegexes(
         parcel.writeParcelable(sizeRegex, flags)
         parcel.writeParcelable(magnetRegex, flags)
         parcel.writeParcelable(torrentRegexes, flags)
+        parcel.writeParcelable(hostingRegexes, flags)
         parcel.writeParcelable(detailsRegex, flags)
     }
 
@@ -430,9 +434,12 @@ data class Columns(
     @Json(name = "torrent_column")
     val torrentColumn: Int?,
     @Json(name = "details_column")
-    val detailsColumn: Int?
+    val detailsColumn: Int?,
+    @Json(name = "hosting_column")
+    val hostingColumn: Int?
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
+        parcel.readValue(Int::class.java.classLoader) as? Int,
         parcel.readValue(Int::class.java.classLoader) as? Int,
         parcel.readValue(Int::class.java.classLoader) as? Int,
         parcel.readValue(Int::class.java.classLoader) as? Int,
@@ -450,6 +457,7 @@ data class Columns(
         parcel.writeValue(magnetColumn)
         parcel.writeValue(torrentColumn)
         parcel.writeValue(detailsColumn)
+        parcel.writeValue(hostingColumn)
     }
 
     override fun describeContents(): Int {

@@ -317,4 +317,5 @@
     <string name="sending_crash_report">Unchained vient de planter.\nJ\'envoie un rapport de panne…</string>
     <string name="upload">Upload</string>
     <string name="unsupported_file">Fichier non supporté</string>
+    <string name="hoster">Hébergeur</string>
 </resources>

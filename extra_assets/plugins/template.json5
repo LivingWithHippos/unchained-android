@@ -201,12 +201,28 @@
           }
         ]
       },
+      // this is used to parse hosting sites such as mega, rapidgator etc. No point in adding
+      // sites unsupported by real debrid so only put here those.
+      "hosting": {
+        "regex_use": "all",
+        "regexps": [
+          {
+            "regex": "(https?://hostingsite1\\.org/host/[^\\.]+.com)",
+            "group": 1
+          }
+        ]
+      },
       "details": {
-        "regex": "href=\"(/torrent/[^\"]+)",
-        "group": 1,
-        "slug_type": "append_url",
-        "other": "https://other_url.com"
-      }
+        "regex_use": "all",
+        "regexps": [
+          {
+            "regex": "href=\"(/torrent/[^\"]+)",
+            "group": 1,
+            "slug_type": "append_url",
+            "other": "https://other_url.com"
+          }
+        ]
+      },
     }
   }
 }

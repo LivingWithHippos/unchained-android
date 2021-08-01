@@ -524,4 +524,5 @@
     <string name="sending_crash_report">Unchained just crashed.\nSending crash report…</string>
     <string name="upload">Upload</string>
     <string name="unsupported_file">File not supported</string>
+    <string name="hoster">Hoster</string>
 </resources>
