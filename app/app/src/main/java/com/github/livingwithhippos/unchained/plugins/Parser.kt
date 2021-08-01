@@ -218,7 +218,7 @@ class Parser(
         }
 
         // parse magnets
-        val magnets = mutableListOf<String>()
+        val magnets = mutableSetOf<String>()
         regexes.magnetRegex?.regexps?.forEach { regex ->
 
             val parsedMagnets = parseList(
@@ -235,7 +235,7 @@ class Parser(
             }
         }
         // parse torrents
-        val torrents = mutableListOf<String>()
+        val torrents = mutableSetOf<String>()
         regexes.torrentRegexes?.regexps?.forEach { regex ->
             torrents.addAll(
                 parseList(
@@ -252,7 +252,7 @@ class Parser(
         }
 
         // parse hosting websites links
-        val hosting = mutableListOf<String>()
+        val hosting = mutableSetOf<String>()
         regexes.hostingRegexes?.regexps?.forEach { regex ->
             hosting.addAll(
                 parseList(
@@ -320,9 +320,9 @@ class Parser(
             leechers = leechers,
             size = size,
             parsedSize = parsedSize,
-            magnets = magnets,
-            torrents = torrents,
-            hosting = hosting,
+            magnets = magnets.toList(),
+            torrents = torrents.toList(),
+            hosting = hosting.toList(),
         )
     }
 
@@ -376,9 +376,9 @@ class Parser(
                 var seeders: String? = null
                 var leechers: String? = null
                 var size: String? = null
-                var magnets: List<String> = emptyList()
-                var torrents: List<String> = emptyList()
-                var hosting: List<String> = emptyList()
+                var magnets = mutableSetOf<String>()
+                var torrents = mutableSetOf<String>()
+                var hosting = mutableSetOf<String>()
                 try {
 
                     if (tableLink.columns.nameColumn != null)
@@ -416,26 +416,26 @@ class Parser(
                             baseUrl
                         )
                     if (tableLink.columns.magnetColumn != null)
-                        magnets = parseList(
+                        magnets.addAll( parseList(
                             regexes.magnetRegex,
                             columns[tableLink.columns.magnetColumn].html(),
                             baseUrl
                         ).map {
                             // this function cleans links from html codes such as %3A, %3F etc.
                             it.removeWebFormatting()
-                        }
+                        })
                     if (tableLink.columns.torrentColumn != null)
-                        torrents = parseList(
+                        torrents.addAll(parseList(
                             regexes.torrentRegexes,
                             columns[tableLink.columns.torrentColumn].html(),
                             baseUrl
-                        )
+                        ))
                     if (tableLink.columns.hostingColumn != null)
-                        hosting = parseList(
+                        hosting.addAll(parseList(
                             regexes.hostingRegexes,
                             columns[tableLink.columns.hostingColumn].html(),
                             baseUrl
-                        )
+                        ))
                 } catch (e: IndexOutOfBoundsException) {
                     Timber.d("skipping row")
                 }
@@ -451,9 +451,9 @@ class Parser(
                             leechers = leechers,
                             size = size,
                             parsedSize = parsedSize,
-                            magnets = magnets,
-                            torrents = torrents,
-                            hosting = hosting,
+                            magnets = magnets.toList(),
+                            torrents = torrents.toList(),
+                            hosting = hosting.toList(),
                         )
                     )
             }
