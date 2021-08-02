@@ -26,6 +26,8 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.model.AuthenticationState
+import com.github.livingwithhippos.unchained.data.model.AuthenticationStatus
+import com.github.livingwithhippos.unchained.data.model.UserAction
 import com.github.livingwithhippos.unchained.data.repositoy.PluginRepository.Companion.TYPE_UNCHAINED
 import com.github.livingwithhippos.unchained.data.service.ForegroundTorrentService
 import com.github.livingwithhippos.unchained.data.service.ForegroundTorrentService.Companion.KEY_TORRENT_ID
@@ -106,6 +108,52 @@ class MainActivity : AppCompatActivity() {
                 R.id.search_dest
             ),
             null
+        )
+
+        viewModel.newAuthenticationState.observe(
+            this,
+            {status ->
+                when(status.peekContent()) {
+                    is AuthenticationStatus.Authenticated -> {
+                        enableAllBottomNavItems()
+                    }
+                    is AuthenticationStatus.AuthenticatedNoPremium -> {
+                        enableAllBottomNavItems()
+                    }
+                    is AuthenticationStatus.NeedUserAction -> {
+                        when((status.peekContent() as AuthenticationStatus.NeedUserAction).actionNeeded) {
+                            UserAction.PERMISSION_DENIED -> showToast(R.string.permission_denied)
+                            UserAction.TFA_NEEDED -> showToast(R.string.tfa_needed)
+                            UserAction.TFA_PENDING -> showToast(R.string.tfa_pending)
+                            UserAction.IP_NOT_ALLOWED -> showToast(R.string.ip_Address_not_allowed)
+                            UserAction.UNKNOWN -> showToast(R.string.generic_login_error)
+                            UserAction.NETWORK_ERROR -> showToast(R.string.network_error)
+                            UserAction.RETRY_LATER -> showToast(R.string.retry_later)
+                        }
+                        lifecycleScope.launch {
+                            disableBottomNavItems(
+                                R.id.navigation_lists,
+                                R.id.navigation_search
+                            )
+                            doubleClickBottomItem(R.id.navigation_home)
+                        }
+                    }
+                    is AuthenticationStatus.RefreshToken -> {
+                        // showToast(R.string.refreshing_token)
+                        viewModel.refreshToken()
+                    }
+                    AuthenticationStatus.Unauthenticated -> {
+                        lifecycleScope.launch {
+                            disableBottomNavItems(
+                                R.id.navigation_lists,
+                                R.id.navigation_search
+                            )
+                            doubleClickBottomItem(R.id.navigation_home)
+                            viewModel.setTokenRefreshing(false)
+                        }
+                    }
+                }
+            }
         )
 
         // manage the authentication state

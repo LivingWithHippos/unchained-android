@@ -58,4 +58,7 @@ class AuthenticationRepository @Inject constructor(private val apiHelper: AuthAp
 
     suspend fun refreshToken(credentials: Credentials): Token? =
         refreshToken(credentials.clientId!!, credentials.clientSecret!!, credentials.refreshToken!!)
+
+    suspend fun refreshToken(credentials: com.github.livingwithhippos.unchained.data.local.Credentials.CurrentCredential): Token? =
+        refreshToken(credentials.clientId!!, credentials.clientSecret!!, credentials.refreshToken!!)
 }

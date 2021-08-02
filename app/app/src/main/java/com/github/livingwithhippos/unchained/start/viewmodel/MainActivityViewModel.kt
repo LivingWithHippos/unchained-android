@@ -289,24 +289,26 @@ class MainActivityViewModel @Inject constructor(
 
         viewModelScope.launch {
 
-            // get the old credentials
-            val oldCredentials = credentialRepository.getFirstCredentials()
-            // check if they are private API token credentials
-            if (oldCredentials != null && oldCredentials.refreshToken != PRIVATE_TOKEN) {
-                // refresh the token
-                authRepository.refreshToken(oldCredentials)?.let {
-                    val newCredentials = Credentials(
-                        oldCredentials.deviceCode,
-                        oldCredentials.clientId,
-                        oldCredentials.clientSecret,
-                        it.accessToken,
-                        it.refreshToken
-                    )
-                    // update the credentials
-                    credentialRepository.updateCredentials(newCredentials)
+            protoStore.credentialsFlow.collect { currentCredentials ->
+                if (!currentCredentials.refreshToken.isNullOrBlank() && currentCredentials.refreshToken != PRIVATE_TOKEN) {
+                    val newToken = authRepository.refreshToken(currentCredentials)
+                    if (newToken != null) {
+                        protoStore.setCredentials(
+                            deviceCode = currentCredentials.deviceCode,
+                            clientId = currentCredentials.clientId,
+                            clientSecret = currentCredentials.clientSecret,
+                            accessToken = newToken.accessToken,
+                            refreshToken = newToken.refreshToken
+                        )
 
-                    // program the refresh of the token
-                    programTokenRefresh(it.expiresIn)
+                        // program the refresh of the token
+                        programTokenRefresh(newToken.expiresIn)
+
+                        // use the new token to check the status
+                        setupAuthenticationStatus()
+                    } else {
+                        // todo: use an EitherResult to analyze the newToken result instead of just getting null
+                    }
                 }
             }
         }
