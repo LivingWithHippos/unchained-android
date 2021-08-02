@@ -7,6 +7,9 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
+import com.github.livingwithhippos.unchained.data.model.AuthenticationStatus
+import com.github.livingwithhippos.unchained.data.model.UserAction
+import com.github.livingwithhippos.unchained.databinding.FragmentStartBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 /**
@@ -16,42 +19,66 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class StartFragment : UnchainedFragment() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        // check our credentials and decide to navigate to the user fragment or the authentication one.
-        activityViewModel.userLiveData.observe(
-            this,
-            {
-                // navigate to user fragment
-                if (it != null) {
-                    if (it.premium > 0)
-                        activityViewModel.setAuthenticated()
-                    else
-                        activityViewModel.setAuthenticatedNoPremium()
-
-                    val action =
-                        StartFragmentDirections.actionStartFragmentToUserProfileFragment()
-                    findNavController().navigate(action)
-                }
-                // no complete credentials: navigate to authentication fragment
-                else {
-                    // todo: check if null could be because of missing network connectivity
-                    activityViewModel.setUnauthenticated()
-                    val action =
-                        StartFragmentDirections.actionStartFragmentToAuthenticationFragment()
-                    findNavController().navigate(action)
-                }
-            }
-        )
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        val binding = FragmentStartBinding.inflate(inflater, container, false)
+
+        activityViewModel.newAuthenticationState.observe(
+            viewLifecycleOwner,
+            {
+                when (it.peekContent()) {
+                    is AuthenticationStatus.Authenticated -> {
+                        val action =
+                            StartFragmentDirections.actionStartFragmentToUserProfileFragment()
+                        findNavController().navigate(action)
+                    }
+                    is AuthenticationStatus.AuthenticatedNoPremium -> {
+                        val action =
+                            StartFragmentDirections.actionStartFragmentToUserProfileFragment()
+                        findNavController().navigate(action)
+                    }
+                    is AuthenticationStatus.RefreshToken -> {
+                        activityViewModel.refreshToken()
+                    }
+                    is AuthenticationStatus.Unauthenticated -> {
+                        val action =
+                            StartFragmentDirections.actionStartFragmentToAuthenticationFragment()
+                        findNavController().navigate(action)
+                    }
+                    is AuthenticationStatus.NeedUserAction -> {
+
+                        binding.loadingCircle.visibility = View.INVISIBLE
+                        binding.bRetry.visibility = View.VISIBLE
+
+                        val actionNeeded = (it.peekContent() as AuthenticationStatus.NeedUserAction).actionNeeded
+                        binding.tvErrorMessage.text = when(actionNeeded) {
+                            UserAction.PERMISSION_DENIED -> getString(R.string.permission_denied)
+                            UserAction.TFA_NEEDED -> getString(R.string.tfa_needed)
+                            UserAction.TFA_PENDING -> getString(R.string.tfa_pending)
+                            UserAction.IP_NOT_ALLOWED -> getString(R.string.ip_Address_not_allowed)
+                            UserAction.UNKNOWN -> getString(R.string.generic_login_error)
+                            UserAction.NETWORK_ERROR -> getString(R.string.network_error)
+                            UserAction.RETRY_LATER -> getString(R.string.retry_later)
+                        }
+                    }
+                }
+            }
+        )
+
+        // check our credentials and decide to navigate to the user fragment or the authentication one.
+        activityViewModel.setupAuthenticationStatus()
+
+        binding.bRetry.setOnClickListener {
+            activityViewModel.setupAuthenticationStatus()
+            binding.loadingCircle.visibility = View.VISIBLE
+            binding.bRetry.visibility = View.INVISIBLE
+        }
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_start, container, false)
+        return binding.root
     }
 }

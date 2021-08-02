@@ -48,7 +48,6 @@ class AuthenticationRepository @Inject constructor(private val apiHelper: AuthAp
 
     /**
      * Get a new open source Token that usually lasts one hour.
-     * You can not use both offset and page at the same time, page is prioritized in case it happens.
      * @param clientId the client id obtained from the /device/credentials endpoint
      * @param clientSecret the code obtained from the /token endpoint
      * @param refreshToken the device code obtained from the /device/code endpoint

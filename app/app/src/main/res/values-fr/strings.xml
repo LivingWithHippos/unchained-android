@@ -323,4 +323,7 @@
     <string name="upload">Upload</string>
     <string name="unsupported_file">Fichier non supporté</string>
     <string name="hoster">Hébergeur</string>
+    <string name="generic_login_error">Une erreur s\'est produite lors de la connexion. Vous pouvez vérifier votre connexion, réessayer dans quelque temps, ou vous connecter à partir de real-debrid.com pour plus d\'informations.</string>
+    <string name="retry_login">Réessayer</string>
+    <string name="retry_later">Réessayer plus tard</string>
 </resources>

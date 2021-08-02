@@ -11,9 +11,17 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.livingwithhippos.unchained.R
+import com.github.livingwithhippos.unchained.data.local.ProtoStore
+import com.github.livingwithhippos.unchained.data.model.APIError
+import com.github.livingwithhippos.unchained.data.model.ApiConversionError
 import com.github.livingwithhippos.unchained.data.model.AuthenticationState
+import com.github.livingwithhippos.unchained.data.model.AuthenticationStatus
 import com.github.livingwithhippos.unchained.data.model.Credentials
+import com.github.livingwithhippos.unchained.data.model.EmptyBodyError
+import com.github.livingwithhippos.unchained.data.model.NetworkError
+import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkException
 import com.github.livingwithhippos.unchained.data.model.User
+import com.github.livingwithhippos.unchained.data.model.UserAction
 import com.github.livingwithhippos.unchained.data.repositoy.AuthenticationRepository
 import com.github.livingwithhippos.unchained.data.repositoy.CredentialsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.HostsRepository
@@ -23,6 +31,7 @@ import com.github.livingwithhippos.unchained.data.repositoy.UserRepository
 import com.github.livingwithhippos.unchained.data.repositoy.VariousApiRepository
 import com.github.livingwithhippos.unchained.lists.view.ListsTabFragment
 import com.github.livingwithhippos.unchained.plugins.model.Plugin
+import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.PRIVATE_TOKEN
 import com.github.livingwithhippos.unchained.utilities.extension.getDownloadedFileUri
@@ -32,6 +41,7 @@ import com.github.livingwithhippos.unchained.utilities.postEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.io.File
@@ -52,9 +62,12 @@ class MainActivityViewModel @Inject constructor(
     private val variousApiRepository: VariousApiRepository,
     private val hostsRepository: HostsRepository,
     private val pluginRepository: PluginRepository,
+    private val protoStore: ProtoStore,
 ) : ViewModel() {
 
     val authenticationState = MutableLiveData<Event<AuthenticationState>>()
+
+    val newAuthenticationState = MutableLiveData<Event<AuthenticationStatus>>()
 
     val userLiveData = MutableLiveData<User?>()
 
@@ -76,47 +89,152 @@ class MainActivityViewModel @Inject constructor(
 
     private var refreshJob: Job? = null
 
-    fun fetchFirstWorkingCredentials() {
-        viewModelScope.launch {
 
-            var user: User? = null
+    suspend fun checkCredentialsWithUser(): User? {
+        var user: User? = null
 
-            val completeCredentials = credentialRepository
-                .getAllCredentials()
-                .filter { it.accessToken != null && it.clientId != null && it.clientSecret != null && it.deviceCode.isNotBlank() && it.refreshToken != null }
+        val completeCredentials = credentialRepository
+            .getAllCredentials()
+            .filter { it.accessToken != null && it.clientId != null && it.clientSecret != null && it.deviceCode.isNotBlank() && it.refreshToken != null }
 
-            if (completeCredentials.isNotEmpty()) {
+        if (completeCredentials.isNotEmpty()) {
 
-                // step #1: test for private API token
-                completeCredentials.firstOrNull { it.deviceCode == PRIVATE_TOKEN }?.let {
-                    user = checkCredentials(it)
+            // step #1: test for private API token
+            completeCredentials.firstOrNull { it.deviceCode == PRIVATE_TOKEN }?.let {
+                user = checkCredentials(it)
+            }
+            // step #2: test for open source credentials
+            if (user == null) {
+                completeCredentials.firstOrNull { it.deviceCode != PRIVATE_TOKEN }?.let {
+                    authRepository.refreshToken(it)?.let { token ->
+                        val newCredentials = Credentials(
+                            it.deviceCode,
+                            it.clientId,
+                            it.clientSecret,
+                            token.accessToken,
+                            token.refreshToken
+                        )
+
+                        user = userRepository.getUserInfo(token.accessToken)
+                        if (user != null) {
+                            // update the credentials
+                            credentialRepository.updateCredentials(newCredentials)
+                            // program the refresh of the token
+                            programTokenRefresh(token.expiresIn)
+                        }
+                    }
                 }
-                // step #2: test for open source credentials
-                if (user == null) {
-                    completeCredentials.firstOrNull { it.deviceCode != PRIVATE_TOKEN }?.let {
-                        authRepository.refreshToken(it)?.let { token ->
-                            val newCredentials = Credentials(
-                                it.deviceCode,
-                                it.clientId,
-                                it.clientSecret,
-                                token.accessToken,
-                                token.refreshToken
-                            )
+            }
+        }
 
-                            user = userRepository.getUserInfo(token.accessToken)
-                            if (user != null) {
-                                // update the credentials
-                                credentialRepository.updateCredentials(newCredentials)
-                                // program the refresh of the token
-                                programTokenRefresh(token.expiresIn)
+        return user
+    }
+
+    fun updateAuthenticationStatus() {
+        viewModelScope.launch {
+            /**
+             * 1. get all the credentials
+             * 2. parse through them, private tokens first
+             * 3. if there is a single user use that
+             */
+            var currentUser: User? = null
+            credentialRepository.deleteIncompleteCredentials()
+            val allCredentials = credentialRepository.getAllCredentials()
+            allCredentials.filter { it.deviceCode == PRIVATE_TOKEN }.forEach {
+                if (it.accessToken != null) {
+                    val userResponse: EitherResult<UnchainedNetworkException, User> =
+                        userRepository.getUserOrError(it.accessToken)
+                    when (userResponse) {
+                        is EitherResult.Failure -> {
+                            when (userResponse.failure) {
+                                is APIError -> {
+                                    when (userResponse.failure.errorCode) {
+                                        8 -> messageLiveData.postEvent(R.string.bad_token)
+                                        9 -> messageLiveData.postEvent(R.string.permission_denied)
+                                        10 -> messageLiveData.postEvent(R.string.tfa_needed)
+                                        11 -> messageLiveData.postEvent(R.string.tfa_pending)
+                                        12 -> messageLiveData.postEvent(R.string.invalid_login)
+                                        13 -> messageLiveData.postEvent(R.string.invalid_password)
+                                        14 -> messageLiveData.postEvent(R.string.account_locked)
+                                        15 -> messageLiveData.postEvent(R.string.account_not_activated)
+                                        22 -> messageLiveData.postEvent(R.string.ip_Address_not_allowed)
+                                        else -> messageLiveData.postEvent(R.string.unknown_error)
+                                    }
+                                    //todo: show toast according to api error and set status if error is about user
+                                }
+                                is EmptyBodyError -> {
+                                    // should not happen
+                                }
+                                is NetworkError -> {
+                                    //todo: show toast about network connectivity
+                                }
+                                is ApiConversionError -> {
+                                    //todo: show toast about parsing error, retry later?
+                                }
                             }
+                        }
+                        is EitherResult.Success -> {
+                            currentUser = userResponse.success
+                            if (userResponse.success.premium > 0)
+                                setAuthenticated()
+                            else
+                                setAuthenticatedNoPremium()
+                            return@forEach
                         }
                     }
                 }
             }
 
-            // pass whatever user was retrieved, or null if none was found
-            userLiveData.postValue(user)
+            if (currentUser == null) {
+                allCredentials.filter { it.deviceCode != PRIVATE_TOKEN }.forEach {
+                    authRepository.refreshToken(it)?.let { token ->
+                        val newCredentials = Credentials(
+                            it.deviceCode,
+                            it.clientId,
+                            it.clientSecret,
+                            token.accessToken,
+                            token.refreshToken
+                        )
+
+                        val userResponse: EitherResult<UnchainedNetworkException, User> =
+                            userRepository.getUserOrError(token.accessToken)
+
+                        when (userResponse) {
+                            is EitherResult.Failure -> {
+                                when (userResponse.failure) {
+                                    is APIError -> {
+                                        //todo: show toast according to api error and set status if error is about user
+                                    }
+                                    is EmptyBodyError -> {
+                                        // should not happen
+                                    }
+                                    is NetworkError -> {
+                                        //todo: show toast about network connectivity
+                                    }
+                                    is ApiConversionError -> {
+                                        //todo: show toast about parsing error, retry later?
+                                    }
+                                }
+                            }
+                            is EitherResult.Success -> {
+                                currentUser = userResponse.success
+                                // update the credentials
+                                credentialRepository.updateCredentials(newCredentials)
+                                // program the refresh of the token
+                                programTokenRefresh(token.expiresIn)
+                                if (userResponse.success.premium > 0)
+                                    setAuthenticated()
+                                else
+                                    setAuthenticatedNoPremium()
+                                return@forEach
+                            }
+                        }
+
+                    }
+                }
+            }
+
+            userLiveData.postValue(currentUser)
         }
     }
 
@@ -166,8 +284,6 @@ class MainActivityViewModel @Inject constructor(
         val credentials = credentialRepository.getFirstCredentials()
         return credentials?.refreshToken == PRIVATE_TOKEN
     }
-
-    suspend fun deleteIncompleteCredentials() = credentialRepository.deleteIncompleteCredentials()
 
     fun refreshToken() {
 
@@ -443,6 +559,132 @@ class MainActivityViewModel @Inject constructor(
                 }
             }
             connectivityLiveData.postValue(isConnected)
+        }
+    }
+
+    fun setupAuthenticationStatus() {
+
+        viewModelScope.launch {
+            // todo: after a couple of releases just remove Credentials from the room db
+            // 1. retrieve the datastore credentials (will return en empty instance if none)
+            protoStore.credentialsFlow.collect { currentCredentials ->
+                Timber.e("collecting credentials")
+                // todo: check what happens with null values
+                // default value for strings is an empty string, it means no currentCredentials available
+                if (currentCredentials.accessToken.isEmpty()) {
+                    // 2. check credentials in room
+                    credentialRepository.deleteIncompleteCredentials()
+                    val dbCredentials = credentialRepository.getAllCredentials()
+                    // get the first available credentials
+                    val availableCredentials: Credentials? =
+                        dbCredentials.firstOrNull { it.deviceCode == PRIVATE_TOKEN }
+                            ?: dbCredentials.firstOrNull { it.deviceCode != PRIVATE_TOKEN }
+
+                    // 3. if they are missing we don't have any credentials
+                    // set as unauthenticated to go to authentication flow
+                    if (availableCredentials == null) {
+                        newAuthenticationState.postEvent(AuthenticationStatus.Unauthenticated)
+                    } else {
+                        // 4 copy the db credentials to the datastore
+                        //todo : check if this works and if it triggers a collect update otherwise run another collect below
+                            protoStore.setCredentials(
+                                deviceCode = availableCredentials.deviceCode,
+                                clientId = availableCredentials.clientId,
+                                clientSecret = availableCredentials.clientSecret,
+                                accessToken = availableCredentials.accessToken,
+                                refreshToken = availableCredentials.refreshToken
+                            )
+                    }
+                } else {
+                    // 5 test the datastore credentials
+                    val userResult = userRepository.getUserOrError(currentCredentials.accessToken)
+                    when (userResult) {
+                        is EitherResult.Failure -> {
+                            when (userResult.failure) {
+                                is APIError -> {
+                                    when (userResult.failure.errorCode) {
+                                        8 -> {
+                                            newAuthenticationState.postEvent(AuthenticationStatus.RefreshToken(currentCredentials))
+                                        }
+                                        9 -> {
+                                            newAuthenticationState.postEvent(AuthenticationStatus.NeedUserAction(
+                                                UserAction.PERMISSION_DENIED
+                                            ))
+                                        }
+                                        10 -> {
+                                            newAuthenticationState.postEvent(AuthenticationStatus.NeedUserAction(
+                                                UserAction.TFA_NEEDED
+                                            ))
+                                        }
+                                        11 -> {
+                                            newAuthenticationState.postEvent(
+                                                AuthenticationStatus.NeedUserAction(
+                                                    UserAction.TFA_PENDING
+                                                )
+                                            )
+                                        }
+                                        12 -> {
+                                            newAuthenticationState.postEvent(AuthenticationStatus.Unauthenticated)
+                                        }
+                                        13 -> {
+                                            newAuthenticationState.postEvent(AuthenticationStatus.Unauthenticated)
+                                        }
+                                        14 -> {
+                                            newAuthenticationState.postEvent(AuthenticationStatus.Unauthenticated)
+                                        }
+                                        15 -> {
+                                            newAuthenticationState.postEvent(AuthenticationStatus.Unauthenticated)
+                                        }
+                                        22 -> {
+                                            newAuthenticationState.postEvent(
+                                                AuthenticationStatus.NeedUserAction(
+                                                    UserAction.IP_NOT_ALLOWED
+                                                )
+                                            )
+                                        }
+                                        else -> {
+                                            newAuthenticationState.postEvent(
+                                                AuthenticationStatus.NeedUserAction(
+                                                    UserAction.UNKNOWN
+                                                )
+                                            )
+                                        }
+                                    }
+                                }
+                                is EmptyBodyError -> {
+                                    // should not happen
+                                    newAuthenticationState.postEvent(
+                                        AuthenticationStatus.NeedUserAction(
+                                            UserAction.UNKNOWN
+                                        )
+                                    )
+                                }
+                                is NetworkError -> {
+                                    newAuthenticationState.postEvent(
+                                        AuthenticationStatus.NeedUserAction(
+                                            UserAction.UNKNOWN
+                                        )
+                                    )
+                                }
+                                is ApiConversionError -> {
+                                    newAuthenticationState.postEvent(
+                                        AuthenticationStatus.NeedUserAction(
+                                            UserAction.RETRY_LATER
+                                        )
+                                    )
+                                }
+                            }
+                        }
+                        is EitherResult.Success -> {
+                            val user = userResult.success
+                            if (user.premium > 0)
+                                newAuthenticationState.postEvent(AuthenticationStatus.AuthenticatedNoPremium(user))
+                            else
+                                newAuthenticationState.postEvent(AuthenticationStatus.Authenticated(user))
+                        }
+                    }
+                }
+            }
         }
     }
 

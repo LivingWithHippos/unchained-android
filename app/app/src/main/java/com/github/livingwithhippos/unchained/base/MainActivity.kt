@@ -1,5 +1,6 @@
 package com.github.livingwithhippos.unchained.base
 
+import android.annotation.SuppressLint
 import android.app.DownloadManager
 import android.content.BroadcastReceiver
 import android.content.ContentResolver.SCHEME_CONTENT
@@ -152,11 +153,12 @@ class MainActivity : AppCompatActivity() {
             }
         )
 
+        // initialize the login flow
         disableBottomNavItems(
             R.id.navigation_lists,
             R.id.navigation_search
         )
-        viewModel.fetchFirstWorkingCredentials()
+        viewModel.setupAuthenticationStatus()
 
         // check if the app has been opened by clicking on torrents/magnet on sharing links
         getIntentData()
@@ -200,10 +202,16 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+
+        @SuppressLint("ShowToast")
+        val currentToast: Toast = Toast.makeText(this, "", Toast.LENGTH_SHORT)
+
         viewModel.messageLiveData.observe(
             this,
             EventObserver {
-                showToast(it, length = Toast.LENGTH_LONG)
+                currentToast.cancel()
+                currentToast.setText(getString(it))
+                currentToast.show()
             }
         )
 
@@ -358,8 +366,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * simulate a double click on a bottom bar option which will bring us to the first destinatin of that tab.
+     *
+     * @param destinationID the id of the bottom item to click
+     */
     private suspend fun doubleClickBottomItem(destinationID: Int) {
-        // simulate click on a bottom bar option
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_nav_view)
 
         // if the tab was already selected, a single tap will bring us back to the first fragment of its navigation xml. Otherwise, simulate another click after a delay
