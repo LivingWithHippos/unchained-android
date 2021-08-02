@@ -7,7 +7,6 @@ import com.github.livingwithhippos.unchained.data.local.ProtoStore
 import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkException
 import com.github.livingwithhippos.unchained.data.model.UploadedTorrent
-import com.github.livingwithhippos.unchained.data.repositoy.CredentialsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.HostsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.TorrentsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.UnrestrictRepository
@@ -131,7 +130,7 @@ class NewDownloadViewModel @Inject constructor(
     }
 
     fun postMessage(message: String) {
-       toastLiveData.postEvent(message)
+        toastLiveData.postEvent(message)
     }
 }
 

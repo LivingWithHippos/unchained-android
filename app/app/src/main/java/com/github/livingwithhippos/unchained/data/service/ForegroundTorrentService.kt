@@ -16,7 +16,6 @@ import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.MainActivity
 import com.github.livingwithhippos.unchained.data.local.ProtoStore
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
-import com.github.livingwithhippos.unchained.data.repositoy.CredentialsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.TorrentsRepository
 import com.github.livingwithhippos.unchained.di.SummaryNotification
 import com.github.livingwithhippos.unchained.di.TorrentNotification

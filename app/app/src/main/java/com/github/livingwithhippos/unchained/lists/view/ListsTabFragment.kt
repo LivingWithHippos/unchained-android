@@ -24,7 +24,6 @@ import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.data.model.APIError
 import com.github.livingwithhippos.unchained.data.model.ApiConversionError
-import com.github.livingwithhippos.unchained.data.model.AuthenticationState
 import com.github.livingwithhippos.unchained.data.model.AuthenticationStatus
 import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.data.model.EmptyBodyError
@@ -261,7 +260,8 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
                         if (!viewModel.torrentsLiveData.hasActiveObservers())
                             viewModel.torrentsLiveData.observe(viewLifecycleOwner, torrentObserver)
                     }
-                    else -> {}
+                    else -> {
+                    }
                 }
             }
         )

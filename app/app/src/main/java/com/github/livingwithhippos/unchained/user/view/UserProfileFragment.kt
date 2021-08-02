@@ -10,7 +10,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
-import com.github.livingwithhippos.unchained.data.model.AuthenticationState
 import com.github.livingwithhippos.unchained.data.model.AuthenticationStatus
 import com.github.livingwithhippos.unchained.databinding.FragmentUserProfileBinding
 import com.github.livingwithhippos.unchained.settings.SettingsFragment.Companion.KEY_REFERRAL_ASKED

@@ -6,10 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.livingwithhippos.unchained.data.model.Authentication
 import com.github.livingwithhippos.unchained.data.model.AuthenticationState
-import com.github.livingwithhippos.unchained.data.model.Credentials
 import com.github.livingwithhippos.unchained.data.model.Secrets
 import com.github.livingwithhippos.unchained.data.model.Token
-import com.github.livingwithhippos.unchained.data.model.User
 import com.github.livingwithhippos.unchained.data.repositoy.AuthenticationRepository
 import com.github.livingwithhippos.unchained.data.repositoy.CredentialsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.UserRepository

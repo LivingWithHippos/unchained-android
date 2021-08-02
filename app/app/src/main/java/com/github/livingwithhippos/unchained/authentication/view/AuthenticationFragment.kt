@@ -17,9 +17,7 @@ import androidx.navigation.fragment.findNavController
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.authentication.viewmodel.AuthenticationViewModel
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
-import com.github.livingwithhippos.unchained.data.model.AuthenticationState
 import com.github.livingwithhippos.unchained.data.model.AuthenticationStatus
-import com.github.livingwithhippos.unchained.data.model.Credentials
 import com.github.livingwithhippos.unchained.databinding.FragmentAuthenticationBinding
 import com.github.livingwithhippos.unchained.utilities.EventObserver
 import com.github.livingwithhippos.unchained.utilities.PRIVATE_TOKEN
@@ -31,7 +29,6 @@ import com.github.livingwithhippos.unchained.utilities.extension.openExternalWeb
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.google.android.material.textfield.TextInputEditText
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 /**

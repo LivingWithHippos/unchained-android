@@ -72,8 +72,8 @@ class ProtoStoreImpl @Inject constructor(
             if (
                 it.deviceCode.isNullOrBlank() ||
                 it.accessToken.isNullOrBlank() ||
-                it.clientId.isNullOrBlank()||
-                it.clientSecret.isNullOrBlank()||
+                it.clientId.isNullOrBlank() ||
+                it.clientSecret.isNullOrBlank() ||
                 it.refreshToken.isNullOrBlank()
             )
                 it.toBuilder().clear().build()
@@ -86,12 +86,12 @@ class ProtoStoreImpl @Inject constructor(
     }
 
     override suspend fun getCredentials(): Credentials.CurrentCredential {
-            return try {
-                context.credentialsDataStore.data.first()
-            } catch (e : Exception) {
-                e.printStackTrace()
-                Credentials.CurrentCredential.getDefaultInstance()
-            }
+        return try {
+            context.credentialsDataStore.data.first()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Credentials.CurrentCredential.getDefaultInstance()
+        }
     }
 
 

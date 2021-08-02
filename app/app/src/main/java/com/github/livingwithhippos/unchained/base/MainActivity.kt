@@ -25,7 +25,6 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.github.livingwithhippos.unchained.R
-import com.github.livingwithhippos.unchained.data.model.AuthenticationState
 import com.github.livingwithhippos.unchained.data.model.AuthenticationStatus
 import com.github.livingwithhippos.unchained.data.model.UserAction
 import com.github.livingwithhippos.unchained.data.repositoy.PluginRepository.Companion.TYPE_UNCHAINED

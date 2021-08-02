@@ -16,7 +16,6 @@ import com.github.livingwithhippos.unchained.data.local.ProtoStore
 import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkException
-import com.github.livingwithhippos.unchained.data.repositoy.CredentialsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.DownloadRepository
 import com.github.livingwithhippos.unchained.data.repositoy.TorrentsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.UnrestrictRepository

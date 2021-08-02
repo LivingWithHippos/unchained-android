@@ -131,7 +131,10 @@ class SearchViewModel @Inject constructor(
     }
 
     fun getListSortPreference(): String {
-        return preferences.getString(FolderListViewModel.KEY_LIST_SORTING, FolderListFragment.TAG_DEFAULT_SORT) ?: FolderListFragment.TAG_DEFAULT_SORT
+        return preferences.getString(
+            FolderListViewModel.KEY_LIST_SORTING,
+            FolderListFragment.TAG_DEFAULT_SORT
+        ) ?: FolderListFragment.TAG_DEFAULT_SORT
     }
 
     companion object {

@@ -429,10 +429,12 @@ class NewDownloadFragment : UnchainedFragment() {
             )
             when (queuedDownload) {
                 is EitherResult.Failure -> {
-                    viewModel.postMessage(getString(
-                        R.string.download_not_started_format,
-                        torrentName
-                    ))
+                    viewModel.postMessage(
+                        getString(
+                            R.string.download_not_started_format,
+                            torrentName
+                        )
+                    )
                 }
                 is EitherResult.Success -> {
                     activityViewModel.setDownload(queuedDownload.success)

@@ -54,8 +54,9 @@ class StartFragment : UnchainedFragment() {
                         binding.loadingCircle.visibility = View.INVISIBLE
                         binding.bRetry.visibility = View.VISIBLE
 
-                        val actionNeeded = (it.peekContent() as AuthenticationStatus.NeedUserAction).actionNeeded
-                        binding.tvErrorMessage.text = when(actionNeeded) {
+                        val actionNeeded =
+                            (it.peekContent() as AuthenticationStatus.NeedUserAction).actionNeeded
+                        binding.tvErrorMessage.text = when (actionNeeded) {
                             UserAction.PERMISSION_DENIED -> getString(R.string.permission_denied)
                             UserAction.TFA_NEEDED -> getString(R.string.tfa_needed)
                             UserAction.TFA_PENDING -> getString(R.string.tfa_pending)

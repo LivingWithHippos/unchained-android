@@ -22,55 +22,56 @@ class PluginRepository @Inject constructor(
         .build()
         .adapter(Plugin::class.java)
 
-    suspend fun getPlugins(context: Context): Pair<List<Plugin>, Int> = withContext(Dispatchers.IO) {
+    suspend fun getPlugins(context: Context): Pair<List<Plugin>, Int> =
+        withContext(Dispatchers.IO) {
 
-        /**
-         * get local .json and .unchained files from the search_plugin folder in the assets folder
-         */
-        val jsonFiles = assetsManager.searchFiles(TYPE_JSON, PLUGIN_FOLDER)
-        val unchainedFiles = assetsManager.searchFiles(TYPE_UNCHAINED, PLUGIN_FOLDER)
-        val plugins = mutableListOf<Plugin>()
+            /**
+             * get local .json and .unchained files from the search_plugin folder in the assets folder
+             */
+            val jsonFiles = assetsManager.searchFiles(TYPE_JSON, PLUGIN_FOLDER)
+            val unchainedFiles = assetsManager.searchFiles(TYPE_UNCHAINED, PLUGIN_FOLDER)
+            val plugins = mutableListOf<Plugin>()
 
-        var errors = 0
+            var errors = 0
 
-        for (json in jsonFiles) {
+            for (json in jsonFiles) {
 
-            val plugin: Plugin? = getPluginFromPath(context, json)
+                val plugin: Plugin? = getPluginFromPath(context, json)
 
-            if (plugin != null)
-                plugins.add(plugin)
-            else
-                errors++
-        }
+                if (plugin != null)
+                    plugins.add(plugin)
+                else
+                    errors++
+            }
 
-        for (json in unchainedFiles) {
+            for (json in unchainedFiles) {
 
-            val plugin: Plugin? = getPluginFromPath(context, json)
+                val plugin: Plugin? = getPluginFromPath(context, json)
 
-            if (plugin != null)
-                plugins.add(plugin)
-        }
+                if (plugin != null)
+                    plugins.add(plugin)
+            }
 
-        /**
-         * get installed .unchained search plugins
-         */
+            /**
+             * get installed .unchained search plugins
+             */
 
-        context.fileList().filter {
-            it.endsWith(TYPE_UNCHAINED, ignoreCase = true)
-        }.forEach {
-            context.openFileInput(it).bufferedReader().use { reader ->
-                try {
-                    val plugin = pluginAdapter.fromJson(reader.readText())
-                    if (plugin != null)
-                        plugins.add(plugin)
-                } catch (ex: Exception) {
-                    Timber.e("Error reading file in path $it, exception ${ex.message}")
+            context.fileList().filter {
+                it.endsWith(TYPE_UNCHAINED, ignoreCase = true)
+            }.forEach {
+                context.openFileInput(it).bufferedReader().use { reader ->
+                    try {
+                        val plugin = pluginAdapter.fromJson(reader.readText())
+                        if (plugin != null)
+                            plugins.add(plugin)
+                    } catch (ex: Exception) {
+                        Timber.e("Error reading file in path $it, exception ${ex.message}")
+                    }
                 }
             }
-        }
 
-        Pair(plugins, errors)
-    }
+            Pair(plugins, errors)
+        }
 
     private fun getPluginFromJSON(json: String): Plugin? {
         return try {

@@ -1,6 +1,5 @@
 package com.github.livingwithhippos.unchained.data.model
 
-import com.github.livingwithhippos.unchained.data.local.Credentials
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 

@@ -2,7 +2,6 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.github.livingwithhippos.unchained.data.local.ProtoStore
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
-import com.github.livingwithhippos.unchained.data.repositoy.CredentialsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.TorrentsRepository
 import retrofit2.HttpException
 import java.io.IOException

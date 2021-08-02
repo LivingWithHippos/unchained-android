@@ -9,19 +9,15 @@ import android.os.Build
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.local.ProtoStore
 import com.github.livingwithhippos.unchained.data.model.APIError
 import com.github.livingwithhippos.unchained.data.model.ApiConversionError
-import com.github.livingwithhippos.unchained.data.model.AuthenticationState
 import com.github.livingwithhippos.unchained.data.model.AuthenticationStatus
 import com.github.livingwithhippos.unchained.data.model.Credentials
 import com.github.livingwithhippos.unchained.data.model.EmptyBodyError
 import com.github.livingwithhippos.unchained.data.model.NetworkError
-import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkException
-import com.github.livingwithhippos.unchained.data.model.User
 import com.github.livingwithhippos.unchained.data.model.UserAction
 import com.github.livingwithhippos.unchained.data.repositoy.AuthenticationRepository
 import com.github.livingwithhippos.unchained.data.repositoy.CredentialsRepository
@@ -38,7 +34,6 @@ import com.github.livingwithhippos.unchained.utilities.PRIVATE_TOKEN
 import com.github.livingwithhippos.unchained.utilities.extension.getDownloadedFileUri
 import com.github.livingwithhippos.unchained.utilities.extension.isMagnet
 import com.github.livingwithhippos.unchained.utilities.extension.isTorrent
-import com.github.livingwithhippos.unchained.utilities.extension.observeOnce
 import com.github.livingwithhippos.unchained.utilities.postEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -46,7 +41,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.io.File
@@ -431,7 +425,7 @@ class MainActivityViewModel @Inject constructor(
             }
         } else {
             // 5 test the datastore credentials
-            getUser(updateAuthStatus = true).collect {  }
+            getUser(updateAuthStatus = true).collect { }
         }
     }
 

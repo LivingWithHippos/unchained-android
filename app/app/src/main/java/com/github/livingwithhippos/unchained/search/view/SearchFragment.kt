@@ -59,7 +59,13 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
 
             val plugins = parsedPlugins.first
             if (parsedPlugins.second > 0)
-                requireContext().showToast(resources.getQuantityString(R.plurals.plugins_version_old_format, parsedPlugins.second, parsedPlugins.second))
+                requireContext().showToast(
+                    resources.getQuantityString(
+                        R.plurals.plugins_version_old_format,
+                        parsedPlugins.second,
+                        parsedPlugins.second
+                    )
+                )
 
             pluginAdapter.clear()
             pluginAdapter.addAll(plugins.map { it.name })
@@ -153,7 +159,11 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
         ).observe(viewLifecycleOwner) { result ->
             when (result) {
                 is ParserResult.SingleResult -> {
-                    submitSortedList(binding.sortingButton.tag.toString(), adapter, listOf(result.value))
+                    submitSortedList(
+                        binding.sortingButton.tag.toString(),
+                        adapter,
+                        listOf(result.value)
+                    )
                     adapter.notifyDataSetChanged()
                 }
                 is ParserResult.Results -> {
