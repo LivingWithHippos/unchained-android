@@ -25,4 +25,6 @@ interface ProtoStore {
     suspend fun deleteCredentials()
 
     suspend fun deleteIncompleteCredentials()
+
+    suspend fun getCredentials(): Credentials.CurrentCredential
 }

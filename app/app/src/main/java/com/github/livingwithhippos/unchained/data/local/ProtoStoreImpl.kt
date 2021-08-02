@@ -4,6 +4,7 @@ import android.content.Context
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.first
 import java.io.IOException
 import javax.inject.Inject
 
@@ -82,6 +83,15 @@ class ProtoStoreImpl @Inject constructor(
                 it.toBuilder().build()
             }
         }
+    }
+
+    override suspend fun getCredentials(): Credentials.CurrentCredential {
+            return try {
+                context.credentialsDataStore.data.first()
+            } catch (e : Exception) {
+                e.printStackTrace()
+                Credentials.CurrentCredential.getDefaultInstance()
+            }
     }
 
 

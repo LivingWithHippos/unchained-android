@@ -12,6 +12,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.liveData
+import com.github.livingwithhippos.unchained.data.local.ProtoStore
 import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkException
@@ -37,7 +38,7 @@ class DownloadListViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val downloadRepository: DownloadRepository,
     private val torrentsRepository: TorrentsRepository,
-    private val credentialsRepository: CredentialsRepository,
+    private val protoStore: ProtoStore,
     private val unrestrictRepository: UnrestrictRepository
 ) : ViewModel() {
 
@@ -48,14 +49,14 @@ class DownloadListViewModel @Inject constructor(
     val downloadsLiveData: LiveData<PagingData<DownloadItem>> =
         Transformations.switchMap(queryLiveData) { query: String ->
             Pager(PagingConfig(pageSize = 50, initialLoadSize = 100)) {
-                DownloadPagingSource(downloadRepository, credentialsRepository, query)
+                DownloadPagingSource(downloadRepository, protoStore, query)
             }.liveData.cachedIn(viewModelScope)
         }
 
     val torrentsLiveData: LiveData<PagingData<TorrentItem>> =
         Transformations.switchMap(queryLiveData) { query: String ->
             Pager(PagingConfig(pageSize = 50, initialLoadSize = 100)) {
-                TorrentPagingSource(torrentsRepository, credentialsRepository, query)
+                TorrentPagingSource(torrentsRepository, protoStore, query)
             }.liveData.cachedIn(viewModelScope)
         }
 
@@ -68,7 +69,7 @@ class DownloadListViewModel @Inject constructor(
 
     fun downloadTorrent(torrent: TorrentItem) {
         viewModelScope.launch {
-            val token = credentialsRepository.getToken()
+            val token = protoStore.getCredentials().accessToken
             val items = unrestrictRepository.getUnrestrictedLinkList(token, torrent.links)
             val values =
                 items.filterIsInstance<EitherResult.Success<DownloadItem>>().map { it.success }
@@ -84,7 +85,7 @@ class DownloadListViewModel @Inject constructor(
 
     fun downloadTorrentFolder(torrent: TorrentItem) {
         viewModelScope.launch {
-            val token = credentialsRepository.getToken()
+            val token = protoStore.getCredentials().accessToken
             val items = unrestrictRepository.getUnrestrictedLinkList(token, torrent.links)
             val values =
                 items.filterIsInstance<EitherResult.Success<DownloadItem>>().map { it.success }
@@ -100,7 +101,7 @@ class DownloadListViewModel @Inject constructor(
 
     fun deleteTorrent(id: String) {
         viewModelScope.launch {
-            val token = credentialsRepository.getToken()
+            val token = protoStore.getCredentials().accessToken
             val deleted = torrentsRepository.deleteTorrent(token, id)
             when (deleted) {
                 is EitherResult.Failure -> {
@@ -116,7 +117,7 @@ class DownloadListViewModel @Inject constructor(
 
     fun deleteDownload(id: String) {
         viewModelScope.launch {
-            val token = credentialsRepository.getToken()
+            val token = protoStore.getCredentials().accessToken
             val deleted = downloadRepository.deleteDownload(token, id)
             if (deleted == null)
                 deletedDownloadLiveData.postEvent(DOWNLOAD_NOT_DELETED)
@@ -144,7 +145,7 @@ class DownloadListViewModel @Inject constructor(
 
             deletedDownloadLiveData.postEvent(0)
             var page = 1
-            val token = credentialsRepository.getToken()
+            val token = protoStore.getCredentials().accessToken
             val completeDownloadList = mutableListOf<DownloadItem>()
             do {
                 val downloads = downloadRepository.getDownloads(token, 0, page++, 50)
@@ -167,7 +168,7 @@ class DownloadListViewModel @Inject constructor(
 
     fun deleteAllTorrents() {
         viewModelScope.launch {
-            val token = credentialsRepository.getToken()
+            val token = protoStore.getCredentials().accessToken
             do {
                 val torrents = torrentsRepository.getTorrentsList(token, 0, 1, 50)
                 torrents.forEach {
@@ -181,7 +182,7 @@ class DownloadListViewModel @Inject constructor(
 
     fun deleteTorrents(torrents: List<TorrentItem>) {
         viewModelScope.launch {
-            val token = credentialsRepository.getToken()
+            val token = protoStore.getCredentials().accessToken
             torrents.forEach {
                 torrentsRepository.deleteTorrent(token, it.id)
             }
@@ -201,7 +202,7 @@ class DownloadListViewModel @Inject constructor(
 
     fun deleteDownloads(downloads: List<DownloadItem>) {
         viewModelScope.launch {
-            val token = credentialsRepository.getToken()
+            val token = protoStore.getCredentials().accessToken
             downloads.forEach {
                 downloadRepository.deleteDownload(token, it.id)
             }
