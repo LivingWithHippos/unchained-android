@@ -21,6 +21,14 @@ import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
+import android.content.Intent
+import android.net.Uri
+import android.os.Build
+import android.provider.Settings
+import android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION
+import androidx.activity.result.contract.ActivityResultContracts
+
+
 /**
  * A simple [PreferenceFragmentCompat] subclass.
  * Manages the interactions with the items in the preferences menu
@@ -129,6 +137,13 @@ class SettingsFragment : PreferenceFragmentCompat() {
         }
     }
 
+    private val requestOverlayLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) {
+            // do nothing
+        }
+
     override fun onPreferenceTreeClick(preference: Preference?): Boolean {
         when (preference?.key) {
             "feedback" -> openExternalWebPage(FEEDBACK_URL)
@@ -136,6 +151,16 @@ class SettingsFragment : PreferenceFragmentCompat() {
             "credits" -> openCreditsDialog()
             "terms" -> openTermsDialog()
             "privacy" -> openPrivacyDialog()
+            "overlay" -> {
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    val intent = Intent(
+                        ACTION_MANAGE_OVERLAY_PERMISSION,
+                        Uri.parse("package:" + context?.packageName)
+                    )
+                    requestOverlayLauncher.launch(intent)
+                }
+            }
             "update_regexps" -> {
                 viewModel.updateRegexps()
                 context?.showToast(R.string.updating_link_matcher)
