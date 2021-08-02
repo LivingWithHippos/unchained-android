@@ -124,7 +124,9 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
         activityViewModel.newAuthenticationState.observe(
             viewLifecycleOwner,
             {
+
                 if (it.peekContent() is AuthenticationStatus.Authenticated || it.peekContent() is AuthenticationStatus.AuthenticatedNoPremium) {
+                    viewModel.setAuthState(true)
                     val action =
                         AuthenticationFragmentDirections.actionAuthenticationToUser()
                     findNavController().navigate(action)
@@ -176,10 +178,10 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
         // pass the value to be checked and eventually saved
             lifecycleScope.launch {
                 activityViewModel.updateCredentials(
-                    deviceCode = token,
+                    accessToken = token,
                     clientId = PRIVATE_TOKEN,
                     clientSecret = PRIVATE_TOKEN,
-                    accessToken = PRIVATE_TOKEN,
+                    deviceCode = PRIVATE_TOKEN,
                     refreshToken = PRIVATE_TOKEN
                 )
                 activityViewModel.setupAuthenticationStatus()

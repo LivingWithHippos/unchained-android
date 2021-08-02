@@ -5,7 +5,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.livingwithhippos.unchained.data.model.Authentication
-import com.github.livingwithhippos.unchained.data.model.AuthenticationState
+import com.github.livingwithhippos.unchained.data.model.AuthenticationStatus
 import com.github.livingwithhippos.unchained.data.model.Secrets
 import com.github.livingwithhippos.unchained.data.model.Token
 import com.github.livingwithhippos.unchained.data.repositoy.AuthenticationRepository
@@ -56,7 +56,11 @@ class AuthenticationViewModel @Inject constructor(
         viewModelScope.launch {
             var secretData = authRepository.getSecrets(deviceCode)
 
-            while (secretData?.clientId == null && calls-- > 0) {
+            while (
+                secretData?.clientId == null &&
+                calls-- > 0 &&
+                !getAuthState()
+            ) {
                 delay(waitTime)
                 secretData = authRepository.getSecrets(deviceCode)
             }
@@ -78,12 +82,12 @@ class AuthenticationViewModel @Inject constructor(
         }
     }
 
-    fun setAuthState(state: AuthenticationState) {
-        savedStateHandle.set(AUTH_STATE, state)
+    fun setAuthState(authenticated: Boolean) {
+        savedStateHandle.set(AUTH_STATE, authenticated)
     }
 
-    private fun getAuthState(): AuthenticationState? {
-        return savedStateHandle.get(AUTH_STATE)
+    private fun getAuthState(): Boolean {
+        return savedStateHandle.get(AUTH_STATE) ?: false
     }
 
     companion object {
