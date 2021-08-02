@@ -22,6 +22,7 @@ import com.github.livingwithhippos.unchained.data.model.AuthenticationStatus
 import com.github.livingwithhippos.unchained.data.model.Credentials
 import com.github.livingwithhippos.unchained.databinding.FragmentAuthenticationBinding
 import com.github.livingwithhippos.unchained.utilities.EventObserver
+import com.github.livingwithhippos.unchained.utilities.PRIVATE_TOKEN
 import com.github.livingwithhippos.unchained.utilities.extension.copyToClipboard
 import com.github.livingwithhippos.unchained.utilities.extension.getClipboardText
 import com.github.livingwithhippos.unchained.utilities.extension.getThemeColor
@@ -178,7 +179,11 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
         // pass the value to be checked and eventually saved
             lifecycleScope.launch {
                 activityViewModel.updateCredentials(
-                    deviceCode = token
+                    deviceCode = token,
+                    clientId = PRIVATE_TOKEN,
+                    clientSecret = PRIVATE_TOKEN,
+                    accessToken = PRIVATE_TOKEN,
+                    refreshToken = PRIVATE_TOKEN
                 )
                 activityViewModel.setupAuthenticationStatus()
             }

@@ -62,5 +62,27 @@ class ProtoStoreImpl @Inject constructor(
         }
     }
 
+    override suspend fun deleteCredentials() {
+        context.credentialsDataStore.updateData { it.toBuilder().clear().build() }
+    }
+
+    override suspend fun deleteIncompleteCredentials() {
+        context.credentialsDataStore.updateData {
+            if (
+                it.deviceCode.isNullOrBlank() ||
+                it.accessToken.isNullOrBlank() ||
+                it.clientId.isNullOrBlank()||
+                it.clientSecret.isNullOrBlank()||
+                it.refreshToken.isNullOrBlank()
+            )
+                it.toBuilder().clear().build()
+            else {
+                // todo: a smarter way to remove an incomplete element?
+                // get the original one and call deleteCredentials() checking there instead of here?
+                it.toBuilder().build()
+            }
+        }
+    }
+
 
 }

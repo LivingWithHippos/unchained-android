@@ -9,6 +9,7 @@ import android.os.Build
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.local.ProtoStore
@@ -37,6 +38,7 @@ import com.github.livingwithhippos.unchained.utilities.PRIVATE_TOKEN
 import com.github.livingwithhippos.unchained.utilities.extension.getDownloadedFileUri
 import com.github.livingwithhippos.unchained.utilities.extension.isMagnet
 import com.github.livingwithhippos.unchained.utilities.extension.isTorrent
+import com.github.livingwithhippos.unchained.utilities.extension.observeOnce
 import com.github.livingwithhippos.unchained.utilities.postEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -272,11 +274,15 @@ class MainActivityViewModel @Inject constructor(
 
     fun logout() {
         viewModelScope.launch {
-            credentialRepository.deleteAllCredentials()
-            setUnauthenticated()
+            protoStore.deleteCredentials()
+            setAuthStatus(AuthenticationStatus.Unauthenticated)
         }
     }
 
+    /**
+     * Used for testing and debugging if the token refresh works. Disables the current token.
+     *
+     */
     fun invalidateOpenSourceToken() {
         viewModelScope.launch {
             credentialRepository.getFirstCredentials()?.let {
@@ -603,7 +609,7 @@ class MainActivityViewModel @Inject constructor(
             }
         } else {
             // 5 test the datastore credentials
-            val userResult: User? = getUser(updateAuthStatus = true).single()
+            getUser(updateAuthStatus = true).collect {  }
         }
     }
 

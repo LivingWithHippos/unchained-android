@@ -11,6 +11,7 @@ import androidx.navigation.fragment.findNavController
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.data.model.AuthenticationState
+import com.github.livingwithhippos.unchained.data.model.AuthenticationStatus
 import com.github.livingwithhippos.unchained.databinding.FragmentUserProfileBinding
 import com.github.livingwithhippos.unchained.settings.SettingsFragment.Companion.KEY_REFERRAL_ASKED
 import com.github.livingwithhippos.unchained.settings.SettingsFragment.Companion.KEY_REFERRAL_USE
@@ -94,20 +95,25 @@ class UserProfileFragment : UnchainedFragment() {
             }
         }
 
-        activityViewModel.authenticationState.observe(
+        activityViewModel.newAuthenticationState.observe(
             viewLifecycleOwner,
             {
-                // it's possible to use peek with findNavController().currentDestination to avoid launching the navigate(action) twice (it crashes)
-                // val destination = findNavController().currentDestination
-                // val destinationId = findNavController().currentDestination?.id
                 when (it.peekContent()) {
-                    // back to authentication fragment
-                    AuthenticationState.UNAUTHENTICATED -> {
+                    AuthenticationStatus.Unauthenticated -> {
                         val action = UserProfileFragmentDirections.actionUserToAuthentication()
                         findNavController().navigate(action)
                     }
-                    // do nothing for now, add other states later
-                    else -> {
+                    is AuthenticationStatus.Authenticated -> {
+                        // managed by activity
+                    }
+                    is AuthenticationStatus.AuthenticatedNoPremium -> {
+                        // managed by activity
+                    }
+                    is AuthenticationStatus.NeedUserAction -> {
+                        // managed by activity
+                    }
+                    is AuthenticationStatus.RefreshToken -> {
+                        // managed by activity
                     }
                 }
             }

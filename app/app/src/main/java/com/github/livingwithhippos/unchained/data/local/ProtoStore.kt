@@ -21,4 +21,8 @@ interface ProtoStore {
         accessToken: String? = null,
         refreshToken: String? = null
     )
+
+    suspend fun deleteCredentials()
+
+    suspend fun deleteIncompleteCredentials()
 }

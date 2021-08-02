@@ -112,8 +112,8 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.newAuthenticationState.observe(
             this,
-            {status ->
-                when(status.peekContent()) {
+            { status ->
+                when (status.peekContent()) {
                     is AuthenticationStatus.Authenticated -> {
                         enableAllBottomNavItems()
                     }
@@ -121,7 +121,7 @@ class MainActivity : AppCompatActivity() {
                         enableAllBottomNavItems()
                     }
                     is AuthenticationStatus.NeedUserAction -> {
-                        when((status.peekContent() as AuthenticationStatus.NeedUserAction).actionNeeded) {
+                        when ((status.peekContent() as AuthenticationStatus.NeedUserAction).actionNeeded) {
                             UserAction.PERMISSION_DENIED -> showToast(R.string.permission_denied)
                             UserAction.TFA_NEEDED -> showToast(R.string.tfa_needed)
                             UserAction.TFA_PENDING -> showToast(R.string.tfa_pending)
@@ -351,7 +351,10 @@ class MainActivity : AppCompatActivity() {
                         SCHEME_MAGNET, SCHEME_CONTENT, SCHEME_FILE -> {
                             when {
                                 // check if it's a search plugin
-                                data.path?.endsWith(TYPE_UNCHAINED, ignoreCase = true) == true -> addSearchPlugin(data)
+                                data.path?.endsWith(
+                                    TYPE_UNCHAINED,
+                                    ignoreCase = true
+                                ) == true -> addSearchPlugin(data)
                                 else -> {
                                     // it's a magnet/torrent, check auth state before loading it
                                     viewModel.authenticationState.observeOnce(
