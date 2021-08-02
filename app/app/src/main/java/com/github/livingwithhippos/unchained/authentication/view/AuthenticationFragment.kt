@@ -11,20 +11,27 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.authentication.viewmodel.AuthenticationViewModel
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.data.model.AuthenticationState
+import com.github.livingwithhippos.unchained.data.model.AuthenticationStatus
+import com.github.livingwithhippos.unchained.data.model.Credentials
 import com.github.livingwithhippos.unchained.databinding.FragmentAuthenticationBinding
 import com.github.livingwithhippos.unchained.utilities.EventObserver
 import com.github.livingwithhippos.unchained.utilities.extension.copyToClipboard
 import com.github.livingwithhippos.unchained.utilities.extension.getClipboardText
 import com.github.livingwithhippos.unchained.utilities.extension.getThemeColor
+import com.github.livingwithhippos.unchained.utilities.extension.observeOnce
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.google.android.material.textfield.TextInputEditText
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 /**
  * A simple [UnchainedFragment] subclass.
@@ -42,14 +49,11 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
     ): View {
 
         val authBinding = FragmentAuthenticationBinding.inflate(inflater, container, false)
-        // todo: add loading gif
 
         authBinding.listener = this
 
         authBinding.loginMessageDirect = getLoginMessage(LOGIN_TYPE_DIRECT)
         authBinding.loginMessageIndirect = getLoginMessage(LOGIN_TYPE_INDIRECT)
-
-        // open source client id observers:
 
         // start checking for the auth link
         viewModel.authLiveData.observe(
@@ -57,7 +61,14 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
             EventObserver { auth ->
                 if (auth != null) {
                     authBinding.auth = auth
-                    viewModel.fetchSecrets(auth.deviceCode, auth.expiresIn)
+                    lifecycleScope.launch {
+                        // update the currently saved credentials
+                        activityViewModel.updateCredentials(
+                            deviceCode = auth.deviceCode
+                        )
+                        // start the next auth step
+                        viewModel.fetchSecrets(auth.deviceCode, auth.expiresIn)
+                    }
                 }
             }
         )
@@ -67,8 +78,22 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
             viewLifecycleOwner,
             EventObserver { secrets ->
                 authBinding.secrets = secrets
-                viewModel.authLiveData.value?.peekContent()?.deviceCode?.let { device ->
-                    viewModel.fetchToken(secrets.clientId, device, secrets.clientSecret)
+                lifecycleScope.launch {
+                    // update the currently saved credentials
+                    activityViewModel.updateCredentials(
+                        clientId = secrets.clientId,
+                        clientSecret = secrets.clientSecret,
+                    )
+                    // start the next auth step
+                    activityViewModel.getCurrentCredentials().asLiveData()
+                        .observeOnce(viewLifecycleOwner,
+                            {
+                                viewModel.fetchToken(
+                                    secrets.clientId,
+                                    it.deviceCode,
+                                    secrets.clientSecret
+                                )
+                            })
                 }
             }
         )
@@ -79,47 +104,32 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
             EventObserver { token ->
                 authBinding.token = token
                 // pass the value to be checked and eventually saved
-                viewModel.checkAndSaveToken(token = token)
-            }
-        )
-
-        // a user is retrieved when a working token is used
-        viewModel.userLiveData.observe(
-            viewLifecycleOwner,
-            EventObserver {
-                it?.let { user ->
-                    if (user.premium > 0)
-                        activityViewModel.setAuthenticated()
-                    else
-                        activityViewModel.setAuthenticatedNoPremium()
+                if (token != null) {
+                    lifecycleScope.launch {
+                        // update the current credentials
+                        activityViewModel.updateCredentials(
+                            accessToken = token.accessToken,
+                            refreshToken = token.refreshToken
+                        )
+                    }
+                    activityViewModel.getCurrentCredentials().asLiveData()
+                        .observeOnce(viewLifecycleOwner, {
+                            lifecycleScope.launch {
+                                // check the current credentials
+                                activityViewModel.setupAuthenticationStatus(it)
+                            }
+                        })
                 }
             }
         )
 
-        // monitor the shared authentication state, if authenticated switch to the user fragment
-        activityViewModel.authenticationState.observe(
+        activityViewModel.newAuthenticationState.observe(
             viewLifecycleOwner,
             {
-                when (it.peekContent()) {
-                    AuthenticationState.AUTHENTICATED -> {
-                        val action =
-                            AuthenticationFragmentDirections.actionAuthenticationToUser()
-                        findNavController().navigate(action)
-                        // these will stop the api calls to the secret endpoint in the viewModel
-                        viewModel.setAuthState(AuthenticationState.AUTHENTICATED)
-                    }
-                    AuthenticationState.UNAUTHENTICATED -> viewModel.setAuthState(
-                        AuthenticationState.UNAUTHENTICATED
-                    )
-                    AuthenticationState.BAD_TOKEN -> viewModel.setAuthState(AuthenticationState.BAD_TOKEN)
-                    AuthenticationState.ACCOUNT_LOCKED -> viewModel.setAuthState(AuthenticationState.ACCOUNT_LOCKED)
-                    AuthenticationState.AUTHENTICATED_NO_PREMIUM -> {
-                        val action =
-                            AuthenticationFragmentDirections.actionAuthenticationToUser()
-                        findNavController().navigate(action)
-                        // these will stop the api calls to the secret endpoint in the viewModel
-                        viewModel.setAuthState(AuthenticationState.AUTHENTICATED_NO_PREMIUM)
-                    }
+                if (it.peekContent() is AuthenticationStatus.Authenticated || it.peekContent() is AuthenticationStatus.AuthenticatedNoPremium) {
+                    val action =
+                        AuthenticationFragmentDirections.actionAuthenticationToUser()
+                    findNavController().navigate(action)
                 }
             }
         )
@@ -166,7 +176,12 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
             context?.showToast(R.string.invalid_token)
         else
         // pass the value to be checked and eventually saved
-            viewModel.checkAndSaveToken(privateKey = token)
+            lifecycleScope.launch {
+                activityViewModel.updateCredentials(
+                    deviceCode = token
+                )
+                activityViewModel.setupAuthenticationStatus()
+            }
     }
 
     override fun onPasteCodeClick(codeInputField: TextInputEditText) {

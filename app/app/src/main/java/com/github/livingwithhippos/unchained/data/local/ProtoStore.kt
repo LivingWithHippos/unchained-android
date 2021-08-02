@@ -13,4 +13,12 @@ interface ProtoStore {
         accessToken: String? = null,
         refreshToken: String? = null
     )
+
+    suspend fun updateCredentials(
+        deviceCode: String? = null,
+        clientId: String? = null,
+        clientSecret: String? = null,
+        accessToken: String? = null,
+        refreshToken: String? = null
+    )
 }
