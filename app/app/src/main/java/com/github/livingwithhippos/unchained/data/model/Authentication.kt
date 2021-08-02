@@ -60,9 +60,9 @@ enum class AuthenticationState {
 
 sealed class AuthenticationStatus {
     object Unauthenticated : AuthenticationStatus()
+    object RefreshToken : AuthenticationStatus()
     data class Authenticated(val user: User) : AuthenticationStatus()
     data class AuthenticatedNoPremium(val user: User) : AuthenticationStatus()
-    data class RefreshToken(val credentials: Credentials.CurrentCredential) : AuthenticationStatus()
     data class NeedUserAction(val actionNeeded: UserAction) : AuthenticationStatus()
 }
 

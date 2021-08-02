@@ -469,7 +469,7 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
                             when (error.errorCode) {
                                 8 -> {
                                     // bad token, try refreshing it
-                                    activityViewModel.setBadToken()
+                                    activityViewModel.setAuthStatus(AuthenticationStatus.RefreshToken)
                                     context?.showToast(R.string.refreshing_token)
                                 }
                             }

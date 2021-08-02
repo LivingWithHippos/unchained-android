@@ -8,6 +8,7 @@ import android.content.SharedPreferences
 import android.os.Build
 import com.github.livingwithhippos.unchained.BuildConfig
 import com.github.livingwithhippos.unchained.R
+import com.github.livingwithhippos.unchained.data.local.ProtoStore
 import com.github.livingwithhippos.unchained.data.repositoy.CredentialsRepository
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
@@ -38,6 +39,9 @@ class UnchainedApplication : Application() {
     @Inject
     lateinit var activityCallback: ThemingCallback
 
+    @Inject
+    lateinit var protoStore: ProtoStore
+
     private val job = Job()
     private val scope = CoroutineScope(Dispatchers.Default + job)
 
@@ -48,6 +52,7 @@ class UnchainedApplication : Application() {
 
         scope.launch {
             credentialsRepository.deleteIncompleteCredentials()
+            protoStore.deleteIncompleteCredentials()
         }
 
         createNotificationChannel()

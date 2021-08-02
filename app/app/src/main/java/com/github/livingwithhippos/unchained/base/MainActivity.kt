@@ -156,51 +156,6 @@ class MainActivity : AppCompatActivity() {
             }
         )
 
-        // manage the authentication state
-        viewModel.authenticationState.observe(
-            this,
-            { state ->
-                when (state.peekContent()) {
-                    // go to login fragment
-                    AuthenticationState.UNAUTHENTICATED -> {
-                        lifecycleScope.launch {
-                            disableBottomNavItems(
-                                R.id.navigation_lists,
-                                R.id.navigation_search
-                            )
-                            doubleClickBottomItem(R.id.navigation_home)
-                            viewModel.setTokenRefreshing(false)
-                        }
-                    }
-                    // refresh the token.
-                    AuthenticationState.BAD_TOKEN -> {
-                        if (!viewModel.isTokenRefreshing()) {
-                            viewModel.refreshToken()
-                            viewModel.setTokenRefreshing(true)
-                        } else {
-                            viewModel.setUnauthenticated()
-                        }
-                    }
-                    // go to login fragment and show another error message
-                    AuthenticationState.ACCOUNT_LOCKED -> {
-                        lifecycleScope.launch {
-                            disableBottomNavItems(
-                                R.id.navigation_lists,
-                                R.id.navigation_search
-                            )
-                            doubleClickBottomItem(R.id.navigation_home)
-                            viewModel.setTokenRefreshing(false)
-                        }
-                    }
-                    // do nothing
-                    AuthenticationState.AUTHENTICATED, AuthenticationState.AUTHENTICATED_NO_PREMIUM -> {
-                        enableAllBottomNavItems()
-                        viewModel.setTokenRefreshing(false)
-                    }
-                }
-            }
-        )
-
         // initialize the login flow
         disableBottomNavItems(
             R.id.navigation_lists,
@@ -226,9 +181,9 @@ class MainActivity : AppCompatActivity() {
                     }
                     else -> {
                         // check the authentication
-                        when (viewModel.authenticationState.value?.peekContent()) {
-                            AuthenticationState.AUTHENTICATED -> processLinkIntent(link)
-                            AuthenticationState.AUTHENTICATED_NO_PREMIUM -> baseContext.showToast(
+                        when (viewModel.newAuthenticationState.value?.peekContent()) {
+                            is AuthenticationStatus.Authenticated -> processLinkIntent(link)
+                            is AuthenticationStatus.AuthenticatedNoPremium -> baseContext.showToast(
                                 R.string.premium_needed
                             )
                             else -> showToast(R.string.please_login)
@@ -357,14 +312,14 @@ class MainActivity : AppCompatActivity() {
                                 ) == true -> addSearchPlugin(data)
                                 else -> {
                                     // it's a magnet/torrent, check auth state before loading it
-                                    viewModel.authenticationState.observeOnce(
+                                    viewModel.newAuthenticationState.observeOnce(
                                         this,
                                         { auth ->
                                             when (auth.peekContent()) {
-                                                AuthenticationState.AUTHENTICATED -> processLinkIntent(
+                                                is AuthenticationStatus.Authenticated -> processLinkIntent(
                                                     data
                                                 )
-                                                AuthenticationState.AUTHENTICATED_NO_PREMIUM -> baseContext.showToast(
+                                                is AuthenticationStatus.AuthenticatedNoPremium -> baseContext.showToast(
                                                     R.string.premium_needed_torrent
                                                 )
                                                 else -> showToast(R.string.please_login)
@@ -384,10 +339,10 @@ class MainActivity : AppCompatActivity() {
                 // could be because of the tap on a notification
                 intent.getStringExtra(KEY_TORRENT_ID)?.let { id ->
 
-                    viewModel.authenticationState.observeOnce(
+                    viewModel.newAuthenticationState.observeOnce(
                         this,
                         { auth ->
-                            if (auth.peekContent() == AuthenticationState.AUTHENTICATED || auth.peekContent() == AuthenticationState.AUTHENTICATED_NO_PREMIUM)
+                            if (auth.peekContent() is AuthenticationStatus.Authenticated || auth.peekContent() is AuthenticationStatus.AuthenticatedNoPremium)
                                 processTorrentNotificationIntent(id)
                         }
                     )
