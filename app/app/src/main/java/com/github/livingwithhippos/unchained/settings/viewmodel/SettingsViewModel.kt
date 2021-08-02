@@ -1,4 +1,4 @@
-package com.github.livingwithhippos.unchained.settings
+package com.github.livingwithhippos.unchained.settings.viewmodel
 
 import android.content.Context
 import androidx.lifecycle.MutableLiveData

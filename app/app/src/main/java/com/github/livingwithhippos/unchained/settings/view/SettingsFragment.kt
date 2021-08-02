@@ -1,4 +1,4 @@
-package com.github.livingwithhippos.unchained.settings
+package com.github.livingwithhippos.unchained.settings.view
 
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -12,6 +12,7 @@ import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.github.livingwithhippos.unchained.R
+import com.github.livingwithhippos.unchained.settings.viewmodel.SettingsViewModel
 import com.github.livingwithhippos.unchained.utilities.FEEDBACK_URL
 import com.github.livingwithhippos.unchained.utilities.GPLV3_URL
 import com.github.livingwithhippos.unchained.utilities.PLUGINS_URL

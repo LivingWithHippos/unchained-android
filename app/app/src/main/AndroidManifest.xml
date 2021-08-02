@@ -25,7 +25,7 @@
         tools:targetApi="n">
 
         <activity
-            android:name=".settings.SettingsActivity"
+            android:name=".settings.view.SettingsActivity"
             android:parentActivityName=".base.MainActivity" />
         <activity
             android:name=".base.MainActivity"

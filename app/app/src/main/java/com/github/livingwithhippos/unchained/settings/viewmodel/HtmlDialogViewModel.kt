@@ -1,4 +1,4 @@
-package com.github.livingwithhippos.unchained.settings
+package com.github.livingwithhippos.unchained.settings.viewmodel
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
