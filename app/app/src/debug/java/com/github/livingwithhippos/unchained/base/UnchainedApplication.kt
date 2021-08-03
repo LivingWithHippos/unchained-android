@@ -30,6 +30,11 @@ import javax.inject.Inject
  */
 @HiltAndroidApp
 class UnchainedApplication : Application() {
+
+    /*************************************************
+     * DUPLICATE CHANGES IN THE RELEASE FILE VERSION *
+     *************************************************/
+
     @Inject
     lateinit var credentialsRepository: CredentialsRepository
 
@@ -65,30 +70,27 @@ class UnchainedApplication : Application() {
     override fun attachBaseContext(base: Context) {
         super.attachBaseContext(base)
 
-        // todo: duplicate file for release mode without this and use debugImplementation instead of implementation to avoid packing acra in release file
         // add error report for debug builds
-        if (BuildConfig.DEBUG) {
-            initAcra {
-                // core configuration:
-                buildConfigClass = BuildConfig::class.java
-                reportFormat = StringFormat.JSON
-                httpSender {
-                    // required. Https recommended
-                    uri = BuildConfig.ACRA_URL
-                    // optional. Enables http basic auth
-                    basicAuthLogin = BuildConfig.ACRA_LOGIN
-                    // required if above set
-                    basicAuthPassword = BuildConfig.ACRA_PASSWORD
-                    // defaults to POST
-                    httpMethod = HttpSender.Method.POST
-                    // defaults to false. Recommended if your backend supports it
-                    compress = true
-                    // defaults to all
-                    tlsProtocols = arrayOf(TLS.V1_3, TLS.V1_2)
-                }
-                toast {
-                    text = getString(R.string.sending_crash_report)
-                }
+        initAcra {
+            // core configuration:
+            buildConfigClass = BuildConfig::class.java
+            reportFormat = StringFormat.JSON
+            httpSender {
+                // required. Https recommended
+                uri = BuildConfig.ACRA_URL
+                // optional. Enables http basic auth
+                basicAuthLogin = BuildConfig.ACRA_LOGIN
+                // required if above set
+                basicAuthPassword = BuildConfig.ACRA_PASSWORD
+                // defaults to POST
+                httpMethod = HttpSender.Method.POST
+                // defaults to false. Recommended if your backend supports it
+                compress = true
+                // defaults to all
+                tlsProtocols = arrayOf(TLS.V1_3, TLS.V1_2)
+            }
+            toast {
+                text = getString(R.string.sending_crash_report)
             }
         }
     }

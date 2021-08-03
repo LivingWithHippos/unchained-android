@@ -284,8 +284,8 @@ dependencies {
     // debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakcanary_version"
 
     // acra
-    implementation "ch.acra:acra-http:$acra_version"
-    implementation "ch.acra:acra-toast:$acra_version"
+    debugImplementation "ch.acra:acra-http:$acra_version"
+    debugImplementation "ch.acra:acra-toast:$acra_version"
 }
 
 kapt {

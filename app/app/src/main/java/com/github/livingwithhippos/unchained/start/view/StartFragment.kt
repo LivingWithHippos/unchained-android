@@ -32,13 +32,11 @@ class StartFragment : UnchainedFragment() {
             {
                 when (it.peekContent()) {
                     is AuthenticationStatus.Authenticated -> {
-                        val action =
-                            StartFragmentDirections.actionStartFragmentToUserProfileFragment()
+                        val action = StartFragmentDirections.actionStartFragmentToUserProfileFragment()
                         findNavController().navigate(action)
                     }
                     is AuthenticationStatus.AuthenticatedNoPremium -> {
-                        val action =
-                            StartFragmentDirections.actionStartFragmentToUserProfileFragment()
+                        val action = StartFragmentDirections.actionStartFragmentToUserProfileFragment()
                         findNavController().navigate(action)
                     }
                     is AuthenticationStatus.RefreshToken -> {
