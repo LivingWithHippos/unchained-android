@@ -19,3 +19,8 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# avoid rewriting of proto datastore variables name. Remove when https://android-review.googlesource.com/c/platform/frameworks/support/+/1433465/ is available
+-keep class * extends com.google.protobuf.GeneratedMessageLite {
+  <fields>;
+   }
