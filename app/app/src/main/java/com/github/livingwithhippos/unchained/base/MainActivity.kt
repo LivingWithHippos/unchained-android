@@ -1,5 +1,6 @@
 package com.github.livingwithhippos.unchained.base
 
+import android.annotation.SuppressLint
 import android.app.DownloadManager
 import android.content.BroadcastReceiver
 import android.content.ContentResolver.SCHEME_CONTENT
@@ -24,13 +25,14 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.github.livingwithhippos.unchained.R
-import com.github.livingwithhippos.unchained.data.model.AuthenticationState
+import com.github.livingwithhippos.unchained.data.model.AuthenticationStatus
+import com.github.livingwithhippos.unchained.data.model.UserAction
 import com.github.livingwithhippos.unchained.data.repositoy.PluginRepository.Companion.TYPE_UNCHAINED
 import com.github.livingwithhippos.unchained.data.service.ForegroundTorrentService
 import com.github.livingwithhippos.unchained.data.service.ForegroundTorrentService.Companion.KEY_TORRENT_ID
 import com.github.livingwithhippos.unchained.databinding.ActivityMainBinding
-import com.github.livingwithhippos.unchained.settings.SettingsActivity
-import com.github.livingwithhippos.unchained.settings.SettingsFragment.Companion.KEY_TORRENT_NOTIFICATIONS
+import com.github.livingwithhippos.unchained.settings.view.SettingsActivity
+import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Companion.KEY_TORRENT_NOTIFICATIONS
 import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewModel
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.EventObserver
@@ -107,56 +109,58 @@ class MainActivity : AppCompatActivity() {
             null
         )
 
-        // manage the authentication state
-        viewModel.authenticationState.observe(
+        viewModel.newAuthenticationState.observe(
             this,
-            { state ->
-                when (state.peekContent()) {
-                    // go to login fragment
-                    AuthenticationState.UNAUTHENTICATED -> {
-                        lifecycleScope.launch {
-                            disableBottomNavItems(
-                                R.id.navigation_lists,
-                                R.id.navigation_search
-                            )
-                            doubleClickBottomItem(R.id.navigation_home)
-                            viewModel.setTokenRefreshing(false)
-                        }
-                    }
-                    // refresh the token.
-                    AuthenticationState.BAD_TOKEN -> {
-                        if (!viewModel.isTokenRefreshing()) {
-                            viewModel.refreshToken()
-                            viewModel.setTokenRefreshing(true)
-                        } else {
-                            viewModel.setUnauthenticated()
-                        }
-                    }
-                    // go to login fragment and show another error message
-                    AuthenticationState.ACCOUNT_LOCKED -> {
-                        lifecycleScope.launch {
-                            disableBottomNavItems(
-                                R.id.navigation_lists,
-                                R.id.navigation_search
-                            )
-                            doubleClickBottomItem(R.id.navigation_home)
-                            viewModel.setTokenRefreshing(false)
-                        }
-                    }
-                    // do nothing
-                    AuthenticationState.AUTHENTICATED, AuthenticationState.AUTHENTICATED_NO_PREMIUM -> {
+            { status ->
+                when (status.peekContent()) {
+                    is AuthenticationStatus.Authenticated -> {
                         enableAllBottomNavItems()
-                        viewModel.setTokenRefreshing(false)
+                    }
+                    is AuthenticationStatus.AuthenticatedNoPremium -> {
+                        enableAllBottomNavItems()
+                    }
+                    is AuthenticationStatus.NeedUserAction -> {
+                        when ((status.peekContent() as AuthenticationStatus.NeedUserAction).actionNeeded) {
+                            UserAction.PERMISSION_DENIED -> showToast(R.string.permission_denied)
+                            UserAction.TFA_NEEDED -> showToast(R.string.tfa_needed)
+                            UserAction.TFA_PENDING -> showToast(R.string.tfa_pending)
+                            UserAction.IP_NOT_ALLOWED -> showToast(R.string.ip_Address_not_allowed)
+                            UserAction.UNKNOWN -> showToast(R.string.generic_login_error)
+                            UserAction.NETWORK_ERROR -> showToast(R.string.network_error)
+                            UserAction.RETRY_LATER -> showToast(R.string.retry_later)
+                        }
+                        lifecycleScope.launch {
+                            disableBottomNavItems(
+                                R.id.navigation_lists,
+                                R.id.navigation_search
+                            )
+                            doubleClickBottomItem(R.id.navigation_home)
+                        }
+                    }
+                    is AuthenticationStatus.RefreshToken -> {
+                        // showToast(R.string.refreshing_token)
+                        viewModel.refreshToken()
+                    }
+                    AuthenticationStatus.Unauthenticated -> {
+                        lifecycleScope.launch {
+                            disableBottomNavItems(
+                                R.id.navigation_lists,
+                                R.id.navigation_search
+                            )
+                            doubleClickBottomItem(R.id.navigation_home)
+                            viewModel.setTokenRefreshing(false)
+                        }
                     }
                 }
             }
         )
 
+        // initialize the login flow
         disableBottomNavItems(
             R.id.navigation_lists,
             R.id.navigation_search
         )
-        viewModel.fetchFirstWorkingCredentials()
+        viewModel.setupAuthenticationStatus()
 
         // check if the app has been opened by clicking on torrents/magnet on sharing links
         getIntentData()
@@ -176,9 +180,9 @@ class MainActivity : AppCompatActivity() {
                     }
                     else -> {
                         // check the authentication
-                        when (viewModel.authenticationState.value?.peekContent()) {
-                            AuthenticationState.AUTHENTICATED -> processLinkIntent(link)
-                            AuthenticationState.AUTHENTICATED_NO_PREMIUM -> baseContext.showToast(
+                        when (viewModel.newAuthenticationState.value?.peekContent()) {
+                            is AuthenticationStatus.Authenticated -> processLinkIntent(link)
+                            is AuthenticationStatus.AuthenticatedNoPremium -> baseContext.showToast(
                                 R.string.premium_needed
                             )
                             else -> showToast(R.string.please_login)
@@ -200,10 +204,16 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+
+        @SuppressLint("ShowToast")
+        val currentToast: Toast = Toast.makeText(this, "", Toast.LENGTH_SHORT)
+
         viewModel.messageLiveData.observe(
             this,
             EventObserver {
-                showToast(it, length = Toast.LENGTH_LONG)
+                currentToast.cancel()
+                currentToast.setText(getString(it))
+                currentToast.show()
             }
         )
 
@@ -295,17 +305,20 @@ class MainActivity : AppCompatActivity() {
                         SCHEME_MAGNET, SCHEME_CONTENT, SCHEME_FILE -> {
                             when {
                                 // check if it's a search plugin
-                                data.path?.endsWith(TYPE_UNCHAINED, ignoreCase = true) == true -> addSearchPlugin(data)
+                                data.path?.endsWith(
+                                    TYPE_UNCHAINED,
+                                    ignoreCase = true
+                                ) == true -> addSearchPlugin(data)
                                 else -> {
                                     // it's a magnet/torrent, check auth state before loading it
-                                    viewModel.authenticationState.observeOnce(
+                                    viewModel.newAuthenticationState.observeOnce(
                                         this,
                                         { auth ->
                                             when (auth.peekContent()) {
-                                                AuthenticationState.AUTHENTICATED -> processLinkIntent(
+                                                is AuthenticationStatus.Authenticated -> processLinkIntent(
                                                     data
                                                 )
-                                                AuthenticationState.AUTHENTICATED_NO_PREMIUM -> baseContext.showToast(
+                                                is AuthenticationStatus.AuthenticatedNoPremium -> baseContext.showToast(
                                                     R.string.premium_needed_torrent
                                                 )
                                                 else -> showToast(R.string.please_login)
@@ -325,10 +338,10 @@ class MainActivity : AppCompatActivity() {
                 // could be because of the tap on a notification
                 intent.getStringExtra(KEY_TORRENT_ID)?.let { id ->
 
-                    viewModel.authenticationState.observeOnce(
+                    viewModel.newAuthenticationState.observeOnce(
                         this,
                         { auth ->
-                            if (auth.peekContent() == AuthenticationState.AUTHENTICATED || auth.peekContent() == AuthenticationState.AUTHENTICATED_NO_PREMIUM)
+                            if (auth.peekContent() is AuthenticationStatus.Authenticated || auth.peekContent() is AuthenticationStatus.AuthenticatedNoPremium)
                                 processTorrentNotificationIntent(id)
                         }
                     )
@@ -358,8 +371,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * simulate a double click on a bottom bar option which will bring us to the first destinatin of that tab.
+     *
+     * @param destinationID the id of the bottom item to click
+     */
     private suspend fun doubleClickBottomItem(destinationID: Int) {
-        // simulate click on a bottom bar option
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_nav_view)
 
         // if the tab was already selected, a single tap will bring us back to the first fragment of its navigation xml. Otherwise, simulate another click after a delay

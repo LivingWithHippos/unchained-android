@@ -3,6 +3,23 @@ apply plugin: 'dagger.hilt.android.plugin'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: "androidx.navigation.safeargs.kotlin"
+apply plugin: 'com.google.protobuf'
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.17.3"
+    }
+
+    generateProtoTasks {
+        all().each { task ->
+            task.builtins {
+                java {
+                    option 'lite'
+                }
+            }
+        }
+    }
+}
 
 def keyPropertiesFile = rootProject.file("signingkey.properties")
 def keyProperties = new Properties()
@@ -166,10 +183,10 @@ dependencies {
     def acra_version = "5.8.4"
     def androidx_core_version = "1.6.0"
     def appcompat_version = "1.3.1"
-    // def arrow_version = "0.13.2"
     def coil_version = '1.3.1'
     def constraint_layout_version = '2.1.0'
     def coroutines_version = "1.5.1"
+    def datastore_version = "1.0.0-rc02"
     def flexbox_version = "3.0.0"
     def fragment_version = '1.3.6'
     def jsoup_version = '1.14.1'
@@ -194,6 +211,10 @@ dependencies {
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:$swipe_version"
     implementation "androidx.preference:preference-ktx:$preferences_version"
     implementation "androidx.recyclerview:recyclerview-selection:$recyclerview_version"
+
+    // datastore
+    implementation "androidx.datastore:datastore-preferences:$datastore_version"
+    implementation  "com.google.protobuf:protobuf-javalite:3.17.3"
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
@@ -263,8 +284,8 @@ dependencies {
     // debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakcanary_version"
 
     // acra
-    implementation "ch.acra:acra-http:$acra_version"
-    implementation "ch.acra:acra-toast:$acra_version"
+    debugImplementation "ch.acra:acra-http:$acra_version"
+    debugImplementation "ch.acra:acra-toast:$acra_version"
 }
 
 kapt {

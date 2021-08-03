@@ -301,7 +301,7 @@ data class InternalParser(
 data class Internal(
     @Json(name = "link")
     val link: RegexpsGroup
-): Parcelable {
+) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readParcelable(RegexpsGroup::class.java.classLoader)!!
     )

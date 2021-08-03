@@ -20,7 +20,7 @@ import androidx.navigation.fragment.navArgs
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.data.model.APIError
-import com.github.livingwithhippos.unchained.data.model.AuthenticationState
+import com.github.livingwithhippos.unchained.data.model.AuthenticationStatus
 import com.github.livingwithhippos.unchained.data.model.EmptyBodyError
 import com.github.livingwithhippos.unchained.data.model.NetworkError
 import com.github.livingwithhippos.unchained.databinding.NewDownloadFragmentBinding
@@ -177,11 +177,11 @@ class NewDownloadFragment : UnchainedFragment() {
                             8 -> {
                                 viewModel.postMessage(getString(R.string.refreshing_token))
                                 // try refreshing the token
-                                activityViewModel.setBadToken()
+                                activityViewModel.setAuthStatus(AuthenticationStatus.RefreshToken)
                             }
                             in 9..15 -> {
                                 viewModel.postMessage(errorMessage)
-                                activityViewModel.setUnauthenticated()
+                                activityViewModel.setAuthStatus(AuthenticationStatus.Unauthenticated)
                             }
                             else -> {
                                 viewModel.postMessage(errorMessage)
@@ -217,8 +217,8 @@ class NewDownloadFragment : UnchainedFragment() {
         // add the unrestrict button listener
         binding.bUnrestrict.setOnClickListener {
 
-            val authState = activityViewModel.authenticationState.value?.peekContent()
-            if (authState == AuthenticationState.AUTHENTICATED) {
+            val authState = activityViewModel.newAuthenticationState.value?.peekContent()
+            if (authState is AuthenticationStatus.Authenticated) {
                 val link: String = binding.tiLink.text.toString().trim()
                 when {
                     // this must be before the link.isWebUrl() check
@@ -309,8 +309,8 @@ class NewDownloadFragment : UnchainedFragment() {
             }
 
         binding.bUploadFile.setOnClickListener {
-            val authState = activityViewModel.authenticationState.value?.peekContent()
-            if (authState == AuthenticationState.AUTHENTICATED)
+            val authState = activityViewModel.newAuthenticationState.value?.peekContent()
+            if (authState is AuthenticationStatus.Authenticated)
                 filePicker.launch("*/*")
             else
                 viewModel.postMessage(getString(R.string.premium_needed))
@@ -429,10 +429,12 @@ class NewDownloadFragment : UnchainedFragment() {
             )
             when (queuedDownload) {
                 is EitherResult.Failure -> {
-                    viewModel.postMessage(getString(
-                        R.string.download_not_started_format,
-                        torrentName
-                    ))
+                    viewModel.postMessage(
+                        getString(
+                            R.string.download_not_started_format,
+                            torrentName
+                        )
+                    )
                 }
                 is EitherResult.Success -> {
                     activityViewModel.setDownload(queuedDownload.success)

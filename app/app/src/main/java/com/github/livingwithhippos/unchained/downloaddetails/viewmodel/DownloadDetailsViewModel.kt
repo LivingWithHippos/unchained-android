@@ -4,8 +4,8 @@ import android.content.SharedPreferences
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.livingwithhippos.unchained.data.local.ProtoStore
 import com.github.livingwithhippos.unchained.data.model.Stream
-import com.github.livingwithhippos.unchained.data.repositoy.CredentialsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.DownloadRepository
 import com.github.livingwithhippos.unchained.data.repositoy.KodiRepository
 import com.github.livingwithhippos.unchained.data.repositoy.StreamingRepository
@@ -22,9 +22,9 @@ import javax.inject.Inject
 @HiltViewModel
 class DownloadDetailsViewModel @Inject constructor(
     private val preferences: SharedPreferences,
-    private val credentialsRepository: CredentialsRepository,
     private val streamingRepository: StreamingRepository,
     private val downloadRepository: DownloadRepository,
+    private val protoStore: ProtoStore,
     private val kodiRepository: KodiRepository
 ) : ViewModel() {
 
@@ -34,7 +34,7 @@ class DownloadDetailsViewModel @Inject constructor(
 
     fun fetchStreamingInfo(id: String) {
         viewModelScope.launch {
-            val token = credentialsRepository.getToken()
+            val token = protoStore.getCredentials().accessToken
             if (token.isBlank())
                 throw IllegalArgumentException("Loaded token was empty: $token")
             val streamingInfo = streamingRepository.getStreams(token, id)
@@ -44,7 +44,7 @@ class DownloadDetailsViewModel @Inject constructor(
 
     fun deleteDownload(id: String) {
         viewModelScope.launch {
-            val token = credentialsRepository.getToken()
+            val token = protoStore.getCredentials().accessToken
             val deleted = downloadRepository.deleteDownload(token, id)
             if (deleted == null)
                 deletedDownloadLiveData.postEvent(-1)

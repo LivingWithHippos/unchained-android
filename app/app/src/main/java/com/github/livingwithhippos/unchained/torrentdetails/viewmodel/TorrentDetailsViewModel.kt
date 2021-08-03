@@ -3,10 +3,10 @@ package com.github.livingwithhippos.unchained.torrentdetails.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.livingwithhippos.unchained.data.local.ProtoStore
 import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkException
-import com.github.livingwithhippos.unchained.data.repositoy.CredentialsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.TorrentsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.UnrestrictRepository
 import com.github.livingwithhippos.unchained.utilities.EitherResult
@@ -22,8 +22,8 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class TorrentDetailsViewModel @Inject constructor(
-    private val credentialsRepository: CredentialsRepository,
     private val torrentsRepository: TorrentsRepository,
+    private val protoStore: ProtoStore,
     private val unrestrictRepository: UnrestrictRepository
 ) : ViewModel() {
 
@@ -44,7 +44,7 @@ class TorrentDetailsViewModel @Inject constructor(
     }
 
     private suspend fun getToken(): String {
-        val token = credentialsRepository.getToken()
+        val token = protoStore.getCredentials().accessToken
         if (token.isBlank() || token.length < 5)
             throw IllegalArgumentException("Loaded token was empty or wrong: $token")
 
@@ -68,7 +68,7 @@ class TorrentDetailsViewModel @Inject constructor(
 
     fun downloadTorrent() {
         viewModelScope.launch {
-            val token = credentialsRepository.getToken()
+            val token = protoStore.getCredentials().accessToken
             torrentLiveData.value?.let { torrent ->
                 val links = torrent.peekContent()?.links
                 if (links != null) {

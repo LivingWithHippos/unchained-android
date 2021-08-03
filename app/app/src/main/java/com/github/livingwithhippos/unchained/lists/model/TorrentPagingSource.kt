@@ -1,7 +1,7 @@
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import com.github.livingwithhippos.unchained.data.local.ProtoStore
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
-import com.github.livingwithhippos.unchained.data.repositoy.CredentialsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.TorrentsRepository
 import retrofit2.HttpException
 import java.io.IOException
@@ -13,13 +13,13 @@ private const val TORRENT_STARTING_PAGE_INDEX = 1
  */
 class TorrentPagingSource(
     private val torrentsRepository: TorrentsRepository,
-    private val credentialsRepository: CredentialsRepository,
+    private val protoStore: ProtoStore,
     private val query: String,
 ) : PagingSource<Int, TorrentItem>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, TorrentItem> {
         val page = params.key ?: TORRENT_STARTING_PAGE_INDEX
-        val token = credentialsRepository.getToken()
+        val token = protoStore.getCredentials().accessToken
         if (token.length < 5)
             throw IllegalArgumentException("Error loading token: $token")
 

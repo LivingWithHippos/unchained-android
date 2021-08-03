@@ -33,7 +33,6 @@ interface UnchainedNetworkException
 
 /**
  * Helper function to quickly debug network errors. Will output them using Timber.
- *
  */
 fun UnchainedNetworkException.printError() {
     when (this) {

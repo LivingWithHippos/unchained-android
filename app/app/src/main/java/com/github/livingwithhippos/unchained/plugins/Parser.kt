@@ -695,12 +695,10 @@ class Parser(
     private fun cleanName(name: String): String {
         val textFromHtml: Spanned = HtmlCompat.fromHtml(name, HtmlCompat.FROM_HTML_MODE_COMPACT)
         return textFromHtml.trim()
-            // replace newlines with spaces
-            .replace("\\R+".toRegex(), " ")
+            // replace newlines anf multiple spaces with single space
+            .replace("[\\t\\n\\r\\s]+".toRegex(), " ")
             // remove all html tags from the name. Will replace anything like <*> if it's in the name
             .replace("<[^>]+>".toRegex(), "")
-            // replace multiple spaces with single space
-            .replace("\\s{2,}".toRegex(), " ")
     }
 
     companion object {

@@ -52,6 +52,19 @@ data class Token(
 /**
  * Enum class that represents the possible authentication states
  */
+// todo: replace with sealed class for passing around the bad token or the credentials
 enum class AuthenticationState {
     AUTHENTICATED, UNAUTHENTICATED, BAD_TOKEN, ACCOUNT_LOCKED, AUTHENTICATED_NO_PREMIUM
+}
+
+sealed class AuthenticationStatus {
+    object Unauthenticated : AuthenticationStatus()
+    object RefreshToken : AuthenticationStatus()
+    data class Authenticated(val user: User) : AuthenticationStatus()
+    data class AuthenticatedNoPremium(val user: User) : AuthenticationStatus()
+    data class NeedUserAction(val actionNeeded: UserAction) : AuthenticationStatus()
+}
+
+enum class UserAction {
+    PERMISSION_DENIED, TFA_NEEDED, TFA_PENDING, IP_NOT_ALLOWED, UNKNOWN, NETWORK_ERROR, RETRY_LATER
 }

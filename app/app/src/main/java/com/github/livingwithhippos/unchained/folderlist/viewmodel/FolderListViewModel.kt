@@ -5,9 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.livingwithhippos.unchained.data.local.ProtoStore
 import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkException
-import com.github.livingwithhippos.unchained.data.repositoy.CredentialsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.DownloadRepository
 import com.github.livingwithhippos.unchained.data.repositoy.UnrestrictRepository
 import com.github.livingwithhippos.unchained.folderlist.view.FolderListFragment
@@ -25,7 +25,7 @@ class FolderListViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val preferences: SharedPreferences,
     private val unrestrictRepository: UnrestrictRepository,
-    private val credentialsRepository: CredentialsRepository,
+    private val protoStore: ProtoStore,
     private val downloadRepository: DownloadRepository
 ) : ViewModel() {
 
@@ -42,7 +42,7 @@ class FolderListViewModel @Inject constructor(
 
     fun retrieveFolderFileList(folderLink: String) {
         viewModelScope.launch {
-            val token = credentialsRepository.getToken()
+            val token = protoStore.getCredentials().accessToken
 
             val filesList: EitherResult<UnchainedNetworkException, List<String>> =
                 unrestrictRepository.getEitherFolderLinks(token, folderLink)
@@ -57,7 +57,7 @@ class FolderListViewModel @Inject constructor(
     fun retrieveFiles(links: List<String>) {
         viewModelScope.launch {
 
-            val token = credentialsRepository.getToken()
+            val token = protoStore.getCredentials().accessToken
             // either first time or there were some errors, re-download
             if (links.size != getRetrievedLinks()) {
 
@@ -99,7 +99,7 @@ class FolderListViewModel @Inject constructor(
 
     fun deleteDownload(id: String) {
         viewModelScope.launch {
-            val token = credentialsRepository.getToken()
+            val token = protoStore.getCredentials().accessToken
             val deleted = downloadRepository.deleteDownload(token, id)
             if (deleted == null)
                 deletedDownloadLiveData.postEvent(-1)
@@ -154,7 +154,8 @@ class FolderListViewModel @Inject constructor(
     }
 
     fun getListSortPreference(): String {
-        return preferences.getString(KEY_LIST_SORTING, FolderListFragment.TAG_DEFAULT_SORT) ?: FolderListFragment.TAG_DEFAULT_SORT
+        return preferences.getString(KEY_LIST_SORTING, FolderListFragment.TAG_DEFAULT_SORT)
+            ?: FolderListFragment.TAG_DEFAULT_SORT
     }
 
     companion object {

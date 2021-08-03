@@ -7,7 +7,8 @@ import javax.inject.Inject
 class HostsApiHelperImpl @Inject constructor(private val hostsApi: HostsApi) :
     HostsApiHelper {
 
-    override suspend fun getHostsStatus(token: String): Response<Host> = hostsApi.getStreams(token)
+    override suspend fun getHostsStatus(token: String): Response<Host> =
+        hostsApi.getHostsStatus(token)
 
     override suspend fun getHostsRegex(): Response<List<String>> = hostsApi.getHostsRegex()
 

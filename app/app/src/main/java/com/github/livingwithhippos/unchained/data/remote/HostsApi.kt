@@ -8,7 +8,7 @@ import retrofit2.http.Header
 interface HostsApi {
 
     @GET("hosts/status/")
-    suspend fun getStreams(
+    suspend fun getHostsStatus(
         @Header("Authorization") token: String
     ): Response<Host>
 

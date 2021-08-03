@@ -1,4 +1,4 @@
-package com.github.livingwithhippos.unchained.settings
+package com.github.livingwithhippos.unchained.settings.view
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity

@@ -24,7 +24,7 @@ import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.data.model.APIError
 import com.github.livingwithhippos.unchained.data.model.ApiConversionError
-import com.github.livingwithhippos.unchained.data.model.AuthenticationState
+import com.github.livingwithhippos.unchained.data.model.AuthenticationStatus
 import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.data.model.EmptyBodyError
 import com.github.livingwithhippos.unchained.data.model.NetworkError
@@ -243,25 +243,24 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
             }
         }
 
+
         // checks the authentication state. Needed to avoid automatic API calls before the authentication process is finished
-        activityViewModel.authenticationState.observe(
+        activityViewModel.newAuthenticationState.observe(
             viewLifecycleOwner,
             {
                 when (it.peekContent()) {
-                    AuthenticationState.AUTHENTICATED, AuthenticationState.AUTHENTICATED_NO_PREMIUM -> {
+                    is AuthenticationStatus.Authenticated, is AuthenticationStatus.AuthenticatedNoPremium -> {
                         // register observers if not already registered
                         if (!viewModel.downloadsLiveData.hasActiveObservers())
                             viewModel.downloadsLiveData.observe(
                                 viewLifecycleOwner,
                                 downloadObserver
                             )
+
                         if (!viewModel.torrentsLiveData.hasActiveObservers())
                             viewModel.torrentsLiveData.observe(viewLifecycleOwner, torrentObserver)
                     }
                     else -> {
-                        // remove observers if present
-                        viewModel.downloadsLiveData.removeObserver(downloadObserver)
-                        viewModel.torrentsLiveData.removeObserver(torrentObserver)
                     }
                 }
             }
@@ -404,8 +403,8 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
                 viewModel.deleteTorrent(it)
             }
             bundle.getString("openedTorrentItem")?.let {
-                val authState = activityViewModel.authenticationState.value?.peekContent()
-                if (authState == AuthenticationState.AUTHENTICATED) {
+                val authState = activityViewModel.newAuthenticationState.value?.peekContent()
+                if (authState is AuthenticationStatus.Authenticated) {
                     val action = ListsTabFragmentDirections.actionListsTabToTorrentDetails(it)
 
                     // workaround to avoid issues when the dialog still hasn't been popped from the navigation stack
@@ -470,7 +469,7 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
                             when (error.errorCode) {
                                 8 -> {
                                     // bad token, try refreshing it
-                                    activityViewModel.setBadToken()
+                                    activityViewModel.setAuthStatus(AuthenticationStatus.RefreshToken)
                                     context?.showToast(R.string.refreshing_token)
                                 }
                             }
@@ -603,8 +602,8 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
     }
 
     override fun onClick(item: DownloadItem) {
-        val authState = activityViewModel.authenticationState.value?.peekContent()
-        if (authState == AuthenticationState.AUTHENTICATED) {
+        val authState = activityViewModel.newAuthenticationState.value?.peekContent()
+        if (authState is AuthenticationStatus.Authenticated) {
             val action = ListsTabFragmentDirections.actionListsTabToDownloadDetails(item)
             var loop = 0
             val controller = findNavController()
@@ -620,8 +619,8 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
     }
 
     override fun onClick(item: TorrentItem) {
-        val authState = activityViewModel.authenticationState.value?.peekContent()
-        if (authState == AuthenticationState.AUTHENTICATED) {
+        val authState = activityViewModel.newAuthenticationState.value?.peekContent()
+        if (authState is AuthenticationStatus.Authenticated) {
             when (item.status) {
                 "downloaded" -> {
                     if (item.links.size > 1) {

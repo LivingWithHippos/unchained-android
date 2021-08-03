@@ -3,10 +3,10 @@ package com.github.livingwithhippos.unchained.newdownload.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.livingwithhippos.unchained.data.local.ProtoStore
 import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkException
 import com.github.livingwithhippos.unchained.data.model.UploadedTorrent
-import com.github.livingwithhippos.unchained.data.repositoy.CredentialsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.HostsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.TorrentsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.UnrestrictRepository
@@ -26,10 +26,10 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class NewDownloadViewModel @Inject constructor(
-    private val credentialsRepository: CredentialsRepository,
     private val unrestrictRepository: UnrestrictRepository,
     private val torrentsRepository: TorrentsRepository,
-    private val hostsRepository: HostsRepository
+    private val hostsRepository: HostsRepository,
+    private val protoStore: ProtoStore,
 ) : ViewModel() {
 
     // use Event since navigating back to this fragment would trigger this observable again
@@ -77,7 +77,7 @@ class NewDownloadViewModel @Inject constructor(
 
     fun unrestrictContainer(link: String) {
         viewModelScope.launch {
-            val token = credentialsRepository.getToken()
+            val token = protoStore.getCredentials().accessToken
             val links = unrestrictRepository.getContainerLinks(token, link)
             if (links != null)
                 containerLiveData.postEvent(Link.Container(links))
@@ -123,14 +123,14 @@ class NewDownloadViewModel @Inject constructor(
     }
 
     private suspend fun getToken(): String {
-        val token = credentialsRepository.getToken()
+        val token = protoStore.getCredentials().accessToken
         if (token.isBlank())
             throw IllegalArgumentException("Loaded token was null or empty: $token")
         return token
     }
 
     fun postMessage(message: String) {
-       toastLiveData.postEvent(message)
+        toastLiveData.postEvent(message)
     }
 }
 
