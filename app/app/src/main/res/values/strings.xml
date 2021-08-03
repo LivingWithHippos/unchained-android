@@ -126,7 +126,7 @@
     <string name="torrent_already_active">Torrent already active</string>
     <string name="logout">Logout</string>
     <string name="account_page">Account Page</string>
-    <string name="login_type_open">Logged in with the open token. Some features such as streaming are unavailable.</string>
+    <string name="login_type_open">Logged in with the open token. Some features such as transcoding are unavailable.</string>
     <string name="login_type_private">Logged in with private token. All features are available.</string>
     <string name="api_needs_private_token">This function requires a private API token</string>
     <string name="torrents">Torrents</string>

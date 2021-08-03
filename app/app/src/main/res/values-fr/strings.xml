@@ -121,7 +121,7 @@
     <string name="torrent_already_active">Torrent déjà actif</string>
     <string name="logout">Déconnexion</string>
     <string name="account_page">Page du compte</string>
-    <string name="login_type_open">Identifié avec le jeton ouvert Certaines fonctionnalités comme le streaming ne sont pas disponibles.</string>
+    <string name="login_type_open">Identifié avec le jeton ouvert Certaines fonctionnalités comme le transcodage ne sont pas disponibles.</string>
     <string name="login_type_private">Identifié avec un jeton privé. Toutes les fonctionnalités sont disponibles.</string>
     <string name="api_needs_private_token">Cette fonction requiert un jeton d’API privé</string>
     <string name="torrents">Torrents</string>
