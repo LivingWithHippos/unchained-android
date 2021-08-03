@@ -12,6 +12,7 @@ import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.data.model.AuthenticationStatus
 import com.github.livingwithhippos.unchained.databinding.FragmentUserProfileBinding
+import com.github.livingwithhippos.unchained.lists.view.ListsTabFragment
 import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Companion.KEY_REFERRAL_ASKED
 import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Companion.KEY_REFERRAL_USE
 import com.github.livingwithhippos.unchained.user.viewmodel.UserProfileViewModel
@@ -97,6 +98,7 @@ class UserProfileFragment : UnchainedFragment() {
         activityViewModel.newAuthenticationState.observe(
             viewLifecycleOwner,
             {
+                userBinding.srLayout.isRefreshing = false
                 when (it.peekContent()) {
                     AuthenticationStatus.Unauthenticated -> {
                         val action = UserProfileFragmentDirections.actionUserToAuthentication()
@@ -120,6 +122,11 @@ class UserProfileFragment : UnchainedFragment() {
 
         userBinding.bLogout.setOnClickListener {
             activityViewModel.logout()
+        }
+
+
+        userBinding.srLayout.setOnRefreshListener {
+            activityViewModel.setupAuthenticationStatus()
         }
 
         return userBinding.root
