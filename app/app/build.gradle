@@ -42,8 +42,8 @@ android {
         applicationId "com.github.livingwithhippos.unchained"
         minSdkVersion 22
         targetSdkVersion 30
-        versionCode 23
-        versionName "4.16.4-beta"
+        versionCode 24
+        versionName "4.18.3-beta"
         // limit resources for a list of locales
         // resConfigs "en", "it"
 
