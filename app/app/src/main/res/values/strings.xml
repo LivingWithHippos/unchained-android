@@ -534,4 +534,6 @@
     <string name="retry_later">Retry later</string>
     <string name="overlay_title">Overlay</string>
     <string name="overlay_summary">Let this app overlay over others</string>
+    <string name="content_description_plugins_link">Link to plugins page</string>
+    <string name="get_plugins">Get more plugins</string>
 </resources>

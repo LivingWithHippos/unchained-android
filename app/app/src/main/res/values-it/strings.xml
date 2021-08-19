@@ -323,4 +323,6 @@
     <string name="retry_later">Riprova più tardi</string>
     <string name="overlay_summary">Permetti alla app di sovrapporsi ad altre</string>
     <string name="overlay_title">Visualizzazione in primo piano</string>
+    <string name="get_plugins">Ottieni più plugins</string>
+    <string name="content_description_plugins_link">Collegamento alla pagina dei plugin</string>
 </resources>

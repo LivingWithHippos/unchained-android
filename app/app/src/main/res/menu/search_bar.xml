@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/plugins_link"
+        android:contentDescription="@string/content_description_plugins_link"
+        android:icon="@drawable/icon_link"
+        android:title="@string/get_plugins"
+        app:actionViewClass="androidx.appcompat.widget.SearchView"
+        app:showAsAction="never" />
+
+</menu>
