@@ -183,13 +183,13 @@ dependencies {
     def acra_version = "5.8.4"
     def androidx_core_version = "1.6.0"
     def appcompat_version = "1.3.1"
-    def coil_version = '1.3.1'
+    def coil_version = '1.3.2'
     def constraint_layout_version = '2.1.0'
     def coroutines_version = "1.5.1"
-    def datastore_version = "1.0.0-rc02"
+    def datastore_version = "1.0.0"
     def flexbox_version = "3.0.0"
     def fragment_version = '1.3.6'
-    def jsoup_version = '1.14.1'
+    def jsoup_version = '1.14.2'
     def lifecycle_version = "2.3.1"
     def material_version = '1.4.0'
     def moshi_version = '1.12.0'
@@ -200,7 +200,7 @@ dependencies {
     def retrofit_version = '2.9.0'
     def room_version = "2.3.0"
     def swipe_version = "1.1.0"
-    def timber_version = "4.7.1"
+    def timber_version = "5.0.1"
 
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
