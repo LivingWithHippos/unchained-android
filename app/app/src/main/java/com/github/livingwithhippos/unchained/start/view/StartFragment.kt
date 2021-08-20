@@ -11,6 +11,7 @@ import com.github.livingwithhippos.unchained.data.model.AuthenticationStatus
 import com.github.livingwithhippos.unchained.data.model.UserAction
 import com.github.livingwithhippos.unchained.databinding.FragmentStartBinding
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 /**
  * A simple [UnchainedFragment] subclass.
@@ -32,12 +33,24 @@ class StartFragment : UnchainedFragment() {
             {
                 when (it.peekContent()) {
                     is AuthenticationStatus.Authenticated -> {
-                        val action = StartFragmentDirections.actionStartFragmentToUserProfileFragment()
-                        findNavController().navigate(action)
+                        try {
+                            val action =
+                                StartFragmentDirections.actionStartFragmentToUserProfileFragment()
+                            findNavController().navigate(action)
+                        } catch (e: IllegalArgumentException) {
+                            Timber.e("This could have been a crash")
+                            // todo: fix this and remove this bypass
+                        }
                     }
                     is AuthenticationStatus.AuthenticatedNoPremium -> {
-                        val action = StartFragmentDirections.actionStartFragmentToUserProfileFragment()
-                        findNavController().navigate(action)
+                        try {
+                            val action =
+                                StartFragmentDirections.actionStartFragmentToUserProfileFragment()
+                            findNavController().navigate(action)
+                        } catch (e: IllegalArgumentException) {
+                            Timber.e("This could have been a crash")
+                            // todo: fix this and remove this bypass
+                        }
                     }
                     is AuthenticationStatus.RefreshToken -> {
                         activityViewModel.refreshToken()

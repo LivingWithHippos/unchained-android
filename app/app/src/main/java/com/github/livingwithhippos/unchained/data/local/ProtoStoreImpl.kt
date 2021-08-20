@@ -64,7 +64,11 @@ class ProtoStoreImpl @Inject constructor(
     }
 
     override suspend fun deleteCredentials() {
-        context.credentialsDataStore.updateData { it.toBuilder().clear().build() }
+        context.credentialsDataStore.updateData {
+            // fixme: using logout these lines do not work
+            it.toBuilder().clear().build()
+            // it.defaultInstanceForType
+        }
     }
 
     override suspend fun deleteIncompleteCredentials() {
