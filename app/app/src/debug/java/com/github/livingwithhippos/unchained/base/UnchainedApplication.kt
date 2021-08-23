@@ -66,7 +66,7 @@ class UnchainedApplication : Application() {
             .setIdMode(DeviceId.Type.OPEN_UDID)
             .enableCrashReporting()
             // if true will print internal countly logs to the console
-            .setLoggingEnabled(true)
+            .setLoggingEnabled(false)
         // .setParameterTamperingProtectionSalt("SampleSalt")
 
         Countly.sharedInstance().init(config)
