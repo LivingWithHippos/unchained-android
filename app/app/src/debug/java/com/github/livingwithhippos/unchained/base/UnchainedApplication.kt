@@ -7,6 +7,8 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Build
 import com.github.livingwithhippos.unchained.BuildConfig
+import com.github.livingwithhippos.unchained.BuildConfig.COUNTLY_APP_KEY
+import com.github.livingwithhippos.unchained.BuildConfig.COUNTLY_URL
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.local.ProtoStore
 import com.github.livingwithhippos.unchained.data.repositoy.CredentialsRepository
@@ -15,12 +17,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import org.acra.config.httpSender
-import org.acra.config.toast
-import org.acra.data.StringFormat
-import org.acra.ktx.initAcra
-import org.acra.security.TLS
-import org.acra.sender.HttpSender
+import ly.count.android.sdk.Countly
+import ly.count.android.sdk.CountlyConfig
+import ly.count.android.sdk.DeviceId
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -62,37 +61,18 @@ class UnchainedApplication : Application() {
 
         createNotificationChannel()
 
-        if (BuildConfig.DEBUG) {
-            Timber.plant(Timber.DebugTree())
-        }
-    }
+        Timber.plant(Timber.DebugTree())
 
-    override fun attachBaseContext(base: Context) {
-        super.attachBaseContext(base)
+        val config: CountlyConfig = CountlyConfig(this, COUNTLY_APP_KEY, COUNTLY_URL)
+            .setIdMode(DeviceId.Type.OPEN_UDID)
+            .enableCrashReporting()
+            // if true will print internal countly logs to the console
+            .setLoggingEnabled(true)
+        // .setParameterTamperingProtectionSalt("SampleSalt")
 
-        // add error report for debug builds
-        initAcra {
-            // core configuration:
-            buildConfigClass = BuildConfig::class.java
-            reportFormat = StringFormat.JSON
-            httpSender {
-                // required. Https recommended
-                uri = BuildConfig.ACRA_URL
-                // optional. Enables http basic auth
-                basicAuthLogin = BuildConfig.ACRA_LOGIN
-                // required if above set
-                basicAuthPassword = BuildConfig.ACRA_PASSWORD
-                // defaults to POST
-                httpMethod = HttpSender.Method.POST
-                // defaults to false. Recommended if your backend supports it
-                compress = true
-                // defaults to all
-                tlsProtocols = arrayOf(TLS.V1_3, TLS.V1_2)
-            }
-            toast {
-                text = getString(R.string.sending_crash_report)
-            }
-        }
+        Countly.sharedInstance().init(config);
+
+        Timber.e("After calling init. This should return 'true', the value is: ${Countly.sharedInstance().isInitialized}" );
     }
 
     private fun createNotificationChannel() {
