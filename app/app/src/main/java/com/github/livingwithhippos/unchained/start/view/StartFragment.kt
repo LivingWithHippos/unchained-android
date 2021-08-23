@@ -81,9 +81,6 @@ class StartFragment : UnchainedFragment() {
             }
         )
 
-        // check our credentials and decide to navigate to the user fragment or the authentication one.
-        activityViewModel.setupAuthenticationStatus()
-
         binding.bRetry.setOnClickListener {
             activityViewModel.setupAuthenticationStatus()
             binding.loadingCircle.visibility = View.VISIBLE
