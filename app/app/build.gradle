@@ -116,6 +116,7 @@ android {
 
         release {
 
+            // with the separated release/debug files this could be unnecessary now
             buildConfigField("String", "COUNTLY_APP_KEY", "\"" + "not for production" + "\"")
             buildConfigField("String", "COUNTLY_URL", "\"" + "not for production" + "\"")
 

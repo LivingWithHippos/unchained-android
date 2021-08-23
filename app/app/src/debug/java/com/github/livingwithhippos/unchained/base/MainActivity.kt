@@ -60,6 +60,10 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
+    /****************************************************************
+     * ADD CHANGES MADE HERE IN THE RELEASE VERSION OF MAINACTIVITY *
+     ***************************************************************/
+
     private var currentNavController: LiveData<NavController>? = null
     private lateinit var appBarConfiguration: AppBarConfiguration
 
