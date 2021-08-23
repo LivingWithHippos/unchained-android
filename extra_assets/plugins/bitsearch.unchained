@@ -1,0 +1,88 @@
+{
+  "engine_version": 2.0,
+  "version": 1.0,
+  "url": "https://bitsearch.to",
+  "name": "bitsearch",
+  "description": "Parser for bitsearch.to",
+  "supported_categories": {
+    "all": "",
+    "games": "6",
+    "tv": "3",
+    "movies": "2",
+    "music": "7",
+    "books": "9",
+    "anime": "4",
+    "software": "5"
+  },
+  "search": {
+    "category": "${url}/search?q=${query}&category=${category}&page=${page}",
+    "no_category": "${url}/search?q=${query}&page=${page}",
+    "page_start": 1
+  },
+  "download": {
+    "internal": {
+      "link": {
+        "regex_use": "all",
+        "regexps": [
+          {
+            "regex": "href=\"(/torrents/[^\"]+)",
+            "group": 1,
+            "slug_type": "append_url"
+          }
+        ]
+      }
+    },
+    "regexes": {
+      "name": {
+        "regex_use": "first",
+        "regexps": [
+          {
+            "regex": "class=\"mt-0 title\">([^<]+)",
+            "group": 1,
+            "slug_type": "complete"
+          }
+        ]
+      },
+      "magnet": {
+        "regex_use": "first",
+        "regexps": [
+          {
+            "regex": "href=\"(magnet:\\?xt=urn:btih:[^\"]+)",
+            "group": 1,
+            "slug_type": "complete"
+          }
+        ]
+      },
+      "seeders": {
+        "regex_use": "first",
+        "regexps": [
+          {
+            "regex": "<td>\\s*<font color=\"#0AB49A\">(\\d+)",
+            "group": 1,
+            "slug_type": "complete"
+          }
+        ]
+      },
+      "leechers": {
+        "regex_use": "first",
+        "regexps": [
+          {
+            "regex": "<td>\\s*<font color=\"#C35257\">(\\d+)",
+            "group": 1,
+            "slug_type": "complete"
+          }
+        ]
+      },
+      "size": {
+        "regex_use": "first",
+        "regexps": [
+          {
+            "regex": "<Size\\s*<\/td>\\s*<td>([^<]+)",
+            "group": 1,
+            "slug_type": "complete"
+          }
+        ]
+      }
+    }
+  }
+}
