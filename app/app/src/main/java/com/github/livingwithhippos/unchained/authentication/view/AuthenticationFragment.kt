@@ -84,14 +84,16 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
                     )
                     // start the next auth step
                     activityViewModel.getCurrentCredentials().asLiveData()
-                        .observeOnce(viewLifecycleOwner,
+                        .observeOnce(
+                            viewLifecycleOwner,
                             {
                                 viewModel.fetchToken(
                                     secrets.clientId,
                                     it.deviceCode,
                                     secrets.clientSecret
                                 )
-                            })
+                            }
+                        )
                 }
             }
         )
@@ -111,12 +113,15 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
                         )
                     }
                     activityViewModel.getCurrentCredentials().asLiveData()
-                        .observeOnce(viewLifecycleOwner, {
-                            lifecycleScope.launch {
-                                // check the current credentials
-                                activityViewModel.setupAuthenticationStatus(it)
+                        .observeOnce(
+                            viewLifecycleOwner,
+                            {
+                                lifecycleScope.launch {
+                                    // check the current credentials
+                                    activityViewModel.setupAuthenticationStatus(it)
+                                }
                             }
-                        })
+                        )
                 }
             }
         )

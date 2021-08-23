@@ -106,21 +106,19 @@ android {
             signingConfig signingConfigs.debug
 
             if (apiPropertiesFile.exists()) {
-                buildConfigField("String", "ACRA_URL", apiProperties['ACRA_URL'])
-                buildConfigField("String", "ACRA_LOGIN", apiProperties['ACRA_LOGIN'])
-                buildConfigField("String", "ACRA_PASSWORD", apiProperties['ACRA_PASSWORD'])
+                buildConfigField("String", "COUNTLY_APP_KEY", apiProperties['COUNTLY_APP_KEY'])
+                buildConfigField("String", "COUNTLY_URL", apiProperties['COUNTLY_URL'])
             } else {
-                buildConfigField("String", "ACRA_URL", "\""+System.getenv("ACRA_URL")+"\"")
-                buildConfigField("String", "ACRA_LOGIN", "\""+System.getenv("ACRA_LOGIN")+"\"")
-                buildConfigField("String", "ACRA_PASSWORD", "\""+System.getenv("ACRA_PASSWORD")+"\"")
+                buildConfigField("String", "COUNTLY_APP_KEY", "\""+System.getenv("COUNTLY_APP_KEY")+"\"")
+                buildConfigField("String", "COUNTLY_URL", "\""+System.getenv("COUNTLY_URL")+"\"")
             }
         }
 
         release {
 
-            buildConfigField("String", "ACRA_URL", "\"" + "not for production" + "\"")
-            buildConfigField("String", "ACRA_LOGIN", "\"" + "not for production" + "\"")
-            buildConfigField("String", "ACRA_PASSWORD", "\"" + "not for production" + "\"")
+            // with the separated release/debug files this could be unnecessary now
+            buildConfigField("String", "COUNTLY_APP_KEY", "\"" + "not for production" + "\"")
+            buildConfigField("String", "COUNTLY_URL", "\"" + "not for production" + "\"")
 
             signingConfig signingConfigs.release
 
@@ -180,10 +178,10 @@ clean.mustRunAfter copyPlugins
 dependencies {
 
     // def leakcanary_version = '2.4'
-    def acra_version = "5.8.4"
     def androidx_core_version = "1.6.0"
     def appcompat_version = "1.3.1"
     def coil_version = '1.3.2'
+    def countly_version = '20.11.8'
     def constraint_layout_version = '2.1.0'
     def coroutines_version = "1.5.1"
     def datastore_version = "1.0.0"
@@ -283,9 +281,8 @@ dependencies {
     // leak canary
     // debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakcanary_version"
 
-    // acra
-    debugImplementation "ch.acra:acra-http:$acra_version"
-    debugImplementation "ch.acra:acra-toast:$acra_version"
+    // countly
+    debugImplementation "ly.count.android:sdk:$countly_version"
 }
 
 kapt {

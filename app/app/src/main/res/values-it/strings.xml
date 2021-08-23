@@ -321,8 +321,6 @@
     <string name="retry_login">Riprova</string>
     <string name="generic_login_error">Si è verificato un errore durante il login. Puoi controllare la tua connessione, riprovare tra un po\' o fare il login da real-debrid.com per avere più informazioni.</string>
     <string name="retry_later">Riprova più tardi</string>
-    <string name="overlay_summary">Permetti alla app di sovrapporsi ad altre</string>
-    <string name="overlay_title">Visualizzazione in primo piano</string>
     <string name="get_plugins">Ottieni più plugins</string>
     <string name="content_description_plugins_link">Collegamento alla pagina dei plugin</string>
 </resources>

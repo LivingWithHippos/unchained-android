@@ -9,6 +9,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.SharedPreferences
+import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
@@ -24,6 +25,7 @@ import androidx.navigation.NavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
+import com.github.livingwithhippos.unchained.BuildConfig
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.model.AuthenticationStatus
 import com.github.livingwithhippos.unchained.data.model.UserAction
@@ -47,6 +49,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import ly.count.android.sdk.Countly
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -56,6 +59,10 @@ import javax.inject.Inject
  */
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+
+    /****************************************************************
+     * ADD CHANGES MADE HERE IN THE RELEASE VERSION OF MAINACTIVITY *
+     ***************************************************************/
 
     private var currentNavController: LiveData<NavController>? = null
     private lateinit var appBarConfiguration: AppBarConfiguration
@@ -204,7 +211,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-
         @SuppressLint("ShowToast")
         val currentToast: Toast = Toast.makeText(this, "", Toast.LENGTH_SHORT)
 
@@ -260,7 +266,36 @@ class MainActivity : AppCompatActivity() {
                 viewModel.setPluginDownload(queuedDownload.success)
             }
         }
+
+        if (BuildConfig.DEBUG) {
+            Countly.onCreate(this)
+        }
     }
+
+    // countly crash reporter set up. Debug mode only
+    override fun onStart() {
+        super.onStart()
+        if (BuildConfig.DEBUG) {
+            Countly.sharedInstance().onStart(this)
+        }
+    }
+
+    override fun onStop() {
+        if (BuildConfig.DEBUG) {
+            Countly.sharedInstance().onStop()
+        }
+        super.onStop()
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+
+        if (BuildConfig.DEBUG) {
+            Countly.sharedInstance().onConfigurationChanged(newConfig)
+        }
+    }
+
+    // end of countly crash reporter set up.
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater = menuInflater

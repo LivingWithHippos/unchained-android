@@ -117,11 +117,6 @@
             app:title="@string/referral" />
 
         <Preference
-            app:key="overlay"
-            app:summary="@string/overlay_summary"
-            app:title="@string/overlay_title" />
-
-        <Preference
             app:key="feedback"
             app:summary="@string/feedback_summary"
             app:title="@string/feedback_title" />
