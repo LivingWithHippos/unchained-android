@@ -207,7 +207,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-
         @SuppressLint("ShowToast")
         val currentToast: Toast = Toast.makeText(this, "", Toast.LENGTH_SHORT)
 

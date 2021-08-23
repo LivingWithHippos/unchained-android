@@ -6,7 +6,6 @@ import android.app.NotificationManager
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Build
-import com.github.livingwithhippos.unchained.BuildConfig
 import com.github.livingwithhippos.unchained.BuildConfig.COUNTLY_APP_KEY
 import com.github.livingwithhippos.unchained.BuildConfig.COUNTLY_URL
 import com.github.livingwithhippos.unchained.R
@@ -70,9 +69,7 @@ class UnchainedApplication : Application() {
             .setLoggingEnabled(true)
         // .setParameterTamperingProtectionSalt("SampleSalt")
 
-        Countly.sharedInstance().init(config);
-
-        Timber.e("After calling init. This should return 'true', the value is: ${Countly.sharedInstance().isInitialized}" );
+        Countly.sharedInstance().init(config)
     }
 
     private fun createNotificationChannel() {
