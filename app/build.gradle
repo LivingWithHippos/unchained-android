@@ -3,7 +3,9 @@ buildscript {
     ext.kotlin_version = '1.5.30'
     ext.hilt_version = '2.38.1'
     ext.ktlint_gradle_version = '10.1.0'
-    ext.nav_version = "2.3.5"
+    ext.nav_version = "2.4.0-alpha08"
+    ext.protobuf_plugin_version = "0.8.17"
+    ext.protobuf_version = "3.17.3"
 
     repositories {
         google()
@@ -11,11 +13,12 @@ buildscript {
     }
     dependencies {
 
+        // current version of android studio accept 7.1.0-alpha05 at max
         classpath 'com.android.tools.build:gradle:7.1.0-alpha05'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$nav_version"
         classpath "com.google.dagger:hilt-android-gradle-plugin:$hilt_version"
-        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.17'
+        classpath "com.google.protobuf:protobuf-gradle-plugin:$protobuf_plugin_version"
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
