@@ -169,11 +169,6 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
         return sb
     }
 
-    override fun onCopyClick(text: String) {
-        copyToClipboard("real-debrid authorization code", text)
-        context?.showToast(R.string.code_copied)
-    }
-
     override fun onSaveCodeClick(codeInputField: TextInputEditText) {
         val token: String = codeInputField.text.toString().trim()
         // mine is 52 characters
@@ -209,7 +204,6 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
 }
 
 interface ButtonListener {
-    fun onCopyClick(text: String)
     fun onSaveCodeClick(codeInputField: TextInputEditText)
     fun onPasteCodeClick(codeInputField: TextInputEditText)
     fun onOpenLinkClick(url: String)
