@@ -4,15 +4,18 @@
         android:id="@+id/navigation_home"
         android:enabled="true"
         android:icon="@drawable/icon_crown"
+        android:contentDescription="@string/user"
         android:title="@string/user" />
     <item
         android:id="@+id/navigation_lists"
         android:enabled="true"
         android:icon="@drawable/icon_lists"
+        android:contentDescription="@string/downloads"
         android:title="@string/downloads" />
     <item
         android:id="@+id/navigation_search"
         android:enabled="true"
         android:icon="@drawable/icon_search_symbol"
+        android:contentDescription="@string/search"
         android:title="@string/search" />
 </menu>
