@@ -411,7 +411,8 @@ class MainActivityViewModel @Inject constructor(
             // 3. if they are missing we don't have any credentials
             // set as unauthenticated to go to authentication flow
             if (availableCredentials == null) {
-                newAuthenticationState.postEvent(AuthenticationStatus.Unauthenticated)
+                if (newAuthenticationState.value?.peekContent() != AuthenticationStatus.Unauthenticated)
+                    newAuthenticationState.postEvent(AuthenticationStatus.Unauthenticated)
             } else {
                 // 4 copy the db credentials to the datastore
                 //todo : check if this works and if it triggers a collect update otherwise run another collect below
