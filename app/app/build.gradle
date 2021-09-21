@@ -242,9 +242,8 @@ dependencies {
     // paging
     implementation deps.paging_runtime
 
-    // arrow
-    // implementation "io.arrow-kt:arrow-core:$arrow_version"
-    // kapt "io.arrow-kt:arrow-meta:$arrow_version"
+    // state-machine
+    implementation deps.statemachine
 
     // timber
     implementation deps.timber
