@@ -414,7 +414,7 @@ class MainActivityViewModel @Inject constructor(
                 if (newAuthenticationState.value?.peekContent() != AuthenticationStatus.Unauthenticated)
                     newAuthenticationState.postEvent(AuthenticationStatus.Unauthenticated)
             } else {
-                // 4 copy the db credentials to the datastore
+                // 4 copy the db credentials to the datastore and then check them
                 //todo : check if this works and if it triggers a collect update otherwise run another collect below
                 protoStore.setCredentials(
                     deviceCode = availableCredentials.deviceCode,
@@ -423,6 +423,7 @@ class MainActivityViewModel @Inject constructor(
                     accessToken = availableCredentials.accessToken,
                     refreshToken = availableCredentials.refreshToken
                 )
+                getUser(updateAuthStatus = true).collect { }
             }
         } else {
             // 5 test the datastore credentials
