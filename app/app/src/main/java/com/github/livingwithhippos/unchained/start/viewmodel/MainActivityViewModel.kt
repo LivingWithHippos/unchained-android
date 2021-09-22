@@ -24,10 +24,11 @@ import com.github.livingwithhippos.unchained.data.repositoy.CredentialsRepositor
 import com.github.livingwithhippos.unchained.data.repositoy.HostsRepository
 import com.github.livingwithhippos.unchained.data.repositoy.PluginRepository
 import com.github.livingwithhippos.unchained.data.repositoy.PluginRepository.Companion.TYPE_UNCHAINED
-import com.github.livingwithhippos.unchained.data.repositoy.UserRepository
-import com.github.livingwithhippos.unchained.data.repositoy.VariousApiRepository
 import com.github.livingwithhippos.unchained.lists.view.ListsTabFragment
 import com.github.livingwithhippos.unchained.plugins.model.Plugin
+import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationEvent
+import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationSideEffect
+import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationState
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.PRIVATE_TOKEN
@@ -35,6 +36,7 @@ import com.github.livingwithhippos.unchained.utilities.extension.getDownloadedFi
 import com.github.livingwithhippos.unchained.utilities.extension.isMagnet
 import com.github.livingwithhippos.unchained.utilities.extension.isTorrent
 import com.github.livingwithhippos.unchained.utilities.postEvent
+import com.tinder.StateMachine
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -83,6 +85,86 @@ class MainActivityViewModel @Inject constructor(
     val messageLiveData = MutableLiveData<Event<Int>>()
 
     private var refreshJob: Job? = null
+
+    private val authStateMachine: StateMachine <
+            FSMAuthenticationState,
+            FSMAuthenticationEvent,
+            FSMAuthenticationSideEffect
+            > = StateMachine.create {
+
+        initialState(FSMAuthenticationState.GetCredentials)
+
+        state<FSMAuthenticationState.GetCredentials> {
+            on<FSMAuthenticationEvent.OnCredentials> {
+                if (it.credentials == null)
+                    transitionTo(FSMAuthenticationState.CheckCredentials)
+                else {
+
+                    transitionTo(FSMAuthenticationState.NewLogin)
+                }
+            }
+        }
+
+        state<FSMAuthenticationState.CheckCredentials> {
+            on<FSMAuthenticationEvent.onWorkingOpenToken> {
+                transitionTo(FSMAuthenticationState.Ready)
+            }
+            on<FSMAuthenticationEvent.onWorkingPrivateToken> {
+                transitionTo(FSMAuthenticationState.Ready)
+            }
+            on<FSMAuthenticationEvent.onNotWorking> {
+                transitionTo(FSMAuthenticationState.NewLogin)
+            }
+        }
+
+
+        state<FSMAuthenticationState.NewLogin> {
+            on<FSMAuthenticationEvent.onAuthLoaded> {
+                transitionTo(FSMAuthenticationState.WaitUser)
+            }
+            on<FSMAuthenticationEvent.onPrivateToken> {
+                transitionTo(FSMAuthenticationState.CheckCredentials)
+            }
+        }
+
+        state<FSMAuthenticationState.WaitUser> {
+            on<FSMAuthenticationEvent.onUserConfirmationLoaded> {
+                transitionTo(FSMAuthenticationState.WaitToken)
+            }
+            on<FSMAuthenticationEvent.onUserConfirmationMissing> {
+                transitionTo(FSMAuthenticationState.WaitUser)
+            }
+            on<FSMAuthenticationEvent.onPrivateToken> {
+                transitionTo(FSMAuthenticationState.CheckCredentials)
+            }
+        }
+
+        state<FSMAuthenticationState.WaitToken> {
+            on<FSMAuthenticationEvent.onOpenTokenLoaded> {
+                transitionTo(FSMAuthenticationState.CheckCredentials)
+            }
+            on<FSMAuthenticationEvent.onPrivateToken> {
+                transitionTo(FSMAuthenticationState.CheckCredentials)
+            }
+        }
+
+        state<FSMAuthenticationState.Ready> {
+            on<FSMAuthenticationEvent.onExpired> {
+                transitionTo(FSMAuthenticationState.Refreshing)
+            }
+        }
+
+        state<FSMAuthenticationState.Refreshing> {
+            on<FSMAuthenticationEvent.onRefreshed> {
+                transitionTo(FSMAuthenticationState.Ready)
+            }
+        }
+
+        onTransition {
+            val validTransition = it as? StateMachine.Transition.Valid ?: return@onTransition
+            Timber.d("statemachine", validTransition)
+        }
+    }
 
 
     fun setAuthStatus(status: AuthenticationStatus) {
