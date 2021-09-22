@@ -192,7 +192,7 @@ room.rxjava2 = "androidx.room:room-rxjava2:$versions.room"
 room.testing = "androidx.room:room-testing:$versions.room"
 deps.room = room
 
-deps.statemachine = "com.tinder.statemachine:$versions.statemachine"
+deps.statemachine = "com.tinder.statemachine:statemachine:$versions.statemachine"
 
 deps.swiperefreshlayout = "androidx.swiperefreshlayout:swiperefreshlayout:$versions.swiperefreshlayout"
 
