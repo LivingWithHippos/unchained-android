@@ -729,7 +729,7 @@ class MainActivityViewModel @Inject constructor(
         viewModelScope.launch {
             // retrieve the datastore credentials (will return en empty instance if none)
             val protoCredentials = protoStore.getCredentials()
-            if (protoCredentials.accessToken != null) {
+            if (protoCredentials.accessToken.isNotBlank()) {
                 transitionAuthenticationMachine(FSMAuthenticationEvent.OnAvailableCredentials)
             } else {
                 transitionAuthenticationMachine(FSMAuthenticationEvent.OnMissingCredentials)

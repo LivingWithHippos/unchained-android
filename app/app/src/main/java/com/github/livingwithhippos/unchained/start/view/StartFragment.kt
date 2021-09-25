@@ -12,6 +12,7 @@ import com.github.livingwithhippos.unchained.databinding.FragmentStartBinding
 import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationEvent
 import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationState
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 /**
  * A simple [UnchainedFragment] subclass.
@@ -65,6 +66,7 @@ class StartFragment : UnchainedFragment() {
                 }
                 else -> {
                     // ignore other statuses
+                    Timber.d("AuthMachine State: ${it.peekContent()}")
                 }
             }
         })
