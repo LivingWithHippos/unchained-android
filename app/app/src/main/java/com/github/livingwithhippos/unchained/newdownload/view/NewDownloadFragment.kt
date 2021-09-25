@@ -27,6 +27,8 @@ import com.github.livingwithhippos.unchained.databinding.NewDownloadFragmentBind
 import com.github.livingwithhippos.unchained.lists.view.ListsTabFragment
 import com.github.livingwithhippos.unchained.newdownload.viewmodel.Link
 import com.github.livingwithhippos.unchained.newdownload.viewmodel.NewDownloadViewModel
+import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationEvent
+import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationState
 import com.github.livingwithhippos.unchained.utilities.CONTAINER_EXTENSION_PATTERN
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.EventObserver
@@ -177,11 +179,21 @@ class NewDownloadFragment : UnchainedFragment() {
                             8 -> {
                                 viewModel.postMessage(getString(R.string.refreshing_token))
                                 // try refreshing the token
-                                activityViewModel.setAuthStatus(AuthenticationStatus.RefreshToken)
+                                if (activityViewModel.getAuthenticationMachineState() is FSMAuthenticationState.AuthenticatedOpenToken)
+                                    activityViewModel.transitionAuthenticationMachine(FSMAuthenticationEvent.OnExpiredOpenToken)
+                                else
+                                    Timber.e("Asked for a refresh while in a wrong state: ${activityViewModel.getAuthenticationMachineState()}")
                             }
                             in 9..15 -> {
                                 viewModel.postMessage(errorMessage)
-                                activityViewModel.setAuthStatus(AuthenticationStatus.Unauthenticated)
+                                when (activityViewModel.getAuthenticationMachineState()) {
+                                    FSMAuthenticationState.AuthenticatedOpenToken, FSMAuthenticationState.AuthenticatedPrivateToken, FSMAuthenticationState.RefreshingOpenToken -> {
+                                        activityViewModel.transitionAuthenticationMachine(FSMAuthenticationEvent.OnAuthenticationError)
+                                    }
+                                    else -> {
+                                        Timber.e("Asked for logout while in a wrong state: ${activityViewModel.getAuthenticationMachineState()}")
+                                    }
+                                }
                             }
                             else -> {
                                 viewModel.postMessage(errorMessage)
@@ -217,8 +229,9 @@ class NewDownloadFragment : UnchainedFragment() {
         // add the unrestrict button listener
         binding.bUnrestrict.setOnClickListener {
 
-            val authState = activityViewModel.newAuthenticationState.value?.peekContent()
-            if (authState is AuthenticationStatus.Authenticated) {
+            // todo: check if opening from the browser trigger the ExpiredToken option
+            val authState = activityViewModel.getAuthenticationMachineState()
+            if (authState is FSMAuthenticationState.AuthenticatedPrivateToken || authState is FSMAuthenticationState.AuthenticatedOpenToken) {
                 val link: String = binding.tiLink.text.toString().trim()
                 when {
                     // this must be before the link.isWebUrl() check
@@ -309,11 +322,15 @@ class NewDownloadFragment : UnchainedFragment() {
             }
 
         binding.bUploadFile.setOnClickListener {
-            val authState = activityViewModel.newAuthenticationState.value?.peekContent()
-            if (authState is AuthenticationStatus.Authenticated)
-                filePicker.launch("*/*")
-            else
-                viewModel.postMessage(getString(R.string.premium_needed))
+
+            when (activityViewModel.getAuthenticationMachineState()) {
+                FSMAuthenticationState.AuthenticatedOpenToken, FSMAuthenticationState.AuthenticatedPrivateToken, FSMAuthenticationState.RefreshingOpenToken -> {
+                    filePicker.launch("*/*")
+                }
+                else -> {
+                    viewModel.postMessage(getString(R.string.premium_needed))
+                }
+            }
         }
     }
 
