@@ -9,7 +9,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.SharedPreferences
-import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
@@ -25,7 +24,6 @@ import androidx.navigation.NavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
-import com.github.livingwithhippos.unchained.BuildConfig
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.model.UserAction
 import com.github.livingwithhippos.unchained.data.repositoy.PluginRepository.Companion.TYPE_UNCHAINED
@@ -114,59 +112,62 @@ class MainActivity : AppCompatActivity() {
             null
         )
 
-        viewModel.fsmAuthenticationState.observe(this, {
-            when (it.getContentIfNotHandled()) {
-                null -> {
-                    // do nothing
-                }
-                is FSMAuthenticationState.CheckCredentials -> {
-                    viewModel.checkCredentials()
-                }
-                FSMAuthenticationState.Start -> {
-                    // do nothing. This is our starting point. It should not be reached again
-                }
-                FSMAuthenticationState.StartNewLogin -> {
-                    // this state should be managed by the fragments directly
-                }
-                FSMAuthenticationState.AuthenticatedOpenToken -> {
-                    // unlock the bottom menu
-                    enableAllBottomNavItems()
-                }
-                FSMAuthenticationState.RefreshingOpenToken -> {
-                    viewModel.refreshToken()
-                }
-                FSMAuthenticationState.AuthenticatedPrivateToken -> {
-                    // unlock the bottom menu
-                    enableAllBottomNavItems()
-                }
-                FSMAuthenticationState.WaitingToken -> {
-                    // this state should be managed by the fragments directly
-                }
-                FSMAuthenticationState.WaitingUserConfirmation -> {
-                    // this state should be managed by the fragments directly
-                }
-                is FSMAuthenticationState.WaitingUserAction -> {
-                    // go back to the user/start fragment and disable the buttons.
-                    when ((it.getContentIfNotHandled() as FSMAuthenticationState.WaitingUserAction).action) {
-                        UserAction.PERMISSION_DENIED -> showToast(R.string.permission_denied)
-                        UserAction.TFA_NEEDED -> showToast(R.string.tfa_needed)
-                        UserAction.TFA_PENDING -> showToast(R.string.tfa_pending)
-                        UserAction.IP_NOT_ALLOWED -> showToast(R.string.ip_Address_not_allowed)
-                        UserAction.UNKNOWN -> showToast(R.string.generic_login_error)
-                        UserAction.NETWORK_ERROR -> showToast(R.string.network_error)
-                        UserAction.RETRY_LATER -> showToast(R.string.retry_later)
+        viewModel.fsmAuthenticationState.observe(
+            this,
+            {
+                when (it.getContentIfNotHandled()) {
+                    null -> {
+                        // do nothing
                     }
-                    // this state should be managed by the fragments directly
-                    lifecycleScope.launch {
-                        disableBottomNavItems(
-                            R.id.navigation_lists,
-                            R.id.navigation_search
-                        )
-                        doubleClickBottomItem(R.id.navigation_home)
+                    is FSMAuthenticationState.CheckCredentials -> {
+                        viewModel.checkCredentials()
+                    }
+                    FSMAuthenticationState.Start -> {
+                        // do nothing. This is our starting point. It should not be reached again
+                    }
+                    FSMAuthenticationState.StartNewLogin -> {
+                        // this state should be managed by the fragments directly
+                    }
+                    FSMAuthenticationState.AuthenticatedOpenToken -> {
+                        // unlock the bottom menu
+                        enableAllBottomNavItems()
+                    }
+                    FSMAuthenticationState.RefreshingOpenToken -> {
+                        viewModel.refreshToken()
+                    }
+                    FSMAuthenticationState.AuthenticatedPrivateToken -> {
+                        // unlock the bottom menu
+                        enableAllBottomNavItems()
+                    }
+                    FSMAuthenticationState.WaitingToken -> {
+                        // this state should be managed by the fragments directly
+                    }
+                    FSMAuthenticationState.WaitingUserConfirmation -> {
+                        // this state should be managed by the fragments directly
+                    }
+                    is FSMAuthenticationState.WaitingUserAction -> {
+                        // go back to the user/start fragment and disable the buttons.
+                        when ((it.getContentIfNotHandled() as FSMAuthenticationState.WaitingUserAction).action) {
+                            UserAction.PERMISSION_DENIED -> showToast(R.string.permission_denied)
+                            UserAction.TFA_NEEDED -> showToast(R.string.tfa_needed)
+                            UserAction.TFA_PENDING -> showToast(R.string.tfa_pending)
+                            UserAction.IP_NOT_ALLOWED -> showToast(R.string.ip_Address_not_allowed)
+                            UserAction.UNKNOWN -> showToast(R.string.generic_login_error)
+                            UserAction.NETWORK_ERROR -> showToast(R.string.network_error)
+                            UserAction.RETRY_LATER -> showToast(R.string.retry_later)
+                        }
+                        // this state should be managed by the fragments directly
+                        lifecycleScope.launch {
+                            disableBottomNavItems(
+                                R.id.navigation_lists,
+                                R.id.navigation_search
+                            )
+                            doubleClickBottomItem(R.id.navigation_home)
+                        }
                     }
                 }
             }
-        })
+        )
 
         // disable the bottom menu items before loading the credentials
         disableBottomNavItems(

@@ -10,7 +10,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
-import com.github.livingwithhippos.unchained.data.model.AuthenticationStatus
 import com.github.livingwithhippos.unchained.databinding.FragmentUserProfileBinding
 import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Companion.KEY_REFERRAL_ASKED
 import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Companion.KEY_REFERRAL_USE
@@ -23,7 +22,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-
 
 /**
  * A simple [UnchainedFragment] subclass.
@@ -99,7 +97,7 @@ class UserProfileFragment : UnchainedFragment() {
             {
                 userBinding.srLayout.isRefreshing = false
 
-                when(it.peekContent()) {
+                when (it.peekContent()) {
                     is FSMAuthenticationState.WaitingUserAction -> {
                         // an error occurred, check it and eventually go back to the start fragment
                         val action = UserProfileFragmentDirections.actionUserToStartFragment()
@@ -115,7 +113,8 @@ class UserProfileFragment : UnchainedFragment() {
                         // shouldn't happen
                     }
                 }
-            })
+            }
+        )
 
         userBinding.bLogout.setOnClickListener {
             activityViewModel.logout()
@@ -127,5 +126,4 @@ class UserProfileFragment : UnchainedFragment() {
 
         return userBinding.root
     }
-
 }
