@@ -25,6 +25,7 @@ sealed class FSMAuthenticationEvent {
     object OnUserActionReset : FSMAuthenticationEvent()
     object OnUserConfirmationLoaded : FSMAuthenticationEvent()
     object OnUserConfirmationMissing : FSMAuthenticationEvent()
+    object OnUserConfirmationExpired : FSMAuthenticationEvent()
     object OnOpenTokenLoaded : FSMAuthenticationEvent()
     object OnWorkingPrivateToken : FSMAuthenticationEvent()
     object OnWorkingOpenToken : FSMAuthenticationEvent()

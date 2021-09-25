@@ -164,6 +164,12 @@ class MainActivityViewModel @Inject constructor(
         }
 
         state<FSMAuthenticationState.WaitingUserConfirmation> {
+            on<FSMAuthenticationEvent.OnUserConfirmationExpired> {
+                transitionTo(
+                    FSMAuthenticationState.StartNewLogin,
+                    FSMAuthenticationSideEffect.PostNewLogin
+                )
+            }
             on<FSMAuthenticationEvent.OnUserConfirmationLoaded> {
                 transitionTo(
                     FSMAuthenticationState.WaitingToken,
@@ -279,6 +285,16 @@ class MainActivityViewModel @Inject constructor(
         isPrivateToken: Boolean
     ) {
         when (user) {
+            is EitherResult.Success -> {
+
+                if (isPrivateToken) {
+                    transitionAuthenticationMachine(FSMAuthenticationEvent.OnWorkingPrivateToken)
+                } else {
+                    // todo: check if always posting Expired token makes sense. The idea is that this way I can manage the expiration time better
+                    // transitionAuthenticationMachine(FSMAuthenticationEvent.OnWorkingOpenToken)
+                    transitionAuthenticationMachine(FSMAuthenticationEvent.OnExpiredOpenToken)
+                }
+            }
             is EitherResult.Failure -> {
                 // check errors, either ask for a retry or go to login
                 when (user.failure) {
@@ -359,16 +375,6 @@ class MainActivityViewModel @Inject constructor(
                             )
                         )
                     }
-                }
-            }
-            is EitherResult.Success -> {
-
-                if (isPrivateToken) {
-                    transitionAuthenticationMachine(FSMAuthenticationEvent.OnWorkingPrivateToken)
-                } else {
-                    // todo: check if always posting Expired token makes sense. The idea is that this way I can manage the expiration time better
-                    // transitionAuthenticationMachine(FSMAuthenticationEvent.OnWorkingOpenToken)
-                    transitionAuthenticationMachine(FSMAuthenticationEvent.OnExpiredOpenToken)
                 }
             }
         }
@@ -862,11 +868,7 @@ class MainActivityViewModel @Inject constructor(
         accessToken: String? = null,
         refreshToken: String? = null
     ) {
-
-        protoStore.updateCredentials(
-            deviceCode, clientId, clientSecret, accessToken, refreshToken
-        )
-
+        protoStore.updateCredentials(deviceCode, clientId, clientSecret, accessToken, refreshToken)
     }
 
     /**************************
