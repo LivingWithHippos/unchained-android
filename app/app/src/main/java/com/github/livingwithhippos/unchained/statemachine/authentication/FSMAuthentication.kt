@@ -1,31 +1,45 @@
 package com.github.livingwithhippos.unchained.statemachine.authentication
 
-import com.github.livingwithhippos.unchained.data.local.Credentials
+import com.github.livingwithhippos.unchained.data.model.UserAction
 
 sealed class FSMAuthenticationState {
-    object GetCredentials : FSMAuthenticationState()
+    object Start : FSMAuthenticationState()
     object CheckCredentials : FSMAuthenticationState()
-    object NewLogin : FSMAuthenticationState()
-    object WaitUser : FSMAuthenticationState()
-    object WaitToken : FSMAuthenticationState()
-    object Ready : FSMAuthenticationState()
-    object Refreshing : FSMAuthenticationState()
+    data class WaitingUserAction(val action: UserAction?) : FSMAuthenticationState()
+    object StartNewLogin : FSMAuthenticationState()
+    object WaitingUserConfirmation : FSMAuthenticationState()
+    object WaitingToken : FSMAuthenticationState()
+    object AuthenticatedOpenToken : FSMAuthenticationState()
+    object AuthenticatedPrivateToken : FSMAuthenticationState()
+    object RefreshingOpenToken : FSMAuthenticationState()
 }
 
 sealed class FSMAuthenticationEvent {
-    data class OnCredentials(val credentials: Credentials?) : FSMAuthenticationEvent()
-    object onPrivateToken : FSMAuthenticationEvent()
-    object onNotWorking : FSMAuthenticationEvent()
-    object onAuthLoaded : FSMAuthenticationEvent()
-    object onUserConfirmationLoaded : FSMAuthenticationEvent()
-    object onUserConfirmationMissing : FSMAuthenticationEvent()
-    object onOpenTokenLoaded : FSMAuthenticationEvent()
-    object onWorkingPrivateToken : FSMAuthenticationEvent()
-    object onWorkingOpenToken : FSMAuthenticationEvent()
-    object onExpired : FSMAuthenticationEvent()
-    object onRefreshed : FSMAuthenticationEvent()
+    object OnAvailableCredentials: FSMAuthenticationEvent()
+    object OnMissingCredentials: FSMAuthenticationEvent()
+    object OnPrivateToken : FSMAuthenticationEvent()
+    object OnNotWorking : FSMAuthenticationEvent()
+    object OnAuthLoaded : FSMAuthenticationEvent()
+    data class OnUserActionNeeded(val action: UserAction) : FSMAuthenticationEvent()
+    object OnUserActionRetry : FSMAuthenticationEvent()
+    object OnUserActionReset : FSMAuthenticationEvent()
+    object OnUserConfirmationLoaded : FSMAuthenticationEvent()
+    object OnUserConfirmationMissing : FSMAuthenticationEvent()
+    object OnOpenTokenLoaded : FSMAuthenticationEvent()
+    object OnWorkingPrivateToken : FSMAuthenticationEvent()
+    object OnWorkingOpenToken : FSMAuthenticationEvent()
+    object OnExpiredOpenToken : FSMAuthenticationEvent()
+    object OnRefreshed : FSMAuthenticationEvent()
 }
 
 sealed class FSMAuthenticationSideEffect {
-    object CheckingCredentials : FSMAuthenticationSideEffect()
+    object CheckingCredentials: FSMAuthenticationSideEffect()
+    object PostActionNeeded: FSMAuthenticationSideEffect()
+    object PostNewLogin: FSMAuthenticationSideEffect()
+    object ResetAuthentication: FSMAuthenticationSideEffect()
+    object PostWaitUserConfirmation: FSMAuthenticationSideEffect()
+    object PostWaitToken: FSMAuthenticationSideEffect()
+    object PostAuthenticatedOpen: FSMAuthenticationSideEffect()
+    object PostAuthenticatedPrivate: FSMAuthenticationSideEffect()
+    object PostRefreshingToken: FSMAuthenticationSideEffect()
 }

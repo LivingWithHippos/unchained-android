@@ -5,12 +5,9 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.livingwithhippos.unchained.data.model.Authentication
-import com.github.livingwithhippos.unchained.data.model.AuthenticationStatus
 import com.github.livingwithhippos.unchained.data.model.Secrets
 import com.github.livingwithhippos.unchained.data.model.Token
 import com.github.livingwithhippos.unchained.data.repositoy.AuthenticationRepository
-import com.github.livingwithhippos.unchained.data.repositoy.CredentialsRepository
-import com.github.livingwithhippos.unchained.data.repositoy.UserRepository
 import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.postEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,9 +22,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AuthenticationViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
-    private val authRepository: AuthenticationRepository,
-    private val credentialRepository: CredentialsRepository,
-    private val userRepository: UserRepository
+    private val authRepository: AuthenticationRepository
 ) : ViewModel() {
 
     val authLiveData = MutableLiveData<Event<Authentication?>>()

@@ -19,9 +19,9 @@ import com.github.livingwithhippos.unchained.authentication.viewmodel.Authentica
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.data.model.AuthenticationStatus
 import com.github.livingwithhippos.unchained.databinding.FragmentAuthenticationBinding
+import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationState
 import com.github.livingwithhippos.unchained.utilities.EventObserver
 import com.github.livingwithhippos.unchained.utilities.PRIVATE_TOKEN
-import com.github.livingwithhippos.unchained.utilities.extension.copyToClipboard
 import com.github.livingwithhippos.unchained.utilities.extension.getClipboardText
 import com.github.livingwithhippos.unchained.utilities.extension.getThemeColor
 import com.github.livingwithhippos.unchained.utilities.extension.observeOnce
@@ -52,6 +52,30 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
 
         authBinding.loginMessageDirect = getLoginMessage(LOGIN_TYPE_DIRECT)
         authBinding.loginMessageIndirect = getLoginMessage(LOGIN_TYPE_INDIRECT)
+
+        activityViewModel.fsmAuthenticationState.observe(viewLifecycleOwner, {
+
+            when(it.peekContent()) {
+                FSMAuthenticationState.AuthenticatedOpenToken -> {
+                    val action =
+                        AuthenticationFragmentDirections.actionAuthenticationToUser()
+                    findNavController().navigate(action)
+                }
+                FSMAuthenticationState.AuthenticatedPrivateToken -> {
+                    val action =
+                        AuthenticationFragmentDirections.actionAuthenticationToUser()
+                    findNavController().navigate(action)
+                }
+                FSMAuthenticationState.CheckCredentials -> TODO()
+                FSMAuthenticationState.RefreshingOpenToken -> TODO()
+                FSMAuthenticationState.StartNewLogin -> TODO()
+                FSMAuthenticationState.WaitingToken -> TODO()
+                FSMAuthenticationState.WaitingUserConfirmation -> TODO()
+                is FSMAuthenticationState.WaitingUserAction, FSMAuthenticationState.Start -> {
+                    // these shouldn't happen
+                }
+            }
+        })
 
         // start checking for the auth link
         viewModel.authLiveData.observe(
@@ -118,7 +142,7 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
                             {
                                 lifecycleScope.launch {
                                     // check the current credentials
-                                    activityViewModel.setupAuthenticationStatus(it)
+                                    activityViewModel.startAuthenticationFlow(it)
                                 }
                             }
                         )
@@ -184,7 +208,7 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
                     deviceCode = PRIVATE_TOKEN,
                     refreshToken = PRIVATE_TOKEN
                 )
-                activityViewModel.setupAuthenticationStatus()
+                activityViewModel.startAuthenticationFlow()
             }
     }
 

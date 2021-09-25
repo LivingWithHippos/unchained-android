@@ -36,6 +36,7 @@ import com.github.livingwithhippos.unchained.databinding.ActivityMainBinding
 import com.github.livingwithhippos.unchained.settings.view.SettingsActivity
 import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Companion.KEY_TORRENT_NOTIFICATIONS
 import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewModel
+import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationState
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.EventObserver
 import com.github.livingwithhippos.unchained.utilities.SCHEME_HTTP
@@ -145,7 +146,6 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
                     is AuthenticationStatus.RefreshToken -> {
-                        // showToast(R.string.refreshing_token)
                         viewModel.refreshToken()
                     }
                     AuthenticationStatus.Unauthenticated -> {
@@ -162,12 +162,53 @@ class MainActivity : AppCompatActivity() {
             }
         )
 
-        // initialize the login flow
+        viewModel.fsmAuthenticationState.observe(this,{
+            when(it.getContentIfNotHandled()) {
+                null -> {
+                    // do nothing
+                }
+                is FSMAuthenticationState.CheckCredentials -> {
+                    viewModel.checkCredentials()
+                }
+                FSMAuthenticationState.Start -> {
+                    // do nothing. This is our starting point. It should not be reached again
+                }
+                FSMAuthenticationState.StartNewLogin -> {
+                    // this state should be managed by the fragments directly
+                }
+                FSMAuthenticationState.AuthenticatedOpenToken -> {
+                    // unlock the bottom menu
+                    enableAllBottomNavItems()
+                }
+                FSMAuthenticationState.RefreshingOpenToken -> {
+                    viewModel.refreshToken()
+                }
+                FSMAuthenticationState.AuthenticatedPrivateToken -> {
+                    // unlock the bottom menu
+                    enableAllBottomNavItems()
+                }
+                FSMAuthenticationState.WaitingToken -> {
+                    // this state should be managed by the fragments directly
+                }
+                FSMAuthenticationState.WaitingUserConfirmation -> {
+                    // this state should be managed by the fragments directly
+                }
+                is FSMAuthenticationState.WaitingUserAction -> {
+                    // this state should be managed by the fragments directly
+                }
+            }
+        })
+
+        // disable the bottom menu items before loading the credentials
         disableBottomNavItems(
             R.id.navigation_lists,
             R.id.navigation_search
         )
-        viewModel.setupAuthenticationStatus()
+
+        // start the authentication state machine
+        viewModel.startAuthenticationMachine()
+        // todo: remove
+        // viewModel.setupAuthenticationStatus()
 
         // check if the app has been opened by clicking on torrents/magnet on sharing links
         getIntentData()

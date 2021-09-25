@@ -59,7 +59,6 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-
     /**************************************************************
      * ADD CHANGES MADE HERE IN THE DEBUG VERSION OF MAINACTIVITY *
      *************************************************************/
