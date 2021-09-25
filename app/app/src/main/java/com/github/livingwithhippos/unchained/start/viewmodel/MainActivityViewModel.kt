@@ -214,6 +214,12 @@ class MainActivityViewModel @Inject constructor(
                     FSMAuthenticationSideEffect.PostRefreshingToken
                 )
             }
+            on<FSMAuthenticationEvent.OnAuthenticationError> {
+                transitionTo(
+                    FSMAuthenticationState.WaitingUserAction(null),
+                    FSMAuthenticationSideEffect.PostActionNeeded
+                )
+            }
         }
 
         state<FSMAuthenticationState.RefreshingOpenToken> {
@@ -223,9 +229,21 @@ class MainActivityViewModel @Inject constructor(
                     FSMAuthenticationSideEffect.PostAuthenticatedOpen
                 )
             }
+            on<FSMAuthenticationEvent.OnAuthenticationError> {
+                transitionTo(
+                    FSMAuthenticationState.WaitingUserAction(null),
+                    FSMAuthenticationSideEffect.PostActionNeeded
+                )
+            }
         }
 
         state<FSMAuthenticationState.AuthenticatedPrivateToken> {
+            on<FSMAuthenticationEvent.OnAuthenticationError> {
+                transitionTo(
+                    FSMAuthenticationState.WaitingUserAction(null),
+                    FSMAuthenticationSideEffect.PostActionNeeded
+                )
+            }
         }
 
         onTransition {
@@ -387,7 +405,18 @@ class MainActivityViewModel @Inject constructor(
     fun logout() {
         viewModelScope.launch {
             protoStore.deleteCredentials()
-            setAuthStatus(AuthenticationStatus.Unauthenticated)
+            recheckAuthenticationStatus()
+        }
+    }
+
+    fun recheckAuthenticationStatus() {
+        when (getAuthenticationMachineState()) {
+            FSMAuthenticationState.AuthenticatedOpenToken, FSMAuthenticationState.AuthenticatedPrivateToken, FSMAuthenticationState.RefreshingOpenToken -> {
+                transitionAuthenticationMachine(FSMAuthenticationEvent.OnAuthenticationError)
+            }
+            else -> {
+                Timber.e("Asked for logout while in a wrong state: ${getAuthenticationMachineState()}")
+            }
         }
     }
 

@@ -14,6 +14,7 @@ import com.github.livingwithhippos.unchained.data.model.AuthenticationStatus
 import com.github.livingwithhippos.unchained.databinding.FragmentUserProfileBinding
 import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Companion.KEY_REFERRAL_ASKED
 import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Companion.KEY_REFERRAL_USE
+import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationState
 import com.github.livingwithhippos.unchained.user.viewmodel.UserProfileViewModel
 import com.github.livingwithhippos.unchained.utilities.ACCOUNT_LINK
 import com.github.livingwithhippos.unchained.utilities.REFERRAL_LINK
@@ -93,40 +94,38 @@ class UserProfileFragment : UnchainedFragment() {
             }
         }
 
-        activityViewModel.newAuthenticationState.observe(
+        activityViewModel.fsmAuthenticationState.observe(
             viewLifecycleOwner,
             {
                 userBinding.srLayout.isRefreshing = false
-                when (it.peekContent()) {
-                    AuthenticationStatus.Unauthenticated -> {
-                        val action = UserProfileFragmentDirections.actionUserToAuthentication()
+
+                when(it.peekContent()) {
+                    is FSMAuthenticationState.WaitingUserAction -> {
+                        // an error occurred, check it and eventually go back to the start fragment
+                        val action = UserProfileFragmentDirections.actionUserToStartFragment()
                         findNavController().navigate(action)
                     }
-                    is AuthenticationStatus.Authenticated -> {
+                    FSMAuthenticationState.AuthenticatedOpenToken, FSMAuthenticationState.AuthenticatedPrivateToken, FSMAuthenticationState.RefreshingOpenToken -> {
                         // managed by activity
                     }
-                    is AuthenticationStatus.AuthenticatedNoPremium -> {
-                        // managed by activity
+                    FSMAuthenticationState.CheckCredentials -> {
+                        // shouldn't matter
                     }
-                    is AuthenticationStatus.NeedUserAction -> {
-                        // managed by activity
-                    }
-                    is AuthenticationStatus.RefreshToken -> {
-                        // managed by activity
+                    FSMAuthenticationState.Start, FSMAuthenticationState.StartNewLogin, FSMAuthenticationState.WaitingToken, FSMAuthenticationState.WaitingUserConfirmation -> {
+                        // shouldn't happen
                     }
                 }
-            }
-        )
+            })
 
         userBinding.bLogout.setOnClickListener {
             activityViewModel.logout()
         }
 
-
         userBinding.srLayout.setOnRefreshListener {
-            activityViewModel.startAuthenticationFlow()
+            activityViewModel.recheckAuthenticationStatus()
         }
 
         return userBinding.root
     }
+
 }

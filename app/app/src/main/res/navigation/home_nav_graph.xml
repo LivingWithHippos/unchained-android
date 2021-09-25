@@ -39,8 +39,8 @@
         tools:layout="@layout/fragment_user_profile"
         android:label="@string/user" >
         <action
-            android:id="@+id/actionUserToAuthentication"
-            app:destination="@id/authentication_dest"
+            android:id="@+id/action_user_to_start_fragment"
+            app:destination="@id/start_dest"
             app:popUpTo="@id/start_dest"
             app:popUpToInclusive="true"/>
     </fragment>
