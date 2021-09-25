@@ -33,7 +33,7 @@ import javax.inject.Inject
  * It offers LiveData to be observed to populate lists with paging support
  */
 @HiltViewModel
-class DownloadListViewModel @Inject constructor(
+class ListTabsViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val downloadRepository: DownloadRepository,
     private val torrentsRepository: TorrentsRepository,

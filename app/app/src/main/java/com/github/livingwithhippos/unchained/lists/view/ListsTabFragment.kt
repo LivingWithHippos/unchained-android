@@ -30,15 +30,15 @@ import com.github.livingwithhippos.unchained.data.model.EmptyBodyError
 import com.github.livingwithhippos.unchained.data.model.NetworkError
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.databinding.FragmentTabListsBinding
-import com.github.livingwithhippos.unchained.lists.viewmodel.DownloadListViewModel
-import com.github.livingwithhippos.unchained.lists.viewmodel.DownloadListViewModel.Companion.DOWNLOADS_DELETED
-import com.github.livingwithhippos.unchained.lists.viewmodel.DownloadListViewModel.Companion.DOWNLOADS_DELETED_ALL
-import com.github.livingwithhippos.unchained.lists.viewmodel.DownloadListViewModel.Companion.DOWNLOAD_DELETED
-import com.github.livingwithhippos.unchained.lists.viewmodel.DownloadListViewModel.Companion.DOWNLOAD_NOT_DELETED
-import com.github.livingwithhippos.unchained.lists.viewmodel.DownloadListViewModel.Companion.TORRENTS_DELETED
-import com.github.livingwithhippos.unchained.lists.viewmodel.DownloadListViewModel.Companion.TORRENTS_DELETED_ALL
-import com.github.livingwithhippos.unchained.lists.viewmodel.DownloadListViewModel.Companion.TORRENT_DELETED
-import com.github.livingwithhippos.unchained.lists.viewmodel.DownloadListViewModel.Companion.TORRENT_NOT_DELETED
+import com.github.livingwithhippos.unchained.lists.viewmodel.ListTabsViewModel
+import com.github.livingwithhippos.unchained.lists.viewmodel.ListTabsViewModel.Companion.DOWNLOADS_DELETED
+import com.github.livingwithhippos.unchained.lists.viewmodel.ListTabsViewModel.Companion.DOWNLOADS_DELETED_ALL
+import com.github.livingwithhippos.unchained.lists.viewmodel.ListTabsViewModel.Companion.DOWNLOAD_DELETED
+import com.github.livingwithhippos.unchained.lists.viewmodel.ListTabsViewModel.Companion.DOWNLOAD_NOT_DELETED
+import com.github.livingwithhippos.unchained.lists.viewmodel.ListTabsViewModel.Companion.TORRENTS_DELETED
+import com.github.livingwithhippos.unchained.lists.viewmodel.ListTabsViewModel.Companion.TORRENTS_DELETED_ALL
+import com.github.livingwithhippos.unchained.lists.viewmodel.ListTabsViewModel.Companion.TORRENT_DELETED
+import com.github.livingwithhippos.unchained.lists.viewmodel.ListTabsViewModel.Companion.TORRENT_NOT_DELETED
 import com.github.livingwithhippos.unchained.utilities.DataBindingDetailsLookup
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.EventObserver
@@ -66,7 +66,7 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
     }
 
     // todo: rename viewModel/fragment to ListTab or DownloadLists
-    private val viewModel: DownloadListViewModel by viewModels()
+    private val viewModel: ListTabsViewModel by viewModels()
 
     // used to simulate a debounce effect while typing on the search bar
     var queryJob: Job? = null
