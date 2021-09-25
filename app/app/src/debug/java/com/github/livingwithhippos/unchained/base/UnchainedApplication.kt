@@ -10,7 +10,7 @@ import com.github.livingwithhippos.unchained.BuildConfig.COUNTLY_APP_KEY
 import com.github.livingwithhippos.unchained.BuildConfig.COUNTLY_URL
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.local.ProtoStore
-import com.github.livingwithhippos.unchained.data.repositoy.CredentialsRepository
+import com.github.livingwithhippos.unchained.data.repository.CredentialsRepository
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

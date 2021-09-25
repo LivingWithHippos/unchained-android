@@ -1,4 +1,4 @@
-package com.github.livingwithhippos.unchained.data.repositoy
+package com.github.livingwithhippos.unchained.data.repository
 
 import com.github.livingwithhippos.unchained.data.model.Stream
 import com.github.livingwithhippos.unchained.data.remote.StreamingApiHelper

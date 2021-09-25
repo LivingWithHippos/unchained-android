@@ -4,9 +4,9 @@ import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.livingwithhippos.unchained.data.repositoy.HostsRepository
-import com.github.livingwithhippos.unchained.data.repositoy.KodiRepository
-import com.github.livingwithhippos.unchained.data.repositoy.PluginRepository
+import com.github.livingwithhippos.unchained.data.repository.HostsRepository
+import com.github.livingwithhippos.unchained.data.repository.KodiRepository
+import com.github.livingwithhippos.unchained.data.repository.PluginRepository
 import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.postEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
