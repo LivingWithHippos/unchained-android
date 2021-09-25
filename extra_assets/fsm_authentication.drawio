@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2021-09-25T17:39:23.168Z" agent="5.0 (Windows)" etag="1Wln9Kr2Uj8xIr1_503b" version="15.3.1" type="github">
+<mxfile host="app.diagrams.net" modified="2021-09-25T18:09:04.273Z" agent="5.0 (Windows)" etag="nZQ9PZFNcIFF9mCesfR-" version="15.3.1" type="github">
   <diagram name="Page-1" id="58cdce13-f638-feb5-8d6f-7d28b1aa9fa0">
     <mxGraphModel dx="1021" dy="1112" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" background="none" math="0" shadow="0">
       <root>
@@ -304,9 +304,9 @@
             <mxPoint x="105" y="680" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="S2DreNZuNs3_jRe_7X1X-20" value="errors" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="1">
-          <mxGeometry x="220" y="460" as="geometry">
-            <mxPoint x="-16" as="offset" />
+        <mxCell id="S2DreNZuNs3_jRe_7X1X-20" value="&lt;div&gt;Real Debrid&lt;/div&gt;&lt;div&gt;errors&lt;br&gt;&lt;/div&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="1">
+          <mxGeometry x="200" y="460" as="geometry">
+            <mxPoint x="-4" as="offset" />
           </mxGeometry>
         </mxCell>
         <mxCell id="S2DreNZuNs3_jRe_7X1X-21" value="working &lt;br&gt;&lt;div&gt;open source&lt;/div&gt;&lt;div&gt;token&lt;br&gt;&lt;/div&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="1">
@@ -323,9 +323,9 @@
             <mxPoint x="150" y="460" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="S2DreNZuNs3_jRe_7X1X-23" value="errors" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="1">
-          <mxGeometry x="330" y="650" as="geometry">
-            <mxPoint x="-16" as="offset" />
+        <mxCell id="S2DreNZuNs3_jRe_7X1X-24" value="&lt;div&gt;Real Debrid&lt;/div&gt;&lt;div&gt;errors&lt;br&gt;&lt;/div&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="1">
+          <mxGeometry x="315" y="650" as="geometry">
+            <mxPoint x="-4" as="offset" />
           </mxGeometry>
         </mxCell>
       </root>
