@@ -1,9 +1,6 @@
 # Contribution guidelines
 
-Developement happens on the `dev` branch, which is merged onto `master` when ready to be published on the stores. To contribute to the project:
-
-1. Open an [issue](https://github.com/LivingWithHippos/unchained-android/issues) or a [discussion](https://github.com/LivingWithHippos/unchained-android/discussions) to talk about it with the mantainers
-2. Clone the `dev` branch of the repo and create a new branch from that 
+Developement happens on the `dev` branch, which is merged onto `master` when ready to be published on the stores. To contribute to the project open an [issue](https://github.com/LivingWithHippos/unchained-android/issues) or a [discussion](https://github.com/LivingWithHippos/unchained-android/discussions) to talk about it with the mantainers
 
 ## How Can I Contribute?
 
