@@ -84,6 +84,7 @@ class ProtoStoreImpl @Inject constructor(
             else {
                 // todo: a smarter way to remove an incomplete element?
                 // get the original one and call deleteCredentials() checking there instead of here?
+                // todo: why I'm doing this?
                 it.toBuilder().build()
             }
         }
