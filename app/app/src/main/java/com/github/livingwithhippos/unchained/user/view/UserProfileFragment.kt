@@ -15,15 +15,14 @@ import com.github.livingwithhippos.unchained.databinding.FragmentUserProfileBind
 import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Companion.KEY_REFERRAL_ASKED
 import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Companion.KEY_REFERRAL_USE
 import com.github.livingwithhippos.unchained.user.viewmodel.UserProfileViewModel
+import com.github.livingwithhippos.unchained.utilities.ACCOUNT_LINK
+import com.github.livingwithhippos.unchained.utilities.REFERRAL_LINK
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-const val REFERRAL_LINK = "http://real-debrid.com/?id=78841"
-const val PREMIUM_LINK = "https://real-debrid.com/premium"
-const val ACCOUNT_LINK = "https://real-debrid.com/account"
 
 /**
  * A simple [UnchainedFragment] subclass.
