@@ -24,7 +24,6 @@ import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.data.model.APIError
 import com.github.livingwithhippos.unchained.data.model.ApiConversionError
-import com.github.livingwithhippos.unchained.data.model.AuthenticationStatus
 import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.data.model.EmptyBodyError
 import com.github.livingwithhippos.unchained.data.model.NetworkError
@@ -39,6 +38,8 @@ import com.github.livingwithhippos.unchained.lists.viewmodel.ListTabsViewModel.C
 import com.github.livingwithhippos.unchained.lists.viewmodel.ListTabsViewModel.Companion.TORRENTS_DELETED_ALL
 import com.github.livingwithhippos.unchained.lists.viewmodel.ListTabsViewModel.Companion.TORRENT_DELETED
 import com.github.livingwithhippos.unchained.lists.viewmodel.ListTabsViewModel.Companion.TORRENT_NOT_DELETED
+import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationEvent
+import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationState
 import com.github.livingwithhippos.unchained.utilities.DataBindingDetailsLookup
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.EventObserver
@@ -65,7 +66,6 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
         UPDATE_TORRENT, UPDATE_DOWNLOAD, READY
     }
 
-    // todo: rename viewModel/fragment to ListTab or DownloadLists
     private val viewModel: ListTabsViewModel by viewModels()
 
     // used to simulate a debounce effect while typing on the search bar
@@ -245,26 +245,21 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
 
 
         // checks the authentication state. Needed to avoid automatic API calls before the authentication process is finished
-        activityViewModel.newAuthenticationState.observe(
-            viewLifecycleOwner,
-            {
-                when (it.peekContent()) {
-                    is AuthenticationStatus.Authenticated, is AuthenticationStatus.AuthenticatedNoPremium -> {
-                        // register observers if not already registered
-                        if (!viewModel.downloadsLiveData.hasActiveObservers())
-                            viewModel.downloadsLiveData.observe(
-                                viewLifecycleOwner,
-                                downloadObserver
-                            )
+        activityViewModel.fsmAuthenticationState.observe(viewLifecycleOwner, {
+            when (it.peekContent()) {
+                FSMAuthenticationState.AuthenticatedOpenToken, FSMAuthenticationState.AuthenticatedPrivateToken -> {
+                    // register observers if not already registered
+                    if (!viewModel.downloadsLiveData.hasActiveObservers())
+                        viewModel.downloadsLiveData.observe(viewLifecycleOwner, downloadObserver)
 
-                        if (!viewModel.torrentsLiveData.hasActiveObservers())
-                            viewModel.torrentsLiveData.observe(viewLifecycleOwner, torrentObserver)
-                    }
-                    else -> {
-                    }
+                    if (!viewModel.torrentsLiveData.hasActiveObservers())
+                        viewModel.torrentsLiveData.observe(viewLifecycleOwner, torrentObserver)
+                }
+                else -> {
+
                 }
             }
-        )
+        })
 
         binding.tabs.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
 
@@ -403,22 +398,18 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
                 viewModel.deleteTorrent(it)
             }
             bundle.getString("openedTorrentItem")?.let {
-                val authState = activityViewModel.newAuthenticationState.value?.peekContent()
-                if (authState is AuthenticationStatus.Authenticated) {
-                    val action = ListsTabFragmentDirections.actionListsTabToTorrentDetails(it)
+                val action = ListsTabFragmentDirections.actionListsTabToTorrentDetails(it)
 
-                    // workaround to avoid issues when the dialog still hasn't been popped from the navigation stack
-                    val controller = findNavController()
-                    var loop = 0
-                    lifecycleScope.launch {
-                        while (loop++ < 20 && controller.currentDestination?.id != R.id.list_tabs_dest) {
-                            delay(100)
-                        }
-                        if (controller.currentDestination?.id == R.id.list_tabs_dest)
-                            controller.navigate(action)
+                // workaround to avoid issues when the dialog still hasn't been popped from the navigation stack
+                val controller = findNavController()
+                var loop = 0
+                lifecycleScope.launch {
+                    while (loop++ < 20 && controller.currentDestination?.id != R.id.list_tabs_dest) {
+                        delay(100)
                     }
-                } else
-                    context?.showToast(R.string.premium_needed)
+                    if (controller.currentDestination?.id == R.id.list_tabs_dest)
+                        controller.navigate(action)
+                }
             }
             bundle.getParcelable<TorrentItem>("downloadedTorrentItem")?.let {
                 onClick(it)
@@ -469,7 +460,9 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
                             when (error.errorCode) {
                                 8 -> {
                                     // bad token, try refreshing it
-                                    activityViewModel.setAuthStatus(AuthenticationStatus.RefreshToken)
+                                    activityViewModel.transitionAuthenticationMachine(
+                                        FSMAuthenticationEvent.OnExpiredOpenToken
+                                    )
                                     context?.showToast(R.string.refreshing_token)
                                 }
                             }
@@ -602,55 +595,47 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
     }
 
     override fun onClick(item: DownloadItem) {
-        val authState = activityViewModel.newAuthenticationState.value?.peekContent()
-        if (authState is AuthenticationStatus.Authenticated) {
-            val action = ListsTabFragmentDirections.actionListsTabToDownloadDetails(item)
-            var loop = 0
-            val controller = findNavController()
-            lifecycleScope.launch {
-                while (loop++ < 20 && controller.currentDestination?.id != R.id.list_tabs_dest) {
-                    delay(100)
-                }
-                if (controller.currentDestination?.id == R.id.list_tabs_dest)
-                    controller.navigate(action)
+        val action = ListsTabFragmentDirections.actionListsTabToDownloadDetails(item)
+        var loop = 0
+        val controller = findNavController()
+        lifecycleScope.launch {
+            while (loop++ < 20 && controller.currentDestination?.id != R.id.list_tabs_dest) {
+                delay(100)
             }
-        } else
-            context?.showToast(R.string.premium_needed)
+            if (controller.currentDestination?.id == R.id.list_tabs_dest)
+                controller.navigate(action)
+        }
     }
 
     override fun onClick(item: TorrentItem) {
-        val authState = activityViewModel.newAuthenticationState.value?.peekContent()
-        if (authState is AuthenticationStatus.Authenticated) {
-            when (item.status) {
-                "downloaded" -> {
-                    if (item.links.size > 1) {
-                        val action =
-                            ListsTabFragmentDirections.actionListTabsDestToFolderListFragment2(
-                                folder = null,
-                                torrent = item,
-                                linkList = null
-                            )
-                        findNavController().navigate(action)
-                    } else
-                        viewModel.downloadTorrent(item)
-                }
-                // open the torrent details fragment
-                else -> {
-                    val action = ListsTabFragmentDirections.actionListsTabToTorrentDetails(item.id)
-                    var loop = 0
+        when (item.status) {
+            "downloaded" -> {
+                if (item.links.size > 1) {
+                    val action =
+                        ListsTabFragmentDirections.actionListTabsDestToFolderListFragment2(
+                            folder = null,
+                            torrent = item,
+                            linkList = null
+                        )
+                    findNavController().navigate(action)
+                } else
+                    viewModel.downloadTorrent(item)
+            }
+            // open the torrent details fragment
+            else -> {
+                val action = ListsTabFragmentDirections.actionListsTabToTorrentDetails(item.id)
+                var loop = 0
 
-                    val controller = findNavController()
-                    lifecycleScope.launch {
-                        while (loop++ < 20 && controller.currentDestination?.id != R.id.list_tabs_dest) {
-                            delay(100)
-                        }
-                        if (controller.currentDestination?.id == R.id.list_tabs_dest)
-                            controller.navigate(action)
+                val controller = findNavController()
+                lifecycleScope.launch {
+                    while (loop++ < 20 && controller.currentDestination?.id != R.id.list_tabs_dest) {
+                        delay(100)
                     }
+                    if (controller.currentDestination?.id == R.id.list_tabs_dest)
+                        controller.navigate(action)
                 }
             }
-        } else
-            context?.showToast(R.string.premium_needed)
+        }
     }
 
     companion object {
