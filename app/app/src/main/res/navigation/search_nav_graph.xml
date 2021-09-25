@@ -17,7 +17,8 @@
     <fragment
         android:id="@+id/searchItemFragment"
         android:name="com.github.livingwithhippos.unchained.search.view.SearchItemFragment"
-        android:label="@string/links" >
+        android:label="@string/links"
+        tools:layout="@layout/fragment_search_item">
         <argument
             android:name="item"
             app:argType="com.github.livingwithhippos.unchained.plugins.model.ScrapedItem" />
