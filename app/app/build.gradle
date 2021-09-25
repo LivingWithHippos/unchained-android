@@ -109,8 +109,11 @@ android {
                 buildConfigField("String", "COUNTLY_APP_KEY", apiProperties['COUNTLY_APP_KEY'])
                 buildConfigField("String", "COUNTLY_URL", apiProperties['COUNTLY_URL'])
             } else {
-                buildConfigField("String", "COUNTLY_APP_KEY", "\""+System.getenv("COUNTLY_APP_KEY")+"\"")
-                buildConfigField("String", "COUNTLY_URL", "\""+System.getenv("COUNTLY_URL")+"\"")
+                // use a random key and localhost if the env are missing
+                def countlyKey = System.getenv("COUNTLY_APP_KEY") ?: "pDJz4WrY9XeBotXAaL9MYrraSwZNyDqfAPy8p38c"
+                def countlyHost = System.getenv("COUNTLY_URL") ?: "http://localhost"
+                buildConfigField("String", "COUNTLY_APP_KEY", "\""+countlyKey+"\"")
+                buildConfigField("String", "COUNTLY_URL", "\""+countlyHost+"\"")
             }
         }
 
