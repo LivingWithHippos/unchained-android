@@ -47,7 +47,7 @@ class AuthenticationViewModel @Inject constructor(
             secretLiveData.postEvent(SecretResult.Expired)
         } else {
             viewModelScope.launch {
-                val credentials = protoStore.credentialsFlow.single()
+                val credentials = protoStore.getCredentials()
                 val secretData = authRepository.getSecrets(credentials.deviceCode)
                 if (secretData != null)
                     secretLiveData.postEvent(SecretResult.Retrieved(secretData))
@@ -62,7 +62,7 @@ class AuthenticationViewModel @Inject constructor(
 
     fun fetchToken() {
         viewModelScope.launch {
-            val credentials = protoStore.credentialsFlow.single()
+            val credentials = protoStore.getCredentials()
             val tokenData = authRepository.getToken(credentials.clientId, credentials.clientSecret, credentials.deviceCode)
             tokenLiveData.postEvent(tokenData)
         }

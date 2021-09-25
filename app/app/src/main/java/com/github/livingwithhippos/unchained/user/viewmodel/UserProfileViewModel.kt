@@ -23,7 +23,7 @@ class UserProfileViewModel @Inject constructor(
     fun fetchUserInfo() {
 
         viewModelScope.launch {
-            val credentials = protoStore.credentialsFlow.single()
+            val credentials = protoStore.getCredentials()
             val user = userRepository.getUserInfo(credentials.accessToken)
             userLiveData.postValue(user)
         }

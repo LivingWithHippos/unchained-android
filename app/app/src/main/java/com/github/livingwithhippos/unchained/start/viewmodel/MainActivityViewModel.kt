@@ -51,11 +51,9 @@ class MainActivityViewModel @Inject constructor(
     private val variousApiRepository: VariousApiRepository,
     private val hostsRepository: HostsRepository,
     private val pluginRepository: PluginRepository,
-    private val credentialsRepository: CredentialsRepository,
     private val protoStore: ProtoStore,
 ) : ViewModel() {
 
-    val newAuthenticationState = MutableLiveData<Event<AuthenticationStatus>>()
     val fsmAuthenticationState = MutableLiveData<Event<FSMAuthenticationState>>()
 
     val externalLinkLiveData = MutableLiveData<Event<Uri>>()
@@ -292,7 +290,7 @@ class MainActivityViewModel @Inject constructor(
 
     fun checkCredentials() {
         viewModelScope.launch {
-            val credentials = getCurrentCredentials().single()
+            val credentials = protoStore.getCredentials()
             val userResult = userRepository.getUserOrError(credentials.accessToken)
             parseUserResult(userResult, credentials.deviceCode == PRIVATE_TOKEN)
         }
@@ -399,10 +397,6 @@ class MainActivityViewModel @Inject constructor(
         }
     }
 
-    fun setAuthStatus(status: AuthenticationStatus) {
-        newAuthenticationState.postEvent(status)
-    }
-
     fun logout() {
         viewModelScope.launch {
             protoStore.deleteCredentials()
@@ -443,7 +437,7 @@ class MainActivityViewModel @Inject constructor(
     fun refreshToken() {
 
         viewModelScope.launch {
-            val credentials = protoStore.credentialsFlow.single()
+            val credentials = protoStore.getCredentials()
             if (!credentials.refreshToken.isNullOrBlank() && credentials.refreshToken != PRIVATE_TOKEN) {
                 // todo: add EitherResult to check for errors and retry eventually
                 val newToken = authRepository.refreshToken(credentials)
@@ -608,14 +602,6 @@ class MainActivityViewModel @Inject constructor(
         notificationTorrentLiveData.postEvent(torrentID)
     }
 
-    fun setTokenRefreshing(refreshing: Boolean) {
-        savedStateHandle.set(KEY_REFRESHING_TOKEN, refreshing)
-    }
-
-    fun isTokenRefreshing(): Boolean {
-        return savedStateHandle.get<Boolean>(KEY_REFRESHING_TOKEN) ?: false
-    }
-
     fun addPlugin(context: Context, data: Uri) {
         // check if the plugin is already installed/a newer version.
         viewModelScope.launch {
@@ -719,178 +705,6 @@ class MainActivityViewModel @Inject constructor(
         }
     }
 
-    suspend fun startAuthenticationFlow(currentCredentials: com.github.livingwithhippos.unchained.data.local.Credentials.CurrentCredential) {
-        Timber.e("collecting credentials")
-        // todo: check what happens with null values
-        // default value for strings is an empty string, it means no currentCredentials available
-        if (currentCredentials.accessToken.isEmpty()) {
-            // 2. check credentials in room
-            // todo: after a couple of releases just remove Credentials from the room db
-            credentialsRepository.deleteIncompleteCredentials()
-            val dbCredentials = credentialsRepository.getAllCredentials()
-            // get the first available credentials
-            val availableCredentials: Credentials? =
-                dbCredentials.firstOrNull { it.deviceCode == PRIVATE_TOKEN }
-                    ?: dbCredentials.firstOrNull { it.deviceCode != PRIVATE_TOKEN }
-
-            // 3. if they are missing we don't have any credentials
-            // set as unauthenticated to go to authentication flow
-            if (availableCredentials == null) {
-                if (newAuthenticationState.value?.peekContent() != AuthenticationStatus.Unauthenticated)
-                    newAuthenticationState.postEvent(AuthenticationStatus.Unauthenticated)
-            } else {
-                // 4 copy the db credentials to the datastore and then check them
-                //todo : check if this works and if it triggers a collect update otherwise run another collect below
-                protoStore.setCredentials(
-                    deviceCode = availableCredentials.deviceCode,
-                    clientId = availableCredentials.clientId,
-                    clientSecret = availableCredentials.clientSecret,
-                    accessToken = availableCredentials.accessToken,
-                    refreshToken = availableCredentials.refreshToken
-                )
-                getUser(updateAuthStatus = true).collect { }
-            }
-        } else {
-            // 5 test the datastore credentials
-            getUser(updateAuthStatus = true).collect { }
-        }
-    }
-
-    fun getCurrentCredentials(): Flow<com.github.livingwithhippos.unchained.data.local.Credentials.CurrentCredential> =
-        protoStore.credentialsFlow
-
-
-    fun startAuthenticationFlow() {
-
-        viewModelScope.launch {
-            // 1. retrieve the datastore credentials (will return en empty instance if none)
-            protoStore.credentialsFlow.collect { currentCredentials ->
-                startAuthenticationFlow(currentCredentials)
-            }
-        }
-    }
-
-    private suspend fun getUser(updateAuthStatus: Boolean = true) = flow {
-
-        protoStore.credentialsFlow.collect { credentials ->
-            if (credentials.accessToken.isNotBlank()) {
-
-                val userResult = userRepository.getUserOrError(credentials.accessToken)
-                when (userResult) {
-                    is EitherResult.Failure -> {
-                        if (updateAuthStatus) {
-                            when (userResult.failure) {
-                                is APIError -> {
-                                    when (userResult.failure.errorCode) {
-                                        8 -> {
-                                            newAuthenticationState.postEvent(
-                                                AuthenticationStatus.RefreshToken
-                                            )
-                                        }
-                                        9 -> {
-                                            newAuthenticationState.postEvent(
-                                                AuthenticationStatus.NeedUserAction(
-                                                    UserAction.PERMISSION_DENIED
-                                                )
-                                            )
-                                        }
-                                        10 -> {
-                                            newAuthenticationState.postEvent(
-                                                AuthenticationStatus.NeedUserAction(
-                                                    UserAction.TFA_NEEDED
-                                                )
-                                            )
-                                        }
-                                        11 -> {
-                                            newAuthenticationState.postEvent(
-                                                AuthenticationStatus.NeedUserAction(
-                                                    UserAction.TFA_PENDING
-                                                )
-                                            )
-                                        }
-                                        12 -> {
-                                            newAuthenticationState.postEvent(AuthenticationStatus.Unauthenticated)
-                                        }
-                                        13 -> {
-                                            newAuthenticationState.postEvent(AuthenticationStatus.Unauthenticated)
-                                        }
-                                        14 -> {
-                                            newAuthenticationState.postEvent(AuthenticationStatus.Unauthenticated)
-                                        }
-                                        15 -> {
-                                            newAuthenticationState.postEvent(AuthenticationStatus.Unauthenticated)
-                                        }
-                                        22 -> {
-                                            newAuthenticationState.postEvent(
-                                                AuthenticationStatus.NeedUserAction(
-                                                    UserAction.IP_NOT_ALLOWED
-                                                )
-                                            )
-                                        }
-                                        else -> {
-                                            newAuthenticationState.postEvent(
-                                                AuthenticationStatus.NeedUserAction(
-                                                    UserAction.UNKNOWN
-                                                )
-                                            )
-                                        }
-                                    }
-                                }
-                                is EmptyBodyError -> {
-                                    // should not happen
-                                    newAuthenticationState.postEvent(
-                                        AuthenticationStatus.NeedUserAction(
-                                            UserAction.UNKNOWN
-                                        )
-                                    )
-                                }
-                                is NetworkError -> {
-                                    newAuthenticationState.postEvent(
-                                        AuthenticationStatus.NeedUserAction(
-                                            UserAction.NETWORK_ERROR
-                                        )
-                                    )
-                                }
-                                is ApiConversionError -> {
-                                    newAuthenticationState.postEvent(
-                                        AuthenticationStatus.NeedUserAction(
-                                            UserAction.RETRY_LATER
-                                        )
-                                    )
-                                }
-                            }
-                        }
-                        emit(null)
-                    }
-                    is EitherResult.Success -> {
-                        if (updateAuthStatus) {
-                            if (userResult.success.premium > 0)
-                                newAuthenticationState.postEvent(
-                                    AuthenticationStatus.Authenticated(
-                                        userResult.success
-                                    )
-                                )
-                            else
-                                newAuthenticationState.postEvent(
-                                    AuthenticationStatus.AuthenticatedNoPremium(
-                                        userResult.success
-                                    )
-                                )
-                        }
-                        emit(userResult.success)
-                    }
-                }
-            } else {
-                if (updateAuthStatus) {
-                    newAuthenticationState.postEvent(
-                        AuthenticationStatus.Unauthenticated
-                    )
-                }
-                emit(null)
-            }
-        }
-    }
-
     fun updateCredentials(
         deviceCode: String? = null,
         clientId: String? = null,
@@ -914,11 +728,11 @@ class MainActivityViewModel @Inject constructor(
     fun startAuthenticationMachine() {
         viewModelScope.launch {
             // retrieve the datastore credentials (will return en empty instance if none)
-            val protoCredentials = protoStore.credentialsFlow.singleOrNull()
-            if (protoCredentials != null) {
-                authStateMachine.transition(FSMAuthenticationEvent.OnAvailableCredentials)
+            val protoCredentials = protoStore.getCredentials()
+            if (protoCredentials.accessToken != null) {
+                transitionAuthenticationMachine(FSMAuthenticationEvent.OnAvailableCredentials)
             } else {
-                authStateMachine.transition(FSMAuthenticationEvent.OnMissingCredentials)
+                transitionAuthenticationMachine(FSMAuthenticationEvent.OnMissingCredentials)
             }
         }
     }
