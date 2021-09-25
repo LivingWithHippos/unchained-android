@@ -319,7 +319,8 @@ class MainActivityViewModel @Inject constructor(
                     is APIError -> {
                         when (user.failure.errorCode) {
                             8 -> {
-                                transitionAuthenticationMachine(FSMAuthenticationEvent.OnExpiredOpenToken)
+                                if (getAuthenticationMachineState() is FSMAuthenticationState.AuthenticatedOpenToken || getAuthenticationMachineState() is FSMAuthenticationState.CheckCredentials)
+                                    transitionAuthenticationMachine(FSMAuthenticationEvent.OnExpiredOpenToken)
                             }
                             9 -> {
                                 // todo: add hint for user action needed

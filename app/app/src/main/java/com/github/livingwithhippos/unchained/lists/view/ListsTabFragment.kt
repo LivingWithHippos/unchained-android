@@ -460,9 +460,8 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
                             when (error.errorCode) {
                                 8 -> {
                                     // bad token, try refreshing it
-                                    activityViewModel.transitionAuthenticationMachine(
-                                        FSMAuthenticationEvent.OnExpiredOpenToken
-                                    )
+                                    if (activityViewModel.getAuthenticationMachineState() is FSMAuthenticationState.AuthenticatedOpenToken)
+                                        activityViewModel.transitionAuthenticationMachine(FSMAuthenticationEvent.OnExpiredOpenToken)
                                     context?.showToast(R.string.refreshing_token)
                                 }
                             }
