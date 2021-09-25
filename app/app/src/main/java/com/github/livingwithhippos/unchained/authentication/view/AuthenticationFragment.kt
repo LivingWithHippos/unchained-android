@@ -11,14 +11,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.authentication.viewmodel.AuthenticationViewModel
 import com.github.livingwithhippos.unchained.authentication.viewmodel.SecretResult
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
-import com.github.livingwithhippos.unchained.data.model.AuthenticationStatus
 import com.github.livingwithhippos.unchained.databinding.FragmentAuthenticationBinding
 import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationEvent
 import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationState
@@ -26,12 +24,10 @@ import com.github.livingwithhippos.unchained.utilities.EventObserver
 import com.github.livingwithhippos.unchained.utilities.PRIVATE_TOKEN
 import com.github.livingwithhippos.unchained.utilities.extension.getClipboardText
 import com.github.livingwithhippos.unchained.utilities.extension.getThemeColor
-import com.github.livingwithhippos.unchained.utilities.extension.observeOnce
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.google.android.material.textfield.TextInputEditText
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 /**
@@ -58,7 +54,7 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
 
         activityViewModel.fsmAuthenticationState.observe(viewLifecycleOwner, {
 
-            when(it.peekContent()) {
+            when (it.peekContent()) {
                 FSMAuthenticationState.AuthenticatedOpenToken -> {
                     val action =
                         AuthenticationFragmentDirections.actionAuthenticationToUser()
@@ -84,7 +80,7 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
                 }
                 FSMAuthenticationState.WaitingUserConfirmation -> {
                     // start the next auth step
-                    viewModel.fetchSecrets(authBinding.auth.deviceCode)
+                    viewModel.fetchSecrets()
                 }
                 is FSMAuthenticationState.WaitingUserAction -> {
                     // todo: depending on the action required show an error or restart the process
@@ -197,18 +193,17 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
         // mine is 52 characters
         if (token.length < 40)
             context?.showToast(R.string.invalid_token)
-        else
-        // pass the value to be checked and eventually saved
-            lifecycleScope.launch {
-                activityViewModel.updateCredentials(
-                    accessToken = token,
-                    clientId = PRIVATE_TOKEN,
-                    clientSecret = PRIVATE_TOKEN,
-                    deviceCode = PRIVATE_TOKEN,
-                    refreshToken = PRIVATE_TOKEN
-                )
-                activityViewModel.startAuthenticationFlow()
-            }
+        else {
+            // pass the value to be checked and eventually saved
+            activityViewModel.updateCredentials(
+                accessToken = token,
+                clientId = PRIVATE_TOKEN,
+                clientSecret = PRIVATE_TOKEN,
+                deviceCode = PRIVATE_TOKEN,
+                refreshToken = PRIVATE_TOKEN
+            )
+            activityViewModel.transitionAuthenticationMachine(FSMAuthenticationEvent.OnPrivateToken)
+        }
     }
 
     override fun onPasteCodeClick(codeInputField: TextInputEditText) {

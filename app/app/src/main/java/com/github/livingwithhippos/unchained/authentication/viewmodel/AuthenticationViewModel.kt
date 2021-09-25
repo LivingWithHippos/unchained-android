@@ -32,7 +32,6 @@ class AuthenticationViewModel @Inject constructor(
     val secretLiveData = MutableLiveData<Event<SecretResult>>()
     val tokenLiveData = MutableLiveData<Event<Token?>>()
 
-    // todo: here we should check if we already have credentials and if they work, and pass those
     fun fetchAuthenticationInfo() {
         viewModelScope.launch {
             val authData = authRepository.getVerificationCode()
@@ -40,11 +39,7 @@ class AuthenticationViewModel @Inject constructor(
         }
     }
 
-
-    /**
-     * @param deviceCode: the device code assigned calling the authentication endpoint
-     */
-    fun fetchSecrets(deviceCode: String) {
+    fun fetchSecrets() {
         // check how many calls we've made
         val calls = savedStateHandle.get<Int>(SECRET_CALLS) ?: 0
         val maxCalls = savedStateHandle.get<Int>(SECRET_CALLS_MAX) ?: 108
@@ -52,7 +47,8 @@ class AuthenticationViewModel @Inject constructor(
             secretLiveData.postEvent(SecretResult.Expired)
         } else {
             viewModelScope.launch {
-                val secretData = authRepository.getSecrets(deviceCode)
+                val credentials = protoStore.credentialsFlow.single()
+                val secretData = authRepository.getSecrets(credentials.deviceCode)
                 if (secretData != null)
                     secretLiveData.postEvent(SecretResult.Retrieved(secretData))
                 else {
@@ -70,14 +66,6 @@ class AuthenticationViewModel @Inject constructor(
             val tokenData = authRepository.getToken(credentials.clientId, credentials.clientSecret, credentials.deviceCode)
             tokenLiveData.postEvent(tokenData)
         }
-    }
-
-    fun setAuthState(authenticated: Boolean) {
-        savedStateHandle.set(AUTH_STATE, authenticated)
-    }
-
-    private fun getAuthState(): Boolean {
-        return savedStateHandle.get(AUTH_STATE) ?: false
     }
 
     /**

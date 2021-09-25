@@ -861,14 +861,16 @@ class MainActivityViewModel @Inject constructor(
         }
     }
 
-    suspend fun updateCredentials(
+    fun updateCredentials(
         deviceCode: String? = null,
         clientId: String? = null,
         clientSecret: String? = null,
         accessToken: String? = null,
         refreshToken: String? = null
     ) {
-        protoStore.updateCredentials(deviceCode, clientId, clientSecret, accessToken, refreshToken)
+        viewModelScope.launch {
+            protoStore.updateCredentials(deviceCode, clientId, clientSecret, accessToken, refreshToken)
+        }
     }
 
     /**************************
