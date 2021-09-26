@@ -18,6 +18,7 @@ import com.github.livingwithhippos.unchained.data.repository.*
 import com.github.livingwithhippos.unchained.data.repository.PluginRepository.Companion.TYPE_UNCHAINED
 import com.github.livingwithhippos.unchained.lists.view.ListsTabFragment
 import com.github.livingwithhippos.unchained.plugins.model.Plugin
+import com.github.livingwithhippos.unchained.statemachine.authentication.CurrentFSMAuthentication
 import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationEvent
 import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationSideEffect
 import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationState
@@ -841,13 +842,32 @@ class MainActivityViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Returns the current finite state authentication machine state
+     *
+     * @return
+     */
     fun getAuthenticationMachineState(): FSMAuthenticationState {
         return authStateMachine.state
     }
 
+    /**
+     * Returns a more generic status of the authentication machine as ready, checking and not ready.
+     *
+     * @return CurrentFSMAuthentication
+     */
+    fun getCurrentAuthenticationStatus(): CurrentFSMAuthentication =
+        when (getAuthenticationMachineState()) {
+            FSMAuthenticationState.AuthenticatedPrivateToken, FSMAuthenticationState.AuthenticatedOpenToken -> CurrentFSMAuthentication.Authenticated
+            FSMAuthenticationState.CheckCredentials, FSMAuthenticationState.RefreshingOpenToken -> CurrentFSMAuthentication.Waiting
+            else -> CurrentFSMAuthentication.Unauthenticated
+        }
+
+
     fun transitionAuthenticationMachine(event: FSMAuthenticationEvent) {
         authStateMachine.transition(event)
     }
+
 
     companion object {
         const val KEY_TORRENT_DOWNLOAD_ID = "torrent_download_id_key"

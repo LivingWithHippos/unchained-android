@@ -15,8 +15,8 @@ sealed class FSMAuthenticationState {
 }
 
 sealed class FSMAuthenticationEvent {
-    object OnAvailableCredentials: FSMAuthenticationEvent()
-    object OnMissingCredentials: FSMAuthenticationEvent()
+    object OnAvailableCredentials : FSMAuthenticationEvent()
+    object OnMissingCredentials : FSMAuthenticationEvent()
     object OnPrivateToken : FSMAuthenticationEvent()
     object OnNotWorking : FSMAuthenticationEvent()
     object OnAuthLoaded : FSMAuthenticationEvent()
@@ -36,13 +36,23 @@ sealed class FSMAuthenticationEvent {
 }
 
 sealed class FSMAuthenticationSideEffect {
-    object CheckingCredentials: FSMAuthenticationSideEffect()
-    object PostActionNeeded: FSMAuthenticationSideEffect()
-    object PostNewLogin: FSMAuthenticationSideEffect()
-    object ResetAuthentication: FSMAuthenticationSideEffect()
-    object PostWaitUserConfirmation: FSMAuthenticationSideEffect()
-    object PostWaitToken: FSMAuthenticationSideEffect()
-    object PostAuthenticatedOpen: FSMAuthenticationSideEffect()
-    object PostAuthenticatedPrivate: FSMAuthenticationSideEffect()
-    object PostRefreshingToken: FSMAuthenticationSideEffect()
+    object CheckingCredentials : FSMAuthenticationSideEffect()
+    object PostActionNeeded : FSMAuthenticationSideEffect()
+    object PostNewLogin : FSMAuthenticationSideEffect()
+    object ResetAuthentication : FSMAuthenticationSideEffect()
+    object PostWaitUserConfirmation : FSMAuthenticationSideEffect()
+    object PostWaitToken : FSMAuthenticationSideEffect()
+    object PostAuthenticatedOpen : FSMAuthenticationSideEffect()
+    object PostAuthenticatedPrivate : FSMAuthenticationSideEffect()
+    object PostRefreshingToken : FSMAuthenticationSideEffect()
+}
+
+// support class
+sealed class CurrentFSMAuthentication {
+    // auth is ok
+    object Authenticated : CurrentFSMAuthentication()
+    // auth may become ok
+    object Waiting : CurrentFSMAuthentication()
+    // auth is not ok
+    object Unauthenticated : CurrentFSMAuthentication()
 }

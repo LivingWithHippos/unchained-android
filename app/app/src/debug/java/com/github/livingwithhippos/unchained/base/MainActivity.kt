@@ -35,6 +35,7 @@ import com.github.livingwithhippos.unchained.databinding.ActivityMainBinding
 import com.github.livingwithhippos.unchained.settings.view.SettingsActivity
 import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Companion.KEY_TORRENT_NOTIFICATIONS
 import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewModel
+import com.github.livingwithhippos.unchained.statemachine.authentication.CurrentFSMAuthentication
 import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationState
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.EventObserver
@@ -199,15 +200,7 @@ class MainActivity : AppCompatActivity() {
                     }
                     else -> {
                         // check the authentication
-
-                        when (viewModel.getAuthenticationMachineState()) {
-                            FSMAuthenticationState.AuthenticatedOpenToken, FSMAuthenticationState.AuthenticatedPrivateToken, FSMAuthenticationState.RefreshingOpenToken -> {
-                                // todo: check for premium
-                                // todo: if refreshing launch after delay
-                                processLinkIntent(link)
-                            }
-                            else -> showToast(R.string.please_login)
-                        }
+                        processDelayedLink(link)
                     }
                 }
             }
@@ -360,18 +353,7 @@ class MainActivity : AppCompatActivity() {
                                 ) == true -> addSearchPlugin(data)
                                 else -> {
                                     // it's a magnet/torrent, check auth state before loading it
-                                    when (viewModel.getAuthenticationMachineState()) {
-                                        FSMAuthenticationState.AuthenticatedOpenToken, FSMAuthenticationState.AuthenticatedPrivateToken -> {
-                                            // todo: check for premium
-                                            processLinkIntent(data)
-                                        }
-                                        FSMAuthenticationState.RefreshingOpenToken -> {
-                                            // todo: launch it after a delay
-                                        }
-                                        else -> {
-                                            showToast(R.string.please_login)
-                                        }
-                                    }
+                                    processDelayedIntent(data)
                                 }
                             }
                         }
@@ -399,6 +381,52 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             else -> {
+            }
+        }
+    }
+
+    private fun processDelayedLink(link: String) {
+        lifecycleScope.launch {
+            delayLoop@ for (loop in 1..3) {
+                when (viewModel.getCurrentAuthenticationStatus()) {
+                    CurrentFSMAuthentication.Authenticated -> {
+                        // auth ok, process link and exit loop
+                        processLinkIntent(link)
+                        break@delayLoop
+                    }
+                    CurrentFSMAuthentication.Unauthenticated -> {
+                        // auth not ok, show error and exit loop
+                        showToast(R.string.please_login)
+                        break@delayLoop
+                    }
+                    CurrentFSMAuthentication.Waiting -> {
+                        // auth may become ok, delay and continue loop
+                        delay(AUTH_DELAY)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun processDelayedIntent(uri: Uri) {
+        lifecycleScope.launch {
+            delayLoop@ for (loop in 1..3) {
+                when (viewModel.getCurrentAuthenticationStatus()) {
+                    CurrentFSMAuthentication.Authenticated -> {
+                        // auth ok, process link and exit loop
+                        processLinkIntent(uri)
+                        break@delayLoop
+                    }
+                    CurrentFSMAuthentication.Unauthenticated -> {
+                        // auth not ok, show error and exit loop
+                        showToast(R.string.please_login)
+                        break@delayLoop
+                    }
+                    CurrentFSMAuthentication.Waiting -> {
+                        // auth may become ok, delay and continue loop
+                        delay(AUTH_DELAY)
+                    }
+                }
             }
         }
     }
@@ -543,5 +571,6 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         private const val EXIT_WAIT_TIME = 2000L
+        private const val AUTH_DELAY = 500L
     }
 }
