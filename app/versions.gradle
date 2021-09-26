@@ -30,6 +30,7 @@ versions.preference = "1.1.1"
 versions.recyclerview = "1.1.0"
 versions.retrofit = "2.9.0"
 versions.room = "2.3.0"
+versions.statemachine = "0.2.0"
 versions.swiperefreshlayout = "1.1.0"
 versions.timber = "5.0.1"
 ext.versions = versions
@@ -88,6 +89,7 @@ deps.dagger = dagger
 
 def datastore = [:]
 datastore.preferences = "androidx.datastore:datastore-preferences:$versions.datastore"
+datastore.datastore = "androidx.datastore:datastore:$versions.datastore"
 deps.datastore = datastore
 
 def espresso = [:]
@@ -190,6 +192,8 @@ room.ktx = "androidx.room:room-ktx:$versions.room"
 room.rxjava2 = "androidx.room:room-rxjava2:$versions.room"
 room.testing = "androidx.room:room-testing:$versions.room"
 deps.room = room
+
+deps.statemachine = "com.tinder.statemachine:statemachine:$versions.statemachine"
 
 deps.swiperefreshlayout = "androidx.swiperefreshlayout:swiperefreshlayout:$versions.swiperefreshlayout"
 

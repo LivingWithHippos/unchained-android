@@ -5,9 +5,11 @@ const val OPEN_SOURCE_CLIENT_ID = "X245A4XAIBGVM"
 const val OPEN_SOURCE_GRANT_TYPE = "http://oauth.net/grant_type/device/1.0"
 
 const val BASE_URL = "https://api.real-debrid.com/rest/1.0/"
-
 const val BASE_AUTH_URL = "https://api.real-debrid.com/oauth/v2/"
-
+const val REFERRAL_LINK = "http://real-debrid.com/?id=78841"
+const val PREMIUM_LINK = "https://real-debrid.com/premium"
+const val ACCOUNT_LINK = "https://real-debrid.com/account"
+// unofficial link to get streaming from a browser page
 const val RD_STREAMING_URL = "https://real-debrid.com/streaming-"
 
 const val KEY_TOKEN: String = "TOKEN_KEY"

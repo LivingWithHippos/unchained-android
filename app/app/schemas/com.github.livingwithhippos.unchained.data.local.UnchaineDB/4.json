@@ -1,0 +1,40 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 4,
+    "identityHash": "40132ab5533d389dc1aa44b798dec21e",
+    "entities": [
+      {
+        "tableName": "host_regex",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`regex` TEXT NOT NULL, `type` INTEGER NOT NULL, PRIMARY KEY(`regex`))",
+        "fields": [
+          {
+            "fieldPath": "regex",
+            "columnName": "regex",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "type",
+            "columnName": "type",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "regex"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '40132ab5533d389dc1aa44b798dec21e')"
+    ]
+  }
+}

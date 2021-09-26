@@ -10,21 +10,18 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
-import com.github.livingwithhippos.unchained.data.model.AuthenticationStatus
 import com.github.livingwithhippos.unchained.databinding.FragmentUserProfileBinding
-import com.github.livingwithhippos.unchained.lists.view.ListsTabFragment
 import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Companion.KEY_REFERRAL_ASKED
 import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Companion.KEY_REFERRAL_USE
+import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationState
 import com.github.livingwithhippos.unchained.user.viewmodel.UserProfileViewModel
+import com.github.livingwithhippos.unchained.utilities.ACCOUNT_LINK
+import com.github.livingwithhippos.unchained.utilities.REFERRAL_LINK
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-
-const val REFERRAL_LINK = "http://real-debrid.com/?id=78841"
-const val PREMIUM_LINK = "https://real-debrid.com/premium"
-const val ACCOUNT_LINK = "https://real-debrid.com/account"
 
 /**
  * A simple [UnchainedFragment] subclass.
@@ -95,26 +92,30 @@ class UserProfileFragment : UnchainedFragment() {
             }
         }
 
-        activityViewModel.newAuthenticationState.observe(
+        activityViewModel.fsmAuthenticationState.observe(
             viewLifecycleOwner,
             {
                 userBinding.srLayout.isRefreshing = false
+
                 when (it.peekContent()) {
-                    AuthenticationStatus.Unauthenticated -> {
-                        val action = UserProfileFragmentDirections.actionUserToAuthentication()
+                    is FSMAuthenticationState.WaitingUserAction -> {
+                        // an error occurred, check it and eventually go back to the start fragment
+                        val action = UserProfileFragmentDirections.actionUserToStartFragment()
                         findNavController().navigate(action)
                     }
-                    is AuthenticationStatus.Authenticated -> {
+                    FSMAuthenticationState.StartNewLogin -> {
+                        // the user reset the login, go to the auth fragment
+                        val action = UserProfileFragmentDirections.actionUserToAuthenticationFragment()
+                        findNavController().navigate(action)
+                    }
+                    FSMAuthenticationState.AuthenticatedOpenToken, FSMAuthenticationState.AuthenticatedPrivateToken, FSMAuthenticationState.RefreshingOpenToken -> {
                         // managed by activity
                     }
-                    is AuthenticationStatus.AuthenticatedNoPremium -> {
-                        // managed by activity
+                    FSMAuthenticationState.CheckCredentials -> {
+                        // shouldn't matter
                     }
-                    is AuthenticationStatus.NeedUserAction -> {
-                        // managed by activity
-                    }
-                    is AuthenticationStatus.RefreshToken -> {
-                        // managed by activity
+                    FSMAuthenticationState.Start, FSMAuthenticationState.WaitingToken, FSMAuthenticationState.WaitingUserConfirmation -> {
+                        // shouldn't happen
                     }
                 }
             }
@@ -124,9 +125,8 @@ class UserProfileFragment : UnchainedFragment() {
             activityViewModel.logout()
         }
 
-
         userBinding.srLayout.setOnRefreshListener {
-            activityViewModel.setupAuthenticationStatus()
+            activityViewModel.recheckAuthenticationStatus()
         }
 
         return userBinding.root

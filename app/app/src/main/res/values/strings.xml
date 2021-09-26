@@ -534,4 +534,5 @@
     <string name="retry_later">Retry later</string>
     <string name="content_description_plugins_link">Link to plugins page</string>
     <string name="get_plugins">Get more plugins</string>
+    <string name="reset_login">Reset login</string>
 </resources>

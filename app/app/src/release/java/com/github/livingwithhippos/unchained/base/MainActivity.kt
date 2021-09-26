@@ -9,7 +9,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.SharedPreferences
-import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
@@ -25,24 +24,23 @@ import androidx.navigation.NavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
-import com.github.livingwithhippos.unchained.BuildConfig
 import com.github.livingwithhippos.unchained.R
-import com.github.livingwithhippos.unchained.data.model.AuthenticationStatus
 import com.github.livingwithhippos.unchained.data.model.UserAction
-import com.github.livingwithhippos.unchained.data.repositoy.PluginRepository.Companion.TYPE_UNCHAINED
+import com.github.livingwithhippos.unchained.data.repository.PluginRepository.Companion.TYPE_UNCHAINED
 import com.github.livingwithhippos.unchained.data.service.ForegroundTorrentService
 import com.github.livingwithhippos.unchained.data.service.ForegroundTorrentService.Companion.KEY_TORRENT_ID
 import com.github.livingwithhippos.unchained.databinding.ActivityMainBinding
 import com.github.livingwithhippos.unchained.settings.view.SettingsActivity
 import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Companion.KEY_TORRENT_NOTIFICATIONS
 import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewModel
+import com.github.livingwithhippos.unchained.statemachine.authentication.CurrentFSMAuthentication
+import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationState
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.EventObserver
 import com.github.livingwithhippos.unchained.utilities.SCHEME_HTTP
 import com.github.livingwithhippos.unchained.utilities.SCHEME_HTTPS
 import com.github.livingwithhippos.unchained.utilities.SCHEME_MAGNET
 import com.github.livingwithhippos.unchained.utilities.extension.downloadFile
-import com.github.livingwithhippos.unchained.utilities.extension.observeOnce
 import com.github.livingwithhippos.unchained.utilities.extension.setupWithNavController
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -59,10 +57,9 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-
-    /**************************************************************
-     * ADD CHANGES MADE HERE IN THE DEBUG VERSION OF MAINACTIVITY *
-     *************************************************************/
+    /****************************************************************
+     * ADD CHANGES MADE HERE IN THE RELEASE VERSION OF MAINACTIVITY *
+     ***************************************************************/
 
     private var currentNavController: LiveData<NavController>? = null
     private lateinit var appBarConfiguration: AppBarConfiguration
@@ -116,18 +113,42 @@ class MainActivity : AppCompatActivity() {
             null
         )
 
-        viewModel.newAuthenticationState.observe(
+        viewModel.fsmAuthenticationState.observe(
             this,
-            { status ->
-                when (status.peekContent()) {
-                    is AuthenticationStatus.Authenticated -> {
+            {
+                when (it.getContentIfNotHandled()) {
+                    null -> {
+                        // do nothing
+                    }
+                    is FSMAuthenticationState.CheckCredentials -> {
+                        viewModel.checkCredentials()
+                    }
+                    FSMAuthenticationState.Start -> {
+                        // do nothing. This is our starting point. It should not be reached again
+                    }
+                    FSMAuthenticationState.StartNewLogin -> {
+                        // this state should be managed by the fragments directly
+                    }
+                    FSMAuthenticationState.AuthenticatedOpenToken -> {
+                        // unlock the bottom menu
                         enableAllBottomNavItems()
                     }
-                    is AuthenticationStatus.AuthenticatedNoPremium -> {
+                    FSMAuthenticationState.RefreshingOpenToken -> {
+                        viewModel.refreshToken()
+                    }
+                    FSMAuthenticationState.AuthenticatedPrivateToken -> {
+                        // unlock the bottom menu
                         enableAllBottomNavItems()
                     }
-                    is AuthenticationStatus.NeedUserAction -> {
-                        when ((status.peekContent() as AuthenticationStatus.NeedUserAction).actionNeeded) {
+                    FSMAuthenticationState.WaitingToken -> {
+                        // this state should be managed by the fragments directly
+                    }
+                    FSMAuthenticationState.WaitingUserConfirmation -> {
+                        // this state should be managed by the fragments directly
+                    }
+                    is FSMAuthenticationState.WaitingUserAction -> {
+                        // go back to the user/start fragment and disable the buttons.
+                        when ((it.getContentIfNotHandled() as FSMAuthenticationState.WaitingUserAction).action) {
                             UserAction.PERMISSION_DENIED -> showToast(R.string.permission_denied)
                             UserAction.TFA_NEEDED -> showToast(R.string.tfa_needed)
                             UserAction.TFA_PENDING -> showToast(R.string.tfa_pending)
@@ -136,38 +157,27 @@ class MainActivity : AppCompatActivity() {
                             UserAction.NETWORK_ERROR -> showToast(R.string.network_error)
                             UserAction.RETRY_LATER -> showToast(R.string.retry_later)
                         }
+                        // this state should be managed by the fragments directly
                         lifecycleScope.launch {
                             disableBottomNavItems(
                                 R.id.navigation_lists,
                                 R.id.navigation_search
                             )
                             doubleClickBottomItem(R.id.navigation_home)
-                        }
-                    }
-                    is AuthenticationStatus.RefreshToken -> {
-                        // showToast(R.string.refreshing_token)
-                        viewModel.refreshToken()
-                    }
-                    AuthenticationStatus.Unauthenticated -> {
-                        lifecycleScope.launch {
-                            disableBottomNavItems(
-                                R.id.navigation_lists,
-                                R.id.navigation_search
-                            )
-                            doubleClickBottomItem(R.id.navigation_home)
-                            viewModel.setTokenRefreshing(false)
                         }
                     }
                 }
             }
         )
 
-        // initialize the login flow
+        // disable the bottom menu items before loading the credentials
         disableBottomNavItems(
             R.id.navigation_lists,
             R.id.navigation_search
         )
-        viewModel.setupAuthenticationStatus()
+
+        // start the authentication state machine
+        viewModel.startAuthenticationMachine()
 
         // check if the app has been opened by clicking on torrents/magnet on sharing links
         getIntentData()
@@ -187,13 +197,7 @@ class MainActivity : AppCompatActivity() {
                     }
                     else -> {
                         // check the authentication
-                        when (viewModel.newAuthenticationState.value?.peekContent()) {
-                            is AuthenticationStatus.Authenticated -> processLinkIntent(link)
-                            is AuthenticationStatus.AuthenticatedNoPremium -> baseContext.showToast(
-                                R.string.premium_needed
-                            )
-                            else -> showToast(R.string.please_login)
-                        }
+                        processExternalRequestOnAuthentication(Uri.parse(link))
                     }
                 }
             }
@@ -317,20 +321,7 @@ class MainActivity : AppCompatActivity() {
                                 ) == true -> addSearchPlugin(data)
                                 else -> {
                                     // it's a magnet/torrent, check auth state before loading it
-                                    viewModel.newAuthenticationState.observeOnce(
-                                        this,
-                                        { auth ->
-                                            when (auth.peekContent()) {
-                                                is AuthenticationStatus.Authenticated -> processLinkIntent(
-                                                    data
-                                                )
-                                                is AuthenticationStatus.AuthenticatedNoPremium -> baseContext.showToast(
-                                                    R.string.premium_needed_torrent
-                                                )
-                                                else -> showToast(R.string.please_login)
-                                            }
-                                        }
-                                    )
+                                    processExternalRequestOnAuthentication(data)
                                 }
                             }
                         }
@@ -344,16 +335,43 @@ class MainActivity : AppCompatActivity() {
                 // could be because of the tap on a notification
                 intent.getStringExtra(KEY_TORRENT_ID)?.let { id ->
 
-                    viewModel.newAuthenticationState.observeOnce(
-                        this,
-                        { auth ->
-                            if (auth.peekContent() is AuthenticationStatus.Authenticated || auth.peekContent() is AuthenticationStatus.AuthenticatedNoPremium)
-                                processTorrentNotificationIntent(id)
+                    when (viewModel.getAuthenticationMachineState()) {
+                        FSMAuthenticationState.AuthenticatedOpenToken, FSMAuthenticationState.AuthenticatedPrivateToken -> {
+                            processTorrentNotificationIntent(id)
                         }
-                    )
+                        FSMAuthenticationState.RefreshingOpenToken -> {
+                            // todo: launch it after a delay
+                        }
+                        else -> {
+                            // do nothing
+                        }
+                    }
                 }
             }
             else -> {
+            }
+        }
+    }
+
+    private fun processExternalRequestOnAuthentication(uri: Uri) {
+        lifecycleScope.launch {
+            delayLoop@ for (loop in 1..5) {
+                when (viewModel.getCurrentAuthenticationStatus()) {
+                    CurrentFSMAuthentication.Authenticated -> {
+                        // auth ok, process link and exit loop
+                        processExternalRequest(uri)
+                        break@delayLoop
+                    }
+                    CurrentFSMAuthentication.Unauthenticated -> {
+                        // auth not ok, show error and exit loop
+                        showToast(R.string.please_login)
+                        break@delayLoop
+                    }
+                    CurrentFSMAuthentication.Waiting -> {
+                        // auth may become ok, delay and continue loop
+                        delay(AUTH_DELAY)
+                    }
+                }
             }
         }
     }
@@ -370,7 +388,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun processLinkIntent(uri: Uri) {
+    private fun processExternalRequest(uri: Uri) {
         lifecycleScope.launch {
             doubleClickBottomItem(R.id.navigation_lists)
             viewModel.addLink(uri)
@@ -392,8 +410,6 @@ class MainActivity : AppCompatActivity() {
         delay(100)
         bottomNav.selectedItemId = destinationID
     }
-
-    private fun processLinkIntent(link: String) = processLinkIntent(Uri.parse(link))
 
     private fun openSettings() {
         val intent = Intent(this, SettingsActivity::class.java)
@@ -498,5 +514,6 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         private const val EXIT_WAIT_TIME = 2000L
+        private const val AUTH_DELAY = 500L
     }
 }
