@@ -13,9 +13,19 @@ import androidx.lifecycle.viewModelScope
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.local.Credentials
 import com.github.livingwithhippos.unchained.data.local.ProtoStore
-import com.github.livingwithhippos.unchained.data.model.*
-import com.github.livingwithhippos.unchained.data.repository.*
+import com.github.livingwithhippos.unchained.data.model.APIError
+import com.github.livingwithhippos.unchained.data.model.ApiConversionError
+import com.github.livingwithhippos.unchained.data.model.EmptyBodyError
+import com.github.livingwithhippos.unchained.data.model.NetworkError
+import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkException
+import com.github.livingwithhippos.unchained.data.model.User
+import com.github.livingwithhippos.unchained.data.model.UserAction
+import com.github.livingwithhippos.unchained.data.repository.AuthenticationRepository
+import com.github.livingwithhippos.unchained.data.repository.HostsRepository
+import com.github.livingwithhippos.unchained.data.repository.PluginRepository
 import com.github.livingwithhippos.unchained.data.repository.PluginRepository.Companion.TYPE_UNCHAINED
+import com.github.livingwithhippos.unchained.data.repository.UserRepository
+import com.github.livingwithhippos.unchained.data.repository.VariousApiRepository
 import com.github.livingwithhippos.unchained.lists.view.ListsTabFragment
 import com.github.livingwithhippos.unchained.plugins.model.Plugin
 import com.github.livingwithhippos.unchained.statemachine.authentication.CurrentFSMAuthentication
@@ -33,7 +43,8 @@ import com.tinder.StateMachine
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.io.File
@@ -77,253 +88,250 @@ class MainActivityViewModel @Inject constructor(
 
     private var refreshJob: Job? = null
 
-    private val authStateMachine: StateMachine<
-            FSMAuthenticationState,
-            FSMAuthenticationEvent,
-            FSMAuthenticationSideEffect
-            > = StateMachine.create {
+    private val authStateMachine: StateMachine<FSMAuthenticationState, FSMAuthenticationEvent, FSMAuthenticationSideEffect> =
+        StateMachine.create {
 
-        initialState(FSMAuthenticationState.Start)
+            initialState(FSMAuthenticationState.Start)
 
-        state<FSMAuthenticationState.Start> {
-            on<FSMAuthenticationEvent.OnAvailableCredentials> {
-                transitionTo(
-                    FSMAuthenticationState.CheckCredentials,
-                    FSMAuthenticationSideEffect.CheckingCredentials
-                )
-            }
-            on<FSMAuthenticationEvent.OnMissingCredentials> {
-                transitionTo(
-                    FSMAuthenticationState.StartNewLogin,
-                    FSMAuthenticationSideEffect.PostNewLogin
-                )
-            }
-        }
-
-        state<FSMAuthenticationState.CheckCredentials> {
-            on<FSMAuthenticationEvent.OnWorkingOpenToken> {
-                transitionTo(
-                    FSMAuthenticationState.AuthenticatedOpenToken,
-                    FSMAuthenticationSideEffect.PostAuthenticatedPrivate
-                )
-            }
-            on<FSMAuthenticationEvent.OnExpiredOpenToken> {
-                transitionTo(
-                    FSMAuthenticationState.RefreshingOpenToken,
-                    FSMAuthenticationSideEffect.PostRefreshingToken
-                )
-            }
-            on<FSMAuthenticationEvent.OnWorkingPrivateToken> {
-                transitionTo(
-                    FSMAuthenticationState.AuthenticatedPrivateToken,
-                    FSMAuthenticationSideEffect.PostAuthenticatedOpen
-                )
-            }
-            on<FSMAuthenticationEvent.OnNotWorking> {
-                transitionTo(
-                    FSMAuthenticationState.StartNewLogin,
-                    FSMAuthenticationSideEffect.PostNewLogin
-                )
-            }
-            on<FSMAuthenticationEvent.OnUserActionNeeded> {
-                transitionTo(
-                    FSMAuthenticationState.WaitingUserAction(null),
-                    FSMAuthenticationSideEffect.PostActionNeeded
-                )
-            }
-        }
-
-        state<FSMAuthenticationState.WaitingUserAction> {
-            on<FSMAuthenticationEvent.OnUserActionRetry> {
-                transitionTo(
-                    FSMAuthenticationState.CheckCredentials,
-                    FSMAuthenticationSideEffect.CheckingCredentials
-                )
-            }
-            on<FSMAuthenticationEvent.OnUserActionReset> {
-                transitionTo(
-                    FSMAuthenticationState.StartNewLogin,
-                    FSMAuthenticationSideEffect.ResetAuthentication
-                )
-            }
-        }
-
-        state<FSMAuthenticationState.StartNewLogin> {
-            on<FSMAuthenticationEvent.OnAuthLoaded> {
-                transitionTo(
-                    FSMAuthenticationState.WaitingUserConfirmation,
-                    FSMAuthenticationSideEffect.PostWaitUserConfirmation
-                )
-            }
-            // I can get a private token on this state too
-            on<FSMAuthenticationEvent.OnPrivateToken> {
-                transitionTo(
-                    FSMAuthenticationState.CheckCredentials,
-                    FSMAuthenticationSideEffect.CheckingCredentials
-                )
-            }
-        }
-
-        state<FSMAuthenticationState.WaitingUserConfirmation> {
-            on<FSMAuthenticationEvent.OnUserConfirmationExpired> {
-                transitionTo(
-                    FSMAuthenticationState.StartNewLogin,
-                    FSMAuthenticationSideEffect.PostNewLogin
-                )
-            }
-            on<FSMAuthenticationEvent.OnUserConfirmationLoaded> {
-                transitionTo(
-                    FSMAuthenticationState.WaitingToken,
-                    FSMAuthenticationSideEffect.PostWaitToken
-                )
-            }
-            on<FSMAuthenticationEvent.OnUserConfirmationMissing> {
-                transitionTo(
-                    FSMAuthenticationState.WaitingUserConfirmation,
-                    FSMAuthenticationSideEffect.PostWaitUserConfirmation
-                )
-            }
-            // I can get a private token on this state too
-            on<FSMAuthenticationEvent.OnPrivateToken> {
-                transitionTo(
-                    FSMAuthenticationState.CheckCredentials,
-                    FSMAuthenticationSideEffect.CheckingCredentials
-                )
-            }
-        }
-
-        state<FSMAuthenticationState.WaitingToken> {
-            on<FSMAuthenticationEvent.OnOpenTokenLoaded> {
-                transitionTo(
-                    FSMAuthenticationState.CheckCredentials,
-                    FSMAuthenticationSideEffect.CheckingCredentials
-                )
-            }
-            // I can get a private token on this state too
-            on<FSMAuthenticationEvent.OnPrivateToken> {
-                transitionTo(
-                    FSMAuthenticationState.CheckCredentials,
-                    FSMAuthenticationSideEffect.CheckingCredentials
-                )
-            }
-        }
-
-        state<FSMAuthenticationState.AuthenticatedOpenToken> {
-            on<FSMAuthenticationEvent.OnExpiredOpenToken> {
-                transitionTo(
-                    FSMAuthenticationState.RefreshingOpenToken,
-                    FSMAuthenticationSideEffect.PostRefreshingToken
-                )
-            }
-            on<FSMAuthenticationEvent.OnAuthenticationError> {
-                transitionTo(
-                    FSMAuthenticationState.WaitingUserAction(null),
-                    FSMAuthenticationSideEffect.PostActionNeeded
-                )
-            }
-            on<FSMAuthenticationEvent.OnLogout> {
-                transitionTo(
-                    FSMAuthenticationState.StartNewLogin,
-                    FSMAuthenticationSideEffect.PostNewLogin
-                )
-            }
-        }
-
-        state<FSMAuthenticationState.RefreshingOpenToken> {
-            on<FSMAuthenticationEvent.OnRefreshed> {
-                transitionTo(
-                    FSMAuthenticationState.AuthenticatedOpenToken,
-                    FSMAuthenticationSideEffect.PostAuthenticatedOpen
-                )
-            }
-            on<FSMAuthenticationEvent.OnLogout> {
-                transitionTo(
-                    FSMAuthenticationState.StartNewLogin,
-                    FSMAuthenticationSideEffect.PostNewLogin
-                )
-            }
-            on<FSMAuthenticationEvent.OnAuthenticationError> {
-                transitionTo(
-                    FSMAuthenticationState.WaitingUserAction(null),
-                    FSMAuthenticationSideEffect.PostActionNeeded
-                )
-            }
-        }
-
-        state<FSMAuthenticationState.AuthenticatedPrivateToken> {
-            on<FSMAuthenticationEvent.OnLogout> {
-                transitionTo(
-                    FSMAuthenticationState.StartNewLogin,
-                    FSMAuthenticationSideEffect.PostNewLogin
-                )
-            }
-            on<FSMAuthenticationEvent.OnAuthenticationError> {
-                transitionTo(
-                    FSMAuthenticationState.WaitingUserAction(null),
-                    FSMAuthenticationSideEffect.PostActionNeeded
-                )
-            }
-        }
-
-        onTransition {
-            val validTransition = it as? StateMachine.Transition.Valid ?: return@onTransition
-            Timber.d("statemachine is $validTransition")
-            when (validTransition.sideEffect) {
-                null -> {
-                    // do nothing
+            state<FSMAuthenticationState.Start> {
+                on<FSMAuthenticationEvent.OnAvailableCredentials> {
+                    transitionTo(
+                        FSMAuthenticationState.CheckCredentials,
+                        FSMAuthenticationSideEffect.CheckingCredentials
+                    )
                 }
-                is FSMAuthenticationSideEffect.CheckingCredentials -> {
-                    fsmAuthenticationState.postEvent(FSMAuthenticationState.CheckCredentials)
+                on<FSMAuthenticationEvent.OnMissingCredentials> {
+                    transitionTo(
+                        FSMAuthenticationState.StartNewLogin,
+                        FSMAuthenticationSideEffect.PostNewLogin
+                    )
                 }
-                FSMAuthenticationSideEffect.PostNewLogin -> {
-                    fsmAuthenticationState.postEvent(FSMAuthenticationState.StartNewLogin)
+            }
+
+            state<FSMAuthenticationState.CheckCredentials> {
+                on<FSMAuthenticationEvent.OnWorkingOpenToken> {
+                    transitionTo(
+                        FSMAuthenticationState.AuthenticatedOpenToken,
+                        FSMAuthenticationSideEffect.PostAuthenticatedPrivate
+                    )
                 }
-                FSMAuthenticationSideEffect.PostAuthenticatedOpen -> {
-                    fsmAuthenticationState.postEvent(FSMAuthenticationState.AuthenticatedOpenToken)
+                on<FSMAuthenticationEvent.OnExpiredOpenToken> {
+                    transitionTo(
+                        FSMAuthenticationState.RefreshingOpenToken,
+                        FSMAuthenticationSideEffect.PostRefreshingToken
+                    )
                 }
-                FSMAuthenticationSideEffect.PostRefreshingToken -> {
-                    fsmAuthenticationState.postEvent(FSMAuthenticationState.RefreshingOpenToken)
+                on<FSMAuthenticationEvent.OnWorkingPrivateToken> {
+                    transitionTo(
+                        FSMAuthenticationState.AuthenticatedPrivateToken,
+                        FSMAuthenticationSideEffect.PostAuthenticatedOpen
+                    )
                 }
-                FSMAuthenticationSideEffect.PostAuthenticatedPrivate -> {
-                    fsmAuthenticationState.postEvent(FSMAuthenticationState.AuthenticatedPrivateToken)
+                on<FSMAuthenticationEvent.OnNotWorking> {
+                    transitionTo(
+                        FSMAuthenticationState.StartNewLogin,
+                        FSMAuthenticationSideEffect.PostNewLogin
+                    )
                 }
-                FSMAuthenticationSideEffect.PostWaitToken -> {
-                    fsmAuthenticationState.postEvent(FSMAuthenticationState.WaitingToken)
+                on<FSMAuthenticationEvent.OnUserActionNeeded> {
+                    transitionTo(
+                        FSMAuthenticationState.WaitingUserAction(null),
+                        FSMAuthenticationSideEffect.PostActionNeeded
+                    )
                 }
-                FSMAuthenticationSideEffect.PostWaitUserConfirmation -> {
-                    fsmAuthenticationState.postEvent(FSMAuthenticationState.WaitingUserConfirmation)
+            }
+
+            state<FSMAuthenticationState.WaitingUserAction> {
+                on<FSMAuthenticationEvent.OnUserActionRetry> {
+                    transitionTo(
+                        FSMAuthenticationState.CheckCredentials,
+                        FSMAuthenticationSideEffect.CheckingCredentials
+                    )
                 }
-                FSMAuthenticationSideEffect.PostActionNeeded -> {
-                    when (validTransition.event) {
-                        is FSMAuthenticationEvent.OnUserActionNeeded -> {
-                            val action =
-                                (validTransition.event as FSMAuthenticationEvent.OnUserActionNeeded).action
-                            fsmAuthenticationState.postEvent(
-                                FSMAuthenticationState.WaitingUserAction(
-                                    action
-                                )
-                            )
-                        }
-                        is FSMAuthenticationEvent.OnAuthenticationError -> {
-                            fsmAuthenticationState.postEvent(
-                                FSMAuthenticationState.WaitingUserAction(null)
-                            )
-                        }
-                        else -> {
-                            Timber.e("Wrong PostActionNeeded event: ${validTransition.event}")
-                        }
+                on<FSMAuthenticationEvent.OnUserActionReset> {
+                    transitionTo(
+                        FSMAuthenticationState.StartNewLogin,
+                        FSMAuthenticationSideEffect.ResetAuthentication
+                    )
+                }
+            }
+
+            state<FSMAuthenticationState.StartNewLogin> {
+                on<FSMAuthenticationEvent.OnAuthLoaded> {
+                    transitionTo(
+                        FSMAuthenticationState.WaitingUserConfirmation,
+                        FSMAuthenticationSideEffect.PostWaitUserConfirmation
+                    )
+                }
+                // I can get a private token on this state too
+                on<FSMAuthenticationEvent.OnPrivateToken> {
+                    transitionTo(
+                        FSMAuthenticationState.CheckCredentials,
+                        FSMAuthenticationSideEffect.CheckingCredentials
+                    )
+                }
+            }
+
+            state<FSMAuthenticationState.WaitingUserConfirmation> {
+                on<FSMAuthenticationEvent.OnUserConfirmationExpired> {
+                    transitionTo(
+                        FSMAuthenticationState.StartNewLogin,
+                        FSMAuthenticationSideEffect.PostNewLogin
+                    )
+                }
+                on<FSMAuthenticationEvent.OnUserConfirmationLoaded> {
+                    transitionTo(
+                        FSMAuthenticationState.WaitingToken,
+                        FSMAuthenticationSideEffect.PostWaitToken
+                    )
+                }
+                on<FSMAuthenticationEvent.OnUserConfirmationMissing> {
+                    transitionTo(
+                        FSMAuthenticationState.WaitingUserConfirmation,
+                        FSMAuthenticationSideEffect.PostWaitUserConfirmation
+                    )
+                }
+                // I can get a private token on this state too
+                on<FSMAuthenticationEvent.OnPrivateToken> {
+                    transitionTo(
+                        FSMAuthenticationState.CheckCredentials,
+                        FSMAuthenticationSideEffect.CheckingCredentials
+                    )
+                }
+            }
+
+            state<FSMAuthenticationState.WaitingToken> {
+                on<FSMAuthenticationEvent.OnOpenTokenLoaded> {
+                    transitionTo(
+                        FSMAuthenticationState.CheckCredentials,
+                        FSMAuthenticationSideEffect.CheckingCredentials
+                    )
+                }
+                // I can get a private token on this state too
+                on<FSMAuthenticationEvent.OnPrivateToken> {
+                    transitionTo(
+                        FSMAuthenticationState.CheckCredentials,
+                        FSMAuthenticationSideEffect.CheckingCredentials
+                    )
+                }
+            }
+
+            state<FSMAuthenticationState.AuthenticatedOpenToken> {
+                on<FSMAuthenticationEvent.OnExpiredOpenToken> {
+                    transitionTo(
+                        FSMAuthenticationState.RefreshingOpenToken,
+                        FSMAuthenticationSideEffect.PostRefreshingToken
+                    )
+                }
+                on<FSMAuthenticationEvent.OnAuthenticationError> {
+                    transitionTo(
+                        FSMAuthenticationState.WaitingUserAction(null),
+                        FSMAuthenticationSideEffect.PostActionNeeded
+                    )
+                }
+                on<FSMAuthenticationEvent.OnLogout> {
+                    transitionTo(
+                        FSMAuthenticationState.StartNewLogin,
+                        FSMAuthenticationSideEffect.PostNewLogin
+                    )
+                }
+            }
+
+            state<FSMAuthenticationState.RefreshingOpenToken> {
+                on<FSMAuthenticationEvent.OnRefreshed> {
+                    transitionTo(
+                        FSMAuthenticationState.AuthenticatedOpenToken,
+                        FSMAuthenticationSideEffect.PostAuthenticatedOpen
+                    )
+                }
+                on<FSMAuthenticationEvent.OnLogout> {
+                    transitionTo(
+                        FSMAuthenticationState.StartNewLogin,
+                        FSMAuthenticationSideEffect.PostNewLogin
+                    )
+                }
+                on<FSMAuthenticationEvent.OnAuthenticationError> {
+                    transitionTo(
+                        FSMAuthenticationState.WaitingUserAction(null),
+                        FSMAuthenticationSideEffect.PostActionNeeded
+                    )
+                }
+            }
+
+            state<FSMAuthenticationState.AuthenticatedPrivateToken> {
+                on<FSMAuthenticationEvent.OnLogout> {
+                    transitionTo(
+                        FSMAuthenticationState.StartNewLogin,
+                        FSMAuthenticationSideEffect.PostNewLogin
+                    )
+                }
+                on<FSMAuthenticationEvent.OnAuthenticationError> {
+                    transitionTo(
+                        FSMAuthenticationState.WaitingUserAction(null),
+                        FSMAuthenticationSideEffect.PostActionNeeded
+                    )
+                }
+            }
+
+            onTransition {
+                val validTransition = it as? StateMachine.Transition.Valid ?: return@onTransition
+                Timber.d("statemachine is $validTransition")
+                when (validTransition.sideEffect) {
+                    null -> {
+                        // do nothing
                     }
-                }
-                FSMAuthenticationSideEffect.ResetAuthentication -> {
-                    // delete the current credentials and restart a login process
-                    viewModelScope.launch {
-                        protoStore.deleteCredentials()
+                    is FSMAuthenticationSideEffect.CheckingCredentials -> {
+                        fsmAuthenticationState.postEvent(FSMAuthenticationState.CheckCredentials)
+                    }
+                    FSMAuthenticationSideEffect.PostNewLogin -> {
                         fsmAuthenticationState.postEvent(FSMAuthenticationState.StartNewLogin)
                     }
+                    FSMAuthenticationSideEffect.PostAuthenticatedOpen -> {
+                        fsmAuthenticationState.postEvent(FSMAuthenticationState.AuthenticatedOpenToken)
+                    }
+                    FSMAuthenticationSideEffect.PostRefreshingToken -> {
+                        fsmAuthenticationState.postEvent(FSMAuthenticationState.RefreshingOpenToken)
+                    }
+                    FSMAuthenticationSideEffect.PostAuthenticatedPrivate -> {
+                        fsmAuthenticationState.postEvent(FSMAuthenticationState.AuthenticatedPrivateToken)
+                    }
+                    FSMAuthenticationSideEffect.PostWaitToken -> {
+                        fsmAuthenticationState.postEvent(FSMAuthenticationState.WaitingToken)
+                    }
+                    FSMAuthenticationSideEffect.PostWaitUserConfirmation -> {
+                        fsmAuthenticationState.postEvent(FSMAuthenticationState.WaitingUserConfirmation)
+                    }
+                    FSMAuthenticationSideEffect.PostActionNeeded -> {
+                        when (validTransition.event) {
+                            is FSMAuthenticationEvent.OnUserActionNeeded -> {
+                                val action =
+                                    (validTransition.event as FSMAuthenticationEvent.OnUserActionNeeded).action
+                                fsmAuthenticationState.postEvent(
+                                    FSMAuthenticationState.WaitingUserAction(
+                                        action
+                                    )
+                                )
+                            }
+                            is FSMAuthenticationEvent.OnAuthenticationError -> {
+                                fsmAuthenticationState.postEvent(
+                                    FSMAuthenticationState.WaitingUserAction(null)
+                                )
+                            }
+                            else -> {
+                                Timber.e("Wrong PostActionNeeded event: ${validTransition.event}")
+                            }
+                        }
+                    }
+                    FSMAuthenticationSideEffect.ResetAuthentication -> {
+                        // delete the current credentials and restart a login process
+                        viewModelScope.launch {
+                            protoStore.deleteCredentials()
+                            fsmAuthenticationState.postEvent(FSMAuthenticationState.StartNewLogin)
+                        }
+                    }
                 }
             }
         }
-    }
 
     fun checkCredentials() {
         viewModelScope.launch {
@@ -370,10 +378,9 @@ class MainActivityViewModel @Inject constructor(
                                         transitionAuthenticationMachine(FSMAuthenticationEvent.OnNotWorking)
                                     }
                                     else -> {
-                                        /// do nothing
+                                        // do nothing
                                     }
                                 }
-
                             }
                             9 -> {
                                 // todo: add hint for user action needed
@@ -513,7 +520,6 @@ class MainActivityViewModel @Inject constructor(
                     // else I'm just refreshing before it expires
                     // todo: just set it to refreshing at the start of this function
                 }
-
             }
         }
     }
@@ -811,11 +817,7 @@ class MainActivityViewModel @Inject constructor(
     suspend fun getCredentials(): Credentials.CurrentCredential {
         // todo: find a better way to get the first valid value
         val credentials = credentialsFlow.firstOrNull {
-            it.clientId.isNotBlank() ||
-                    it.refreshToken.isNotBlank() ||
-                    it.deviceCode.isNotBlank() ||
-                    it.accessToken.isNotBlank() ||
-                    it.clientSecret.isNotBlank()
+            it.clientId.isNotBlank() || it.refreshToken.isNotBlank() || it.deviceCode.isNotBlank() || it.accessToken.isNotBlank() || it.clientSecret.isNotBlank()
         }
         if (credentials == null)
             return protoStore.getCredentials()
@@ -863,11 +865,9 @@ class MainActivityViewModel @Inject constructor(
             else -> CurrentFSMAuthentication.Unauthenticated
         }
 
-
     fun transitionAuthenticationMachine(event: FSMAuthenticationEvent) {
         authStateMachine.transition(event)
     }
-
 
     companion object {
         const val KEY_TORRENT_DOWNLOAD_ID = "torrent_download_id_key"
