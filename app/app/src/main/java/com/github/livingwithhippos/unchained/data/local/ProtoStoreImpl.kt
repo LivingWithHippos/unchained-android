@@ -12,8 +12,9 @@ import javax.inject.Inject
 class ProtoStoreImpl @Inject constructor(
     @ApplicationContext private val context: Context
 ) : ProtoStore {
-    override val credentialsFlow: Flow<Credentials.CurrentCredential>
-        get() = context.credentialsDataStore.data.catch { exception ->
+
+    override val credentialsFlow: Flow<Credentials.CurrentCredential> =
+        context.credentialsDataStore.data.catch { exception ->
             if (exception is IOException) {
                 exception.printStackTrace()
                 emit(Credentials.CurrentCredential.getDefaultInstance())
@@ -63,36 +64,61 @@ class ProtoStoreImpl @Inject constructor(
         }
     }
 
+    override suspend fun updateDeviceCode(deviceCode: String) {
+        context.credentialsDataStore.updateData { credentials ->
+            credentials.toBuilder().setDeviceCode(deviceCode).build()
+        }
+    }
+
+    override suspend fun updateClientId(clientId: String) {
+        context.credentialsDataStore.updateData { credentials ->
+            credentials.toBuilder().setClientId(clientId).build()
+        }
+    }
+
+    override suspend fun updateClientSecret(clientSecret: String) {
+        context.credentialsDataStore.updateData { credentials ->
+            credentials.toBuilder().setClientSecret(clientSecret).build()
+        }
+    }
+
+    override suspend fun updateAccessToken(accessToken: String) {
+        context.credentialsDataStore.updateData { credentials ->
+            credentials.toBuilder().setAccessToken(accessToken).build()
+        }
+    }
+
+    override suspend fun updateRefreshToken(refreshToken: String) {
+        context.credentialsDataStore.updateData { credentials ->
+            credentials.toBuilder().setRefreshToken(refreshToken).build()
+        }
+    }
+
+
     override suspend fun deleteCredentials() {
         context.credentialsDataStore.updateData {
-            // fixme: using logout these lines do not work
             it.toBuilder().clear().build()
-            // it.defaultInstanceForType
         }
     }
 
     override suspend fun deleteIncompleteCredentials() {
-        context.credentialsDataStore.updateData {
-            if (
-                it.deviceCode.isNullOrBlank() ||
-                it.accessToken.isNullOrBlank() ||
-                it.clientId.isNullOrBlank() ||
-                it.clientSecret.isNullOrBlank() ||
-                it.refreshToken.isNullOrBlank()
-            )
+        val credentials = getCredentials()
+        if (
+            credentials.deviceCode.isNullOrBlank() ||
+            credentials.accessToken.isNullOrBlank() ||
+            credentials.clientId.isNullOrBlank() ||
+            credentials.clientSecret.isNullOrBlank() ||
+            credentials.refreshToken.isNullOrBlank()
+        ) {
+            context.credentialsDataStore.updateData {
                 it.toBuilder().clear().build()
-            else {
-                // todo: a smarter way to remove an incomplete element?
-                // get the original one and call deleteCredentials() checking there instead of here?
-                // todo: why I'm doing this?
-                it.toBuilder().build()
             }
         }
     }
 
     override suspend fun getCredentials(): Credentials.CurrentCredential {
         return try {
-            context.credentialsDataStore.data.first()
+            credentialsFlow.first()
         } catch (e: Exception) {
             e.printStackTrace()
             Credentials.CurrentCredential.getDefaultInstance()

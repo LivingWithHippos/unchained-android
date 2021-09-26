@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.authentication.viewmodel.AuthenticationViewModel
@@ -27,6 +28,7 @@ import com.github.livingwithhippos.unchained.utilities.extension.openExternalWeb
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.google.android.material.textfield.TextInputEditText
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 /**
  * A simple [UnchainedFragment] subclass.
@@ -67,18 +69,15 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
                     // get the authentication link to start the process
                     viewModel.fetchAuthenticationInfo()
                 }
-                FSMAuthenticationState.CheckCredentials -> {
-                    // wait for it to get checked
-                }
-                FSMAuthenticationState.RefreshingOpenToken -> {
-                    // wait for it to get refreshed
+                FSMAuthenticationState.WaitingUserConfirmation -> {
+                    // start the next auth step
+                    viewModel.fetchSecrets()
                 }
                 FSMAuthenticationState.WaitingToken -> {
                     viewModel.fetchToken()
                 }
-                FSMAuthenticationState.WaitingUserConfirmation -> {
-                    // start the next auth step
-                    viewModel.fetchSecrets()
+                FSMAuthenticationState.CheckCredentials, FSMAuthenticationState.RefreshingOpenToken -> {
+                    // managed by activity
                 }
                 is FSMAuthenticationState.WaitingUserAction -> {
                     // todo: depending on the action required show an error or restart the process
@@ -89,16 +88,14 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
             }
         })
 
-        // start checking for the auth link
+        // 1. start checking for the auth link
         viewModel.authLiveData.observe(
             viewLifecycleOwner,
             EventObserver { auth ->
                 if (auth != null) {
                     authBinding.auth = auth
                     // update the currently saved credentials
-                    activityViewModel.updateCredentials(
-                        deviceCode = auth.deviceCode
-                    )
+                    activityViewModel.updateCredentialsDeviceCode(auth.deviceCode)
                     // transition state machine
                     activityViewModel.transitionAuthenticationMachine(FSMAuthenticationEvent.OnAuthLoaded)
                     // set up values for calling the secrets endpoint
@@ -107,7 +104,7 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
             }
         )
 
-        // start checking for user confirmation
+        // 2. start checking for user confirmation
         viewModel.secretLiveData.observe(
             viewLifecycleOwner,
             EventObserver { secrets ->
@@ -122,21 +119,28 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
                         activityViewModel.transitionAuthenticationMachine(FSMAuthenticationEvent.OnUserConfirmationExpired)
                     }
                     is SecretResult.Retrieved -> {
-                        authBinding.secrets = secrets.value
+                        if (activityViewModel.getAuthenticationMachineState() is FSMAuthenticationState.WaitingUserConfirmation) {
 
-                        // update the currently saved credentials
-                        activityViewModel.updateCredentials(
-                            clientId = secrets.value.clientId,
-                            clientSecret = secrets.value.clientSecret,
-                        )
-                        // start the next auth step
-                        activityViewModel.transitionAuthenticationMachine(FSMAuthenticationEvent.OnUserConfirmationLoaded)
+                            authBinding.secrets = secrets.value
+
+                            lifecycleScope.launch {
+                                // update the currently saved credentials
+                                activityViewModel.updateCredentials(
+                                    clientId = secrets.value.clientId,
+                                    clientSecret = secrets.value.clientSecret
+                                )
+                                // start the next auth step
+                                activityViewModel.transitionAuthenticationMachine(
+                                    FSMAuthenticationEvent.OnUserConfirmationLoaded
+                                )
+                            }
+                        }
                     }
                 }
             }
         )
 
-        // start checking for the authentication token
+        // 3. start checking for the authentication token
         viewModel.tokenLiveData.observe(
             viewLifecycleOwner,
             EventObserver { token ->
@@ -144,11 +148,11 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
                 // pass the value to be checked and eventually saved
                 if (token != null) {
                     // update the current credentials
-                    activityViewModel.updateCredentials(
-                        accessToken = token.accessToken,
-                        refreshToken = token.refreshToken
-                    )
+                    activityViewModel.updateCredentialsAccessToken(token.accessToken)
+                    activityViewModel.updateCredentialsRefreshToken(token.refreshToken)
                     activityViewModel.transitionAuthenticationMachine(FSMAuthenticationEvent.OnOpenTokenLoaded)
+
+
                 }
             }
         )

@@ -11,6 +11,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.livingwithhippos.unchained.R
+import com.github.livingwithhippos.unchained.data.local.Credentials
 import com.github.livingwithhippos.unchained.data.local.ProtoStore
 import com.github.livingwithhippos.unchained.data.model.*
 import com.github.livingwithhippos.unchained.data.repository.*
@@ -55,6 +56,7 @@ class MainActivityViewModel @Inject constructor(
 ) : ViewModel() {
 
     val fsmAuthenticationState = MutableLiveData<Event<FSMAuthenticationState>>()
+    val credentialsFlow = protoStore.credentialsFlow
 
     val externalLinkLiveData = MutableLiveData<Event<Uri>>()
 
@@ -246,7 +248,7 @@ class MainActivityViewModel @Inject constructor(
 
         onTransition {
             val validTransition = it as? StateMachine.Transition.Valid ?: return@onTransition
-            Timber.d("statemachine", validTransition)
+            Timber.d("statemachine is $validTransition")
             when (validTransition.sideEffect) {
                 null -> {
                     // do nothing
@@ -713,10 +715,60 @@ class MainActivityViewModel @Inject constructor(
         refreshToken: String? = null
     ) {
         viewModelScope.launch {
-            protoStore.updateCredentials(deviceCode, clientId, clientSecret, accessToken, refreshToken)
+            protoStore.updateCredentials(
+                deviceCode,
+                clientId,
+                clientSecret,
+                accessToken,
+                refreshToken
+            )
         }
     }
 
+    fun updateCredentialsDeviceCode(deviceCode: String) {
+        viewModelScope.launch {
+            protoStore.updateDeviceCode(deviceCode)
+        }
+    }
+
+    fun updateCredentialsClientId(clientId: String) {
+        viewModelScope.launch {
+            protoStore.updateClientId(clientId)
+        }
+    }
+
+    fun updateCredentialsClientSecret(clientSecret: String) {
+        viewModelScope.launch {
+            protoStore.updateClientSecret(clientSecret)
+        }
+    }
+
+    fun updateCredentialsAccessToken(accessToken: String) {
+        viewModelScope.launch {
+            protoStore.updateAccessToken(accessToken)
+        }
+    }
+
+    fun updateCredentialsRefreshToken(refreshToken: String) {
+        viewModelScope.launch {
+            protoStore.updateRefreshToken(refreshToken)
+        }
+    }
+
+    suspend fun getCredentials(): Credentials.CurrentCredential {
+        // todo: find a better way to get the first valid value
+        val credentials = credentialsFlow.firstOrNull {
+            it.clientId.isNotBlank() ||
+                    it.refreshToken.isNotBlank() ||
+                    it.deviceCode.isNotBlank() ||
+                    it.accessToken.isNotBlank() ||
+                    it.clientSecret.isNotBlank()
+        }
+        if (credentials == null)
+            return protoStore.getCredentials()
+        else
+            return credentials
+    }
     /**************************
      * AUTH MACHINE FUNCTIONS *
      **************************/

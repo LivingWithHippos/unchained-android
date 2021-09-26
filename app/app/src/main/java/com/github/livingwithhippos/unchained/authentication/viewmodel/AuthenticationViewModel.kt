@@ -13,6 +13,7 @@ import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.postEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -31,6 +32,8 @@ class AuthenticationViewModel @Inject constructor(
     val secretLiveData = MutableLiveData<Event<SecretResult>>()
     val tokenLiveData = MutableLiveData<Event<Token?>>()
 
+    private val credentialsFlow = protoStore.credentialsFlow
+
     fun fetchAuthenticationInfo() {
         viewModelScope.launch {
             val authData = authRepository.getVerificationCode()
@@ -46,7 +49,9 @@ class AuthenticationViewModel @Inject constructor(
             secretLiveData.postEvent(SecretResult.Expired)
         } else {
             viewModelScope.launch {
-                val credentials = protoStore.getCredentials()
+                val credentials = credentialsFlow.first {
+                    it.deviceCode.isNotBlank()
+                }
                 val secretData = authRepository.getSecrets(credentials.deviceCode)
                 if (secretData != null)
                     secretLiveData.postEvent(SecretResult.Retrieved(secretData))
@@ -61,8 +66,15 @@ class AuthenticationViewModel @Inject constructor(
 
     fun fetchToken() {
         viewModelScope.launch {
-            val credentials = protoStore.getCredentials()
-            val tokenData = authRepository.getToken(credentials.clientId, credentials.clientSecret, credentials.deviceCode)
+            // todo: find a better way to get a single value and avoid empty ones
+            val credentials = protoStore.credentialsFlow.first {
+                it.clientSecret.isNotBlank()
+            }
+            val tokenData = authRepository.getToken(
+                credentials.clientId,
+                credentials.clientSecret,
+                credentials.deviceCode
+            )
             tokenLiveData.postEvent(tokenData)
         }
     }
