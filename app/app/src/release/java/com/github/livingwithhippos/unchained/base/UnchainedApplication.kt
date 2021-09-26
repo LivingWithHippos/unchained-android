@@ -8,7 +8,6 @@ import android.content.SharedPreferences
 import android.os.Build
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.local.ProtoStore
-import com.github.livingwithhippos.unchained.data.repository.CredentialsRepository
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -18,7 +17,7 @@ import javax.inject.Inject
 
 /**
  * Entry point for the Dagger-Hilt injection.
- * Deletes incomplete credentials from the db on start
+ * Deletes incomplete credentials from the datastore on start
  */
 @HiltAndroidApp
 class UnchainedApplication : Application() {
@@ -26,9 +25,6 @@ class UnchainedApplication : Application() {
     /***********************************************
      * DUPLICATE CHANGES IN THE DEBUG FILE VERSION *
      ***********************************************/
-
-    @Inject
-    lateinit var credentialsRepository: CredentialsRepository
 
     @Inject
     lateinit var preferences: SharedPreferences
@@ -48,7 +44,6 @@ class UnchainedApplication : Application() {
         registerActivityLifecycleCallbacks(activityCallback)
 
         scope.launch {
-            credentialsRepository.deleteIncompleteCredentials()
             protoStore.deleteIncompleteCredentials()
         }
 

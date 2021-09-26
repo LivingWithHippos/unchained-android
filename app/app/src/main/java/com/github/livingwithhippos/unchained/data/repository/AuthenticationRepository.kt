@@ -1,7 +1,6 @@
 package com.github.livingwithhippos.unchained.data.repository
 
 import com.github.livingwithhippos.unchained.data.model.Authentication
-import com.github.livingwithhippos.unchained.data.model.Credentials
 import com.github.livingwithhippos.unchained.data.model.Secrets
 import com.github.livingwithhippos.unchained.data.model.Token
 import com.github.livingwithhippos.unchained.data.remote.AuthApiHelper
