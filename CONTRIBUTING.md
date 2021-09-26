@@ -44,4 +44,4 @@ The important part to keep in mind is that after forking and cloning it on your 
 
 #### Linting
 
-Before opening a PR check the code style with `gradlew ktLintCheck`. You should get some suggestion to follow, but only if they are relative to the code you wrote.
+Before opening a PR check the code style with `gradlew ktLintCheck`. You may get some fixes suggested, but follow them only if they are about the code you wrote.
