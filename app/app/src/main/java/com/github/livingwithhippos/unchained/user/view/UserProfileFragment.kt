@@ -103,13 +103,18 @@ class UserProfileFragment : UnchainedFragment() {
                         val action = UserProfileFragmentDirections.actionUserToStartFragment()
                         findNavController().navigate(action)
                     }
+                    FSMAuthenticationState.StartNewLogin -> {
+                        // the user reset the login, go to the auth fragment
+                        val action = UserProfileFragmentDirections.actionUserToAuthenticationFragment()
+                        findNavController().navigate(action)
+                    }
                     FSMAuthenticationState.AuthenticatedOpenToken, FSMAuthenticationState.AuthenticatedPrivateToken, FSMAuthenticationState.RefreshingOpenToken -> {
                         // managed by activity
                     }
                     FSMAuthenticationState.CheckCredentials -> {
                         // shouldn't matter
                     }
-                    FSMAuthenticationState.Start, FSMAuthenticationState.StartNewLogin, FSMAuthenticationState.WaitingToken, FSMAuthenticationState.WaitingUserConfirmation -> {
+                    FSMAuthenticationState.Start, FSMAuthenticationState.WaitingToken, FSMAuthenticationState.WaitingUserConfirmation -> {
                         // shouldn't happen
                     }
                 }

@@ -31,6 +31,7 @@ sealed class FSMAuthenticationEvent {
     object OnWorkingOpenToken : FSMAuthenticationEvent()
     object OnExpiredOpenToken : FSMAuthenticationEvent()
     object OnRefreshed : FSMAuthenticationEvent()
+    object OnLogout : FSMAuthenticationEvent()
     object OnAuthenticationError : FSMAuthenticationEvent()
 }
 

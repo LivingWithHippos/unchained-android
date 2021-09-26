@@ -56,7 +56,7 @@ class MainActivityViewModel @Inject constructor(
 ) : ViewModel() {
 
     val fsmAuthenticationState = MutableLiveData<Event<FSMAuthenticationState>>()
-    val credentialsFlow = protoStore.credentialsFlow
+    private val credentialsFlow = protoStore.credentialsFlow
 
     val externalLinkLiveData = MutableLiveData<Event<Uri>>()
 
@@ -220,6 +220,12 @@ class MainActivityViewModel @Inject constructor(
                     FSMAuthenticationSideEffect.PostActionNeeded
                 )
             }
+            on<FSMAuthenticationEvent.OnLogout> {
+                transitionTo(
+                    FSMAuthenticationState.StartNewLogin,
+                    FSMAuthenticationSideEffect.PostNewLogin
+                )
+            }
         }
 
         state<FSMAuthenticationState.RefreshingOpenToken> {
@@ -227,6 +233,12 @@ class MainActivityViewModel @Inject constructor(
                 transitionTo(
                     FSMAuthenticationState.AuthenticatedOpenToken,
                     FSMAuthenticationSideEffect.PostAuthenticatedOpen
+                )
+            }
+            on<FSMAuthenticationEvent.OnLogout> {
+                transitionTo(
+                    FSMAuthenticationState.StartNewLogin,
+                    FSMAuthenticationSideEffect.PostNewLogin
                 )
             }
             on<FSMAuthenticationEvent.OnAuthenticationError> {
@@ -238,6 +250,12 @@ class MainActivityViewModel @Inject constructor(
         }
 
         state<FSMAuthenticationState.AuthenticatedPrivateToken> {
+            on<FSMAuthenticationEvent.OnLogout> {
+                transitionTo(
+                    FSMAuthenticationState.StartNewLogin,
+                    FSMAuthenticationSideEffect.PostNewLogin
+                )
+            }
             on<FSMAuthenticationEvent.OnAuthenticationError> {
                 transitionTo(
                     FSMAuthenticationState.WaitingUserAction(null),
@@ -275,9 +293,25 @@ class MainActivityViewModel @Inject constructor(
                     fsmAuthenticationState.postEvent(FSMAuthenticationState.WaitingUserConfirmation)
                 }
                 FSMAuthenticationSideEffect.PostActionNeeded -> {
-                    val action =
-                        (validTransition.event as FSMAuthenticationEvent.OnUserActionNeeded).action
-                    fsmAuthenticationState.postEvent(FSMAuthenticationState.WaitingUserAction(action))
+                    when (validTransition.event) {
+                        is FSMAuthenticationEvent.OnUserActionNeeded -> {
+                            val action =
+                                (validTransition.event as FSMAuthenticationEvent.OnUserActionNeeded).action
+                            fsmAuthenticationState.postEvent(
+                                FSMAuthenticationState.WaitingUserAction(
+                                    action
+                                )
+                            )
+                        }
+                        is FSMAuthenticationEvent.OnAuthenticationError -> {
+                            fsmAuthenticationState.postEvent(
+                                FSMAuthenticationState.WaitingUserAction(null)
+                            )
+                        }
+                        else -> {
+                            Timber.e("Wrong PostActionNeeded event: ${validTransition.event}")
+                        }
+                    }
                 }
                 FSMAuthenticationSideEffect.ResetAuthentication -> {
                     // delete the current credentials and restart a login process
@@ -409,7 +443,7 @@ class MainActivityViewModel @Inject constructor(
     fun recheckAuthenticationStatus() {
         when (getAuthenticationMachineState()) {
             FSMAuthenticationState.AuthenticatedOpenToken, FSMAuthenticationState.AuthenticatedPrivateToken, FSMAuthenticationState.RefreshingOpenToken -> {
-                transitionAuthenticationMachine(FSMAuthenticationEvent.OnAuthenticationError)
+                transitionAuthenticationMachine(FSMAuthenticationEvent.OnLogout)
             }
             else -> {
                 Timber.e("Asked for logout while in a wrong state: ${getAuthenticationMachineState()}")
