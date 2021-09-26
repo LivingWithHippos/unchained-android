@@ -60,6 +60,7 @@ class UnchainedApplication : Application() {
 
         createNotificationChannel()
 
+        // remove these lines from the release file
         Timber.plant(Timber.DebugTree())
 
         val config: CountlyConfig = CountlyConfig(this, COUNTLY_APP_KEY, COUNTLY_URL)
