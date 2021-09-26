@@ -326,7 +326,8 @@ class MainActivityViewModel @Inject constructor(
 
     fun checkCredentials() {
         viewModelScope.launch {
-            val credentials = protoStore.getCredentials()
+            // todo: how to do this
+            val credentials = protoStore.credentialsFlow.first { it.accessToken.isNotBlank() }
             val userResult = userRepository.getUserOrError(credentials.accessToken)
             parseUserResult(userResult, credentials.deviceCode == PRIVATE_TOKEN)
         }
@@ -353,8 +354,25 @@ class MainActivityViewModel @Inject constructor(
                     is APIError -> {
                         when (user.failure.errorCode) {
                             8 -> {
-                                if (getAuthenticationMachineState() is FSMAuthenticationState.AuthenticatedOpenToken || getAuthenticationMachineState() is FSMAuthenticationState.CheckCredentials)
-                                    transitionAuthenticationMachine(FSMAuthenticationEvent.OnExpiredOpenToken)
+                                when (getAuthenticationMachineState()) {
+                                    FSMAuthenticationState.AuthenticatedOpenToken -> {
+                                        // refresh token
+                                        transitionAuthenticationMachine(FSMAuthenticationEvent.OnExpiredOpenToken)
+                                    }
+                                    FSMAuthenticationState.CheckCredentials -> {
+                                        // a private token was incorrect
+                                        transitionAuthenticationMachine(FSMAuthenticationEvent.OnExpiredOpenToken)
+                                    }
+                                    FSMAuthenticationState.AuthenticatedPrivateToken -> {
+                                        // a private token was incorrect
+                                        // todo: should recover from this according to the current fragment
+                                        transitionAuthenticationMachine(FSMAuthenticationEvent.OnNotWorking)
+                                    }
+                                    else -> {
+                                        /// do nothing
+                                    }
+                                }
+
                             }
                             9 -> {
                                 // todo: add hint for user action needed

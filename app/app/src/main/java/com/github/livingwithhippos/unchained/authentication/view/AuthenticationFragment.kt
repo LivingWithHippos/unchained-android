@@ -66,6 +66,10 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
                     findNavController().navigate(action)
                 }
                 FSMAuthenticationState.StartNewLogin -> {
+                    // reset the current data
+                    authBinding.auth = null
+                    authBinding.secrets = null
+                    authBinding.token = null
                     // get the authentication link to start the process
                     viewModel.fetchAuthenticationInfo()
                 }
