@@ -89,6 +89,7 @@ deps.dagger = dagger
 
 def datastore = [:]
 datastore.preferences = "androidx.datastore:datastore-preferences:$versions.datastore"
+datastore.datastore = "androidx.datastore:datastore:$versions.datastore"
 deps.datastore = datastore
 
 def espresso = [:]

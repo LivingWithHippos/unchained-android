@@ -193,7 +193,8 @@ dependencies {
     implementation deps.recyclerview.selection
 
     // datastore
-    implementation deps.datastore.preferences
+    // implementation deps.datastore.preferences
+    implementation deps.datastore.datastore
     implementation  deps.protobuf.javalite
 
     implementation deps.flexbox
