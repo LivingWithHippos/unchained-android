@@ -69,7 +69,7 @@ fun BottomNavigationView.setupWithNavController(
         }
 
         // Save to the map
-        graphIdToTagMap[graphId] = fragmentTag
+        graphIdToTagMap.put(graphId, fragmentTag)
 
         // Attach or detach nav host fragment depending on whether it's the selected item.
         if (this.selectedItemId == graphId) {
