@@ -323,4 +323,5 @@
     <string name="retry_later">Riprova più tardi</string>
     <string name="get_plugins">Ottieni più plugins</string>
     <string name="content_description_plugins_link">Collegamento alla pagina dei plugin</string>
+    <string name="reset_login">Reset Login</string>
 </resources>

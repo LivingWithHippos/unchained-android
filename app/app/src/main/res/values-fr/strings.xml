@@ -328,4 +328,5 @@
     <string name="retry_later">Réessayer plus tard</string>
     <string name="get_plugins">Obtenir plus de plugins</string>
     <string name="content_description_plugins_link">Lien vers la page des plugins</string>
+    <string name="reset_login">Réinitialiser l\'authentification</string>
 </resources>
