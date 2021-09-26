@@ -58,7 +58,7 @@ import javax.inject.Inject
 class MainActivity : AppCompatActivity() {
 
     /****************************************************************
-     * ADD CHANGES MADE HERE IN THE DEBUG VERSION OF MAINACTIVITY *
+     * ADD CHANGES MADE HERE IN THE RELEASE VERSION OF MAINACTIVITY *
      ***************************************************************/
 
     private var currentNavController: LiveData<NavController>? = null
@@ -197,7 +197,7 @@ class MainActivity : AppCompatActivity() {
                     }
                     else -> {
                         // check the authentication
-                        processDelayedLink(link)
+                        processExternalRequestOnAuthentication(Uri.parse(link))
                     }
                 }
             }
@@ -321,7 +321,7 @@ class MainActivity : AppCompatActivity() {
                                 ) == true -> addSearchPlugin(data)
                                 else -> {
                                     // it's a magnet/torrent, check auth state before loading it
-                                    processDelayedIntent(data)
+                                    processExternalRequestOnAuthentication(data)
                                 }
                             }
                         }
@@ -353,36 +353,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun processDelayedLink(link: String) {
+    private fun processExternalRequestOnAuthentication(uri: Uri) {
         lifecycleScope.launch {
-            delayLoop@ for (loop in 1..3) {
+            delayLoop@ for (loop in 1..5) {
                 when (viewModel.getCurrentAuthenticationStatus()) {
                     CurrentFSMAuthentication.Authenticated -> {
                         // auth ok, process link and exit loop
-                        processLinkIntent(link)
-                        break@delayLoop
-                    }
-                    CurrentFSMAuthentication.Unauthenticated -> {
-                        // auth not ok, show error and exit loop
-                        showToast(R.string.please_login)
-                        break@delayLoop
-                    }
-                    CurrentFSMAuthentication.Waiting -> {
-                        // auth may become ok, delay and continue loop
-                        delay(AUTH_DELAY)
-                    }
-                }
-            }
-        }
-    }
-
-    private fun processDelayedIntent(uri: Uri) {
-        lifecycleScope.launch {
-            delayLoop@ for (loop in 1..3) {
-                when (viewModel.getCurrentAuthenticationStatus()) {
-                    CurrentFSMAuthentication.Authenticated -> {
-                        // auth ok, process link and exit loop
-                        processLinkIntent(uri)
+                        processExternalRequest(uri)
                         break@delayLoop
                     }
                     CurrentFSMAuthentication.Unauthenticated -> {
@@ -411,7 +388,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun processLinkIntent(uri: Uri) {
+    private fun processExternalRequest(uri: Uri) {
         lifecycleScope.launch {
             doubleClickBottomItem(R.id.navigation_lists)
             viewModel.addLink(uri)
@@ -433,8 +410,6 @@ class MainActivity : AppCompatActivity() {
         delay(100)
         bottomNav.selectedItemId = destinationID
     }
-
-    private fun processLinkIntent(link: String) = processLinkIntent(Uri.parse(link))
 
     private fun openSettings() {
         val intent = Intent(this, SettingsActivity::class.java)
