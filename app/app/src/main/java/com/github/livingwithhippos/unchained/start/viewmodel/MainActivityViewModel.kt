@@ -130,7 +130,7 @@ class MainActivityViewModel @Inject constructor(
                 on<FSMAuthenticationEvent.OnNotWorking> {
                     transitionTo(
                         FSMAuthenticationState.StartNewLogin,
-                        FSMAuthenticationSideEffect.PostNewLogin
+                        FSMAuthenticationSideEffect.ResetAuthentication
                     )
                 }
                 on<FSMAuthenticationEvent.OnUserActionNeeded> {
@@ -256,6 +256,12 @@ class MainActivityViewModel @Inject constructor(
                         FSMAuthenticationSideEffect.PostActionNeeded
                     )
                 }
+                on<FSMAuthenticationEvent.OnNotWorking> {
+                    transitionTo(
+                        FSMAuthenticationState.StartNewLogin,
+                        FSMAuthenticationSideEffect.ResetAuthentication
+                    )
+                }
             }
 
             state<FSMAuthenticationState.AuthenticatedPrivateToken> {
@@ -274,9 +280,11 @@ class MainActivityViewModel @Inject constructor(
             }
 
             onTransition {
-                val validTransition = it as? StateMachine.Transition.Valid ?: return@onTransition
-                Timber.d("statemachine is $validTransition")
-                when (validTransition.sideEffect) {
+                if (it !is StateMachine.Transition.Valid) {
+                    Timber.e("Wrong transition ${it.event} for state ${it.fromState}")
+                    return@onTransition
+                }
+                when (it.sideEffect) {
                     null -> {
                         // do nothing
                     }
@@ -302,10 +310,10 @@ class MainActivityViewModel @Inject constructor(
                         fsmAuthenticationState.postEvent(FSMAuthenticationState.WaitingUserConfirmation)
                     }
                     FSMAuthenticationSideEffect.PostActionNeeded -> {
-                        when (validTransition.event) {
+                        when (it.event) {
                             is FSMAuthenticationEvent.OnUserActionNeeded -> {
                                 val action =
-                                    (validTransition.event as FSMAuthenticationEvent.OnUserActionNeeded).action
+                                    (it.event as FSMAuthenticationEvent.OnUserActionNeeded).action
                                 fsmAuthenticationState.postEvent(
                                     FSMAuthenticationState.WaitingUserAction(
                                         action
@@ -318,7 +326,7 @@ class MainActivityViewModel @Inject constructor(
                                 )
                             }
                             else -> {
-                                Timber.e("Wrong PostActionNeeded event: ${validTransition.event}")
+                                Timber.e("Wrong PostActionNeeded event: ${it.event}")
                             }
                         }
                     }
@@ -359,102 +367,7 @@ class MainActivityViewModel @Inject constructor(
             }
             is EitherResult.Failure -> {
                 // check errors, either ask for a retry or go to login
-                when (user.failure) {
-                    is APIError -> {
-                        when (user.failure.errorCode) {
-                            8 -> {
-                                when (getAuthenticationMachineState()) {
-                                    FSMAuthenticationState.AuthenticatedOpenToken -> {
-                                        // refresh token
-                                        transitionAuthenticationMachine(FSMAuthenticationEvent.OnExpiredOpenToken)
-                                    }
-                                    FSMAuthenticationState.CheckCredentials -> {
-                                        // a private token was incorrect
-                                        transitionAuthenticationMachine(FSMAuthenticationEvent.OnExpiredOpenToken)
-                                    }
-                                    FSMAuthenticationState.AuthenticatedPrivateToken -> {
-                                        // a private token was incorrect
-                                        // todo: should recover from this according to the current fragment
-                                        transitionAuthenticationMachine(FSMAuthenticationEvent.OnNotWorking)
-                                    }
-                                    else -> {
-                                        // do nothing
-                                    }
-                                }
-                            }
-                            9 -> {
-                                // todo: add hint for user action needed
-                                transitionAuthenticationMachine(
-                                    FSMAuthenticationEvent.OnUserActionNeeded(
-                                        UserAction.PERMISSION_DENIED
-                                    )
-                                )
-                            }
-                            10 -> {
-                                transitionAuthenticationMachine(
-                                    FSMAuthenticationEvent.OnUserActionNeeded(
-                                        UserAction.TFA_NEEDED
-                                    )
-                                )
-                            }
-                            11 -> {
-                                transitionAuthenticationMachine(
-                                    FSMAuthenticationEvent.OnUserActionNeeded(
-                                        UserAction.TFA_PENDING
-                                    )
-                                )
-                            }
-                            12 -> {
-                                transitionAuthenticationMachine(FSMAuthenticationEvent.OnNotWorking)
-                            }
-                            13 -> {
-                                transitionAuthenticationMachine(FSMAuthenticationEvent.OnNotWorking)
-                            }
-                            14 -> {
-                                transitionAuthenticationMachine(FSMAuthenticationEvent.OnNotWorking)
-                            }
-                            15 -> {
-                                transitionAuthenticationMachine(FSMAuthenticationEvent.OnNotWorking)
-                            }
-                            22 -> {
-                                transitionAuthenticationMachine(
-                                    FSMAuthenticationEvent.OnUserActionNeeded(
-                                        UserAction.IP_NOT_ALLOWED
-                                    )
-                                )
-                            }
-                            else -> {
-                                transitionAuthenticationMachine(
-                                    FSMAuthenticationEvent.OnUserActionNeeded(
-                                        UserAction.UNKNOWN
-                                    )
-                                )
-                            }
-                        }
-                    }
-                    is EmptyBodyError -> {
-                        // should not happen
-                        transitionAuthenticationMachine(
-                            FSMAuthenticationEvent.OnUserActionNeeded(
-                                UserAction.UNKNOWN
-                            )
-                        )
-                    }
-                    is NetworkError -> {
-                        transitionAuthenticationMachine(
-                            FSMAuthenticationEvent.OnUserActionNeeded(
-                                UserAction.NETWORK_ERROR
-                            )
-                        )
-                    }
-                    is ApiConversionError -> {
-                        transitionAuthenticationMachine(
-                            FSMAuthenticationEvent.OnUserActionNeeded(
-                                UserAction.RETRY_LATER
-                            )
-                        )
-                    }
-                }
+                onParseCallFailure(user.failure, isPrivateToken)
             }
         }
     }
@@ -502,24 +415,126 @@ class MainActivityViewModel @Inject constructor(
             val credentials = protoStore.getCredentials()
             if (!credentials.refreshToken.isNullOrBlank() && credentials.refreshToken != PRIVATE_TOKEN) {
                 // todo: add EitherResult to check for errors and retry eventually
-                val newToken = authRepository.refreshToken(credentials)
-                if (newToken != null) {
-                    protoStore.setCredentials(
-                        deviceCode = credentials.deviceCode,
-                        clientId = credentials.clientId,
-                        clientSecret = credentials.clientSecret,
-                        accessToken = newToken.accessToken,
-                        refreshToken = newToken.refreshToken
-                    )
+                when (val newToken = authRepository.refreshTokenWithError(credentials)) {
+                    is EitherResult.Success -> {
+                        protoStore.setCredentials(
+                            deviceCode = credentials.deviceCode,
+                            clientId = credentials.clientId,
+                            clientSecret = credentials.clientSecret,
+                            accessToken = newToken.success.accessToken,
+                            refreshToken = newToken.success.refreshToken
+                        )
 
-                    // program the refresh of the token
-                    programTokenRefresh(newToken.expiresIn)
+                        // program the refresh of the token
+                        programTokenRefresh(newToken.success.expiresIn)
 
-                    if (getAuthenticationMachineState() is FSMAuthenticationState.RefreshingOpenToken)
-                        transitionAuthenticationMachine(FSMAuthenticationEvent.OnRefreshed)
-                    // else I'm just refreshing before it expires
-                    // todo: just set it to refreshing at the start of this function
+                        if (getAuthenticationMachineState() is FSMAuthenticationState.RefreshingOpenToken)
+                            transitionAuthenticationMachine(FSMAuthenticationEvent.OnRefreshed)
+                        // else I'm just refreshing before it expires
+                        // todo: just set it to refreshing at the start of this function
+                    }
+                    is EitherResult.Failure -> {
+                        onParseCallFailure(newToken.failure, credentials.deviceCode == PRIVATE_TOKEN)
+                    }
                 }
+            }
+        }
+    }
+
+    private fun onParseCallFailure(failure: UnchainedNetworkException, isPrivateToken: Boolean) {
+        when (failure) {
+            is APIError -> {
+                when (failure.errorCode) {
+                    8 -> {
+                        when (getAuthenticationMachineState()) {
+                            FSMAuthenticationState.AuthenticatedOpenToken -> {
+                                // refresh token
+                                transitionAuthenticationMachine(FSMAuthenticationEvent.OnExpiredOpenToken)
+                            }
+                            FSMAuthenticationState.CheckCredentials -> {
+                                if (isPrivateToken)
+                                    transitionAuthenticationMachine(FSMAuthenticationEvent.OnNotWorking)
+                                else
+                                    transitionAuthenticationMachine(FSMAuthenticationEvent.OnExpiredOpenToken)
+                            }
+                            FSMAuthenticationState.AuthenticatedPrivateToken -> {
+                                // a private token was incorrect
+                                // todo: should recover from this according to the current fragment
+                                transitionAuthenticationMachine(FSMAuthenticationEvent.OnNotWorking)
+                            }
+                            else -> {
+                                // do nothing
+                            }
+                        }
+                    }
+                    9 -> {
+                        Timber.e("onParseCallFailure " + 9)
+                        // 9 is permission denied which should mean the token is not valid at all and should be discarded
+                        transitionAuthenticationMachine(FSMAuthenticationEvent.OnNotWorking)
+                    }
+                    10 -> {
+                        transitionAuthenticationMachine(
+                            FSMAuthenticationEvent.OnUserActionNeeded(
+                                UserAction.TFA_NEEDED
+                            )
+                        )
+                    }
+                    11 -> {
+                        transitionAuthenticationMachine(
+                            FSMAuthenticationEvent.OnUserActionNeeded(
+                                UserAction.TFA_PENDING
+                            )
+                        )
+                    }
+                    12 -> {
+                        transitionAuthenticationMachine(FSMAuthenticationEvent.OnNotWorking)
+                    }
+                    13 -> {
+                        transitionAuthenticationMachine(FSMAuthenticationEvent.OnNotWorking)
+                    }
+                    14 -> {
+                        transitionAuthenticationMachine(FSMAuthenticationEvent.OnNotWorking)
+                    }
+                    15 -> {
+                        transitionAuthenticationMachine(FSMAuthenticationEvent.OnNotWorking)
+                    }
+                    22 -> {
+                        transitionAuthenticationMachine(
+                            FSMAuthenticationEvent.OnUserActionNeeded(
+                                UserAction.IP_NOT_ALLOWED
+                            )
+                        )
+                    }
+                    else -> {
+                        transitionAuthenticationMachine(
+                            FSMAuthenticationEvent.OnUserActionNeeded(
+                                UserAction.UNKNOWN
+                            )
+                        )
+                    }
+                }
+            }
+            is EmptyBodyError -> {
+                // should not happen
+                transitionAuthenticationMachine(
+                    FSMAuthenticationEvent.OnUserActionNeeded(
+                        UserAction.UNKNOWN
+                    )
+                )
+            }
+            is NetworkError -> {
+                transitionAuthenticationMachine(
+                    FSMAuthenticationEvent.OnUserActionNeeded(
+                        UserAction.NETWORK_ERROR
+                    )
+                )
+            }
+            is ApiConversionError -> {
+                transitionAuthenticationMachine(
+                    FSMAuthenticationEvent.OnUserActionNeeded(
+                        UserAction.RETRY_LATER
+                    )
+                )
             }
         }
     }
