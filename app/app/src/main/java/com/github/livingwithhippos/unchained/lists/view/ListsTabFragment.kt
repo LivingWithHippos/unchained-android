@@ -243,7 +243,6 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
             }
         }
 
-
         // checks the authentication state. Needed to avoid automatic API calls before the authentication process is finished
         activityViewModel.fsmAuthenticationState.observe(viewLifecycleOwner, {
             when (it.peekContent()) {
@@ -256,10 +255,10 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
                         viewModel.torrentsLiveData.observe(viewLifecycleOwner, torrentObserver)
                 }
                 else -> {
-
                 }
             }
-        })
+        }
+        )
 
         binding.tabs.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
 
@@ -461,7 +460,9 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
                                 8 -> {
                                     // bad token, try refreshing it
                                     if (activityViewModel.getAuthenticationMachineState() is FSMAuthenticationState.AuthenticatedOpenToken)
-                                        activityViewModel.transitionAuthenticationMachine(FSMAuthenticationEvent.OnExpiredOpenToken)
+                                        activityViewModel.transitionAuthenticationMachine(
+                                            FSMAuthenticationEvent.OnExpiredOpenToken
+                                        )
                                     context?.showToast(R.string.refreshing_token)
                                 }
                             }

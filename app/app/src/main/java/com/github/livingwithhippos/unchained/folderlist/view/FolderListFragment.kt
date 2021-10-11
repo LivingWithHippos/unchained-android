@@ -9,13 +9,15 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.res.ResourcesCompat
+import androidx.annotation.MenuRes
+import androidx.appcompat.widget.PopupMenu
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.RecyclerView
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.model.APIError
 import com.github.livingwithhippos.unchained.data.model.ApiConversionError
@@ -29,10 +31,9 @@ import com.github.livingwithhippos.unchained.lists.view.DownloadListListener
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.extension.delayedScrolling
 import com.github.livingwithhippos.unchained.utilities.extension.downloadFile
+import com.github.livingwithhippos.unchained.utilities.extension.getThemedDrawable
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
-import com.github.livingwithhippos.unchained.utilities.extension.verticalScrollToPosition
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -115,8 +116,12 @@ class FolderListFragment : Fragment(), DownloadListListener {
 
         // observe the list loading status
         viewModel.folderLiveData.observe(viewLifecycleOwner) {
-            it.getContentIfNotHandled()?.let { files ->
-                updateList(binding, adapter, list = files)
+            // todo: if I use just getContent() I can restore on reload?
+            it.getContentIfNotHandled()?.let { _ ->
+                updateList(adapter)
+                lifecycleScope.launch {
+                    binding.rvFolderList.delayedScrolling(requireContext(), delay = 500)
+                }
             }
         }
 
@@ -155,49 +160,41 @@ class FolderListFragment : Fragment(), DownloadListListener {
         }
 
         viewModel.queryLiveData.observe(viewLifecycleOwner) {
-            updateList(binding, adapter, query = it)
+            updateList(adapter)
+            lifecycleScope.launch {
+                binding.rvFolderList.delayedScrolling(requireContext())
+            }
         }
 
         // load size filter button status
         binding.cbFilterSize.isChecked = viewModel.getFilterSizePreference()
 
         binding.cbFilterSize.setOnCheckedChangeListener { _, isChecked ->
-            updateList(binding, adapter, size = isChecked)
             viewModel.setFilterSizePreference(isChecked)
+            updateList(adapter)
+            lifecycleScope.launch {
+                binding.rvFolderList.delayedScrolling(requireContext())
+            }
         }
 
         // load type filter button status
         binding.cbFilterType.isChecked = viewModel.getFilterTypePreference()
 
         binding.cbFilterType.setOnCheckedChangeListener { _, isChecked ->
-            updateList(binding, adapter, type = isChecked)
             viewModel.setFilterTypePreference(isChecked)
-        }
-
-        // load list sorting status
-        val lastTag = viewModel.getListSortPreference()
-        binding.sortingButton.tag = lastTag
-        binding.sortingButton.background = ResourcesCompat.getDrawable(
-            resources,
-            getSortingDrawable(lastTag),
-            requireContext().theme
-        )
-
-        binding.sortingButton.setOnClickListener {
-            // every click changes to the next state
-            val newTag = getNextSortingTag(it.tag as String)
-            val drawableID = getSortingDrawable(newTag)
-            binding.sortingButton.tag = newTag
-            binding.sortingButton.background = ResourcesCompat.getDrawable(
-                resources,
-                drawableID,
-                requireContext().theme
-            )
-            updateList(binding, adapter, sort = newTag)
-            viewModel.setListSortPreference(newTag)
+            updateList(adapter)
             lifecycleScope.launch {
                 binding.rvFolderList.delayedScrolling(requireContext())
             }
+        }
+
+        // load list sorting status
+        val sortTag = viewModel.getListSortPreference()
+        val sortDrawableID = getSortingDrawable(sortTag)
+        binding.sortingButton.background = requireContext().getThemedDrawable(sortDrawableID)
+
+        binding.sortingButton.setOnClickListener {
+            showSortingPopup(it, R.menu.sorting_popup, adapter, binding.rvFolderList)
         }
 
         // load all the links
@@ -211,6 +208,51 @@ class FolderListFragment : Fragment(), DownloadListListener {
                 viewModel.retrieveFiles(args.linkList!!.toList())
             }
         }
+    }
+
+    private fun showSortingPopup(
+        v: View,
+        @MenuRes menuRes: Int,
+        folderAdapter: FolderItemAdapter,
+        folderList: RecyclerView
+    ) {
+
+        val popup = PopupMenu(requireContext(), v)
+        popup.menuInflater.inflate(menuRes, popup.menu)
+
+        popup.setOnMenuItemClickListener { menuItem: MenuItem ->
+            // todo: check if the theme is needed, in case use getSortDrawable and remove from the menu xml the icons
+            v.background = menuItem.icon
+            // save the new sorting preference
+            when (menuItem.itemId) {
+                R.id.sortByDefault -> {
+                    viewModel.setListSortPreference(TAG_DEFAULT_SORT)
+                }
+                R.id.sortByAZ -> {
+                    viewModel.setListSortPreference(TAG_SORT_AZ)
+                }
+                R.id.sortByZA -> {
+                    viewModel.setListSortPreference(TAG_SORT_ZA)
+                }
+                R.id.sortBySizeAsc -> {
+                    viewModel.setListSortPreference(TAG_SORT_SIZE_ASC)
+                }
+                R.id.sortBySizeDesc -> {
+                    viewModel.setListSortPreference(TAG_SORT_SIZE_DESC)
+                }
+            }
+            // update the list and scroll it to the top
+            updateList(folderAdapter)
+            lifecycleScope.launch {
+                folderList.delayedScrolling(requireContext())
+            }
+            true
+        }
+        popup.setOnDismissListener {
+            // Respond to popup being dismissed.
+        }
+        // Show the popup menu.
+        popup.show()
     }
 
     private fun getSortingDrawable(tag: String): Int {
@@ -236,19 +278,13 @@ class FolderListFragment : Fragment(), DownloadListListener {
     }
 
     private fun updateList(
-        binding: FragmentFolderListBinding,
-        adapter: FolderItemAdapter,
-        list: List<DownloadItem>? = null,
-        size: Boolean? = null,
-        type: Boolean? = null,
-        query: String? = null,
-        sort: String? = null
+        adapter: FolderItemAdapter
     ) {
-        val items: List<DownloadItem>? = list ?: viewModel.folderLiveData.value?.peekContent()
-        val filterSize: Boolean = size ?: binding.cbFilterSize.isChecked
-        val filterType: Boolean = type ?: binding.cbFilterType.isChecked
-        val filterQuery: String? = query ?: viewModel.queryLiveData.value
-        val sortTag: String = sort ?: binding.sortingButton.tag.toString()
+        val items: List<DownloadItem>? = viewModel.folderLiveData.value?.peekContent()
+        val filterSize: Boolean = viewModel.getFilterSizePreference()
+        val filterType: Boolean = viewModel.getFilterTypePreference()
+        val filterQuery: String? = viewModel.queryLiveData.value
+        val sortTag: String = viewModel.getListSortPreference()
 
         val customizedList = mutableListOf<DownloadItem>()
 
@@ -315,13 +351,6 @@ class FolderListFragment : Fragment(), DownloadListListener {
             }
         }
         adapter.notifyDataSetChanged()
-        lifecycleScope.launch {
-            delay(100)
-            binding.rvFolderList.layoutManager?.verticalScrollToPosition(
-                requireContext(),
-                position = 0
-            )
-        }
     }
 
     override fun onClick(item: DownloadItem) {

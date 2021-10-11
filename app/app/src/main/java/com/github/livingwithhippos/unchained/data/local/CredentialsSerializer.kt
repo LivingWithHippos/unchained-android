@@ -25,7 +25,6 @@ object CredentialsSerializer : Serializer<CurrentCredential> {
 
     @Suppress("BlockingMethodInNonBlockingContext")
     override suspend fun writeTo(t: CurrentCredential, output: OutputStream) = t.writeTo(output)
-
 }
 
 val Context.credentialsDataStore: DataStore<CurrentCredential> by dataStore(

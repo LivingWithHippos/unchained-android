@@ -124,6 +124,4 @@ class ProtoStoreImpl @Inject constructor(
             Credentials.CurrentCredential.getDefaultInstance()
         }
     }
-
-
 }

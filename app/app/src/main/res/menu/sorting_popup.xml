@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/sortByDefault"
+        android:icon="@drawable/icon_sort_default"
+        android:title="@string/sort_by_default" />
+    <item
+        android:id="@+id/sortByAZ"
+        android:icon="@drawable/icon_sort_az"
+        android:title="@string/sort_by_az" />
+    <item
+        android:id="@+id/sortByZA"
+        android:icon="@drawable/icon_sort_za"
+        android:title="@string/sort_by_za" />
+    <item
+        android:id="@+id/sortBySizeAsc"
+        android:icon="@drawable/icon_sort_size_asc"
+        android:title="@string/sort_by_size_asc" />
+    <item
+        android:id="@+id/sortBySizeDesc"
+        android:icon="@drawable/icon_sort_size_desc"
+        android:title="@string/sort_by_size_desc" />
+</menu>

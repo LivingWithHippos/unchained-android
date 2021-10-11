@@ -210,7 +210,6 @@ class NewDownloadFragment : UnchainedFragment() {
             }
         )
 
-
         @SuppressLint("ShowToast")
         val currentToast: Toast = Toast.makeText(requireContext(), "", Toast.LENGTH_SHORT)
 
