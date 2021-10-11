@@ -14,6 +14,7 @@ import android.content.res.Configuration
 import android.content.res.Resources
 import android.database.Cursor
 import android.graphics.Color
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
@@ -24,7 +25,10 @@ import android.util.TypedValue
 import android.view.View
 import android.view.WindowInsetsController
 import android.widget.Toast
+import androidx.annotation.DrawableRes
+import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
@@ -58,12 +62,26 @@ fun Context.showToast(message: String, length: Int = Toast.LENGTH_SHORT) {
  * @param attributeID: the attribute id, like R.attr.colorAccent
  * @return the int value of the color
  */
-fun Context.getThemeColor(attributeID: Int): Int {
+fun Context.getThemeColor(@IdRes attributeID: Int): Int {
     // get a reference to the current theme
     val typedValue = TypedValue()
     val theme: Resources.Theme = this.theme
     theme.resolveAttribute(attributeID, typedValue, true)
     return typedValue.data
+}
+
+/**
+ * Returns a Drawable from its id with the tint color of the current theme
+ *
+ * @param id the Drawable id
+ * @return the themed Drawable
+ */
+fun Context.getThemedDrawable(@DrawableRes id: Int): Drawable {
+    return ResourcesCompat.getDrawable(
+        resources,
+        id,
+        this.theme
+    ) ?: throw IllegalArgumentException("Drawable with id $id was missing")
 }
 
 /**
