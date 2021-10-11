@@ -418,7 +418,6 @@ data class PluginRegexes(
     }
 }
 
-
 @JsonClass(generateAdapter = true)
 data class Columns(
     @Json(name = "name_column")
