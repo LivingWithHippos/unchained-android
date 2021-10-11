@@ -140,22 +140,7 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
         if (lastResults.isNotEmpty())
             submitSortedList(latestTag, adapter, lastResults)
 
-        binding.sortingButton.setOnClickListener {
-            // every click changes to the next state
-            val newTag = getNextSortingTag(it.tag as String)
-            val currentDrawableID = getSortingDrawable(newTag)
-            binding.sortingButton.tag = newTag
-            binding.sortingButton.background = ResourcesCompat.getDrawable(
-                resources,
-                currentDrawableID,
-                requireContext().theme
-            )
-            submitSortedList(newTag, adapter, viewModel.getSearchResults())
-            viewModel.setListSortPreference(newTag)
-            lifecycleScope.launch {
-                binding.rvSearchList.delayedScrolling(requireContext())
-            }
-        }
+        setupSortingDropdown(binding, adapter)
 
         // search option
         binding.tiSearch.setOnEditorActionListener { _, actionId, _ ->
@@ -171,6 +156,26 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
         // search button listener
         binding.tfSearch.setEndIconOnClickListener {
             performSearch(binding, adapter)
+        }
+    }
+
+    private fun setupSortingDropdown(binding: FragmentSearchBinding, adapter: SearchItemAdapter) {
+
+        binding.sortingButton.setOnClickListener {
+            // every click changes to the next state
+            val newTag = getNextSortingTag(it.tag as String)
+            val currentDrawableID = getSortingDrawable(newTag)
+            binding.sortingButton.tag = newTag
+            binding.sortingButton.background = ResourcesCompat.getDrawable(
+                resources,
+                currentDrawableID,
+                requireContext().theme
+            )
+            submitSortedList(newTag, adapter, viewModel.getSearchResults())
+            viewModel.setListSortPreference(newTag)
+            lifecycleScope.launch {
+                binding.rvSearchList.delayedScrolling(requireContext())
+            }
         }
     }
 
