@@ -130,7 +130,7 @@ class MainActivityViewModel @Inject constructor(
                 on<FSMAuthenticationEvent.OnNotWorking> {
                     transitionTo(
                         FSMAuthenticationState.StartNewLogin,
-                        FSMAuthenticationSideEffect.PostNewLogin
+                        FSMAuthenticationSideEffect.ResetAuthentication
                     )
                 }
                 on<FSMAuthenticationEvent.OnUserActionNeeded> {
@@ -254,6 +254,12 @@ class MainActivityViewModel @Inject constructor(
                     transitionTo(
                         FSMAuthenticationState.WaitingUserAction(null),
                         FSMAuthenticationSideEffect.PostActionNeeded
+                    )
+                }
+                on<FSMAuthenticationEvent.OnNotWorking> {
+                    transitionTo(
+                        FSMAuthenticationState.StartNewLogin,
+                        FSMAuthenticationSideEffect.ResetAuthentication
                     )
                 }
             }
