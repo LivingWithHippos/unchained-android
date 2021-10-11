@@ -204,6 +204,7 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
                 }
                 is ParserResult.EmptyInnerLinks -> {
                     context?.showToast(R.string.no_links)
+                    adapter.submitList(emptyList())
                     binding.loadingCircle.visibility = View.INVISIBLE
                     binding.sortingButton.visibility = View.VISIBLE
                 }
