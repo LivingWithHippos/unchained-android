@@ -2,7 +2,10 @@
 buildscript {
     apply from: 'versions.gradle'
 
-    ext.ktlint_version = '10.1.0'
+    ext {
+        ktlint_version = '10.1.0'
+        versions_plugin_version = '0.39.0'
+    }
 
     repositories {
         google()
@@ -23,6 +26,7 @@ buildscript {
 
 plugins {
     id "org.jlleitschuh.gradle.ktlint" version "$ktlint_version"
+    id "com.github.ben-manes.versions" version "$versions_plugin_version"
 }
 
 allprojects {
