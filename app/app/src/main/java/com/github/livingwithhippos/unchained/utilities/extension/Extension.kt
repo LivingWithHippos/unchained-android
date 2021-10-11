@@ -25,8 +25,8 @@ import android.util.TypedValue
 import android.view.View
 import android.view.WindowInsetsController
 import android.widget.Toast
+import androidx.annotation.AttrRes
 import androidx.annotation.DrawableRes
-import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
@@ -62,7 +62,7 @@ fun Context.showToast(message: String, length: Int = Toast.LENGTH_SHORT) {
  * @param attributeID: the attribute id, like R.attr.colorAccent
  * @return the int value of the color
  */
-fun Context.getThemeColor(@IdRes attributeID: Int): Int {
+fun Context.getThemeColor(@AttrRes attributeID: Int): Int {
     // get a reference to the current theme
     val typedValue = TypedValue()
     val theme: Resources.Theme = this.theme
