@@ -274,9 +274,11 @@ class MainActivityViewModel @Inject constructor(
             }
 
             onTransition {
-                val validTransition = it as? StateMachine.Transition.Valid ?: return@onTransition
-                Timber.d("statemachine is $validTransition")
-                when (validTransition.sideEffect) {
+                if (it !is StateMachine.Transition.Valid) {
+                    Timber.e("Wrong transition ${it.event} for state ${it.fromState}")
+                    return@onTransition
+                }
+                when (it.sideEffect) {
                     null -> {
                         // do nothing
                     }
@@ -302,10 +304,10 @@ class MainActivityViewModel @Inject constructor(
                         fsmAuthenticationState.postEvent(FSMAuthenticationState.WaitingUserConfirmation)
                     }
                     FSMAuthenticationSideEffect.PostActionNeeded -> {
-                        when (validTransition.event) {
+                        when (it.event) {
                             is FSMAuthenticationEvent.OnUserActionNeeded -> {
                                 val action =
-                                    (validTransition.event as FSMAuthenticationEvent.OnUserActionNeeded).action
+                                    (it.event as FSMAuthenticationEvent.OnUserActionNeeded).action
                                 fsmAuthenticationState.postEvent(
                                     FSMAuthenticationState.WaitingUserAction(
                                         action
@@ -318,7 +320,7 @@ class MainActivityViewModel @Inject constructor(
                                 )
                             }
                             else -> {
-                                Timber.e("Wrong PostActionNeeded event: ${validTransition.event}")
+                                Timber.e("Wrong PostActionNeeded event: ${it.event}")
                             }
                         }
                     }
