@@ -73,16 +73,16 @@ class MainActivity : AppCompatActivity() {
 
     private val downloadReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            intent?.let {
+            if (intent != null) {
                 viewModel.checkTorrentDownload(
-                    it.getLongExtra(
+                    intent.getLongExtra(
                         DownloadManager.EXTRA_DOWNLOAD_ID,
                         -1
                     )
                 )
                 viewModel.checkPluginDownload(
                     applicationContext,
-                    it.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
+                    intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
                 )
             }
         }
