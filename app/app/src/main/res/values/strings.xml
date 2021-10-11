@@ -532,8 +532,7 @@
     <string name="retry_login">Retry</string>
     <string name="generic_login_error">An error occurred during login. You can check your connection, try again in a while, or log in from real-debrid.com for more information.</string>
     <string name="retry_later">Retry later</string>
-    <string name="overlay_title">Overlay</string>
-    <string name="overlay_summary">Let this app overlay over others</string>
     <string name="content_description_plugins_link">Link to plugins page</string>
     <string name="get_plugins">Get more plugins</string>
+    <string name="reset_login">Reset login</string>
 </resources>

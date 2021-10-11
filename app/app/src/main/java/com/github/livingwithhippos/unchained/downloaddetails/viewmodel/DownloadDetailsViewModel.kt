@@ -6,9 +6,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.livingwithhippos.unchained.data.local.ProtoStore
 import com.github.livingwithhippos.unchained.data.model.Stream
-import com.github.livingwithhippos.unchained.data.repositoy.DownloadRepository
-import com.github.livingwithhippos.unchained.data.repositoy.KodiRepository
-import com.github.livingwithhippos.unchained.data.repositoy.StreamingRepository
+import com.github.livingwithhippos.unchained.data.repository.DownloadRepository
+import com.github.livingwithhippos.unchained.data.repository.KodiRepository
+import com.github.livingwithhippos.unchained.data.repository.StreamingRepository
 import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.postEvent
 import dagger.hilt.android.lifecycle.HiltViewModel

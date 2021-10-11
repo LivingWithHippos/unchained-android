@@ -229,9 +229,9 @@ class Parser(
 
             val parsedMagnets = parseList(
                 regex,
-                source,
+                source.removeWebFormatting(),
                 baseUrl
-            ).map { it.removeWebFormatting() }
+            )
 
             magnets.addAll(parsedMagnets)
 
@@ -425,12 +425,9 @@ class Parser(
                         magnets.addAll(
                             parseList(
                                 regexes.magnetRegex,
-                                columns[tableLink.columns.magnetColumn].html(),
+                                columns[tableLink.columns.magnetColumn].html().removeWebFormatting(),
                                 baseUrl
-                            ).map {
-                                // this function cleans links from html codes such as %3A, %3F etc.
-                                it.removeWebFormatting()
-                            }
+                            )
                         )
                     if (tableLink.columns.torrentColumn != null)
                         torrents.addAll(

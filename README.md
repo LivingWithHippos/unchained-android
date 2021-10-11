@@ -4,7 +4,7 @@
 
 # Unchained for Android
 
-[![License](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)    [![Kotlin Version](https://img.shields.io/badge/kotlin-1.5.10-blue)](http://kotlinlang.org/) [![Android Studio](https://img.shields.io/badge/Android%20Studio-4.1%2B-brightgreen)](https://developer.android.com/studio)    [![API](https://img.shields.io/badge/API-22%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=22)    [![Build Status](https://img.shields.io/github/workflow/status/LivingWithHippos/unchained-android/Build)](https://github.com/LivingWithHippos/unchained-android/actions)    [![Play Store](https://img.shields.io/badge/play%20store-available-brightgreen)](https://play.google.com/store/apps/details?id=com.github.livingwithhippos.unchained) [![translated](https://localization.professiona.li/widgets/unchained-for-android/-/strings/svg-badge.svg)](https://localization.professiona.li/engage/unchained-for-android/)
+[![License](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)    [![Kotlin Version](https://img.shields.io/badge/kotlin-1.5.30-blue)](http://kotlinlang.org/)    [![API](https://img.shields.io/badge/API-22%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=22)    [![Build Status](https://img.shields.io/github/workflow/status/LivingWithHippos/unchained-android/Build)](https://github.com/LivingWithHippos/unchained-android/actions)    [![Play Store](https://img.shields.io/badge/play%20store-available-brightgreen)](https://play.google.com/store/apps/details?id=com.github.livingwithhippos.unchained) [![translated](https://localization.professiona.li/widgets/unchained-for-android/-/strings/svg-badge.svg)](https://localization.professiona.li/engage/unchained-for-android/)
 
 
 
@@ -15,17 +15,15 @@ App to interact with [Real Debrid](https://real-debrid.com/) APIs.
 Real Debrid is a service to download files from hosting websites and the torrent network.
 Files are downloaded directly on their servers that you can then use for your downloads.
 They provide high speeds without premium accounts for a lot of services like Mega and RapidGator
-and can also convert downloads of media files into streams. It offers a cheap premium service.
+and can also stream media files directly. It offers a cheap premium service.
 
 ### Features :memo:
 
 You can take a look at the project [here](https://github.com/LivingWithHippos/unchained-android/projects/1) for general status.
 
-- [x] login with a temporary open-source token (it has some API limitations)
-- [x] login with permanent [private API key](https://real-debrid.com/apitoken) (recommended)
 - [x] user info
 - [x] themes support
-- [x] unrestrict links
+- [x] hoster support
 - [x] containers support
 - [x] magnets support
 - [x] torrent support
@@ -53,7 +51,10 @@ You have multiple options to install Unchained for Android:
 
 ### Developing and Contributing :writing_hand:
 
-At the moment, the app is under heavy development under Android Studio beta. Contributions are welcome.
+
+Contributions are welcome. You can use the [discussion tab](https://github.com/LivingWithHippos/unchained-android/discussions) to ask for help setting up the project.
+
+The dev branch is the one where the developement happens, it gets merged into master when a release is ready.
 
 A debug version is available, it reports automatically any crash information, it can be useful to help me debug errors.
 
@@ -61,7 +62,7 @@ This app is written in Kotlin and uses the following architectures/patterns/libr
 
 MVVM architectural pattern, Dagger-Hilt for dependency injection, Data Binding for managing ui-data relations, Navigation, Moshi, Retrofit, OkHTTP, Room, Coroutines, Flow, Livedata, Coil
 
-The app is available in English, Italian and French, you can contribute to those or add a new language [here](https://localization.professiona.li/engage/unchained-for-android/) (much appreciated)
+The app is available in English, Italian and French, you can contribute to those or add a new language [here](https://localization.professiona.li/engage/unchained-for-android/) (much appreciated!)
 
 There's a work in progress [wiki page](https://github.com/LivingWithHippos/unchained-android/wiki/Search-Engine) for creating search plugins.
 

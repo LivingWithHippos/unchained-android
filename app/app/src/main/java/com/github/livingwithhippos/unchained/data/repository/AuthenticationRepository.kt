@@ -1,10 +1,11 @@
-package com.github.livingwithhippos.unchained.data.repositoy
+package com.github.livingwithhippos.unchained.data.repository
 
 import com.github.livingwithhippos.unchained.data.model.Authentication
-import com.github.livingwithhippos.unchained.data.model.Credentials
 import com.github.livingwithhippos.unchained.data.model.Secrets
 import com.github.livingwithhippos.unchained.data.model.Token
+import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkException
 import com.github.livingwithhippos.unchained.data.remote.AuthApiHelper
+import com.github.livingwithhippos.unchained.utilities.EitherResult
 import javax.inject.Inject
 
 class AuthenticationRepository @Inject constructor(private val apiHelper: AuthApiHelper) :
@@ -46,6 +47,26 @@ class AuthenticationRepository @Inject constructor(private val apiHelper: AuthAp
         return tokenResponse
     }
 
+    suspend fun getTokenOrError(
+        clientId: String,
+        clientSecret: String,
+        code: String
+    ): EitherResult<UnchainedNetworkException, Token> {
+
+        val tokenResponse = eitherApiResult(
+            call = {
+                apiHelper.getToken(
+                    clientId = clientId,
+                    clientSecret = clientSecret,
+                    code = code
+                )
+            },
+            errorMessage = "Error Fetching Token"
+        )
+
+        return tokenResponse
+    }
+
     /**
      * Get a new open source Token that usually lasts one hour.
      * @param clientId the client id obtained from the /device/credentials endpoint
@@ -56,9 +77,13 @@ class AuthenticationRepository @Inject constructor(private val apiHelper: AuthAp
     suspend fun refreshToken(clientId: String, clientSecret: String, refreshToken: String): Token? =
         getToken(clientId, clientSecret, refreshToken)
 
-    suspend fun refreshToken(credentials: Credentials): Token? =
-        refreshToken(credentials.clientId!!, credentials.clientSecret!!, credentials.refreshToken!!)
-
     suspend fun refreshToken(credentials: com.github.livingwithhippos.unchained.data.local.Credentials.CurrentCredential): Token? =
         refreshToken(credentials.clientId!!, credentials.clientSecret!!, credentials.refreshToken!!)
+
+    suspend fun refreshTokenWithError(credentials: com.github.livingwithhippos.unchained.data.local.Credentials.CurrentCredential): EitherResult<UnchainedNetworkException, Token> =
+        getTokenOrError(
+            credentials.clientId!!,
+            credentials.clientSecret!!,
+            credentials.refreshToken!!
+        )
 }

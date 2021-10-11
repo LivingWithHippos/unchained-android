@@ -1,4 +1,4 @@
-package com.github.livingwithhippos.unchained.data.repositoy
+package com.github.livingwithhippos.unchained.data.repository
 
 import android.content.Context
 import android.net.Uri

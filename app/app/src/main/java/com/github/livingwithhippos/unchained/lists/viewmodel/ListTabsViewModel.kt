@@ -16,9 +16,9 @@ import com.github.livingwithhippos.unchained.data.local.ProtoStore
 import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkException
-import com.github.livingwithhippos.unchained.data.repositoy.DownloadRepository
-import com.github.livingwithhippos.unchained.data.repositoy.TorrentsRepository
-import com.github.livingwithhippos.unchained.data.repositoy.UnrestrictRepository
+import com.github.livingwithhippos.unchained.data.repository.DownloadRepository
+import com.github.livingwithhippos.unchained.data.repository.TorrentsRepository
+import com.github.livingwithhippos.unchained.data.repository.UnrestrictRepository
 import com.github.livingwithhippos.unchained.lists.model.DownloadPagingSource
 import com.github.livingwithhippos.unchained.lists.view.ListsTabFragment.Companion.TAB_DOWNLOADS
 import com.github.livingwithhippos.unchained.utilities.EitherResult
@@ -33,7 +33,7 @@ import javax.inject.Inject
  * It offers LiveData to be observed to populate lists with paging support
  */
 @HiltViewModel
-class DownloadListViewModel @Inject constructor(
+class ListTabsViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val downloadRepository: DownloadRepository,
     private val torrentsRepository: TorrentsRepository,

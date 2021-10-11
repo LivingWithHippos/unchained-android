@@ -5,9 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.livingwithhippos.unchained.data.local.ProtoStore
 import com.github.livingwithhippos.unchained.data.model.User
-import com.github.livingwithhippos.unchained.data.repositoy.UserRepository
+import com.github.livingwithhippos.unchained.data.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -22,10 +21,9 @@ class UserProfileViewModel @Inject constructor(
     fun fetchUserInfo() {
 
         viewModelScope.launch {
-            protoStore.credentialsFlow.collect {
-                val user = userRepository.getUserInfo(it.accessToken)
-                userLiveData.postValue(user)
-            }
+            val credentials = protoStore.getCredentials()
+            val user = userRepository.getUserInfo(credentials.accessToken)
+            userLiveData.postValue(user)
         }
     }
 }

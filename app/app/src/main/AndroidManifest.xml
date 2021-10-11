@@ -12,9 +12,6 @@
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="28" />
 
-    <uses-permission android:name="android.permission.ACTION_MANAGE_OVERLAY_PERMISSION" />
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-
     <application
         android:name=".base.UnchainedApplication"
         android:allowBackup="true"
@@ -31,6 +28,7 @@
             android:name=".settings.view.SettingsActivity"
             android:parentActivityName=".base.MainActivity" />
         <activity
+            android:exported="true"
             android:name=".base.MainActivity"
             android:windowSoftInputMode="adjustPan">
             <intent-filter>

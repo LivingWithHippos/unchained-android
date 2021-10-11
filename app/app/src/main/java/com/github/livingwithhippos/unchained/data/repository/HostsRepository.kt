@@ -1,4 +1,4 @@
-package com.github.livingwithhippos.unchained.data.repositoy
+package com.github.livingwithhippos.unchained.data.repository
 
 import com.github.livingwithhippos.unchained.data.local.HostRegexDao
 import com.github.livingwithhippos.unchained.data.model.Host
@@ -166,7 +166,8 @@ class HostsRepository @Inject constructor(
             "^(https?://)?(www?\\d?\\.)?dropapk\\.to/\\w+/[^\\s]+\$",
             "^(https?://)?(www?\\d?\\.)?katfile\\.com/\\w+/[^\\s]+\$",
             "^(https?://)?(www?\\d?\\.)?clicknupload\\.cc/\\w+/[^\\s]+\$",
-            "^(https?://)?(www?\\d?\\.)?fastclick\\.to/\\w+/[^\\s]+\$"
+            "^(https?://)?(www?\\d?\\.)?fastclick\\.to/\\w+/[^\\s]+\$",
+            "^(https?://)?(www?\\d?\\.)?drop\\.download/\\w+/[^\\s]+\$"
         )
 
         // if any of the converted folder regexps are wrong, we can add these to the db manually

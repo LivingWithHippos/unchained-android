@@ -163,6 +163,7 @@ fun DownloadManager.downloadFile(
  * @param id the file id
  * @return the file Uri or null if the id wasn't found or the download wasn't successful
  */
+@SuppressLint("Range")
 fun Context.getDownloadedFileUri(id: Long): Uri? {
     val manager = this.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
     val cursor = manager.query(DownloadManager.Query().setFilterById(id))
@@ -175,6 +176,7 @@ fun Context.getDownloadedFileUri(id: Long): Uri? {
     return null
 }
 
+@SuppressLint("Range")
 fun Uri.getFileName(context: Context): String {
     var fileName = ""
     when (this.scheme) {

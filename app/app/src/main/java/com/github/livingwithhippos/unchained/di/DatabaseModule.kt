@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.room.Room
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.github.livingwithhippos.unchained.data.local.CredentialsDao
 import com.github.livingwithhippos.unchained.data.local.HostRegexDao
 import com.github.livingwithhippos.unchained.data.local.UnchaineDB
 import com.github.livingwithhippos.unchained.data.model.REGEX_TYPE_HOST
@@ -30,13 +29,8 @@ object DatabaseModule {
             UnchaineDB::class.java,
             "unchained_db"
         )
-            .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
+            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
             .build()
-    }
-
-    @Provides
-    fun provideCredentialsDao(database: UnchaineDB): CredentialsDao {
-        return database.credentialsDao()
     }
 
     @Provides
@@ -55,6 +49,12 @@ object DatabaseModule {
     private val MIGRATION_2_3 = object : Migration(2, 3) {
         override fun migrate(database: SupportSQLiteDatabase) {
             database.execSQL("ALTER TABLE host_regex ADD COLUMN type INTEGER NOT NULL DEFAULT $REGEX_TYPE_HOST")
+        }
+    }
+
+    private val MIGRATION_3_4 = object : Migration(3, 4) {
+        override fun migrate(database: SupportSQLiteDatabase) {
+            database.execSQL("DROP TABLE credentials")
         }
     }
 }

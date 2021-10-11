@@ -21,8 +21,10 @@ fun String.isWebUrl(): Boolean =
 fun String.removeWebFormatting(): String {
     return this.replace("%3A", ":")
         .replace("%3F", "?")
+        .replace("&#x3D;", "=")
         .replace("%3D", "=")
         .replace("%26", "&")
+        .replace("&amp;", "&")
         .replace("%2B", "+")
         .replace("%25", "%")
 }

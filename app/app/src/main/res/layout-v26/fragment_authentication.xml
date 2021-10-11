@@ -71,33 +71,6 @@
                 spannableText="@{auth.directVerificationUrl != null ? loginMessageDirect : loginMessageIndirect}"
                 />
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="@{auth.directVerificationUrl != null ? View.GONE: View.VISIBLE, default=visible}" >
-
-            <TextView
-                android:id="@+id/tvCode"
-                style="@style/TextAppearance.UnchainedTheme.Subtitle1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="5dp"
-                android:text="@{auth.userCode, default=`AB1CDEFGH`}" />
-
-            <Button
-                android:id="@+id/bCopy"
-                style="@style/Widget.MaterialComponents.Button.Icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:nextFocusDown="@id/tvUsePrivateToken"
-                android:text="@string/copy"
-                android:onClick="@{() -> listener.onCopyClick(auth.userCode)}"
-                app:icon="@drawable/icon_copy"
-                android:contentDescription="@string/paste" />
-
-            </LinearLayout>
-
         </LinearLayout>
 
         <CheckBox
