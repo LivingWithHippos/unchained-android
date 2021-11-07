@@ -119,7 +119,7 @@ class MainActivity : AppCompatActivity() {
         viewModel.fsmAuthenticationState.observe(
             this,
             {
-                if (it != null)
+                if (it != null) {
                     when (it.getContentIfNotHandled()) {
                         null -> {
                             // do nothing
@@ -171,6 +171,10 @@ class MainActivity : AppCompatActivity() {
                             }
                         }
                     }
+                } else {
+                    Countly.sharedInstance().events()
+                        .recordEvent("fsmAuthenticationState observable was null")
+                }
             }
         )
 
@@ -192,20 +196,23 @@ class MainActivity : AppCompatActivity() {
             IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
         )
 
-        viewModel.linkLiveData.observe(
-            this,
-            EventObserver { link ->
-                when {
-                    link.endsWith(TYPE_UNCHAINED, ignoreCase = true) -> {
-                        downloadPlugin(link)
-                    }
-                    else -> {
-                        // check the authentication
-                        processExternalRequestOnAuthentication(Uri.parse(link))
+        viewModel.linkLiveData.observe(this, {
+            if (it == null) {
+                Countly.sharedInstance().events().recordEvent("linkLiveData observable was null")
+            } else {
+                it.getContentIfNotHandled()?.let { link ->
+                    when {
+                        link.endsWith(TYPE_UNCHAINED, ignoreCase = true) -> {
+                            downloadPlugin(link)
+                        }
+                        else -> {
+                            // check the authentication
+                            processExternalRequestOnAuthentication(Uri.parse(link))
+                        }
                     }
                 }
             }
-        )
+        })
 
         // monitor if the torrent notification service needs to be started. It monitor the preference change itself
         // for the shutting down part
@@ -224,10 +231,17 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.messageLiveData.observe(
             this,
-            EventObserver {
-                currentToast.cancel()
-                currentToast.setText(getString(it))
-                currentToast.show()
+            {
+                if (it == null) {
+                    Countly.sharedInstance().events()
+                        .recordEvent("messageLiveData observable was null")
+                } else {
+                    it.getContentIfNotHandled()?.let { message ->
+                        currentToast.cancel()
+                        currentToast.setText(getString(message))
+                        currentToast.show()
+                    }
+                }
             }
         )
 
@@ -247,6 +261,8 @@ class MainActivity : AppCompatActivity() {
                         applicationContext.showToast(R.string.no_network_connection)
                     }
                     null -> {
+                        Countly.sharedInstance().events()
+                            .recordEvent("connectivityLiveData observable was null")
                     }
                 }
             }
