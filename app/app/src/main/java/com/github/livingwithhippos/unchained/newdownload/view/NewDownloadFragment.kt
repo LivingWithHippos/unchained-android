@@ -179,7 +179,9 @@ class NewDownloadFragment : UnchainedFragment() {
                                 viewModel.postMessage(getString(R.string.refreshing_token))
                                 // try refreshing the token
                                 if (activityViewModel.getAuthenticationMachineState() is FSMAuthenticationState.AuthenticatedOpenToken)
-                                    activityViewModel.transitionAuthenticationMachine(FSMAuthenticationEvent.OnExpiredOpenToken)
+                                    activityViewModel.transitionAuthenticationMachine(
+                                        FSMAuthenticationEvent.OnExpiredOpenToken
+                                    )
                                 else
                                     Timber.e("Asked for a refresh while in a wrong state: ${activityViewModel.getAuthenticationMachineState()}")
                             }
@@ -187,7 +189,9 @@ class NewDownloadFragment : UnchainedFragment() {
                                 viewModel.postMessage(errorMessage)
                                 when (activityViewModel.getAuthenticationMachineState()) {
                                     FSMAuthenticationState.AuthenticatedOpenToken, FSMAuthenticationState.AuthenticatedPrivateToken, FSMAuthenticationState.RefreshingOpenToken -> {
-                                        activityViewModel.transitionAuthenticationMachine(FSMAuthenticationEvent.OnAuthenticationError)
+                                        activityViewModel.transitionAuthenticationMachine(
+                                            FSMAuthenticationEvent.OnAuthenticationError
+                                        )
                                     }
                                     else -> {
                                         Timber.e("Asked for logout while in a wrong state: ${activityViewModel.getAuthenticationMachineState()}")
@@ -275,6 +279,21 @@ class NewDownloadFragment : UnchainedFragment() {
                     }
                     link.isContainerWebLink() -> {
                         viewModel.unrestrictContainer(link)
+                    }
+                    link.split("\n").firstOrNull()?.trim()?.isWebUrl() == true -> {
+                        val splitLinks: List<String> = link.split("\n").map { it.trim() }.filter { it.length > 10 }
+                        viewModel.postMessage(getString(R.string.loading))
+                        enableButtons(binding, false)
+
+                        // new folder list, alert the list fragment that it needs updating
+                        activityViewModel.setListState(ListsTabFragment.ListState.UPDATE_DOWNLOAD)
+                        val action =
+                            NewDownloadFragmentDirections.actionNewDownloadDestToFolderListFragment(
+                                folder = null,
+                                torrent = null,
+                                linkList = splitLinks.toTypedArray()
+                            )
+                        findNavController().navigate(action)
                     }
                     else -> {
                         viewModel.postMessage(getString(R.string.invalid_url))
