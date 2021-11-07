@@ -86,7 +86,6 @@ object ApiFactory {
     @DOHClient
     fun provideDOHClient(): OkHttpClient {
 
-        val appCache = Cache(File("cacheDir", "okhttpcache"), 10485760)
         val bootstrapClient: OkHttpClient = if(BuildConfig.DEBUG) {
 
             val logInterceptor: HttpLoggingInterceptor = HttpLoggingInterceptor().apply {
@@ -94,7 +93,6 @@ object ApiFactory {
             }
 
             OkHttpClient().newBuilder()
-                .cache(appCache)
                 // logs all the calls, removed in the release channel
                 .addInterceptor(logInterceptor)
                 // avoid issues with empty bodies on delete/put and 20x return codes
@@ -103,14 +101,13 @@ object ApiFactory {
         } else {
             OkHttpClient()
                 .newBuilder()
-                .cache(appCache)
                 .addInterceptor(EmptyBodyInterceptor)
                 .build()
         }
 
         val dns = DnsOverHttps.Builder().client(bootstrapClient)
-            .url("https://cloudflare-dns.com/dns-query".toHttpUrl())
-            .bootstrapDnsHosts(InetAddress.getByName("1.1.1.1"))
+            .url("https://dns.google/dns-query".toHttpUrl())
+            .bootstrapDnsHosts(InetAddress.getByName("8.8.8.8"),InetAddress.getByName("8.8.4.4"))
             .build()
 
         return bootstrapClient.newBuilder().dns(dns).build()
