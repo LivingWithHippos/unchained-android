@@ -31,6 +31,7 @@
     <string name="open_link">Apri link</string>
     <string name="copy_link">Copia link</string>
     <string name="link_copied">Link copiato</string>
+    <string name="links_copied">Link copiati</string>
     <string name="streaming">Streaming</string>
     <string name="megabytes_short">MB</string>
     <string name="file_size_format">%1$d MB</string>
@@ -180,6 +181,7 @@
     <string name="content_description_share_download">Condividi download link</string>
     <string name="share">Condividi</string>
     <string name="share_with">Condividi link di download tramite:</string>
+    <string name="share_all_with">Condividi tutti i links di download tramite:</string>
     <string name="restart_to_apply">Riavvia per applicare</string>
     <string name="remove">Rimuovi</string>
     <string name="confirm_download_removal_description">Sei sicuro di voler rimuovere il download? Questa azione non può essere annullata.</string>
@@ -330,4 +332,6 @@
     <string name="sort_by_za">Alfabetico inverso</string>
     <string name="sort_by_size_desc">Dal più grande</string>
     <string name="sort_by_size_asc">Dal più piccolo</string>
+    <string name="share_all">Condividi tutto</string>
+    <string name="copy_all">Copia tutto</string>
 </resources>

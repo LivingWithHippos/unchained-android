@@ -2,6 +2,7 @@ package com.github.livingwithhippos.unchained.folderlist.view
 
 import android.app.DownloadManager
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -29,6 +30,7 @@ import com.github.livingwithhippos.unchained.folderlist.model.FolderItemAdapter
 import com.github.livingwithhippos.unchained.folderlist.viewmodel.FolderListViewModel
 import com.github.livingwithhippos.unchained.lists.view.DownloadListListener
 import com.github.livingwithhippos.unchained.utilities.EitherResult
+import com.github.livingwithhippos.unchained.utilities.extension.copyToClipboard
 import com.github.livingwithhippos.unchained.utilities.extension.delayedScrolling
 import com.github.livingwithhippos.unchained.utilities.extension.downloadFile
 import com.github.livingwithhippos.unchained.utilities.extension.getThemedDrawable
@@ -62,7 +64,48 @@ class FolderListFragment : Fragment(), DownloadListListener {
                 downloadAll()
                 true
             }
+            R.id.share_all -> {
+                shareAll()
+                true
+            }
+            R.id.copy_all -> {
+                copyAll()
+                true
+            }
+
             else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun shareAll() {
+        val downloads: List<DownloadItem>? = viewModel.folderLiveData.value?.peekContent()
+
+        if (!downloads.isNullOrEmpty()) {
+            val downloadList = StringBuilder()
+            downloads.forEach {
+                downloadList.appendLine(it.download)
+            }
+            val shareIntent = Intent(Intent.ACTION_SEND)
+            shareIntent.type = "text/plain"
+            shareIntent.putExtra(Intent.EXTRA_TEXT, downloadList.toString())
+            startActivity(Intent.createChooser(shareIntent, getString(R.string.share_all_with)))
+        } else {
+            context?.showToast(R.string.no_links)
+        }
+    }
+
+    private fun copyAll() {
+        val downloads: List<DownloadItem>? = viewModel.folderLiveData.value?.peekContent()
+
+        if (!downloads.isNullOrEmpty()) {
+            val downloadList = StringBuilder()
+            downloads.forEach {
+                downloadList.appendLine(it.download)
+            }
+            copyToClipboard(getString(R.string.links), downloadList.toString())
+            context?.showToast(R.string.link_copied)
+        } else {
+            context?.showToast(R.string.no_links)
         }
     }
 
