@@ -2,6 +2,7 @@ package com.github.livingwithhippos.unchained.plugins
 
 import android.text.Spanned
 import androidx.core.text.HtmlCompat
+import com.github.livingwithhippos.unchained.di.DOHClient
 import com.github.livingwithhippos.unchained.plugins.model.CustomRegex
 import com.github.livingwithhippos.unchained.plugins.model.Plugin
 import com.github.livingwithhippos.unchained.plugins.model.PluginRegexes
@@ -12,9 +13,9 @@ import com.github.livingwithhippos.unchained.utilities.extension.removeWebFormat
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
+import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
-import okhttp3.dnsoverhttps.DnsOverHttps
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
@@ -22,7 +23,7 @@ import timber.log.Timber
 import java.net.SocketTimeoutException
 
 class Parser(
-    private val dohClient: DnsOverHttps
+    private val dohClient: OkHttpClient
 ) {
 
     private fun isPluginSupported(plugin: Plugin): Boolean {
@@ -425,7 +426,8 @@ class Parser(
                         magnets.addAll(
                             parseList(
                                 regexes.magnetRegex,
-                                columns[tableLink.columns.magnetColumn].html().removeWebFormatting(),
+                                columns[tableLink.columns.magnetColumn].html()
+                                    .removeWebFormatting(),
                                 baseUrl
                             )
                         )
@@ -484,7 +486,7 @@ class Parser(
         // todo: check if this works
         // todo: return the complete Response to let the caller check the return code
         try {
-            dohClient.client.newCall(request).execute().use { response: Response ->
+            dohClient.newCall(request).execute().use { response: Response ->
                 response.body?.string() ?: ""
             }
         } catch (e: SocketTimeoutException) {
