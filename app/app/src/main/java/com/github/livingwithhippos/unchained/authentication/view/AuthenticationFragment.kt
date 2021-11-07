@@ -54,40 +54,42 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
 
         activityViewModel.fsmAuthenticationState.observe(viewLifecycleOwner, {
 
-            when (it.peekContent()) {
-                FSMAuthenticationState.AuthenticatedOpenToken -> {
-                    val action =
-                        AuthenticationFragmentDirections.actionAuthenticationToUser()
-                    findNavController().navigate(action)
-                }
-                FSMAuthenticationState.AuthenticatedPrivateToken -> {
-                    val action =
-                        AuthenticationFragmentDirections.actionAuthenticationToUser()
-                    findNavController().navigate(action)
-                }
-                FSMAuthenticationState.StartNewLogin -> {
-                    // reset the current data
-                    authBinding.auth = null
-                    authBinding.secrets = null
-                    authBinding.token = null
-                    // get the authentication link to start the process
-                    viewModel.fetchAuthenticationInfo()
-                }
-                FSMAuthenticationState.WaitingUserConfirmation -> {
-                    // start the next auth step
-                    viewModel.fetchSecrets()
-                }
-                FSMAuthenticationState.WaitingToken -> {
-                    viewModel.fetchToken()
-                }
-                FSMAuthenticationState.CheckCredentials, FSMAuthenticationState.RefreshingOpenToken -> {
-                    // managed by activity
-                }
-                is FSMAuthenticationState.WaitingUserAction -> {
-                    // todo: depending on the action required show an error or restart the process
-                }
-                FSMAuthenticationState.Start -> {
-                    // this shouldn't happen
+            if (it!=null) {
+                when (it.peekContent()) {
+                    FSMAuthenticationState.AuthenticatedOpenToken -> {
+                        val action =
+                            AuthenticationFragmentDirections.actionAuthenticationToUser()
+                        findNavController().navigate(action)
+                    }
+                    FSMAuthenticationState.AuthenticatedPrivateToken -> {
+                        val action =
+                            AuthenticationFragmentDirections.actionAuthenticationToUser()
+                        findNavController().navigate(action)
+                    }
+                    FSMAuthenticationState.StartNewLogin -> {
+                        // reset the current data
+                        authBinding.auth = null
+                        authBinding.secrets = null
+                        authBinding.token = null
+                        // get the authentication link to start the process
+                        viewModel.fetchAuthenticationInfo()
+                    }
+                    FSMAuthenticationState.WaitingUserConfirmation -> {
+                        // start the next auth step
+                        viewModel.fetchSecrets()
+                    }
+                    FSMAuthenticationState.WaitingToken -> {
+                        viewModel.fetchToken()
+                    }
+                    FSMAuthenticationState.CheckCredentials, FSMAuthenticationState.RefreshingOpenToken -> {
+                        // managed by activity
+                    }
+                    is FSMAuthenticationState.WaitingUserAction -> {
+                        // todo: depending on the action required show an error or restart the process
+                    }
+                    FSMAuthenticationState.Start -> {
+                        // this shouldn't happen
+                    }
                 }
             }
         })

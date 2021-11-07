@@ -67,7 +67,7 @@ class MainActivityViewModel @Inject constructor(
     private val protoStore: ProtoStore,
 ) : ViewModel() {
 
-    val fsmAuthenticationState = MutableLiveData<Event<FSMAuthenticationState>>()
+    val fsmAuthenticationState = MutableLiveData<Event<FSMAuthenticationState>?>()
     private val credentialsFlow = protoStore.credentialsFlow
 
     val externalLinkLiveData = MutableLiveData<Event<Uri>>()
@@ -78,13 +78,13 @@ class MainActivityViewModel @Inject constructor(
 
     val listStateLiveData = MutableLiveData<Event<ListsTabFragment.ListState>>()
 
-    val connectivityLiveData = MutableLiveData<Boolean>()
+    val connectivityLiveData = MutableLiveData<Boolean?>()
     // val currentNetworkLiveData = MutableLiveData<Network?>()
 
     // todo: use a better name to reflect the difference between this and externalLinkLiveData
-    val linkLiveData = MutableLiveData<Event<String>>()
+    val linkLiveData = MutableLiveData<Event<String>?>()
 
-    val messageLiveData = MutableLiveData<Event<Int>>()
+    val messageLiveData = MutableLiveData<Event<Int>?>()
 
     private var refreshJob: Job? = null
 
@@ -289,41 +289,66 @@ class MainActivityViewModel @Inject constructor(
                         // do nothing
                     }
                     is FSMAuthenticationSideEffect.CheckingCredentials -> {
-                        fsmAuthenticationState.postEvent(FSMAuthenticationState.CheckCredentials)
+                        fsmAuthenticationState.postValue(
+                            Event(
+                                FSMAuthenticationState.CheckCredentials
+                        ))
                     }
                     FSMAuthenticationSideEffect.PostNewLogin -> {
-                        fsmAuthenticationState.postEvent(FSMAuthenticationState.StartNewLogin)
+                        fsmAuthenticationState.postValue(
+                            Event(
+                                FSMAuthenticationState.StartNewLogin
+                            ))
+
                     }
                     FSMAuthenticationSideEffect.PostAuthenticatedOpen -> {
-                        fsmAuthenticationState.postEvent(FSMAuthenticationState.AuthenticatedOpenToken)
+                        fsmAuthenticationState.postValue(
+                            Event(
+                                FSMAuthenticationState.AuthenticatedOpenToken
+                            ))
                     }
                     FSMAuthenticationSideEffect.PostRefreshingToken -> {
-                        fsmAuthenticationState.postEvent(FSMAuthenticationState.RefreshingOpenToken)
+                        fsmAuthenticationState.postValue(
+                            Event(
+                                FSMAuthenticationState.RefreshingOpenToken
+                            ))
                     }
                     FSMAuthenticationSideEffect.PostAuthenticatedPrivate -> {
-                        fsmAuthenticationState.postEvent(FSMAuthenticationState.AuthenticatedPrivateToken)
+                        fsmAuthenticationState.postValue(
+                            Event(
+                                FSMAuthenticationState.AuthenticatedPrivateToken
+                            ))
                     }
                     FSMAuthenticationSideEffect.PostWaitToken -> {
-                        fsmAuthenticationState.postEvent(FSMAuthenticationState.WaitingToken)
+                        fsmAuthenticationState.postValue(
+                            Event(
+                                FSMAuthenticationState.WaitingToken
+                            ))
                     }
                     FSMAuthenticationSideEffect.PostWaitUserConfirmation -> {
-                        fsmAuthenticationState.postEvent(FSMAuthenticationState.WaitingUserConfirmation)
+                        fsmAuthenticationState.postValue(
+                            Event(
+                                FSMAuthenticationState.WaitingUserConfirmation
+                            ))
                     }
                     FSMAuthenticationSideEffect.PostActionNeeded -> {
                         when (it.event) {
                             is FSMAuthenticationEvent.OnUserActionNeeded -> {
                                 val action =
                                     (it.event as FSMAuthenticationEvent.OnUserActionNeeded).action
-                                fsmAuthenticationState.postEvent(
-                                    FSMAuthenticationState.WaitingUserAction(
-                                        action
-                                    )
-                                )
+
+                                fsmAuthenticationState.postValue(
+                                    Event(
+                                        FSMAuthenticationState.WaitingUserAction(
+                                            action
+                                        )
+                                    ))
                             }
                             is FSMAuthenticationEvent.OnAuthenticationError -> {
-                                fsmAuthenticationState.postEvent(
-                                    FSMAuthenticationState.WaitingUserAction(null)
-                                )
+                                fsmAuthenticationState.postValue(
+                                    Event(
+                                        FSMAuthenticationState.WaitingUserAction(null)
+                                    ))
                             }
                             else -> {
                                 Timber.e("Wrong PostActionNeeded event: ${it.event}")
@@ -334,7 +359,10 @@ class MainActivityViewModel @Inject constructor(
                         // delete the current credentials and restart a login process
                         viewModelScope.launch {
                             protoStore.deleteCredentials()
-                            fsmAuthenticationState.postEvent(FSMAuthenticationState.StartNewLogin)
+                            fsmAuthenticationState.postValue(
+                                Event(
+                                    FSMAuthenticationState.StartNewLogin
+                                ))
                         }
                     }
                 }
@@ -582,9 +610,9 @@ class MainActivityViewModel @Inject constructor(
                     }
 
                     if (installed)
-                        messageLiveData.postEvent(R.string.plugin_install_installed)
+                        messageLiveData.postValue(Event(R.string.plugin_install_installed))
                     else
-                        messageLiveData.postEvent(R.string.plugin_install_not_installed)
+                        messageLiveData.postValue(Event(R.string.plugin_install_not_installed))
                 }
             }
         }
@@ -615,15 +643,15 @@ class MainActivityViewModel @Inject constructor(
     fun downloadSupportedLink(link: String) {
         viewModelScope.launch {
             when {
-                link.isMagnet() -> linkLiveData.postEvent(link)
-                link.isTorrent() -> linkLiveData.postEvent(link)
+                link.isMagnet() -> linkLiveData.postValue(Event(link))
+                link.isTorrent() -> linkLiveData.postValue(Event(link))
                 link.endsWith(TYPE_UNCHAINED, ignoreCase = true) -> {
                     // only accept github links for now
                     val newLink = convertGithubToRaw(link)
                     if (newLink != null)
-                        linkLiveData.postEvent(newLink)
+                        linkLiveData.postValue(Event(newLink))
                     else
-                        messageLiveData.postEvent(R.string.invalid_url)
+                        messageLiveData.postValue(Event(R.string.invalid_url))
                 }
                 else -> {
                     var matchFound = false
@@ -632,7 +660,7 @@ class MainActivityViewModel @Inject constructor(
                         val m: Matcher = Pattern.compile(hostRegex.regex).matcher(link)
                         if (m.matches()) {
                             matchFound = true
-                            linkLiveData.postEvent(link)
+                            linkLiveData.postValue(Event(link))
                             break
                         }
                     }
@@ -642,13 +670,13 @@ class MainActivityViewModel @Inject constructor(
                             val m: Matcher = Pattern.compile(hostRegex.regex).matcher(link)
                             if (m.matches()) {
                                 matchFound = true
-                                linkLiveData.postEvent(link)
+                                linkLiveData.postValue(Event(link))
                                 break
                             }
                         }
                     }
                     if (!matchFound)
-                        messageLiveData.postEvent(R.string.host_match_not_found)
+                        messageLiveData.postValue(Event(R.string.host_match_not_found))
                 }
             }
         }
@@ -694,9 +722,9 @@ class MainActivityViewModel @Inject constructor(
                         file.delete()
                         val installed = pluginRepository.addExternalPlugin(context, data)
                         if (installed)
-                            messageLiveData.postEvent(R.string.plugin_install_installed)
+                            messageLiveData.postValue(Event(R.string.plugin_install_installed))
                         else
-                            messageLiveData.postEvent(R.string.plugin_install_not_installed)
+                            messageLiveData.postValue(Event(R.string.plugin_install_not_installed))
                     } else {
                         // is it the same plugin?
                         if (existingPlugin.name == tempPlugin.name) {
@@ -705,12 +733,12 @@ class MainActivityViewModel @Inject constructor(
                                 file.delete()
                                 val installed = pluginRepository.addExternalPlugin(context, data)
                                 if (installed)
-                                    messageLiveData.postEvent(R.string.plugin_install_installed)
+                                    messageLiveData.postValue(Event(R.string.plugin_install_installed))
                                 else
-                                    messageLiveData.postEvent(R.string.plugin_install_not_installed)
+                                    messageLiveData.postValue(Event(R.string.plugin_install_not_installed))
                             } else {
                                 // installed plugin is newer
-                                messageLiveData.postEvent(R.string.plugin_install_error_newer)
+                                messageLiveData.postValue(Event(R.string.plugin_install_error_newer))
                             }
                         } else {
                             // same file name for different plugins
@@ -719,20 +747,20 @@ class MainActivityViewModel @Inject constructor(
                                 "_$filename"
                             )
                             if (installed)
-                                messageLiveData.postEvent(R.string.plugin_install_installed)
+                                messageLiveData.postValue(Event(R.string.plugin_install_installed))
                             else
-                                messageLiveData.postEvent(R.string.plugin_install_not_installed)
+                                messageLiveData.postValue(Event(R.string.plugin_install_not_installed))
                         }
                     }
                 } else {
                     val installed = pluginRepository.addExternalPlugin(context, data)
                     if (installed)
-                        messageLiveData.postEvent(R.string.plugin_install_installed)
+                        messageLiveData.postValue(Event(R.string.plugin_install_installed))
                     else
-                        messageLiveData.postEvent(R.string.plugin_install_not_installed)
+                        messageLiveData.postValue(Event(R.string.plugin_install_not_installed))
                 }
             } else {
-                messageLiveData.postEvent(R.string.plugin_install_not_installed)
+                messageLiveData.postValue(Event(R.string.plugin_install_not_installed))
             }
         }
     }
