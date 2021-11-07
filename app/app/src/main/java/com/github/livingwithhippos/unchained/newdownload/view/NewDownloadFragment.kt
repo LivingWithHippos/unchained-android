@@ -306,7 +306,12 @@ class NewDownloadFragment : UnchainedFragment() {
         binding.bPasteLink.setOnClickListener {
             val pasteText = getClipboardText()
 
-            if (pasteText.isWebUrl() || pasteText.isMagnet() || pasteText.isTorrent())
+            if (
+                pasteText.isWebUrl() ||
+                pasteText.isMagnet() ||
+                pasteText.isTorrent() ||
+                pasteText.split("\n").firstOrNull()?.trim()?.isWebUrl() == true
+            )
                 binding.tiLink.setText(pasteText, TextView.BufferType.EDITABLE)
             else
                 viewModel.postMessage(getString(R.string.invalid_url))
