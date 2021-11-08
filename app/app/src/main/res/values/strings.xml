@@ -544,4 +544,6 @@
     <string name="sort_by_size_asc">Smaller first</string>
     <string name="share_all">Share all</string>
     <string name="copy_all">Copy all</string>
+    <string name="enable_doh">Enable DNS over HTTPS</string>
+    <string name="uses_google_dns">Uses Google DNS</string>
 </resources>

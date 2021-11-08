@@ -334,4 +334,6 @@
     <string name="sort_by_size_asc">Dal più piccolo</string>
     <string name="share_all">Condividi tutto</string>
     <string name="copy_all">Copia tutto</string>
+    <string name="enable_doh">Abilita il DNS su HTTPS</string>
+    <string name="uses_google_dns">Usa i DNS Google</string>
 </resources>
