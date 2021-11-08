@@ -546,4 +546,8 @@
     <string name="copy_all">Copy all</string>
     <string name="enable_doh">Enable DNS over HTTPS</string>
     <string name="uses_google_dns">Uses Google DNS</string>
+    <string name="doh" translatable="false">DNS over HTTPS</string>
+    <string name="doh_description_message">DNS over HTTPS is a protocol used to increase privacy and avoid eavesdropping of DNS requests. If a plugin\'s website is blocked at DNS level, enabling DOH can help bypass this. The DOH only provider available at the moment is  Google. This option is disabled by default and it can be changed anytime from the settings menu. This feature may cause crashes.</string>
+    <string name="disable">Disable</string>
+    <string name="enable">Enable</string>
 </resources>
