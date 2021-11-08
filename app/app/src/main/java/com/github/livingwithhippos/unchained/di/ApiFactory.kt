@@ -1,5 +1,6 @@
 package com.github.livingwithhippos.unchained.di
 
+import android.content.SharedPreferences
 import com.github.livingwithhippos.unchained.BuildConfig
 import com.github.livingwithhippos.unchained.data.model.EmptyBodyInterceptor
 import com.github.livingwithhippos.unchained.data.remote.AuthApiHelper
@@ -35,15 +36,12 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import okhttp3.Cache
-import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.dnsoverhttps.DnsOverHttps
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
-import java.io.File
 import java.net.InetAddress
 import javax.inject.Singleton
 
@@ -86,7 +84,7 @@ object ApiFactory {
     @DOHClient
     fun provideDOHClient(): OkHttpClient {
 
-        val bootstrapClient: OkHttpClient = if(BuildConfig.DEBUG) {
+        val bootstrapClient: OkHttpClient = if (BuildConfig.DEBUG) {
 
             val logInterceptor: HttpLoggingInterceptor = HttpLoggingInterceptor().apply {
                 level = HttpLoggingInterceptor.Level.BODY
@@ -107,7 +105,7 @@ object ApiFactory {
 
         val dns = DnsOverHttps.Builder().client(bootstrapClient)
             .url("https://dns.google/dns-query".toHttpUrl())
-            .bootstrapDnsHosts(InetAddress.getByName("8.8.8.8"),InetAddress.getByName("8.8.4.4"))
+            .bootstrapDnsHosts(InetAddress.getByName("8.8.8.8"), InetAddress.getByName("8.8.4.4"))
             .build()
 
         return bootstrapClient.newBuilder().dns(dns).build()
@@ -237,5 +235,9 @@ object ApiFactory {
 
     @Provides
     @Singleton
-    fun provideParser(@DOHClient dohClient: OkHttpClient): Parser = Parser(dohClient)
+    fun provideParser(
+        preferences: SharedPreferences,
+        @ClassicClient classicClient: OkHttpClient,
+        @DOHClient dohClient: OkHttpClient
+    ): Parser = Parser(preferences, classicClient, dohClient)
 }
