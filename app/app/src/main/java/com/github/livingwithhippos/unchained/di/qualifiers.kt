@@ -17,3 +17,11 @@ annotation class TorrentNotification
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class SummaryNotification
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class ClassicClient
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class DOHClient

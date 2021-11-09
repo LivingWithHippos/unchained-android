@@ -338,4 +338,9 @@
     <string name="sort_by_size_asc">Plus petit d\'abord</string>
     <string name="share_all">Partager tout</string>
     <string name="copy_all">Copier tout</string>
+    <string name="enable_doh">Activer le DNS sur HTTPS</string>
+    <string name="uses_google_dns">Utilisez Google DNS</string>
+    <string name="disable">Désactiver</string>
+    <string name="enable">Activer</string>
+    <string name="doh_description_message">DNS over HTTPS est un protocole utilisé pour accroître la confidentialité et empêcher l\'écoute des requêtes DNS. Si le site Web d\'un plugin est bloqué au niveau du DNS, l\'activation de DOH peut aider à contourner ce problème. Le seul fournisseur DOH disponible pour le moment est Google. Cette option est désactivée par défaut, et elle peut être modifiée à tout moment dans le menu des paramètres. Cette fonctionnalité peut provoquer des plantages.</string>
 </resources>

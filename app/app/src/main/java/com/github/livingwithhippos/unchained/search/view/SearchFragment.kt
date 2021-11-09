@@ -75,7 +75,7 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
     }
 
     private fun setup(binding: FragmentSearchBinding) {
-        showDialogIfNeeded()
+        showDialogsIfNeeded()
         // setup the plugin dropdown
         val pluginAdapter =
             ArrayAdapter(requireContext(), R.layout.plugin_list_item, arrayListOf<String>())
@@ -300,20 +300,40 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
         }
     }
 
-    private fun showDialogIfNeeded() {
-        if (viewModel.isDialogNeeded()) {
+    private fun showDialogsIfNeeded() {
+        if (viewModel.isPluginDialogNeeded()) {
             val alertDialog: AlertDialog? = activity?.let {
                 val builder = AlertDialog.Builder(it)
                 builder.apply {
                     setTitle(R.string.search_plugins)
                     setMessage(R.string.plugin_description_message)
                     setPositiveButton(R.string.open_github) { _, _ ->
-                        viewModel.setDialogNeeded(false)
+                        viewModel.setPluginDialogNeeded(false)
                         // User clicked OK button
                         openExternalWebPage(PLUGINS_URL)
                     }
                     setNegativeButton(R.string.close) { _, _ ->
-                        viewModel.setDialogNeeded(false)
+                        viewModel.setPluginDialogNeeded(false)
+                    }
+                }
+                builder.create()
+            }
+            alertDialog?.show()
+        }
+
+        if (viewModel.isDOHDialogNeeded()) {
+            val alertDialog: AlertDialog? = activity?.let {
+                val builder = AlertDialog.Builder(it)
+                builder.apply {
+                    setTitle(R.string.doh)
+                    setMessage(R.string.doh_description_message)
+                    setPositiveButton(R.string.enable) { _, _ ->
+                        viewModel.enableDOH(true)
+                        viewModel.setDOHDialogNeeded(false)
+                    }
+                    setNegativeButton(R.string.disable) { _, _ ->
+                        viewModel.enableDOH(false)
+                        viewModel.setPluginDialogNeeded(false)
                     }
                 }
                 builder.create()
