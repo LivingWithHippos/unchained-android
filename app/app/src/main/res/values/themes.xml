@@ -135,6 +135,7 @@
         <!-- custom ones -->
         <item name="colorOnSurfaceVariant">?attr/colorPrimary</item>
         <item name="colorOnBackgroundVariant">?attr/colorOnBackground</item>
+        <item name="mainBackground">@drawable/bg_solid</item>
     </style>
 
     <style name="Base.Theme.MaterialThemeBuilder" parent="Theme.MaterialComponents.DayNight.NoActionBar">
