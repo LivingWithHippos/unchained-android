@@ -65,11 +65,11 @@
         <item name="colorError">@color/red_600</item>
         <!--"On" colors define how text, icons and strokes are colored in relation to the surface-->
         <!--on which they appear.-->
-        <item name="colorOnPrimary">@color/black</item>
-        <item name="colorOnSecondary">@color/black</item>
-        <item name="colorOnBackground">@color/white</item>
+        <item name="colorOnPrimary">@color/grey_1000</item>
+        <item name="colorOnSecondary">@color/grey_1000</item>
+        <item name="colorOnBackground">@color/grey_1000</item>
         <item name="colorOnBackgroundVariant">@color/grey_700</item>
-        <item name="colorOnSurface">@color/black_800</item>
+        <item name="colorOnSurface">@color/white</item>
         <item name="colorOnError">@color/white</item>
 
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
