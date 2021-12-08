@@ -33,7 +33,7 @@ You can take a look at the project [here](https://github.com/LivingWithHippos/un
 ### Screenshots :iphone:
 
 | User  | Downloads List | Download Details | New Download | Search |
-| ------------- | ------------- | ------------- |
+| ------------- | ------------- | ------------- |------------- |------------- |
 | <img width="150" src="/extra_assets/screenshots/user.png?raw=true" alt="User Screen"> | <img width="150" src="/extra_assets/screenshots/downloads_list.png?raw=true" alt="List of downloads"> | <img width="150" src="/extra_assets/screenshots/download_details.png?raw=true" alt="Download details screen">  | <img width="150" src="/extra_assets/screenshots/new_download.png?raw=true" alt="New download screen">  | <img width="150" src="/extra_assets/screenshots/search.png?raw=true" alt="Search screen">  |
 
 
