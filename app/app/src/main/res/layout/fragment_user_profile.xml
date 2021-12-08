@@ -57,7 +57,6 @@
                     android:text="@{user.email, default=`Email@Address`}"
                     android:textAlignment="viewStart"
                     android:textAppearance="?attr/textAppearanceOverline"
-                    android:textColor="?attr/colorOnBackgroundVariant"
                     app:layout_constraintEnd_toStartOf="@id/ivProfilePic"
                     app:layout_constraintStart_toStartOf="@id/tvName"
                     app:layout_constraintTop_toBottomOf="@id/tvName" />
@@ -67,7 +66,7 @@
                     android:layout_width="70dp"
                     android:layout_height="70dp"
                     android:contentDescription="@string/user_avatar"
-                    android:src="@drawable/android_black"
+                    android:src="@drawable/icon_arrows"
                     app:imageURL="@{user.avatar}"
                     app:layout_constraintEnd_toEndOf="@id/cvPremium"
                     app:layout_constraintTop_toTopOf="@id/tvName" />
@@ -112,7 +111,6 @@
                             android:layout_gravity="center"
                             android:text="@{user.premium > 0 ? @string/premium : @string/not_premium, default=`Premium`}"
                             android:textAllCaps="true"
-                            android:textColor="?attr/colorOnSurfaceVariant"
                             android:textStyle="bold"
                             app:layout_constraintStart_toStartOf="@id/tvStatus"
                             app:layout_constraintTop_toBottomOf="@id/tvStatus" />
@@ -167,6 +165,8 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
                     android:autoLink="web"
                     android:text="@{privateToken == true ? @string/login_type_private : @string/login_type_open, default=@string/login_type_private }"
                     android:textAlignment="center"
@@ -188,14 +188,14 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tvLoginDescription" />
 
-
                 <TextView
                     android:id="@+id/tvDescription"
                     style="@style/TextAppearance.UnchainedTheme.Body2"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:autoLink="web"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
                     android:text="@string/rd_settings_link_description"
                     android:textAlignment="center"
                     app:layout_constraintBottom_toTopOf="@+id/bAccount"
@@ -219,9 +219,7 @@
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:layout_marginStart="20dp"
-                    android:backgroundTint="?attr/colorSecondary"
                     android:text="@string/logout"
-                    android:textColor="?attr/colorOnSecondary"
                     app:layout_constraintBottom_toBottomOf="@id/bAccount"
                     app:layout_constraintEnd_toEndOf="@id/cvPremium"
                     app:layout_constraintStart_toEndOf="@+id/bAccount"

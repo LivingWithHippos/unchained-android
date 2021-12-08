@@ -77,7 +77,9 @@
             android:id="@+id/tvConfirmDelete"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
+            android:padding="10dp"
+            android:textAlignment="center"
             android:text="@string/confirm_download_removal_description"
             style="@style/TextAppearance.UnchainedTheme.Body1"/>
 

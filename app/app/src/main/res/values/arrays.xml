@@ -7,12 +7,14 @@
         <item>@string/original</item>
         <item>@string/tropical_sunset</item>
         <item>@string/black_and_white</item>
+        <item>@string/waves_01</item>
     </string-array>
     <!-- TODO: move these values to their own array, to be used across the application -->
     <string-array name="theme_values">
         <item>original</item>
         <item>tropical_sunset</item>
         <item>black_n_white</item>
+        <item>waves_01</item>
     </string-array>
     <string-array name="night_mode" >
         <item>@string/automatic</item>

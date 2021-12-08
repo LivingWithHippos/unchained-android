@@ -37,6 +37,9 @@ import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+
+
+
 /**
  * A simple [UnchainedFragment] subclass.
  * It is capable of showing the details of a [DownloadItem]
@@ -171,6 +174,10 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         return when (item.itemId) {
             R.id.delete -> {
                 val dialog = DeleteDialogFragment()
+                val bundle = Bundle()
+                val title = getString(R.string.delete_item_title_format, args.details.filename)
+                bundle.putString("title", title)
+                dialog.arguments = bundle
                 dialog.show(parentFragmentManager, "DeleteDialogFragment")
                 true
             }

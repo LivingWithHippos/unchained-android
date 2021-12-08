@@ -32,6 +32,8 @@
         android:paddingEnd="20dp"
         android:paddingBottom="10dp"
         android:autoLink="web|email"
+        android:textAlignment="center"
+        android:padding="10dp"
         />
 
     </androidx.core.widget.NestedScrollView>

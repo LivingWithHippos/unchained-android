@@ -45,7 +45,6 @@
             android:maxLines="2"
             android:ellipsize="middle"
             android:text="@{item.link, default=`https://www.link.com`}"
-            android:textColor="?attr/colorOnSurfaceVariant"
             app:layout_constraintStart_toStartOf="@id/tvName"
             app:layout_constraintEnd_toEndOf="@id/tvName"
             app:layout_constraintTop_toBottomOf="@id/tvName"

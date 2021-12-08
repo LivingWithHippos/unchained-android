@@ -78,7 +78,9 @@
                 style="@style/TextAppearance.UnchainedTheme.Body1"
                 android:layout_width="250dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="10dp"
+                android:textAlignment="center"
+                android:padding="10dp"
                 android:text="@string/confirm_torrent_removal_description" />
 
             <Button

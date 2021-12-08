@@ -48,7 +48,7 @@
                 android:scaleY="1.7"
                 android:src="@drawable/icon_download"
                 android:visibility="invisible"
-                app:tint="?attr/colorOnSurfaceVariant" />
+                app:tint="?attr/colorPrimary" />
 
             <com.google.android.material.progressindicator.CircularProgressIndicator
                 android:id="@+id/loadingCircle"
