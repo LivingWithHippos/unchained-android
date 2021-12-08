@@ -3,8 +3,6 @@ package com.github.livingwithhippos.unchained.settings.view
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.github.livingwithhippos.unchained.R
-import com.github.livingwithhippos.unchained.utilities.extension.getThemeColor
-import com.github.livingwithhippos.unchained.utilities.extension.setNavigationBarColor
 import dagger.hilt.android.AndroidEntryPoint
 
 /**
@@ -28,9 +26,6 @@ class SettingsActivity : AppCompatActivity() {
             .replace(R.id.fragment_container, settingsFragment)
             .commit()
 
-        // no bottom app bar, change the color of the navigation bar from the primary one
-        val surfaceColor = getThemeColor(R.attr.colorSurface)
-        setNavigationBarColor(surfaceColor)
     }
 
     override fun onSupportNavigateUp(): Boolean {
