@@ -339,4 +339,5 @@
     <string name="disable">Disattiva</string>
     <string name="enable">Attiva</string>
     <string name="doh_description_message">DNS over HTTPS è un protocollo utilizzato per aumentare la privacy ed evitare l\'intercettazione delle richieste DNS. Se il sito web di un plugin è bloccato a livello di DNS, abilitare DoH può aiutare a bypassarlo. L\'unico provider DoH disponibile al momento è Google. Questa opzione è disabilitata di default e può essere cambiata in qualsiasi momento dal menu delle impostazioni. Questa funzione può causare dei crash.</string>
+    <string name="delete_item_title_format">Elimina %s</string>
 </resources>

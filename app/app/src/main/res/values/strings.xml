@@ -377,6 +377,7 @@
     <string name="night_theme">Night mode</string>
     <string name="title_aspect">Aspect</string>
     <string name="delete">Delete</string>
+    <string name="delete_item_title_format">Delete %s</string>
     <string name="torrent_removed">Torrent removed</string>
     <string name="open">Open</string>
     <string name="content_description_delete_torrent_item">Remove the torrent item</string>

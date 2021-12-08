@@ -171,6 +171,7 @@
     <string name="night_theme">Mode nuit</string>
     <string name="title_aspect">Proportions</string>
     <string name="delete">Supprimer</string>
+    <string name="delete_item_title_format">Supprimer %s</string>
     <string name="torrent_removed">Torrent retiré</string>
     <string name="open">Ouvrir</string>
     <string name="content_description_delete_torrent_item">Supprimer le torrent</string>
