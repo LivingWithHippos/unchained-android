@@ -1,6 +1,5 @@
 package com.github.livingwithhippos.unchained.base
 
-import android.app.AlertDialog
 import android.app.Dialog
 import android.os.Bundle
 import androidx.core.os.bundleOf
@@ -14,7 +13,6 @@ class DeleteDialogFragment : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let {
             val builder = MaterialAlertDialogBuilder(it)
-            AlertDialog.Builder(it)
 
             val title = arguments?.getString("title") ?: getString(R.string.delete)
             builder.setMessage(R.string.confirm_item_removal_description)
