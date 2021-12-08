@@ -32,14 +32,10 @@ You can take a look at the project [here](https://github.com/LivingWithHippos/un
 
 ### Screenshots :iphone:
 
-| Home  | New Download | Download Details |
+| User  | Downloads List | Download Details | New Download | Search |
 | ------------- | ------------- | ------------- |
-| <img width="150" src="/extra_assets/screenshots/home.png?raw=true" alt="User Screen"> <img width="150" src="/extra_assets/screenshots/home_dark.png?raw=true" alt="Dark User Screen"> | <img width="150" src="/extra_assets/screenshots/new_download.png?raw=true" alt="New Download Screen">  | <img width="150" src="/extra_assets/screenshots/download_details_streaming.png?raw=true" alt="Download Details Screen">  |
+| <img width="150" src="/extra_assets/screenshots/user.png?raw=true" alt="User Screen"> | <img width="150" src="/extra_assets/screenshots/downloads_list.png?raw=true" alt="List of downloads"> | <img width="150" src="/extra_assets/screenshots/download_details.png?raw=true" alt="Download details screen">  | <img width="150" src="/extra_assets/screenshots/new_download.png?raw=true" alt="New download screen">  | <img width="150" src="/extra_assets/screenshots/search.png?raw=true" alt="Search screen">  |
 
-
-| Torrent Download                                                                                             | Download List                                                                                   |
-|--------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------|
-| <img width="150" src="/extra_assets/screenshots/torrent_details.png?raw=true" alt="Torrent Download Screen"> | <img width="150" src="/extra_assets/screenshots/download_list.png?raw=true" alt="Download List Screen"> |
 
 ### Installation :calling:
 
@@ -52,9 +48,9 @@ You have multiple options to install Unchained for Android:
 ### Developing and Contributing :writing_hand:
 
 
-Contributions are welcome. You can use the [discussion tab](https://github.com/LivingWithHippos/unchained-android/discussions) to ask for help setting up the project.
+Contributions are welcome. You can use the [discussion tab](https://github.com/LivingWithHippos/unchained-android/discussions) to ask for help setting up the project. At the moment at least Android Studio 2021.1.1 is needed to build the project.
 
-The dev branch is the one where the developement happens, it gets merged into master when a release is ready.
+The dev branch is the one where the development happens, it gets merged into master when a release is ready.
 
 A debug version is available, it reports automatically any crash information, it can be useful to help me debug errors.
 
