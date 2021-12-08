@@ -39,7 +39,6 @@
         <item name="colorOnPrimary">@color/white</item>
         <item name="colorOnSecondary">@color/black</item>
         <item name="colorOnBackground">@color/grey_03</item>
-        <item name="colorOnBackgroundVariant">@color/purple_300</item>
         <item name="colorOnSurface">@color/black</item>
         <item name="colorOnError">@color/white</item>
     </style>
@@ -68,7 +67,6 @@
         <item name="colorOnPrimary">@color/grey_1000</item>
         <item name="colorOnSecondary">@color/grey_1000</item>
         <item name="colorOnBackground">@color/grey_1000</item>
-        <item name="colorOnBackgroundVariant">@color/grey_700</item>
         <item name="colorOnSurface">@color/white</item>
         <item name="colorOnError">@color/white</item>
 
@@ -132,7 +130,6 @@
         <item name="toolbarStyle">@style/Widget.MaterialComponents.Toolbar.PrimarySurface</item>
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- custom ones -->
-        <item name="colorOnBackgroundVariant">?attr/colorOnBackground</item>
         <item name="mainBackground">@drawable/bg_solid</item>
     </style>
 
