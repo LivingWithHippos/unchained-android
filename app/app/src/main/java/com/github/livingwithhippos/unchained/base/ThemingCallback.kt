@@ -9,7 +9,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.settings.view.SettingsFragment
-import com.github.livingwithhippos.unchained.utilities.extension.setCustomTheme
 
 class ThemingCallback(val preferences: SharedPreferences) : Application.ActivityLifecycleCallbacks {
 
@@ -17,8 +16,19 @@ class ThemingCallback(val preferences: SharedPreferences) : Application.Activity
         preferences.getString(SettingsFragment.KEY_THEME, "original")?.let {
             setupNightMode(activity.resources, it)
             if (activity is AppCompatActivity)
-                activity.setCustomTheme(it)
+                setCustomTheme(activity, it)
         }
+    }
+
+    private fun setCustomTheme(activity: Activity, theme: String) {
+        val themeID = when (theme) {
+            "original" -> R.style.Theme_Unchained
+            "tropical_sunset" -> R.style.Theme_TropicalSunset
+            "black_n_white" -> R.style.Theme_BlackAndWhite
+            "waves_01" -> R.style.Theme_Wave01
+            else -> R.style.Theme_Unchained
+        }
+        activity.setTheme(themeID)
     }
 
     override fun onActivityStarted(activity: Activity) {
@@ -63,6 +73,6 @@ class ThemingCallback(val preferences: SharedPreferences) : Application.Activity
     }
 
     companion object {
-        private val DAY_ONLY_THEMES = arrayOf("tropical_sunset")
+        val DAY_ONLY_THEMES = arrayOf("tropical_sunset","waves_01")
     }
 }

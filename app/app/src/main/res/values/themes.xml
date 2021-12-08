@@ -73,6 +73,38 @@
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
     </style>
 
+    <!-- Wave 01 Theme -->
+    <style name="Theme.Wave01" parent="Base.Theme.Unchained">
+
+        <!--colorPrimary colors map to components and elements, such as app bars and buttons. -->
+        <!--colorSecondary colors are most often used as accents on components, such as FABs and -->
+        <!--selection controls.-->
+        <item name="colorPrimary">#fe4365</item>
+        <item name="colorPrimaryVariant">@color/peach_tropico_lighter</item>
+        <item name="colorPrimaryDark">@color/peach_tropico_darker</item>
+        <item name="colorSecondary">#fe9376</item>
+        <item name="colorSecondaryVariant">@color/plum_tropico</item>
+
+        <!--colorBackground appears behind scrollable content and is used for the default window-->
+        <!--background. colorSurface is mapped to the surface of components such as cards, sheets-->
+        <!--and menus. colorError is used to indicate an error state for components such as-->
+        <!--text fields.-->
+        <item name="android:colorBackground">@color/yellow_tropico</item>
+        <item name="colorSurface">#F9CDAD</item>
+        <item name="colorError">@color/red_600</item>
+        <!--"On" colors define how text, icons and strokes are colored in relation to the surface-->
+        <!--on which they appear.-->
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorOnSecondary">@color/grey_1000</item>
+        <item name="colorOnBackground">@color/grey_1000</item>
+        <item name="colorOnSurface">@color/grey_1000</item>
+        <item name="colorOnError">@color/white</item>
+
+        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
+
+        <item name="mainBackground">@drawable/bg_waves_01</item>
+    </style>
+
     <!-- Black & White theme -->
     <style name="Theme.BlackAndWhite" parent="Base.Theme.Unchained">
 
@@ -130,6 +162,7 @@
         <item name="toolbarStyle">@style/Widget.MaterialComponents.Toolbar.PrimarySurface</item>
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- custom ones -->
+        <!-- app background, implement to change it from colorBackground -->
         <item name="mainBackground">@drawable/bg_solid</item>
     </style>
 

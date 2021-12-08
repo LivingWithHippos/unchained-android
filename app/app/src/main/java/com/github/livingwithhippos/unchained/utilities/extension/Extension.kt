@@ -305,14 +305,6 @@ fun <T> LiveData<T>.observeOnce(
     )
 }
 
-fun AppCompatActivity.setCustomTheme(theme: String) {
-    when (theme) {
-        "original" -> setTheme(R.style.Theme_Unchained)
-        "tropical_sunset" -> setTheme(R.style.Theme_TropicalSunset)
-        "black_n_white" -> setTheme(R.style.Theme_BlackAndWhite)
-    }
-}
-
 fun AppCompatActivity.setNavigationBarColor(color: Int, alpha: Int = 0) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
         val newColor = Color.argb(
