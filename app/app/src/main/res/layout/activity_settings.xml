@@ -8,6 +8,7 @@
     android:layout_height="match_parent"
     tools:context=".settings.view.SettingsActivity">
 
+        <!-- Don't use a custom background in this activity so it's clearer that it's "different" -->
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appBarLayout"
             android:layout_width="match_parent"
