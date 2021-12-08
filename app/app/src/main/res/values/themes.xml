@@ -104,8 +104,7 @@
 
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
         <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
-        <!-- alternative text colors on surfaces -->
-        <item name="colorOnSurfaceVariant">@color/black_800</item>
+
     </style>
 
     <!--BASE CUSTOM THEME which will be shared between both light and dark theme variants-->
@@ -133,7 +132,6 @@
         <item name="toolbarStyle">@style/Widget.MaterialComponents.Toolbar.PrimarySurface</item>
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- custom ones -->
-        <item name="colorOnSurfaceVariant">?attr/colorPrimary</item>
         <item name="colorOnBackgroundVariant">?attr/colorOnBackground</item>
         <item name="mainBackground">@drawable/bg_solid</item>
     </style>
