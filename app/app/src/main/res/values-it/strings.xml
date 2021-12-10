@@ -304,7 +304,7 @@
     <string name="kodi_remote_control">Controllo remoto per Kodi</string>
     <string name="rd_status">Stato Real Debrid</string>
     <string name="show_kodi">Mostra pulsante Kodi</string>
-    <string name="filter_type">Solo media (avi etc.)</string>
+    <string name="filter_type">Solo media</string>
     <string name="only_big_files">Solo file grandi</string>
     <string name="sort">Ordina</string>
     <string name="file_size_filter">Filtro per la dimensione dei file</string>
@@ -340,4 +340,7 @@
     <string name="enable">Attiva</string>
     <string name="doh_description_message">DNS over HTTPS è un protocollo utilizzato per aumentare la privacy ed evitare l\'intercettazione delle richieste DNS. Se il sito web di un plugin è bloccato a livello di DNS, abilitare DoH può aiutare a bypassarlo. L\'unico provider DoH disponibile al momento è Google. Questa opzione è disabilitata di default e può essere cambiata in qualsiasi momento dal menu delle impostazioni. Questa funzione può causare dei crash.</string>
     <string name="delete_item_title_format">Elimina %s</string>
+    <string name="download_selected">Scarica selezione</string>
+    <string name="delete_selected">Cancella selezione</string>
+    <string name="share_selected">Condividi selezione</string>
 </resources>
