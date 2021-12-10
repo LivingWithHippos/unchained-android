@@ -118,6 +118,12 @@
 
         <SwitchPreference
             android:defaultValue="false"
+            app:key="show_folders_filters"
+            app:summary="@string/show_folder_filters_summary"
+            app:title="@string/show_folder_filters" />
+
+        <SwitchPreference
+            android:defaultValue="false"
             app:key="use_referral_key"
             app:summary="@string/referral_summary"
             app:title="@string/referral" />

@@ -555,4 +555,6 @@
     <string name="download_selected">Download selected</string>
     <string name="delete_selected">Delete selected</string>
     <string name="share_selected">Share selected</string>
+    <string name="show_folder_filters">Show folder filters</string>
+    <string name="show_folder_filters_summary">Show the filters for files size and media type in the folder screen</string>
 </resources>

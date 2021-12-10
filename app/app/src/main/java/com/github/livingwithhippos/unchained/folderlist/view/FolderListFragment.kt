@@ -164,6 +164,19 @@ class FolderListFragment : Fragment(), DownloadListListener {
 
         binding.selectedLinks = 0
 
+        if (viewModel.shouldShowFilters()) {
+            binding.cbFilterSize.visibility = View.VISIBLE
+            // load size filter button status
+            binding.cbFilterSize.isChecked = viewModel.getFilterSizePreference()
+
+            binding.cbFilterType.visibility = View.VISIBLE
+            // load type filter button status
+            binding.cbFilterType.isChecked = viewModel.getFilterTypePreference()
+        } else {
+            binding.cbFilterSize.visibility = View.GONE
+            binding.cbFilterType.visibility = View.GONE
+        }
+
         val adapter = FolderItemAdapter(this)
 
         // this must be assigned BEFORE the SelectionTracker builder
@@ -295,15 +308,7 @@ class FolderListFragment : Fragment(), DownloadListListener {
 
         // update the progress bar
         viewModel.progressLiveData.observe(viewLifecycleOwner) {
-            binding.loadingCircle.progress = it
-            if (it >= 100) {
-                binding.bDownloadAll.visibility = View.VISIBLE
-                binding.loadingCircle.visibility = View.GONE
-            }
-        }
-
-        binding.bDownloadAll.setOnClickListener {
-            downloadAll()
+            binding.progressIndicator.progress = it
         }
 
         // observe the search bar for changes
@@ -318,9 +323,6 @@ class FolderListFragment : Fragment(), DownloadListListener {
             }
         }
 
-        // load size filter button status
-        binding.cbFilterSize.isChecked = viewModel.getFilterSizePreference()
-
         binding.cbFilterSize.setOnCheckedChangeListener { _, isChecked ->
             viewModel.setFilterSizePreference(isChecked)
             updateList(adapter)
@@ -328,9 +330,6 @@ class FolderListFragment : Fragment(), DownloadListListener {
                 binding.rvFolderList.delayedScrolling(requireContext())
             }
         }
-
-        // load type filter button status
-        binding.cbFilterType.isChecked = viewModel.getFilterTypePreference()
 
         binding.cbFilterType.setOnCheckedChangeListener { _, isChecked ->
             viewModel.setFilterTypePreference(isChecked)

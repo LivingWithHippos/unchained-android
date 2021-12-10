@@ -40,6 +40,10 @@ class FolderListViewModel @Inject constructor(
     // stores the last query value
     val queryLiveData = MutableLiveData<String>()
 
+    fun shouldShowFilters(): Boolean {
+        return preferences.getBoolean(KEY_SHOW_FOLDER_FILTERS,false)
+    }
+
     fun retrieveFolderFileList(folderLink: String) {
         viewModelScope.launch {
             val token = protoStore.getCredentials().accessToken
@@ -163,5 +167,7 @@ class FolderListViewModel @Inject constructor(
         const val KEY_LIST_FILTER_SIZE = "filter_list_size"
         const val KEY_LIST_FILTER_TYPE = "filter_list_type"
         const val KEY_LIST_SORTING = "sort_list_type"
+        const val KEY_SHOW_FOLDER_FILTERS = "show_folders_filters"
+
     }
 }
