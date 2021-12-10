@@ -27,4 +27,15 @@
         <item>day</item>
     </string-array>
     <string name="tropical_sunset" translatable="false">Tropical Sunset</string>
+
+    <string-array name="main_screen" >
+        <item>@string/user</item>
+        <item>@string/downloads</item>
+        <item>@string/search</item>
+    </string-array>
+    <string-array name="main_screen_values">
+        <item>user</item>
+        <item>downloads</item>
+        <item>search</item>
+    </string-array>
 </resources>

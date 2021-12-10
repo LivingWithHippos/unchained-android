@@ -52,9 +52,9 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
         authBinding.loginMessageDirect = getLoginMessage(LOGIN_TYPE_DIRECT)
         authBinding.loginMessageIndirect = getLoginMessage(LOGIN_TYPE_INDIRECT)
 
-        activityViewModel.fsmAuthenticationState.observe(viewLifecycleOwner, {
+        activityViewModel.fsmAuthenticationState.observe(viewLifecycleOwner) {
 
-            if (it!=null) {
+            if (it != null) {
                 when (it.peekContent()) {
                     FSMAuthenticationState.AuthenticatedOpenToken -> {
                         val action =
@@ -92,7 +92,7 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
                     }
                 }
             }
-        })
+        }
 
         // 1. start checking for the auth link
         viewModel.authLiveData.observe(

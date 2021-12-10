@@ -349,4 +349,6 @@
     <string name="share_selected">Partagez la sélection</string>
     <string name="show_folder_filters">Afficher filtres dans dossiers</string>
     <string name="show_folder_filters_summary">Afficher les filtres pour la taille des fichiers et le type de média dans l\'écran du dossier</string>
+    <string name="title_main_screen">Page d\'accueil</string>
+    <string name="summary_main_screen">Onglet à ouvrir au démarrage</string>
 </resources>

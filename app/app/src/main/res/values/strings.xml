@@ -557,4 +557,6 @@
     <string name="share_selected">Share selected</string>
     <string name="show_folder_filters">Show folder filters</string>
     <string name="show_folder_filters_summary">Show the filters for files size and media type in the folder screen</string>
+    <string name="title_main_screen">Start-up Screen</string>
+    <string name="summary_main_screen">Tab to open at start-up</string>
 </resources>

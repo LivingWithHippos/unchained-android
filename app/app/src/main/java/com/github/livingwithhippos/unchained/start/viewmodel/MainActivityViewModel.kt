@@ -1,6 +1,7 @@
 package com.github.livingwithhippos.unchained.start.viewmodel
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
@@ -59,6 +60,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
+    private val preferences: SharedPreferences,
     private val authRepository: AuthenticationRepository,
     private val userRepository: UserRepository,
     private val variousApiRepository: VariousApiRepository,
@@ -80,6 +82,8 @@ class MainActivityViewModel @Inject constructor(
 
     val connectivityLiveData = MutableLiveData<Boolean?>()
     // val currentNetworkLiveData = MutableLiveData<Network?>()
+
+    val jumpTabLiveData = MutableLiveData<Event<String>>()
 
     // todo: use a better name to reflect the difference between this and externalLinkLiveData
     val linkLiveData = MutableLiveData<Event<String>?>()
@@ -910,6 +914,13 @@ class MainActivityViewModel @Inject constructor(
 
     fun transitionAuthenticationMachine(event: FSMAuthenticationEvent) {
         authStateMachine.transition(event)
+    }
+
+    /**
+     * Jump to the main screen set in the settings
+     */
+    fun goToStartUpScreen() {
+        jumpTabLiveData.postEvent(preferences.getString("main_screen","user") ?: "user")
     }
 
     companion object {

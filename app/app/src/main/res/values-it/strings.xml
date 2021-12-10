@@ -345,4 +345,6 @@
     <string name="share_selected">Condividi selezione</string>
     <string name="show_folder_filters">Mostra filtri in cartelle</string>
     <string name="show_folder_filters_summary">Mostra i filtri per la dimensione dei file e il tipo di media nella schermata della cartella</string>
+    <string name="title_main_screen">Pagina di avvio</string>
+    <string name="summary_main_screen">Pagina da aprire all\'avvio</string>
 </resources>

@@ -103,9 +103,15 @@
 
     <PreferenceCategory android:title="@string/title_various">
 
-        <Preference
-            app:key="update_regexps"
-            app:title="@string/update_regexps" />
+        <DropDownPreference
+            android:defaultValue="user"
+            android:entries="@array/main_screen"
+            android:entryValues="@array/main_screen_values"
+            android:key="main_screen"
+            android:title="@string/title_main_screen"
+            android:summary="@string/summary_main_screen"
+            app:summary="@string/summary_main_screen"
+            app:useSimpleSummaryProvider="true" />
 
         <EditTextPreference
             android:defaultValue="10"
@@ -127,6 +133,10 @@
             app:key="use_referral_key"
             app:summary="@string/referral_summary"
             app:title="@string/referral" />
+
+        <Preference
+            app:key="update_regexps"
+            app:title="@string/update_regexps" />
 
         <Preference
             app:key="feedback"

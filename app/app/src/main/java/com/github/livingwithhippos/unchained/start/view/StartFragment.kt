@@ -29,52 +29,53 @@ class StartFragment : UnchainedFragment() {
         val binding = FragmentStartBinding.inflate(inflater, container, false)
 
         activityViewModel.fsmAuthenticationState.observe(
-            viewLifecycleOwner,
-            {
-                if (it!=null) {
-                    when (it.peekContent()) {
-                        FSMAuthenticationState.StartNewLogin -> {
-                            val action =
-                                StartFragmentDirections.actionStartFragmentToAuthenticationFragment()
-                            findNavController().navigate(action)
-                        }
-                        FSMAuthenticationState.AuthenticatedOpenToken -> {
-                            val action =
-                                StartFragmentDirections.actionStartFragmentToUserProfileFragment()
-                            findNavController().navigate(action)
-                        }
-                        FSMAuthenticationState.AuthenticatedPrivateToken -> {
-                            val action =
-                                StartFragmentDirections.actionStartFragmentToUserProfileFragment()
-                            findNavController().navigate(action)
-                        }
-                        is FSMAuthenticationState.WaitingUserAction -> {
-                            // todo: show action needed
+            viewLifecycleOwner
+        ) {
+            if (it != null) {
+                when (it.peekContent()) {
+                    FSMAuthenticationState.StartNewLogin -> {
+                        val action =
+                            StartFragmentDirections.actionStartFragmentToAuthenticationFragment()
+                        findNavController().navigate(action)
+                    }
+                    FSMAuthenticationState.AuthenticatedOpenToken -> {
+                        val action =
+                            StartFragmentDirections.actionStartFragmentToUserProfileFragment()
+                        findNavController().navigate(action)
+                        activityViewModel.goToStartUpScreen()
+                    }
+                    FSMAuthenticationState.AuthenticatedPrivateToken -> {
+                        val action =
+                            StartFragmentDirections.actionStartFragmentToUserProfileFragment()
+                        findNavController().navigate(action)
+                        activityViewModel.goToStartUpScreen()
+                    }
+                    is FSMAuthenticationState.WaitingUserAction -> {
+                        // todo: show action needed
 
-                            binding.loadingCircle.visibility = View.INVISIBLE
-                            binding.buttonsLayout.visibility = View.VISIBLE
+                        binding.loadingCircle.visibility = View.INVISIBLE
+                        binding.buttonsLayout.visibility = View.VISIBLE
 
-                            val actionNeeded =
-                                (it.peekContent() as FSMAuthenticationState.WaitingUserAction).action
-                            binding.tvErrorMessage.text = when (actionNeeded) {
-                                UserAction.PERMISSION_DENIED -> getString(R.string.permission_denied)
-                                UserAction.TFA_NEEDED -> getString(R.string.tfa_needed)
-                                UserAction.TFA_PENDING -> getString(R.string.tfa_pending)
-                                UserAction.IP_NOT_ALLOWED -> getString(R.string.ip_Address_not_allowed)
-                                UserAction.UNKNOWN -> getString(R.string.generic_login_error)
-                                UserAction.NETWORK_ERROR -> getString(R.string.network_error)
-                                UserAction.RETRY_LATER -> getString(R.string.retry_later)
-                                null -> getString(R.string.generic_login_error)
-                            }
+                        val actionNeeded =
+                            (it.peekContent() as FSMAuthenticationState.WaitingUserAction).action
+                        binding.tvErrorMessage.text = when (actionNeeded) {
+                            UserAction.PERMISSION_DENIED -> getString(R.string.permission_denied)
+                            UserAction.TFA_NEEDED -> getString(R.string.tfa_needed)
+                            UserAction.TFA_PENDING -> getString(R.string.tfa_pending)
+                            UserAction.IP_NOT_ALLOWED -> getString(R.string.ip_Address_not_allowed)
+                            UserAction.UNKNOWN -> getString(R.string.generic_login_error)
+                            UserAction.NETWORK_ERROR -> getString(R.string.network_error)
+                            UserAction.RETRY_LATER -> getString(R.string.retry_later)
+                            null -> getString(R.string.generic_login_error)
                         }
-                        else -> {
-                            // ignore other statuses
-                            Timber.d("AuthMachine State: ${it.peekContent()}")
-                        }
+                    }
+                    else -> {
+                        // ignore other statuses
+                        Timber.d("AuthMachine State: ${it.peekContent()}")
                     }
                 }
             }
-        )
+        }
 
         binding.bRetry.setOnClickListener {
             activityViewModel.transitionAuthenticationMachine(FSMAuthenticationEvent.OnUserActionRetry)
