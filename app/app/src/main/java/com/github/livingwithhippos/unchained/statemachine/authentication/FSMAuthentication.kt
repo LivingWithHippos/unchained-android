@@ -51,8 +51,10 @@ sealed class FSMAuthenticationSideEffect {
 sealed class CurrentFSMAuthentication {
     // auth is ok
     object Authenticated : CurrentFSMAuthentication()
+
     // auth may become ok
     object Waiting : CurrentFSMAuthentication()
+
     // auth is not ok
     object Unauthenticated : CurrentFSMAuthentication()
 }

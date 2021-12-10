@@ -16,7 +16,6 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -34,7 +33,8 @@ import com.github.livingwithhippos.unchained.databinding.FragmentFolderListBindi
 import com.github.livingwithhippos.unchained.folderlist.model.FolderItemAdapter
 import com.github.livingwithhippos.unchained.folderlist.model.FolderKeyProvider
 import com.github.livingwithhippos.unchained.folderlist.viewmodel.FolderListViewModel
-import com.github.livingwithhippos.unchained.lists.view.*
+import com.github.livingwithhippos.unchained.lists.view.DownloadListListener
+import com.github.livingwithhippos.unchained.lists.view.SelectedItemsButtonsListener
 import com.github.livingwithhippos.unchained.utilities.DataBindingDetailsLookup
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.EventObserver

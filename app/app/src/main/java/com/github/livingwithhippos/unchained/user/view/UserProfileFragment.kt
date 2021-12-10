@@ -97,7 +97,7 @@ class UserProfileFragment : UnchainedFragment() {
             {
                 userBinding.srLayout.isRefreshing = false
 
-                if (it!=null) {
+                if (it != null) {
                     when (it.peekContent()) {
                         is FSMAuthenticationState.WaitingUserAction -> {
                             // an error occurred, check it and eventually go back to the start fragment

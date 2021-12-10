@@ -296,44 +296,51 @@ class MainActivityViewModel @Inject constructor(
                         fsmAuthenticationState.postValue(
                             Event(
                                 FSMAuthenticationState.CheckCredentials
-                        ))
+                            )
+                        )
                     }
                     FSMAuthenticationSideEffect.PostNewLogin -> {
                         fsmAuthenticationState.postValue(
                             Event(
                                 FSMAuthenticationState.StartNewLogin
-                            ))
+                            )
+                        )
 
                     }
                     FSMAuthenticationSideEffect.PostAuthenticatedOpen -> {
                         fsmAuthenticationState.postValue(
                             Event(
                                 FSMAuthenticationState.AuthenticatedOpenToken
-                            ))
+                            )
+                        )
                     }
                     FSMAuthenticationSideEffect.PostRefreshingToken -> {
                         fsmAuthenticationState.postValue(
                             Event(
                                 FSMAuthenticationState.RefreshingOpenToken
-                            ))
+                            )
+                        )
                     }
                     FSMAuthenticationSideEffect.PostAuthenticatedPrivate -> {
                         fsmAuthenticationState.postValue(
                             Event(
                                 FSMAuthenticationState.AuthenticatedPrivateToken
-                            ))
+                            )
+                        )
                     }
                     FSMAuthenticationSideEffect.PostWaitToken -> {
                         fsmAuthenticationState.postValue(
                             Event(
                                 FSMAuthenticationState.WaitingToken
-                            ))
+                            )
+                        )
                     }
                     FSMAuthenticationSideEffect.PostWaitUserConfirmation -> {
                         fsmAuthenticationState.postValue(
                             Event(
                                 FSMAuthenticationState.WaitingUserConfirmation
-                            ))
+                            )
+                        )
                     }
                     FSMAuthenticationSideEffect.PostActionNeeded -> {
                         when (it.event) {
@@ -346,13 +353,15 @@ class MainActivityViewModel @Inject constructor(
                                         FSMAuthenticationState.WaitingUserAction(
                                             action
                                         )
-                                    ))
+                                    )
+                                )
                             }
                             is FSMAuthenticationEvent.OnAuthenticationError -> {
                                 fsmAuthenticationState.postValue(
                                     Event(
                                         FSMAuthenticationState.WaitingUserAction(null)
-                                    ))
+                                    )
+                                )
                             }
                             else -> {
                                 Timber.e("Wrong PostActionNeeded event: ${it.event}")
@@ -366,7 +375,8 @@ class MainActivityViewModel @Inject constructor(
                             fsmAuthenticationState.postValue(
                                 Event(
                                     FSMAuthenticationState.StartNewLogin
-                                ))
+                                )
+                            )
                         }
                     }
                 }
@@ -466,7 +476,10 @@ class MainActivityViewModel @Inject constructor(
                         // todo: just set it to refreshing at the start of this function
                     }
                     is EitherResult.Failure -> {
-                        onParseCallFailure(newToken.failure, credentials.deviceCode == PRIVATE_TOKEN)
+                        onParseCallFailure(
+                            newToken.failure,
+                            credentials.deviceCode == PRIVATE_TOKEN
+                        )
                     }
                 }
             }
@@ -920,7 +933,7 @@ class MainActivityViewModel @Inject constructor(
      * Jump to the main screen set in the settings
      */
     fun goToStartUpScreen() {
-        jumpTabLiveData.postEvent(preferences.getString("main_screen","user") ?: "user")
+        jumpTabLiveData.postEvent(preferences.getString("main_screen", "user") ?: "user")
     }
 
     companion object {

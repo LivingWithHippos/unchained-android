@@ -9,6 +9,7 @@ const val BASE_AUTH_URL = "https://api.real-debrid.com/oauth/v2/"
 const val REFERRAL_LINK = "http://real-debrid.com/?id=78841"
 const val PREMIUM_LINK = "https://real-debrid.com/premium"
 const val ACCOUNT_LINK = "https://real-debrid.com/account"
+
 // unofficial link to get streaming from a browser page
 const val RD_STREAMING_URL = "https://real-debrid.com/streaming-"
 

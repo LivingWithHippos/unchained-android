@@ -38,8 +38,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 
-
-
 /**
  * A simple [UnchainedFragment] subclass.
  * It is capable of showing the details of a [DownloadItem]

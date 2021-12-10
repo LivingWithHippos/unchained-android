@@ -281,7 +281,8 @@ class NewDownloadFragment : UnchainedFragment() {
                         viewModel.unrestrictContainer(link)
                     }
                     link.split("\n").firstOrNull()?.trim()?.isWebUrl() == true -> {
-                        val splitLinks: List<String> = link.split("\n").map { it.trim() }.filter { it.length > 10 }
+                        val splitLinks: List<String> =
+                            link.split("\n").map { it.trim() }.filter { it.length > 10 }
                         viewModel.postMessage(getString(R.string.loading))
                         enableButtons(binding, false)
 

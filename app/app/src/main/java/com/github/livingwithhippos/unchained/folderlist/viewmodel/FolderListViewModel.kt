@@ -41,7 +41,7 @@ class FolderListViewModel @Inject constructor(
     val queryLiveData = MutableLiveData<String>()
 
     fun shouldShowFilters(): Boolean {
-        return preferences.getBoolean(KEY_SHOW_FOLDER_FILTERS,false)
+        return preferences.getBoolean(KEY_SHOW_FOLDER_FILTERS, false)
     }
 
     fun retrieveFolderFileList(folderLink: String) {

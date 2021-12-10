@@ -231,12 +231,12 @@ fun Fragment.openExternalWebPage(url: String, showErrorToast: Boolean = true): B
 /**
  * this function can be used to create a new context with a particular locale.
  * It must be used while overriding Activity.attachBaseContext like this:
-    override fun attachBaseContext(base: Context?) {
-        if (base != null)
-            super.attachBaseContext(getUpdatedLocaleContext(base, "en"))
-        else
-            super.attachBaseContext(null)
-    }
+override fun attachBaseContext(base: Context?) {
+if (base != null)
+super.attachBaseContext(getUpdatedLocaleContext(base, "en"))
+else
+super.attachBaseContext(null)
+}
  * it must be applied to all the activities or added to a BaseActivity extended by them
  */
 fun Activity.getUpdatedLocaleContext(context: Context, language: String): Context {
