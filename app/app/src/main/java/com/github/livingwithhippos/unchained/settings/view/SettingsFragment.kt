@@ -12,6 +12,7 @@ import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.github.livingwithhippos.unchained.R
+import com.github.livingwithhippos.unchained.base.ThemingCallback.Companion.DAY_ONLY_THEMES
 import com.github.livingwithhippos.unchained.settings.viewmodel.SettingsViewModel
 import com.github.livingwithhippos.unchained.utilities.FEEDBACK_URL
 import com.github.livingwithhippos.unchained.utilities.GPLV3_URL
@@ -39,7 +40,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         val themePreference = findPreference<ListPreference>(KEY_THEME)
 
         dayNightPreference?.setOnPreferenceChangeListener { _, newValue ->
-            if (newValue != THEME_DAY && themePreference?.value == "tropical_sunset") {
+            if (newValue != THEME_DAY && DAY_ONLY_THEMES.contains(themePreference?.value)) {
                 context?.showToast(R.string.theme_day_support)
                 false
             } else
@@ -47,7 +48,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         }
 
         themePreference?.setOnPreferenceChangeListener { _, newValue ->
-            if (newValue == "tropical_sunset" && dayNightPreference?.entry != THEME_DAY) {
+            if (DAY_ONLY_THEMES.contains(newValue) && dayNightPreference?.entry != THEME_DAY) {
                 setNightMode(THEME_DAY)
                 // todo: this produces a flicker. If possible find another way to update only the dayNightPreference summary, or restart the app to apply it.
                 // update the  dayNightPreference summary
@@ -196,10 +197,9 @@ class SettingsFragment : PreferenceFragmentCompat() {
         const val KEY_REFERRAL_ASKED = "referral_asked_key"
         const val KEY_REFERRAL_USE = "use_referral_key"
         const val KEY_APP_VERSION = "app_version_key"
+        const val KEY_USE_DOH = "use_doh_key"
         const val THEME_AUTO = "auto"
         const val THEME_NIGHT = "night"
         const val THEME_DAY = "day"
-        const val THEME_ORIGINAL = "original"
-        const val THEME_TROPICAL = "tropical_sunset"
     }
 }

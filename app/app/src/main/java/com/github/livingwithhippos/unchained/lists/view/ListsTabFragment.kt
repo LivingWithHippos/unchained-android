@@ -135,51 +135,67 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
         binding.listener = object : SelectedItemsButtonsListener {
             override fun deleteSelectedItems() {
                 if (binding.tabs.selectedTabPosition == TAB_DOWNLOADS) {
-                    viewModel.deleteDownloads(downloadTracker.selection.toList())
+                    if (downloadTracker.selection.toList().isNotEmpty())
+                        viewModel.deleteDownloads(downloadTracker.selection.toList())
                 } else {
-                    viewModel.deleteTorrents(torrentTracker.selection.toList())
+                    if (torrentTracker.selection.toList().isNotEmpty())
+                        viewModel.deleteTorrents(torrentTracker.selection.toList())
                 }
             }
 
             override fun shareSelectedItems() {
                 if (binding.tabs.selectedTabPosition == TAB_DOWNLOADS) {
-                    val shareIntent = Intent(Intent.ACTION_SEND)
-                    shareIntent.type = "text/plain"
-                    val shareLinks = downloadTracker.selection.joinToString("\n") { it.download }
-                    shareIntent.putExtra(Intent.EXTRA_TEXT, shareLinks)
-                    startActivity(Intent.createChooser(shareIntent, getString(R.string.share_with)))
+
+                    if (downloadTracker.selection.toList().isNotEmpty()) {
+                        val shareIntent = Intent(Intent.ACTION_SEND)
+                        shareIntent.type = "text/plain"
+                        val shareLinks =
+                            downloadTracker.selection.joinToString("\n") { it.download }
+                        shareIntent.putExtra(Intent.EXTRA_TEXT, shareLinks)
+                        startActivity(
+                            Intent.createChooser(
+                                shareIntent,
+                                getString(R.string.share_with)
+                            )
+                        )
+                    }
                 }
             }
 
             override fun downloadSelectedItems() {
                 if (binding.tabs.selectedTabPosition == TAB_DOWNLOADS) {
-                    var downloadStarted = false
-                    val manager =
-                        requireContext().getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-                    downloadTracker.selection.forEach { item ->
-                        val queuedDownload = manager.downloadFile(
-                            item.download,
-                            item.filename,
-                            getString(R.string.app_name),
-                        )
-                        when (queuedDownload) {
-                            is EitherResult.Failure -> {
-                                context?.showToast(
-                                    getString(
-                                        R.string.download_not_started_format,
-                                        item.filename
+
+                    if (downloadTracker.selection.toList().isNotEmpty()) {
+                        var downloadStarted = false
+                        val manager =
+                            requireContext().getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+                        downloadTracker.selection.forEach { item ->
+                            val queuedDownload = manager.downloadFile(
+                                item.download,
+                                item.filename,
+                                getString(R.string.app_name),
+                            )
+                            when (queuedDownload) {
+                                is EitherResult.Failure -> {
+                                    context?.showToast(
+                                        getString(
+                                            R.string.download_not_started_format,
+                                            item.filename
+                                        )
                                     )
-                                )
-                            }
-                            is EitherResult.Success -> {
-                                downloadStarted = true
+                                }
+                                is EitherResult.Success -> {
+                                    downloadStarted = true
+                                }
                             }
                         }
+                        if (downloadStarted)
+                            context?.showToast(R.string.download_started)
                     }
-                    if (downloadStarted)
-                        context?.showToast(R.string.download_started)
                 } else {
-                    viewModel.downloadItems(torrentTracker.selection.toList())
+                    if (torrentTracker.selection.toList().isNotEmpty()) {
+                        viewModel.downloadItems(torrentTracker.selection.toList())
+                    }
                 }
             }
         }
@@ -243,23 +259,27 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
             }
         }
 
-
         // checks the authentication state. Needed to avoid automatic API calls before the authentication process is finished
         activityViewModel.fsmAuthenticationState.observe(viewLifecycleOwner, {
-            when (it.peekContent()) {
-                FSMAuthenticationState.AuthenticatedOpenToken, FSMAuthenticationState.AuthenticatedPrivateToken -> {
-                    // register observers if not already registered
-                    if (!viewModel.downloadsLiveData.hasActiveObservers())
-                        viewModel.downloadsLiveData.observe(viewLifecycleOwner, downloadObserver)
+            if (it != null) {
+                when (it.peekContent()) {
+                    FSMAuthenticationState.AuthenticatedOpenToken, FSMAuthenticationState.AuthenticatedPrivateToken -> {
+                        // register observers if not already registered
+                        if (!viewModel.downloadsLiveData.hasActiveObservers())
+                            viewModel.downloadsLiveData.observe(
+                                viewLifecycleOwner,
+                                downloadObserver
+                            )
 
-                    if (!viewModel.torrentsLiveData.hasActiveObservers())
-                        viewModel.torrentsLiveData.observe(viewLifecycleOwner, torrentObserver)
-                }
-                else -> {
-
+                        if (!viewModel.torrentsLiveData.hasActiveObservers())
+                            viewModel.torrentsLiveData.observe(viewLifecycleOwner, torrentObserver)
+                    }
+                    else -> {
+                    }
                 }
             }
-        })
+        }
+        )
 
         binding.tabs.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
 
@@ -461,7 +481,9 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
                                 8 -> {
                                     // bad token, try refreshing it
                                     if (activityViewModel.getAuthenticationMachineState() is FSMAuthenticationState.AuthenticatedOpenToken)
-                                        activityViewModel.transitionAuthenticationMachine(FSMAuthenticationEvent.OnExpiredOpenToken)
+                                        activityViewModel.transitionAuthenticationMachine(
+                                            FSMAuthenticationEvent.OnExpiredOpenToken
+                                        )
                                     context?.showToast(R.string.refreshing_token)
                                 }
                             }

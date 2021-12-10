@@ -19,27 +19,19 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!--Top level DayNight theme to be used in AndroidManifest.xml-->
     <style name="Theme.Unchained" parent="Base.Theme.Unchained">
-        <!--Material color attributes (light theme) -->
-        <!--colorPrimary colors map to components and elements, such as app bars and buttons. -->
-        <!--colorSecondary colors are most often used as accents on components, such as FABs and -->
-        <!--selection controls.-->
+
         <item name="colorPrimary">@color/purple_A700</item>
         <item name="colorPrimaryVariant">@color/purple_100</item>
         <item name="colorSecondary">@color/green_200</item>
         <item name="colorSecondaryVariant">@color/green_500</item>
-        <!--colorBackground appears behind scrollable content and is used for the default window-->
-        <!--background. colorSurface is mapped to the surface of components such as cards, sheets-->
-        <!--and menus. colorError is used to indicate an error state for components such as-->
-        <!--text fields.-->
+
         <item name="android:colorBackground">@color/white</item>
         <item name="colorSurface">@color/white</item>
         <item name="colorError">@color/red_600</item>
-        <!--"On" colors define how text, icons and strokes are colored in relation to the surface-->
-        <!--on which they appear.-->
+
         <item name="colorOnPrimary">@color/white</item>
         <item name="colorOnSecondary">@color/black</item>
         <item name="colorOnBackground">@color/grey_03</item>
-        <item name="colorOnBackgroundVariant">@color/purple_300</item>
         <item name="colorOnSurface">@color/black</item>
         <item name="colorOnError">@color/white</item>
     </style>
@@ -47,32 +39,51 @@
     <!-- Tropical Sunset Theme -->
     <style name="Theme.TropicalSunset" parent="Base.Theme.Unchained">
 
-        <!--colorPrimary colors map to components and elements, such as app bars and buttons. -->
-        <!--colorSecondary colors are most often used as accents on components, such as FABs and -->
-        <!--selection controls.-->
         <item name="colorPrimary">@color/peach_tropico</item>
+        <item name="colorOnPrimary">@color/grey_1000</item>
+
+        <item name="colorSurface">@color/plum_tropico</item>
+        <item name="colorOnSurface">@color/grey_1000</item>
+
+        <item name="colorSecondary">@color/plum_tropico_lighter</item>
+        <item name="colorOnSecondary">@color/grey_1000</item>
+
+        <item name="android:colorBackground">@color/yellow_tropico</item>
+        <item name="colorOnBackground">@color/grey_1000</item>
+
+        <item name="colorError">@color/red_600</item>
+        <item name="colorOnError">@color/white</item>
+
         <item name="colorPrimaryVariant">@color/peach_tropico_lighter</item>
         <item name="colorPrimaryDark">@color/peach_tropico_darker</item>
-        <item name="colorSecondary">@color/plum_tropico_lighter</item>
         <item name="colorSecondaryVariant">@color/plum_tropico</item>
 
-        <!--colorBackground appears behind scrollable content and is used for the default window-->
-        <!--background. colorSurface is mapped to the surface of components such as cards, sheets-->
-        <!--and menus. colorError is used to indicate an error state for components such as-->
-        <!--text fields.-->
-        <item name="android:colorBackground">@color/yellow_tropico</item>
-        <item name="colorSurface">@color/plum_tropico</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
+    </style>
+
+    <!-- Wave 01 Theme -->
+    <style name="Theme.Wave01" parent="Base.Theme.Unchained">
+
+        <item name="colorPrimary">@color/radical_red</item>
+        <item name="colorPrimaryVariant">@color/peach_tropico_lighter</item>
+        <item name="colorPrimaryDark">@color/peach_tropico_darker</item>
+        <item name="colorSecondary">@color/mortar</item>
+        <item name="colorSecondaryVariant">@color/plum_tropico</item>
+
+        <item name="android:colorBackground">@color/thistle_green</item>
+        <item name="colorSurface">@color/apricot_peach</item>
         <item name="colorError">@color/red_600</item>
-        <!--"On" colors define how text, icons and strokes are colored in relation to the surface-->
-        <!--on which they appear.-->
-        <item name="colorOnPrimary">@color/black</item>
-        <item name="colorOnSecondary">@color/black</item>
-        <item name="colorOnBackground">@color/white</item>
-        <item name="colorOnBackgroundVariant">@color/grey_700</item>
-        <item name="colorOnSurface">@color/black_800</item>
+
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorOnSecondary">@color/grey_50</item>
+        <item name="colorOnBackground">@color/grey_1000</item>
+        <item name="colorOnSurface">@color/grey_1000</item>
         <item name="colorOnError">@color/white</item>
 
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">false</item>
+
+        <item name="mainBackground">@drawable/bg_waves_01</item>
     </style>
 
     <!-- Black & White theme -->
@@ -81,9 +92,9 @@
         <!--colorPrimary colors map to components and elements, such as app bars and buttons. -->
         <!--colorSecondary colors are most often used as accents on components, such as FABs and -->
         <!--selection controls.-->
-        <item name="colorPrimary">@color/white</item>
-        <item name="colorPrimaryVariant">@color/grey_50</item>
-        <item name="colorPrimaryDark">@color/grey_100</item>
+        <item name="colorPrimary">@color/grey_1000</item>
+        <item name="colorPrimaryVariant">@color/black</item>
+        <item name="colorPrimaryDark">@color/black</item>
         <item name="colorSecondary">@color/black_800</item>
         <item name="colorSecondaryVariant">@color/grey_900</item>
 
@@ -92,20 +103,19 @@
         <!--and menus. colorError is used to indicate an error state for components such as-->
         <!--text fields.-->
         <item name="android:colorBackground">@color/white</item>
-        <item name="colorSurface">@color/grey_300</item>
+        <item name="colorSurface">@color/grey_50</item>
         <item name="colorError">@color/red_600</item>
         <!--"On" colors define how text, icons and strokes are colored in relation to the surface-->
         <!--on which they appear.-->
-        <item name="colorOnPrimary">@color/black</item>
+        <item name="colorOnPrimary">@color/white</item>
         <item name="colorOnSecondary">@color/white</item>
         <item name="colorOnBackground">@color/black_800</item>
         <item name="colorOnSurface">@color/black_800</item>
         <item name="colorOnError">@color/white</item>
 
-        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
-        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
-        <!-- alternative text colors on surfaces -->
-        <item name="colorOnSurfaceVariant">@color/grey_700</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">false</item>
+
     </style>
 
     <!--BASE CUSTOM THEME which will be shared between both light and dark theme variants-->
@@ -133,8 +143,8 @@
         <item name="toolbarStyle">@style/Widget.MaterialComponents.Toolbar.PrimarySurface</item>
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- custom ones -->
-        <item name="colorOnSurfaceVariant">?attr/colorPrimary</item>
-        <item name="colorOnBackgroundVariant">?attr/colorOnBackground</item>
+        <!-- app background, implement to change it from colorBackground -->
+        <item name="mainBackground">@drawable/bg_solid</item>
     </style>
 
     <style name="Base.Theme.MaterialThemeBuilder" parent="Theme.MaterialComponents.DayNight.NoActionBar">

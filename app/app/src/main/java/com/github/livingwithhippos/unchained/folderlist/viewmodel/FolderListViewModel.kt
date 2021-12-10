@@ -30,7 +30,7 @@ class FolderListViewModel @Inject constructor(
 ) : ViewModel() {
 
     val folderLiveData = MutableLiveData<Event<List<DownloadItem>>>()
-    val deletedDownloadLiveData = MutableLiveData<Event<Int>>()
+    val deletedDownloadLiveData = MutableLiveData<Event<DownloadItem>>()
     val errorsLiveData = MutableLiveData<Event<UnchainedNetworkException>>()
     val progressLiveData = MutableLiveData<Int>()
 
@@ -39,6 +39,10 @@ class FolderListViewModel @Inject constructor(
 
     // stores the last query value
     val queryLiveData = MutableLiveData<String>()
+
+    fun shouldShowFilters(): Boolean {
+        return preferences.getBoolean(KEY_SHOW_FOLDER_FILTERS, false)
+    }
 
     fun retrieveFolderFileList(folderLink: String) {
         viewModelScope.launch {
@@ -97,14 +101,14 @@ class FolderListViewModel @Inject constructor(
         return savedStateHandle.get(KEY_RETRIEVED_LINKS) ?: -1
     }
 
-    fun deleteDownload(id: String) {
+    fun deleteDownloadList(downloads: List<DownloadItem>) {
         viewModelScope.launch {
             val token = protoStore.getCredentials().accessToken
-            val deleted = downloadRepository.deleteDownload(token, id)
-            if (deleted == null)
-                deletedDownloadLiveData.postEvent(-1)
-            else
-                deletedDownloadLiveData.postEvent(1)
+            downloads.forEach {
+                val deleted = downloadRepository.deleteDownload(token, it.id)
+                if (deleted != null)
+                    deletedDownloadLiveData.postEvent(it)
+            }
         }
     }
 
@@ -163,5 +167,7 @@ class FolderListViewModel @Inject constructor(
         const val KEY_LIST_FILTER_SIZE = "filter_list_size"
         const val KEY_LIST_FILTER_TYPE = "filter_list_type"
         const val KEY_LIST_SORTING = "sort_list_type"
+        const val KEY_SHOW_FOLDER_FILTERS = "show_folders_filters"
+
     }
 }

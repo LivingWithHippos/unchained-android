@@ -31,6 +31,7 @@
     <string name="open_link">Ouvrir le lien</string>
     <string name="copy_link">Copier le lien</string>
     <string name="link_copied">Lien copié</string>
+    <string name="links_copied">Liens copié</string>
     <string name="streaming">Streaming</string>
     <string name="megabytes_short">Mo</string>
     <string name="file_size_format">%1$d Mo</string>
@@ -170,6 +171,7 @@
     <string name="night_theme">Mode nuit</string>
     <string name="title_aspect">Proportions</string>
     <string name="delete">Supprimer</string>
+    <string name="delete_item_title_format">Supprimer %s</string>
     <string name="torrent_removed">Torrent retiré</string>
     <string name="open">Ouvrir</string>
     <string name="content_description_delete_torrent_item">Supprimer le torrent</string>
@@ -179,7 +181,8 @@
     <string name="press_again_exit">Touchez à nouveau pour sortir</string>
     <string name="content_description_share_download">Partager le lien de téléchargement</string>
     <string name="share">Partager</string>
-    <string name="share_with">Partager le lien de téléchargement via :</string>
+    <string name="share_with">Partager le lien de téléchargement via:</string>
+    <string name="share_all_with">Partagez tous les liens de téléchargement via:</string>
     <string name="restart_to_apply">Redémarrer pour appliquer les modifications</string>
     <string name="remove">Supprimer</string>
     <string name="confirm_download_removal_description">Êtes-vous bien sûr de vouloir supprimer ce téléchargement ? Cette action est irréversible.</string>
@@ -307,7 +310,7 @@
     <string name="kodi_remote_control">Télécommande pour Kodi</string>
     <string name="rd_status">Statut de Real Debrid</string>
     <string name="show_kodi">Afficher le bouton de Kodi</string>
-    <string name="filter_type">Uniquement les fichiers multimédia (avi, etc.)</string>
+    <string name="filter_type">Uniquement les fichiers multimédia</string>
     <string name="only_big_files">Seulement les gros fichiers</string>
     <string name="sort">Trier</string>
     <string name="file_size_filter">Filtre pour la taille des fichiers</string>
@@ -329,4 +332,23 @@
     <string name="get_plugins">Obtenir plus de plugins</string>
     <string name="content_description_plugins_link">Lien vers la page des plugins</string>
     <string name="reset_login">Réinitialiser l\'authentification</string>
+    <string name="sort_by_default">Défaut</string>
+    <string name="sort_by_az">Alphabétique</string>
+    <string name="sort_by_za">Alphabétique inversé</string>
+    <string name="sort_by_size_desc">Plus grand d\'abord</string>
+    <string name="sort_by_size_asc">Plus petit d\'abord</string>
+    <string name="share_all">Partager tout</string>
+    <string name="copy_all">Copier tout</string>
+    <string name="enable_doh">Activer le DNS sur HTTPS</string>
+    <string name="uses_google_dns">Utilisez Google DNS</string>
+    <string name="disable">Désactiver</string>
+    <string name="enable">Activer</string>
+    <string name="doh_description_message">DNS over HTTPS est un protocole utilisé pour accroître la confidentialité et empêcher l\'écoute des requêtes DNS. Si le site Web d\'un plugin est bloqué au niveau du DNS, l\'activation de DOH peut aider à contourner ce problème. Le seul fournisseur DOH disponible pour le moment est Google. Cette option est désactivée par défaut, et elle peut être modifiée à tout moment dans le menu des paramètres. Cette fonctionnalité peut provoquer des plantages.</string>
+    <string name="download_selected">Télécharger la sélection</string>
+    <string name="delete_selected">Supprimer la sélection</string>
+    <string name="share_selected">Partagez la sélection</string>
+    <string name="show_folder_filters">Afficher filtres dans dossiers</string>
+    <string name="show_folder_filters_summary">Afficher les filtres pour la taille des fichiers et le type de média dans l\'écran du dossier</string>
+    <string name="title_main_screen">Page d\'accueil</string>
+    <string name="summary_main_screen">Onglet à ouvrir au démarrage</string>
 </resources>

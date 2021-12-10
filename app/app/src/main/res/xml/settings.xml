@@ -45,6 +45,12 @@
             app:summary="@string/delete_plugins_summary"
             app:title="@string/delete_plugins" />
 
+        <SwitchPreference
+            android:defaultValue="false"
+            app:key="use_doh_key"
+            app:summary="@string/uses_google_dns"
+            app:title="@string/enable_doh" />
+
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/kodi">
@@ -97,9 +103,15 @@
 
     <PreferenceCategory android:title="@string/title_various">
 
-        <Preference
-            app:key="update_regexps"
-            app:title="@string/update_regexps" />
+        <DropDownPreference
+            android:defaultValue="user"
+            android:entries="@array/main_screen"
+            android:entryValues="@array/main_screen_values"
+            android:key="main_screen"
+            android:title="@string/title_main_screen"
+            android:summary="@string/summary_main_screen"
+            app:summary="@string/summary_main_screen"
+            app:useSimpleSummaryProvider="true" />
 
         <EditTextPreference
             android:defaultValue="10"
@@ -112,9 +124,19 @@
 
         <SwitchPreference
             android:defaultValue="false"
+            app:key="show_folders_filters"
+            app:summary="@string/show_folder_filters_summary"
+            app:title="@string/show_folder_filters" />
+
+        <SwitchPreference
+            android:defaultValue="false"
             app:key="use_referral_key"
             app:summary="@string/referral_summary"
             app:title="@string/referral" />
+
+        <Preference
+            app:key="update_regexps"
+            app:title="@string/update_regexps" />
 
         <Preference
             app:key="feedback"

@@ -43,8 +43,8 @@
   * The slugs ${url},${query}, ${category}, ${page} are currently supported
   * to build the link dynamically.
   *
-  * "url_category": url used to search with categories
-  * "url_no_category" [OPTIONAL]: url used to search without categories,
+  * "category" [OPTIONAL]: url used to search with categories
+  * "no_category": url used to search without categories,
   * "page_start" [OPTIONAL IF NO {page} slug, default to 1]: starting page number, usually 0 or 1.
   */
   "search": {
@@ -117,7 +117,7 @@
     },
     /**
     regexes is the collection of regexes available for whatever parsing method you're using
-    you need at least name and one between magnet or torrent.
+    you need at least name and one between magnet, torrent or hosting.
     */
     "regexes": {
       // "magnet" is the link to the magnet, it's a java regex. The magnet needs to be inside parenthesis (magnet:...)

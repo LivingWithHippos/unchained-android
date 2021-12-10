@@ -117,8 +117,9 @@ class MainActivity : AppCompatActivity() {
         )
 
         viewModel.fsmAuthenticationState.observe(
-            this,
-            {
+            this
+        ) {
+            if (it != null) {
                 when (it.getContentIfNotHandled()) {
                     null -> {
                         // do nothing
@@ -170,8 +171,11 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
                 }
+            } else {
+                Countly.sharedInstance().events()
+                    .recordEvent("fsmAuthenticationState observable was null")
             }
-        )
+        }
 
         // disable the bottom menu items before loading the credentials
         disableBottomNavItems(
@@ -191,20 +195,42 @@ class MainActivity : AppCompatActivity() {
             IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
         )
 
-        viewModel.linkLiveData.observe(
-            this,
-            EventObserver { link ->
-                when {
-                    link.endsWith(TYPE_UNCHAINED, ignoreCase = true) -> {
-                        downloadPlugin(link)
-                    }
-                    else -> {
-                        // check the authentication
-                        processExternalRequestOnAuthentication(Uri.parse(link))
+        viewModel.linkLiveData.observe(this) {
+            if (it == null) {
+                Countly.sharedInstance().events().recordEvent("linkLiveData observable was null")
+            } else {
+                it.getContentIfNotHandled()?.let { link ->
+                    when {
+                        link.endsWith(TYPE_UNCHAINED, ignoreCase = true) -> {
+                            downloadPlugin(link)
+                        }
+                        else -> {
+                            // check the authentication
+                            processExternalRequestOnAuthentication(Uri.parse(link))
+                        }
                     }
                 }
             }
-        )
+        }
+
+        viewModel.jumpTabLiveData.observe(this, EventObserver {
+            when (it) {
+                "user" -> {
+                    // do nothing
+                }
+                "downloads" -> {
+                    lifecycleScope.launch {
+                        doubleClickBottomItem(R.id.navigation_lists)
+                    }
+                }
+                "search" -> {
+                    lifecycleScope.launch {
+                        doubleClickBottomItem(R.id.navigation_search)
+                    }
+                }
+            }
+        })
+
 
         // monitor if the torrent notification service needs to be started. It monitor the preference change itself
         // for the shutting down part
@@ -222,13 +248,19 @@ class MainActivity : AppCompatActivity() {
         val currentToast: Toast = Toast.makeText(this, "", Toast.LENGTH_SHORT)
 
         viewModel.messageLiveData.observe(
-            this,
-            EventObserver {
-                currentToast.cancel()
-                currentToast.setText(getString(it))
-                currentToast.show()
+            this
+        ) {
+            if (it == null) {
+                Countly.sharedInstance().events()
+                    .recordEvent("messageLiveData observable was null")
+            } else {
+                it.getContentIfNotHandled()?.let { message ->
+                    currentToast.cancel()
+                    currentToast.setText(getString(message))
+                    currentToast.show()
+                }
             }
-        )
+        }
 
         // start the notification system if enabled
         if (preferences.getBoolean(KEY_TORRENT_NOTIFICATIONS, false)) {
@@ -237,16 +269,20 @@ class MainActivity : AppCompatActivity() {
         }
 
         viewModel.connectivityLiveData.observe(
-            this,
-            {
-                if (it) {
-                    Timber.d("connection enabled")
-                } else {
+            this
+        ) {
+            when (it) {
+                true -> Timber.d("connection enabled")
+                false -> {
                     Timber.e("connection disabled")
                     applicationContext.showToast(R.string.no_network_connection)
                 }
+                null -> {
+                    Countly.sharedInstance().events()
+                        .recordEvent("connectivityLiveData observable was null")
+                }
             }
-        )
+        }
         viewModel.setupConnectivityCheck(applicationContext)
     }
 

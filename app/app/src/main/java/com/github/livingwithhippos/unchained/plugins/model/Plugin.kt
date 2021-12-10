@@ -389,8 +389,7 @@ data class PluginRegexes(
         parcel.readParcelable(RegexpsGroup::class.java.classLoader),
         parcel.readParcelable(RegexpsGroup::class.java.classLoader),
         parcel.readParcelable(RegexpsGroup::class.java.classLoader)
-    ) {
-    }
+    )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeParcelable(nameRegex, flags)
@@ -417,7 +416,6 @@ data class PluginRegexes(
         }
     }
 }
-
 
 @JsonClass(generateAdapter = true)
 data class Columns(

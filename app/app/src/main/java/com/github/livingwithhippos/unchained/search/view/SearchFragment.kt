@@ -11,10 +11,12 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
-import androidx.core.content.res.ResourcesCompat
+import androidx.annotation.MenuRes
+import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.RecyclerView
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.databinding.FragmentSearchBinding
@@ -27,6 +29,7 @@ import com.github.livingwithhippos.unchained.search.model.SearchItemListener
 import com.github.livingwithhippos.unchained.search.viewmodel.SearchViewModel
 import com.github.livingwithhippos.unchained.utilities.PLUGINS_URL
 import com.github.livingwithhippos.unchained.utilities.extension.delayedScrolling
+import com.github.livingwithhippos.unchained.utilities.extension.getThemedDrawable
 import com.github.livingwithhippos.unchained.utilities.extension.hideKeyboard
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
@@ -38,7 +41,6 @@ import timber.log.Timber
 class SearchFragment : UnchainedFragment(), SearchItemListener {
 
     private val viewModel: SearchViewModel by viewModels()
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,7 +75,7 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
     }
 
     private fun setup(binding: FragmentSearchBinding) {
-        showDialogIfNeeded()
+        showDialogsIfNeeded()
         // setup the plugin dropdown
         val pluginAdapter =
             ArrayAdapter(requireContext(), R.layout.plugin_list_item, arrayListOf<String>())
@@ -127,35 +129,19 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
         val adapter = SearchItemAdapter(this)
         binding.rvSearchList.adapter = adapter
 
-        val latestTag = viewModel.getListSortPreference()
-        val drawableID = getSortingDrawable(latestTag)
-        binding.sortingButton.tag = latestTag
-        binding.sortingButton.background = ResourcesCompat.getDrawable(
-            resources,
-            drawableID,
-            requireContext().theme
-        )
+        // load the sorting preference if set
+        val sortTag = viewModel.getListSortPreference()
+        val sortDrawableID = getSortingDrawable(sortTag)
+        binding.sortingButton.background = requireContext().getThemedDrawable(sortDrawableID)
+
+        binding.sortingButton.setOnClickListener {
+            showSortingPopup(it, R.menu.sorting_popup, adapter, binding.rvSearchList)
+        }
+
         // load the latest results if coming back from another fragment
         val lastResults = viewModel.getSearchResults()
         if (lastResults.isNotEmpty())
-            submitSortedList(latestTag, adapter, lastResults)
-
-        binding.sortingButton.setOnClickListener {
-            // every click changes to the next state
-            val newTag = getNextSortingTag(it.tag as String)
-            val currentDrawableID = getSortingDrawable(newTag)
-            binding.sortingButton.tag = newTag
-            binding.sortingButton.background = ResourcesCompat.getDrawable(
-                resources,
-                currentDrawableID,
-                requireContext().theme
-            )
-            submitSortedList(newTag, adapter, viewModel.getSearchResults())
-            viewModel.setListSortPreference(newTag)
-            lifecycleScope.launch {
-                binding.rvSearchList.delayedScrolling(requireContext())
-            }
-        }
+            submitSortedList(adapter, lastResults)
 
         // search option
         binding.tiSearch.setOnEditorActionListener { _, actionId, _ ->
@@ -174,7 +160,52 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
         }
     }
 
-    private fun performSearch(binding: FragmentSearchBinding, adapter: SearchItemAdapter) {
+    private fun showSortingPopup(
+        v: View,
+        @MenuRes menuRes: Int,
+        searchAdapter: SearchItemAdapter,
+        searchList: RecyclerView
+    ) {
+
+        val popup = PopupMenu(requireContext(), v)
+        popup.menuInflater.inflate(menuRes, popup.menu)
+
+        popup.setOnMenuItemClickListener { menuItem: MenuItem ->
+            // todo: check if the theme is needed, in case use getSortDrawable and remove from the menu xml the icons
+            v.background = menuItem.icon
+            // save the new sorting preference
+            when (menuItem.itemId) {
+                R.id.sortByDefault -> {
+                    viewModel.setListSortPreference(FolderListFragment.TAG_DEFAULT_SORT)
+                }
+                R.id.sortByAZ -> {
+                    viewModel.setListSortPreference(FolderListFragment.TAG_SORT_AZ)
+                }
+                R.id.sortByZA -> {
+                    viewModel.setListSortPreference(FolderListFragment.TAG_SORT_ZA)
+                }
+                R.id.sortBySizeAsc -> {
+                    viewModel.setListSortPreference(FolderListFragment.TAG_SORT_SIZE_ASC)
+                }
+                R.id.sortBySizeDesc -> {
+                    viewModel.setListSortPreference(FolderListFragment.TAG_SORT_SIZE_DESC)
+                }
+            }
+            // update the list and scroll it to the top
+            submitSortedList(searchAdapter, viewModel.getSearchResults())
+            lifecycleScope.launch {
+                searchList.delayedScrolling(requireContext())
+            }
+            true
+        }
+        popup.setOnDismissListener {
+            // Respond to popup being dismissed.
+        }
+        // Show the popup menu.
+        popup.show()
+    }
+
+    private fun performSearch(binding: FragmentSearchBinding, searchAdapter: SearchItemAdapter) {
         binding.tfSearch.hideKeyboard()
         viewModel.completeSearch(
             query = binding.tiSearch.text.toString(),
@@ -184,15 +215,14 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
             when (result) {
                 is ParserResult.SingleResult -> {
                     submitSortedList(
-                        binding.sortingButton.tag.toString(),
-                        adapter,
+                        searchAdapter,
                         listOf(result.value)
                     )
-                    adapter.notifyDataSetChanged()
+                    searchAdapter.notifyDataSetChanged()
                 }
                 is ParserResult.Results -> {
-                    submitSortedList(binding.sortingButton.tag.toString(), adapter, result.values)
-                    adapter.notifyDataSetChanged()
+                    submitSortedList(searchAdapter, result.values)
+                    searchAdapter.notifyDataSetChanged()
                 }
                 is ParserResult.SearchStarted -> {
                     binding.sortingButton.visibility = View.INVISIBLE
@@ -204,6 +234,7 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
                 }
                 is ParserResult.EmptyInnerLinks -> {
                     context?.showToast(R.string.no_links)
+                    searchAdapter.submitList(emptyList())
                     binding.loadingCircle.visibility = View.INVISIBLE
                     binding.sortingButton.visibility = View.VISIBLE
                 }
@@ -227,23 +258,11 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
         }
     }
 
-    private fun getNextSortingTag(currentTag: String): String {
-        return when (currentTag) {
-            FolderListFragment.TAG_DEFAULT_SORT -> FolderListFragment.TAG_SORT_AZ
-            FolderListFragment.TAG_SORT_AZ -> FolderListFragment.TAG_SORT_ZA
-            FolderListFragment.TAG_SORT_ZA -> FolderListFragment.TAG_SORT_SIZE_DESC
-            FolderListFragment.TAG_SORT_SIZE_DESC -> FolderListFragment.TAG_SORT_SIZE_ASC
-            FolderListFragment.TAG_SORT_SIZE_ASC -> FolderListFragment.TAG_DEFAULT_SORT
-            else -> FolderListFragment.TAG_DEFAULT_SORT
-        }
-    }
-
     private fun submitSortedList(
-        tag: String,
         adapter: SearchItemAdapter,
         items: List<ScrapedItem>
     ) {
-        when (tag) {
+        when (viewModel.getListSortPreference()) {
             FolderListFragment.TAG_DEFAULT_SORT -> {
                 adapter.submitList(items)
             }
@@ -281,20 +300,40 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
         }
     }
 
-    private fun showDialogIfNeeded() {
-        if (viewModel.isDialogNeeded()) {
+    private fun showDialogsIfNeeded() {
+        if (viewModel.isPluginDialogNeeded()) {
             val alertDialog: AlertDialog? = activity?.let {
                 val builder = AlertDialog.Builder(it)
                 builder.apply {
                     setTitle(R.string.search_plugins)
                     setMessage(R.string.plugin_description_message)
                     setPositiveButton(R.string.open_github) { _, _ ->
-                        viewModel.setDialogNeeded(false)
+                        viewModel.setPluginDialogNeeded(false)
                         // User clicked OK button
                         openExternalWebPage(PLUGINS_URL)
                     }
                     setNegativeButton(R.string.close) { _, _ ->
-                        viewModel.setDialogNeeded(false)
+                        viewModel.setPluginDialogNeeded(false)
+                    }
+                }
+                builder.create()
+            }
+            alertDialog?.show()
+        }
+
+        if (viewModel.isDOHDialogNeeded()) {
+            val alertDialog: AlertDialog? = activity?.let {
+                val builder = AlertDialog.Builder(it)
+                builder.apply {
+                    setTitle(R.string.doh)
+                    setMessage(R.string.doh_description_message)
+                    setPositiveButton(R.string.enable) { _, _ ->
+                        viewModel.enableDOH(true)
+                        viewModel.setDOHDialogNeeded(false)
+                    }
+                    setNegativeButton(R.string.disable) { _, _ ->
+                        viewModel.enableDOH(false)
+                        viewModel.setPluginDialogNeeded(false)
                     }
                 }
                 builder.create()

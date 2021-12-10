@@ -118,7 +118,6 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="5dp"
                         android:text="123 MB"
-                        android:textColor="?attr/colorOnSurfaceVariant"
                         app:layout_constraintBottom_toTopOf="@id/tvMimeType"
                         app:layout_constraintStart_toEndOf="@id/ivHosterPic"
                         app:layout_constraintTop_toBottomOf="@id/tvDownloadId"

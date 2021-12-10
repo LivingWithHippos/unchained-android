@@ -9,6 +9,7 @@ import com.github.livingwithhippos.unchained.data.model.KodiResponse
 import com.github.livingwithhippos.unchained.data.remote.KodiApi
 import com.github.livingwithhippos.unchained.data.remote.KodiApiHelper
 import com.github.livingwithhippos.unchained.data.remote.KodiApiHelperImpl
+import com.github.livingwithhippos.unchained.di.ClassicClient
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -16,7 +17,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class KodiRepository @Inject constructor(
-    private val client: OkHttpClient
+    @ClassicClient private val client: OkHttpClient
 ) : BaseRepository() {
 
     private fun provideRetrofit(baseUrl: String): Retrofit {

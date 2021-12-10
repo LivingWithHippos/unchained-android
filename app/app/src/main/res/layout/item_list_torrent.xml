@@ -46,7 +46,7 @@
                     android:id="@+id/selectionIndicator"
                     android:layout_width="10dp"
                     android:layout_height="0dp"
-                    android:backgroundTint="?attr/colorOnSurfaceVariant"
+                    android:backgroundTint="?attr/colorPrimary"
                     android:background="@drawable/rectangle"
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="10dp"
@@ -76,7 +76,7 @@
                     android:visibility="@{item.progress >=0 &amp;&amp; item.progress &lt;100 ? View.VISIBLE : View.GONE, default=visible}"
                     android:text="@{@string/percent_format(item.progress), default=`90%`}"
                     android:layout_marginStart="5dp"
-                    android:textColor="?attr/colorOnSurfaceVariant"
+                    android:textColor="?attr/colorPrimary"
                     app:layout_constraintBottom_toBottomOf="@+id/tvTitle"
                     app:layout_constraintStart_toEndOf="@id/tvTitle" />
 
@@ -96,11 +96,11 @@
                 <TextView
                     android:id="@+id/tvSize"
                     style="@style/TextAppearance.UnchainedTheme.Caption"
+                    fileSize="@{item.bytes}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    fileSize="@{item.bytes}"
                     android:text="20 MB"
-                    android:textColor="?attr/colorOnSurfaceVariant"
+                    android:textColor="?attr/colorPrimary"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/tvName"
                     app:layout_constraintTop_toBottomOf="@+id/tvName"

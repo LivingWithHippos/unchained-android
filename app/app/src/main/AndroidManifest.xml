@@ -27,6 +27,7 @@
         <activity
             android:name=".settings.view.SettingsActivity"
             android:parentActivityName=".base.MainActivity" />
+
         <activity
             android:exported="true"
             android:name=".base.MainActivity"

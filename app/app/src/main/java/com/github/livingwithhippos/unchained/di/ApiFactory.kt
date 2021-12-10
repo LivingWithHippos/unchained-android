@@ -1,5 +1,6 @@
 package com.github.livingwithhippos.unchained.di
 
+import android.content.SharedPreferences
 import com.github.livingwithhippos.unchained.BuildConfig
 import com.github.livingwithhippos.unchained.data.model.EmptyBodyInterceptor
 import com.github.livingwithhippos.unchained.data.remote.AuthApiHelper
@@ -35,12 +36,13 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import okhttp3.HttpUrl
+import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.dnsoverhttps.DnsOverHttps
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import java.net.InetAddress
 import javax.inject.Singleton
 
 /**
@@ -52,6 +54,7 @@ object ApiFactory {
 
     @Provides
     @Singleton
+    @ClassicClient
     fun provideOkHttpClient(): OkHttpClient {
         if (BuildConfig.DEBUG) {
             val logInterceptor: HttpLoggingInterceptor = HttpLoggingInterceptor().apply {
@@ -78,25 +81,40 @@ object ApiFactory {
      */
     @Provides
     @Singleton
-    fun provideDOHClient(okHttpClient: OkHttpClient): DnsOverHttps {
+    @DOHClient
+    fun provideDOHClient(): OkHttpClient {
 
-        val dnsUrl = HttpUrl.Builder()
-            .scheme("https")
-            .host("mozilla.cloudflare-dns.com")
-            .addPathSegment("dns-query")
+        val bootstrapClient: OkHttpClient = if (BuildConfig.DEBUG) {
+
+            val logInterceptor: HttpLoggingInterceptor = HttpLoggingInterceptor().apply {
+                level = HttpLoggingInterceptor.Level.BODY
+            }
+
+            OkHttpClient().newBuilder()
+                // logs all the calls, removed in the release channel
+                .addInterceptor(logInterceptor)
+                // avoid issues with empty bodies on delete/put and 20x return codes
+                .addInterceptor(EmptyBodyInterceptor)
+                .build()
+        } else {
+            OkHttpClient()
+                .newBuilder()
+                .addInterceptor(EmptyBodyInterceptor)
+                .build()
+        }
+
+        val dns = DnsOverHttps.Builder().client(bootstrapClient)
+            .url("https://dns.google/dns-query".toHttpUrl())
+            .bootstrapDnsHosts(InetAddress.getByName("8.8.8.8"), InetAddress.getByName("8.8.4.4"))
             .build()
 
-        return DnsOverHttps.Builder()
-            .client(okHttpClient)
-            .url(dnsUrl)
-            // .bootstrapDnsHosts(InetAddress.getByName())
-            .build()
+        return bootstrapClient.newBuilder().dns(dns).build()
     }
 
     @Provides
     @Singleton
     @AuthRetrofit
-    fun authRetrofit(okHttpClient: OkHttpClient): Retrofit = Retrofit.Builder()
+    fun authRetrofit(@ClassicClient okHttpClient: OkHttpClient): Retrofit = Retrofit.Builder()
         .client(okHttpClient)
         .baseUrl(BASE_AUTH_URL)
         .addConverterFactory(MoshiConverterFactory.create())
@@ -105,7 +123,7 @@ object ApiFactory {
     @Provides
     @Singleton
     @ApiRetrofit
-    fun apiRetrofit(okHttpClient: OkHttpClient): Retrofit {
+    fun apiRetrofit(@ClassicClient okHttpClient: OkHttpClient): Retrofit {
         val moshi = Moshi.Builder()
             .add(KotlinJsonAdapterFactory())
             .build()
@@ -217,5 +235,9 @@ object ApiFactory {
 
     @Provides
     @Singleton
-    fun provideParser(dohClient: DnsOverHttps): Parser = Parser(dohClient)
+    fun provideParser(
+        preferences: SharedPreferences,
+        @ClassicClient classicClient: OkHttpClient,
+        @DOHClient dohClient: OkHttpClient
+    ): Parser = Parser(preferences, classicClient, dohClient)
 }

@@ -94,7 +94,6 @@
                     android:layout_height="wrap_content"
                     android:text="File Size"
                     fileSize="@{torrent.bytes}"
-                    android:textColor="?attr/colorOnSurfaceVariant"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintEnd_toStartOf="@id/loadingCircle"
@@ -156,7 +155,6 @@
                     android:visibility="@{torrent.progress >=0 &amp;&amp; torrent.progress &lt;100 ? View.VISIBLE : View.GONE, default=visible}"
                     android:text="@{@string/percent_format(torrent.progress), default=`90%`}"
                     android:layout_marginStart="5dp"
-                    android:textColor="?attr/colorOnSurfaceVariant"
                     app:layout_constraintBottom_toBottomOf="@+id/tvDownloadOverline"
                     app:layout_constraintStart_toEndOf="@id/tvDownloadOverline" />
 

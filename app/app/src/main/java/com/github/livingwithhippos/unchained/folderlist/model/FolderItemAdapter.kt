@@ -1,13 +1,14 @@
 package com.github.livingwithhippos.unchained.folderlist.model
 
+import androidx.recyclerview.selection.ItemKeyProvider
 import androidx.recyclerview.widget.DiffUtil
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.lists.view.DownloadListListener
-import com.github.livingwithhippos.unchained.utilities.DataBindingAdapter
+import com.github.livingwithhippos.unchained.utilities.DataBindingTrackedAdapter
 
 class FolderItemAdapter(listener: DownloadListListener) :
-    DataBindingAdapter<DownloadItem, DownloadListListener>(
+    DataBindingTrackedAdapter<DownloadItem, DownloadListListener>(
         DiffCallback(), listener
     ) {
     class DiffCallback : DiffUtil.ItemCallback<DownloadItem>() {
@@ -21,4 +22,20 @@ class FolderItemAdapter(listener: DownloadListListener) :
     }
 
     override fun getItemViewType(position: Int) = R.layout.item_list_download
+
+    fun getFolderItem(position: Int): DownloadItem? {
+        // snapshot().items[position]
+        return super.getItem(position)
+    }
+}
+
+class FolderKeyProvider(private val adapter: FolderItemAdapter) :
+    ItemKeyProvider<DownloadItem>(SCOPE_CACHED) {
+    override fun getKey(position: Int): DownloadItem? {
+        return adapter.getFolderItem(position)
+    }
+
+    override fun getPosition(key: DownloadItem): Int {
+        return adapter.currentList.indexOfFirst { it.id == key.id }
+    }
 }

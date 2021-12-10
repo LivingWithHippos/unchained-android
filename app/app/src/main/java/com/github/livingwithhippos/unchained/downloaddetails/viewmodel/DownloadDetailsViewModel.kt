@@ -78,7 +78,7 @@ class DownloadDetailsViewModel @Inject constructor(
     }
 }
 
-sealed class DownloadDetailsMessage() {
+sealed class DownloadDetailsMessage {
     object KodiError : DownloadDetailsMessage()
     object KodiSuccess : DownloadDetailsMessage()
     object KodiMissingCredentials : DownloadDetailsMessage()

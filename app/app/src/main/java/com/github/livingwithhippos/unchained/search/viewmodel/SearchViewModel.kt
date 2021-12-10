@@ -14,6 +14,7 @@ import com.github.livingwithhippos.unchained.plugins.Parser
 import com.github.livingwithhippos.unchained.plugins.ParserResult
 import com.github.livingwithhippos.unchained.plugins.model.Plugin
 import com.github.livingwithhippos.unchained.plugins.model.ScrapedItem
+import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Companion.KEY_USE_DOH
 import com.github.livingwithhippos.unchained.utilities.extension.cancelIfActive
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -112,13 +113,31 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    fun isDialogNeeded(): Boolean {
+    fun isPluginDialogNeeded(): Boolean {
         return preferences.getBoolean(KEY_PLUGIN_DIALOG_NEEDED, true)
     }
 
-    fun setDialogNeeded(needed: Boolean) {
+    fun setPluginDialogNeeded(needed: Boolean) {
         with(preferences.edit()) {
             putBoolean(KEY_PLUGIN_DIALOG_NEEDED, needed)
+            apply()
+        }
+    }
+
+    fun isDOHDialogNeeded(): Boolean {
+        return preferences.getBoolean(KEY_DOH_DIALOG_NEEDED, true)
+    }
+
+    fun setDOHDialogNeeded(needed: Boolean) {
+        with(preferences.edit()) {
+            putBoolean(KEY_DOH_DIALOG_NEEDED, needed)
+            apply()
+        }
+    }
+
+    fun enableDOH(enable: Boolean) {
+        with(preferences.edit()) {
+            putBoolean(KEY_USE_DOH, enable)
             apply()
         }
     }
@@ -142,5 +161,6 @@ class SearchViewModel @Inject constructor(
         const val KEY_PLUGINS = "plugins_key"
         const val KEY_LAST_SELECTED_PLUGIN = "plugin_last_selected_key"
         const val KEY_PLUGIN_DIALOG_NEEDED = "plugin_dialog_needed_key"
+        const val KEY_DOH_DIALOG_NEEDED = "doh_dialog_needed_key"
     }
 }

@@ -36,6 +36,37 @@ abstract class DataBindingAdapter<T, U>(
 }
 
 /**
+ * A [ListAdapter] subclass.
+ * Allows for a generic list of items with data binding, an optional listener and a tracker for selected items.
+ * After having created the adapter set the tracker with myAdapter.tracker = mySelectionTracker
+ */
+abstract class DataBindingTrackedAdapter<T : Any, U>(
+    diffCallback: DiffUtil.ItemCallback<T>,
+    val listener: U? = null
+) :
+    ListAdapter<T, DataBindingTrackedViewHolder<T, U>>(diffCallback) {
+
+    var tracker: SelectionTracker<T>? = null
+
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): DataBindingTrackedViewHolder<T, U> {
+        val layoutInflater = LayoutInflater.from(parent.context)
+        val binding =
+            DataBindingUtil.inflate<ViewDataBinding>(layoutInflater, viewType, parent, false)
+        return DataBindingTrackedViewHolder(binding)
+    }
+
+    override fun onBindViewHolder(holder: DataBindingTrackedViewHolder<T, U>, position: Int) {
+        val repoItem = getItem(position)
+        if (repoItem != null) {
+            holder.bind(repoItem, tracker?.isSelected(repoItem) ?: false, listener)
+        }
+    }
+}
+
+/**
  * A [PagingDataAdapter] subclass.
  * Allows for a generic list of items with data binding and Paging support and an optional listener.
  */

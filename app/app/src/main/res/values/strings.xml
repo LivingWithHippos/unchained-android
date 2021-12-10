@@ -30,7 +30,8 @@
     <string name="copy">Copy</string>
     <string name="open_link">Open Link</string>
     <string name="copy_link">Copy Link</string>
-    <string name="link_copied">Link Copied</string>
+    <string name="link_copied">Link copied</string>
+    <string name="links_copied">Links copied</string>
     <string name="streaming">Streaming</string>
     <string name="megabytes_short">MB</string>
     <string name="file_size_format">%1$d MB</string>
@@ -376,6 +377,7 @@
     <string name="night_theme">Night mode</string>
     <string name="title_aspect">Aspect</string>
     <string name="delete">Delete</string>
+    <string name="delete_item_title_format">Delete %s</string>
     <string name="torrent_removed">Torrent removed</string>
     <string name="open">Open</string>
     <string name="content_description_delete_torrent_item">Remove the torrent item</string>
@@ -386,6 +388,7 @@
     <string name="content_description_share_download">Share download link</string>
     <string name="share">Share</string>
     <string name="share_with">Share download link via:</string>
+    <string name="share_all_with">Share all download links via:</string>
     <string name="restart_to_apply">Restart to apply</string>
     <string name="remove">Remove</string>
     <string name="confirm_download_removal_description">Are you sure you want to remove the download? This action cannot be undone.</string>
@@ -438,6 +441,7 @@
     <string name="host_match_not_found">No matching host found. Refresh hosts from settings if needed.</string>
     <string name="refreshing_token">Refreshing authentication, please retry in a bit</string>
     <string name="black_and_white">Black and white</string>
+    <string name="waves_01" translatable="false">Waves 01</string>
     <string name="open_browser_stream">Stream in browser</string>
     <string name="folder">Folder</string>
     <string name="files_list">Files List</string>
@@ -516,7 +520,7 @@
     <string name="rd_status">Real Debrid status</string>
     <string name="show_kodi">Show Kodi button</string>
     <string name="only_big_files">Only big files</string>
-    <string name="filter_type">Only media files (avi etc.)</string>
+    <string name="filter_type">Only media files</string>
     <string name="sort">Sort</string>
     <string name="file_size_filter">Filter for the files size</string>
     <string name="file_size_filter_description">Minimum size in MB for the \"Only big files\" option in the folder screen</string>
@@ -535,4 +539,24 @@
     <string name="content_description_plugins_link">Link to plugins page</string>
     <string name="get_plugins">Get more plugins</string>
     <string name="reset_login">Reset login</string>
+    <string name="sort_by_default">Default</string>
+    <string name="sort_by_az">Alphabetical</string>
+    <string name="sort_by_za">Reverse alphabetical</string>
+    <string name="sort_by_size_desc">Bigger first</string>
+    <string name="sort_by_size_asc">Smaller first</string>
+    <string name="share_all">Share all</string>
+    <string name="copy_all">Copy all</string>
+    <string name="enable_doh">Enable DNS over HTTPS</string>
+    <string name="uses_google_dns">Uses Google DNS</string>
+    <string name="doh" translatable="false">DNS over HTTPS</string>
+    <string name="doh_description_message">DNS over HTTPS is a protocol used to increase privacy and avoid eavesdropping of DNS requests. If a plugin\'s website is blocked at DNS level, enabling DOH can help bypass this. The DOH only provider available at the moment is  Google. This option is disabled by default and it can be changed anytime from the settings menu. This feature may cause crashes.</string>
+    <string name="disable">Disable</string>
+    <string name="enable">Enable</string>
+    <string name="download_selected">Download selected</string>
+    <string name="delete_selected">Delete selected</string>
+    <string name="share_selected">Share selected</string>
+    <string name="show_folder_filters">Show folder filters</string>
+    <string name="show_folder_filters_summary">Show the filters for files size and media type in the folder screen</string>
+    <string name="title_main_screen">Start-up Screen</string>
+    <string name="summary_main_screen">Tab to open at start-up</string>
 </resources>

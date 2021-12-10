@@ -31,6 +31,7 @@
     <string name="open_link">Apri link</string>
     <string name="copy_link">Copia link</string>
     <string name="link_copied">Link copiato</string>
+    <string name="links_copied">Link copiati</string>
     <string name="streaming">Streaming</string>
     <string name="megabytes_short">MB</string>
     <string name="file_size_format">%1$d MB</string>
@@ -180,6 +181,7 @@
     <string name="content_description_share_download">Condividi download link</string>
     <string name="share">Condividi</string>
     <string name="share_with">Condividi link di download tramite:</string>
+    <string name="share_all_with">Condividi tutti i links di download tramite:</string>
     <string name="restart_to_apply">Riavvia per applicare</string>
     <string name="remove">Rimuovi</string>
     <string name="confirm_download_removal_description">Sei sicuro di voler rimuovere il download? Questa azione non può essere annullata.</string>
@@ -302,7 +304,7 @@
     <string name="kodi_remote_control">Controllo remoto per Kodi</string>
     <string name="rd_status">Stato Real Debrid</string>
     <string name="show_kodi">Mostra pulsante Kodi</string>
-    <string name="filter_type">Solo media (avi etc.)</string>
+    <string name="filter_type">Solo media</string>
     <string name="only_big_files">Solo file grandi</string>
     <string name="sort">Ordina</string>
     <string name="file_size_filter">Filtro per la dimensione dei file</string>
@@ -325,4 +327,24 @@
     <string name="get_plugins">Ottieni più plugins</string>
     <string name="content_description_plugins_link">Collegamento alla pagina dei plugin</string>
     <string name="reset_login">Reset Login</string>
+    <string name="sort_by_default">Default</string>
+    <string name="sort_by_az">Alfabetico</string>
+    <string name="sort_by_za">Alfabetico inverso</string>
+    <string name="sort_by_size_desc">Dal più grande</string>
+    <string name="sort_by_size_asc">Dal più piccolo</string>
+    <string name="share_all">Condividi tutto</string>
+    <string name="copy_all">Copia tutto</string>
+    <string name="enable_doh">Abilita il DNS su HTTPS</string>
+    <string name="uses_google_dns">Usa i DNS Google</string>
+    <string name="disable">Disattiva</string>
+    <string name="enable">Attiva</string>
+    <string name="doh_description_message">DNS over HTTPS è un protocollo utilizzato per aumentare la privacy ed evitare l\'intercettazione delle richieste DNS. Se il sito web di un plugin è bloccato a livello di DNS, abilitare DoH può aiutare a bypassarlo. L\'unico provider DoH disponibile al momento è Google. Questa opzione è disabilitata di default e può essere cambiata in qualsiasi momento dal menu delle impostazioni. Questa funzione può causare dei crash.</string>
+    <string name="delete_item_title_format">Elimina %s</string>
+    <string name="download_selected">Scarica selezione</string>
+    <string name="delete_selected">Cancella selezione</string>
+    <string name="share_selected">Condividi selezione</string>
+    <string name="show_folder_filters">Mostra filtri in cartelle</string>
+    <string name="show_folder_filters_summary">Mostra i filtri per la dimensione dei file e il tipo di media nella schermata della cartella</string>
+    <string name="title_main_screen">Pagina di avvio</string>
+    <string name="summary_main_screen">Pagina da aprire all\'avvio</string>
 </resources>

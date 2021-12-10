@@ -52,7 +52,7 @@ open class Event<out T>(private val content: T) {
  *
  * [onEventUnhandledContent] is *only* called if the [Event]'s contents has not been handled.
  */
-class EventObserver<T>(private val onEventUnhandledContent: (T) -> Unit) : Observer<Event<T>> {
+class EventObserver<T>(private val onEventUnhandledContent: (T) -> Unit) : Observer<Event<T>?> {
     override fun onChanged(event: Event<T>?) {
         event?.getContentIfNotHandled()?.let {
             onEventUnhandledContent(it)

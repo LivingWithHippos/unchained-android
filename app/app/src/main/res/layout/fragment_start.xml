@@ -79,7 +79,6 @@
             android:layout_height="wrap_content"
             android:text="@string/loading"
             android:textAlignment="center"
-            android:textColor="?attr/colorOnSurface"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/gEnd"
             app:layout_constraintStart_toEndOf="@+id/gStart"
