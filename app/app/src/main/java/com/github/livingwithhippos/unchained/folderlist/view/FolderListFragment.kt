@@ -4,6 +4,7 @@ import android.app.DownloadManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -15,9 +16,13 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.selection.SelectionPredicates
+import androidx.recyclerview.selection.SelectionTracker
+import androidx.recyclerview.selection.StorageStrategy
 import androidx.recyclerview.widget.RecyclerView
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.model.APIError
@@ -27,9 +32,12 @@ import com.github.livingwithhippos.unchained.data.model.EmptyBodyError
 import com.github.livingwithhippos.unchained.data.model.NetworkError
 import com.github.livingwithhippos.unchained.databinding.FragmentFolderListBinding
 import com.github.livingwithhippos.unchained.folderlist.model.FolderItemAdapter
+import com.github.livingwithhippos.unchained.folderlist.model.FolderKeyProvider
 import com.github.livingwithhippos.unchained.folderlist.viewmodel.FolderListViewModel
-import com.github.livingwithhippos.unchained.lists.view.DownloadListListener
+import com.github.livingwithhippos.unchained.lists.view.*
+import com.github.livingwithhippos.unchained.utilities.DataBindingDetailsLookup
 import com.github.livingwithhippos.unchained.utilities.EitherResult
+import com.github.livingwithhippos.unchained.utilities.EventObserver
 import com.github.livingwithhippos.unchained.utilities.extension.copyToClipboard
 import com.github.livingwithhippos.unchained.utilities.extension.delayedScrolling
 import com.github.livingwithhippos.unchained.utilities.extension.downloadFile
@@ -154,8 +162,109 @@ class FolderListFragment : Fragment(), DownloadListListener {
 
     private fun setup(binding: FragmentFolderListBinding) {
 
+        binding.selectedLinks = 0
+
         val adapter = FolderItemAdapter(this)
+
+        // this must be assigned BEFORE the SelectionTracker builder
         binding.rvFolderList.adapter = adapter
+
+        val linkTracker: SelectionTracker<DownloadItem> = SelectionTracker.Builder(
+            "folderListSelection",
+            binding.rvFolderList,
+            FolderKeyProvider(adapter),
+            DataBindingDetailsLookup(binding.rvFolderList),
+            StorageStrategy.createParcelableStorage(DownloadItem::class.java)
+        ).withSelectionPredicate(
+            SelectionPredicates.createSelectAnything()
+        ).build()
+
+        adapter.tracker = linkTracker
+
+        linkTracker.addObserver(
+            object : SelectionTracker.SelectionObserver<DownloadItem>() {
+                override fun onSelectionChanged() {
+                    super.onSelectionChanged()
+                    binding.selectedLinks = linkTracker.selection.size()
+                }
+            })
+
+        binding.listener = object : SelectedItemsButtonsListener {
+            override fun deleteSelectedItems() {
+                if (linkTracker.selection.toList().isNotEmpty()) {
+                    viewModel.deleteDownloadList(linkTracker.selection.toList())
+                }
+            }
+
+            override fun shareSelectedItems() {
+                if (linkTracker.selection.toList().isNotEmpty()) {
+                    val shareIntent = Intent(Intent.ACTION_SEND)
+                    shareIntent.type = "text/plain"
+                    val shareLinks =
+                        linkTracker.selection.joinToString("\n") { it.download }
+                    shareIntent.putExtra(Intent.EXTRA_TEXT, shareLinks)
+                    startActivity(
+                        Intent.createChooser(
+                            shareIntent,
+                            getString(R.string.share_with)
+                        )
+                    )
+                }
+            }
+
+            override fun downloadSelectedItems() {
+                if (linkTracker.selection.toList().isNotEmpty()) {
+                    var downloadStarted = false
+                    val manager =
+                        requireContext().getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+                    linkTracker.selection.forEach { item ->
+                        val queuedDownload = manager.downloadFile(
+                            item.download,
+                            item.filename,
+                            getString(R.string.app_name),
+                        )
+                        when (queuedDownload) {
+                            is EitherResult.Failure -> {
+                                context?.showToast(
+                                    getString(
+                                        R.string.download_not_started_format,
+                                        item.filename
+                                    )
+                                )
+                            }
+                            is EitherResult.Success -> {
+                                downloadStarted = true
+                            }
+                        }
+                    }
+                    if (downloadStarted)
+                        context?.showToast(R.string.download_started)
+                }
+            }
+        }
+
+        binding.cbSelectAll.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                linkTracker.setItemsSelected(adapter.currentList, true)
+            } else {
+                linkTracker.clearSelection()
+            }
+        }
+
+
+        viewModel.deletedDownloadLiveData.observe(
+            viewLifecycleOwner
+        ) {
+            Timber.d(it.toString())
+            it.getContentIfNotHandled()?.let { item ->
+                val originalList = mutableListOf<DownloadItem>()
+                originalList.addAll(adapter.currentList.minus(item))
+                if (originalList.size != adapter.currentList.size) {
+                    adapter.submitList(originalList)
+                    adapter.notifyDataSetChanged()
+                }
+            }
+        }
 
         // observe the list loading status
         viewModel.folderLiveData.observe(viewLifecycleOwner) {
@@ -306,17 +415,6 @@ class FolderListFragment : Fragment(), DownloadListListener {
             TAG_SORT_SIZE_DESC -> R.drawable.icon_sort_size_desc
             TAG_SORT_SIZE_ASC -> R.drawable.icon_sort_size_asc
             else -> R.drawable.icon_sort_default
-        }
-    }
-
-    private fun getNextSortingTag(currentTag: String): String {
-        return when (currentTag) {
-            TAG_DEFAULT_SORT -> TAG_SORT_AZ
-            TAG_SORT_AZ -> TAG_SORT_ZA
-            TAG_SORT_ZA -> TAG_SORT_SIZE_DESC
-            TAG_SORT_SIZE_DESC -> TAG_SORT_SIZE_ASC
-            TAG_SORT_SIZE_ASC -> TAG_DEFAULT_SORT
-            else -> TAG_DEFAULT_SORT
         }
     }
 

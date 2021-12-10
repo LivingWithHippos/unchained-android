@@ -30,7 +30,7 @@ class FolderListViewModel @Inject constructor(
 ) : ViewModel() {
 
     val folderLiveData = MutableLiveData<Event<List<DownloadItem>>>()
-    val deletedDownloadLiveData = MutableLiveData<Event<Int>>()
+    val deletedDownloadLiveData = MutableLiveData<Event<DownloadItem>>()
     val errorsLiveData = MutableLiveData<Event<UnchainedNetworkException>>()
     val progressLiveData = MutableLiveData<Int>()
 
@@ -97,14 +97,14 @@ class FolderListViewModel @Inject constructor(
         return savedStateHandle.get(KEY_RETRIEVED_LINKS) ?: -1
     }
 
-    fun deleteDownload(id: String) {
+    fun deleteDownloadList(downloads: List<DownloadItem>) {
         viewModelScope.launch {
             val token = protoStore.getCredentials().accessToken
-            val deleted = downloadRepository.deleteDownload(token, id)
-            if (deleted == null)
-                deletedDownloadLiveData.postEvent(-1)
-            else
-                deletedDownloadLiveData.postEvent(1)
+            downloads.forEach {
+                val deleted = downloadRepository.deleteDownload(token, it.id)
+                if (deleted != null)
+                    deletedDownloadLiveData.postEvent(it)
+            }
         }
     }
 
