@@ -82,6 +82,8 @@
     <color name="red_A400">#FF1744</color>
     <color name="red_A700">#D50000</color>
 
+    <!-- use https://chir.ag/projects/name-that-color to find color names -->
+
     <!-- https://www.colourlovers.com/palette/56122/Sweet_Lolly -->
     <color name="premium_gold">#FABE28</color>
     <color name="free_red">#FF003C</color>
@@ -100,5 +102,11 @@
     <color name="plum_tropico">#976393</color>
     <color name="plum_tropico_lighter">#c891c4</color>
     <color name="plum_tropico_darker">#683765</color>
+
+    <!-- Wave 01 Color Palette -->
+    <color name="thistle_green">#C8C8A9</color>
+    <color name="apricot_peach">#F9CDAD</color>
+    <color name="mortar">#5D4E60</color>
+    <color name="radical_red">#FE4365</color>
 
 </resources>

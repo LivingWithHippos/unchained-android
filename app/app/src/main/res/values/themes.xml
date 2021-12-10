@@ -64,14 +64,14 @@
     <!-- Wave 01 Theme -->
     <style name="Theme.Wave01" parent="Base.Theme.Unchained">
 
-        <item name="colorPrimary">#FE4365</item>
+        <item name="colorPrimary">@color/radical_red</item>
         <item name="colorPrimaryVariant">@color/peach_tropico_lighter</item>
         <item name="colorPrimaryDark">@color/peach_tropico_darker</item>
-        <item name="colorSecondary">#5D4E60</item>
+        <item name="colorSecondary">@color/mortar</item>
         <item name="colorSecondaryVariant">@color/plum_tropico</item>
 
-        <item name="android:colorBackground">#C8C8A9</item>
-        <item name="colorSurface">#F9CDAD</item>
+        <item name="android:colorBackground">@color/thistle_green</item>
+        <item name="colorSurface">@color/apricot_peach</item>
         <item name="colorError">@color/red_600</item>
 
         <item name="colorOnPrimary">@color/white</item>
