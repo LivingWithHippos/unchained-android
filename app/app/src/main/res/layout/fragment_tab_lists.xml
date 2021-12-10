@@ -110,7 +110,7 @@
                 android:contentDescription="@string/share"
                 android:onClick="@{() -> listener.shareSelectedItems()}"
                 android:src="@drawable/icon_share"
-                android:visibility="@{selectedTab == 0 ? View.VISIBLE : View.GONE}"/>
+                android:visibility="@{selectedTab == 0 ? View.VISIBLE : View.INVISIBLE}"/>
 
 
         </LinearLayout>
