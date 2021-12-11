@@ -351,4 +351,5 @@
     <string name="show_folder_filters_summary">Afficher les filtres pour la taille des fichiers et le type de média dans l\'écran du dossier</string>
     <string name="title_main_screen">Page d\'accueil</string>
     <string name="summary_main_screen">Onglet à ouvrir au démarrage</string>
+    <string name="select_deselect_all">Tout sélectionner ou désélectionner</string>
 </resources>

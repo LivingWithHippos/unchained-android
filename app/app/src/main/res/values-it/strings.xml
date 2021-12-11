@@ -347,4 +347,5 @@
     <string name="show_folder_filters_summary">Mostra i filtri per la dimensione dei file e il tipo di media nella schermata della cartella</string>
     <string name="title_main_screen">Pagina di avvio</string>
     <string name="summary_main_screen">Pagina da aprire all\'avvio</string>
+    <string name="select_deselect_all">Seleziona o deseleziona tutto</string>
 </resources>
