@@ -83,7 +83,7 @@
             android:layout_marginStart="10dp"
             android:layout_marginEnd="20dp"
             android:background="@drawable/icon_sort_default"
-            android:backgroundTint="?attr/colorOnSurface"
+            android:backgroundTint="?android:textColorSecondary"
             android:contentDescription="@string/sort"
             app:layout_constraintBottom_toBottomOf="@id/tfFilter"
             app:layout_constraintEnd_toEndOf="parent"

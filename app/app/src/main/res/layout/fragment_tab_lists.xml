@@ -86,8 +86,7 @@
                 android:backgroundTint="@android:color/transparent"
                 android:contentDescription="@string/delete"
                 android:onClick="@{() -> listener.deleteSelectedItems()}"
-                android:src="@drawable/icon_delete"
-                 />
+                android:src="@drawable/icon_delete" />
 
             <ImageButton
                 android:id="@+id/bDownloadSelected"
