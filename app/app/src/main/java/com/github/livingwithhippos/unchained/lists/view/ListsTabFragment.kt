@@ -137,9 +137,13 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
                 if (binding.tabs.selectedTabPosition == TAB_DOWNLOADS) {
                     if (downloadTracker.selection.toList().isNotEmpty())
                         viewModel.deleteDownloads(downloadTracker.selection.toList())
+                    else
+                        context?.showToast(R.string.select_one_item)
                 } else {
                     if (torrentTracker.selection.toList().isNotEmpty())
                         viewModel.deleteTorrents(torrentTracker.selection.toList())
+                    else
+                        context?.showToast(R.string.select_one_item)
                 }
             }
 
@@ -158,7 +162,8 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
                                 getString(R.string.share_with)
                             )
                         )
-                    }
+                    } else
+                        context?.showToast(R.string.select_one_item)
                 }
             }
 
@@ -191,11 +196,13 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
                         }
                         if (downloadStarted)
                             context?.showToast(R.string.download_started)
-                    }
+                    } else
+                        context?.showToast(R.string.select_one_item)
                 } else {
                     if (torrentTracker.selection.toList().isNotEmpty()) {
                         viewModel.downloadItems(torrentTracker.selection.toList())
-                    }
+                    } else
+                        context?.showToast(R.string.select_one_item)
                 }
             }
         }

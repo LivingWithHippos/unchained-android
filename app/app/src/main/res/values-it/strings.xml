@@ -348,4 +348,5 @@
     <string name="title_main_screen">Pagina di avvio</string>
     <string name="summary_main_screen">Pagina da aprire all\'avvio</string>
     <string name="select_deselect_all">Seleziona o deseleziona tutto</string>
+    <string name="select_one_item">Seleziona almeno un elemento</string>
 </resources>

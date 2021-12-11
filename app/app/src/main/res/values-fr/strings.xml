@@ -352,4 +352,5 @@
     <string name="title_main_screen">Page d\'accueil</string>
     <string name="summary_main_screen">Onglet à ouvrir au démarrage</string>
     <string name="select_deselect_all">Tout sélectionner ou désélectionner</string>
+    <string name="select_one_item">Sélectionnez au moins un élément</string>
 </resources>

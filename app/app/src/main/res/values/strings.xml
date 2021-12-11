@@ -560,4 +560,5 @@
     <string name="title_main_screen">Start-up Screen</string>
     <string name="summary_main_screen">Tab to open at start-up</string>
     <string name="select_deselect_all">Select or deselect all</string>
+    <string name="select_one_item">Select at least one item</string>
 </resources>
