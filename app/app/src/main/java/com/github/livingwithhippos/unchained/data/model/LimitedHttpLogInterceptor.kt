@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-// This file has been modified
+// This file has been modified from HttpLoggingInterceptor on okhttp version 4.9.3
 
 package com.github.livingwithhippos.unchained.data.model
 
