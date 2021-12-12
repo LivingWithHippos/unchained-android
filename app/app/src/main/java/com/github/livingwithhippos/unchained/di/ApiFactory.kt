@@ -59,7 +59,7 @@ object ApiFactory {
     fun provideOkHttpClient(): OkHttpClient {
         if (BuildConfig.DEBUG) {
             val logInterceptor: LimitedHttpLogInterceptor = LimitedHttpLogInterceptor().apply {
-                level = HttpLoggingInterceptor.Level.BODY
+                level = HttpLoggingInterceptor.Level.HEADERS
             }
 
             return OkHttpClient().newBuilder()
@@ -88,7 +88,7 @@ object ApiFactory {
         val bootstrapClient: OkHttpClient = if (BuildConfig.DEBUG) {
 
             val logInterceptor: LimitedHttpLogInterceptor = LimitedHttpLogInterceptor().apply {
-                level = HttpLoggingInterceptor.Level.BODY
+                level = HttpLoggingInterceptor.Level.HEADERS
             }
 
             OkHttpClient().newBuilder()
