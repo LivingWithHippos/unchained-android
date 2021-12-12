@@ -3,6 +3,7 @@ package com.github.livingwithhippos.unchained.di
 import android.content.SharedPreferences
 import com.github.livingwithhippos.unchained.BuildConfig
 import com.github.livingwithhippos.unchained.data.model.EmptyBodyInterceptor
+import com.github.livingwithhippos.unchained.data.model.LimitedHttpLogInterceptor
 import com.github.livingwithhippos.unchained.data.remote.AuthApiHelper
 import com.github.livingwithhippos.unchained.data.remote.AuthApiHelperImpl
 import com.github.livingwithhippos.unchained.data.remote.AuthenticationApi
@@ -57,7 +58,7 @@ object ApiFactory {
     @ClassicClient
     fun provideOkHttpClient(): OkHttpClient {
         if (BuildConfig.DEBUG) {
-            val logInterceptor: HttpLoggingInterceptor = HttpLoggingInterceptor().apply {
+            val logInterceptor: LimitedHttpLogInterceptor = LimitedHttpLogInterceptor().apply {
                 level = HttpLoggingInterceptor.Level.BODY
             }
 
@@ -86,7 +87,7 @@ object ApiFactory {
 
         val bootstrapClient: OkHttpClient = if (BuildConfig.DEBUG) {
 
-            val logInterceptor: HttpLoggingInterceptor = HttpLoggingInterceptor().apply {
+            val logInterceptor: LimitedHttpLogInterceptor = LimitedHttpLogInterceptor().apply {
                 level = HttpLoggingInterceptor.Level.BODY
             }
 
