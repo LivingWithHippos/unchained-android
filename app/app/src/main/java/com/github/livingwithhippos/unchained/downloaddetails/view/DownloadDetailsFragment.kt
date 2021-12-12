@@ -70,57 +70,56 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         detailsBinding.showKodi = viewModel.getKodiPreference()
 
         viewModel.streamLiveData.observe(
-            viewLifecycleOwner,
-            {
-                if (it != null) {
-                    detailsBinding.stream = it
+            viewLifecycleOwner
+        ) {
+            if (it != null) {
+                detailsBinding.stream = it
 
-                    val streams = mutableListOf<Alternative>()
-                    // parameter mimetype gets shown as the name and "streaming" as title in the list, the other params don't matter
-                    streams.add(
-                        Alternative(
-                            "h264WebM",
-                            "h264WebM",
-                            it.h264WebM.link,
-                            getString(R.string.h264_webm),
-                            getString(R.string.streaming)
-                        )
+                val streams = mutableListOf<Alternative>()
+                // parameter mimetype gets shown as the name and "streaming" as title in the list, the other params don't matter
+                streams.add(
+                    Alternative(
+                        "h264WebM",
+                        "h264WebM",
+                        it.h264WebM.link,
+                        getString(R.string.h264_webm),
+                        getString(R.string.streaming)
                     )
-                    streams.add(
-                        Alternative(
-                            "liveMP4",
-                            "liveMP4",
-                            it.liveMP4.link,
-                            getString(R.string.liveMP4),
-                            getString(R.string.streaming)
-                        )
+                )
+                streams.add(
+                    Alternative(
+                        "liveMP4",
+                        "liveMP4",
+                        it.liveMP4.link,
+                        getString(R.string.liveMP4),
+                        getString(R.string.streaming)
                     )
-                    streams.add(
-                        Alternative(
-                            "apple",
-                            "apple",
-                            it.apple.link,
-                            getString(R.string.apple),
-                            getString(R.string.streaming)
-                        )
+                )
+                streams.add(
+                    Alternative(
+                        "apple",
+                        "apple",
+                        it.apple.link,
+                        getString(R.string.apple),
+                        getString(R.string.streaming)
                     )
-                    streams.add(
-                        Alternative(
-                            "dash",
-                            "dash",
-                            it.dash.link,
-                            getString(R.string.dash),
-                            getString(R.string.streaming)
-                        )
+                )
+                streams.add(
+                    Alternative(
+                        "dash",
+                        "dash",
+                        it.dash.link,
+                        getString(R.string.dash),
+                        getString(R.string.streaming)
                     )
+                )
 
-                    if (!args.details.alternative.isNullOrEmpty())
-                        streams.addAll(args.details.alternative!!)
+                if (!args.details.alternative.isNullOrEmpty())
+                    streams.addAll(args.details.alternative!!)
 
-                    alternativeAdapter.submitList(streams)
-                }
+                alternativeAdapter.submitList(streams)
             }
-        )
+        }
 
         viewModel.deletedDownloadLiveData.observe(
             viewLifecycleOwner,
@@ -260,8 +259,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
     override fun onShareClick(url: String) {
         val shareIntent = Intent(Intent.ACTION_SEND)
         shareIntent.type = "text/plain"
-        val shareLink = url
-        shareIntent.putExtra(Intent.EXTRA_TEXT, shareLink)
+        shareIntent.putExtra(Intent.EXTRA_TEXT, url)
         startActivity(Intent.createChooser(shareIntent, getString(R.string.share_with)))
     }
 }
