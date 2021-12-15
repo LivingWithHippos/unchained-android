@@ -46,16 +46,15 @@ class UserProfileFragment : UnchainedFragment() {
         viewModel.fetchUserInfo()
 
         viewModel.userLiveData.observe(
-            viewLifecycleOwner,
-            {
-                if (it != null) {
-                    userBinding.user = it
-                    lifecycleScope.launch {
-                        userBinding.privateToken = activityViewModel.isTokenPrivate()
-                    }
+            viewLifecycleOwner
+        ) {
+            if (it != null) {
+                userBinding.user = it
+                lifecycleScope.launch {
+                    userBinding.privateToken = activityViewModel.isTokenPrivate()
                 }
             }
-        )
+        }
 
         userBinding.bAccount.setOnClickListener {
             // if we never asked, show a dialog
@@ -93,43 +92,37 @@ class UserProfileFragment : UnchainedFragment() {
         }
 
         activityViewModel.fsmAuthenticationState.observe(
-            viewLifecycleOwner,
-            {
-                userBinding.srLayout.isRefreshing = false
+            viewLifecycleOwner
+        ) {
 
-                if (it != null) {
-                    when (it.peekContent()) {
-                        is FSMAuthenticationState.WaitingUserAction -> {
-                            // an error occurred, check it and eventually go back to the start fragment
-                            val action = UserProfileFragmentDirections.actionUserToStartFragment()
-                            findNavController().navigate(action)
-                        }
-                        FSMAuthenticationState.StartNewLogin -> {
-                            // the user reset the login, go to the auth fragment
-                            val action =
-                                UserProfileFragmentDirections.actionUserToAuthenticationFragment()
-                            findNavController().navigate(action)
-                        }
-                        FSMAuthenticationState.AuthenticatedOpenToken, FSMAuthenticationState.AuthenticatedPrivateToken, FSMAuthenticationState.RefreshingOpenToken -> {
-                            // managed by activity
-                        }
-                        FSMAuthenticationState.CheckCredentials -> {
-                            // shouldn't matter
-                        }
-                        FSMAuthenticationState.Start, FSMAuthenticationState.WaitingToken, FSMAuthenticationState.WaitingUserConfirmation -> {
-                            // shouldn't happen
-                        }
+            if (it != null) {
+                when (it.peekContent()) {
+                    is FSMAuthenticationState.WaitingUserAction -> {
+                        // an error occurred, check it and eventually go back to the start fragment
+                        val action = UserProfileFragmentDirections.actionUserToStartFragment()
+                        findNavController().navigate(action)
+                    }
+                    FSMAuthenticationState.StartNewLogin -> {
+                        // the user reset the login, go to the auth fragment
+                        val action =
+                            UserProfileFragmentDirections.actionUserToAuthenticationFragment()
+                        findNavController().navigate(action)
+                    }
+                    FSMAuthenticationState.AuthenticatedOpenToken, FSMAuthenticationState.AuthenticatedPrivateToken, FSMAuthenticationState.RefreshingOpenToken -> {
+                        // managed by activity
+                    }
+                    FSMAuthenticationState.CheckCredentials -> {
+                        // shouldn't matter
+                    }
+                    FSMAuthenticationState.Start, FSMAuthenticationState.WaitingToken, FSMAuthenticationState.WaitingUserConfirmation -> {
+                        // shouldn't happen
                     }
                 }
             }
-        )
+        }
 
         userBinding.bLogout.setOnClickListener {
             activityViewModel.logout()
-        }
-
-        userBinding.srLayout.setOnRefreshListener {
-            activityViewModel.recheckAuthenticationStatus()
         }
 
         return userBinding.root

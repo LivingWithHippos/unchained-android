@@ -4,7 +4,6 @@ import android.app.DownloadManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -37,7 +36,6 @@ import com.github.livingwithhippos.unchained.lists.view.DownloadListListener
 import com.github.livingwithhippos.unchained.lists.view.SelectedItemsButtonsListener
 import com.github.livingwithhippos.unchained.utilities.DataBindingDetailsLookup
 import com.github.livingwithhippos.unchained.utilities.EitherResult
-import com.github.livingwithhippos.unchained.utilities.EventObserver
 import com.github.livingwithhippos.unchained.utilities.extension.copyToClipboard
 import com.github.livingwithhippos.unchained.utilities.extension.delayedScrolling
 import com.github.livingwithhippos.unchained.utilities.extension.downloadFile
@@ -206,7 +204,8 @@ class FolderListFragment : Fragment(), DownloadListListener {
             override fun deleteSelectedItems() {
                 if (linkTracker.selection.toList().isNotEmpty()) {
                     viewModel.deleteDownloadList(linkTracker.selection.toList())
-                }
+                } else
+                    context?.showToast(R.string.select_one_item)
             }
 
             override fun shareSelectedItems() {
@@ -222,7 +221,8 @@ class FolderListFragment : Fragment(), DownloadListListener {
                             getString(R.string.share_with)
                         )
                     )
-                }
+                } else
+                    context?.showToast(R.string.select_one_item)
             }
 
             override fun downloadSelectedItems() {
@@ -252,7 +252,8 @@ class FolderListFragment : Fragment(), DownloadListListener {
                     }
                     if (downloadStarted)
                         context?.showToast(R.string.download_started)
-                }
+                } else
+                    context?.showToast(R.string.select_one_item)
             }
         }
 

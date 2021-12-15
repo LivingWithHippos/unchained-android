@@ -76,6 +76,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="false"
+                android:tooltipText="@string/select_deselect_all"
                 android:text="@{selectedTab == 0 ? selectedDownloads.toString() :  selectedTorrents.toString(), default=`2`}" />
 
             <ImageButton
@@ -87,7 +88,7 @@
                 android:contentDescription="@string/delete"
                 android:onClick="@{() -> listener.deleteSelectedItems()}"
                 android:src="@drawable/icon_delete"
-                 />
+                android:tooltipText="@string/delete_selected" />
 
             <ImageButton
                 android:id="@+id/bDownloadSelected"
@@ -98,7 +99,7 @@
                 android:contentDescription="@string/download"
                 android:onClick="@{() -> listener.downloadSelectedItems()}"
                 android:src="@drawable/icon_download"
-                />
+                android:tooltipText="@string/download_selected" />
 
 
             <ImageButton
@@ -110,8 +111,8 @@
                 android:contentDescription="@string/share"
                 android:onClick="@{() -> listener.shareSelectedItems()}"
                 android:src="@drawable/icon_share"
-                android:visibility="@{selectedTab == 0 ? View.VISIBLE : View.INVISIBLE}"/>
-
+                android:visibility="@{selectedTab == 0 ? View.VISIBLE : View.INVISIBLE}"
+                android:tooltipText="@string/share_selected" />
 
         </LinearLayout>
 

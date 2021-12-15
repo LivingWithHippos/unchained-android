@@ -60,7 +60,7 @@
                 android:layout_height="40dp"
                 android:layout_gravity="center"
                 android:background="@drawable/icon_sort_default"
-                android:backgroundTint="?attr/colorOnBackground"
+                android:backgroundTint="?android:textColorSecondary"
                 android:contentDescription="@string/sort"
                 app:layout_constraintBottom_toBottomOf="@id/tfFilter"
                 app:layout_constraintEnd_toEndOf="parent"

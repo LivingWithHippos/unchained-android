@@ -78,12 +78,12 @@
 
         <ImageButton
             android:id="@+id/sortingButton"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="20dp"
             android:background="@drawable/icon_sort_default"
-            android:backgroundTint="?attr/colorOnSurface"
+            android:backgroundTint="?android:textColorSecondary"
             android:contentDescription="@string/sort"
             app:layout_constraintBottom_toBottomOf="@id/tfFilter"
             app:layout_constraintEnd_toEndOf="parent"
@@ -130,6 +130,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="false"
+                android:tooltipText="@string/select_deselect_all"
                 android:text="@{selectedLinks.toString(), default=`2`}" />
 
             <ImageButton
