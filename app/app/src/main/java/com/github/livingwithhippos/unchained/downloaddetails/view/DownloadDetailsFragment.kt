@@ -1,8 +1,6 @@
 package com.github.livingwithhippos.unchained.downloaddetails.view
 
 import android.Manifest
-import android.app.DownloadManager
-import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -27,15 +25,17 @@ import com.github.livingwithhippos.unchained.downloaddetails.model.AlternativeDo
 import com.github.livingwithhippos.unchained.downloaddetails.viewmodel.DownloadDetailsMessage
 import com.github.livingwithhippos.unchained.downloaddetails.viewmodel.DownloadDetailsViewModel
 import com.github.livingwithhippos.unchained.lists.view.ListsTabFragment
-import com.github.livingwithhippos.unchained.utilities.EitherResult
+import com.github.livingwithhippos.unchained.utilities.Downloader
 import com.github.livingwithhippos.unchained.utilities.EventObserver
 import com.github.livingwithhippos.unchained.utilities.RD_STREAMING_URL
 import com.github.livingwithhippos.unchained.utilities.extension.copyToClipboard
-import com.github.livingwithhippos.unchained.utilities.extension.downloadFile
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import timber.log.Timber
+import javax.inject.Inject
 
 
 /**
@@ -48,6 +48,9 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
     private val viewModel: DownloadDetailsViewModel by viewModels()
 
     private val args: DownloadDetailsFragmentArgs by navArgs()
+
+    @Inject
+    lateinit var downloader: Downloader
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -225,7 +228,27 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         }
     }
 
+    private val writeFileResult = registerForActivityResult(
+        ActivityResultContracts.CreateDocument()
+    ) {
+        val outputStream = context?.contentResolver?.openOutputStream(it)
+        if (outputStream!=null) {
+            lifecycleScope.launch {
+                launch {
+                    downloader.progress.collect { progress ->
+                        Timber.d("progress $progress")
+                    }
+                }
+                downloader.downloadFileViaOKHTTP(args.details.download, outputStream)
+            }
+        } else {
+            Timber.e("Selected file had null output stream")
+        }
+    }
+
     private fun downloadFile(link: String, fileName: String) {
+        /**
+         *
         val manager =
             requireContext().getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
         val queuedDownload = manager.downloadFile(
@@ -241,6 +264,8 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                 context?.showToast(R.string.download_started)
             }
         }
+         */
+        writeFileResult.launch(args.details.filename)
     }
 
     private val requestPermissionLauncher =
