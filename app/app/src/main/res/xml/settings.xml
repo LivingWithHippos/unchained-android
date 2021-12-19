@@ -2,7 +2,6 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-
     <PreferenceCategory
         android:summary="@string/restart_to_apply"
         android:title="@string/title_aspect">
@@ -102,6 +101,14 @@
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/title_various">
+
+        <DropDownPreference
+            android:defaultValue="download_manager"
+            android:entries="@array/download_mode"
+            android:entryValues="@array/download_mode_values"
+            android:key="download_mode"
+            android:title="@string/download_manager"
+            app:summary="@string/download_manager_description"  />
 
         <DropDownPreference
             android:defaultValue="user"

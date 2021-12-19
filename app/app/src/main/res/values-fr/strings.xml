@@ -354,4 +354,8 @@
     <string name="select_deselect_all">Tout sélectionner ou désélectionner</string>
     <string name="select_one_item">Sélectionnez au moins un élément</string>
     <string name="download_channel_description">Canal de notification de l\'état des téléchargements locaux</string>
+    <string name="okhttp">OkHttp</string>
+    <string name="system_download_manager">Gestionnaire des téléchargements du système</string>
+    <string name="download_manager">Gestionnaire de téléchargement</string>
+    <string name="download_manager_description">Choisissez un gestionnaire pour vos téléchargements. Le gestionnaire par défaut est stable mais vous ne pourrez pas choisir votre dossier de téléchargement.</string>
 </resources>

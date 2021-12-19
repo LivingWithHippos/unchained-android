@@ -38,4 +38,13 @@
         <item>downloads</item>
         <item>search</item>
     </string-array>
+
+    <string-array name="download_mode" >
+        <item>@string/system_download_manager</item>
+        <item>@string/okhttp</item>
+    </string-array>
+    <string-array name="download_mode_values">
+        <item>okhttp</item>
+        <item>download_manager</item>
+    </string-array>
 </resources>
