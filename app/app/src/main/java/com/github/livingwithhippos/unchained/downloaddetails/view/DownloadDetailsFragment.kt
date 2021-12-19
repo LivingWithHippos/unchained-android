@@ -231,6 +231,8 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
     private val writeFileResult = registerForActivityResult(
         ActivityResultContracts.CreateDocument()
     ) {
+        activityViewModel.startCustomDownload(args.details.download, it)
+        /*
         val outputStream = context?.contentResolver?.openOutputStream(it)
         if (outputStream!=null) {
             lifecycleScope.launch {
@@ -244,6 +246,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         } else {
             Timber.e("Selected file had null output stream")
         }
+         */
     }
 
     private fun downloadFile(link: String, fileName: String) {

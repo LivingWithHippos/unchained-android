@@ -20,6 +20,10 @@ annotation class SummaryNotification
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
+annotation class DownloadNotification
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
 annotation class ClassicClient
 
 @Qualifier

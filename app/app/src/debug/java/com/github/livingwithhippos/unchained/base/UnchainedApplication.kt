@@ -53,7 +53,7 @@ class UnchainedApplication : Application() {
             protoStore.deleteIncompleteCredentials()
         }
 
-        createNotificationChannel()
+        createNotificationChannels()
 
         // remove these lines from the release file
         Timber.plant(Timber.DebugTree())
@@ -68,24 +68,35 @@ class UnchainedApplication : Application() {
         Countly.sharedInstance().init(config)
     }
 
-    private fun createNotificationChannel() {
+    private fun createNotificationChannels() {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = getString(R.string.app_name)
-            val descriptionText = getString(R.string.torrent_channel_description)
+            val appName = getString(R.string.app_name)
             val importance = NotificationManager.IMPORTANCE_LOW
-            val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
-                description = descriptionText
+            val torrentDescription = getString(R.string.torrent_channel_description)
+
+            val torrentChannel = NotificationChannel(CHANNEL_ID, appName, importance).apply {
+                description = torrentDescription
             }
-            // Register the channel with the system
+
+            val downloadDescription = getString(R.string.torrent_channel_description)
+            val downloadChannel =
+                NotificationChannel(DOWNLOAD_CHANNEL_ID, appName, importance).apply {
+                    description = downloadDescription
+                }
+
+            // Register the channels with the system
             val notificationManager: NotificationManager =
                 getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.createNotificationChannel(channel)
+
+            notificationManager.createNotificationChannel(torrentChannel)
+            notificationManager.createNotificationChannel(downloadChannel)
         }
     }
 
     companion object {
         const val CHANNEL_ID = "unchained_torrent_channel"
+        const val DOWNLOAD_CHANNEL_ID = "unchained_torrent_download_channel"
     }
 }

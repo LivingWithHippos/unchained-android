@@ -27,6 +27,7 @@ import com.github.livingwithhippos.unchained.data.repository.PluginRepository
 import com.github.livingwithhippos.unchained.data.repository.PluginRepository.Companion.TYPE_UNCHAINED
 import com.github.livingwithhippos.unchained.data.repository.UserRepository
 import com.github.livingwithhippos.unchained.data.repository.VariousApiRepository
+import com.github.livingwithhippos.unchained.data.service.CustomDownload
 import com.github.livingwithhippos.unchained.lists.view.ListsTabFragment
 import com.github.livingwithhippos.unchained.plugins.model.Plugin
 import com.github.livingwithhippos.unchained.statemachine.authentication.CurrentFSMAuthentication
@@ -89,6 +90,8 @@ class MainActivityViewModel @Inject constructor(
     val linkLiveData = MutableLiveData<Event<String>?>()
 
     val messageLiveData = MutableLiveData<Event<Int>?>()
+
+    val localDownloadLiveData = MutableLiveData<Event<Pair<String,Uri>>?>()
 
     private var refreshJob: Job? = null
 
@@ -934,6 +937,10 @@ class MainActivityViewModel @Inject constructor(
      */
     fun goToStartUpScreen() {
         jumpTabLiveData.postEvent(preferences.getString("main_screen", "user") ?: "user")
+    }
+
+    fun startCustomDownload(source: String, destination: Uri) {
+        localDownloadLiveData.postValue(Event(Pair(source,destination)))
     }
 
     companion object {

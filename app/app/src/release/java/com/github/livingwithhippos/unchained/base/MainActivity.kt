@@ -3,14 +3,17 @@ package com.github.livingwithhippos.unchained.base
 import android.annotation.SuppressLint
 import android.app.DownloadManager
 import android.content.BroadcastReceiver
+import android.content.ComponentName
 import android.content.ContentResolver.SCHEME_CONTENT
 import android.content.ContentResolver.SCHEME_FILE
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.ServiceConnection
 import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
+import android.os.IBinder
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
@@ -27,6 +30,7 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.model.UserAction
 import com.github.livingwithhippos.unchained.data.repository.PluginRepository.Companion.TYPE_UNCHAINED
+import com.github.livingwithhippos.unchained.data.service.ForegroundDownloadService
 import com.github.livingwithhippos.unchained.data.service.ForegroundTorrentService
 import com.github.livingwithhippos.unchained.data.service.ForegroundTorrentService.Companion.KEY_TORRENT_ID
 import com.github.livingwithhippos.unchained.databinding.ActivityMainBinding
@@ -247,6 +251,18 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         )
+
+        viewModel.localDownloadLiveData.observe(this, EventObserver{
+            if (isDownloadServiceBound != true) {
+                lifecycleScope.launch {
+                    bindService()
+                    // needs some time to connect
+                    delay(1000)
+                    downloadService?.queueDownload(it.first,it.second)
+                }
+            } else
+                downloadService?.queueDownload(it.first,it.second)
+        })
 
         // monitor if the torrent notification service needs to be started. It monitor the preference change itself
         // for the shutting down part

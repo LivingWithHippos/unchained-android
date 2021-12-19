@@ -411,6 +411,7 @@
     <string name="updating_link_matcher">Updating link matcher…</string>
     <string name="unknown_error">Unknown error</string>
     <string name="network_error">Network error</string>
+    <string name="download_channel_description">Notification channel for local downloads status</string>
     <string name="torrent_channel_description">Notification channel for torrents download status</string>
     <string name="torrent_in_progress">Torrent download in progress</string>
     <plurals name="seeders_format">

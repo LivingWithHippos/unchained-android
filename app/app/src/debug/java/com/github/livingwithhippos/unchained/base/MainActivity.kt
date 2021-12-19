@@ -3,15 +3,18 @@ package com.github.livingwithhippos.unchained.base
 import android.annotation.SuppressLint
 import android.app.DownloadManager
 import android.content.BroadcastReceiver
+import android.content.ComponentName
 import android.content.ContentResolver.SCHEME_CONTENT
 import android.content.ContentResolver.SCHEME_FILE
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.ServiceConnection
 import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
+import android.os.IBinder
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
@@ -29,6 +32,7 @@ import com.github.livingwithhippos.unchained.BuildConfig
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.model.UserAction
 import com.github.livingwithhippos.unchained.data.repository.PluginRepository.Companion.TYPE_UNCHAINED
+import com.github.livingwithhippos.unchained.data.service.ForegroundDownloadService
 import com.github.livingwithhippos.unchained.data.service.ForegroundTorrentService
 import com.github.livingwithhippos.unchained.data.service.ForegroundTorrentService.Companion.KEY_TORRENT_ID
 import com.github.livingwithhippos.unchained.databinding.ActivityMainBinding
@@ -70,6 +74,50 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
     val viewModel: MainActivityViewModel by viewModels()
+
+    // Variable for storing instance of our service class
+    var downloadService: ForegroundDownloadService? = null
+
+    // Boolean to check if our activity is bound to service or not
+    var isDownloadServiceBound: Boolean? = null
+
+    /**
+     * Interface for getting the instance of binder from our service class
+     * So client can get instance of our service class and can directly communicate with it.
+     */
+    private val serviceConnection = object : ServiceConnection {
+        override fun onServiceConnected(className: ComponentName, iBinder: IBinder) {
+            Timber.d("ServiceConnection: connected to service.")
+            // We've bound to MyService, cast the IBinder and get MyBinder instance
+            val binder = iBinder as ForegroundDownloadService.DownloadBinder
+            downloadService = binder.service
+            isDownloadServiceBound = true
+        }
+
+        override fun onServiceDisconnected(arg0: ComponentName) {
+            Timber.d("ServiceConnection: disconnected from service.")
+            isDownloadServiceBound = false
+        }
+    }
+
+    /**
+     * Used to bind to our service class
+     */
+    private fun bindService() {
+        Intent(this, ForegroundDownloadService::class.java).also { intent ->
+            bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
+        }
+    }
+
+    /**
+     * Used to unbind and stop our service class
+     */
+    private fun unbindService() {
+        Intent(this, ForegroundDownloadService::class.java).also {
+            unbindService(serviceConnection)
+        }
+    }
+
 
     @Inject
     lateinit var preferences: SharedPreferences
@@ -232,6 +280,17 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
+        viewModel.localDownloadLiveData.observe(this, EventObserver{
+            if (isDownloadServiceBound != true) {
+                lifecycleScope.launch {
+                    bindService()
+                    // needs some time to connect
+                    delay(1000)
+                    downloadService?.queueDownload(it.first,it.second)
+                }
+            } else
+                downloadService?.queueDownload(it.first,it.second)
+        })
 
         // monitor if the torrent notification service needs to be started. It monitor the preference change itself
         // for the shutting down part

@@ -349,4 +349,5 @@
     <string name="summary_main_screen">Pagina da aprire all\'avvio</string>
     <string name="select_deselect_all">Seleziona o deseleziona tutto</string>
     <string name="select_one_item">Seleziona almeno un elemento</string>
+    <string name="download_channel_description">Canale di notifica per lo stato dei download locali</string>
 </resources>
