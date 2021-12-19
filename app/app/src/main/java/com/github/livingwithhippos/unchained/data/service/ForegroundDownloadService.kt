@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Binder
 import android.os.IBinder
+import android.provider.OpenableColumns
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.LifecycleService
@@ -15,7 +16,6 @@ import com.github.livingwithhippos.unchained.utilities.Downloader
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.Mutex
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -33,8 +33,6 @@ class ForegroundDownloadService : LifecycleService() {
 
     @Inject
     lateinit var notificationManager: NotificationManagerCompat
-
-    val mutex = Mutex()
 
     /**
      * Binder for the client. It can be used to retrieve this service and call its public methods.
@@ -61,8 +59,6 @@ class ForegroundDownloadService : LifecycleService() {
 
     fun queueDownload(source: String, destination: Uri) {
 
-        val fileName = destination.lastPathSegment
-        Timber.e("filename $fileName")
         // checking if I already have this download in the queue
         val replaceDownload = downloads.firstOrNull { it.source == source }
         if (replaceDownload != null) {
@@ -82,10 +78,26 @@ class ForegroundDownloadService : LifecycleService() {
         } else {
             Timber.e("Nuovo download, filename " + destination.lastPathSegment)
             // new download!
+            var fileName: String = destination.path?.substringAfterLast("/") ?: "download"
+            val cursor = contentResolver.query(
+                destination,
+                arrayOf(OpenableColumns.DISPLAY_NAME),
+                null,
+                null,
+                null
+            )
+
+            cursor.use {
+                if (it!=null && it.moveToFirst()) {
+                    fileName = it.getString(0)
+                }
+            }
+
             downloads.add(
                 CustomDownload(
                     source = source,
-                    destination = destination
+                    destination = destination,
+                    title = fileName
                 )
             )
         }
@@ -107,16 +119,8 @@ class ForegroundDownloadService : LifecycleService() {
                         launch {
                             downloader.progress.collect {
                                 currentDownload.progress = it
-                                if (it == 100) {
-                                    // finished the download, make the last notification cancellable
-                                    currentDownload.status = DownloadStatus.Completed
-                                    // start a new download from the queue
-                                    startDownloadIfAvailable()
-                                    updateNotification()
-                                } else {
-                                    // update the notification
-                                    updateNotification()
-                                }
+                                // update the notification
+                                updateNotification()
                                 Timber.d("progress $it")
                             }
                         }
@@ -136,12 +140,13 @@ class ForegroundDownloadService : LifecycleService() {
         val notifications: MutableMap<String, Notification> = mutableMapOf()
 
         downloads.let { currentDownloads ->
-            val currentDownload = currentDownloads.firstOrNull { it.status == DownloadStatus.Running }
+            val currentDownload =
+                currentDownloads.firstOrNull { it.status == DownloadStatus.Running }
             val stoppedDownloads = currentDownloads.filter { it.status == DownloadStatus.Stopped }
             val queuedDownload = currentDownloads.filter { it.status == DownloadStatus.Queued }
             val errorDownload = currentDownloads.filter { it.status == DownloadStatus.Error }
 
-            if (currentDownload!=null) {
+            if (currentDownload != null) {
                 downloadBuilder.setProgress(100, currentDownload.progress, false)
                     .setContentTitle(
                         getString(
@@ -153,19 +158,22 @@ class ForegroundDownloadService : LifecycleService() {
 
                 downloadBuilder.setStyle(
                     NotificationCompat.BigTextStyle()
-                        .bigText(currentDownload.source)
+                        .bigText(currentDownload.title)
                 )
 
                 notifications[currentDownload.source] = downloadBuilder.build()
 
-                if (currentDownload.progress >= 100)
+                // todo: finished the download, make the last notification cancellable
+                if (currentDownload.progress >= 100) {
                     currentDownload.status = DownloadStatus.Completed
+                    startDownloadIfAvailable()
+                }
             }
 
             stoppedDownloads.forEach {
                 downloadBuilder.setStyle(
                     NotificationCompat.BigTextStyle()
-                        .bigText(it.source)
+                        .bigText(it.title)
                 )
 
                 notifications[it.source] = downloadBuilder.build()
@@ -174,7 +182,7 @@ class ForegroundDownloadService : LifecycleService() {
             queuedDownload.forEach {
                 downloadBuilder.setStyle(
                     NotificationCompat.BigTextStyle()
-                        .bigText(it.source)
+                        .bigText(it.title)
                 )
 
                 notifications[it.source] = downloadBuilder.build()
@@ -183,7 +191,7 @@ class ForegroundDownloadService : LifecycleService() {
             errorDownload.forEach {
                 downloadBuilder.setStyle(
                     NotificationCompat.BigTextStyle()
-                        .bigText(it.source)
+                        .bigText(it.title)
                 )
 
                 notifications[it.source] = downloadBuilder.build()
@@ -210,6 +218,7 @@ class ForegroundDownloadService : LifecycleService() {
 data class CustomDownload(
     val source: String,
     var destination: Uri,
+    var title: String,
     var status: DownloadStatus = DownloadStatus.Queued,
     var progress: Int = 0,
     var speed: Int = 0
