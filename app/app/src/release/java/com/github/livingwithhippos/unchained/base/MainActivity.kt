@@ -61,6 +61,12 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
+
+
+    private fun createCountly() {
+        // do nothing. This function is empty so MainActivity can share all the code in the release and debug version of the file below here
+    }
+
     /****************************************************************
      * ADD CHANGES MADE HERE IN THE RELEASE VERSION OF MAINACTIVITY *
      ***************************************************************/
@@ -115,21 +121,22 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+
     @Inject
     lateinit var preferences: SharedPreferences
 
     private val downloadReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            if (intent != null) {
+            intent?.let {
                 viewModel.checkTorrentDownload(
-                    intent.getLongExtra(
+                    it.getLongExtra(
                         DownloadManager.EXTRA_DOWNLOAD_ID,
                         -1
                     )
                 )
                 viewModel.checkPluginDownload(
                     applicationContext,
-                    intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
+                    it.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
                 )
             }
         }
@@ -237,9 +244,8 @@ class MainActivity : AppCompatActivity() {
             IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
         )
 
-        viewModel.linkLiveData.observe(
-            this,
-            EventObserver { link ->
+        viewModel.linkLiveData.observe(this) {
+            it?.getContentIfNotHandled()?.let { link ->
                 when {
                     link.endsWith(TYPE_UNCHAINED, ignoreCase = true) -> {
                         downloadPlugin(link)
@@ -250,18 +256,36 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             }
-        )
+        }
 
-        viewModel.localDownloadLiveData.observe(this, EventObserver{
+        viewModel.jumpTabLiveData.observe(this, EventObserver {
+            when (it) {
+                "user" -> {
+                    // do nothing
+                }
+                "downloads" -> {
+                    lifecycleScope.launch {
+                        doubleClickBottomItem(R.id.navigation_lists)
+                    }
+                }
+                "search" -> {
+                    lifecycleScope.launch {
+                        doubleClickBottomItem(R.id.navigation_search)
+                    }
+                }
+            }
+        })
+
+        viewModel.localDownloadLiveData.observe(this, EventObserver {
             if (isDownloadServiceBound != true) {
                 lifecycleScope.launch {
                     bindService()
                     // needs some time to connect
                     delay(1000)
-                    downloadService?.queueDownload(it.first,it.second)
+                    downloadService?.queueDownload(it.first, it.second)
                 }
             } else
-                downloadService?.queueDownload(it.first,it.second)
+                downloadService?.queueDownload(it.first, it.second)
         })
 
         // monitor if the torrent notification service needs to be started. It monitor the preference change itself
@@ -280,13 +304,14 @@ class MainActivity : AppCompatActivity() {
         val currentToast: Toast = Toast.makeText(this, "", Toast.LENGTH_SHORT)
 
         viewModel.messageLiveData.observe(
-            this,
-            EventObserver {
+            this
+        ) {
+            it?.getContentIfNotHandled()?.let { message ->
                 currentToast.cancel()
-                currentToast.setText(getString(it))
+                currentToast.setText(getString(message))
                 currentToast.show()
             }
-        )
+        }
 
         // start the notification system if enabled
         if (preferences.getBoolean(KEY_TORRENT_NOTIFICATIONS, false)) {
@@ -295,19 +320,19 @@ class MainActivity : AppCompatActivity() {
         }
 
         viewModel.connectivityLiveData.observe(
-            this,
-            {
-                when (it) {
-                    true -> Timber.d("connection enabled")
-                    false -> {
-                        Timber.e("connection disabled")
-                        applicationContext.showToast(R.string.no_network_connection)
-                    }
-                    null -> {
-                    }
+            this
+        ) {
+            when (it) {
+                true -> Timber.d("connection enabled")
+                false -> {
+                    Timber.e("connection disabled")
+                    applicationContext.showToast(R.string.no_network_connection)
+                }
+                null -> {
+                    Timber.e("connection null")
                 }
             }
-        )
+        }
         viewModel.setupConnectivityCheck(applicationContext)
     }
 
@@ -334,6 +359,8 @@ class MainActivity : AppCompatActivity() {
                 viewModel.setPluginDownload(queuedDownload.success)
             }
         }
+
+        createCountly()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
