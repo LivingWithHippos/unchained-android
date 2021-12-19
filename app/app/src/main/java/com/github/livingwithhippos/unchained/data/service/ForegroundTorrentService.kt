@@ -37,7 +37,7 @@ class ForegroundTorrentService : LifecycleService() {
     @Inject
     lateinit var protoStore: ProtoStore
 
-    private val torrentBinder = Binder()
+    private val torrentBinder = TorrentBinder()
 
     private val torrentsLiveData = MutableLiveData<List<TorrentItem>>()
 
@@ -83,56 +83,55 @@ class ForegroundTorrentService : LifecycleService() {
 
     private fun startForegroundService() {
         torrentsLiveData.observe(
-            this,
-            { list ->
-                // todo: manage removed torrents (right now they just stop updating)
-                // the torrents we were observing
-                val oldTorrentsIDs: Set<String> =
-                    preferences.getStringSet(KEY_OBSERVED_TORRENTS, emptySet()) as Set<String>
-                // their updated status
-                val newLoadingTorrents =
-                    list.filter { torrent -> loadingStatusList.contains(torrent.status) }
-                // the torrent whose status is not a loading one anymore.
-                val finishedTorrents = list
-                    // They are in our old list
-                    .filter { oldTorrentsIDs.contains(it.id) }
-                    // They aren't in our new loading list
-                    .filter { !newLoadingTorrents.map { newT -> newT.id }.contains(it.id) }
-                /*
-                // the new torrents to add to the notification system
-                val unwatchedTorrents = newLoadingTorrents.filter { !oldTorrentsIDs.contains(it.id) }
-                // the torrents not in our updated list anymore. These needs to be retrieved and analyzed singularly.
-                // Shouldn't happen often since there is a limit on how many active torrents you can have in real debrid
-                // and we retrieve the last 30 torrents every time
-                val missingTorrents = oldTorrentsIDs.filter { id ->
-                    !list.map { it.id }.contains(id)
-                }
-                 */
-
-                // update the torrents id to observe
-                val newIDs = mutableSetOf<String>()
-                newIDs.addAll(newLoadingTorrents.map { it.id })
-                with(preferences.edit()) {
-                    putStringSet(KEY_OBSERVED_TORRENTS, newIDs)
-                    apply()
-                }
-                updateTiming = if (newIDs.isEmpty())
-                    UPDATE_TIMING_LONG
-                else
-                    UPDATE_TIMING_SHORT
-
-                // let's first operate as if all the needed torrents were always in the list
-
-                // update the notifications for torrents in one of the loading statuses
-                updateNotification(newLoadingTorrents)
-                // update the notifications for torrents in one of the finished statuses
-                finishedTorrents.forEach { torrent ->
-                    completeNotification(torrent)
-                }
-                if (finishedTorrents.isNotEmpty())
-                    applicationContext.vibrate()
+            this
+        ) { list ->
+            // todo: manage removed torrents (right now they just stop updating)
+            // the torrents we were observing
+            val oldTorrentsIDs: Set<String> =
+                preferences.getStringSet(KEY_OBSERVED_TORRENTS, emptySet()) as Set<String>
+            // their updated status
+            val newLoadingTorrents =
+                list.filter { torrent -> loadingStatusList.contains(torrent.status) }
+            // the torrent whose status is not a loading one anymore.
+            val finishedTorrents = list
+                // They are in our old list
+                .filter { oldTorrentsIDs.contains(it.id) }
+                // They aren't in our new loading list
+                .filter { !newLoadingTorrents.map { newT -> newT.id }.contains(it.id) }
+            /*
+            // the new torrents to add to the notification system
+            val unwatchedTorrents = newLoadingTorrents.filter { !oldTorrentsIDs.contains(it.id) }
+            // the torrents not in our updated list anymore. These needs to be retrieved and analyzed singularly.
+            // Shouldn't happen often since there is a limit on how many active torrents you can have in real debrid
+            // and we retrieve the last 30 torrents every time
+            val missingTorrents = oldTorrentsIDs.filter { id ->
+                !list.map { it.id }.contains(id)
             }
-        )
+             */
+
+            // update the torrents id to observe
+            val newIDs = mutableSetOf<String>()
+            newIDs.addAll(newLoadingTorrents.map { it.id })
+            with(preferences.edit()) {
+                putStringSet(KEY_OBSERVED_TORRENTS, newIDs)
+                apply()
+            }
+            updateTiming = if (newIDs.isEmpty())
+                UPDATE_TIMING_LONG
+            else
+                UPDATE_TIMING_SHORT
+
+            // let's first operate as if all the needed torrents were always in the list
+
+            // update the notifications for torrents in one of the loading statuses
+            updateNotification(newLoadingTorrents)
+            // update the notifications for torrents in one of the finished statuses
+            finishedTorrents.forEach { torrent ->
+                completeNotification(torrent)
+            }
+            if (finishedTorrents.isNotEmpty())
+                applicationContext.vibrate()
+        }
 
         startForeground(SUMMARY_ID, summaryBuilder.build())
 
