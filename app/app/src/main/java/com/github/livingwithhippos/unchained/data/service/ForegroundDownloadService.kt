@@ -70,7 +70,7 @@ class ForegroundDownloadService : LifecycleService() {
                 replaceDownload.destination = destination
                 replaceDownload.status = DownloadStatus.Queued
                 replaceDownload.progress = 0
-                replaceDownload.speed = 0
+                replaceDownload.speed = 0f
             } else {
                 // not replacing anything for a running or stopped download because it could already be partially downloaded
             }
@@ -88,7 +88,7 @@ class ForegroundDownloadService : LifecycleService() {
             )
 
             cursor.use {
-                if (it!=null && it.moveToFirst()) {
+                if (it != null && it.moveToFirst()) {
                     fileName = it.getString(0)
                 }
             }
@@ -117,11 +117,19 @@ class ForegroundDownloadService : LifecycleService() {
                     lifecycleScope.launch {
                         // this must run in another scope to avoid being blocked
                         launch {
-                            downloader.progress.collect {
-                                currentDownload.progress = it
+                            var lastRegisteredTime = System.currentTimeMillis()
+                            var lastRegisteredSize: Long = 0
+                            downloader.downloadInfo.collect {
+                                val currentTime = System.currentTimeMillis()
+                                // update speed according to the last second
+                                if (currentTime - lastRegisteredTime > 2000) {
+                                    currentDownload.speed = ((it.second - lastRegisteredSize) / ((currentTime - lastRegisteredTime) * 1000)).toFloat()
+                                    lastRegisteredTime = currentTime
+                                    lastRegisteredSize = it.second
+                                }
+                                currentDownload.progress = (it.second * 100 / it.first).toInt()
                                 // update the notification
                                 updateNotification()
-                                Timber.d("progress $it")
                             }
                         }
                         downloader.downloadFileViaOKHTTP(currentDownload.source, outputStream)
@@ -221,7 +229,7 @@ data class CustomDownload(
     var title: String,
     var status: DownloadStatus = DownloadStatus.Queued,
     var progress: Int = 0,
-    var speed: Int = 0
+    var speed: Float = 0f
 )
 
 sealed class DownloadStatus {
