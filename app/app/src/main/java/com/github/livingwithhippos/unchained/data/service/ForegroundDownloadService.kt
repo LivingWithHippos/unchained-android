@@ -13,6 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.di.DownloadNotification
 import com.github.livingwithhippos.unchained.utilities.Downloader
+import com.github.livingwithhippos.unchained.utilities.extension.vibrate
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -76,7 +77,6 @@ class ForegroundDownloadService : LifecycleService() {
             }
 
         } else {
-            Timber.e("Nuovo download, filename " + destination.lastPathSegment)
             // new download!
             var fileName: String = destination.path?.substringAfterLast("/") ?: "download"
             val cursor = contentResolver.query(
@@ -174,6 +174,7 @@ class ForegroundDownloadService : LifecycleService() {
                 if (currentDownload.progress >= 100) {
                     currentDownload.status = DownloadStatus.Completed
                     currentDownload.speed = 0.0F
+                    applicationContext.vibrate()
                     startDownloadIfAvailable()
                 }
 
