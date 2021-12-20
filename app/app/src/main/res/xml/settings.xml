@@ -29,7 +29,9 @@
         <SwitchPreference
             android:defaultValue="false"
             app:key="notification_torrent_key"
-            app:title="@string/enable_torrent_monitoring_title" />
+            app:title="@string/enable_torrent_monitoring_title"
+            app:summary="@string/torrent_monitoring_description"
+            />
 
     </PreferenceCategory>
 

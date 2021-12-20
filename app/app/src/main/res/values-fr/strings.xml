@@ -358,4 +358,5 @@
     <string name="system_download_manager">Gestionnaire des téléchargements du système</string>
     <string name="download_manager">Gestionnaire de téléchargement</string>
     <string name="download_manager_description">Choisissez un gestionnaire pour vos téléchargements. Le gestionnaire par défaut est stable mais vous ne pourrez pas choisir votre dossier de téléchargement.</string>
+    <string name="torrent_monitoring_description">Surveillez le téléchargement de vos torrents sur les serveurs Real Debrid.</string>
 </resources>

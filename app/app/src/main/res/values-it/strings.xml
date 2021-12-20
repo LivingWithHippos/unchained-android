@@ -354,4 +354,5 @@
     <string name="system_download_manager">Gestore download di sistema</string>
     <string name="download_manager">Gestore di download</string>
     <string name="download_manager_description">Scegli un gestore per i tuoi download. Il gestore predefinito è stabile, ma non potrai scegliere la cartella dei tuoi download.</string>
+    <string name="torrent_monitoring_description">Controlla i tuoi torrenti che vengono scaricati sui server di Real Debrid.</string>
 </resources>
