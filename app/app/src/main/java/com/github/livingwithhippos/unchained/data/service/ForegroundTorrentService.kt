@@ -248,6 +248,7 @@ class ForegroundTorrentService : LifecycleService() {
                 .setContentIntent(resultPendingIntent)
                 // remove notification on tap
                 .setAutoCancel(true)
+                .setOngoing(false)
             notify(item.id.hashCode(), torrentBuilder.build())
         }
     }
