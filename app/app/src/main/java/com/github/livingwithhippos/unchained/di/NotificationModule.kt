@@ -50,7 +50,7 @@ object NotificationModule {
     ): NotificationCompat.Builder =
         NotificationCompat.Builder(applicationContext, UnchainedApplication.DOWNLOAD_CHANNEL_ID)
             .setSmallIcon(R.drawable.logo_no_background)
-            .setPriority(NotificationCompat.PRIORITY_LOW)
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setCategory(NotificationCompat.CATEGORY_PROGRESS)
             // ongoing means it can't be swiped away
             .setOngoing(true)
