@@ -181,10 +181,12 @@ class ForegroundTorrentService : LifecycleService() {
                             speedMBs
                         )
                     )
+                    .setOngoing(true)
             } else {
                 torrentBuilder.setContentTitle(applicationContext.getStatusTranslation(torrent.status))
                     // note: this could be indeterminate = true since it's technically in a loading status which should change
                     .setProgress(0, 0, false)
+                    .setOngoing(false)
             }
 
             val resultIntent = Intent(this, MainActivity::class.java).apply {

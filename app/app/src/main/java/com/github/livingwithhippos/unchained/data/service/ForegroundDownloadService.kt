@@ -174,9 +174,13 @@ class ForegroundDownloadService : LifecycleService() {
                 if (currentDownload.progress >= 100) {
                     currentDownload.status = DownloadStatus.Completed
                     currentDownload.speed = 0.0F
-                    downloadBuilder.setOngoing(false)
                     startDownloadIfAvailable()
                 }
+
+                if (currentDownload.status == DownloadStatus.Running && currentDownload.progress < 100)
+                    downloadBuilder.setOngoing(true)
+                else
+                    downloadBuilder.setOngoing(false)
 
                 notifications[currentDownload.source] = downloadBuilder.build()
             }
