@@ -115,10 +115,10 @@ class ForegroundDownloadService : LifecycleService() {
                 val outputStream = contentResolver?.openOutputStream(currentDownload.destination)
                 if (outputStream != null) {
                     lifecycleScope.launch {
-                        // this must run in another scope to avoid being blocked
+                        // the collect must be run in another scope to avoid being blocked
                         launch {
                             var lastRegisteredTime = System.currentTimeMillis()
-                            var lastRegisteredSize: Double = 0.0
+                            var lastRegisteredSize = 0.0
                             downloader.downloadInfo.collect {
                                 val currentTime = System.currentTimeMillis()
                                 // update speed according to the last second
@@ -160,7 +160,7 @@ class ForegroundDownloadService : LifecycleService() {
                         getString(
                             R.string.torrent_in_progress_format,
                             currentDownload.progress,
-                            currentDownload.speed.toFloat()
+                            currentDownload.speed
                         )
                     )
 
@@ -169,13 +169,16 @@ class ForegroundDownloadService : LifecycleService() {
                         .bigText(currentDownload.title)
                 )
 
-                notifications[currentDownload.source] = downloadBuilder.build()
 
                 // todo: finished the download, make the last notification cancellable
                 if (currentDownload.progress >= 100) {
                     currentDownload.status = DownloadStatus.Completed
+                    currentDownload.speed = 0.0F
+                    downloadBuilder.setOngoing(false)
                     startDownloadIfAvailable()
                 }
+
+                notifications[currentDownload.source] = downloadBuilder.build()
             }
 
             stoppedDownloads.forEach {
