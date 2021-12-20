@@ -118,12 +118,12 @@ class ForegroundDownloadService : LifecycleService() {
                         // this must run in another scope to avoid being blocked
                         launch {
                             var lastRegisteredTime = System.currentTimeMillis()
-                            var lastRegisteredSize: Long = 0
+                            var lastRegisteredSize: Double = 0.0
                             downloader.downloadInfo.collect {
                                 val currentTime = System.currentTimeMillis()
                                 // update speed according to the last second
                                 if (currentTime - lastRegisteredTime > 2000) {
-                                    currentDownload.speed = ((it.second - lastRegisteredSize) / ((currentTime - lastRegisteredTime) * 1000)).toFloat()
+                                    currentDownload.speed = ((it.second - lastRegisteredSize) / (currentTime - lastRegisteredTime) / 1000).toFloat()
                                     lastRegisteredTime = currentTime
                                     lastRegisteredSize = it.second
                                 }

@@ -118,8 +118,8 @@ class FlowableInputStream(
     private val wrapped: InputStream
 ) : InputStream() {
 
-    private val _counter: MutableStateFlow<Long> = MutableStateFlow(0)
-    val counter: StateFlow<Long> get() = _counter
+    private val _counter: MutableStateFlow<Double> = MutableStateFlow(0.0)
+    val counter: StateFlow<Double> get() = _counter
 
     @Throws(IOException::class)
     override fun read(): Int {

@@ -17,12 +17,12 @@ import javax.inject.Inject
 
 class Downloader @Inject constructor(@ClassicClient private val okHttpClient: OkHttpClient) {
 
-    private val _downloadInfo: MutableStateFlow<Pair<Double,Long>> = MutableStateFlow(Pair(0.0,0))
-    val downloadInfo: StateFlow<Pair<Double, Long>> get() = _downloadInfo
+    private val _downloadInfo: MutableStateFlow<Pair<Double,Double>> = MutableStateFlow(Pair(0.0,0.0))
+    val downloadInfo: StateFlow<Pair<Double, Double>> get() = _downloadInfo
 
     suspend fun downloadFileViaOKHTTP(url: String, outputStream: OutputStream) = withContext(Dispatchers.IO) {
         // reset the variable value
-        _downloadInfo.value = Pair(0.0,0)
+        _downloadInfo.value = Pair(0.0,0.0)
 
         val request: Request = Request.Builder().url(url).build()
 
@@ -35,7 +35,6 @@ class Downloader @Inject constructor(@ClassicClient private val okHttpClient: Ok
         val customInputStream = FlowableInputStream(responseBody.byteStream())
         launch {
             customInputStream.counter.collect {
-                //_progress.value = (it * 100 / length).toInt()
                 _downloadInfo.value = Pair(length, it)
             }
         }
