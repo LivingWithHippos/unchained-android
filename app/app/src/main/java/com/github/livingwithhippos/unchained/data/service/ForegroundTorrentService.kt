@@ -3,6 +3,7 @@ package com.github.livingwithhippos.unchained.data.service
 import android.app.Notification
 import android.app.PendingIntent
 import android.content.Intent
+import android.content.ServiceConnection
 import android.content.SharedPreferences
 import android.os.Binder
 import android.os.IBinder
@@ -26,6 +27,7 @@ import com.github.livingwithhippos.unchained.utilities.loadingStatusList
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -135,14 +137,17 @@ class ForegroundTorrentService : LifecycleService() {
 
         startForeground(SUMMARY_ID, summaryBuilder.build())
 
-        preferences.registerOnSharedPreferenceChangeListener { sharedPreferences, key ->
+        preferences.registerOnSharedPreferenceChangeListener (preferenceListener)
+    }
+
+    private val preferenceListener =
+        SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
             if (key == SettingsFragment.KEY_TORRENT_NOTIFICATIONS) {
-                val enableTorrentNotifications = sharedPreferences.getBoolean(key, false)
+                val enableTorrentNotifications = sharedPreferences?.getBoolean(key, false) ?: false
                 if (!enableTorrentNotifications)
                     stopTorrentService()
             }
         }
-    }
 
     private fun startMonitoring() {
         lifecycleScope.launch {
@@ -248,6 +253,11 @@ class ForegroundTorrentService : LifecycleService() {
     }
 
     private fun stopTorrentService() {
+        torrentsLiveData.value?.let {
+            it.forEach { torrent->
+                notificationManager.cancel(torrent.id.hashCode())
+            }
+        }
         stopSelf()
     }
 
