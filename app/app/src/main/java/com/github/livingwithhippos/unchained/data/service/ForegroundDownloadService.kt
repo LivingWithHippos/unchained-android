@@ -223,16 +223,16 @@ class ForegroundDownloadService : LifecycleService() {
             notifications[it.source] = downloadBuilder.build()
         }
 
-        // stop serving completed download notifications
-        downloads.removeAll {
-            it.status == DownloadStatus.Completed ||
-            it.status == DownloadStatus.Error
-        }
-
         notificationManager.apply {
             notifications.forEach { (id, notification) ->
                 notify(id.hashCode(), notification)
             }
+        }
+
+        // stop serving completed download notifications
+        downloads.removeAll {
+            it.status == DownloadStatus.Completed ||
+                    it.status == DownloadStatus.Error
         }
 
     }
