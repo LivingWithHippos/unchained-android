@@ -108,7 +108,9 @@ class ForegroundDownloadService : LifecycleService() {
      * Only call this from the mutex lock. I use this to download a single file at once
      */
     private fun startDownloadIfAvailable() {
+        // if I have no running downloads
         if (downloads.firstOrNull { it.status == DownloadStatus.Running } == null) {
+            // Start the first queued download
             val currentDownload = downloads.firstOrNull { it.status == DownloadStatus.Queued }
             if (currentDownload != null) {
                 currentDownload.status = DownloadStatus.Running
@@ -123,7 +125,8 @@ class ForegroundDownloadService : LifecycleService() {
                                 val currentTime = System.currentTimeMillis()
                                 // update speed according to the last second
                                 if (currentTime - lastRegisteredTime > 2000) {
-                                    currentDownload.speed = ((it.second - lastRegisteredSize) / (currentTime - lastRegisteredTime) / 1000).toFloat()
+                                    currentDownload.speed =
+                                        ((it.second - lastRegisteredSize) / (currentTime - lastRegisteredTime) / 1000).toFloat()
                                     lastRegisteredTime = currentTime
                                     lastRegisteredSize = it.second
                                 }
@@ -138,7 +141,7 @@ class ForegroundDownloadService : LifecycleService() {
                     Timber.e("Selected file had null output stream")
                 }
             } else {
-                // todo: close notifications?
+                // notifications are managed in updateNotification, just skip this one
             }
         }
     }
@@ -147,77 +150,88 @@ class ForegroundDownloadService : LifecycleService() {
 
         val notifications: MutableMap<String, Notification> = mutableMapOf()
 
-        downloads.let { currentDownloads ->
-            val currentDownload =
-                currentDownloads.firstOrNull { it.status == DownloadStatus.Running }
-            val stoppedDownloads = currentDownloads.filter { it.status == DownloadStatus.Stopped }
-            val queuedDownload = currentDownloads.filter { it.status == DownloadStatus.Queued }
-            val errorDownload = currentDownloads.filter { it.status == DownloadStatus.Error }
+        downloads.firstOrNull { it.status == DownloadStatus.Running }?.let { currentDownload ->
 
-            if (currentDownload != null) {
-                downloadBuilder.setProgress(100, currentDownload.progress, false)
-                    .setContentTitle(
-                        getString(
-                            R.string.torrent_in_progress_format,
-                            currentDownload.progress,
-                            currentDownload.speed
-                        )
+            downloadBuilder.setProgress(100, currentDownload.progress, false)
+                .setContentTitle(
+                    getString(
+                        R.string.torrent_in_progress_format,
+                        currentDownload.progress,
+                        currentDownload.speed
                     )
-
-                downloadBuilder.setStyle(
-                    NotificationCompat.BigTextStyle()
-                        .bigText(currentDownload.title)
                 )
 
+            downloadBuilder.setStyle(
+                NotificationCompat.BigTextStyle()
+                    .bigText(currentDownload.title)
+            )
 
-                // todo: finished the download, make the last notification cancellable
-                if (currentDownload.progress >= 100) {
-                    currentDownload.status = DownloadStatus.Completed
-                    currentDownload.speed = 0.0F
-                    applicationContext.vibrate()
-                    startDownloadIfAvailable()
-                }
-
-                if (currentDownload.status == DownloadStatus.Running && currentDownload.progress < 100)
-                    downloadBuilder.setOngoing(true)
-                else
-                    downloadBuilder.setOngoing(false)
-
-                notifications[currentDownload.source] = downloadBuilder.build()
+            // todo: finished the download, make the last notification cancellable
+            if (currentDownload.progress >= 100) {
+                currentDownload.status = DownloadStatus.Completed
+                applicationContext.vibrate()
+                startDownloadIfAvailable()
             }
 
-            stoppedDownloads.forEach {
-                downloadBuilder.setStyle(
-                    NotificationCompat.BigTextStyle()
-                        .bigText(it.title)
-                )
+            if (currentDownload.status == DownloadStatus.Running && currentDownload.progress < 100)
+                downloadBuilder.setOngoing(true)
+            else
+                downloadBuilder.setOngoing(false)
 
-                notifications[it.source] = downloadBuilder.build()
-            }
+            notifications[currentDownload.source] = downloadBuilder.build()
+        }
 
-            queuedDownload.forEach {
-                downloadBuilder.setStyle(
-                    NotificationCompat.BigTextStyle()
-                        .bigText(it.title)
-                )
+        downloads.filter { it.status == DownloadStatus.Stopped }.forEach {
+            downloadBuilder.setStyle(
+                NotificationCompat.BigTextStyle()
+                    .bigText(it.title)
+            )
 
-                notifications[it.source] = downloadBuilder.build()
-            }
+            notifications[it.source] = downloadBuilder.build()
+        }
 
-            errorDownload.forEach {
-                downloadBuilder.setStyle(
+        downloads.filter { it.status == DownloadStatus.Queued }.forEach {
+            downloadBuilder
+                .setStyle(
                     NotificationCompat.BigTextStyle()
                         .bigText(it.title)
-                )
+                ).setOngoing(false)
+                .setProgress(0, 0, false)
+                .setContentTitle(getString(R.string.queued))
 
-                notifications[it.source] = downloadBuilder.build()
-            }
+            notifications[it.source] = downloadBuilder.build()
+        }
 
+        downloads.filter { it.status == DownloadStatus.Completed }.forEach {
+            downloadBuilder
+                .setStyle(
+                    NotificationCompat.BigTextStyle()
+                        .bigText(it.title)
+                ).setOngoing(false)
+                .setProgress(0, 0, false)
+                .setContentTitle(getString(R.string.download_complete))
 
-            notificationManager.apply {
-                notifications.forEach { (id, notification) ->
-                    notify(id.hashCode(), notification)
-                }
+            notifications[it.source] = downloadBuilder.build()
+        }
+
+        downloads.filter { it.status == DownloadStatus.Error }.forEach {
+            downloadBuilder.setStyle(
+                NotificationCompat.BigTextStyle()
+                    .bigText(it.title)
+            )
+
+            notifications[it.source] = downloadBuilder.build()
+        }
+
+        // stop serving completed download notifications
+        downloads.removeAll {
+            it.status == DownloadStatus.Completed ||
+            it.status == DownloadStatus.Error
+        }
+
+        notificationManager.apply {
+            notifications.forEach { (id, notification) ->
+                notify(id.hashCode(), notification)
             }
         }
 
