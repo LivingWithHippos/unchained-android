@@ -1,0 +1,108 @@
+{
+  "engine_version": 2.0,
+  "version": 1.0,
+  "url": "https://nyaa.si",
+  "name": "Nyaa",
+  "description": "Parser for Nyaa",
+  "author": "morpheasgr, LivingWithHippos",
+  "supported_categories": {
+    "all": "0_0",
+    "anime": "1_0",
+    "software": "6_0",
+    "games": "6_2",
+    "music": "2_0",
+    "tv": "4_0",
+    "books": "3_0"
+  },
+  "search": {
+    "category": "${url}/?q=${query}&c=${category}&p=${page}",
+    "no_category": "${url}/?q=${query}&p=${page}",
+    "page_start": 1
+  },
+  "download": {
+    "table_direct": {
+      "class": "torrent-list",
+      "columns": {
+        "name_column": 1,
+        "seeders_column": 5,
+        "leechers_column": 6,
+        "size_column": 3,
+        "magnet_column": 2,
+        "torrent_column": 2,
+        "details_column": 1
+      }
+    },
+    "regexes": {
+      "magnet": {
+        "regex_use": "all",
+        "regexps": [
+          {
+            "regex": "href=\"(magnet:\\?xt=urn:btih:[^\"]+)",
+            "group": 1,
+            "slug_type": "complete"
+          }
+        ]
+      },
+      "torrents": {
+        "regex_use": "first",
+        "regexps": [
+          {
+            "regex": "(\/download\/\\d+\\.torrent)",
+            "group": 1,
+            "slug_type": "append_url"
+          }
+        ]
+      },
+      "name": {
+        "regex_use": "first",
+        "regexps": [
+          {
+            "regex": "<a\\s+href=\"[^\"]+\"\\s+title=\"([^\"]+)",
+            "group": 1,
+            "slug_type": "complete"
+          }
+        ]
+      },
+      "seeders": {
+        "regex_use": "first",
+        "regexps": [
+          {
+            "regex": "(\\d*)",
+            "group": 1,
+            "slug_type": "complete"
+          }
+        ]
+      },
+      "leechers": {
+        "regex_use": "first",
+        "regexps": [
+          {
+            "regex": "(\\d*)",
+            "group": 1,
+            "slug_type": "complete"
+          }
+        ]
+      },
+      "size": {
+        "regex_use": "first",
+        "regexps": [
+          {
+            "regex": "([\\w\\s.]*)",
+            "group": 1,
+            "slug_type": "complete"
+          }
+        ]
+      },
+      "details": {
+        "regex_use": "first",
+        "regexps": [
+          {
+            "regex": "href=\"(\/view\/[^\"]+)\"\\s+title",
+            "group": 1,
+            "slug_type": "append_url"
+          }
+        ]
+      }
+    }
+  }
+}
