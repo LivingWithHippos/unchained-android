@@ -53,17 +53,15 @@ android {
             }
         }
     }
-
     packagingOptions {
-        // Exclude AndroidX version files
-        exclude 'META-INF/*.version'
-        // Exclude consumer proguard files
-        exclude 'META-INF/proguard/*'
-        // Exclude the Firebase/Fabric/other random properties files
-        exclude '/*.properties'
-        exclude 'fabric/*.properties'
-        exclude 'META-INF/*.properties'
+        jniLibs {
+            excludes += ['META-INF/proguard/*']
+        }
+        resources {
+            excludes += ['META-INF/*.version', 'META-INF/proguard/*', '/*.properties', 'fabric/*.properties', 'META-INF/*.properties']
+        }
     }
+
 
     signingConfigs {
         // use local file if available or Environment variables (for CI)
@@ -156,6 +154,7 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    namespace 'com.github.livingwithhippos.unchained'
 }
 /*
 tasks.register('copyPlugins', Copy) {
