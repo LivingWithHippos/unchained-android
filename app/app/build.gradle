@@ -154,7 +154,6 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
-    namespace 'com.github.livingwithhippos.unchained'
 }
 /*
 tasks.register('copyPlugins', Copy) {
