@@ -70,7 +70,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         viewModel.kodiLiveData.observe(viewLifecycleOwner) {
             when (it.getContentIfNotHandled()) {
@@ -130,8 +130,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
         }
     }
 
-    override fun onPreferenceTreeClick(preference: Preference?): Boolean {
-        when (preference?.key) {
+    override fun onPreferenceTreeClick(preference: Preference): Boolean {
+        when (preference.key) {
             "feedback" -> openExternalWebPage(FEEDBACK_URL)
             "license" -> openExternalWebPage(GPLV3_URL)
             "credits" -> openCreditsDialog()
