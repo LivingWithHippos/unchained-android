@@ -567,4 +567,5 @@
     <string name="download_manager">Download Manager</string>
     <string name="download_manager_description">Choose a manager for your downloads. The system own manager will be the most stable but you won\'t be able to pick your download location. Use OkHttp to pick a location.</string>
     <string name="torrent_monitoring_description">Monitor your torrents being downloaded on Real-Debrid servers.</string>
+    <string name="stop">Stop</string>
 </resources>

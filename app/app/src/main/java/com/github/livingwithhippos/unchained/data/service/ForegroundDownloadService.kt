@@ -1,12 +1,16 @@
 package com.github.livingwithhippos.unchained.data.service
 
 import android.app.Notification
+import android.app.PendingIntent
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Binder
 import android.os.IBinder
 import android.provider.OpenableColumns
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationCompat.EXTRA_NOTIFICATION_ID
 import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.lifecycleScope
@@ -104,15 +108,40 @@ class ForegroundDownloadService : LifecycleService() {
         startDownloadIfAvailable()
     }
 
+    inner class CommandReceiver: BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            intent?.let {
+                when(it.action) {
+                    PAUSE_DOWNLOAD -> {}
+                    RESTART_DOWNLOAD -> {}
+                    STOP_DOWNLOAD -> {}
+                }
+                Timber.d("Ricevuto intent")
+            }
+        }
+    }
+
     /**
      * Only call this from the mutex lock. I use this to download a single file at once
      */
     private fun startDownloadIfAvailable() {
+
         // if I have no running downloads
         if (downloads.firstOrNull { it.status == DownloadStatus.Running } == null) {
             // Start the first queued download
             val currentDownload = downloads.firstOrNull { it.status == DownloadStatus.Queued }
             if (currentDownload != null) {
+
+                val stopDownloadIntent = Intent(this, CommandReceiver::class.java).apply {
+                    action = STOP_DOWNLOAD
+                    putExtra(EXTRA_NOTIFICATION_ID, 0)
+                    putExtra(CURRENT_DOWNLOAD_TITLE, currentDownload.title)
+                }
+
+                val stopDownloadPendingIntent: PendingIntent =
+                    PendingIntent.getBroadcast(this, 0, stopDownloadIntent, 0)
+
+
                 currentDownload.status = DownloadStatus.Running
                 val outputStream = contentResolver?.openOutputStream(currentDownload.destination)
                 if (outputStream != null) {
@@ -132,7 +161,7 @@ class ForegroundDownloadService : LifecycleService() {
                                 }
                                 currentDownload.progress = (it.second * 100 / it.first).toInt()
                                 // update the notification
-                                updateNotification()
+                                updateNotification(stopDownloadPendingIntent)
                             }
                         }
                         downloader.downloadFileViaOKHTTP(currentDownload.source, outputStream)
@@ -146,25 +175,19 @@ class ForegroundDownloadService : LifecycleService() {
         }
     }
 
-    private fun updateNotification() {
+    private fun updateNotification(stopDownloadPendingIntent: PendingIntent) {
 
         val notifications: MutableMap<String, Notification> = mutableMapOf()
 
         downloads.firstOrNull { it.status == DownloadStatus.Running }?.let { currentDownload ->
 
             downloadBuilder.setProgress(100, currentDownload.progress, false)
-                .setContentTitle(
-                    getString(
+                .setContentTitle(getString(
                         R.string.torrent_in_progress_format,
                         currentDownload.progress,
                         currentDownload.speed
-                    )
-                )
-
-            downloadBuilder.setStyle(
-                NotificationCompat.BigTextStyle()
-                    .bigText(currentDownload.title)
-            )
+                    ))
+                .setStyle(NotificationCompat.BigTextStyle().bigText(currentDownload.title))
 
             // todo: finished the download, make the last notification cancellable
             if (currentDownload.progress >= 100) {
@@ -173,8 +196,14 @@ class ForegroundDownloadService : LifecycleService() {
                 startDownloadIfAvailable()
             }
 
-            if (currentDownload.status == DownloadStatus.Running && currentDownload.progress < 100)
-                downloadBuilder.setOngoing(true)
+            if (currentDownload.status == DownloadStatus.Running && currentDownload.progress < 100) {
+                downloadBuilder.setOngoing(true).addAction(
+                    R.drawable.icon_stop,
+                    getString(R.string.stop),
+                    stopDownloadPendingIntent
+                )
+            }
+
             else
                 downloadBuilder.setOngoing(false)
 
@@ -242,6 +271,11 @@ class ForegroundDownloadService : LifecycleService() {
         const val KEY_DOWNLOADS_ID = "downloads_id_key"
         const val SUMMARY_ID: Int = 308
         val downloads = mutableListOf<CustomDownload>()
+
+        const val PAUSE_DOWNLOAD="pause_download"
+        const val RESTART_DOWNLOAD="restart_download"
+        const val STOP_DOWNLOAD="stop_download"
+        const val CURRENT_DOWNLOAD_TITLE="current_download_id"
     }
 }
 
