@@ -139,7 +139,12 @@ class ForegroundDownloadService : LifecycleService() {
                 }
 
                 val stopDownloadPendingIntent: PendingIntent =
-                    PendingIntent.getBroadcast(this, 0, stopDownloadIntent, 0)
+                    PendingIntent.getBroadcast(
+                        this,
+                        0,
+                        stopDownloadIntent,
+                        PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+                    )
 
 
                 currentDownload.status = DownloadStatus.Running
