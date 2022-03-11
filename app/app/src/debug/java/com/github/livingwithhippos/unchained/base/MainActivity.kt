@@ -160,6 +160,7 @@ class MainActivity : AppCompatActivity() {
                             UserAction.UNKNOWN -> showToast(R.string.generic_login_error)
                             UserAction.NETWORK_ERROR -> showToast(R.string.network_error)
                             UserAction.RETRY_LATER -> showToast(R.string.retry_later)
+                            null -> showToast(R.string.retry_later)
                         }
                         // this state should be managed by the fragments directly
                         lifecycleScope.launch {
