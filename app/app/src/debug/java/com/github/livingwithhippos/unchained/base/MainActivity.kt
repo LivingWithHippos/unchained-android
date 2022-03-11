@@ -60,6 +60,35 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
+    // countly crash reporter set up. Debug mode only
+    override fun onStart() {
+        super.onStart()
+        if (BuildConfig.DEBUG) {
+            Countly.sharedInstance().onStart(this)
+        }
+    }
+
+    override fun onStop() {
+        if (BuildConfig.DEBUG) {
+            Countly.sharedInstance().onStop()
+        }
+        super.onStop()
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+
+        if (BuildConfig.DEBUG) {
+            Countly.sharedInstance().onConfigurationChanged(newConfig)
+        }
+    }
+
+    private fun createCountly() {
+        if (BuildConfig.DEBUG) {
+            Countly.onCreate(this)
+        }
+    }
+
     /****************************************************************
      * ADD CHANGES MADE HERE IN THE RELEASE VERSION OF MAINACTIVITY *
      ***************************************************************/
@@ -172,9 +201,6 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
                 }
-            } else {
-                Countly.sharedInstance().events()
-                    .recordEvent("fsmAuthenticationState observable was null")
             }
         }
 
@@ -197,18 +223,14 @@ class MainActivity : AppCompatActivity() {
         )
 
         viewModel.linkLiveData.observe(this) {
-            if (it == null) {
-                Countly.sharedInstance().events().recordEvent("linkLiveData observable was null")
-            } else {
-                it.getContentIfNotHandled()?.let { link ->
-                    when {
-                        link.endsWith(TYPE_UNCHAINED, ignoreCase = true) -> {
-                            downloadPlugin(link)
-                        }
-                        else -> {
-                            // check the authentication
-                            processExternalRequestOnAuthentication(Uri.parse(link))
-                        }
+            it?.getContentIfNotHandled()?.let { link ->
+                when {
+                    link.endsWith(TYPE_UNCHAINED, ignoreCase = true) -> {
+                        downloadPlugin(link)
+                    }
+                    else -> {
+                        // check the authentication
+                        processExternalRequestOnAuthentication(Uri.parse(link))
                     }
                 }
             }
@@ -251,15 +273,10 @@ class MainActivity : AppCompatActivity() {
         viewModel.messageLiveData.observe(
             this
         ) {
-            if (it == null) {
-                Countly.sharedInstance().events()
-                    .recordEvent("messageLiveData observable was null")
-            } else {
-                it.getContentIfNotHandled()?.let { message ->
-                    currentToast.cancel()
-                    currentToast.setText(getString(message))
-                    currentToast.show()
-                }
+            it?.getContentIfNotHandled()?.let { message ->
+                currentToast.cancel()
+                currentToast.setText(getString(message))
+                currentToast.show()
             }
         }
 
@@ -279,8 +296,7 @@ class MainActivity : AppCompatActivity() {
                     applicationContext.showToast(R.string.no_network_connection)
                 }
                 null -> {
-                    Countly.sharedInstance().events()
-                        .recordEvent("connectivityLiveData observable was null")
+                    Timber.e("connection null")
                 }
             }
         }
@@ -311,35 +327,8 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        if (BuildConfig.DEBUG) {
-            Countly.onCreate(this)
-        }
+        createCountly()
     }
-
-    // countly crash reporter set up. Debug mode only
-    override fun onStart() {
-        super.onStart()
-        if (BuildConfig.DEBUG) {
-            Countly.sharedInstance().onStart(this)
-        }
-    }
-
-    override fun onStop() {
-        if (BuildConfig.DEBUG) {
-            Countly.sharedInstance().onStop()
-        }
-        super.onStop()
-    }
-
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-
-        if (BuildConfig.DEBUG) {
-            Countly.sharedInstance().onConfigurationChanged(newConfig)
-        }
-    }
-
-    // end of countly crash reporter set up.
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater = menuInflater
@@ -527,11 +516,10 @@ class MainActivity : AppCompatActivity() {
 
         // Whenever the selected controller changes, setup the action bar.
         controller.observe(
-            this,
-            { navController ->
-                setupActionBarWithNavController(navController, appBarConfiguration)
-            }
-        )
+            this
+        ) { navController ->
+            setupActionBarWithNavController(navController, appBarConfiguration)
+        }
         currentNavController = controller
     }
 
