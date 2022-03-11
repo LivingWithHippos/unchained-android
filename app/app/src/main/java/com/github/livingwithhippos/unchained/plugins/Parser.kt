@@ -500,7 +500,8 @@ class Parser(
             getClient().newCall(request).execute().use { response: Response ->
                 response.body?.string() ?: ""
             }
-        } catch (e: SocketTimeoutException) {
+        } catch (e: Exception) {
+            // todo: checking different exceptions can help debugging the issue
             Timber.e("Error getting source while parsing link: ${e.message} ")
             ""
         }
