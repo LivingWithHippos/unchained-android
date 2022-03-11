@@ -26,6 +26,7 @@ object NotificationModule {
         NotificationCompat.Builder(applicationContext, UnchainedApplication.CHANNEL_ID)
             .setSmallIcon(R.drawable.logo_no_background)
             .setPriority(NotificationCompat.PRIORITY_LOW)
+            .setOngoing(true)
             .setGroup(ForegroundTorrentService.GROUP_KEY_TORRENTS)
 
     @ServiceScoped
