@@ -16,10 +16,10 @@ import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.lifecycleScope
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.di.DownloadNotification
+import com.github.livingwithhippos.unchained.utilities.DownloadStatus
 import com.github.livingwithhippos.unchained.utilities.Downloader
 import com.github.livingwithhippos.unchained.utilities.extension.vibrate
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -53,6 +53,7 @@ class ForegroundDownloadService : LifecycleService() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        // todo: check if I can pass parameters
         val input = intent?.getStringExtra("ASD")
         startForegroundService()
         return super.onStartCommand(intent, flags, startId)
@@ -69,11 +70,11 @@ class ForegroundDownloadService : LifecycleService() {
         if (replaceDownload != null) {
             // in these cases I can restart it eventually
             if (
-                replaceDownload.status == DownloadStatus.Queued ||
-                replaceDownload.status == DownloadStatus.Error
+                replaceDownload.status == CurrentDownloadStatus.Queued ||
+                replaceDownload.status == CurrentDownloadStatus.Error
             ) {
                 replaceDownload.destination = destination
-                replaceDownload.status = DownloadStatus.Queued
+                replaceDownload.status = CurrentDownloadStatus.Queued
                 replaceDownload.progress = 0
                 replaceDownload.speed = 0f
             } else {
@@ -127,9 +128,9 @@ class ForegroundDownloadService : LifecycleService() {
     private fun startDownloadIfAvailable() {
 
         // if I have no running downloads
-        if (downloads.firstOrNull { it.status == DownloadStatus.Running } == null) {
+        if (downloads.firstOrNull { it.status == CurrentDownloadStatus.Running } == null) {
             // Start the first queued download
-            val currentDownload = downloads.firstOrNull { it.status == DownloadStatus.Queued }
+            val currentDownload = downloads.firstOrNull { it.status == CurrentDownloadStatus.Queued }
             if (currentDownload != null) {
 
                 val stopDownloadIntent = Intent(this, CommandReceiver::class.java).apply {
@@ -147,24 +148,51 @@ class ForegroundDownloadService : LifecycleService() {
                     )
 
 
-                currentDownload.status = DownloadStatus.Running
+                currentDownload.status = CurrentDownloadStatus.Running
                 val outputStream = contentResolver?.openOutputStream(currentDownload.destination)
                 if (outputStream != null) {
                     lifecycleScope.launch {
+                        // todo: move collection code to own function
                         // the collect must be run in another scope to avoid being blocked
                         launch {
                             var lastRegisteredTime = System.currentTimeMillis()
                             var lastRegisteredSize = 0.0
                             downloader.downloadInfo.collect {
-                                val currentTime = System.currentTimeMillis()
-                                // update speed according to the last second
-                                if (currentTime - lastRegisteredTime > 2000) {
-                                    currentDownload.speed =
-                                        ((it.second - lastRegisteredSize) / (currentTime - lastRegisteredTime) / 1000).toFloat()
-                                    lastRegisteredTime = currentTime
-                                    lastRegisteredSize = it.second
+                                val asd = 3
+                                // todo: collect is not triggered if the data is equal to the previous one (maybe, check)
+                                it.forEach { downloadStatus ->
+                                    if (downloadStatus.key == outputStream.hashCode()) {
+                                        when (downloadStatus.value) {
+                                            is DownloadStatus.Running -> {
+                                                val running =
+                                                    downloadStatus.value as DownloadStatus.Running
+                                                val currentTime = System.currentTimeMillis()
+                                                // update speed every 2 seconds
+                                                if (currentTime - lastRegisteredTime > 2000) {
+                                                    currentDownload.speed =
+                                                        ((running.downloadedSize - lastRegisteredSize) / (currentTime - lastRegisteredTime) / 1000).toFloat()
+                                                    lastRegisteredTime = currentTime
+                                                    lastRegisteredSize = running.downloadedSize
+                                                }
+                                                currentDownload.progress =
+                                                    (running.downloadedSize * 100 / running.totalSize).toInt()
+                                            }
+                                            DownloadStatus.Completed -> {
+                                                currentDownload.status = CurrentDownloadStatus.Completed
+                                                currentDownload.progress = 100
+                                                applicationContext.vibrate()
+                                            }
+                                            is DownloadStatus.Error -> {
+                                                currentDownload.status = CurrentDownloadStatus.Error
+                                            }
+                                            DownloadStatus.Paused -> {
+                                                currentDownload.status = CurrentDownloadStatus.Stopped
+                                            }
+                                            DownloadStatus.Queued -> TODO()
+                                            DownloadStatus.Stopped -> TODO()
+                                        }
+                                    }
                                 }
-                                currentDownload.progress = (it.second * 100 / it.first).toInt()
                                 // update the notification
                                 updateNotification(stopDownloadPendingIntent)
                             }
@@ -184,77 +212,86 @@ class ForegroundDownloadService : LifecycleService() {
 
         val notifications: MutableMap<String, Notification> = mutableMapOf()
 
-        downloads.firstOrNull { it.status == DownloadStatus.Running }?.let { currentDownload ->
+        downloads.forEach {
+            when(it.status) {
+                CurrentDownloadStatus.Running -> {
+                    downloadBuilder.setProgress(100, it.progress, false)
+                        .setContentTitle(getString(
+                            R.string.torrent_in_progress_format,
+                            it.progress,
+                            it.speed
+                        ))
+                        .setStyle(NotificationCompat.BigTextStyle().bigText(it.title))
 
-            downloadBuilder.setProgress(100, currentDownload.progress, false)
-                .setContentTitle(getString(
-                        R.string.torrent_in_progress_format,
-                        currentDownload.progress,
-                        currentDownload.speed
-                    ))
-                .setStyle(NotificationCompat.BigTextStyle().bigText(currentDownload.title))
+                    // todo: when a Running download notification becomes Completed, make the last Running notification cancellable
 
-            // todo: finished the download, make the last notification cancellable
-            if (currentDownload.progress >= 100) {
-                currentDownload.status = DownloadStatus.Completed
-                applicationContext.vibrate()
-                startDownloadIfAvailable()
+                    if (it.status == CurrentDownloadStatus.Running && it.progress < 100) {
+                        downloadBuilder.setOngoing(true).addAction(
+                            R.drawable.icon_stop,
+                            getString(R.string.stop),
+                            stopDownloadPendingIntent
+                        )
+                    } else
+                        downloadBuilder.setOngoing(false)
+
+                    notifications[it.source] = downloadBuilder.build()
+                }
+                CurrentDownloadStatus.Completed -> {
+                    downloadBuilder
+                        .setStyle(
+                            NotificationCompat.BigTextStyle()
+                                .bigText(it.title)
+                        ).setOngoing(false)
+                        .setProgress(0, 0, false)
+                        .setContentTitle(getString(R.string.download_complete))
+
+                    notifications[it.source] = downloadBuilder.build()
+                }
+                CurrentDownloadStatus.Error -> {
+                    downloadBuilder.setStyle(
+                        NotificationCompat.BigTextStyle()
+                            .bigText(it.title)
+                    )
+
+                    notifications[it.source] = downloadBuilder.build()
+                }
+                CurrentDownloadStatus.Queued -> {
+                    downloadBuilder
+                        .setStyle(
+                            NotificationCompat.BigTextStyle()
+                                .bigText(it.title)
+                        ).setOngoing(false)
+                        .setProgress(0, 0, false)
+                        .setContentTitle(getString(R.string.queued))
+
+                    notifications[it.source] = downloadBuilder.build()
+                }
+                CurrentDownloadStatus.Stopped -> {
+                    downloadBuilder.setStyle(
+                        NotificationCompat.BigTextStyle()
+                            .bigText(it.title)
+                    )
+
+                    notifications[it.source] = downloadBuilder.build()
+                }
+                CurrentDownloadStatus.Paused -> {
+                    downloadBuilder.setProgress(100, it.progress, false)
+                        .setContentTitle(getString(
+                            R.string.torrent_in_progress_format,
+                            it.progress,
+                            it.speed
+                        ))
+                        .setStyle(NotificationCompat.BigTextStyle().bigText(it.title))
+
+                    downloadBuilder.setOngoing(true).addAction(
+                        R.drawable.icon_stop,
+                        getString(R.string.stop),
+                        stopDownloadPendingIntent
+                    )
+
+                    notifications[it.source] = downloadBuilder.build()
+                }
             }
-
-            if (currentDownload.status == DownloadStatus.Running && currentDownload.progress < 100) {
-                downloadBuilder.setOngoing(true).addAction(
-                    R.drawable.icon_stop,
-                    getString(R.string.stop),
-                    stopDownloadPendingIntent
-                )
-            }
-
-            else
-                downloadBuilder.setOngoing(false)
-
-            notifications[currentDownload.source] = downloadBuilder.build()
-        }
-
-        downloads.filter { it.status == DownloadStatus.Stopped }.forEach {
-            downloadBuilder.setStyle(
-                NotificationCompat.BigTextStyle()
-                    .bigText(it.title)
-            )
-
-            notifications[it.source] = downloadBuilder.build()
-        }
-
-        downloads.filter { it.status == DownloadStatus.Queued }.forEach {
-            downloadBuilder
-                .setStyle(
-                    NotificationCompat.BigTextStyle()
-                        .bigText(it.title)
-                ).setOngoing(false)
-                .setProgress(0, 0, false)
-                .setContentTitle(getString(R.string.queued))
-
-            notifications[it.source] = downloadBuilder.build()
-        }
-
-        downloads.filter { it.status == DownloadStatus.Completed }.forEach {
-            downloadBuilder
-                .setStyle(
-                    NotificationCompat.BigTextStyle()
-                        .bigText(it.title)
-                ).setOngoing(false)
-                .setProgress(0, 0, false)
-                .setContentTitle(getString(R.string.download_complete))
-
-            notifications[it.source] = downloadBuilder.build()
-        }
-
-        downloads.filter { it.status == DownloadStatus.Error }.forEach {
-            downloadBuilder.setStyle(
-                NotificationCompat.BigTextStyle()
-                    .bigText(it.title)
-            )
-
-            notifications[it.source] = downloadBuilder.build()
         }
 
         notificationManager.apply {
@@ -265,8 +302,8 @@ class ForegroundDownloadService : LifecycleService() {
 
         // stop serving completed download notifications
         downloads.removeAll {
-            it.status == DownloadStatus.Completed ||
-                    it.status == DownloadStatus.Error
+            it.status == CurrentDownloadStatus.Completed ||
+                    it.status == CurrentDownloadStatus.Error
         }
 
     }
@@ -288,15 +325,16 @@ data class CustomDownload(
     val source: String,
     var destination: Uri,
     var title: String,
-    var status: DownloadStatus = DownloadStatus.Queued,
+    var status: CurrentDownloadStatus = CurrentDownloadStatus.Queued,
     var progress: Int = 0,
     var speed: Float = 0f
 )
 
-sealed class DownloadStatus {
-    object Queued : DownloadStatus()
-    object Stopped : DownloadStatus()
-    object Completed : DownloadStatus()
-    object Running : DownloadStatus()
-    object Error : DownloadStatus()
+sealed class CurrentDownloadStatus {
+    object Queued : CurrentDownloadStatus()
+    object Stopped : CurrentDownloadStatus()
+    object Paused : CurrentDownloadStatus()
+    object Completed : CurrentDownloadStatus()
+    object Running : CurrentDownloadStatus()
+    object Error : CurrentDownloadStatus()
 }
