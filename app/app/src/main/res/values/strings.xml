@@ -561,4 +561,5 @@
     <string name="summary_main_screen">Tab to open at start-up</string>
     <string name="select_deselect_all">Select or deselect all</string>
     <string name="select_one_item">Select at least one item</string>
+    <string name="torrent_monitoring_description">Monitor your torrents being downloaded on Real-Debrid servers.</string>
 </resources>

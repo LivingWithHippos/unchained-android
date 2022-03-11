@@ -353,4 +353,5 @@
     <string name="summary_main_screen">Onglet à ouvrir au démarrage</string>
     <string name="select_deselect_all">Tout sélectionner ou désélectionner</string>
     <string name="select_one_item">Sélectionnez au moins un élément</string>
+    <string name="torrent_monitoring_description">Surveillez le téléchargement de vos torrents sur les serveurs Real Debrid.</string>
 </resources>
