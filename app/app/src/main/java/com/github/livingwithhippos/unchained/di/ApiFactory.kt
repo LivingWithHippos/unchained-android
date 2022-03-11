@@ -36,6 +36,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import okhttp3.ConnectionSpec
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.dnsoverhttps.DnsOverHttps
@@ -62,6 +63,16 @@ object ApiFactory {
             }
 
             return OkHttpClient().newBuilder()
+                // should fix the javax.net.ssl.SSLHandshakeException: Failure in SSL library
+                .connectionSpecs(
+                    listOf(
+                        ConnectionSpec.CLEARTEXT,
+                        ConnectionSpec.Builder(ConnectionSpec.MODERN_TLS)
+                            .allEnabledTlsVersions()
+                            .allEnabledCipherSuites()
+                            .build()
+                    )
+                )
                 // logs all the calls, removed in the release channel
                 .addInterceptor(logInterceptor)
                 // avoid issues with empty bodies on delete/put and 20x return codes
@@ -69,6 +80,15 @@ object ApiFactory {
                 .build()
         } else return OkHttpClient()
             .newBuilder()
+            .connectionSpecs(
+                listOf(
+                    ConnectionSpec.CLEARTEXT,
+                    ConnectionSpec.Builder(ConnectionSpec.MODERN_TLS)
+                        .allEnabledTlsVersions()
+                        .allEnabledCipherSuites()
+                        .build()
+                )
+            )
             // avoid issues with empty bodies on delete/put and 20x return codes
             .addInterceptor(EmptyBodyInterceptor)
             .build()
