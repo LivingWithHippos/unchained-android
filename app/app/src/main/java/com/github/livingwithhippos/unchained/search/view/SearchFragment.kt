@@ -333,7 +333,7 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
                     }
                     setNegativeButton(R.string.disable) { _, _ ->
                         viewModel.enableDOH(false)
-                        viewModel.setPluginDialogNeeded(false)
+                        viewModel.setDOHDialogNeeded(false)
                     }
                 }
                 builder.create()
