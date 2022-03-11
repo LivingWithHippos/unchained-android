@@ -111,6 +111,15 @@ object ApiFactory {
             }
 
             OkHttpClient().newBuilder()
+                .connectionSpecs(
+                    listOf(
+                        ConnectionSpec.CLEARTEXT,
+                        ConnectionSpec.Builder(ConnectionSpec.MODERN_TLS)
+                            .allEnabledTlsVersions()
+                            .allEnabledCipherSuites()
+                            .build()
+                    )
+                )
                 // logs all the calls, removed in the release channel
                 .addInterceptor(logInterceptor)
                 // avoid issues with empty bodies on delete/put and 20x return codes
@@ -119,6 +128,15 @@ object ApiFactory {
         } else {
             OkHttpClient()
                 .newBuilder()
+                .connectionSpecs(
+                    listOf(
+                        ConnectionSpec.CLEARTEXT,
+                        ConnectionSpec.Builder(ConnectionSpec.MODERN_TLS)
+                            .allEnabledTlsVersions()
+                            .allEnabledCipherSuites()
+                            .build()
+                    )
+                )
                 .addInterceptor(EmptyBodyInterceptor)
                 .build()
         }
