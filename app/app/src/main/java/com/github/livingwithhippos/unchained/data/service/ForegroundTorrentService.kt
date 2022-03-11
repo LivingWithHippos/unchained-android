@@ -202,7 +202,14 @@ class ForegroundTorrentService : LifecycleService() {
                 // Add the intent, which inflates the back stack
                 addNextIntentWithParentStack(resultIntent)
                 // Get the PendingIntent containing the entire back stack
-                getPendingIntent(torrent.id.hashCode(), PendingIntent.FLAG_UPDATE_CURRENT)
+                getPendingIntent(
+                    torrent.id.hashCode(),
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+                        PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+                    else
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                )
+
             }
 
             torrentBuilder.setContentIntent(resultPendingIntent)
@@ -231,7 +238,13 @@ class ForegroundTorrentService : LifecycleService() {
             // Add the intent, which inflates the back stack
             addNextIntentWithParentStack(resultIntent)
             // Get the PendingIntent containing the entire back stack
-            getPendingIntent(item.id.hashCode(), PendingIntent.FLAG_UPDATE_CURRENT)
+            getPendingIntent(
+                item.id.hashCode(),
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+                    PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+                else
+                    PendingIntent.FLAG_UPDATE_CURRENT
+            )
         }
 
         notificationManager.apply {
