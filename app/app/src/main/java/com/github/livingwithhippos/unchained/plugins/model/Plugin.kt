@@ -8,9 +8,9 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class Plugin(
     @Json(name = "engine_version")
-    val engineVersion: Double,
+    val engineVersion: Float,
     @Json(name = "version")
-    val version: Double,
+    val version: Float,
     @Json(name = "url")
     val url: String,
     @Json(name = "name")
@@ -27,8 +27,8 @@ data class Plugin(
     val download: PluginDownload
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
-        parcel.readDouble(),
-        parcel.readDouble(),
+        parcel.readFloat(),
+        parcel.readFloat(),
         parcel.readString()!!,
         parcel.readString()!!,
         parcel.readString(),
@@ -39,8 +39,8 @@ data class Plugin(
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeDouble(engineVersion)
-        parcel.writeDouble(version)
+        parcel.writeFloat(engineVersion)
+        parcel.writeFloat(version)
         parcel.writeString(url)
         parcel.writeString(name)
         parcel.writeString(description)
@@ -161,6 +161,8 @@ data class PluginSearch(
 data class PluginDownload(
     @Json(name = "internal")
     val internalParser: InternalParser?,
+    @Json(name = "direct")
+    val directParser: DirectParser?,
     @Json(name = "table_direct")
     val tableLink: TableParser?,
     @Json(name = "table_indirect")
@@ -172,11 +174,13 @@ data class PluginDownload(
         parcel.readParcelable(InternalParser::class.java.classLoader),
         parcel.readParcelable(TableParser::class.java.classLoader),
         parcel.readParcelable(TableParser::class.java.classLoader),
+        parcel.readParcelable(TableParser::class.java.classLoader),
         parcel.readParcelable(PluginRegexes::class.java.classLoader)!!
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeParcelable(internalParser, flags)
+        parcel.writeParcelable(directParser, flags)
         parcel.writeParcelable(tableLink, flags)
         parcel.writeParcelable(indirectTableLink, flags)
         parcel.writeParcelable(regexes, flags)
@@ -344,6 +348,38 @@ data class TableParser(
         parcel.writeString(className)
         parcel.writeString(idName)
         parcel.writeParcelable(columns, flags)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<TableParser> {
+        override fun createFromParcel(parcel: Parcel): TableParser {
+            return TableParser(parcel)
+        }
+
+        override fun newArray(size: Int): Array<TableParser?> {
+            return arrayOfNulls(size)
+        }
+    }
+}
+
+@JsonClass(generateAdapter = true)
+data class DirectParser(
+    @Json(name = "class")
+    val className: String?,
+    @Json(name = "id")
+    val idName: String?
+) : Parcelable {
+    constructor(parcel: Parcel) : this(
+        parcel.readString(),
+        parcel.readString(),
+    )
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(className)
+        parcel.writeString(idName)
     }
 
     override fun describeContents(): Int {
