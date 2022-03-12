@@ -734,7 +734,7 @@ class Parser(
             val details = parseList(detailsRegex, source, url)
 
             // checking the max size of combinations between names, torrents, hosting and magnets I can find
-            val maxSize: Int = minOf( names.size, maxOf(magnets.size, torrents.size, hosting.size))
+            val maxSize: Int = minOf(names.size, maxOf(magnets.size, torrents.size, hosting.size))
             for (index in 0..maxSize) {
                 directItems.add(
                     ScrapedItem(
@@ -751,7 +751,6 @@ class Parser(
                 )
             }
             return directItems
-
         } else return emptyList()
     }
 

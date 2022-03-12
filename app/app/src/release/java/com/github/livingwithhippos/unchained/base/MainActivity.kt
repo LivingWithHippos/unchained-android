@@ -57,7 +57,6 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-
     private fun createCountly() {
         // empty function so that code below can be shared between the debug and realease version of the file
     }
@@ -175,7 +174,6 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             }
-
         }
 
         // disable the bottom menu items before loading the credentials
@@ -210,24 +208,26 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        viewModel.jumpTabLiveData.observe(this, EventObserver {
-            when (it) {
-                "user" -> {
-                    // do nothing
-                }
-                "downloads" -> {
-                    lifecycleScope.launch {
-                        doubleClickBottomItem(R.id.navigation_lists)
+        viewModel.jumpTabLiveData.observe(
+            this,
+            EventObserver {
+                when (it) {
+                    "user" -> {
+                        // do nothing
                     }
-                }
-                "search" -> {
-                    lifecycleScope.launch {
-                        doubleClickBottomItem(R.id.navigation_search)
+                    "downloads" -> {
+                        lifecycleScope.launch {
+                            doubleClickBottomItem(R.id.navigation_lists)
+                        }
+                    }
+                    "search" -> {
+                        lifecycleScope.launch {
+                            doubleClickBottomItem(R.id.navigation_search)
+                        }
                     }
                 }
             }
-        })
-
+        )
 
         // monitor if the torrent notification service needs to be started. It monitor the preference change itself
         // for the shutting down part
