@@ -15,6 +15,7 @@ import com.github.livingwithhippos.unchained.settings.viewmodel.KodiManagementVi
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 @AndroidEntryPoint
 class KodiManagementDialog : DialogFragment(), KodiDeviceListener {
@@ -22,13 +23,12 @@ class KodiManagementDialog : DialogFragment(), KodiDeviceListener {
     private val viewModel: KodiManagementViewModel by viewModels()
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        return activity?.let {
-
+        if (activity!=null) {
             // Use the Builder class for convenient dialog construction
-            val builder = MaterialAlertDialogBuilder(it)
+            val builder = MaterialAlertDialogBuilder(requireActivity())
 
             // Get the layout inflater
-            val inflater = it.layoutInflater
+            val inflater = requireActivity().layoutInflater
 
             val view = inflater.inflate(R.layout.dialog_kodi_management, null)
 
@@ -36,14 +36,25 @@ class KodiManagementDialog : DialogFragment(), KodiDeviceListener {
                 showNewDeviceBottomSheet()
             }
 
+            val adapter = KodiDeviceAdapter(this)
+            val list = view.findViewById<RecyclerView>(R.id.rvKodiDeviceList)
+            list.adapter = adapter
+
+            viewModel.devices.observe(this) { devices ->
+                adapter.submitList(devices)
+                adapter.notifyDataSetChanged()
+            }
+
             builder.setView(view)
                 .setNeutralButton(getString(R.string.close)) { dialog, _ ->
                     dialog.cancel()
                 }
                 .setTitle(getString(R.string.kodi))
+
             // Create the AlertDialog object and return it
-            builder.create()
-        } ?: throw IllegalStateException("Activity cannot be null")
+            return builder.create()
+        } else throw IllegalStateException("Activity cannot be null")
+
     }
 
     private fun showNewDeviceBottomSheet() {
@@ -53,13 +64,6 @@ class KodiManagementDialog : DialogFragment(), KodiDeviceListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        val adapter = KodiDeviceAdapter(this)
-        val list = view.findViewById<RecyclerView>(R.id.rvKodiDeviceList)
-        list.adapter = adapter
-
-        viewModel.devices.observe(viewLifecycleOwner) { devices ->
-            adapter.submitList(devices)
-        }
 
         super.onViewCreated(view, savedInstanceState)
     }

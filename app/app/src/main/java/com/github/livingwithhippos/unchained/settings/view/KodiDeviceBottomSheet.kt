@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.CheckBox
 import androidx.fragment.app.viewModels
-import androidx.preference.EditTextPreference
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.model.KodiDevice
 import com.github.livingwithhippos.unchained.settings.viewmodel.KodiManagementViewModel
@@ -41,7 +40,7 @@ class KodiDeviceBottomSheet : BottomSheetDialogFragment() {
                     view.findViewById<TextInputEditText>(R.id.tiPassword).text.toString().trim()
                 val username =
                     view.findViewById<TextInputEditText>(R.id.tiUsername).text.toString().trim()
-                viewModel.testKodi(address,port, username, password)
+                viewModel.testKodi(address, port, username, password)
             }
         }
 

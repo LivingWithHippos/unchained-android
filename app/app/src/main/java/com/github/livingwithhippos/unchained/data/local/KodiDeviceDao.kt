@@ -1,6 +1,5 @@
 package com.github.livingwithhippos.unchained.data.local
 
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -12,10 +11,10 @@ import kotlinx.coroutines.flow.Flow
 interface KodiDeviceDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(device: KodiDevice)
+    suspend fun insert(device: KodiDevice): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(list: List<KodiDevice>)
+    suspend fun insertAll(list: List<KodiDevice>): List<Long>
 
     @Query("SELECT * from kodi_device")
     suspend fun getAllDevices(): List<KodiDevice>

@@ -17,8 +17,8 @@ class KodiDeviceRepository @Inject constructor(
         return kodiDeviceDao.getAllDevices()
     }
 
-    suspend fun add(device: KodiDevice) {
-        kodiDeviceDao.insert(device)
+    suspend fun add(device: KodiDevice): Long {
+        return kodiDeviceDao.insert(device)
     }
 
     suspend fun remove(device: KodiDevice) {
