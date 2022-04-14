@@ -96,6 +96,10 @@ class KodiManagementViewModel @Inject constructor(
         return null
     }
 
+    suspend fun deleteDevice(device: KodiDevice) {
+        deviceRepository.remove(device)
+    }
+
     companion object {
         const val KEY_SAVED_DEVICE="saved_item_key"
     }

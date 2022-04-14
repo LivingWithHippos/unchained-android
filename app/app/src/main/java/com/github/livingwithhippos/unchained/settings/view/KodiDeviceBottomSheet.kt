@@ -6,8 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.CheckBox
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.model.KodiDevice
 import com.github.livingwithhippos.unchained.settings.viewmodel.KodiManagementViewModel
@@ -15,6 +17,7 @@ import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.textfield.TextInputEditText
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class KodiDeviceBottomSheet() : BottomSheetDialogFragment() {
@@ -58,6 +61,18 @@ class KodiDeviceBottomSheet() : BottomSheetDialogFragment() {
                 val username =
                     view.findViewById<TextInputEditText>(R.id.tiUsername).text.toString().trim()
                 viewModel.testKodi(address, port, username, password)
+            }
+        }
+
+        view.findViewById<ImageButton>(R.id.deleteDevice).setOnClickListener {
+            if (device != null) {
+                lifecycleScope.launch {
+                    viewModel.deleteDevice(device)
+                    context?.showToast(R.string.device_deleted)
+                    dismiss()
+                }
+            } else {
+                dismiss()
             }
         }
 

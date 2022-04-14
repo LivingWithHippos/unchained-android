@@ -5,32 +5,47 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingStart="10dp"
-    android:paddingEnd="10dp"
-    android:paddingTop="20dp">
-
+    android:paddingTop="20dp"
+    android:paddingEnd="10dp">
 
     <TextView
         android:id="@+id/tvTitle"
         style="@style/TextAppearance.UnchainedTheme.Headline5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
         android:text="@string/new_device"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/tvRules"
+        app:layout_constraintEnd_toStartOf="@id/deleteDevice"
+        app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/tvRules"
         app:layout_constraintVertical_chainStyle="packed" />
+
+    <ImageButton
+        android:id="@+id/deleteDevice"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_gravity="center"
+        android:layout_marginStart="10dp"
+        android:background="@drawable/icon_delete"
+        android:backgroundTint="?android:textColorSecondary"
+        android:contentDescription="@string/delete"
+        app:layout_constraintBottom_toBottomOf="@id/tvTitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tvTitle"
+        app:layout_constraintTop_toTopOf="@id/tvTitle" />
 
     <TextView
         android:id="@+id/tvRules"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/fields_required"
         android:layout_marginTop="20dp"
+        android:text="@string/fields_required"
+        app:layout_constraintBottom_toTopOf="@id/tfName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvTitle"
-        app:layout_constraintBottom_toTopOf="@id/tfName"
         app:layout_constraintVertical_chainStyle="packed" />
 
 
@@ -103,8 +118,8 @@
             android:id="@+id/tiPort"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:singleLine="true"
             android:inputType="number"
+            android:singleLine="true"
             android:text="8080" />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -175,13 +190,13 @@
     <Button
         android:id="@+id/bTest"
         style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
-        app:icon="@drawable/icon_link"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
+        android:contentDescription="@string/sort"
         android:minLines="2"
         android:text="@string/test"
-        android:contentDescription="@string/sort"
+        app:icon="@drawable/icon_link"
         app:layout_constraintBottom_toBottomOf="@id/cbDefault"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/cbDefault"
@@ -190,23 +205,22 @@
     <Button
         android:id="@+id/bSave"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
-        app:icon="@drawable/icon_save"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
         android:minLines="2"
         android:text="@string/save_device"
+        app:icon="@drawable/icon_save"
         app:layout_constraintBottom_toBottomOf="@id/cbDefault"
+        app:layout_constraintBottom_toTopOf="@id/bottomSpace"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/bTest"
-        app:layout_constraintBottom_toTopOf="@id/bottomSpace"/>
+        app:layout_constraintTop_toBottomOf="@id/bTest" />
 
     <Space
         android:id="@+id/bottomSpace"
         android:layout_width="match_parent"
         android:layout_height="25dp"
-        app:layout_constraintTop_toBottomOf="@id/bSave"
-        />
+        app:layout_constraintTop_toBottomOf="@id/bSave" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
