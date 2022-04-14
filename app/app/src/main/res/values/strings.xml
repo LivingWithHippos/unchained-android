@@ -576,4 +576,6 @@
     <string name="device_added">Device added</string>
     <string name="test">Test</string>
     <string name="save_device">Save Device</string>
+    <string name="update_device">Update Device</string>
+    <string name="kodi_missing_default">Default Kodi device missing</string>
 </resources>

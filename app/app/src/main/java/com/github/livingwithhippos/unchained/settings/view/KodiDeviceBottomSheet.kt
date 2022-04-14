@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.CheckBox
+import android.widget.TextView
 import androidx.fragment.app.viewModels
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.model.KodiDevice
@@ -38,8 +39,10 @@ class KodiDeviceBottomSheet() : BottomSheetDialogFragment() {
         }
 
         val device = viewModel.getCurrentDevice()
-        if (device != null)
+        if (device != null) {
             loadDeviceInfo(view, device)
+            view.findViewById<TextView>(R.id.tvTitle).setText(R.string.update_device)
+        }
 
         view.findViewById<Button>(R.id.bTest).setOnClickListener {
             val address =
