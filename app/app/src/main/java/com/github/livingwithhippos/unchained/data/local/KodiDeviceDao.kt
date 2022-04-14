@@ -19,7 +19,7 @@ interface KodiDeviceDao {
     @Query("SELECT * from kodi_device")
     suspend fun getAllDevices(): List<KodiDevice>
 
-    @Query("SELECT * from kodi_device ORDER BY kodi_device.is_default")
+    @Query("SELECT * from kodi_device ORDER BY kodi_device.is_default DESC")
     fun getAllDevicesFlow(): Flow<List<KodiDevice>>
 
     @Query("DELETE FROM kodi_device")
@@ -39,4 +39,15 @@ interface KodiDeviceDao {
 
     @Query("UPDATE kodi_device SET is_default = 0 WHERE is_default = 1 AND name != :name")
     suspend fun resetDefaultsExcept(name: String)
+
+    @Query("UPDATE kodi_device SET name = :name, ip = :address, port =:port, username =:username, password=:password, is_default = :isDefault WHERE name = :oldDeviceName")
+    suspend fun update(
+        name: String,
+        address: String,
+        port: Int,
+        username: String?,
+        password: String?,
+        isDefault: Int,
+        oldDeviceName: String
+    )
 }

@@ -42,7 +42,6 @@ class KodiManagementDialog : DialogFragment(), KodiDeviceListener {
 
             viewModel.devices.observe(this) { devices ->
                 adapter.submitList(devices)
-                adapter.notifyDataSetChanged()
             }
 
             builder.setView(view)
@@ -62,21 +61,8 @@ class KodiManagementDialog : DialogFragment(), KodiDeviceListener {
         sheet.show(parentFragmentManager, KodiDeviceBottomSheet.TAG)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
-
-        super.onViewCreated(view, savedInstanceState)
-    }
-
-    override fun onDefaultClick(item: KodiDevice) {
-        context?.showToast("onDefaultClick")
-    }
-
     override fun onEditClick(item: KodiDevice) {
-        context?.showToast("onEditClick")
-    }
-
-    override fun onDeleteClick(item: KodiDevice) {
-        context?.showToast("onDeleteClick")
+        val sheet = KodiDeviceBottomSheet(item)
+        sheet.show(parentFragmentManager, KodiDeviceBottomSheet.TAG)
     }
 }

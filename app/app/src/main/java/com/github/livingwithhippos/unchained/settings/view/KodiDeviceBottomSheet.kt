@@ -16,9 +16,15 @@ import com.google.android.material.textfield.TextInputEditText
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class KodiDeviceBottomSheet : BottomSheetDialogFragment() {
+class KodiDeviceBottomSheet() : BottomSheetDialogFragment() {
 
     private val viewModel: KodiManagementViewModel by viewModels()
+
+    private var currentDevice: KodiDevice? = null
+
+    constructor(device: KodiDevice) : this() {
+        currentDevice = device
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -26,6 +32,14 @@ class KodiDeviceBottomSheet : BottomSheetDialogFragment() {
         savedInstanceState: Bundle?
     ): View {
         val view: View = inflater.inflate(R.layout.modal_kodi_device, container, false)
+
+        currentDevice?.let {
+            viewModel.setCurrentDevice(it)
+        }
+
+        val device = viewModel.getCurrentDevice()
+        if (device != null)
+            loadDeviceInfo(view, device)
 
         view.findViewById<Button>(R.id.bTest).setOnClickListener {
             val address =
@@ -61,17 +75,35 @@ class KodiDeviceBottomSheet : BottomSheetDialogFragment() {
                     view.findViewById<TextInputEditText>(R.id.tiUsername).text.toString().trim()
                 val isDefault = view.findViewById<CheckBox>(R.id.cbDefault).isChecked
                 // todo: manage same device name being overwritten
-                viewModel.updateDevice(
-                    KodiDevice(
-                        name, address, port, username, password, isDefault
+                if (device != null) {
+                    viewModel.updateDevice(
+                        KodiDevice(
+                            name, address, port, username, password, isDefault
+                        ),
+                        device.name
                     )
-                )
+                } else {
+                    viewModel.insertDevice(
+                        KodiDevice(
+                            name, address, port, username, password, isDefault
+                        )
+                    )
+                }
                 context?.showToast(R.string.device_added)
                 dismiss()
             }
         }
 
         return view
+    }
+
+    private fun loadDeviceInfo(view: View, device: KodiDevice) {
+        view.findViewById<TextInputEditText>(R.id.tiName).setText(device.name)
+        view.findViewById<TextInputEditText>(R.id.tiAddress).setText(device.address)
+        view.findViewById<TextInputEditText>(R.id.tiPort).setText(device.port.toString())
+        view.findViewById<TextInputEditText>(R.id.tiUsername).setText(device.username)
+        view.findViewById<TextInputEditText>(R.id.tiPassword).setText(device.password)
+        view.findViewById<CheckBox>(R.id.cbDefault).isChecked = device.isDefault
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

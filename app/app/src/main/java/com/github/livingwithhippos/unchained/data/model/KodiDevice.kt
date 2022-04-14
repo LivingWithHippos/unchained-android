@@ -10,7 +10,7 @@ class KodiDevice (
     @ColumnInfo(name = "name")
     val name: String,
     @ColumnInfo(name = "ip")
-    val ip: String,
+    val address: String,
     @ColumnInfo(name = "port")
     val port: Int,
     @ColumnInfo(name = "username")

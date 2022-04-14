@@ -45,4 +45,16 @@ class KodiDeviceRepository @Inject constructor(
         kodiDeviceDao.resetDefaultsExcept(device.name)
         kodiDeviceDao.setDefault(device.name)
     }
+
+    suspend fun update(device: KodiDevice, oldDeviceName: String) {
+        return kodiDeviceDao.update(
+            device.name,
+            device.address,
+            device.port,
+            device.username,
+            device.password,
+            if (device.isDefault) 1 else 0,
+            oldDeviceName
+        )
+    }
 }

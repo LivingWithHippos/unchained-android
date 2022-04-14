@@ -14,7 +14,7 @@ class KodiDeviceAdapter(listener: KodiDeviceListener) :
             oldItem.name == newItem.name
 
         override fun areContentsTheSame(oldItem: KodiDevice, newItem: KodiDevice): Boolean =
-            oldItem.ip == newItem.ip &&
+            oldItem.address == newItem.address &&
                     oldItem.port == newItem.port &&
                     oldItem.name == newItem.name &&
                     // these are not shown in the layout at the moment
@@ -28,7 +28,5 @@ class KodiDeviceAdapter(listener: KodiDeviceListener) :
 }
 
 interface KodiDeviceListener {
-    fun onDefaultClick(item: KodiDevice)
     fun onEditClick(item: KodiDevice)
-    fun onDeleteClick(item: KodiDevice)
 }
