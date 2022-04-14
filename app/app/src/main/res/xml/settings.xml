@@ -67,6 +67,11 @@
             android:key="show_kodi"
             android:title="@string/show_kodi" />
 
+        <Preference
+            app:key="kodi_list_editor"
+            app:summary="@string/kodi_manage_list_summary"
+            app:title="@string/kodi_manage_list" />
+
         <EditTextPreference
             android:defaultValue="192.168.1.7"
             android:key="kodi_ip_address"
