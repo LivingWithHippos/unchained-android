@@ -8,7 +8,6 @@ import kotlinx.coroutines.flow.first
 import java.io.IOException
 import javax.inject.Inject
 
-
 class ProtoStoreImpl @Inject constructor(
     @ApplicationContext private val context: Context
 ) : ProtoStore {
@@ -93,7 +92,6 @@ class ProtoStoreImpl @Inject constructor(
             credentials.toBuilder().setRefreshToken(refreshToken).build()
         }
     }
-
 
     override suspend fun deleteCredentials() {
         context.credentialsDataStore.updateData {
