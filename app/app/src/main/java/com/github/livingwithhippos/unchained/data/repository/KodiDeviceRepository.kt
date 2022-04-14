@@ -37,8 +37,12 @@ class KodiDeviceRepository @Inject constructor(
         return kodiDeviceDao.getDefault()
     }
 
+    suspend fun clearDefaultsExcept(device: KodiDevice) {
+        kodiDeviceDao.resetDefaultsExcept(device.name)
+    }
+
     suspend fun setDefault(device: KodiDevice) {
-        kodiDeviceDao.resetDefaults()
+        kodiDeviceDao.resetDefaultsExcept(device.name)
         kodiDeviceDao.setDefault(device.name)
     }
 }
