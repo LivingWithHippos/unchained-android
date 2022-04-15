@@ -565,8 +565,6 @@
     <string name="kodi_manage_list">Manage Kodi Devices</string>
     <string name="kodi_manage_list_summary">Add or edit a connection to a Kodi device, and choose the default one.</string>
     <string name="add_device">Add Device</string>
-    <string name="edit">Edit</string>
-    <string name="edit_item">Edit Item</string>
     <string name="set_as_default">Set as default</string>
     <string name="new_device">Add New Device</string>
     <string name="fields_required">Fields marked with * are required</string>
@@ -577,6 +575,6 @@
     <string name="test">Test</string>
     <string name="save_device">Save Device</string>
     <string name="update_device">Update Device</string>
-    <string name="kodi_missing_default">Default Kodi device missing</string>
+    <string name="kodi_missing_default">The default Kodi device is not set</string>
     <string name="device_deleted">Device deleted</string>
 </resources>
