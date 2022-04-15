@@ -288,6 +288,9 @@ class MainActivity : AppCompatActivity() {
             ContextCompat.startForegroundService(this, notificationIntent)
         }
 
+        // load the old share preferences of kodi devices into the db and then delete them
+        viewModel.updateOldKodiPreferences()
+
         viewModel.connectivityLiveData.observe(
             this
         ) {
