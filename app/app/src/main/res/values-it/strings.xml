@@ -365,4 +365,10 @@
     <string name="update_device">Aggiorna dispositivo</string>
     <string name="kodi_missing_default">Il dIspositivo Kodi di default non è impostato</string>
     <string name="device_deleted">Dispositivo eliminato</string>
+    <string name="ui_settings">Impostazioni UI</string>
+    <string name="show_media_player_button_summary">Mostra un bottone per inviare media ad un lettore locale</string>
+    <string name="show_media_player_button">Mostra bottone media</string>
+    <string name="default_media_player">Lettore media da aprire di default</string>
+    <string name="send_to_player">Invia a lettore</string>
+    <string name="missing_default_player">Imposta il lettore di default nell impostazioni</string>
 </resources>

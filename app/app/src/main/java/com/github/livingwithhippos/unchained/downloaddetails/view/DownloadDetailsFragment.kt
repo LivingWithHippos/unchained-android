@@ -2,8 +2,10 @@ package com.github.livingwithhippos.unchained.downloaddetails.view
 
 import android.Manifest
 import android.app.DownloadManager
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -68,6 +70,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         }
 
         detailsBinding.showKodi = viewModel.getKodiPreference()
+        detailsBinding.showLocalPlay = viewModel.getDefaultPlayerButtonVisibility()
 
         viewModel.streamLiveData.observe(
             viewLifecycleOwner
@@ -262,9 +265,59 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
     override fun onShareClick(url: String) {
         val shareIntent = Intent(Intent.ACTION_SEND)
         shareIntent.type = "text/plain"
-        val shareLink = url
-        shareIntent.putExtra(Intent.EXTRA_TEXT, shareLink)
+        shareIntent.putExtra(Intent.EXTRA_TEXT, url)
         startActivity(Intent.createChooser(shareIntent, getString(R.string.share_with)))
+    }
+
+    private fun tryStartExternalApp(intent: Intent) {
+
+        try {
+            startActivity(intent)
+        } catch (e: android.content.ActivityNotFoundException) {
+            context?.showToast(R.string.app_not_installed)
+        }
+    }
+
+    private fun createMediaIntent(appPackage: String, url: String, component: ComponentName? = null, dataType: String = "video/*"): Intent {
+
+        val uri = Uri.parse(url)
+        val intent = Intent(Intent.ACTION_VIEW)
+        intent.setPackage(appPackage)
+        intent.setDataAndTypeAndNormalize(uri, dataType)
+        if (component!=null)
+            intent.component = component
+
+        return intent
+    }
+
+    override fun onSendToPlayer(url: String) {
+        when (viewModel.getDefaultPlayer()) {
+            "vlc" -> {
+                val vlcIntent = createMediaIntent("org.videolan.vlc", url, ComponentName(
+                    "org.videolan.vlc",
+                    "org.videolan.vlc.gui.video.VideoPlayerActivity"
+                ))
+
+                tryStartExternalApp(vlcIntent)
+            }
+            "mpv" -> {
+                val mpvIntent = createMediaIntent("is.xyz.mpv", url)
+                tryStartExternalApp(mpvIntent)
+            }
+            "mx_player" -> {
+                val mxIntent = createMediaIntent("com.mxtech.videoplayer.pro", url)
+
+                try {
+                    startActivity(mxIntent)
+                } catch (e: android.content.ActivityNotFoundException) {
+                    mxIntent.setPackage("com.mxtech.videoplayer.ad")
+                    tryStartExternalApp(mxIntent)
+                }
+            }
+            else -> {
+                context?.showToast(R.string.missing_default_player)
+            }
+        }
     }
 }
 
@@ -276,4 +329,5 @@ interface DownloadDetailsListener {
     fun onBrowserStreamsClick(id: String)
     fun onDownloadClick(link: String, fileName: String)
     fun onShareClick(url: String)
+    fun onSendToPlayer(url: String)
 }

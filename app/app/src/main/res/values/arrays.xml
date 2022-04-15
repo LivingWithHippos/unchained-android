@@ -27,6 +27,7 @@
         <item>day</item>
     </string-array>
     <string name="tropical_sunset" translatable="false">Tropical Sunset</string>
+    <string name="player_mpv" translatable="false">MPV</string>
 
     <string-array name="main_screen" >
         <item>@string/user</item>
@@ -37,5 +38,16 @@
         <item>user</item>
         <item>downloads</item>
         <item>search</item>
+    </string-array>
+
+    <string-array name="default_media_player" >
+        <item>@string/player_vlc</item>
+        <item>@string/player_mx</item>
+        <item>@string/player_mpv</item>
+    </string-array>
+    <string-array name="default_media_player_values">
+        <item>vlc</item>
+        <item>mx_player</item>
+        <item>mpv</item>
     </string-array>
 </resources>

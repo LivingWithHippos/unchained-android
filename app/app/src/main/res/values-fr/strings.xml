@@ -369,4 +369,10 @@
     <string name="update_device">Mettre à jour le dispositif</string>
     <string name="kodi_missing_default">Le périphérique Kodi par défaut n\'est pas défini</string>
     <string name="device_deleted">Dispositif supprimé</string>
+    <string name="ui_settings">Paramètres de l\'IU</string>
+    <string name="show_media_player_button_summary">Afficher le bouton pour envoyer le média vers un lecteur installé</string>
+    <string name="show_media_player_button">Afficher le bouton média</string>
+    <string name="default_media_player">Lecteur multimédia par défaut à ouvrir</string>
+    <string name="send_to_player">Envoyer au lecteur</string>
+    <string name="missing_default_player">Définir le lecteur multimédia par défaut dans les paramètres</string>
 </resources>

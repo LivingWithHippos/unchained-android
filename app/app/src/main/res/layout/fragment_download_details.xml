@@ -20,6 +20,10 @@
             type="Boolean" />
 
         <variable
+            name="showLocalPlay"
+            type="Boolean" />
+
+        <variable
             name="listener"
             type="com.github.livingwithhippos.unchained.downloaddetails.view.DownloadDetailsListener" />
     </data>
@@ -262,6 +266,33 @@
                         android:layout_height="wrap_content"
                         android:focusable="false"
                         android:text="@string/download"
+                        android:textAlignment="center" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="@dimen/fab_download_details_width"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:visibility="@{details.streamable == 1 &amp;&amp; showLocalPlay == true? View.VISIBLE : View.GONE, default=visible}"
+                    android:layout_marginBottom="10dp">
+
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        android:id="@+id/fabSendToPlayer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:clickable="true"
+                        android:contentDescription="@string/send_to_player"
+                        android:focusable="true"
+                        android:onClick="@{() -> listener.onSendToPlayer(details.download)}"
+                        app:srcCompat="@drawable/icon_play_local" />
+
+                    <TextView
+                        style="@style/TextAppearance.UnchainedTheme.Body2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:focusable="false"
+                        android:text="@string/send_to_player"
                         android:textAlignment="center" />
                 </LinearLayout>
 

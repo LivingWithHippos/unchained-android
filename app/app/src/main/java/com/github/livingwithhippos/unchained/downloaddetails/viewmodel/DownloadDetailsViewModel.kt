@@ -1,6 +1,9 @@
 package com.github.livingwithhippos.unchained.downloaddetails.viewmodel
 
+import android.content.Intent
 import android.content.SharedPreferences
+import android.net.Uri
+import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -76,6 +79,14 @@ class DownloadDetailsViewModel @Inject constructor(
 
     fun getKodiPreference(): Boolean {
         return preferences.getBoolean("show_kodi", true)
+    }
+
+    fun getDefaultPlayer(): String? {
+        return preferences.getString("default_media_player", null)
+    }
+
+    fun getDefaultPlayerButtonVisibility(): Boolean {
+        return preferences.getBoolean("show_media_button", true)
     }
 }
 
