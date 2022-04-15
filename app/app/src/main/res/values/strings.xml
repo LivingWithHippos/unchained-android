@@ -514,8 +514,8 @@
     <string name="kodi_connection_error">Kodi connection error</string>
     <string name="port_range_error">Port must be between 1 and 65535</string>
     <string name="kodi_configure_credentials">Please configure Kodi in the app settings</string>
-    <string name="kodi_remote_control">Kodi remote control</string>
-    <string name="enable_kodi_control">Read here for instructions on how to set up Kodi for remote control (usually enabled in system->services->control). After that complete the required fields below</string>
+    <string name="kodi_remote_control">Kodi remote control instructions</string>
+    <string name="enable_kodi_control">Tap here for instructions on how to set up Kodi for remote control (usually enabled in system->services->control). After that complete the required fields below</string>
     <string name="only_if_auth">Required only if the authentication is enabled in Kodi</string>
     <string name="rd_status">Real Debrid status</string>
     <string name="show_kodi">Show Kodi button</string>
@@ -561,4 +561,37 @@
     <string name="summary_main_screen">Tab to open at start-up</string>
     <string name="select_deselect_all">Select or deselect all</string>
     <string name="select_one_item">Select at least one item</string>
+    <string name="torrent_monitoring_description">Monitor your torrents being downloaded on Real-Debrid servers.</string>
+    <string name="kodi_manage_list">Manage Kodi Devices</string>
+    <string name="kodi_manage_list_summary">Add or edit a connection to a Kodi device, and choose the default one.</string>
+    <string name="add_device">Add Device</string>
+    <string name="set_as_default">Set as default</string>
+    <string name="new_device">Add New Device</string>
+    <string name="fields_required">Fields marked with * are required</string>
+    <string name="name_required">Name *</string>
+    <string name="address_required">Address *</string>
+    <string name="port_required">Port *</string>
+    <string name="device_added">Device added</string>
+    <string name="test">Test</string>
+    <string name="save_device">Save Device</string>
+    <string name="update_device">Update Device</string>
+    <string name="kodi_missing_default">The default Kodi device is not set</string>
+    <string name="device_deleted">Device deleted</string>
+    <string name="ui_settings">UI Settings</string>
+    <string name="player_vlc" translatable="false">VLC</string>
+    <string name="player_mx" translatable="false">MX Player</string>
+    <string name="show_media_player_button_summary">Show the button to send the media to an installed player</string>
+    <string name="show_media_player_button">Show media button</string>
+    <string name="default_media_player">Default media player to open</string>
+    <string name="send_to_player">Send to player</string>
+    <string name="missing_default_player">Set the default media player in settings</string>
+    <string name="ui_settings_summary">Choose how and if things are shown</string>
+    <string name="download_details_button_choice">Choose which buttons should be shown in the download details screen</string>
+    <string name="external_apps">External applications</string>
+    <string name="show_share_button">Show share button</string>
+    <string name="show_open_button">Show open button</string>
+    <string name="show_copy_button">Show copy button</string>
+    <string name="show_download_button">Show download button</string>
+    <string name="show_load_stream_button">Show load stream button</string>
+    <string name="show_stream_browser_button">Show stream in browser button</string>
 </resources>

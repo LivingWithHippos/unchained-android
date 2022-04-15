@@ -70,7 +70,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         viewModel.kodiLiveData.observe(viewLifecycleOwner) {
             when (it.getContentIfNotHandled()) {
@@ -93,6 +93,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
         findPreference<Preference>("kodi_remote_control_info")?.setOnPreferenceClickListener {
             openExternalWebPage("https://kodi.wiki/view/Settings/Services/Control")
         }
+        findPreference<Preference>("kodi_list_editor")?.setOnPreferenceClickListener {
+            openKodiManagementDialog()
+            true
+        }
+        // todo: sistema per kodi
         val ipPreference = findPreference<EditTextPreference>("kodi_ip_address")
         val portPreference = findPreference<EditTextPreference>("kodi_port")
 
@@ -130,8 +135,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
         }
     }
 
-    override fun onPreferenceTreeClick(preference: Preference?): Boolean {
-        when (preference?.key) {
+    override fun onPreferenceTreeClick(preference: Preference): Boolean {
+        when (preference.key) {
             "feedback" -> openExternalWebPage(FEEDBACK_URL)
             "license" -> openExternalWebPage(GPLV3_URL)
             "credits" -> openCreditsDialog()
@@ -172,6 +177,14 @@ class SettingsFragment : PreferenceFragmentCompat() {
         else {
             viewModel.testKodi(ip, port, username, password)
         }
+    }
+
+    /**
+     * This function opens a dialog to manage the kodi list
+     */
+    private fun openKodiManagementDialog() {
+        val dialog = KodiManagementDialog()
+        dialog.show(parentFragmentManager, "KodiManagementDialogFragment")
     }
 
     private fun openCreditsDialog() {

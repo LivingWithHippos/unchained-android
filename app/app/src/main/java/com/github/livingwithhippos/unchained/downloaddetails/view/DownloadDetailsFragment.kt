@@ -2,8 +2,10 @@ package com.github.livingwithhippos.unchained.downloaddetails.view
 
 import android.Manifest
 import android.app.DownloadManager
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -67,60 +69,68 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
             alternativeAdapter.submitList(args.details.alternative)
         }
 
-        detailsBinding.showKodi = viewModel.getKodiPreference()
+        detailsBinding.showShare = viewModel.getButtonVisibilityPreference(SHOW_SHARE_BUTTON)
+        detailsBinding.showOpen = viewModel.getButtonVisibilityPreference(SHOW_OPEN_BUTTON)
+        detailsBinding.showCopy = viewModel.getButtonVisibilityPreference(SHOW_COPY_BUTTON)
+        detailsBinding.showDownload = viewModel.getButtonVisibilityPreference(SHOW_DOWNLOAD_BUTTON)
+        detailsBinding.showKodi = viewModel.getButtonVisibilityPreference(SHOW_KODI_BUTTON)
+        detailsBinding.showLocalPlay = viewModel.getButtonVisibilityPreference(SHOW_MEDIA_BUTTON)
+        detailsBinding.showLoadStream = viewModel.getButtonVisibilityPreference(
+            SHOW_LOAD_STREAM_BUTTON)
+        detailsBinding.showStreamBrowser = viewModel.getButtonVisibilityPreference(
+            SHOW_STREAM_BROWSER_BUTTON)
 
         viewModel.streamLiveData.observe(
-            viewLifecycleOwner,
-            {
-                if (it != null) {
-                    detailsBinding.stream = it
+            viewLifecycleOwner
+        ) {
+            if (it != null) {
+                detailsBinding.stream = it
 
-                    val streams = mutableListOf<Alternative>()
-                    // parameter mimetype gets shown as the name and "streaming" as title in the list, the other params don't matter
-                    streams.add(
-                        Alternative(
-                            "h264WebM",
-                            "h264WebM",
-                            it.h264WebM.link,
-                            getString(R.string.h264_webm),
-                            getString(R.string.streaming)
-                        )
+                val streams = mutableListOf<Alternative>()
+                // parameter mimetype gets shown as the name and "streaming" as title in the list, the other params don't matter
+                streams.add(
+                    Alternative(
+                        "h264WebM",
+                        "h264WebM",
+                        it.h264WebM.link,
+                        getString(R.string.h264_webm),
+                        getString(R.string.streaming)
                     )
-                    streams.add(
-                        Alternative(
-                            "liveMP4",
-                            "liveMP4",
-                            it.liveMP4.link,
-                            getString(R.string.liveMP4),
-                            getString(R.string.streaming)
-                        )
+                )
+                streams.add(
+                    Alternative(
+                        "liveMP4",
+                        "liveMP4",
+                        it.liveMP4.link,
+                        getString(R.string.liveMP4),
+                        getString(R.string.streaming)
                     )
-                    streams.add(
-                        Alternative(
-                            "apple",
-                            "apple",
-                            it.apple.link,
-                            getString(R.string.apple),
-                            getString(R.string.streaming)
-                        )
+                )
+                streams.add(
+                    Alternative(
+                        "apple",
+                        "apple",
+                        it.apple.link,
+                        getString(R.string.apple),
+                        getString(R.string.streaming)
                     )
-                    streams.add(
-                        Alternative(
-                            "dash",
-                            "dash",
-                            it.dash.link,
-                            getString(R.string.dash),
-                            getString(R.string.streaming)
-                        )
+                )
+                streams.add(
+                    Alternative(
+                        "dash",
+                        "dash",
+                        it.dash.link,
+                        getString(R.string.dash),
+                        getString(R.string.streaming)
                     )
+                )
 
-                    if (!args.details.alternative.isNullOrEmpty())
-                        streams.addAll(args.details.alternative!!)
+                if (!args.details.alternative.isNullOrEmpty())
+                    streams.addAll(args.details.alternative!!)
 
-                    alternativeAdapter.submitList(streams)
-                }
+                alternativeAdapter.submitList(streams)
             }
-        )
+        }
 
         viewModel.deletedDownloadLiveData.observe(
             viewLifecycleOwner,
@@ -149,6 +159,9 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                 }
                 DownloadDetailsMessage.KodiMissingCredentials -> {
                     context?.showToast(R.string.kodi_configure_credentials)
+                }
+                DownloadDetailsMessage.KodiMissingDefault -> {
+                    context?.showToast(R.string.kodi_missing_default)
                 }
                 null -> {
                 }
@@ -260,9 +273,70 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
     override fun onShareClick(url: String) {
         val shareIntent = Intent(Intent.ACTION_SEND)
         shareIntent.type = "text/plain"
-        val shareLink = url
-        shareIntent.putExtra(Intent.EXTRA_TEXT, shareLink)
+        shareIntent.putExtra(Intent.EXTRA_TEXT, url)
         startActivity(Intent.createChooser(shareIntent, getString(R.string.share_with)))
+    }
+
+    private fun tryStartExternalApp(intent: Intent) {
+
+        try {
+            startActivity(intent)
+        } catch (e: android.content.ActivityNotFoundException) {
+            context?.showToast(R.string.app_not_installed)
+        }
+    }
+
+    private fun createMediaIntent(appPackage: String, url: String, component: ComponentName? = null, dataType: String = "video/*"): Intent {
+
+        val uri = Uri.parse(url)
+        val intent = Intent(Intent.ACTION_VIEW)
+        intent.setPackage(appPackage)
+        intent.setDataAndTypeAndNormalize(uri, dataType)
+        if (component!=null)
+            intent.component = component
+
+        return intent
+    }
+
+    override fun onSendToPlayer(url: String) {
+        when (viewModel.getDefaultPlayer()) {
+            "vlc" -> {
+                val vlcIntent = createMediaIntent("org.videolan.vlc", url, ComponentName(
+                    "org.videolan.vlc",
+                    "org.videolan.vlc.gui.video.VideoPlayerActivity"
+                ))
+
+                tryStartExternalApp(vlcIntent)
+            }
+            "mpv" -> {
+                val mpvIntent = createMediaIntent("is.xyz.mpv", url)
+                tryStartExternalApp(mpvIntent)
+            }
+            "mx_player" -> {
+                val mxIntent = createMediaIntent("com.mxtech.videoplayer.pro", url)
+
+                try {
+                    startActivity(mxIntent)
+                } catch (e: android.content.ActivityNotFoundException) {
+                    mxIntent.setPackage("com.mxtech.videoplayer.ad")
+                    tryStartExternalApp(mxIntent)
+                }
+            }
+            else -> {
+                context?.showToast(R.string.missing_default_player)
+            }
+        }
+    }
+
+    companion object {
+        const val SHOW_SHARE_BUTTON = "show_share_button"
+        const val SHOW_OPEN_BUTTON = "show_open_button"
+        const val SHOW_COPY_BUTTON = "show_copy_button"
+        const val SHOW_DOWNLOAD_BUTTON = "show_download_button"
+        const val SHOW_MEDIA_BUTTON = "show_media_button"
+        const val SHOW_KODI_BUTTON = "show_kodi"
+        const val SHOW_LOAD_STREAM_BUTTON = "show_load_stream_button"
+        const val SHOW_STREAM_BROWSER_BUTTON = "show_stream_browser_button"
     }
 }
 
@@ -274,4 +348,5 @@ interface DownloadDetailsListener {
     fun onBrowserStreamsClick(id: String)
     fun onDownloadClick(link: String, fileName: String)
     fun onShareClick(url: String)
+    fun onSendToPlayer(url: String)
 }

@@ -17,18 +17,21 @@ import com.github.livingwithhippos.unchained.data.local.ProtoStore
 import com.github.livingwithhippos.unchained.data.model.APIError
 import com.github.livingwithhippos.unchained.data.model.ApiConversionError
 import com.github.livingwithhippos.unchained.data.model.EmptyBodyError
+import com.github.livingwithhippos.unchained.data.model.KodiDevice
 import com.github.livingwithhippos.unchained.data.model.NetworkError
 import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkException
 import com.github.livingwithhippos.unchained.data.model.User
 import com.github.livingwithhippos.unchained.data.model.UserAction
 import com.github.livingwithhippos.unchained.data.repository.AuthenticationRepository
 import com.github.livingwithhippos.unchained.data.repository.HostsRepository
+import com.github.livingwithhippos.unchained.data.repository.KodiDeviceRepository
 import com.github.livingwithhippos.unchained.data.repository.PluginRepository
 import com.github.livingwithhippos.unchained.data.repository.PluginRepository.Companion.TYPE_UNCHAINED
 import com.github.livingwithhippos.unchained.data.repository.UserRepository
 import com.github.livingwithhippos.unchained.data.repository.VariousApiRepository
 import com.github.livingwithhippos.unchained.lists.view.ListsTabFragment
 import com.github.livingwithhippos.unchained.plugins.model.Plugin
+import com.github.livingwithhippos.unchained.settings.view.SettingsFragment
 import com.github.livingwithhippos.unchained.statemachine.authentication.CurrentFSMAuthentication
 import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationEvent
 import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationSideEffect
@@ -67,6 +70,7 @@ class MainActivityViewModel @Inject constructor(
     private val hostsRepository: HostsRepository,
     private val pluginRepository: PluginRepository,
     private val protoStore: ProtoStore,
+    private val kodiDeviceRepository: KodiDeviceRepository
 ) : ViewModel() {
 
     val fsmAuthenticationState = MutableLiveData<Event<FSMAuthenticationState>?>()
@@ -934,6 +938,41 @@ class MainActivityViewModel @Inject constructor(
      */
     fun goToStartUpScreen() {
         jumpTabLiveData.postEvent(preferences.getString("main_screen", "user") ?: "user")
+    }
+
+    /**
+     * Loads the old saved kodi preference into the new db one and then deletes it
+     */
+    fun updateOldKodiPreferences() {
+
+        val address: String? = preferences.getString("kodi_ip_address", null)
+        val port: Int? = preferences.getString("kodi_port", null)?.toIntOrNull()
+
+        if (!address.isNullOrBlank() && port != null) {
+            val user: String? = preferences.getString("kodi_username", null)
+            val password: String? = preferences.getString("kodi_password", null)
+
+            viewModelScope.launch {
+                kodiDeviceRepository.add(
+                    KodiDevice(
+                        "Imported Kodi Device",
+                        address,
+                        port,
+                        user,
+                        password,
+                        true
+                    )
+                )
+
+                with(preferences.edit()) {
+                    remove("kodi_ip_address")
+                    remove("kodi_port")
+                    remove("kodi_username")
+                    remove("kodi_password")
+                    apply()
+                }
+            }
+        }
     }
 
     companion object {

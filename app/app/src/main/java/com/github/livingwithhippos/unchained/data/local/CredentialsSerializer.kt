@@ -20,7 +20,6 @@ object CredentialsSerializer : Serializer<CurrentCredential> {
         } catch (exception: InvalidProtocolBufferException) {
             throw CorruptionException("Cannot read proto.", exception)
         }
-
     }
 
     @Suppress("BlockingMethodInNonBlockingContext")

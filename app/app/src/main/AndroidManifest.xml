@@ -22,7 +22,8 @@
         android:roundIcon="@mipmap/icon_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Unchained"
-        tools:targetApi="n">
+        tools:targetApi="n"
+        android:dataExtractionRules="@xml/data_extraction_rules">
 
         <activity
             android:name=".settings.view.SettingsActivity"

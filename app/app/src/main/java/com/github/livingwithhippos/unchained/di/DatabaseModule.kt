@@ -5,6 +5,7 @@ import androidx.room.Room
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.github.livingwithhippos.unchained.data.local.HostRegexDao
+import com.github.livingwithhippos.unchained.data.local.KodiDeviceDao
 import com.github.livingwithhippos.unchained.data.local.UnchaineDB
 import com.github.livingwithhippos.unchained.data.model.REGEX_TYPE_HOST
 import dagger.Module
@@ -36,6 +37,11 @@ object DatabaseModule {
     @Provides
     fun provideHostRegexDao(database: UnchaineDB): HostRegexDao {
         return database.hostRegexDao()
+    }
+
+    @Provides
+    fun provideKodiDeviceDao(database: UnchaineDB): KodiDeviceDao {
+        return database.kodiDeviceDao()
     }
 
     private val MIGRATION_1_2 = object : Migration(1, 2) {

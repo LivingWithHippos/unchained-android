@@ -42,7 +42,7 @@ android {
         minSdk 22
         targetSdk 31
         versionCode 28
-        versionName "4.27.5-beta"
+        versionName "4.33.10-beta"
         // limit resources for a list of locales
         // resConfigs "en", "it"
 

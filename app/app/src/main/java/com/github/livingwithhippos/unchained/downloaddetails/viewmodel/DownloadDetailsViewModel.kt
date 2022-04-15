@@ -1,12 +1,16 @@
 package com.github.livingwithhippos.unchained.downloaddetails.viewmodel
 
+import android.content.Intent
 import android.content.SharedPreferences
+import android.net.Uri
+import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.livingwithhippos.unchained.data.local.ProtoStore
 import com.github.livingwithhippos.unchained.data.model.Stream
 import com.github.livingwithhippos.unchained.data.repository.DownloadRepository
+import com.github.livingwithhippos.unchained.data.repository.KodiDeviceRepository
 import com.github.livingwithhippos.unchained.data.repository.KodiRepository
 import com.github.livingwithhippos.unchained.data.repository.StreamingRepository
 import com.github.livingwithhippos.unchained.utilities.Event
@@ -25,7 +29,8 @@ class DownloadDetailsViewModel @Inject constructor(
     private val streamingRepository: StreamingRepository,
     private val downloadRepository: DownloadRepository,
     private val protoStore: ProtoStore,
-    private val kodiRepository: KodiRepository
+    private val kodiRepository: KodiRepository,
+    private val kodiDeviceRepository: KodiDeviceRepository,
 ) : ViewModel() {
 
     val streamLiveData = MutableLiveData<Stream?>()
@@ -54,27 +59,38 @@ class DownloadDetailsViewModel @Inject constructor(
     }
 
     fun openUrlOnKodi(url: String) {
-
-        val ip: String? = preferences.getString("kodi_ip_address", "")
-        val port: Int = preferences.getString("kodi_port", null)?.toIntOrNull() ?: -1
-        val username: String? = preferences.getString("kodi_username", "")
-        val password: String? = preferences.getString("kodi_password", "")
-
-        if (!ip.isNullOrBlank() && port > 0) {
-            viewModelScope.launch {
-                val response = kodiRepository.openUrl(ip, port, url, username, password)
+        viewModelScope.launch {
+            val device = kodiDeviceRepository.getDefault()
+            if (device != null) {
+                val response = kodiRepository.openUrl(device.address, device.port, url, device.username, device.password)
                 if (response != null)
                     messageLiveData.postEvent(DownloadDetailsMessage.KodiSuccess)
                 else
                     messageLiveData.postEvent(DownloadDetailsMessage.KodiError)
+            } else {
+                val allDevices = kodiDeviceRepository.getDevices()
+                if (allDevices.isNotEmpty())
+                    messageLiveData.postEvent(DownloadDetailsMessage.KodiMissingDefault)
+                else
+                    messageLiveData.postEvent(DownloadDetailsMessage.KodiMissingCredentials)
             }
-        } else {
-            messageLiveData.postEvent(DownloadDetailsMessage.KodiMissingCredentials)
         }
     }
 
     fun getKodiPreference(): Boolean {
         return preferences.getBoolean("show_kodi", true)
+    }
+
+    fun getDefaultPlayer(): String? {
+        return preferences.getString("default_media_player", null)
+    }
+
+    fun getDefaultPlayerButtonVisibility(): Boolean {
+        return preferences.getBoolean("show_media_button", true)
+    }
+
+    fun getButtonVisibilityPreference(buttonKey: String, default: Boolean = true): Boolean {
+        return preferences.getBoolean(buttonKey, default)
     }
 }
 
@@ -82,4 +98,5 @@ sealed class DownloadDetailsMessage {
     object KodiError : DownloadDetailsMessage()
     object KodiSuccess : DownloadDetailsMessage()
     object KodiMissingCredentials : DownloadDetailsMessage()
+    object KodiMissingDefault : DownloadDetailsMessage()
 }

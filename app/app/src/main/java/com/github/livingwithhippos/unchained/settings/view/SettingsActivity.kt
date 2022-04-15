@@ -25,7 +25,6 @@ class SettingsActivity : AppCompatActivity() {
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, settingsFragment)
             .commit()
-
     }
 
     override fun onSupportNavigateUp(): Boolean {

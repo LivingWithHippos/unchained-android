@@ -30,6 +30,7 @@
         <SwitchPreference
             android:defaultValue="false"
             app:key="notification_torrent_key"
+            app:summary="@string/torrent_monitoring_description"
             app:title="@string/enable_torrent_monitoring_title" />
 
     </PreferenceCategory>
@@ -53,80 +54,110 @@
 
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="@string/kodi">
+    <PreferenceCategory android:title="@string/external_apps">
 
         <Preference
             app:key="kodi_remote_control_info"
             app:summary="@string/enable_kodi_control"
             app:title="@string/kodi_remote_control" />
 
-        <SwitchPreference
-            android:defaultValue="true"
-            android:key="show_kodi"
-            android:title="@string/show_kodi" />
-
-        <EditTextPreference
-            android:defaultValue="192.168.1.7"
-            android:key="kodi_ip_address"
-            android:selectAllOnFocus="true"
-            android:singleLine="true"
-            android:title="@string/ip_address" />
-
-        <EditTextPreference
-            android:defaultValue="8080"
-            android:key="kodi_port"
-            android:selectAllOnFocus="true"
-            android:singleLine="true"
-            android:title="@string/port" />
-
-        <EditTextPreference
-            android:defaultValue="kodi"
-            android:key="kodi_username"
-            android:selectAllOnFocus="true"
-            android:singleLine="true"
-            android:summary="@string/only_if_auth"
-            android:title="@string/username" />
-
-        <EditTextPreference
-            android:defaultValue=""
-            android:key="kodi_password"
-            android:inputType="textVisiblePassword"
-            android:selectAllOnFocus="true"
-            android:singleLine="true"
-            android:summary="@string/only_if_auth"
-            android:title="@string/password" />
-
         <Preference
-            app:key="test_kodi"
-            app:title="@string/test_connection" />
+            app:key="kodi_list_editor"
+            app:summary="@string/kodi_manage_list_summary"
+            app:title="@string/kodi_manage_list" />
+
+        <DropDownPreference
+            android:defaultValue="vlc"
+            android:entries="@array/default_media_player"
+            android:entryValues="@array/default_media_player_values"
+            android:key="default_media_player"
+            android:title="@string/default_media_player"
+            app:useSimpleSummaryProvider="true" />
+
+
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="@string/title_various">
+    <PreferenceCategory android:title="@string/ui_settings">
+
+        <Preference app:summary="@string/ui_settings_summary" />
 
         <DropDownPreference
             android:defaultValue="user"
             android:entries="@array/main_screen"
             android:entryValues="@array/main_screen_values"
             android:key="main_screen"
-            android:title="@string/title_main_screen"
             android:summary="@string/summary_main_screen"
+            android:title="@string/title_main_screen"
             app:summary="@string/summary_main_screen"
             app:useSimpleSummaryProvider="true" />
 
-        <EditTextPreference
-            android:defaultValue="10"
-            android:key="filter_size_mb"
-            android:inputType="number"
-            android:selectAllOnFocus="true"
-            android:singleLine="true"
-            android:title="@string/file_size_filter"
-            android:summary="@string/file_size_filter_description" />
 
         <SwitchPreference
             android:defaultValue="false"
             app:key="show_folders_filters"
             app:summary="@string/show_folder_filters_summary"
             app:title="@string/show_folder_filters" />
+
+
+        <PreferenceCategory android:title="@string/download_details">
+
+            <Preference app:summary="@string/download_details_button_choice" />
+
+            <SwitchPreference
+                android:defaultValue="true"
+                app:key="show_share_button"
+                app:title="@string/show_share_button" />
+
+            <SwitchPreference
+                android:defaultValue="true"
+                app:key="show_open_button"
+                app:title="@string/show_open_button" />
+
+            <SwitchPreference
+                android:defaultValue="true"
+                app:key="show_copy_button"
+                app:title="@string/show_copy_button" />
+
+            <SwitchPreference
+                android:defaultValue="true"
+                app:key="show_download_button"
+                app:title="@string/show_download_button" />
+
+            <SwitchPreference
+                android:defaultValue="true"
+                app:key="show_media_button"
+                app:summary="@string/show_media_player_button_summary"
+                app:title="@string/show_media_player_button" />
+
+            <SwitchPreference
+                android:defaultValue="true"
+                android:key="show_kodi"
+                android:title="@string/show_kodi" />
+
+            <SwitchPreference
+                android:defaultValue="true"
+                android:key="show_load_stream_button"
+                android:title="@string/show_load_stream_button" />
+
+            <SwitchPreference
+                android:defaultValue="true"
+                android:key="show_stream_browser_button"
+                android:title="@string/show_stream_browser_button" />
+
+        </PreferenceCategory>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/title_various">
+
+        <EditTextPreference
+            android:defaultValue="10"
+            android:inputType="number"
+            android:key="filter_size_mb"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:summary="@string/file_size_filter_description"
+            android:title="@string/file_size_filter" />
 
         <SwitchPreference
             android:defaultValue="false"
@@ -163,8 +194,8 @@
 
         <Preference
             app:key="app_version"
-            app:title="@string/version"
-            app:summary="4.2.3-beta" />
+            app:summary="4.2.3-beta"
+            app:title="@string/version" />
 
     </PreferenceCategory>
 

@@ -60,6 +60,35 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
+    // countly crash reporter set up. Debug mode only
+    override fun onStart() {
+        super.onStart()
+        if (BuildConfig.DEBUG) {
+            Countly.sharedInstance().onStart(this)
+        }
+    }
+
+    override fun onStop() {
+        if (BuildConfig.DEBUG) {
+            Countly.sharedInstance().onStop()
+        }
+        super.onStop()
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+
+        if (BuildConfig.DEBUG) {
+            Countly.sharedInstance().onConfigurationChanged(newConfig)
+        }
+    }
+
+    private fun createCountly() {
+        if (BuildConfig.DEBUG) {
+            Countly.onCreate(this)
+        }
+    }
+
     /****************************************************************
      * ADD CHANGES MADE HERE IN THE RELEASE VERSION OF MAINACTIVITY *
      ***************************************************************/
@@ -119,61 +148,59 @@ class MainActivity : AppCompatActivity() {
         viewModel.fsmAuthenticationState.observe(
             this
         ) {
-            if (it != null) {
-                when (it.getContentIfNotHandled()) {
-                    null -> {
-                        // do nothing
+            // do not inline this variable in the when, because getContentIfNotHandled() will change its value to null if checked again in WaitingUserAction
+            val authState: FSMAuthenticationState? = it?.getContentIfNotHandled()
+            when (authState) {
+                null -> {
+                    // do nothing
+                }
+                is FSMAuthenticationState.CheckCredentials -> {
+                    viewModel.checkCredentials()
+                }
+                FSMAuthenticationState.Start -> {
+                    // do nothing. This is our starting point. It should not be reached again
+                }
+                FSMAuthenticationState.StartNewLogin -> {
+                    // this state should be managed by the fragments directly
+                }
+                FSMAuthenticationState.AuthenticatedOpenToken -> {
+                    // unlock the bottom menu
+                    enableAllBottomNavItems()
+                }
+                FSMAuthenticationState.RefreshingOpenToken -> {
+                    viewModel.refreshToken()
+                }
+                FSMAuthenticationState.AuthenticatedPrivateToken -> {
+                    // unlock the bottom menu
+                    enableAllBottomNavItems()
+                }
+                FSMAuthenticationState.WaitingToken -> {
+                    // this state should be managed by the fragments directly
+                }
+                FSMAuthenticationState.WaitingUserConfirmation -> {
+                    // this state should be managed by the fragments directly
+                }
+                is FSMAuthenticationState.WaitingUserAction -> {
+                    // go back to the user/start fragment and disable the buttons.
+                    when (authState.action) {
+                        UserAction.PERMISSION_DENIED -> showToast(R.string.permission_denied)
+                        UserAction.TFA_NEEDED -> showToast(R.string.tfa_needed)
+                        UserAction.TFA_PENDING -> showToast(R.string.tfa_pending)
+                        UserAction.IP_NOT_ALLOWED -> showToast(R.string.ip_Address_not_allowed)
+                        UserAction.UNKNOWN -> showToast(R.string.generic_login_error)
+                        UserAction.NETWORK_ERROR -> showToast(R.string.network_error)
+                        UserAction.RETRY_LATER -> showToast(R.string.retry_later)
+                        null -> showToast(R.string.retry_later)
                     }
-                    is FSMAuthenticationState.CheckCredentials -> {
-                        viewModel.checkCredentials()
-                    }
-                    FSMAuthenticationState.Start -> {
-                        // do nothing. This is our starting point. It should not be reached again
-                    }
-                    FSMAuthenticationState.StartNewLogin -> {
-                        // this state should be managed by the fragments directly
-                    }
-                    FSMAuthenticationState.AuthenticatedOpenToken -> {
-                        // unlock the bottom menu
-                        enableAllBottomNavItems()
-                    }
-                    FSMAuthenticationState.RefreshingOpenToken -> {
-                        viewModel.refreshToken()
-                    }
-                    FSMAuthenticationState.AuthenticatedPrivateToken -> {
-                        // unlock the bottom menu
-                        enableAllBottomNavItems()
-                    }
-                    FSMAuthenticationState.WaitingToken -> {
-                        // this state should be managed by the fragments directly
-                    }
-                    FSMAuthenticationState.WaitingUserConfirmation -> {
-                        // this state should be managed by the fragments directly
-                    }
-                    is FSMAuthenticationState.WaitingUserAction -> {
-                        // go back to the user/start fragment and disable the buttons.
-                        when ((it.getContentIfNotHandled() as FSMAuthenticationState.WaitingUserAction).action) {
-                            UserAction.PERMISSION_DENIED -> showToast(R.string.permission_denied)
-                            UserAction.TFA_NEEDED -> showToast(R.string.tfa_needed)
-                            UserAction.TFA_PENDING -> showToast(R.string.tfa_pending)
-                            UserAction.IP_NOT_ALLOWED -> showToast(R.string.ip_Address_not_allowed)
-                            UserAction.UNKNOWN -> showToast(R.string.generic_login_error)
-                            UserAction.NETWORK_ERROR -> showToast(R.string.network_error)
-                            UserAction.RETRY_LATER -> showToast(R.string.retry_later)
-                        }
-                        // this state should be managed by the fragments directly
-                        lifecycleScope.launch {
-                            disableBottomNavItems(
-                                R.id.navigation_lists,
-                                R.id.navigation_search
-                            )
-                            doubleClickBottomItem(R.id.navigation_home)
-                        }
+                    // this state should be managed by the fragments directly
+                    lifecycleScope.launch {
+                        disableBottomNavItems(
+                            R.id.navigation_lists,
+                            R.id.navigation_search
+                        )
+                        doubleClickBottomItem(R.id.navigation_home)
                     }
                 }
-            } else {
-                Countly.sharedInstance().events()
-                    .recordEvent("fsmAuthenticationState observable was null")
             }
         }
 
@@ -196,41 +223,39 @@ class MainActivity : AppCompatActivity() {
         )
 
         viewModel.linkLiveData.observe(this) {
-            if (it == null) {
-                Countly.sharedInstance().events().recordEvent("linkLiveData observable was null")
-            } else {
-                it.getContentIfNotHandled()?.let { link ->
-                    when {
-                        link.endsWith(TYPE_UNCHAINED, ignoreCase = true) -> {
-                            downloadPlugin(link)
-                        }
-                        else -> {
-                            // check the authentication
-                            processExternalRequestOnAuthentication(Uri.parse(link))
-                        }
+            it?.getContentIfNotHandled()?.let { link ->
+                when {
+                    link.endsWith(TYPE_UNCHAINED, ignoreCase = true) -> {
+                        downloadPlugin(link)
+                    }
+                    else -> {
+                        // check the authentication
+                        processExternalRequestOnAuthentication(Uri.parse(link))
                     }
                 }
             }
         }
 
-        viewModel.jumpTabLiveData.observe(this, EventObserver {
-            when (it) {
-                "user" -> {
-                    // do nothing
-                }
-                "downloads" -> {
-                    lifecycleScope.launch {
-                        doubleClickBottomItem(R.id.navigation_lists)
+        viewModel.jumpTabLiveData.observe(
+            this,
+            EventObserver {
+                when (it) {
+                    "user" -> {
+                        // do nothing
                     }
-                }
-                "search" -> {
-                    lifecycleScope.launch {
-                        doubleClickBottomItem(R.id.navigation_search)
+                    "downloads" -> {
+                        lifecycleScope.launch {
+                            doubleClickBottomItem(R.id.navigation_lists)
+                        }
+                    }
+                    "search" -> {
+                        lifecycleScope.launch {
+                            doubleClickBottomItem(R.id.navigation_search)
+                        }
                     }
                 }
             }
-        })
-
+        )
 
         // monitor if the torrent notification service needs to be started. It monitor the preference change itself
         // for the shutting down part
@@ -250,15 +275,10 @@ class MainActivity : AppCompatActivity() {
         viewModel.messageLiveData.observe(
             this
         ) {
-            if (it == null) {
-                Countly.sharedInstance().events()
-                    .recordEvent("messageLiveData observable was null")
-            } else {
-                it.getContentIfNotHandled()?.let { message ->
-                    currentToast.cancel()
-                    currentToast.setText(getString(message))
-                    currentToast.show()
-                }
+            it?.getContentIfNotHandled()?.let { message ->
+                currentToast.cancel()
+                currentToast.setText(getString(message))
+                currentToast.show()
             }
         }
 
@@ -267,6 +287,9 @@ class MainActivity : AppCompatActivity() {
             val notificationIntent = Intent(this, ForegroundTorrentService::class.java)
             ContextCompat.startForegroundService(this, notificationIntent)
         }
+
+        // load the old share preferences of kodi devices into the db and then delete them
+        viewModel.updateOldKodiPreferences()
 
         viewModel.connectivityLiveData.observe(
             this
@@ -278,8 +301,7 @@ class MainActivity : AppCompatActivity() {
                     applicationContext.showToast(R.string.no_network_connection)
                 }
                 null -> {
-                    Countly.sharedInstance().events()
-                        .recordEvent("connectivityLiveData observable was null")
+                    Timber.e("connection null")
                 }
             }
         }
@@ -310,35 +332,8 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        if (BuildConfig.DEBUG) {
-            Countly.onCreate(this)
-        }
+        createCountly()
     }
-
-    // countly crash reporter set up. Debug mode only
-    override fun onStart() {
-        super.onStart()
-        if (BuildConfig.DEBUG) {
-            Countly.sharedInstance().onStart(this)
-        }
-    }
-
-    override fun onStop() {
-        if (BuildConfig.DEBUG) {
-            Countly.sharedInstance().onStop()
-        }
-        super.onStop()
-    }
-
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-
-        if (BuildConfig.DEBUG) {
-            Countly.sharedInstance().onConfigurationChanged(newConfig)
-        }
-    }
-
-    // end of countly crash reporter set up.
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater = menuInflater
@@ -526,11 +521,10 @@ class MainActivity : AppCompatActivity() {
 
         // Whenever the selected controller changes, setup the action bar.
         controller.observe(
-            this,
-            { navController ->
-                setupActionBarWithNavController(navController, appBarConfiguration)
-            }
-        )
+            this
+        ) { navController ->
+            setupActionBarWithNavController(navController, appBarConfiguration)
+        }
         currentNavController = controller
     }
 

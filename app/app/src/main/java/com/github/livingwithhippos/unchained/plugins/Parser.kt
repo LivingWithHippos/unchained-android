@@ -4,6 +4,7 @@ import android.content.SharedPreferences
 import android.text.Spanned
 import androidx.core.text.HtmlCompat
 import com.github.livingwithhippos.unchained.plugins.model.CustomRegex
+import com.github.livingwithhippos.unchained.plugins.model.DirectParser
 import com.github.livingwithhippos.unchained.plugins.model.Plugin
 import com.github.livingwithhippos.unchained.plugins.model.PluginRegexes
 import com.github.livingwithhippos.unchained.plugins.model.RegexpsGroup
@@ -21,7 +22,6 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import timber.log.Timber
-import java.net.SocketTimeoutException
 
 class Parser(
     private val preferences: SharedPreferences,
@@ -111,6 +111,19 @@ class Parser(
                                 } else {
                                     emit(ParserResult.EmptyInnerLinks)
                                 }
+                            }
+                            plugin.download.directParser != null -> {
+                                emit(
+                                    ParserResult.Results(
+                                        parseDirect(
+                                            plugin.download.directParser,
+                                            plugin.download.regexes,
+                                            source,
+                                            plugin.url
+                                        )
+                                    )
+                                )
+                                emit(ParserResult.SearchFinished)
                             }
                             plugin.download.tableLink != null -> {
                                 emit(
@@ -394,9 +407,9 @@ class Parser(
                 var seeders: String? = null
                 var leechers: String? = null
                 var size: String? = null
-                var magnets = mutableSetOf<String>()
-                var torrents = mutableSetOf<String>()
-                var hosting = mutableSetOf<String>()
+                val magnets = mutableSetOf<String>()
+                val torrents = mutableSetOf<String>()
+                val hosting = mutableSetOf<String>()
                 try {
 
                     if (tableLink.columns.nameColumn != null)
@@ -500,7 +513,8 @@ class Parser(
             getClient().newCall(request).execute().use { response: Response ->
                 response.body?.string() ?: ""
             }
-        } catch (e: SocketTimeoutException) {
+        } catch (e: Exception) {
+            // todo: checking different exceptions can help debugging the issue
             Timber.e("Error getting source while parsing link: ${e.message} ")
             ""
         }
@@ -688,6 +702,58 @@ class Parser(
         else emptyList()
     }
 
+    private fun parseDirect(
+        directParser: DirectParser?,
+        regexes: PluginRegexes,
+        source: String,
+        url: String
+    ): List<ScrapedItem> {
+        // todo: implement class and id filtering
+        // todo: implement more robust method to parse multiple links for a single source
+        // maybe let the class filtering separate all of the pieces like a row
+        val directItems = mutableListOf<ScrapedItem>()
+
+        val nameRegex = regexes.nameRegex.regexps
+        val names = parseList(nameRegex, source, url)
+        val magnetRegex = regexes.magnetRegex?.regexps
+        val magnets = parseList(magnetRegex, source, url)
+        val torrentsRegex = regexes.torrentRegexes?.regexps
+        val torrents = parseList(torrentsRegex, source, url)
+        val hostingRegex = regexes.hostingRegexes?.regexps
+        val hosting = parseList(hostingRegex, source, url)
+
+        if (names.isNotEmpty() && (magnets.isNotEmpty() || torrents.isNotEmpty() || hosting.isNotEmpty())) {
+
+            val seedersRegex = regexes.seedersRegex?.regexps
+            val seeders = parseList(seedersRegex, source, url)
+            val leechersRegex = regexes.leechersRegex?.regexps
+            val leechers = parseList(leechersRegex, source, url)
+            val sizeRegex = regexes.sizeRegex?.regexps
+            val size = parseList(sizeRegex, source, url)
+            val detailsRegex = regexes.detailsRegex?.regexps
+            val details = parseList(detailsRegex, source, url)
+
+            // checking the max size of combinations between names, torrents, hosting and magnets I can find
+            val maxSize: Int = minOf(names.size, maxOf(magnets.size, torrents.size, hosting.size))
+            for (index in 0..maxSize) {
+                directItems.add(
+                    ScrapedItem(
+                        names[index],
+                        details.getOrNull(index),
+                        seeders.getOrNull(index),
+                        leechers.getOrNull(index),
+                        size.getOrNull(index),
+                        parseCommonSize(size.getOrNull(index)),
+                        if (magnets.getOrNull(index) != null) listOf(magnets[index]) else emptyList(),
+                        if (torrents.getOrNull(index) != null) listOf(torrents[index]) else emptyList(),
+                        if (hosting.getOrNull(index) != null) listOf(hosting[index]) else emptyList()
+                    )
+                )
+            }
+            return directItems
+        } else return emptyList()
+    }
+
     private fun getCategory(plugin: Plugin, category: String): String? {
         return when (category) {
             "all" -> plugin.supportedCategories.all
@@ -718,8 +784,9 @@ class Parser(
          * 1.1: added skipping of empty rows in tables
          * 1.2: added table_indirect
          * 2.0: use array for all regexps
+         * 2.1: added direct parsing mode
          */
-        const val PLUGIN_ENGINE_VERSION: Float = 2.0f
+        const val PLUGIN_ENGINE_VERSION: Float = 2.1f
     }
 }
 
