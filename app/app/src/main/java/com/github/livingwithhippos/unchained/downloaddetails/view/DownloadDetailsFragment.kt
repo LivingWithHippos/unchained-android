@@ -69,8 +69,16 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
             alternativeAdapter.submitList(args.details.alternative)
         }
 
-        detailsBinding.showKodi = viewModel.getKodiPreference()
-        detailsBinding.showLocalPlay = viewModel.getDefaultPlayerButtonVisibility()
+        detailsBinding.showShare = viewModel.getButtonVisibilityPreference(SHOW_SHARE_BUTTON)
+        detailsBinding.showOpen = viewModel.getButtonVisibilityPreference(SHOW_OPEN_BUTTON)
+        detailsBinding.showCopy = viewModel.getButtonVisibilityPreference(SHOW_COPY_BUTTON)
+        detailsBinding.showDownload = viewModel.getButtonVisibilityPreference(SHOW_DOWNLOAD_BUTTON)
+        detailsBinding.showKodi = viewModel.getButtonVisibilityPreference(SHOW_KODI_BUTTON)
+        detailsBinding.showLocalPlay = viewModel.getButtonVisibilityPreference(SHOW_MEDIA_BUTTON)
+        detailsBinding.showLoadStream = viewModel.getButtonVisibilityPreference(
+            SHOW_LOAD_STREAM_BUTTON)
+        detailsBinding.showStreamBrowser = viewModel.getButtonVisibilityPreference(
+            SHOW_STREAM_BROWSER_BUTTON)
 
         viewModel.streamLiveData.observe(
             viewLifecycleOwner
@@ -318,6 +326,17 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                 context?.showToast(R.string.missing_default_player)
             }
         }
+    }
+
+    companion object {
+        const val SHOW_SHARE_BUTTON = "show_share_button"
+        const val SHOW_OPEN_BUTTON = "show_open_button"
+        const val SHOW_COPY_BUTTON = "show_copy_button"
+        const val SHOW_DOWNLOAD_BUTTON = "show_download_button"
+        const val SHOW_MEDIA_BUTTON = "show_media_button"
+        const val SHOW_KODI_BUTTON = "show_kodi"
+        const val SHOW_LOAD_STREAM_BUTTON = "show_load_stream_button"
+        const val SHOW_STREAM_BROWSER_BUTTON = "show_stream_browser_button"
     }
 }
 

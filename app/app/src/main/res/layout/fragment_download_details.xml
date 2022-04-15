@@ -16,11 +16,35 @@
             type="com.github.livingwithhippos.unchained.data.model.Stream" />
 
         <variable
-            name="showKodi"
+            name="showShare"
+            type="Boolean" />
+
+        <variable
+            name="showOpen"
+            type="Boolean" />
+
+        <variable
+            name="showCopy"
+            type="Boolean" />
+
+        <variable
+            name="showDownload"
             type="Boolean" />
 
         <variable
             name="showLocalPlay"
+            type="Boolean" />
+
+        <variable
+            name="showKodi"
+            type="Boolean" />
+
+        <variable
+            name="showLoadStream"
+            type="Boolean" />
+
+        <variable
+            name="showStreamBrowser"
             type="Boolean" />
 
         <variable
@@ -170,6 +194,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:orientation="vertical"
+                    android:visibility="@{showShare == true? View.VISIBLE : View.GONE, default=visible}"
                     android:layout_marginBottom="10dp">
 
                     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -196,6 +221,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:orientation="vertical"
+                    android:visibility="@{showOpen == true? View.VISIBLE : View.GONE, default=visible}"
                     android:layout_marginBottom="10dp">
 
                     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -222,6 +248,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:orientation="vertical"
+                    android:visibility="@{showCopy == true? View.VISIBLE : View.GONE, default=visible}"
                     android:layout_marginBottom="10dp">
 
                     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -248,6 +275,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:orientation="vertical"
+                    android:visibility="@{showDownload == true? View.VISIBLE : View.GONE, default=visible}"
                     android:layout_marginBottom="10dp">
 
                     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -328,7 +356,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:orientation="vertical"
-                    android:visibility="@{details.streamable == 1 ? View.VISIBLE : View.GONE, default=visible}"
+                    android:visibility="@{details.streamable == 1 &amp;&amp; showLoadStream == true ? View.VISIBLE : View.GONE, default=visible}"
                     android:layout_marginBottom="10dp">
 
                     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -356,7 +384,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:orientation="vertical"
-                    android:visibility="@{details.streamable == 1 ? View.VISIBLE : View.GONE, default=visible}"
+                    android:visibility="@{details.streamable == 1 &amp;&amp; showStreamBrowser == true? View.VISIBLE : View.GONE, default=visible}"
                     android:layout_marginBottom="10dp">
 
                     <com.google.android.material.floatingactionbutton.FloatingActionButton

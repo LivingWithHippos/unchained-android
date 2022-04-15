@@ -371,4 +371,13 @@
     <string name="default_media_player">Lettore media da aprire di default</string>
     <string name="send_to_player">Invia a lettore</string>
     <string name="missing_default_player">Imposta il lettore di default nell impostazioni</string>
+    <string name="ui_settings_summary">Scegli se e come sono mostrate le cose</string>
+    <string name="download_details_button_choice">Scegli quali bottoni mostrare nella scheramata di dettagli download</string>
+    <string name="external_apps">Applicazioni esterne</string>
+    <string name="show_share_button">Mostra bottone condividi</string>
+    <string name="show_open_button">Mostra bottone apri</string>
+    <string name="show_copy_button">Mostra bottone copia</string>
+    <string name="show_download_button">Mostra bottone download</string>
+    <string name="show_load_stream_button">Mostra bottone carica stream</string>
+    <string name="show_stream_browser_button">Mostra bottone stream nel browser</string>
 </resources>

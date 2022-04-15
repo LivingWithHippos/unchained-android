@@ -375,4 +375,13 @@
     <string name="default_media_player">Lecteur multimédia par défaut à ouvrir</string>
     <string name="send_to_player">Envoyer au lecteur</string>
     <string name="missing_default_player">Définir le lecteur multimédia par défaut dans les paramètres</string>
+    <string name="ui_settings_summary">Choisissez comment et si les choses sont montrées</string>
+    <string name="download_details_button_choice">Choisissez les boutons à afficher dans l\'écran des détails du téléchargement.</string>
+    <string name="external_apps">Applications externes</string>
+    <string name="show_share_button">Afficher le bouton de partage</string>
+    <string name="show_open_button">Afficher le bouton d\'ouverture</string>
+    <string name="show_copy_button">Afficher le bouton de copie</string>
+    <string name="show_download_button">Afficher le bouton de téléchargement</string>
+    <string name="show_load_stream_button">Afficher le bouton du flux de chargement</string>
+    <string name="show_stream_browser_button">Afficher le bouton de flux dans le navigateur</string>
 </resources>
