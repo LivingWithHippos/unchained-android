@@ -18,6 +18,8 @@ class KodiDeviceRepository @Inject constructor(
     }
 
     suspend fun add(device: KodiDevice): Long {
+        if (device.isDefault)
+            kodiDeviceDao.resetDefaults()
         return kodiDeviceDao.insert(device)
     }
 
