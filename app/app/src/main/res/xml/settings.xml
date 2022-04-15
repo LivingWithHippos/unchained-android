@@ -67,40 +67,11 @@
             android:key="show_kodi"
             android:title="@string/show_kodi" />
 
-        <EditTextPreference
-            android:defaultValue="192.168.1.7"
-            android:key="kodi_ip_address"
-            android:selectAllOnFocus="true"
-            android:singleLine="true"
-            android:title="@string/ip_address" />
-
-        <EditTextPreference
-            android:defaultValue="8080"
-            android:key="kodi_port"
-            android:selectAllOnFocus="true"
-            android:singleLine="true"
-            android:title="@string/port" />
-
-        <EditTextPreference
-            android:defaultValue="kodi"
-            android:key="kodi_username"
-            android:selectAllOnFocus="true"
-            android:singleLine="true"
-            android:summary="@string/only_if_auth"
-            android:title="@string/username" />
-
-        <EditTextPreference
-            android:defaultValue=""
-            android:key="kodi_password"
-            android:inputType="textVisiblePassword"
-            android:selectAllOnFocus="true"
-            android:singleLine="true"
-            android:summary="@string/only_if_auth"
-            android:title="@string/password" />
-
         <Preference
-            app:key="test_kodi"
-            app:title="@string/test_connection" />
+            app:key="kodi_list_editor"
+            app:summary="@string/kodi_manage_list_summary"
+            app:title="@string/kodi_manage_list" />
+
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/title_various">

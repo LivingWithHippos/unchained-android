@@ -350,4 +350,19 @@
     <string name="select_deselect_all">Seleziona o deseleziona tutto</string>
     <string name="select_one_item">Seleziona almeno un elemento</string>
     <string name="torrent_monitoring_description">Controlla i tuoi torrenti che vengono scaricati sui server di Real Debrid.</string>
+    <string name="kodi_manage_list">Gestisci dispositivi Kodi</string>
+    <string name="kodi_manage_list_summary">Aggiungi o modifica una connessione a un dispositivo Kodi e scegli quella predefinita.</string>
+    <string name="add_device">Aggiungi dispositivo</string>
+    <string name="set_as_default">Imposta come default</string>
+    <string name="new_device">Aggiungi dispositivo</string>
+    <string name="fields_required">I campi con * sono obbligatori</string>
+    <string name="name_required">Nome *</string>
+    <string name="address_required">Indirizzo *</string>
+    <string name="port_required">Porta *</string>
+    <string name="device_added">Dispositivo aggiunto</string>
+    <string name="test">Testa</string>
+    <string name="save_device">Salva dispositivo</string>
+    <string name="update_device">Aggiorna dispositivo</string>
+    <string name="kodi_missing_default">Il dIspositivo Kodi di default non è impostato</string>
+    <string name="device_deleted">Dispositivo eliminato</string>
 </resources>
