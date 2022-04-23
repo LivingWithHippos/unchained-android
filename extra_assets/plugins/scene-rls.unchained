@@ -1,6 +1,6 @@
 {
   "engine_version": 2.0,
-  "version": 1.0,
+  "version": 1.1,
   "url": "http://scene-rls.net",
   "name": "scene-rls",
   "description": "Parser for scene-rls.net",
@@ -47,6 +47,10 @@
           },
           {
             "regex": "href=\"(https?://(www\\.)?nitroflare\\.com/view/[\\w]+/[^\"]+)",
+            "group": 1
+          },
+          {
+            "regex": "href=\"(https?://(www\\.)?nitro\\.download/view/[\\w]+/[^\"]+)",
             "group": 1
           },
           {
