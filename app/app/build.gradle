@@ -52,6 +52,7 @@ android {
                               "room.incremental"   : "true"]
             }
         }
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
 
     packagingOptions {
@@ -256,6 +257,15 @@ dependencies {
 
     // countly
     debugImplementation deps.countly
+
+    // test
+    androidTestImplementation deps.test.core
+    androidTestImplementation deps.test.rules
+    androidTestImplementation deps.test.espresso
+    androidTestImplementation deps.test.junit
+    androidTestImplementation deps.test.runner
+    androidTestImplementation deps.test.truth
+    testImplementation deps.junit
 }
 
 kapt {

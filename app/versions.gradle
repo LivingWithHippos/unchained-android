@@ -1,4 +1,3 @@
-
 def versions = [:]
 // current version of android studio accept 7.1.0-alpha05 at max
 versions.android_gradle_plugin = "7.2.0"
@@ -14,10 +13,12 @@ versions.core_ktx = "1.7.0"
 versions.coroutines = "1.6.1"
 versions.countly = "20.11.12"
 versions.dagger = "2.42"
+versions.espresso = "3.4.0"
 versions.datastore = "1.0.0"
 versions.flexbox = "3.0.0"
 versions.fragment = "1.4.1"
 versions.jsoup = "1.14.3"
+versions.junit = "4.13.2"
 versions.kotlin = "1.6.20"
 versions.ktlint = "10.3.0"
 versions.lifecycle = "2.4.1"
@@ -35,6 +36,8 @@ versions.retrofit = "2.9.0"
 versions.room = "2.4.2"
 versions.statemachine = "0.2.0"
 versions.swiperefreshlayout = "1.1.0"
+versions.test = "1.4.0"
+versions.test_junit = "1.1.3"
 versions.timber = "5.0.1"
 ext.versions = versions
 
@@ -199,6 +202,15 @@ deps.room = room
 deps.statemachine = "com.tinder.statemachine:statemachine:$versions.statemachine"
 
 deps.swiperefreshlayout = "androidx.swiperefreshlayout:swiperefreshlayout:$versions.swiperefreshlayout"
+
+def test = [:]
+test.espresso = "androidx.test.espresso:espresso-core:$versions.espresso"
+test.core = "androidx.test:core:$versions.test"
+test.runner = "androidx.test:runner:$versions.test"
+test.rules = "androidx.test:rules:$versions.test"
+test.junit = "androidx.test.ext:junit:$versions.test_junit"
+test.truth = "androidx.test.ext:truth:$versions.test"
+deps.test = test
 
 deps.timber = "com.jakewharton.timber:timber:$versions.timber"
 
