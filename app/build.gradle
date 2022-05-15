@@ -3,7 +3,7 @@ buildscript {
     apply from: 'versions.gradle'
 
     ext {
-        ktlint_version = '10.2.1'
+        ktlint_version = '10.3.0'
         versions_plugin_version = '0.42.0'
     }
 
