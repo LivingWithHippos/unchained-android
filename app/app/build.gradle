@@ -259,7 +259,6 @@ dependencies {
     debugImplementation deps.countly
 
     // test
-    androidTestImplementation deps.test.core
     androidTestImplementation deps.test.core_ktx
     androidTestImplementation deps.test.rules
     androidTestImplementation deps.test.espresso
