@@ -206,6 +206,7 @@ deps.swiperefreshlayout = "androidx.swiperefreshlayout:swiperefreshlayout:$versi
 def test = [:]
 test.espresso = "androidx.test.espresso:espresso-core:$versions.espresso"
 test.core = "androidx.test:core:$versions.test"
+test.core_ktx = "androidx.test:core-ktx:$versions.test"
 test.runner = "androidx.test:runner:$versions.test"
 test.rules = "androidx.test:rules:$versions.test"
 test.junit = "androidx.test.ext:junit:$versions.test_junit"

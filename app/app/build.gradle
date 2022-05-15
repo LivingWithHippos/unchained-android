@@ -260,6 +260,7 @@ dependencies {
 
     // test
     androidTestImplementation deps.test.core
+    androidTestImplementation deps.test.core_ktx
     androidTestImplementation deps.test.rules
     androidTestImplementation deps.test.espresso
     androidTestImplementation deps.test.junit
