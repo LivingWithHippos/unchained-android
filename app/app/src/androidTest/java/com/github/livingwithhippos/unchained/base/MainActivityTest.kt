@@ -19,6 +19,11 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 
+/**
+ * Test setup: run this once and then edit the generated configuration:
+ * 1. Add your private token as an Instrumentation argument called TOKEN (maybe don't use your main account)
+ * 2. Add in the before launch an adb clear data to remove previous logins etc. Select adb as executable and add the parameters "shell pm clear com.github.livingwithhippos.unchained.debug"
+ */
 @LargeTest
 @RunWith(AndroidJUnit4::class)
 class MainActivityTest {
@@ -39,28 +44,27 @@ class MainActivityTest {
      */
 
     @Test
-    fun logoutTest() {
-        // if the app is already logged in this is going to fail
-        onView(isRoot()).perform(waitForView(R.id.tvMail, 5000))
-        onView(withId(R.id.tvMail)).check(matches(isDisplayed()))
-        onView(withId(R.id.bLogout)).perform(click())
-        onView(withId(R.id.cbLink)).check(matches(isDisplayed()))
-    }
-
-    @Test
     fun loginTest() {
+        // if the app is already logged in this is going to fail, clear it with adb before launching
         // set the TOKEN arguments editing the MainActivityTest Configuration
         val args = InstrumentationRegistry.getArguments().getString("TOKEN")
         onView(withId(R.id.tiPrivateCode)).perform(replaceText(args))
         onView(withId(R.id.bInsertPrivate)).perform(click())
         onView(isRoot()).perform(waitForView(R.id.tvMail, 5000))
         onView(withId(R.id.tvMail)).check(matches(isDisplayed()))
+        navigateDownloadListTest()
     }
 
     fun navigateDownloadListTest() {
-        onView(withId(R.id.loadingCircle)).check(matches(isDisplayed()))
         onView(isRoot()).perform(waitForView(R.id.tvMail, 5000))
         onView(withId(R.id.navigation_lists)).perform(click())
-        onView(withId(R.id.tvMail)).check(doesNotExist())
+        onView(withId(R.id.tabs)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun logoutTest() {
+        onView(isRoot()).perform(waitForView(R.id.tvMail, 5000))
+        onView(withId(R.id.bLogout)).perform(click())
+        onView(withId(R.id.cbLink)).check(matches(isDisplayed()))
     }
 }
