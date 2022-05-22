@@ -35,12 +35,12 @@ if (apiPropertiesFile.exists()) {
 
 android {
 
-    compileSdk 31
+    compileSdk 32
 
     defaultConfig {
         applicationId "com.github.livingwithhippos.unchained"
         minSdk 22
-        targetSdk 31
+        targetSdk 32
         versionCode 29
         versionName "4.33.10-beta"
         // limit resources for a list of locales
@@ -52,6 +52,7 @@ android {
                               "room.incremental"   : "true"]
             }
         }
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
 
     packagingOptions {
@@ -256,6 +257,15 @@ dependencies {
 
     // countly
     debugImplementation deps.countly
+
+    // test
+    androidTestImplementation deps.test.core_ktx
+    androidTestImplementation deps.test.rules
+    androidTestImplementation deps.test.espresso
+    androidTestImplementation deps.test.junit
+    androidTestImplementation deps.test.runner
+    androidTestImplementation deps.test.truth
+    testImplementation deps.junit
 }
 
 kapt {

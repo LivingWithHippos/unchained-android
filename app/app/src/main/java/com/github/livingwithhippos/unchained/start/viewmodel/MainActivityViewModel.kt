@@ -392,7 +392,7 @@ class MainActivityViewModel @Inject constructor(
             // todo: how to do this
             val credentials = protoStore.credentialsFlow.first { it.accessToken.isNotBlank() }
             val userResult = userRepository.getUserOrError(credentials.accessToken)
-            parseUserResult(userResult, credentials.deviceCode == PRIVATE_TOKEN)
+            parseUserResult(userResult, credentials.refreshToken == PRIVATE_TOKEN)
         }
     }
 
