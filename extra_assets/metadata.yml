@@ -1,0 +1,35 @@
+Categories:
+  - Internet
+  - Multimedia
+License: GPL-3.0-or-later
+AuthorName: LivingWithHippos
+AuthorEmail: livingwithhippos@gmail.com
+AuthorWebSite: https://github.com/LivingWithHippos
+SourceCode: https://github.com/LivingWithHippos/unchained-android
+IssueTracker: https://github.com/LivingWithHippos/unchained-android/issues
+Translation: https://localization.professiona.li/engage/unchained-for-android
+Changelog: https://github.com/LivingWithHippos/unchained-android/releases
+Donate: https://github.com/LivingWithHippos/unchained-android#donate-coffee
+Liberapay: LivingWithHippos
+Bitcoin: 1PNZXRz77idWGhbMTRTG8iAuqnYY6tatb7
+Litecoin: LWeoBVVmaYAiZ3oGaLAV9sV2dvY62XxdCF
+
+RepoType: git
+Repo: https://github.com/LivingWithHippos/unchained-android
+
+Builds:
+  - versionName: 4.33.12-beta
+    versionCode: 30
+    commit: c3e3cd2140d8d35523e94245ca1175fe5c811e2a
+    subdir: app/app
+    sudo:
+      - apt-get update || apt-get update
+      - apt-get install -y openjdk-11-jdk-headless
+      - update-alternatives --auto java
+    gradle:
+      - yes
+
+AutoUpdateMode: Version
+UpdateCheckMode: Tags
+CurrentVersion: 4.33.12-beta
+CurrentVersionCode: 30
