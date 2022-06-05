@@ -596,4 +596,5 @@
     <string name="show_load_stream_button">Show load stream button</string>
     <string name="show_stream_browser_button">Show stream in browser button</string>
     <string name="install_plugins_pack">Install plugins pack</string>
+    <string name="install_plugins_pack_summary">Use the button in the search screen menu to install all the plugins at once</string>
 </resources>

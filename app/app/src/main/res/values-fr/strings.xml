@@ -386,4 +386,5 @@
     <string name="show_stream_browser_button">Afficher le bouton de flux dans le navigateur</string>
     <string name="install_plugins_pack">Installer le pack de plugins</string>
     <string name="n_plugins_installed">%d plugins installés</string>
+    <string name="install_plugins_pack_summary">Utilisez le bouton du menu de l\'écran de recherche pour installer tous les plugins en une seule fois.</string>
 </resources>
