@@ -84,6 +84,8 @@ fun Context.getThemedDrawable(@DrawableRes id: Int): Drawable {
     ) ?: throw IllegalArgumentException("Drawable with id $id was missing")
 }
 
+// todo: verify if these can extend context and not fragment
+
 /**
  * Copy some text on the clipboard
  * @param label: the label of the text copied

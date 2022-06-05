@@ -129,6 +129,10 @@ class NewDownloadViewModel @Inject constructor(
         return token
     }
 
+    /**
+     * This function is used to manage multiple toast spawning from different parts of the logic
+     * to avoid the queue getting too long and a lot of messages being shown, see the collect on the fragment
+     */
     fun postMessage(message: String) {
         toastLiveData.postEvent(message)
     }

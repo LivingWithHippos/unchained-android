@@ -6,19 +6,14 @@ import android.app.NotificationManager
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Build
-import com.github.livingwithhippos.unchained.BuildConfig.COUNTLY_APP_KEY
-import com.github.livingwithhippos.unchained.BuildConfig.COUNTLY_URL
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.local.ProtoStore
+import com.github.livingwithhippos.unchained.utilities.TelemetryManager
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import ly.count.android.sdk.Countly
-import ly.count.android.sdk.CountlyConfig
-import ly.count.android.sdk.DeviceId
-import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -27,10 +22,6 @@ import javax.inject.Inject
  */
 @HiltAndroidApp
 class UnchainedApplication : Application() {
-
-    /*************************************************
-     * DUPLICATE CHANGES IN THE RELEASE FILE VERSION *
-     *************************************************/
 
     @Inject
     lateinit var preferences: SharedPreferences
@@ -55,17 +46,7 @@ class UnchainedApplication : Application() {
 
         createNotificationChannel()
 
-        // remove these lines from the release file
-        Timber.plant(Timber.DebugTree())
-
-        val config: CountlyConfig = CountlyConfig(this, COUNTLY_APP_KEY, COUNTLY_URL)
-            .setIdMode(DeviceId.Type.OPEN_UDID)
-            .enableCrashReporting()
-            // if true will print internal countly logs to the console
-            .setLoggingEnabled(false)
-        // .setParameterTamperingProtectionSalt("SampleSalt")
-
-        Countly.sharedInstance().init(config)
+        TelemetryManager.onCreate(this)
     }
 
     private fun createNotificationChannel() {

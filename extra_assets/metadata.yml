@@ -1,3 +1,6 @@
+AntiFeatures:
+  - NonFreeNet
+  - Tracking
 Categories:
   - Internet
   - Multimedia
@@ -13,6 +16,8 @@ Donate: https://github.com/LivingWithHippos/unchained-android#donate-coffee
 Liberapay: LivingWithHippos
 Bitcoin: 1PNZXRz77idWGhbMTRTG8iAuqnYY6tatb7
 Litecoin: LWeoBVVmaYAiZ3oGaLAV9sV2dvY62XxdCF
+
+AutoName: Unchained
 
 RepoType: git
 Repo: https://github.com/LivingWithHippos/unchained-android

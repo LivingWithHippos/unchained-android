@@ -1,10 +1,8 @@
 package com.github.livingwithhippos.unchained.newdownload.view
 
 import android.annotation.SuppressLint
-import android.app.DownloadManager
 import android.content.ContentResolver.SCHEME_CONTENT
 import android.content.ContentResolver.SCHEME_FILE
-import android.content.Context
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -15,6 +13,7 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.github.livingwithhippos.unchained.R
@@ -22,6 +21,7 @@ import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.data.model.APIError
 import com.github.livingwithhippos.unchained.data.model.EmptyBodyError
 import com.github.livingwithhippos.unchained.data.model.NetworkError
+import com.github.livingwithhippos.unchained.data.repository.DownloadResult
 import com.github.livingwithhippos.unchained.databinding.NewDownloadFragmentBinding
 import com.github.livingwithhippos.unchained.lists.view.ListsTabFragment
 import com.github.livingwithhippos.unchained.newdownload.viewmodel.Link
@@ -29,13 +29,11 @@ import com.github.livingwithhippos.unchained.newdownload.viewmodel.NewDownloadVi
 import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationEvent
 import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationState
 import com.github.livingwithhippos.unchained.utilities.CONTAINER_EXTENSION_PATTERN
-import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.EventObserver
 import com.github.livingwithhippos.unchained.utilities.REMOTE_TRAFFIC_ON
 import com.github.livingwithhippos.unchained.utilities.SCHEME_HTTP
 import com.github.livingwithhippos.unchained.utilities.SCHEME_HTTPS
 import com.github.livingwithhippos.unchained.utilities.SCHEME_MAGNET
-import com.github.livingwithhippos.unchained.utilities.extension.downloadFile
 import com.github.livingwithhippos.unchained.utilities.extension.getApiErrorMessage
 import com.github.livingwithhippos.unchained.utilities.extension.getClipboardText
 import com.github.livingwithhippos.unchained.utilities.extension.getDownloadedFileUri
@@ -45,7 +43,9 @@ import com.github.livingwithhippos.unchained.utilities.extension.isMagnet
 import com.github.livingwithhippos.unchained.utilities.extension.isTorrent
 import com.github.livingwithhippos.unchained.utilities.extension.isWebUrl
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.io.File
 import java.io.IOException
 import java.util.regex.Matcher
 import java.util.regex.Pattern
@@ -57,7 +57,7 @@ import java.util.regex.Pattern
 @AndroidEntryPoint
 class NewDownloadFragment : UnchainedFragment() {
 
-    // todo: switch to the navigation scoped viewmodel to manage the transition between fragments
+    // todo: switch to the navigation scoped ViewModel to manage the transition between fragments
     // if we receive an intent and new download is already selected and showing a DownloadDetailsFragment, it may not trigger the observers in this class
     private val viewModel: NewDownloadViewModel by viewModels()
 
@@ -244,12 +244,13 @@ class NewDownloadFragment : UnchainedFragment() {
                          * DownloadManager does not support insecure (https) links anymore
                          * to add support for it, follow these instructions
                          * [https://stackoverflow.com/a/50834600]
-                         */
                         val secureLink = if (link.startsWith("http://")) link.replaceFirst(
-                            "http:",
-                            "https:"
+                        "http:",
+                        "https:"
                         ) else link
                         downloadTorrent(Uri.parse(secureLink))
+                         */
+                        downloadTorrentToCache(binding, link)
                     }
                     link.isWebUrl() -> {
                         viewModel.postMessage(getString(R.string.loading_host_link))
@@ -454,30 +455,69 @@ class NewDownloadFragment : UnchainedFragment() {
         }
     }
 
-    private fun downloadTorrent(uri: Uri) {
-        val nameRegex = "/([^/]+.torrent)\$"
-        val m: Matcher = Pattern.compile(nameRegex).matcher(uri.toString())
-        val torrentName = if (m.find()) m.group(1) else null
-        if (!torrentName.isNullOrBlank() && context != null) {
-            val manager =
-                requireContext().getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-            val queuedDownload = manager.downloadFile(
-                uri = uri,
-                title = getString(R.string.unchained_torrent_download),
-                description = getString(R.string.temporary_torrent_download),
-                fileName = torrentName
-            )
-            when (queuedDownload) {
-                is EitherResult.Failure -> {
-                    viewModel.postMessage(
-                        getString(
-                            R.string.download_not_started_format,
-                            torrentName
-                        )
-                    )
+    private fun loadCachedTorrent(
+        binding: NewDownloadFragmentBinding,
+        cacheDir: File,
+        fileName: String
+    ) {
+        try {
+            viewModel.postMessage(getString(R.string.loading_torrent_file))
+            val cacheFile = File(cacheDir, fileName)
+            cacheFile.inputStream().use { inputStream ->
+                val buffer: ByteArray = inputStream.readBytes()
+                viewModel.fetchUploadedTorrent(buffer)
+            }
+        } catch (exception: Exception) {
+            when (exception) {
+                is IOException -> {
+                    Timber.e("Torrent conversion: IOException error getting the file: ${exception.message}")
                 }
-                is EitherResult.Success -> {
-                    activityViewModel.setDownload(queuedDownload.success)
+                is java.io.FileNotFoundException -> {
+                    Timber.e("Torrent conversion: file not found: ${exception.message}")
+                }
+                else -> {
+                    Timber.e("Torrent conversion: Other error getting the file: ${exception.message}")
+                }
+            }
+            enableButtons(binding, true)
+            viewModel.postMessage(getString(R.string.error_loading_torrent))
+        }
+    }
+
+    private fun downloadTorrentToCache(binding: NewDownloadFragmentBinding, link: String) {
+        val nameRegex = "/([^/]+\\.torrent)\$"
+        val m: Matcher = Pattern.compile(nameRegex).matcher(link)
+        val torrentName = if (m.find()) m.group(1) else null
+        val cacheDir = context?.cacheDir
+        if (!torrentName.isNullOrBlank() && cacheDir != null) {
+            lifecycleScope.launch {
+                activityViewModel.downloadFileToCache(link, torrentName, cacheDir).observe(
+                    viewLifecycleOwner
+                ) {
+                    when (it) {
+                        is DownloadResult.End -> {
+                            loadCachedTorrent(binding, cacheDir, it.fileName)
+                        }
+                        DownloadResult.Failure -> {
+                            viewModel.postMessage(
+                                getString(
+                                    R.string.download_not_started_format,
+                                    torrentName
+                                )
+                            )
+                        }
+                        is DownloadResult.Progress -> {
+                            Timber.d("$torrentName progress: ${it.percent}")
+                        }
+                        DownloadResult.WrongURL -> {
+                            viewModel.postMessage(
+                                getString(
+                                    R.string.download_not_started_format,
+                                    torrentName
+                                )
+                            )
+                        }
+                    }
                 }
             }
         }

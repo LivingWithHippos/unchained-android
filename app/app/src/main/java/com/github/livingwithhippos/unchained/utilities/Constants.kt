@@ -9,6 +9,9 @@ const val BASE_AUTH_URL = "https://api.real-debrid.com/oauth/v2/"
 const val REFERRAL_LINK = "http://real-debrid.com/?id=78841"
 const val PREMIUM_LINK = "https://real-debrid.com/premium"
 const val ACCOUNT_LINK = "https://real-debrid.com/account"
+const val PLUGINS_PACK_LINK = "https://github.com/LivingWithHippos/unchained-android/raw/master/extra_assets/plugins/unchained_plugins_pack.zip"
+const val PLUGINS_PACK_NAME = "unchained_plugins_pack.zip"
+const val PLUGINS_PACK_FOLDER = "pack"
 
 // unofficial link to get streaming from a browser page
 const val RD_STREAMING_URL = "https://real-debrid.com/streaming-"

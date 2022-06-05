@@ -6,6 +6,9 @@ import com.github.livingwithhippos.unchained.data.model.EmptyBodyInterceptor
 import com.github.livingwithhippos.unchained.data.remote.AuthApiHelper
 import com.github.livingwithhippos.unchained.data.remote.AuthApiHelperImpl
 import com.github.livingwithhippos.unchained.data.remote.AuthenticationApi
+import com.github.livingwithhippos.unchained.data.remote.CustomDownload
+import com.github.livingwithhippos.unchained.data.remote.CustomDownloadHelper
+import com.github.livingwithhippos.unchained.data.remote.CustomDownloadHelperImpl
 import com.github.livingwithhippos.unchained.data.remote.DownloadApi
 import com.github.livingwithhippos.unchained.data.remote.DownloadApiHelper
 import com.github.livingwithhippos.unchained.data.remote.DownloadApiHelperImpl
@@ -266,6 +269,18 @@ object ApiFactory {
     @Singleton
     fun provideVariousApiHelper(apiHelper: VariousApiHelperImpl): VariousApiHelper =
         apiHelper
+
+    // custom download injection
+    @Provides
+    @Singleton
+    fun provideCustomDownload(@ApiRetrofit retrofit: Retrofit): CustomDownload {
+        return retrofit.create(CustomDownload::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCustomDownloadHelper(customHelper: CustomDownloadHelperImpl): CustomDownloadHelper =
+        customHelper
 
     /**
      * Search Plugins stuff
