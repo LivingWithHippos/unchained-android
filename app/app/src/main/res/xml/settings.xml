@@ -8,7 +8,7 @@
         android:title="@string/title_aspect">
 
         <DropDownPreference
-            android:defaultValue="original"
+            android:defaultValue="waves_01"
             android:entries="@array/themes"
             android:entryValues="@array/theme_values"
             android:key="current_theme"
