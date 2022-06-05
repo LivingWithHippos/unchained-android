@@ -10,6 +10,7 @@ import android.os.Build
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.local.Credentials
@@ -23,6 +24,7 @@ import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkExceptio
 import com.github.livingwithhippos.unchained.data.model.User
 import com.github.livingwithhippos.unchained.data.model.UserAction
 import com.github.livingwithhippos.unchained.data.repository.AuthenticationRepository
+import com.github.livingwithhippos.unchained.data.repository.CustomDownloadRepository
 import com.github.livingwithhippos.unchained.data.repository.HostsRepository
 import com.github.livingwithhippos.unchained.data.repository.KodiDeviceRepository
 import com.github.livingwithhippos.unchained.data.repository.PluginRepository
@@ -70,7 +72,8 @@ class MainActivityViewModel @Inject constructor(
     private val hostsRepository: HostsRepository,
     private val pluginRepository: PluginRepository,
     private val protoStore: ProtoStore,
-    private val kodiDeviceRepository: KodiDeviceRepository
+    private val kodiDeviceRepository: KodiDeviceRepository,
+    private val customDownloadRepository: CustomDownloadRepository
 ) : ViewModel() {
 
     val fsmAuthenticationState = MutableLiveData<Event<FSMAuthenticationState>?>()
@@ -974,6 +977,9 @@ class MainActivityViewModel @Inject constructor(
             }
         }
     }
+
+    suspend fun downloadFileToCache(link: String, fileName: String, cacheDir: File) =
+        customDownloadRepository.downloadToCache(link, fileName, cacheDir).asLiveData()
 
     companion object {
         const val KEY_TORRENT_DOWNLOAD_ID = "torrent_download_id_key"
