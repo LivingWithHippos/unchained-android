@@ -3,10 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/plugins_link"
-        android:contentDescription="@string/content_description_plugins_link"
-        android:icon="@drawable/icon_link"
-        android:title="@string/get_plugins"
+        android:id="@+id/plugins_pack"
+        android:contentDescription="@string/install_plugins_pack"
+        android:icon="@drawable/icon_archive"
+        android:title="@string/install_plugins_pack"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="never" />
 

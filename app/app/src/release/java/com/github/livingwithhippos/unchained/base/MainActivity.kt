@@ -247,12 +247,27 @@ class MainActivity : AppCompatActivity() {
         viewModel.messageLiveData.observe(
             this
         ) {
-            it?.getContentIfNotHandled()?.let { message ->
-                currentToast.cancel()
-                currentToast.setText(getString(message))
-                currentToast.show()
+            val content = it?.getContentIfNotHandled()
+            when (content) {
+                is MainActivityMessage.InstalledPlugins -> {
+                    currentToast.cancel()
+                    currentToast.setText(
+                        getString(
+                            R.string.n_plugins_installed,
+                            content.number
+                        )
+                    )
+                    currentToast.show()
+                }
+                is MainActivityMessage.StringID -> {
+                    currentToast.cancel()
+                    currentToast.setText(getString(content.id))
+                    currentToast.show()
+                }
+                null -> {}
             }
         }
+
 
         // start the notification system if enabled
         if (preferences.getBoolean(KEY_TORRENT_NOTIFICATIONS, false)) {

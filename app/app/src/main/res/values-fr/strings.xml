@@ -384,4 +384,6 @@
     <string name="show_download_button">Afficher le bouton de téléchargement</string>
     <string name="show_load_stream_button">Afficher le bouton du flux de chargement</string>
     <string name="show_stream_browser_button">Afficher le bouton de flux dans le navigateur</string>
+    <string name="install_plugins_pack">Installer le pack de plugins</string>
+    <string name="n_plugins_installed">%d plugins installés</string>
 </resources>

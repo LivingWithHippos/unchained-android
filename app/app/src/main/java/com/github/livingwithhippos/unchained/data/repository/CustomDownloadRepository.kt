@@ -19,7 +19,8 @@ class CustomDownloadRepository @Inject constructor(private val customDownloadHel
     suspend fun downloadToCache(
         url: String,
         fileName: String,
-        cacheDir: File
+        cacheDir: File,
+        suffix: String? = null
     ): Flow<DownloadResult> = channelFlow {
         if (url.isWebUrl()) {
             val call = customDownloadHelper.getFile(url)
@@ -35,7 +36,7 @@ class CustomDownloadRepository @Inject constructor(private val customDownloadHel
                         var sentEnding = false
 
                         // todo: check cache size with getCacheQuotaBytes() before downloading
-                        val file = File.createTempFile(fileName, null, cacheDir)
+                        val file = File.createTempFile(fileName, suffix, cacheDir)
                         val tempFileName = file.name
 
                         try {
