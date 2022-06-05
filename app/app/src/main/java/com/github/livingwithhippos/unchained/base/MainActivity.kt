@@ -25,7 +25,6 @@ import androidx.navigation.NavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
-import com.github.livingwithhippos.unchained.BuildConfig
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.model.UserAction
 import com.github.livingwithhippos.unchained.data.repository.PluginRepository.Companion.TYPE_UNCHAINED
@@ -43,15 +42,14 @@ import com.github.livingwithhippos.unchained.utilities.EventObserver
 import com.github.livingwithhippos.unchained.utilities.SCHEME_HTTP
 import com.github.livingwithhippos.unchained.utilities.SCHEME_HTTPS
 import com.github.livingwithhippos.unchained.utilities.SCHEME_MAGNET
+import com.github.livingwithhippos.unchained.utilities.TelemetryManager
 import com.github.livingwithhippos.unchained.utilities.extension.downloadFile
-import com.github.livingwithhippos.unchained.utilities.extension.setFileSize
 import com.github.livingwithhippos.unchained.utilities.extension.setupWithNavController
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import ly.count.android.sdk.Countly
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -65,27 +63,18 @@ class MainActivity : AppCompatActivity() {
     // countly crash reporter set up. Debug mode only
     override fun onStart() {
         super.onStart()
-        Countly.sharedInstance().onStart(this)
+        TelemetryManager.onStart(this)
     }
 
     override fun onStop() {
-        Countly.sharedInstance().onStop()
+        TelemetryManager.onStop()
         super.onStop()
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        Countly.sharedInstance().onConfigurationChanged(newConfig)
+        TelemetryManager.onConfigurationChanged(newConfig)
     }
-
-    private fun createCountly() {
-        // todo: update with new function
-        Countly.onCreate(this)
-    }
-
-    /****************************************************************
-     * ADD CHANGES MADE HERE IN THE RELEASE VERSION OF MAINACTIVITY *
-     ***************************************************************/
 
     private var currentNavController: LiveData<NavController>? = null
     private lateinit var appBarConfiguration: AppBarConfiguration
@@ -340,8 +329,6 @@ class MainActivity : AppCompatActivity() {
                 viewModel.setPluginDownload(queuedDownload.success)
             }
         }
-
-        createCountly()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
