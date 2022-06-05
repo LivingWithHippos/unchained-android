@@ -13,7 +13,7 @@ import com.github.livingwithhippos.unchained.settings.view.SettingsFragment
 class ThemingCallback(val preferences: SharedPreferences) : Application.ActivityLifecycleCallbacks {
 
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
-        preferences.getString(SettingsFragment.KEY_THEME, "original")?.let {
+        preferences.getString(SettingsFragment.KEY_THEME, "waves_01")?.let {
             setupNightMode(activity.resources, it)
             if (activity is AppCompatActivity)
                 setCustomTheme(activity, it)
