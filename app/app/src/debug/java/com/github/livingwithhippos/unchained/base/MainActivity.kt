@@ -63,30 +63,21 @@ class MainActivity : AppCompatActivity() {
     // countly crash reporter set up. Debug mode only
     override fun onStart() {
         super.onStart()
-        if (BuildConfig.DEBUG) {
-            Countly.sharedInstance().onStart(this)
-        }
+        Countly.sharedInstance().onStart(this)
     }
 
     override fun onStop() {
-        if (BuildConfig.DEBUG) {
-            Countly.sharedInstance().onStop()
-        }
+        Countly.sharedInstance().onStop()
         super.onStop()
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-
-        if (BuildConfig.DEBUG) {
-            Countly.sharedInstance().onConfigurationChanged(newConfig)
-        }
+        Countly.sharedInstance().onConfigurationChanged(newConfig)
     }
 
     private fun createCountly() {
-        if (BuildConfig.DEBUG) {
-            Countly.onCreate(this)
-        }
+        Countly.onCreate(this)
     }
 
     /****************************************************************

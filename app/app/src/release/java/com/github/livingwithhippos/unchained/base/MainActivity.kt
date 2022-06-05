@@ -58,11 +58,11 @@ import javax.inject.Inject
 class MainActivity : AppCompatActivity() {
 
     private fun createCountly() {
-        // empty function so that code below can be shared between the debug and realease version of the file
+        // empty function so that code below can be shared between the debug and release version of the file
     }
 
     /****************************************************************
-     * ADD CHANGES MADE HERE IN THE RELEASE VERSION OF MAINACTIVITY *
+     * ADD CHANGES MADE BELOW IN THE DEBUG VERSION OF MAINACTIVITY *
      ***************************************************************/
 
     private var currentNavController: LiveData<NavController>? = null
