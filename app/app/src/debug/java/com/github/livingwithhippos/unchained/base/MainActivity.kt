@@ -79,6 +79,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun createCountly() {
+        // todo: update with new function
         Countly.onCreate(this)
     }
 
@@ -268,8 +269,7 @@ class MainActivity : AppCompatActivity() {
         viewModel.messageLiveData.observe(
             this
         ) {
-            val content = it?.getContentIfNotHandled()
-            when (content) {
+            when (val content = it?.getContentIfNotHandled()) {
                 is MainActivityMessage.InstalledPlugins -> {
                     currentToast.cancel()
                     currentToast.setText(
@@ -313,6 +313,8 @@ class MainActivity : AppCompatActivity() {
             }
         }
         viewModel.setupConnectivityCheck(applicationContext)
+
+        viewModel.clearCache(applicationContext.cacheDir)
     }
 
     private fun downloadPlugin(link: String) {

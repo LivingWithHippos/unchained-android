@@ -247,8 +247,7 @@ class MainActivity : AppCompatActivity() {
         viewModel.messageLiveData.observe(
             this
         ) {
-            val content = it?.getContentIfNotHandled()
-            when (content) {
+            when (val content = it?.getContentIfNotHandled()) {
                 is MainActivityMessage.InstalledPlugins -> {
                     currentToast.cancel()
                     currentToast.setText(
@@ -290,6 +289,8 @@ class MainActivity : AppCompatActivity() {
             }
         }
         viewModel.setupConnectivityCheck(applicationContext)
+
+        viewModel.clearCache(applicationContext.cacheDir)
     }
 
     private fun downloadPlugin(link: String) {

@@ -1041,6 +1041,13 @@ class MainActivityViewModel @Inject constructor(
 
     }
 
+    fun clearCache(cacheDir: File) {
+        cacheDir.listFiles()?.forEach {
+            if (it.name != "image_cache")
+                it.deleteRecursively()
+        }
+    }
+
     companion object {
         const val KEY_TORRENT_DOWNLOAD_ID = "torrent_download_id_key"
         const val KEY_PLUGIN_DOWNLOAD_ID = "plugin_download_id_key"
