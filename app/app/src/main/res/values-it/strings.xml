@@ -380,4 +380,7 @@
     <string name="show_download_button">Mostra bottone download</string>
     <string name="show_load_stream_button">Mostra bottone carica stream</string>
     <string name="show_stream_browser_button">Mostra bottone stream nel browser</string>
+    <string name="install_plugins_pack">Installa pacchetto plugins</string>
+    <string name="n_plugins_installed">%d plugins installati</string>
+    <string name="install_plugins_pack_summary">Usa il bottone nel menu della schermata di ricerca per installare il pacchetto completo dei plugins</string>
 </resources>

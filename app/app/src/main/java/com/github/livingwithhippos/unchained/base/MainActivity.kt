@@ -9,6 +9,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.SharedPreferences
+import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
@@ -32,6 +33,7 @@ import com.github.livingwithhippos.unchained.data.service.ForegroundTorrentServi
 import com.github.livingwithhippos.unchained.databinding.ActivityMainBinding
 import com.github.livingwithhippos.unchained.settings.view.SettingsActivity
 import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Companion.KEY_TORRENT_NOTIFICATIONS
+import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityMessage
 import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewModel
 import com.github.livingwithhippos.unchained.statemachine.authentication.CurrentFSMAuthentication
 import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationState
@@ -40,6 +42,7 @@ import com.github.livingwithhippos.unchained.utilities.EventObserver
 import com.github.livingwithhippos.unchained.utilities.SCHEME_HTTP
 import com.github.livingwithhippos.unchained.utilities.SCHEME_HTTPS
 import com.github.livingwithhippos.unchained.utilities.SCHEME_MAGNET
+import com.github.livingwithhippos.unchained.utilities.TelemetryManager
 import com.github.livingwithhippos.unchained.utilities.extension.downloadFile
 import com.github.livingwithhippos.unchained.utilities.extension.setupWithNavController
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
@@ -57,13 +60,21 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    private fun createCountly() {
-        // empty function so that code below can be shared between the debug and realease version of the file
+    // countly crash reporter set up. Debug mode only
+    override fun onStart() {
+        super.onStart()
+        TelemetryManager.onStart(this)
     }
 
-    /****************************************************************
-     * ADD CHANGES MADE HERE IN THE RELEASE VERSION OF MAINACTIVITY *
-     ***************************************************************/
+    override fun onStop() {
+        TelemetryManager.onStop()
+        super.onStop()
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        TelemetryManager.onConfigurationChanged(newConfig)
+    }
 
     private var currentNavController: LiveData<NavController>? = null
     private lateinit var appBarConfiguration: AppBarConfiguration
@@ -247,10 +258,23 @@ class MainActivity : AppCompatActivity() {
         viewModel.messageLiveData.observe(
             this
         ) {
-            it?.getContentIfNotHandled()?.let { message ->
-                currentToast.cancel()
-                currentToast.setText(getString(message))
-                currentToast.show()
+            when (val content = it?.getContentIfNotHandled()) {
+                is MainActivityMessage.InstalledPlugins -> {
+                    currentToast.cancel()
+                    currentToast.setText(
+                        getString(
+                            R.string.n_plugins_installed,
+                            content.number
+                        )
+                    )
+                    currentToast.show()
+                }
+                is MainActivityMessage.StringID -> {
+                    currentToast.cancel()
+                    currentToast.setText(getString(content.id))
+                    currentToast.show()
+                }
+                null -> {}
             }
         }
 
@@ -259,6 +283,9 @@ class MainActivity : AppCompatActivity() {
             val notificationIntent = Intent(this, ForegroundTorrentService::class.java)
             ContextCompat.startForegroundService(this, notificationIntent)
         }
+
+        // load the old share preferences of kodi devices into the db and then delete them
+        viewModel.updateOldKodiPreferences()
 
         viewModel.connectivityLiveData.observe(
             this
@@ -275,6 +302,8 @@ class MainActivity : AppCompatActivity() {
             }
         }
         viewModel.setupConnectivityCheck(applicationContext)
+
+        viewModel.clearCache(applicationContext.cacheDir)
     }
 
     private fun downloadPlugin(link: String) {
@@ -300,8 +329,6 @@ class MainActivity : AppCompatActivity() {
                 viewModel.setPluginDownload(queuedDownload.success)
             }
         }
-
-        createCountly()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

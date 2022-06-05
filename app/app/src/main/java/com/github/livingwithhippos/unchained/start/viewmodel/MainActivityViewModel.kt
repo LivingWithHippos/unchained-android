@@ -10,6 +10,7 @@ import android.os.Build
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.local.Credentials
@@ -23,6 +24,7 @@ import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkExceptio
 import com.github.livingwithhippos.unchained.data.model.User
 import com.github.livingwithhippos.unchained.data.model.UserAction
 import com.github.livingwithhippos.unchained.data.repository.AuthenticationRepository
+import com.github.livingwithhippos.unchained.data.repository.CustomDownloadRepository
 import com.github.livingwithhippos.unchained.data.repository.HostsRepository
 import com.github.livingwithhippos.unchained.data.repository.KodiDeviceRepository
 import com.github.livingwithhippos.unchained.data.repository.PluginRepository
@@ -31,27 +33,31 @@ import com.github.livingwithhippos.unchained.data.repository.UserRepository
 import com.github.livingwithhippos.unchained.data.repository.VariousApiRepository
 import com.github.livingwithhippos.unchained.lists.view.ListsTabFragment
 import com.github.livingwithhippos.unchained.plugins.model.Plugin
-import com.github.livingwithhippos.unchained.settings.view.SettingsFragment
 import com.github.livingwithhippos.unchained.statemachine.authentication.CurrentFSMAuthentication
 import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationEvent
 import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationSideEffect
 import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationState
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.Event
+import com.github.livingwithhippos.unchained.utilities.PLUGINS_PACK_FOLDER
 import com.github.livingwithhippos.unchained.utilities.PRIVATE_TOKEN
+import com.github.livingwithhippos.unchained.utilities.UnzipUtils
 import com.github.livingwithhippos.unchained.utilities.extension.getDownloadedFileUri
 import com.github.livingwithhippos.unchained.utilities.extension.isMagnet
 import com.github.livingwithhippos.unchained.utilities.extension.isTorrent
 import com.github.livingwithhippos.unchained.utilities.postEvent
 import com.tinder.StateMachine
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.io.File
+import java.io.IOException
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 import javax.inject.Inject
@@ -70,7 +76,8 @@ class MainActivityViewModel @Inject constructor(
     private val hostsRepository: HostsRepository,
     private val pluginRepository: PluginRepository,
     private val protoStore: ProtoStore,
-    private val kodiDeviceRepository: KodiDeviceRepository
+    private val kodiDeviceRepository: KodiDeviceRepository,
+    private val customDownloadRepository: CustomDownloadRepository
 ) : ViewModel() {
 
     val fsmAuthenticationState = MutableLiveData<Event<FSMAuthenticationState>?>()
@@ -92,7 +99,7 @@ class MainActivityViewModel @Inject constructor(
     // todo: use a better name to reflect the difference between this and externalLinkLiveData
     val linkLiveData = MutableLiveData<Event<String>?>()
 
-    val messageLiveData = MutableLiveData<Event<Int>?>()
+    val messageLiveData = MutableLiveData<Event<MainActivityMessage>?>()
 
     private var refreshJob: Job? = null
 
@@ -631,9 +638,9 @@ class MainActivityViewModel @Inject constructor(
                     }
 
                     if (installed)
-                        messageLiveData.postValue(Event(R.string.plugin_install_installed))
+                        messageLiveData.postValue(Event(MainActivityMessage.StringID(R.string.plugin_install_installed)))
                     else
-                        messageLiveData.postValue(Event(R.string.plugin_install_not_installed))
+                        messageLiveData.postValue(Event(MainActivityMessage.StringID(R.string.plugin_install_not_installed)))
                 }
             }
         }
@@ -672,7 +679,7 @@ class MainActivityViewModel @Inject constructor(
                     if (newLink != null)
                         linkLiveData.postValue(Event(newLink))
                     else
-                        messageLiveData.postValue(Event(R.string.invalid_url))
+                        messageLiveData.postValue(Event(MainActivityMessage.StringID(R.string.invalid_url)))
                 }
                 else -> {
                     var matchFound = false
@@ -697,7 +704,7 @@ class MainActivityViewModel @Inject constructor(
                         }
                     }
                     if (!matchFound)
-                        messageLiveData.postValue(Event(R.string.host_match_not_found))
+                        messageLiveData.postValue(Event(MainActivityMessage.StringID(R.string.host_match_not_found)))
                 }
             }
         }
@@ -743,9 +750,9 @@ class MainActivityViewModel @Inject constructor(
                         file.delete()
                         val installed = pluginRepository.addExternalPlugin(context, data)
                         if (installed)
-                            messageLiveData.postValue(Event(R.string.plugin_install_installed))
+                            messageLiveData.postValue(Event(MainActivityMessage.StringID(R.string.plugin_install_installed)))
                         else
-                            messageLiveData.postValue(Event(R.string.plugin_install_not_installed))
+                            messageLiveData.postValue(Event(MainActivityMessage.StringID(R.string.plugin_install_not_installed)))
                     } else {
                         // is it the same plugin?
                         if (existingPlugin.name == tempPlugin.name) {
@@ -754,12 +761,12 @@ class MainActivityViewModel @Inject constructor(
                                 file.delete()
                                 val installed = pluginRepository.addExternalPlugin(context, data)
                                 if (installed)
-                                    messageLiveData.postValue(Event(R.string.plugin_install_installed))
+                                    messageLiveData.postValue(Event(MainActivityMessage.StringID(R.string.plugin_install_installed)))
                                 else
-                                    messageLiveData.postValue(Event(R.string.plugin_install_not_installed))
+                                    messageLiveData.postValue(Event(MainActivityMessage.StringID(R.string.plugin_install_not_installed)))
                             } else {
                                 // installed plugin is newer
-                                messageLiveData.postValue(Event(R.string.plugin_install_error_newer))
+                                messageLiveData.postValue(Event(MainActivityMessage.StringID(R.string.plugin_install_error_newer)))
                             }
                         } else {
                             // same file name for different plugins
@@ -768,20 +775,20 @@ class MainActivityViewModel @Inject constructor(
                                 "_$filename"
                             )
                             if (installed)
-                                messageLiveData.postValue(Event(R.string.plugin_install_installed))
+                                messageLiveData.postValue(Event(MainActivityMessage.StringID(R.string.plugin_install_installed)))
                             else
-                                messageLiveData.postValue(Event(R.string.plugin_install_not_installed))
+                                messageLiveData.postValue(Event(MainActivityMessage.StringID(R.string.plugin_install_not_installed)))
                         }
                     }
                 } else {
                     val installed = pluginRepository.addExternalPlugin(context, data)
                     if (installed)
-                        messageLiveData.postValue(Event(R.string.plugin_install_installed))
+                        messageLiveData.postValue(Event(MainActivityMessage.StringID(R.string.plugin_install_installed)))
                     else
-                        messageLiveData.postValue(Event(R.string.plugin_install_not_installed))
+                        messageLiveData.postValue(Event(MainActivityMessage.StringID(R.string.plugin_install_not_installed)))
                 }
             } else {
-                messageLiveData.postValue(Event(R.string.plugin_install_not_installed))
+                messageLiveData.postValue(Event(MainActivityMessage.StringID(R.string.plugin_install_not_installed)))
             }
         }
     }
@@ -975,10 +982,81 @@ class MainActivityViewModel @Inject constructor(
         }
     }
 
+    suspend fun downloadFileToCache(
+        link: String,
+        fileName: String,
+        cacheDir: File,
+        suffix: String? = null
+    ) = customDownloadRepository.downloadToCache(link, fileName, cacheDir, suffix).asLiveData()
+
+    private suspend fun installPluginsPack(cacheDir: File, pluginsDir: File) {
+        val pluginsFolder = File(cacheDir, PLUGINS_PACK_FOLDER)
+        var installedPlugins = 0
+        if (pluginsFolder.exists() && pluginsFolder.isDirectory) {
+            pluginsFolder.walk().forEach { pluginFile ->
+                if (pluginFile.path.endsWith(".unchained")) {
+                    val plugin = pluginRepository.readPluginFile(pluginFile)
+                    if (plugin != null) {
+                        val installed = pluginRepository.addExternalPlugin(pluginsDir, pluginFile)
+                        if (installed) {
+                            Timber.d("Installed plugin ${pluginFile.name}")
+                            installedPlugins++
+                        } else
+                            Timber.d("Error installing plugin ${pluginFile.name}")
+                    } else {
+                        Timber.d("Error parsing plugin ${pluginFile.name}")
+                    }
+                } else {
+                    // this also gets triggered by the plugins own folder which is traversed by walk
+                    Timber.d("Skipping unrecognized file into the plugin folder: ${pluginFile.name}")
+                }
+            }
+        }
+        messageLiveData.postValue(Event(MainActivityMessage.InstalledPlugins(installedPlugins)))
+    }
+
+    fun processPluginsPack(cacheDir: File, pluginsDir: File, fileName: String) {
+        try {
+            viewModelScope.launch {
+                withContext(Dispatchers.IO) {
+                    val cacheFile = File(cacheDir, fileName)
+                    UnzipUtils.unzip(cacheFile, File(cacheDir, PLUGINS_PACK_FOLDER))
+                    Timber.d("Zip pack extracted")
+                    installPluginsPack(cacheDir, pluginsDir)
+                }
+            }
+        } catch (exception: Exception) {
+            when (exception) {
+                is IOException -> {
+                    Timber.e("Plugins pack IOException error with the file: ${exception.message}")
+                }
+                is java.io.FileNotFoundException -> {
+                    Timber.e("Plugins pack: file not found: ${exception.message}")
+                }
+                else -> {
+                    Timber.e("Plugins pack: Other error getting the file: ${exception.message}")
+                }
+            }
+        }
+
+    }
+
+    fun clearCache(cacheDir: File) {
+        cacheDir.listFiles()?.forEach {
+            if (it.name != "image_cache")
+                it.deleteRecursively()
+        }
+    }
+
     companion object {
         const val KEY_TORRENT_DOWNLOAD_ID = "torrent_download_id_key"
         const val KEY_PLUGIN_DOWNLOAD_ID = "plugin_download_id_key"
         const val KEY_LAST_BACK_PRESS = "last_back_press_key"
         const val KEY_REFRESHING_TOKEN = "refreshing_token_key"
     }
+}
+
+sealed class MainActivityMessage {
+    data class StringID(val id: Int): MainActivityMessage()
+    data class InstalledPlugins(val number: Int): MainActivityMessage()
 }

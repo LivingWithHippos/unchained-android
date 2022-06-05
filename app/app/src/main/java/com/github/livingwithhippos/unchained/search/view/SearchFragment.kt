@@ -19,6 +19,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
+import com.github.livingwithhippos.unchained.data.repository.DownloadResult
 import com.github.livingwithhippos.unchained.databinding.FragmentSearchBinding
 import com.github.livingwithhippos.unchained.folderlist.view.FolderListFragment
 import com.github.livingwithhippos.unchained.plugins.ParserResult
@@ -27,6 +28,9 @@ import com.github.livingwithhippos.unchained.plugins.model.ScrapedItem
 import com.github.livingwithhippos.unchained.search.model.SearchItemAdapter
 import com.github.livingwithhippos.unchained.search.model.SearchItemListener
 import com.github.livingwithhippos.unchained.search.viewmodel.SearchViewModel
+import com.github.livingwithhippos.unchained.utilities.PLUGINS_PACK_FOLDER
+import com.github.livingwithhippos.unchained.utilities.PLUGINS_PACK_LINK
+import com.github.livingwithhippos.unchained.utilities.PLUGINS_PACK_NAME
 import com.github.livingwithhippos.unchained.utilities.PLUGINS_URL
 import com.github.livingwithhippos.unchained.utilities.extension.delayedScrolling
 import com.github.livingwithhippos.unchained.utilities.extension.getThemedDrawable
@@ -36,6 +40,8 @@ import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.io.File
+import java.io.IOException
 
 @AndroidEntryPoint
 class SearchFragment : UnchainedFragment(), SearchItemListener {
@@ -54,8 +60,40 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.plugins_link -> {
-                openExternalWebPage(PLUGINS_URL)
+            R.id.plugins_pack -> {
+                lifecycleScope.launch {
+                    val cacheDir = context?.cacheDir
+
+                    if (cacheDir!=null) {
+                        // clean up old files
+                        // todo: also clear other files, at least ending with zip
+                        File(cacheDir, PLUGINS_PACK_FOLDER).deleteRecursively()
+
+                        activityViewModel.downloadFileToCache(
+                            PLUGINS_PACK_LINK,
+                            PLUGINS_PACK_NAME,
+                            cacheDir,
+                            ".zip"
+                        ).observe(
+                            viewLifecycleOwner
+                        ) {
+                            when (it) {
+                                is DownloadResult.End -> {
+                                    activityViewModel.processPluginsPack(cacheDir, requireContext().filesDir, it.fileName)
+                                }
+                                DownloadResult.Failure -> {
+                                    context?.showToast(R.string.error_loading_file)
+                                }
+                                is DownloadResult.Progress -> {
+                                    Timber.d("Plugins pack progress: ${it.percent}")
+                                }
+                                DownloadResult.WrongURL -> {
+                                    context?.showToast(R.string.error_loading_file)
+                                }
+                            }
+                        }
+                    }
+                }
                 true
             }
             else -> super.onOptionsItemSelected(item)

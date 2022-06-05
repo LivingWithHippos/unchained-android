@@ -155,6 +155,28 @@ class PluginRepository @Inject constructor(
         return@withContext true
     }
 
+    suspend fun addExternalPlugin(
+        pluginsFolder: File,
+        pluginFile: File
+    ): Boolean = withContext(Dispatchers.IO) {
+        try {
+            val savedPluginPath = File(pluginsFolder, pluginFile.name)
+            // remove file if already existing
+            if (savedPluginPath.exists())
+                savedPluginPath.delete()
+            // copy plugin from cache to internal memory
+            pluginFile.inputStream().use { inputStream ->
+                savedPluginPath.outputStream().use {
+                    inputStream.copyTo(it)
+                }
+            }
+        } catch (exception: Exception) {
+            Timber.e("Error saving the plugin ${pluginFile.name}: ${exception.message}")
+            return@withContext false
+        }
+        return@withContext true
+    }
+
     suspend fun addExternalPlugin(context: Context, source: String): Boolean =
         withContext(Dispatchers.IO) {
 
@@ -192,6 +214,20 @@ class PluginRepository @Inject constructor(
                 }
             }
 
+            null
+        }
+
+
+    suspend fun readPluginFile(pluginFile: File): Plugin? =
+        withContext(Dispatchers.IO) {
+            try {
+                pluginFile.bufferedReader().use {
+                    val json = it.readText()
+                    return@withContext getPluginFromJSON(json)
+                }
+            } catch (exception: Exception) {
+                Timber.e("Error adding the plugin ${pluginFile.name}: ${exception.message}")
+            }
             null
         }
 
