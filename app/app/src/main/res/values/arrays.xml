@@ -28,6 +28,7 @@
     </string-array>
     <string name="tropical_sunset" translatable="false">Tropical Sunset</string>
     <string name="player_mpv" translatable="false">MPV</string>
+    <string name="player_web_video_cast" translatable="false">Web Video Cast</string>
 
     <string-array name="main_screen" >
         <item>@string/user</item>
@@ -44,10 +45,14 @@
         <item>@string/player_vlc</item>
         <item>@string/player_mx</item>
         <item>@string/player_mpv</item>
+        <item>@string/player_web_video_cast</item>
+        <item>@string/custom_media_player</item>
     </string-array>
     <string-array name="default_media_player_values">
         <item>vlc</item>
         <item>mx_player</item>
         <item>mpv</item>
+        <item>web_video_cast</item>
+        <item>custom_player</item>
     </string-array>
 </resources>

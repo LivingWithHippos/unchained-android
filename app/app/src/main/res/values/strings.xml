@@ -583,7 +583,7 @@
     <string name="player_mx" translatable="false">MX Player</string>
     <string name="show_media_player_button_summary">Show the button to send the media to an installed player</string>
     <string name="show_media_player_button">Show media button</string>
-    <string name="default_media_player">Default media player to open</string>
+    <string name="default_media_player">Default media player</string>
     <string name="send_to_player">Send to player</string>
     <string name="missing_default_player">Set the default media player in settings</string>
     <string name="ui_settings_summary">Choose how and if things are shown</string>
@@ -597,4 +597,7 @@
     <string name="show_stream_browser_button">Show stream in browser button</string>
     <string name="install_plugins_pack">Install plugins pack</string>
     <string name="install_plugins_pack_summary">Use the button in the search screen menu to install all the plugins at once</string>
+    <string name="custom_media_player">Custom media player</string>
+    <string name="custom_media_player_summary">Use a custom media player package like \"org.videolan.vlc\". It may support direct sharing of media files. Remember to pick \"custom player\" as default media player preference</string>
+    <string name="invalid_package">Invalid package</string>
 </resources>
