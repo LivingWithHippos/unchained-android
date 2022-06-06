@@ -322,6 +322,10 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                     tryStartExternalApp(mxIntent)
                 }
             }
+            "web_video_cast" -> {
+                val wvcIntent = createMediaIntent("com.instantbits.cast.webvideo", url)
+                tryStartExternalApp(wvcIntent)
+            }
             else -> {
                 context?.showToast(R.string.missing_default_player)
             }
