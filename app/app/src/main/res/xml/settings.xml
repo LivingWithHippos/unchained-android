@@ -79,6 +79,13 @@
             android:title="@string/default_media_player"
             app:useSimpleSummaryProvider="true" />
 
+        <EditTextPreference
+            android:defaultValue=""
+            android:key="custom_media_player"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="@string/custom_media_player"
+            android:summary="@string/custom_media_player_summary" />
 
     </PreferenceCategory>
 
@@ -102,7 +109,6 @@
             app:key="show_folders_filters"
             app:summary="@string/show_folder_filters_summary"
             app:title="@string/show_folder_filters" />
-
 
         <PreferenceCategory android:title="@string/download_details">
 

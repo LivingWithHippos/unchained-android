@@ -326,6 +326,15 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                 val wvcIntent = createMediaIntent("com.instantbits.cast.webvideo", url)
                 tryStartExternalApp(wvcIntent)
             }
+            "custom_player" -> {
+                val customPlayerPackage = viewModel.getCustomPlayerPreference()
+                if (customPlayerPackage.isNullOrBlank()) {
+                    context?.showToast(R.string.invalid_package)
+                } else {
+                    val customIntent = createMediaIntent(customPlayerPackage, url)
+                    tryStartExternalApp(customIntent)
+                }
+            }
             else -> {
                 context?.showToast(R.string.missing_default_player)
             }

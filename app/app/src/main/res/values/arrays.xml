@@ -46,11 +46,13 @@
         <item>@string/player_mx</item>
         <item>@string/player_mpv</item>
         <item>@string/player_web_video_cast</item>
+        <item>@string/custom_media_player</item>
     </string-array>
     <string-array name="default_media_player_values">
         <item>vlc</item>
         <item>mx_player</item>
         <item>mpv</item>
         <item>web_video_cast</item>
+        <item>custom_player</item>
     </string-array>
 </resources>
