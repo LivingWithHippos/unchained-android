@@ -301,9 +301,18 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-        viewModel.setupConnectivityCheck(applicationContext)
 
         viewModel.clearCache(applicationContext.cacheDir)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.addConnectivityCheck(applicationContext)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        viewModel.removeConnectivityCheck(applicationContext)
     }
 
     private fun downloadPlugin(link: String) {

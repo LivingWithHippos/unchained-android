@@ -810,13 +810,21 @@ class MainActivityViewModel @Inject constructor(
             }
         }
 
-    fun setupConnectivityCheck(context: Context) {
+    fun addConnectivityCheck(context: Context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             val connectivityManager =
                 context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
             connectivityManager.registerDefaultNetworkCallback(networkCallback)
         } else {
             checkConnectivity(context)
+        }
+    }
+
+    fun removeConnectivityCheck(context: Context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            val connectivityManager =
+                context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            connectivityManager.unregisterNetworkCallback(networkCallback)
         }
     }
 
