@@ -43,6 +43,7 @@ import com.github.livingwithhippos.unchained.utilities.extension.isMagnet
 import com.github.livingwithhippos.unchained.utilities.extension.isTorrent
 import com.github.livingwithhippos.unchained.utilities.extension.isWebUrl
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.io.File
@@ -216,13 +217,20 @@ class NewDownloadFragment : UnchainedFragment() {
 
         @SuppressLint("ShowToast")
         val currentToast: Toast = Toast.makeText(requireContext(), "", Toast.LENGTH_SHORT)
+        var lastToastTime = System.currentTimeMillis()
 
         viewModel.toastLiveData.observe(
             viewLifecycleOwner,
             EventObserver {
-                currentToast.cancel()
-                currentToast.setText(it)
-                currentToast.show()
+                lifecycleScope.launch {
+                    currentToast.cancel()
+                    // if we call this too soon between toasts we'll miss some
+                    if (System.currentTimeMillis() - lastToastTime < 500L)
+                        delay(500)
+                    currentToast.setText(it)
+                    currentToast.show()
+                    lastToastTime = System.currentTimeMillis()
+                }
             }
         )
     }
