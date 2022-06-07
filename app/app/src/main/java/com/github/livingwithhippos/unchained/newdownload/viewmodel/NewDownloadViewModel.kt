@@ -67,11 +67,14 @@ class NewDownloadViewModel @Inject constructor(
     fun uploadContainer(container: ByteArray) {
         viewModelScope.launch {
             val token = getToken()
-            val fileList = unrestrictRepository.uploadContainer(token, container)
-            if (fileList != null)
-                containerLiveData.postEvent(Link.Container(fileList))
-            else
-                containerLiveData.postEvent(Link.RetrievalError)
+            when (val fileList = unrestrictRepository.uploadContainer(token, container)) {
+                is EitherResult.Failure -> {
+                     networkExceptionLiveData.postEvent(fileList.failure)
+                }
+                is EitherResult.Success -> {
+                    containerLiveData.postEvent(Link.Container(fileList.success))
+                }
+            }
         }
     }
 
@@ -95,11 +98,13 @@ class NewDownloadViewModel @Inject constructor(
             } else {
                 val addedMagnet =
                     torrentsRepository.addMagnet(token, magnet, availableHosts.first().host)
-                if (addedMagnet != null) {
-                    // todo: add custom selection of files, this queues all the files
-                    // todo: add checks for already chosen torrent/magnet (if possible), otherwise we get multiple downloads
-                    // todo: get file info and check if it has already been downloaded before doing a select files
-                    torrentLiveData.postEvent(addedMagnet)
+                when (addedMagnet) {
+                    is EitherResult.Failure -> {
+                        networkExceptionLiveData.postEvent(addedMagnet.failure)
+                    }
+                    is EitherResult.Success -> {
+                        torrentLiveData.postEvent(addedMagnet.success)
+                    }
                 }
             }
         }
@@ -114,9 +119,14 @@ class NewDownloadViewModel @Inject constructor(
             } else {
                 val uploadedTorrent =
                     torrentsRepository.addTorrent(token, binaryTorrent, availableHosts.first().host)
-                if (uploadedTorrent != null) {
-                    // todo: add checks for already chosen torrent/magnet (if possible), otherwise we get multiple downloads
-                    torrentLiveData.postEvent(uploadedTorrent)
+                when (uploadedTorrent) {
+                    is EitherResult.Failure -> {
+                        networkExceptionLiveData.postEvent(uploadedTorrent.failure)
+                    }
+                    is EitherResult.Success -> {
+                        // todo: add checks for already chosen torrent/magnet (if possible), otherwise we get multiple downloads
+                        torrentLiveData.postEvent(uploadedTorrent.success)
+                    }
                 }
             }
         }
