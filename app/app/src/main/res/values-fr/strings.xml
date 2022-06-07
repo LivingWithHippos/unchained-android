@@ -150,8 +150,7 @@
             </body>
         ]]>
     </string>
-    <string name="premium_needed">Vous devez posséder un compte Premium pour faire ceci</string>
-    <string name="premium_needed_torrent">Vous devez posséder un compte Premium pour les magnets et torrents</string>
+    <string name="premium_needed">Abonnement Premium nécessaire</string>
     <string name="downloading_torrent">Torrent en préparation, veuillez patienter…</string>
     <string name="please_insert_url">Veuillez entrer un magnet ou un lien</string>
     <string name="please_login">Veuillez vous identifier</string>
