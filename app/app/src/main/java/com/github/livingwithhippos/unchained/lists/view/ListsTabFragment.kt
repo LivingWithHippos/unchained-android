@@ -267,26 +267,25 @@ class ListsTabFragment : UnchainedFragment(), DownloadListListener, TorrentListL
         }
 
         // checks the authentication state. Needed to avoid automatic API calls before the authentication process is finished
-        activityViewModel.fsmAuthenticationState.observe(viewLifecycleOwner, {
-            if (it != null) {
-                when (it.peekContent()) {
-                    FSMAuthenticationState.AuthenticatedOpenToken, FSMAuthenticationState.AuthenticatedPrivateToken -> {
-                        // register observers if not already registered
-                        if (!viewModel.downloadsLiveData.hasActiveObservers())
-                            viewModel.downloadsLiveData.observe(
-                                viewLifecycleOwner,
-                                downloadObserver
-                            )
+        activityViewModel.fsmAuthenticationState.observe(
+            viewLifecycleOwner
+        ) {
+            when (it?.peekContent()) {
+                FSMAuthenticationState.AuthenticatedOpenToken, FSMAuthenticationState.AuthenticatedPrivateToken -> {
+                    // register observers if not already registered
+                    if (!viewModel.downloadsLiveData.hasActiveObservers())
+                        viewModel.downloadsLiveData.observe(
+                            viewLifecycleOwner,
+                            downloadObserver
+                        )
 
-                        if (!viewModel.torrentsLiveData.hasActiveObservers())
-                            viewModel.torrentsLiveData.observe(viewLifecycleOwner, torrentObserver)
-                    }
-                    else -> {
-                    }
+                    if (!viewModel.torrentsLiveData.hasActiveObservers())
+                        viewModel.torrentsLiveData.observe(viewLifecycleOwner, torrentObserver)
+                }
+                else -> {
                 }
             }
         }
-        )
 
         binding.tabs.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
 
