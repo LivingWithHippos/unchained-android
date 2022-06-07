@@ -39,6 +39,7 @@ versions.test = "1.4.0"
 versions.test_junit = "1.1.3"
 versions.test_orchestrator = "1.4.1"
 versions.timber = "5.0.1"
+versions.viewpager2 = "1.0.0"
 ext.versions = versions
 
 ext.deps = [:]
@@ -217,5 +218,7 @@ deps.test = test
 deps.timber = "com.jakewharton.timber:timber:$versions.timber"
 
 deps.transition = "androidx.transition:transition:$versions.transition"
+
+deps.viewpager2 = "androidx.viewpager2:viewpager2:$versions.viewpager2"
 
 ext.deps = deps

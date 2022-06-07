@@ -191,6 +191,7 @@ dependencies {
     implementation deps.preference_ktx
     implementation deps.recyclerview.recyclerview
     implementation deps.recyclerview.selection
+    implementation deps.viewpager2
 
     // datastore
     // implementation deps.datastore.preferences
