@@ -104,7 +104,7 @@ class TorrentsRepository @Inject constructor(private val torrentApiHelper: Torre
                     filter = filter
                 )
             },
-            errorMessage = "Error Retrieving Torrent Info"
+            errorMessage = "Error retrieving the torrents List, or list empty"
         )
 
         return torrentsResponse ?: emptyList()
