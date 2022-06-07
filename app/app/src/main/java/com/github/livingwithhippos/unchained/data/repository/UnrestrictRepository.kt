@@ -101,7 +101,7 @@ class UnrestrictRepository @Inject constructor(private val unrestrictApiHelper: 
     suspend fun uploadContainer(
         token: String,
         container: ByteArray
-    ): List<String>? {
+    ): EitherResult<UnchainedNetworkException, List<String>> {
 
         val requestBody: RequestBody = container.toRequestBody(
             "application/octet-stream".toMediaTypeOrNull(),
@@ -109,7 +109,7 @@ class UnrestrictRepository @Inject constructor(private val unrestrictApiHelper: 
             container.size
         )
 
-        val uploadResponse = safeApiCall(
+        val uploadResponse = eitherApiResult(
             call = {
                 unrestrictApiHelper.uploadContainer(
                     token = "Bearer $token",

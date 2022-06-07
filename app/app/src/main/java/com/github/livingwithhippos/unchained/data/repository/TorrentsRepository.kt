@@ -45,7 +45,7 @@ class TorrentsRepository @Inject constructor(private val torrentApiHelper: Torre
         token: String,
         binaryTorrent: ByteArray,
         host: String
-    ): UploadedTorrent? {
+    ): EitherResult<UnchainedNetworkException, UploadedTorrent> {
 
         val requestBody: RequestBody = binaryTorrent.toRequestBody(
             "application/octet-stream".toMediaTypeOrNull(),
@@ -53,7 +53,7 @@ class TorrentsRepository @Inject constructor(private val torrentApiHelper: Torre
             binaryTorrent.size
         )
 
-        val addTorrentResponse = safeApiCall(
+        val addTorrentResponse = eitherApiResult(
             call = {
                 torrentApiHelper.addTorrent(
                     token = "Bearer $token",
@@ -71,8 +71,8 @@ class TorrentsRepository @Inject constructor(private val torrentApiHelper: Torre
         token: String,
         magnet: String,
         host: String
-    ): UploadedTorrent? {
-        val torrentResponse = safeApiCall(
+    ): EitherResult<UnchainedNetworkException, UploadedTorrent> {
+        val torrentResponse = eitherApiResult(
             call = {
                 torrentApiHelper.addMagnet(
                     token = "Bearer $token",
@@ -104,7 +104,7 @@ class TorrentsRepository @Inject constructor(private val torrentApiHelper: Torre
                     filter = filter
                 )
             },
-            errorMessage = "Error Retrieving Torrent Info"
+            errorMessage = "Error retrieving the torrents List, or list empty"
         )
 
         return torrentsResponse ?: emptyList()

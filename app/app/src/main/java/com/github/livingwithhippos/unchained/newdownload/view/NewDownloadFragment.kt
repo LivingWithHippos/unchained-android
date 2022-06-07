@@ -43,6 +43,7 @@ import com.github.livingwithhippos.unchained.utilities.extension.isMagnet
 import com.github.livingwithhippos.unchained.utilities.extension.isTorrent
 import com.github.livingwithhippos.unchained.utilities.extension.isWebUrl
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.io.File
@@ -185,7 +186,7 @@ class NewDownloadFragment : UnchainedFragment() {
                                 else
                                     Timber.e("Asked for a refresh while in a wrong state: ${activityViewModel.getAuthenticationMachineState()}")
                             }
-                            in 9..15 -> {
+                            in 10..15 -> {
                                 viewModel.postMessage(errorMessage)
                                 when (activityViewModel.getAuthenticationMachineState()) {
                                     FSMAuthenticationState.AuthenticatedOpenToken, FSMAuthenticationState.AuthenticatedPrivateToken, FSMAuthenticationState.RefreshingOpenToken -> {
@@ -197,6 +198,11 @@ class NewDownloadFragment : UnchainedFragment() {
                                         Timber.e("Asked for logout while in a wrong state: ${activityViewModel.getAuthenticationMachineState()}")
                                     }
                                 }
+                            }
+                            9 -> {
+                                // todo: check if permission denied (code 9) is related only to asking for magnet without premium or other stuff too
+                                // we use this because permission denied is not clear
+                                viewModel.postMessage(getString(R.string.premium_needed))
                             }
                             else -> {
                                 viewModel.postMessage(errorMessage)
@@ -216,13 +222,20 @@ class NewDownloadFragment : UnchainedFragment() {
 
         @SuppressLint("ShowToast")
         val currentToast: Toast = Toast.makeText(requireContext(), "", Toast.LENGTH_SHORT)
+        var lastToastTime = System.currentTimeMillis()
 
         viewModel.toastLiveData.observe(
             viewLifecycleOwner,
             EventObserver {
-                currentToast.cancel()
-                currentToast.setText(it)
-                currentToast.show()
+                lifecycleScope.launch {
+                    currentToast.cancel()
+                    // if we call this too soon between toasts we'll miss some
+                    if (System.currentTimeMillis() - lastToastTime < 1000L)
+                        delay(1000)
+                    currentToast.setText(it)
+                    currentToast.show()
+                    lastToastTime = System.currentTimeMillis()
+                }
             }
         )
     }
