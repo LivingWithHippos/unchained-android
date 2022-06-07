@@ -36,6 +36,7 @@ import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Comp
 import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityMessage
 import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewModel
 import com.github.livingwithhippos.unchained.statemachine.authentication.CurrentFSMAuthentication
+import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationEvent
 import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationState
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.EventObserver
@@ -193,8 +194,21 @@ class MainActivity : AppCompatActivity() {
             R.id.navigation_search
         )
 
-        // start the authentication state machine
-        viewModel.startAuthenticationMachine()
+        // to avoid issues with restoring the app state we check the current state before calling this
+        when (viewModel.fsmAuthenticationState.value?.peekContent()) {
+            is FSMAuthenticationState.AuthenticatedPrivateToken, FSMAuthenticationState.AuthenticatedOpenToken -> {
+                // we probably stopped and restored the app, do the same actions
+                // in the viewModel.fsmAuthenticationState.observe for these states
+                
+                // unlock the bottom menu
+                enableAllBottomNavItems()
+            }
+            else -> {
+                // todo: decide if we need to check other possible values or reset the fsm to checkCredentials in these states and call startAuthenticationMachine
+                // start the authentication state machine, the first time it's going to be null
+                viewModel.startAuthenticationMachine()
+            }
+        }
 
         // check if the app has been opened by clicking on torrents/magnet on sharing links
         getIntentData()
@@ -301,9 +315,18 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-        viewModel.setupConnectivityCheck(applicationContext)
 
         viewModel.clearCache(applicationContext.cacheDir)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.addConnectivityCheck(applicationContext)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        viewModel.removeConnectivityCheck(applicationContext)
     }
 
     private fun downloadPlugin(link: String) {
