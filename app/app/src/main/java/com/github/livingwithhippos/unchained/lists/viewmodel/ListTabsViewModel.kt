@@ -20,7 +20,8 @@ import com.github.livingwithhippos.unchained.data.repository.DownloadRepository
 import com.github.livingwithhippos.unchained.data.repository.TorrentsRepository
 import com.github.livingwithhippos.unchained.data.repository.UnrestrictRepository
 import com.github.livingwithhippos.unchained.lists.model.DownloadPagingSource
-import com.github.livingwithhippos.unchained.lists.view.ListsTabFragment.Companion.TAB_DOWNLOADS
+import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityMessage
+import com.github.livingwithhippos.unchained.utilities.DOWNLOADS_TAB
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.postEvent
@@ -65,6 +66,8 @@ class ListTabsViewModel @Inject constructor(
 
     val deletedTorrentLiveData = MutableLiveData<Event<Int>>()
     val deletedDownloadLiveData = MutableLiveData<Event<Int>>()
+
+    val eventLiveData = MutableLiveData<Event<ListEvent>>()
 
     fun downloadTorrent(torrent: TorrentItem) {
         viewModelScope.launch {
@@ -130,7 +133,7 @@ class ListTabsViewModel @Inject constructor(
     }
 
     fun getSelectedTab(): Int {
-        return savedStateHandle.get(KEY_SELECTED_TAB) ?: TAB_DOWNLOADS
+        return savedStateHandle.get(KEY_SELECTED_TAB) ?: DOWNLOADS_TAB
     }
 
     fun setListFilter(query: String?) {
@@ -212,6 +215,10 @@ class ListTabsViewModel @Inject constructor(
         }
     }
 
+    fun postEventNotice(event: ListEvent){
+        eventLiveData.postEvent(event)
+    }
+
     companion object {
         const val KEY_SELECTED_TAB = "selected_tab_key"
         const val TORRENT_DELETED = -1
@@ -223,4 +230,10 @@ class ListTabsViewModel @Inject constructor(
         const val DOWNLOADS_DELETED_ALL = -3
         const val DOWNLOAD_NOT_DELETED = -4
     }
+}
+
+sealed class ListEvent {
+    data class DownloadItemClick(val item: DownloadItem): ListEvent()
+    data class TorrentItemClick(val item: TorrentItem): ListEvent()
+    data class OpenTorrent(val id: String): ListEvent()
 }

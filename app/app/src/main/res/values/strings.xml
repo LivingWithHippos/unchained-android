@@ -599,4 +599,6 @@
     <string name="custom_media_player">Custom media player</string>
     <string name="custom_media_player_summary">Use a custom media player package like \"org.videolan.vlc\". It may support direct sharing of media files. Remember to pick \"custom player\" as default media player preference</string>
     <string name="invalid_package">Invalid package</string>
+    <string name="delete_all_downloads">Delete all downloads</string>
+    <string name="delete_all_torrents">Delete all torrents</string>
 </resources>

@@ -28,6 +28,7 @@ import com.github.livingwithhippos.unchained.databinding.FragmentDownloadDetails
 import com.github.livingwithhippos.unchained.downloaddetails.model.AlternativeDownloadAdapter
 import com.github.livingwithhippos.unchained.downloaddetails.viewmodel.DownloadDetailsMessage
 import com.github.livingwithhippos.unchained.downloaddetails.viewmodel.DownloadDetailsViewModel
+import com.github.livingwithhippos.unchained.lists.view.ListState
 import com.github.livingwithhippos.unchained.lists.view.ListsTabFragment
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.EventObserver
@@ -139,7 +140,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                 activity?.baseContext?.showToast(R.string.download_removed)
                 // if deleted go back
                 activity?.onBackPressed()
-                activityViewModel.setListState(ListsTabFragment.ListState.UPDATE_DOWNLOAD)
+                activityViewModel.setListState(ListState.UpdateDownload)
             }
         )
 

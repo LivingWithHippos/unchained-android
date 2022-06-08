@@ -31,6 +31,7 @@ import com.github.livingwithhippos.unchained.data.repository.PluginRepository
 import com.github.livingwithhippos.unchained.data.repository.PluginRepository.Companion.TYPE_UNCHAINED
 import com.github.livingwithhippos.unchained.data.repository.UserRepository
 import com.github.livingwithhippos.unchained.data.repository.VariousApiRepository
+import com.github.livingwithhippos.unchained.lists.view.ListState
 import com.github.livingwithhippos.unchained.lists.view.ListsTabFragment
 import com.github.livingwithhippos.unchained.plugins.model.Plugin
 import com.github.livingwithhippos.unchained.statemachine.authentication.CurrentFSMAuthentication
@@ -89,7 +90,7 @@ class MainActivityViewModel @Inject constructor(
 
     val notificationTorrentLiveData = MutableLiveData<Event<String>>()
 
-    val listStateLiveData = MutableLiveData<Event<ListsTabFragment.ListState>>()
+    val listStateLiveData = MutableLiveData<Event<ListState>>()
 
     val connectivityLiveData = MutableLiveData<Boolean?>()
     // val currentNetworkLiveData = MutableLiveData<Network?>()
@@ -647,7 +648,7 @@ class MainActivityViewModel @Inject constructor(
     }
 
     // todo: move this stuff to a shared navigationViewModel
-    fun setListState(state: ListsTabFragment.ListState) {
+    fun setListState(state: ListState) {
         listStateLiveData.postEvent(state)
     }
 

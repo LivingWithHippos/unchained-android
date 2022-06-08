@@ -8,21 +8,10 @@
         <import type="android.view.View" />
 
         <variable
-            name="selectedTorrents"
-            type="Integer" />
-
-        <variable
-            name="selectedDownloads"
-            type="Integer" />
-
-        <variable
             name="selectedTab"
             type="Integer" />
 
-        <variable
-            name="listener"
-            type="com.github.livingwithhippos.unchained.lists.view.SelectedItemsButtonsListener" />
-    </data>
+        </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -36,7 +25,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/llMultiSelection"
+            app:layout_constraintTop_toBottomOf="@id/listPager"
             app:tabMode="fixed">
 
             <com.google.android.material.tabs.TabItem
@@ -56,106 +45,15 @@
                 android:text="@string/torrents" />
         </com.google.android.material.tabs.TabLayout>
 
-        <LinearLayout
-            android:id="@+id/llMultiSelection"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:paddingStart="10dp"
-            android:paddingTop="5dp"
-            android:paddingEnd="10dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tabs"
-            app:layout_constraintBottom_toTopOf="@id/srLayout"
-            >
-
-            <CheckBox
-                android:id="@+id/cbSelectAll"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checked="false"
-                android:tooltipText="@string/select_deselect_all"
-                android:text="@{selectedTab == 0 ? selectedDownloads.toString() :  selectedTorrents.toString(), default=`2`}" />
-
-            <ImageButton
-                android:id="@+id/bDeleteSelected"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginStart="10dp"
-                android:backgroundTint="@android:color/transparent"
-                android:contentDescription="@string/delete"
-                android:onClick="@{() -> listener.deleteSelectedItems()}"
-                android:src="@drawable/icon_delete"
-                android:tooltipText="@string/delete_selected" />
-
-            <ImageButton
-                android:id="@+id/bDownloadSelected"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginStart="10dp"
-                android:backgroundTint="@android:color/transparent"
-                android:contentDescription="@string/download"
-                android:onClick="@{() -> listener.downloadSelectedItems()}"
-                android:src="@drawable/icon_download"
-                android:tooltipText="@string/download_selected" />
-
-
-            <ImageButton
-                android:id="@+id/bShareSelected"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginStart="10dp"
-                android:backgroundTint="@android:color/transparent"
-                android:contentDescription="@string/share"
-                android:onClick="@{() -> listener.shareSelectedItems()}"
-                android:src="@drawable/icon_share"
-                android:visibility="@{selectedTab == 0 ? View.VISIBLE : View.INVISIBLE}"
-                android:tooltipText="@string/share_selected" />
-
-        </LinearLayout>
-
-        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-            android:id="@+id/srLayout"
-            refreshColorTheme="@{true}"
-            android:layout_width="wrap_content"
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/listPager"
+            android:layout_width="0dp"
             android:layout_height="0dp"
+            app:layout_constraintTop_toBottomOf="@id/tabs"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/llMultiSelection"
             app:layout_constraintBottom_toBottomOf="parent"
-            >
-
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rvTorrentList"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:scrollbars="vertical"
-                    android:visibility="gone"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    tools:listitem="@layout/item_list_torrent" />
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rvDownloadList"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:scrollbars="vertical"
-                    android:visibility="visible"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    tools:listitem="@layout/item_list_download" />
-
-            </FrameLayout>
-
-
-        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
+            />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fabNewDownload"

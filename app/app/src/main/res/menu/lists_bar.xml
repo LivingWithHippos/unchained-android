@@ -12,10 +12,17 @@
         app:actionViewClass="androidx.appcompat.widget.SearchView" />
 
     <item
-        android:id="@+id/delete_all"
-        android:contentDescription="@string/delete_all"
+        android:id="@+id/delete_all_downloads"
+        android:contentDescription="@string/delete_all_downloads"
         android:icon="@drawable/icon_delete"
-        android:title="@string/delete_all"
+        android:title="@string/delete_all_downloads"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/delete_all_torrents"
+        android:contentDescription="@string/delete_all_torrents"
+        android:icon="@drawable/icon_delete"
+        android:title="@string/delete_all_torrents"
         app:showAsAction="ifRoom" />
 
 </menu>

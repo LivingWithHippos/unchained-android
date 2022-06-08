@@ -385,4 +385,6 @@
     <string name="custom_media_player">Lettore media personalizzato</string>
     <string name="custom_media_player_summary">Usa il package di un lettore media personalizzato come \"org.videolan.vlc\". Potrebbe supportare la condivisione diretta di media. Ricorda di impostare \"lettore media personalizzato\" come impostazione di lettore media predefinito</string>
     <string name="invalid_package">Package non valido</string>
+    <string name="delete_all_downloads">Elimina tutti i download</string>
+    <string name="delete_all_torrents">Elimina tutti i torrent</string>
 </resources>
