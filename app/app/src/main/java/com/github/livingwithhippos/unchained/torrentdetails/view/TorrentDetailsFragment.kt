@@ -22,6 +22,7 @@ import com.github.livingwithhippos.unchained.data.model.EmptyBodyError
 import com.github.livingwithhippos.unchained.data.model.NetworkError
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.databinding.FragmentTorrentDetailsBinding
+import com.github.livingwithhippos.unchained.lists.view.ListState
 import com.github.livingwithhippos.unchained.lists.view.ListsTabFragment
 import com.github.livingwithhippos.unchained.torrentdetails.viewmodel.TorrentDetailsViewModel
 import com.github.livingwithhippos.unchained.utilities.EventObserver
@@ -116,7 +117,7 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
                 activity?.baseContext?.showToast(R.string.torrent_removed)
                 // if deleted go back
                 activity?.onBackPressed()
-                activityViewModel.setListState(ListsTabFragment.ListState.UPDATE_TORRENT)
+                activityViewModel.setListState(ListState.UpdateTorrent)
             }
         )
 

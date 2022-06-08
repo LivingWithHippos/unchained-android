@@ -23,6 +23,7 @@ import com.github.livingwithhippos.unchained.data.model.EmptyBodyError
 import com.github.livingwithhippos.unchained.data.model.NetworkError
 import com.github.livingwithhippos.unchained.data.repository.DownloadResult
 import com.github.livingwithhippos.unchained.databinding.NewDownloadFragmentBinding
+import com.github.livingwithhippos.unchained.lists.view.ListState
 import com.github.livingwithhippos.unchained.lists.view.ListsTabFragment
 import com.github.livingwithhippos.unchained.newdownload.viewmodel.Link
 import com.github.livingwithhippos.unchained.newdownload.viewmodel.NewDownloadViewModel
@@ -84,7 +85,7 @@ class NewDownloadFragment : UnchainedFragment() {
             viewLifecycleOwner,
             EventObserver { linkDetails ->
                 // new download item, alert the list fragment that it needs updating
-                activityViewModel.setListState(ListsTabFragment.ListState.UPDATE_DOWNLOAD)
+                activityViewModel.setListState(ListState.UpdateDownload)
                 val action =
                     NewDownloadFragmentDirections.actionUnrestrictDownloadToDetailsFragment(
                         linkDetails
@@ -97,7 +98,7 @@ class NewDownloadFragment : UnchainedFragment() {
             viewLifecycleOwner,
             EventObserver { folder ->
                 // new folder list, alert the list fragment that it needs updating
-                activityViewModel.setListState(ListsTabFragment.ListState.UPDATE_DOWNLOAD)
+                activityViewModel.setListState(ListState.UpdateDownload)
                 val action =
                     NewDownloadFragmentDirections.actionNewDownloadDestToFolderListFragment(
                         folder = folder,
@@ -112,7 +113,7 @@ class NewDownloadFragment : UnchainedFragment() {
             viewLifecycleOwner,
             EventObserver { torrent ->
                 // new torrent item, alert the list fragment that it needs updating
-                activityViewModel.setListState(ListsTabFragment.ListState.UPDATE_TORRENT)
+                activityViewModel.setListState(ListState.UpdateTorrent)
                 val action =
                     NewDownloadFragmentDirections.actionNewDownloadDestToTorrentDetailsFragment(
                         torrent.id
@@ -127,7 +128,7 @@ class NewDownloadFragment : UnchainedFragment() {
                 when (link) {
                     is Link.Container -> {
                         // new container, alert the list fragment that it needs updating
-                        activityViewModel.setListState(ListsTabFragment.ListState.UPDATE_DOWNLOAD)
+                        activityViewModel.setListState(ListState.UpdateDownload)
                         val action =
                             NewDownloadFragmentDirections.actionNewDownloadDestToFolderListFragment(
                                 linkList = link.links.toTypedArray(),
@@ -301,7 +302,7 @@ class NewDownloadFragment : UnchainedFragment() {
                         enableButtons(binding, false)
 
                         // new folder list, alert the list fragment that it needs updating
-                        activityViewModel.setListState(ListsTabFragment.ListState.UPDATE_DOWNLOAD)
+                        activityViewModel.setListState(ListState.UpdateDownload)
                         val action =
                             NewDownloadFragmentDirections.actionNewDownloadDestToFolderListFragment(
                                 folder = null,

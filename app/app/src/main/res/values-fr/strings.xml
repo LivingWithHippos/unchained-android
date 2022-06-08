@@ -389,4 +389,6 @@
     <string name="custom_media_player">Lecteur multimédia personnalisé</string>
     <string name="custom_media_player_summary">Utilisez un paquetage de lecteur multimédia personnalisé comme \"org.videolan.vlc\". Il peut prendre en charge le partage direct des fichiers multimédias. N\'oubliez pas de choisir \"Lecteur multimédia personnalisé\" comme préférence de lecteur multimédia par défaut.</string>
     <string name="invalid_package">Paquet non valide</string>
+    <string name="delete_all_downloads">Supprimer tous les téléchargements</string>
+    <string name="delete_all_torrents">Supprimer tous les torrents</string>
 </resources>

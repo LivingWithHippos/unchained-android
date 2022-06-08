@@ -88,3 +88,6 @@ val loadingStatusList = listOf(
     "compressing",
     "uploading"
 )
+
+const val DOWNLOADS_TAB = 0
+const val TORRENTS_TAB = 1
