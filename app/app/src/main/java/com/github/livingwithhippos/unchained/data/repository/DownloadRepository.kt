@@ -15,7 +15,7 @@ class DownloadRepository @Inject constructor(private val downloadApiHelper: Down
 
         val downloadResponse = safeApiCall(
             call = { downloadApiHelper.getDownloads("Bearer $token", offset, page, limit) },
-            errorMessage = "Error Fetching User Info"
+            errorMessage = "Error Fetching Downloads list or list empty"
         )
 
         return downloadResponse ?: emptyList()

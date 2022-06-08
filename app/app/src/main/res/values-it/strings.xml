@@ -150,11 +150,10 @@
             </body>
         ]]>
     </string>
-    <string name="premium_needed">Per utilizzare questa funzionalità è richiesto un account premium</string>
+    <string name="premium_needed">Account premium richiesto</string>
     <string name="downloading_torrent">Torrent in preparazione, attendere…</string>
     <string name="please_insert_url">Inserisci un magnet o un link</string>
     <string name="please_login">Si prega di autenticarsi sull\'account</string>
-    <string name="premium_needed_torrent">Per torrent e magnet è richiestoun abbonamento premium</string>
     <string name="loading_magnet_link">Caricando link magnet…</string>
     <string name="loading_torrent_file">Caricando file torrent…</string>
     <string name="unchained_torrent_download">Unchained .torrent download</string>
@@ -368,7 +367,7 @@
     <string name="ui_settings">Impostazioni UI</string>
     <string name="show_media_player_button_summary">Mostra un bottone per inviare media ad un lettore locale</string>
     <string name="show_media_player_button">Mostra bottone media</string>
-    <string name="default_media_player">Lettore media da aprire di default</string>
+    <string name="default_media_player">Lettore media predefinito</string>
     <string name="send_to_player">Invia a lettore</string>
     <string name="missing_default_player">Imposta il lettore di default nell impostazioni</string>
     <string name="ui_settings_summary">Scegli se e come sono mostrate le cose</string>
@@ -383,4 +382,9 @@
     <string name="install_plugins_pack">Installa pacchetto plugins</string>
     <string name="n_plugins_installed">%d plugins installati. Riavvia l\'app per usarli</string>
     <string name="install_plugins_pack_summary">Usa il bottone nel menu della schermata di ricerca per installare il pacchetto completo dei plugins</string>
+    <string name="custom_media_player">Lettore media personalizzato</string>
+    <string name="custom_media_player_summary">Usa il package di un lettore media personalizzato come \"org.videolan.vlc\". Potrebbe supportare la condivisione diretta di media. Ricorda di impostare \"lettore media personalizzato\" come impostazione di lettore media predefinito</string>
+    <string name="invalid_package">Package non valido</string>
+    <string name="delete_all_downloads">Elimina tutti i download</string>
+    <string name="delete_all_torrents">Elimina tutti i torrent</string>
 </resources>

@@ -1,7 +1,7 @@
 {
   "engine_version": 2.0,
-  "version": 1.1,
-  "url": "http://scene-rls.net",
+  "version": 1.2,
+  "url": "https://scene-rls.net",
   "name": "scene-rls",
   "description": "Parser for scene-rls.net",
   "supported_categories": {
@@ -17,7 +17,7 @@
         "regex_use": "all",
         "regexps": [
           {
-            "regex": "href=\"(http:\/\/scene-rls\\.net\/[^\"]+)\"\\s+title",
+            "regex": "href=\"(https?:\/\/scene-rls\\.net\/[^\"]+)\"\\s+title",
             "group": 1
           }
         ]

@@ -59,27 +59,49 @@
 
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="@string/external_apps">
+    <PreferenceCategory
+        android:title="@string/external_apps"
+        app:allowDividerBelow="false">
 
-        <Preference
-            app:key="kodi_remote_control_info"
-            app:summary="@string/enable_kodi_control"
-            app:title="@string/kodi_remote_control" />
+        <PreferenceCategory
+            android:title="@string/kodi"
+            app:allowDividerBelow="false">
+            <Preference
+                app:key="kodi_remote_control_info"
+                app:summary="@string/enable_kodi_control"
+                app:title="@string/kodi_remote_control" />
 
-        <Preference
-            app:key="kodi_list_editor"
-            app:summary="@string/kodi_manage_list_summary"
-            app:title="@string/kodi_manage_list" />
+            <Preference
+                app:key="kodi_list_editor"
+                app:summary="@string/kodi_manage_list_summary"
+                app:title="@string/kodi_manage_list" />
 
-        <DropDownPreference
-            android:defaultValue="vlc"
-            android:entries="@array/default_media_player"
-            android:entryValues="@array/default_media_player_values"
-            android:key="default_media_player"
+        </PreferenceCategory>
+        <PreferenceCategory
             android:title="@string/default_media_player"
-            app:useSimpleSummaryProvider="true" />
+            app:allowDividerAbove="false"
+            app:allowDividerBelow="false">
+            <DropDownPreference
+                android:defaultValue="vlc"
+                android:entries="@array/default_media_player"
+                android:entryValues="@array/default_media_player_values"
+                android:key="default_media_player"
+                android:title="@string/default_media_player"
+                app:useSimpleSummaryProvider="true" />
 
+            <Preference
+                android:summary="@string/custom_media_player_summary"
+                />
 
+            <EditTextPreference
+                android:defaultValue=""
+                android:key="custom_media_player"
+                android:selectAllOnFocus="true"
+                android:singleLine="true"
+                android:title="@string/custom_media_player"
+                app:useSimpleSummaryProvider="true"
+                />
+        </PreferenceCategory>
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/ui_settings">
@@ -102,7 +124,6 @@
             app:key="show_folders_filters"
             app:summary="@string/show_folder_filters_summary"
             app:title="@string/show_folder_filters" />
-
 
         <PreferenceCategory android:title="@string/download_details">
 

@@ -150,8 +150,7 @@
             </body>
         ]]>
     </string>
-    <string name="premium_needed">Vous devez posséder un compte Premium pour faire ceci</string>
-    <string name="premium_needed_torrent">Vous devez posséder un compte Premium pour les magnets et torrents</string>
+    <string name="premium_needed">Abonnement Premium nécessaire</string>
     <string name="downloading_torrent">Torrent en préparation, veuillez patienter…</string>
     <string name="please_insert_url">Veuillez entrer un magnet ou un lien</string>
     <string name="please_login">Veuillez vous identifier</string>
@@ -372,7 +371,7 @@
     <string name="ui_settings">Paramètres de l\'IU</string>
     <string name="show_media_player_button_summary">Afficher le bouton pour envoyer le média vers un lecteur installé</string>
     <string name="show_media_player_button">Afficher le bouton média</string>
-    <string name="default_media_player">Lecteur multimédia par défaut à ouvrir</string>
+    <string name="default_media_player">Lecteur multimédia par défaut</string>
     <string name="send_to_player">Envoyer au lecteur</string>
     <string name="missing_default_player">Définir le lecteur multimédia par défaut dans les paramètres</string>
     <string name="ui_settings_summary">Choisissez comment et si les choses sont montrées</string>
@@ -387,4 +386,9 @@
     <string name="install_plugins_pack">Installer le pack de plugins</string>
     <string name="n_plugins_installed">%d plugins installés. Redémarrez l\'application pour les utiliser.</string>
     <string name="install_plugins_pack_summary">Utilisez le bouton du menu de l\'écran de recherche pour installer tous les plugins en une seule fois.</string>
+    <string name="custom_media_player">Lecteur multimédia personnalisé</string>
+    <string name="custom_media_player_summary">Utilisez un paquetage de lecteur multimédia personnalisé comme \"org.videolan.vlc\". Il peut prendre en charge le partage direct des fichiers multimédias. N\'oubliez pas de choisir \"Lecteur multimédia personnalisé\" comme préférence de lecteur multimédia par défaut.</string>
+    <string name="invalid_package">Paquet non valide</string>
+    <string name="delete_all_downloads">Supprimer tous les téléchargements</string>
+    <string name="delete_all_torrents">Supprimer tous les torrents</string>
 </resources>

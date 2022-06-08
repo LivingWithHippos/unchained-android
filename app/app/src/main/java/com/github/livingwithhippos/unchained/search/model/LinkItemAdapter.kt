@@ -26,5 +26,6 @@ interface LinkItemListener {
 
 data class LinkItem(
     val type: String,
+    val name: String,
     val link: String
 )

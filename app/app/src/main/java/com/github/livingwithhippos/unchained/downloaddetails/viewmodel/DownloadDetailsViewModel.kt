@@ -92,6 +92,10 @@ class DownloadDetailsViewModel @Inject constructor(
     fun getButtonVisibilityPreference(buttonKey: String, default: Boolean = true): Boolean {
         return preferences.getBoolean(buttonKey, default)
     }
+
+    fun getCustomPlayerPreference(): String {
+        return preferences.getString("custom_media_player", "") ?: ""
+    }
 }
 
 sealed class DownloadDetailsMessage {

@@ -41,8 +41,8 @@ android {
         applicationId "com.github.livingwithhippos.unchained"
         minSdk 22
         targetSdk 32
-        versionCode 31
-        versionName "4.35.0-beta"
+        versionCode 32
+        versionName "4.40.2-beta"
         // limit resources for a list of locales
         // resConfigs "en", "it"
 
@@ -191,6 +191,7 @@ dependencies {
     implementation deps.preference_ktx
     implementation deps.recyclerview.recyclerview
     implementation deps.recyclerview.selection
+    implementation deps.viewpager2
 
     // datastore
     // implementation deps.datastore.preferences

@@ -23,6 +23,7 @@ import com.github.livingwithhippos.unchained.data.model.EmptyBodyError
 import com.github.livingwithhippos.unchained.data.model.NetworkError
 import com.github.livingwithhippos.unchained.data.repository.DownloadResult
 import com.github.livingwithhippos.unchained.databinding.NewDownloadFragmentBinding
+import com.github.livingwithhippos.unchained.lists.view.ListState
 import com.github.livingwithhippos.unchained.lists.view.ListsTabFragment
 import com.github.livingwithhippos.unchained.newdownload.viewmodel.Link
 import com.github.livingwithhippos.unchained.newdownload.viewmodel.NewDownloadViewModel
@@ -43,6 +44,7 @@ import com.github.livingwithhippos.unchained.utilities.extension.isMagnet
 import com.github.livingwithhippos.unchained.utilities.extension.isTorrent
 import com.github.livingwithhippos.unchained.utilities.extension.isWebUrl
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.io.File
@@ -83,7 +85,7 @@ class NewDownloadFragment : UnchainedFragment() {
             viewLifecycleOwner,
             EventObserver { linkDetails ->
                 // new download item, alert the list fragment that it needs updating
-                activityViewModel.setListState(ListsTabFragment.ListState.UPDATE_DOWNLOAD)
+                activityViewModel.setListState(ListState.UpdateDownload)
                 val action =
                     NewDownloadFragmentDirections.actionUnrestrictDownloadToDetailsFragment(
                         linkDetails
@@ -96,7 +98,7 @@ class NewDownloadFragment : UnchainedFragment() {
             viewLifecycleOwner,
             EventObserver { folder ->
                 // new folder list, alert the list fragment that it needs updating
-                activityViewModel.setListState(ListsTabFragment.ListState.UPDATE_DOWNLOAD)
+                activityViewModel.setListState(ListState.UpdateDownload)
                 val action =
                     NewDownloadFragmentDirections.actionNewDownloadDestToFolderListFragment(
                         folder = folder,
@@ -111,7 +113,7 @@ class NewDownloadFragment : UnchainedFragment() {
             viewLifecycleOwner,
             EventObserver { torrent ->
                 // new torrent item, alert the list fragment that it needs updating
-                activityViewModel.setListState(ListsTabFragment.ListState.UPDATE_TORRENT)
+                activityViewModel.setListState(ListState.UpdateTorrent)
                 val action =
                     NewDownloadFragmentDirections.actionNewDownloadDestToTorrentDetailsFragment(
                         torrent.id
@@ -126,7 +128,7 @@ class NewDownloadFragment : UnchainedFragment() {
                 when (link) {
                     is Link.Container -> {
                         // new container, alert the list fragment that it needs updating
-                        activityViewModel.setListState(ListsTabFragment.ListState.UPDATE_DOWNLOAD)
+                        activityViewModel.setListState(ListState.UpdateDownload)
                         val action =
                             NewDownloadFragmentDirections.actionNewDownloadDestToFolderListFragment(
                                 linkList = link.links.toTypedArray(),
@@ -185,7 +187,7 @@ class NewDownloadFragment : UnchainedFragment() {
                                 else
                                     Timber.e("Asked for a refresh while in a wrong state: ${activityViewModel.getAuthenticationMachineState()}")
                             }
-                            in 9..15 -> {
+                            in 10..15 -> {
                                 viewModel.postMessage(errorMessage)
                                 when (activityViewModel.getAuthenticationMachineState()) {
                                     FSMAuthenticationState.AuthenticatedOpenToken, FSMAuthenticationState.AuthenticatedPrivateToken, FSMAuthenticationState.RefreshingOpenToken -> {
@@ -197,6 +199,11 @@ class NewDownloadFragment : UnchainedFragment() {
                                         Timber.e("Asked for logout while in a wrong state: ${activityViewModel.getAuthenticationMachineState()}")
                                     }
                                 }
+                            }
+                            9 -> {
+                                // todo: check if permission denied (code 9) is related only to asking for magnet without premium or other stuff too
+                                // we use this because permission denied is not clear
+                                viewModel.postMessage(getString(R.string.premium_needed))
                             }
                             else -> {
                                 viewModel.postMessage(errorMessage)
@@ -216,13 +223,20 @@ class NewDownloadFragment : UnchainedFragment() {
 
         @SuppressLint("ShowToast")
         val currentToast: Toast = Toast.makeText(requireContext(), "", Toast.LENGTH_SHORT)
+        var lastToastTime = System.currentTimeMillis()
 
         viewModel.toastLiveData.observe(
             viewLifecycleOwner,
             EventObserver {
-                currentToast.cancel()
-                currentToast.setText(it)
-                currentToast.show()
+                lifecycleScope.launch {
+                    currentToast.cancel()
+                    // if we call this too soon between toasts we'll miss some
+                    if (System.currentTimeMillis() - lastToastTime < 1000L)
+                        delay(1000)
+                    currentToast.setText(it)
+                    currentToast.show()
+                    lastToastTime = System.currentTimeMillis()
+                }
             }
         )
     }
@@ -288,7 +302,7 @@ class NewDownloadFragment : UnchainedFragment() {
                         enableButtons(binding, false)
 
                         // new folder list, alert the list fragment that it needs updating
-                        activityViewModel.setListState(ListsTabFragment.ListState.UPDATE_DOWNLOAD)
+                        activityViewModel.setListState(ListState.UpdateDownload)
                         val action =
                             NewDownloadFragmentDirections.actionNewDownloadDestToFolderListFragment(
                                 folder = null,

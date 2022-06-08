@@ -31,6 +31,7 @@ import com.github.livingwithhippos.unchained.data.repository.PluginRepository
 import com.github.livingwithhippos.unchained.data.repository.PluginRepository.Companion.TYPE_UNCHAINED
 import com.github.livingwithhippos.unchained.data.repository.UserRepository
 import com.github.livingwithhippos.unchained.data.repository.VariousApiRepository
+import com.github.livingwithhippos.unchained.lists.view.ListState
 import com.github.livingwithhippos.unchained.lists.view.ListsTabFragment
 import com.github.livingwithhippos.unchained.plugins.model.Plugin
 import com.github.livingwithhippos.unchained.statemachine.authentication.CurrentFSMAuthentication
@@ -89,7 +90,7 @@ class MainActivityViewModel @Inject constructor(
 
     val notificationTorrentLiveData = MutableLiveData<Event<String>>()
 
-    val listStateLiveData = MutableLiveData<Event<ListsTabFragment.ListState>>()
+    val listStateLiveData = MutableLiveData<Event<ListState>>()
 
     val connectivityLiveData = MutableLiveData<Boolean?>()
     // val currentNetworkLiveData = MutableLiveData<Network?>()
@@ -127,7 +128,7 @@ class MainActivityViewModel @Inject constructor(
                 on<FSMAuthenticationEvent.OnWorkingOpenToken> {
                     transitionTo(
                         FSMAuthenticationState.AuthenticatedOpenToken,
-                        FSMAuthenticationSideEffect.PostAuthenticatedPrivate
+                        FSMAuthenticationSideEffect.PostAuthenticatedOpen
                     )
                 }
                 on<FSMAuthenticationEvent.OnExpiredOpenToken> {
@@ -139,7 +140,7 @@ class MainActivityViewModel @Inject constructor(
                 on<FSMAuthenticationEvent.OnWorkingPrivateToken> {
                     transitionTo(
                         FSMAuthenticationState.AuthenticatedPrivateToken,
-                        FSMAuthenticationSideEffect.PostAuthenticatedOpen
+                        FSMAuthenticationSideEffect.PostAuthenticatedPrivate
                     )
                 }
                 on<FSMAuthenticationEvent.OnNotWorking> {
@@ -647,7 +648,7 @@ class MainActivityViewModel @Inject constructor(
     }
 
     // todo: move this stuff to a shared navigationViewModel
-    fun setListState(state: ListsTabFragment.ListState) {
+    fun setListState(state: ListState) {
         listStateLiveData.postEvent(state)
     }
 
@@ -810,13 +811,21 @@ class MainActivityViewModel @Inject constructor(
             }
         }
 
-    fun setupConnectivityCheck(context: Context) {
+    fun addConnectivityCheck(context: Context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             val connectivityManager =
                 context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
             connectivityManager.registerDefaultNetworkCallback(networkCallback)
         } else {
             checkConnectivity(context)
+        }
+    }
+
+    fun removeConnectivityCheck(context: Context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            val connectivityManager =
+                context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            connectivityManager.unregisterNetworkCallback(networkCallback)
         }
     }
 
@@ -1053,6 +1062,7 @@ class MainActivityViewModel @Inject constructor(
         const val KEY_PLUGIN_DOWNLOAD_ID = "plugin_download_id_key"
         const val KEY_LAST_BACK_PRESS = "last_back_press_key"
         const val KEY_REFRESHING_TOKEN = "refreshing_token_key"
+        const val KEY_FSM_AUTH_STATE = "fsm_auth_state_key"
     }
 }
 

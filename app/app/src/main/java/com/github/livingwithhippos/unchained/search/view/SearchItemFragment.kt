@@ -45,13 +45,13 @@ class SearchItemFragment : UnchainedFragment(), LinkItemListener {
 
         val links = mutableListOf<LinkItem>()
         item.magnets.forEach {
-            links.add(LinkItem(getString(R.string.magnet), it))
+            links.add(LinkItem(getString(R.string.magnet), it.substringBefore("&"), it))
         }
         item.torrents.forEach {
-            links.add(LinkItem(getString(R.string.torrent), it))
+            links.add(LinkItem(getString(R.string.torrent), it, it))
         }
         item.hosting.forEach {
-            links.add(LinkItem(getString(R.string.hoster), it))
+            links.add(LinkItem(getString(R.string.hoster), it, it))
         }
         adapter.submitList(links)
     }
