@@ -45,6 +45,7 @@ import com.github.livingwithhippos.unchained.utilities.SCHEME_HTTPS
 import com.github.livingwithhippos.unchained.utilities.SCHEME_MAGNET
 import com.github.livingwithhippos.unchained.utilities.TelemetryManager
 import com.github.livingwithhippos.unchained.utilities.extension.downloadFile
+import com.github.livingwithhippos.unchained.utilities.extension.isWebUrl
 import com.github.livingwithhippos.unchained.utilities.extension.setupWithNavController
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -408,7 +409,7 @@ class MainActivity : AppCompatActivity() {
                             }
                         }
                         SCHEME_HTTP, SCHEME_HTTPS -> {
-                            showToast("You activated the http/s scheme somehow")
+                            processExternalRequestOnAuthentication(data)
                         }
                     }
                 }
