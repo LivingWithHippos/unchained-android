@@ -57,7 +57,6 @@ import com.github.livingwithhippos.unchained.utilities.extension.getApiErrorMess
 import com.github.livingwithhippos.unchained.utilities.extension.getDownloadedFileUri
 import com.github.livingwithhippos.unchained.utilities.extension.getThemedDrawable
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
-import com.github.livingwithhippos.unchained.utilities.postEvent
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -195,7 +194,8 @@ class ListsTabFragment : UnchainedFragment() {
                         }
                     }
                     is ListEvent.OpenTorrent -> {
-                        val action = ListsTabFragmentDirections.actionListsTabToTorrentDetails(event.id)
+                        val action =
+                            ListsTabFragmentDirections.actionListsTabToTorrentDetails(event.id)
 
                         // workaround to avoid issues when the dialog still hasn't been popped from the navigation stack
                         val controller = findNavController()
@@ -206,6 +206,16 @@ class ListsTabFragment : UnchainedFragment() {
                             }
                             if (controller.currentDestination?.id == R.id.list_tabs_dest)
                                 controller.navigate(action)
+                        }
+                    }
+                    is ListEvent.SetTab -> {
+
+                        if (event.tab == DOWNLOADS_TAB) {
+                            if (binding.listPager.currentItem == TORRENTS_TAB)
+                                binding.listPager.currentItem = DOWNLOADS_TAB
+                        } else {
+                            if (viewModel.getSelectedTab() == DOWNLOADS_TAB)
+                                binding.listPager.currentItem = TORRENTS_TAB
                         }
                     }
                 }
@@ -507,6 +517,8 @@ class DownloadsListFragment : UnchainedFragment(), DownloadListListener {
                     binding.srLayout.isRefreshing = true
                     // refresh items, when returned they'll stop the animation
                     downloadAdapter.refresh()
+
+                    viewModel.postEventNotice(ListEvent.SetTab(DOWNLOADS_TAB))
                 }
             }
         )
@@ -757,9 +769,9 @@ class TorrentsListFragment : UnchainedFragment(), TorrentListListener {
 
 
 sealed class ListState {
-    object UpdateTorrent: ListState()
-    object UpdateDownload: ListState()
-    object Ready: ListState()
+    object UpdateTorrent : ListState()
+    object UpdateDownload : ListState()
+    object Ready : ListState()
 }
 
 interface SelectedItemsButtonsListener {

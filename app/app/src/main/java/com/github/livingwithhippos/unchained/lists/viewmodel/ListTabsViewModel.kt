@@ -236,4 +236,5 @@ sealed class ListEvent {
     data class DownloadItemClick(val item: DownloadItem): ListEvent()
     data class TorrentItemClick(val item: TorrentItem): ListEvent()
     data class OpenTorrent(val id: String): ListEvent()
+    data class SetTab(val tab: Int): ListEvent()
 }
