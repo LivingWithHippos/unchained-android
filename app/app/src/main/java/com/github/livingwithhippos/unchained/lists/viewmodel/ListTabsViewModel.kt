@@ -20,7 +20,6 @@ import com.github.livingwithhippos.unchained.data.repository.DownloadRepository
 import com.github.livingwithhippos.unchained.data.repository.TorrentsRepository
 import com.github.livingwithhippos.unchained.data.repository.UnrestrictRepository
 import com.github.livingwithhippos.unchained.lists.model.DownloadPagingSource
-import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityMessage
 import com.github.livingwithhippos.unchained.utilities.DOWNLOADS_TAB
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.Event
@@ -215,7 +214,7 @@ class ListTabsViewModel @Inject constructor(
         }
     }
 
-    fun postEventNotice(event: ListEvent){
+    fun postEventNotice(event: ListEvent) {
         eventLiveData.postEvent(event)
     }
 
@@ -233,8 +232,8 @@ class ListTabsViewModel @Inject constructor(
 }
 
 sealed class ListEvent {
-    data class DownloadItemClick(val item: DownloadItem): ListEvent()
-    data class TorrentItemClick(val item: TorrentItem): ListEvent()
-    data class OpenTorrent(val id: String): ListEvent()
-    data class SetTab(val tab: Int): ListEvent()
+    data class DownloadItemClick(val item: DownloadItem) : ListEvent()
+    data class TorrentItemClick(val item: TorrentItem) : ListEvent()
+    data class OpenTorrent(val id: String) : ListEvent()
+    data class SetTab(val tab: Int) : ListEvent()
 }
