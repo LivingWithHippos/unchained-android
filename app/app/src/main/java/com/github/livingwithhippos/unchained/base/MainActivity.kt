@@ -11,6 +11,7 @@ import android.content.IntentFilter
 import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
@@ -280,19 +281,31 @@ class MainActivity : AppCompatActivity() {
         ) {
             when (val content = it?.getContentIfNotHandled()) {
                 is MainActivityMessage.InstalledPlugins -> {
-                    currentToast.cancel()
-                    currentToast.setText(
-                        getString(
-                            R.string.n_plugins_installed,
-                            content.number
+                    lifecycleScope.launch {
+                        currentToast.cancel()
+                        // calling cancel stops the toast from showing on api 22 maybe others
+                        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M) {
+                            delay(200)
+                        }
+                        currentToast.setText(
+                            getString(
+                                R.string.n_plugins_installed,
+                                content.number
+                            )
                         )
-                    )
-                    currentToast.show()
+                        currentToast.show()
+                    }
                 }
                 is MainActivityMessage.StringID -> {
-                    currentToast.cancel()
-                    currentToast.setText(getString(content.id))
-                    currentToast.show()
+                    lifecycleScope.launch {
+                        currentToast.cancel()
+                        // calling cancel stops the toast from showing on api 22 maybe others
+                        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M) {
+                            delay(200)
+                        }
+                        currentToast.setText(getString(content.id))
+                        currentToast.show()
+                    }
                 }
                 null -> {}
             }

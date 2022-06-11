@@ -70,6 +70,7 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
                 override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                     return when (menuItem.itemId) {
                         R.id.plugins_pack -> {
+                            context?.showToast(R.string.downloading)
                             lifecycleScope.launch {
                                 val cacheDir = context?.cacheDir
 
