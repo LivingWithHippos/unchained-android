@@ -201,21 +201,6 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         return detailsBinding.root
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.delete -> {
-                val dialog = DeleteDialogFragment()
-                val bundle = Bundle()
-                val title = getString(R.string.delete_item_title_format, args.details.filename)
-                bundle.putString("title", title)
-                dialog.arguments = bundle
-                dialog.show(parentFragmentManager, "DeleteDialogFragment")
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-
     override fun onCopyClick(text: String) {
         copyToClipboard("Real-Debrid Download Link", text)
         context?.showToast(R.string.link_copied)
@@ -351,7 +336,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
             }
             "custom_player" -> {
                 val customPlayerPackage = viewModel.getCustomPlayerPreference()
-                if (customPlayerPackage.isNullOrBlank()) {
+                if (customPlayerPackage.isBlank()) {
                     context?.showToast(R.string.invalid_package)
                 } else {
                     val customIntent = createMediaIntent(customPlayerPackage, url)

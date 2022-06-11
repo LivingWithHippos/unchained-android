@@ -558,38 +558,35 @@ class MainActivity : AppCompatActivity() {
     override fun onBackPressed() {
         // if the user is pressing back on an "exiting"fragment, show a toast alerting him and wait for him to press back again for confirmation
 
-        if (navController != null) {
-            val currentDestination = navController.currentDestination
-            val previousDestination = navController.previousBackStackEntry
+        val currentDestination = navController.currentDestination
+        val previousDestination = navController.previousBackStackEntry
 
-            // check if we're pressing back from the user or authentication fragment
-            if (currentDestination?.id == R.id.user_dest || currentDestination?.id == R.id.authentication_dest) {
-                // check the destination for the back action
-                if (previousDestination == null ||
-                    previousDestination.destination.id == R.id.authentication_dest ||
-                    previousDestination.destination.id == R.id.start_dest ||
-                    previousDestination.destination.id == R.id.user_dest ||
-                    previousDestination.destination.id == R.id.search_dest
-                ) {
-                    // check if it has been 2 seconds since the last time we pressed back
-                    val pressedTime = System.currentTimeMillis()
-                    val lastPressedTime = viewModel.getLastBackPress()
-                    // exit if pressed back twice in EXIT_WAIT_TIME
-                    if (pressedTime - lastPressedTime <= EXIT_WAIT_TIME)
-                        finish()
-                    // else update the last time the user pressed back
-                    else {
-                        viewModel.setLastBackPress(pressedTime)
-                        this.showToast(R.string.press_again_exit)
-                    }
-                } else {
-                    super.onBackPressed()
+        // check if we're pressing back from the user or authentication fragment
+        if (currentDestination?.id == R.id.user_dest || currentDestination?.id == R.id.authentication_dest) {
+            // check the destination for the back action
+            if (previousDestination == null ||
+                previousDestination.destination.id == R.id.authentication_dest ||
+                previousDestination.destination.id == R.id.start_dest ||
+                previousDestination.destination.id == R.id.user_dest ||
+                previousDestination.destination.id == R.id.search_dest
+            ) {
+                // check if it has been 2 seconds since the last time we pressed back
+                val pressedTime = System.currentTimeMillis()
+                val lastPressedTime = viewModel.getLastBackPress()
+                // exit if pressed back twice in EXIT_WAIT_TIME
+                if (pressedTime - lastPressedTime <= EXIT_WAIT_TIME)
+                    finish()
+                // else update the last time the user pressed back
+                else {
+                    viewModel.setLastBackPress(pressedTime)
+                    this.showToast(R.string.press_again_exit)
                 }
             } else {
                 super.onBackPressed()
             }
-        } else
+        } else {
             super.onBackPressed()
+        }
     }
 
     companion object {

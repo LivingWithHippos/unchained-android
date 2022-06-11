@@ -36,7 +36,7 @@ class KodiManagementViewModel @Inject constructor(
 
     fun updateDevice(device: KodiDevice, oldDeviceName: String) {
         viewModelScope.launch {
-            val inserted = deviceRepository.update(device, oldDeviceName)
+            deviceRepository.update(device, oldDeviceName)
             // if the device was default and now it's not the add above will overwrite it.
             // if the device was not default and now it is this will clear the old default
             if (device.isDefault) {
@@ -49,7 +49,7 @@ class KodiManagementViewModel @Inject constructor(
         viewModelScope.launch {
             // if the device was default and now it's not the add above will overwrite it.
             // if the device was not default and now it is this will clear the old default
-            val inserted = deviceRepository.add(device)
+            deviceRepository.add(device)
         }
     }
 
