@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation_home"
     app:startDestination="@id/start_dest"
-    tools:ignore="UnusedNavigation">
+    >
 
     <fragment
         android:id="@+id/start_dest"

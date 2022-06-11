@@ -22,9 +22,11 @@ import androidx.core.view.forEach
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.model.UserAction
 import com.github.livingwithhippos.unchained.data.repository.PluginRepository.Companion.TYPE_UNCHAINED
@@ -36,7 +38,6 @@ import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Comp
 import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityMessage
 import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewModel
 import com.github.livingwithhippos.unchained.statemachine.authentication.CurrentFSMAuthentication
-import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationEvent
 import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationState
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.EventObserver
@@ -45,8 +46,6 @@ import com.github.livingwithhippos.unchained.utilities.SCHEME_HTTPS
 import com.github.livingwithhippos.unchained.utilities.SCHEME_MAGNET
 import com.github.livingwithhippos.unchained.utilities.TelemetryManager
 import com.github.livingwithhippos.unchained.utilities.extension.downloadFile
-import com.github.livingwithhippos.unchained.utilities.extension.isWebUrl
-import com.github.livingwithhippos.unchained.utilities.extension.setupWithNavController
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
@@ -55,12 +54,16 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
+
 /**
  * A [AppCompatActivity] subclass.
  * Shared between all the fragments except for the preferences.
  */
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var navController: NavController
+    private lateinit var appBarConfiguration: AppBarConfiguration
 
     // countly crash reporter set up. Debug mode only
     override fun onStart() {
@@ -77,9 +80,6 @@ class MainActivity : AppCompatActivity() {
         super.onConfigurationChanged(newConfig)
         TelemetryManager.onConfigurationChanged(newConfig)
     }
-
-    private var currentNavController: LiveData<NavController>? = null
-    private lateinit var appBarConfiguration: AppBarConfiguration
 
     private lateinit var binding: ActivityMainBinding
 
@@ -200,7 +200,7 @@ class MainActivity : AppCompatActivity() {
             is FSMAuthenticationState.AuthenticatedPrivateToken, FSMAuthenticationState.AuthenticatedOpenToken -> {
                 // we probably stopped and restored the app, do the same actions
                 // in the viewModel.fsmAuthenticationState.observe for these states
-                
+
                 // unlock the bottom menu
                 enableAllBottomNavItems()
             }
@@ -355,14 +355,14 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val inflater = menuInflater
         inflater.inflate(R.menu.top_app_bar, menu)
         return true
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        return currentNavController?.value?.navigateUp(appBarConfiguration) ?: false
+        return navController.navigateUp(appBarConfiguration)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -523,29 +523,20 @@ class MainActivity : AppCompatActivity() {
      * Called on first creation and when restoring state.
      */
     private fun setupBottomNavigationBar() {
+
+        val navHostFragment = supportFragmentManager.findFragmentById(
+            R.id.nav_host_fragment
+        ) as NavHostFragment
+        navController = navHostFragment.navController
+
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_nav_view)
+        bottomNavigationView.setupWithNavController(navController)
 
-        val navGraphIds = listOf(
-            R.navigation.home_nav_graph,
-            R.navigation.lists_nav_graph,
-            R.navigation.search_nav_graph,
+        // Setup the ActionBar with navController and 3 top level destinations
+        appBarConfiguration = AppBarConfiguration(
+            setOf(R.id.start_dest, R.id.list_tabs_dest, R.id.search_dest)
         )
-
-        // Setup the bottom navigation view with a list of navigation graphs
-        val controller = bottomNavigationView.setupWithNavController(
-            navGraphIds = navGraphIds,
-            fragmentManager = supportFragmentManager,
-            containerId = R.id.nav_host_fragment,
-            intent = intent
-        )
-
-        // Whenever the selected controller changes, setup the action bar.
-        controller.observe(
-            this
-        ) { navController ->
-            setupActionBarWithNavController(navController, appBarConfiguration)
-        }
-        currentNavController = controller
+        setupActionBarWithNavController(navController, appBarConfiguration)
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
@@ -558,7 +549,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         // if the user is pressing back on an "exiting"fragment, show a toast alerting him and wait for him to press back again for confirmation
-        val navController = currentNavController?.value
 
         if (navController != null) {
             val currentDestination = navController.currentDestination
