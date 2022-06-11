@@ -13,11 +13,13 @@ import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
+import android.view.MenuInflater
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.view.MenuProvider
 import androidx.core.view.forEach
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.lifecycleScope
@@ -117,6 +119,24 @@ class MainActivity : AppCompatActivity() {
         if (savedInstanceState == null) {
             setupBottomNavigationBar()
         } // Else, need to wait for onRestoreInstanceState
+
+        addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                // Add menu items here
+                menuInflater.inflate(R.menu.top_app_bar, menu)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                return when (menuItem.itemId) {
+                    R.id.settings -> {
+                        openSettings()
+                        true
+                    }
+                    else -> false
+                }
+            }
+        })
+
 
         viewModel.fsmAuthenticationState.observe(
             this
@@ -342,25 +362,8 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        val inflater = menuInflater
-        inflater.inflate(R.menu.top_app_bar, menu)
-        return true
-    }
-
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp(appBarConfiguration)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.settings -> {
-                openSettings()
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
     }
 
     private fun getIntentData() {

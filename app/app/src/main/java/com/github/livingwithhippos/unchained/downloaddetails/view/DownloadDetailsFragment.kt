@@ -15,8 +15,11 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import com.github.livingwithhippos.unchained.R
@@ -24,6 +27,7 @@ import com.github.livingwithhippos.unchained.base.DeleteDialogFragment
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.data.model.Alternative
 import com.github.livingwithhippos.unchained.data.model.DownloadItem
+import com.github.livingwithhippos.unchained.data.repository.DownloadResult
 import com.github.livingwithhippos.unchained.databinding.FragmentDownloadDetailsBinding
 import com.github.livingwithhippos.unchained.downloaddetails.model.AlternativeDownloadAdapter
 import com.github.livingwithhippos.unchained.downloaddetails.viewmodel.DownloadDetailsMessage
@@ -32,6 +36,9 @@ import com.github.livingwithhippos.unchained.lists.view.ListState
 import com.github.livingwithhippos.unchained.lists.view.ListsTabFragment
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.EventObserver
+import com.github.livingwithhippos.unchained.utilities.PLUGINS_PACK_FOLDER
+import com.github.livingwithhippos.unchained.utilities.PLUGINS_PACK_LINK
+import com.github.livingwithhippos.unchained.utilities.PLUGINS_PACK_NAME
 import com.github.livingwithhippos.unchained.utilities.RD_STREAMING_URL
 import com.github.livingwithhippos.unchained.utilities.extension.copyToClipboard
 import com.github.livingwithhippos.unchained.utilities.extension.downloadFile
@@ -39,6 +46,8 @@ import com.github.livingwithhippos.unchained.utilities.extension.openExternalWeb
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import timber.log.Timber
+import java.io.File
 
 
 /**
@@ -58,6 +67,30 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         savedInstanceState: Bundle?
     ): View {
         val detailsBinding = FragmentDownloadDetailsBinding.inflate(inflater, container, false)
+
+
+        val menuHost: MenuHost = requireActivity()
+
+        menuHost.addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.download_details_bar, menu)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                return when (menuItem.itemId) {
+                    R.id.delete -> {
+                        val dialog = DeleteDialogFragment()
+                        val bundle = Bundle()
+                        val title = getString(R.string.delete_item_title_format, args.details.filename)
+                        bundle.putString("title", title)
+                        dialog.arguments = bundle
+                        dialog.show(parentFragmentManager, "DeleteDialogFragment")
+                        true
+                    }
+                    else -> false
+                }
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
 
         detailsBinding.details = args.details
         detailsBinding.listener = this
@@ -170,16 +203,6 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         }
 
         return detailsBinding.root
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.download_details_bar, menu)
-        super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

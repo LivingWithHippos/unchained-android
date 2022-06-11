@@ -13,7 +13,10 @@ import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import androidx.annotation.MenuRes
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
@@ -48,58 +51,6 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
 
     private val viewModel: SearchViewModel by viewModels()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.search_bar, menu)
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.plugins_pack -> {
-                lifecycleScope.launch {
-                    val cacheDir = context?.cacheDir
-
-                    if (cacheDir!=null) {
-                        // clean up old files
-                        // todo: also clear other files, at least ending with zip
-                        File(cacheDir, PLUGINS_PACK_FOLDER).deleteRecursively()
-
-                        activityViewModel.downloadFileToCache(
-                            PLUGINS_PACK_LINK,
-                            PLUGINS_PACK_NAME,
-                            cacheDir,
-                            ".zip"
-                        ).observe(
-                            viewLifecycleOwner
-                        ) {
-                            when (it) {
-                                is DownloadResult.End -> {
-                                    activityViewModel.processPluginsPack(cacheDir, requireContext().filesDir, it.fileName)
-                                }
-                                DownloadResult.Failure -> {
-                                    context?.showToast(R.string.error_loading_file)
-                                }
-                                is DownloadResult.Progress -> {
-                                    Timber.d("Plugins pack progress: ${it.percent}")
-                                }
-                                DownloadResult.WrongURL -> {
-                                    context?.showToast(R.string.error_loading_file)
-                                }
-                            }
-                        }
-                    }
-                }
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -109,7 +60,58 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
 
         setup(binding)
 
-        return binding.root
+
+        val menuHost: MenuHost = requireActivity()
+
+        menuHost.addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.search_bar, menu)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                return when (menuItem.itemId) {
+                    R.id.plugins_pack -> {
+                        lifecycleScope.launch {
+                            val cacheDir = context?.cacheDir
+
+                            if (cacheDir!=null) {
+                                // clean up old files
+                                // todo: also clear other files, at least ending with zip
+                                File(cacheDir, PLUGINS_PACK_FOLDER).deleteRecursively()
+
+                                activityViewModel.downloadFileToCache(
+                                    PLUGINS_PACK_LINK,
+                                    PLUGINS_PACK_NAME,
+                                    cacheDir,
+                                    ".zip"
+                                ).observe(
+                                    viewLifecycleOwner
+                                ) {
+                                    when (it) {
+                                        is DownloadResult.End -> {
+                                            activityViewModel.processPluginsPack(cacheDir, requireContext().filesDir, it.fileName)
+                                        }
+                                        DownloadResult.Failure -> {
+                                            context?.showToast(R.string.error_loading_file)
+                                        }
+                                        is DownloadResult.Progress -> {
+                                            Timber.d("Plugins pack progress: ${it.percent}")
+                                        }
+                                        DownloadResult.WrongURL -> {
+                                            context?.showToast(R.string.error_loading_file)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        true
+                    }
+                    else -> false
+                }
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+
+    return binding.root
     }
 
     private fun setup(binding: FragmentSearchBinding) {

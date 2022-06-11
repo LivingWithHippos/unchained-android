@@ -12,9 +12,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.MenuRes
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -28,6 +31,7 @@ import com.github.livingwithhippos.unchained.data.model.ApiConversionError
 import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.data.model.EmptyBodyError
 import com.github.livingwithhippos.unchained.data.model.NetworkError
+import com.github.livingwithhippos.unchained.data.repository.DownloadResult
 import com.github.livingwithhippos.unchained.databinding.FragmentFolderListBinding
 import com.github.livingwithhippos.unchained.folderlist.model.FolderItemAdapter
 import com.github.livingwithhippos.unchained.folderlist.model.FolderKeyProvider
@@ -36,6 +40,9 @@ import com.github.livingwithhippos.unchained.lists.view.DownloadListListener
 import com.github.livingwithhippos.unchained.lists.view.SelectedItemsButtonsListener
 import com.github.livingwithhippos.unchained.utilities.DataBindingDetailsLookup
 import com.github.livingwithhippos.unchained.utilities.EitherResult
+import com.github.livingwithhippos.unchained.utilities.PLUGINS_PACK_FOLDER
+import com.github.livingwithhippos.unchained.utilities.PLUGINS_PACK_LINK
+import com.github.livingwithhippos.unchained.utilities.PLUGINS_PACK_NAME
 import com.github.livingwithhippos.unchained.utilities.extension.copyToClipboard
 import com.github.livingwithhippos.unchained.utilities.extension.delayedScrolling
 import com.github.livingwithhippos.unchained.utilities.extension.downloadFile
@@ -44,6 +51,7 @@ import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.io.File
 
 @AndroidEntryPoint
 class FolderListFragment : Fragment(), DownloadListListener {
@@ -53,35 +61,6 @@ class FolderListFragment : Fragment(), DownloadListListener {
 
     private val mediaRegex =
         "\\.(webm|avi|mkv|ogg|MTS|M2TS|TS|mov|wmv|mp4|m4p|m4v|mp2|mpe|mpv|mpg|mpeg|m2v|3gp)$".toRegex()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.folder_bar, menu)
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.download_all -> {
-                downloadAll()
-                true
-            }
-            R.id.share_all -> {
-                shareAll()
-                true
-            }
-            R.id.copy_all -> {
-                copyAll()
-                true
-            }
-
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
 
     private fun shareAll() {
         val downloads: List<DownloadItem>? = viewModel.folderLiveData.value?.peekContent()
@@ -155,6 +134,34 @@ class FolderListFragment : Fragment(), DownloadListListener {
         val binding = FragmentFolderListBinding.inflate(inflater, container, false)
 
         setup(binding)
+
+        val menuHost: MenuHost = requireActivity()
+
+        menuHost.addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.folder_bar, menu)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                return when (menuItem.itemId) {
+                    R.id.download_all -> {
+                        downloadAll()
+                        true
+                    }
+                    R.id.share_all -> {
+                        shareAll()
+                        true
+                    }
+                    R.id.copy_all -> {
+                        copyAll()
+                        true
+                    }
+
+                    else -> false
+                }
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+
         return binding.root
     }
 
