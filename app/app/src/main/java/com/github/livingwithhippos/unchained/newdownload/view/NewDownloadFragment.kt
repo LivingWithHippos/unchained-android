@@ -24,7 +24,6 @@ import com.github.livingwithhippos.unchained.data.model.NetworkError
 import com.github.livingwithhippos.unchained.data.repository.DownloadResult
 import com.github.livingwithhippos.unchained.databinding.NewDownloadFragmentBinding
 import com.github.livingwithhippos.unchained.lists.view.ListState
-import com.github.livingwithhippos.unchained.lists.view.ListsTabFragment
 import com.github.livingwithhippos.unchained.newdownload.viewmodel.Link
 import com.github.livingwithhippos.unchained.newdownload.viewmodel.NewDownloadViewModel
 import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationEvent
@@ -258,11 +257,11 @@ class NewDownloadFragment : UnchainedFragment() {
                          * DownloadManager does not support insecure (https) links anymore
                          * to add support for it, follow these instructions
                          * [https://stackoverflow.com/a/50834600]
-                        val secureLink = if (link.startsWith("http://")) link.replaceFirst(
-                        "http:",
-                        "https:"
-                        ) else link
-                        downloadTorrent(Uri.parse(secureLink))
+                         val secureLink = if (link.startsWith("http://")) link.replaceFirst(
+                         "http:",
+                         "https:"
+                         ) else link
+                         downloadTorrent(Uri.parse(secureLink))
                          */
                         downloadTorrentToCache(binding, link)
                     }

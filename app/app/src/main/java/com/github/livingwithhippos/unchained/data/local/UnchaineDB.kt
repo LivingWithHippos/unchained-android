@@ -10,11 +10,11 @@ import com.github.livingwithhippos.unchained.data.model.KodiDevice
  * Annotates class to be a Room Database with a table (entity) of the Credentials class
  */
 @Database(
-    entities = [HostRegex::class,KodiDevice::class],
+    entities = [HostRegex::class, KodiDevice::class],
     version = 5,
     exportSchema = true,
     autoMigrations = [
-        AutoMigration (from = 4, to = 5)
+        AutoMigration(from = 4, to = 5)
     ]
 )
 abstract class UnchaineDB : RoomDatabase() {

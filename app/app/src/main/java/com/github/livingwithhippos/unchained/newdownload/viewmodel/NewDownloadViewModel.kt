@@ -69,7 +69,7 @@ class NewDownloadViewModel @Inject constructor(
             val token = getToken()
             when (val fileList = unrestrictRepository.uploadContainer(token, container)) {
                 is EitherResult.Failure -> {
-                     networkExceptionLiveData.postEvent(fileList.failure)
+                    networkExceptionLiveData.postEvent(fileList.failure)
                 }
                 is EitherResult.Success -> {
                     containerLiveData.postEvent(Link.Container(fileList.success))

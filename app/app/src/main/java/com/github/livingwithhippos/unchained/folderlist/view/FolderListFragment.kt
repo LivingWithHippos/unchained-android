@@ -12,9 +12,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.MenuRes
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -53,35 +56,6 @@ class FolderListFragment : Fragment(), DownloadListListener {
 
     private val mediaRegex =
         "\\.(webm|avi|mkv|ogg|MTS|M2TS|TS|mov|wmv|mp4|m4p|m4v|mp2|mpe|mpv|mpg|mpeg|m2v|3gp)$".toRegex()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.folder_bar, menu)
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.download_all -> {
-                downloadAll()
-                true
-            }
-            R.id.share_all -> {
-                shareAll()
-                true
-            }
-            R.id.copy_all -> {
-                copyAll()
-                true
-            }
-
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
 
     private fun shareAll() {
         val downloads: List<DownloadItem>? = viewModel.folderLiveData.value?.peekContent()
@@ -155,6 +129,37 @@ class FolderListFragment : Fragment(), DownloadListListener {
         val binding = FragmentFolderListBinding.inflate(inflater, container, false)
 
         setup(binding)
+
+        val menuHost: MenuHost = requireActivity()
+
+        menuHost.addMenuProvider(
+            object : MenuProvider {
+                override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                    menuInflater.inflate(R.menu.folder_bar, menu)
+                }
+
+                override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                    return when (menuItem.itemId) {
+                        R.id.download_all -> {
+                            downloadAll()
+                            true
+                        }
+                        R.id.share_all -> {
+                            shareAll()
+                            true
+                        }
+                        R.id.copy_all -> {
+                            copyAll()
+                            true
+                        }
+
+                        else -> false
+                    }
+                }
+            },
+            viewLifecycleOwner, Lifecycle.State.RESUMED
+        )
+
         return binding.root
     }
 
@@ -264,7 +269,6 @@ class FolderListFragment : Fragment(), DownloadListListener {
                 linkTracker.clearSelection()
             }
         }
-
 
         viewModel.deletedDownloadLiveData.observe(
             viewLifecycleOwner

@@ -15,8 +15,11 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import com.github.livingwithhippos.unchained.R
@@ -29,7 +32,6 @@ import com.github.livingwithhippos.unchained.downloaddetails.model.AlternativeDo
 import com.github.livingwithhippos.unchained.downloaddetails.viewmodel.DownloadDetailsMessage
 import com.github.livingwithhippos.unchained.downloaddetails.viewmodel.DownloadDetailsViewModel
 import com.github.livingwithhippos.unchained.lists.view.ListState
-import com.github.livingwithhippos.unchained.lists.view.ListsTabFragment
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.EventObserver
 import com.github.livingwithhippos.unchained.utilities.RD_STREAMING_URL
@@ -39,7 +41,6 @@ import com.github.livingwithhippos.unchained.utilities.extension.openExternalWeb
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-
 
 /**
  * A simple [UnchainedFragment] subclass.
@@ -59,6 +60,32 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
     ): View {
         val detailsBinding = FragmentDownloadDetailsBinding.inflate(inflater, container, false)
 
+        val menuHost: MenuHost = requireActivity()
+
+        menuHost.addMenuProvider(
+            object : MenuProvider {
+                override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                    menuInflater.inflate(R.menu.download_details_bar, menu)
+                }
+
+                override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                    return when (menuItem.itemId) {
+                        R.id.delete -> {
+                            val dialog = DeleteDialogFragment()
+                            val bundle = Bundle()
+                            val title = getString(R.string.delete_item_title_format, args.details.filename)
+                            bundle.putString("title", title)
+                            dialog.arguments = bundle
+                            dialog.show(parentFragmentManager, "DeleteDialogFragment")
+                            true
+                        }
+                        else -> false
+                    }
+                }
+            },
+            viewLifecycleOwner, Lifecycle.State.RESUMED
+        )
+
         detailsBinding.details = args.details
         detailsBinding.listener = this
 
@@ -77,9 +104,11 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         detailsBinding.showKodi = viewModel.getButtonVisibilityPreference(SHOW_KODI_BUTTON)
         detailsBinding.showLocalPlay = viewModel.getButtonVisibilityPreference(SHOW_MEDIA_BUTTON)
         detailsBinding.showLoadStream = viewModel.getButtonVisibilityPreference(
-            SHOW_LOAD_STREAM_BUTTON)
+            SHOW_LOAD_STREAM_BUTTON
+        )
         detailsBinding.showStreamBrowser = viewModel.getButtonVisibilityPreference(
-            SHOW_STREAM_BROWSER_BUTTON)
+            SHOW_STREAM_BROWSER_BUTTON
+        )
 
         viewModel.streamLiveData.observe(
             viewLifecycleOwner
@@ -170,16 +199,6 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         }
 
         return detailsBinding.root
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.download_details_bar, menu)
-        super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -293,7 +312,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         val intent = Intent(Intent.ACTION_VIEW)
         intent.setPackage(appPackage)
         intent.setDataAndTypeAndNormalize(uri, dataType)
-        if (component!=null)
+        if (component != null)
             intent.component = component
 
         return intent
@@ -302,10 +321,13 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
     override fun onSendToPlayer(url: String) {
         when (viewModel.getDefaultPlayer()) {
             "vlc" -> {
-                val vlcIntent = createMediaIntent("org.videolan.vlc", url, ComponentName(
-                    "org.videolan.vlc",
-                    "org.videolan.vlc.gui.video.VideoPlayerActivity"
-                ))
+                val vlcIntent = createMediaIntent(
+                    "org.videolan.vlc", url,
+                    ComponentName(
+                        "org.videolan.vlc",
+                        "org.videolan.vlc.gui.video.VideoPlayerActivity"
+                    )
+                )
 
                 tryStartExternalApp(vlcIntent)
             }

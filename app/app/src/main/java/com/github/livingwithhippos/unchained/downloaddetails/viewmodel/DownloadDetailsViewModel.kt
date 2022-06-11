@@ -1,9 +1,6 @@
 package com.github.livingwithhippos.unchained.downloaddetails.viewmodel
 
-import android.content.Intent
 import android.content.SharedPreferences
-import android.net.Uri
-import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

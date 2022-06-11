@@ -15,19 +15,12 @@ import com.github.livingwithhippos.unchained.plugins.ParserResult
 import com.github.livingwithhippos.unchained.plugins.model.Plugin
 import com.github.livingwithhippos.unchained.plugins.model.ScrapedItem
 import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Companion.KEY_USE_DOH
-import com.github.livingwithhippos.unchained.utilities.PLUGINS_PACK_FOLDER
-import com.github.livingwithhippos.unchained.utilities.UnzipUtils
 import com.github.livingwithhippos.unchained.utilities.extension.cancelIfActive
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import timber.log.Timber
-import java.io.File
-import java.io.IOException
 import javax.inject.Inject
 
 @HiltViewModel

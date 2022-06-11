@@ -157,8 +157,6 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
                     activityViewModel.updateCredentialsAccessToken(token.accessToken)
                     activityViewModel.updateCredentialsRefreshToken(token.refreshToken)
                     activityViewModel.transitionAuthenticationMachine(FSMAuthenticationEvent.OnOpenTokenLoaded)
-
-
                 }
             }
         )
