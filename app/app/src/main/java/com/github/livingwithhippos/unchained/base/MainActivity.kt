@@ -118,18 +118,6 @@ class MainActivity : AppCompatActivity() {
             setupBottomNavigationBar()
         } // Else, need to wait for onRestoreInstanceState
 
-        // list of fragments with no back arrow
-        appBarConfiguration = AppBarConfiguration(
-            setOf(
-                R.id.authentication_dest,
-                R.id.start_dest,
-                R.id.user_dest,
-                R.id.list_tabs_dest,
-                R.id.search_dest
-            ),
-            null
-        )
-
         viewModel.fsmAuthenticationState.observe(
             this
         ) {
@@ -533,8 +521,15 @@ class MainActivity : AppCompatActivity() {
         bottomNavigationView.setupWithNavController(navController)
 
         // Setup the ActionBar with navController and 3 top level destinations
+        // these won't show a back/up arrow
         appBarConfiguration = AppBarConfiguration(
-            setOf(R.id.start_dest, R.id.list_tabs_dest, R.id.search_dest)
+            setOf(
+                R.id.authentication_dest,
+                R.id.start_dest,
+                R.id.user_dest,
+                R.id.list_tabs_dest,
+                R.id.search_dest
+            )
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
     }
