@@ -21,7 +21,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.MenuProvider
 import androidx.core.view.forEach
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
@@ -55,7 +54,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
-
 
 /**
  * A [AppCompatActivity] subclass.
@@ -136,7 +134,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         })
-
 
         viewModel.fsmAuthenticationState.observe(
             this

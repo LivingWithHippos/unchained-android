@@ -59,7 +59,6 @@ class CustomDownloadRepository @Inject constructor(private val customDownloadHel
                             // todo: add check for fileSizeDownloaded and fileSize difference
                             outputStream.flush()
                             successfulDownload = true
-
                         } catch (e: IOException) {
                             send(DownloadResult.Failure)
                             sentEnding = true
@@ -77,7 +76,6 @@ class CustomDownloadRepository @Inject constructor(private val customDownloadHel
             } else send(DownloadResult.Failure)
         } else send(DownloadResult.WrongURL)
     }
-
 }
 
 sealed class DownloadResult {

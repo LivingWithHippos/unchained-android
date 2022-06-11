@@ -67,15 +67,17 @@ class KodiManagementViewModel @Inject constructor(
     }
 
     fun setCurrentDevice(device: KodiDevice) {
-        savedStateHandle.set(KEY_SAVED_DEVICE,
-        TempKodiDevice(
-            device.name,
-            device.address,
-            device.port,
-            device.username,
-            device.password,
-            device.isDefault
-        ))
+        savedStateHandle.set(
+            KEY_SAVED_DEVICE,
+            TempKodiDevice(
+                device.name,
+                device.address,
+                device.port,
+                device.username,
+                device.password,
+                device.isDefault
+            )
+        )
     }
 
     fun getCurrentDevice(): KodiDevice? {
@@ -98,7 +100,7 @@ class KodiManagementViewModel @Inject constructor(
     }
 
     companion object {
-        const val KEY_SAVED_DEVICE="saved_item_key"
+        const val KEY_SAVED_DEVICE = "saved_item_key"
     }
 }
 
@@ -109,10 +111,10 @@ data class TempKodiDevice(
     val username: String?,
     val password: String?,
     val isDefault: Boolean = false,
-): Parcelable {
+) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString() ?: "kodi device",
-        parcel.readString()?: "",
+        parcel.readString() ?: "",
         parcel.readInt(),
         parcel.readString(),
         parcel.readString(),

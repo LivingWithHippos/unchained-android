@@ -12,7 +12,6 @@ class KodiDeviceRepository @Inject constructor(
     val devicesFlow: Flow<List<KodiDevice>>
         get() = kodiDeviceDao.getAllDevicesFlow()
 
-
     suspend fun getDevices(): List<KodiDevice> {
         return kodiDeviceDao.getAllDevices()
     }

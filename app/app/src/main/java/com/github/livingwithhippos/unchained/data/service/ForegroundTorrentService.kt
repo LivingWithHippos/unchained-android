@@ -209,7 +209,6 @@ class ForegroundTorrentService : LifecycleService() {
                     else
                         PendingIntent.FLAG_UPDATE_CURRENT
                 )
-
             }
 
             torrentBuilder.setContentIntent(resultPendingIntent)

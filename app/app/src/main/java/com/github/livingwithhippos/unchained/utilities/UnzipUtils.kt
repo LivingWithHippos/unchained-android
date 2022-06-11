@@ -5,7 +5,6 @@ import java.io.IOException
 import java.io.InputStream
 import java.util.zip.ZipFile
 
-
 /**
  * UnzipUtils class extracts files and sub-directories of a standard zip file to
  * a destination directory.
@@ -39,9 +38,7 @@ object UnzipUtils {
                         // if the entry is a directory, make the directory
                         filePath.mkdir()
                     }
-
                 }
-
             }
         }
     }

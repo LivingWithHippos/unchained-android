@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "kodi_device")
-class KodiDevice (
+class KodiDevice(
     @PrimaryKey
     @ColumnInfo(name = "name")
     val name: String,

@@ -34,7 +34,6 @@ import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.data.model.EmptyBodyError
 import com.github.livingwithhippos.unchained.data.model.NetworkError
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
-import com.github.livingwithhippos.unchained.data.repository.DownloadResult
 import com.github.livingwithhippos.unchained.databinding.FragmentDownloadsListBinding
 import com.github.livingwithhippos.unchained.databinding.FragmentTabListsBinding
 import com.github.livingwithhippos.unchained.databinding.FragmentTorrentsListBinding
@@ -54,9 +53,6 @@ import com.github.livingwithhippos.unchained.utilities.DOWNLOADS_TAB
 import com.github.livingwithhippos.unchained.utilities.DataBindingDetailsLookup
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.EventObserver
-import com.github.livingwithhippos.unchained.utilities.PLUGINS_PACK_FOLDER
-import com.github.livingwithhippos.unchained.utilities.PLUGINS_PACK_LINK
-import com.github.livingwithhippos.unchained.utilities.PLUGINS_PACK_NAME
 import com.github.livingwithhippos.unchained.utilities.TORRENTS_TAB
 import com.github.livingwithhippos.unchained.utilities.extension.delayedScrolling
 import com.github.livingwithhippos.unchained.utilities.extension.downloadFile
@@ -71,8 +67,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import timber.log.Timber
-import java.io.File
 
 /**
  * A simple [UnchainedFragment] subclass.
@@ -96,51 +90,54 @@ class ListsTabFragment : UnchainedFragment() {
 
         val menuHost: MenuHost = requireActivity()
 
-        menuHost.addMenuProvider(object : MenuProvider {
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menuInflater.inflate(R.menu.lists_bar, menu)
+        menuHost.addMenuProvider(
+            object : MenuProvider {
+                override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                    menuInflater.inflate(R.menu.lists_bar, menu)
 
-                val searchItem = menu.findItem(R.id.search)
-                val searchView = searchItem.actionView as SearchView
-                // listens to the user typing in the search bar
+                    val searchItem = menu.findItem(R.id.search)
+                    val searchView = searchItem.actionView as SearchView
+                    // listens to the user typing in the search bar
 
-                searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-                    // since there is a 500ms delay on new queries, this will help if the user types something and press search in less than half sec. May be unnecessary. The value is checked anyway in the ViewModel to avoid reloading with the same query as the last one.
-                    override fun onQueryTextSubmit(query: String?): Boolean {
-                        viewModel.setListFilter(query)
-                        return true
-                    }
-
-                    override fun onQueryTextChange(newText: String?): Boolean {
-                        // simulate debounce
-                        queryJob?.cancel()
-
-                        queryJob = lifecycleScope.launch {
-                            delay(500)
-                            viewModel.setListFilter(newText)
+                    searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                        // since there is a 500ms delay on new queries, this will help if the user types something and press search in less than half sec. May be unnecessary. The value is checked anyway in the ViewModel to avoid reloading with the same query as the last one.
+                        override fun onQueryTextSubmit(query: String?): Boolean {
+                            viewModel.setListFilter(query)
+                            return true
                         }
-                        return true
-                    }
-                })
-            }
 
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                return when (menuItem.itemId) {
-                    R.id.search -> {
-                        true
-                    }
-                    R.id.delete_all_downloads -> {
-                        showDeleteAllDialog(DOWNLOADS_TAB)
-                        true
-                    }
-                    R.id.delete_all_torrents -> {
-                        showDeleteAllDialog(TORRENTS_TAB)
-                        true
-                    }
-                    else -> false
+                        override fun onQueryTextChange(newText: String?): Boolean {
+                            // simulate debounce
+                            queryJob?.cancel()
+
+                            queryJob = lifecycleScope.launch {
+                                delay(500)
+                                viewModel.setListFilter(newText)
+                            }
+                            return true
+                        }
+                    })
                 }
-            }
-        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+
+                override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                    return when (menuItem.itemId) {
+                        R.id.search -> {
+                            true
+                        }
+                        R.id.delete_all_downloads -> {
+                            showDeleteAllDialog(DOWNLOADS_TAB)
+                            true
+                        }
+                        R.id.delete_all_torrents -> {
+                            showDeleteAllDialog(TORRENTS_TAB)
+                            true
+                        }
+                        else -> false
+                    }
+                }
+            },
+            viewLifecycleOwner, Lifecycle.State.RESUMED
+        )
 
         val listsAdapter = ListsAdapter(this)
         binding.listPager.adapter = listsAdapter
@@ -276,10 +273,8 @@ class ListsTabFragment : UnchainedFragment() {
                         }
                     }
                 }
-
             }
         )
-
 
         viewModel.errorsLiveData.observe(
             viewLifecycleOwner,
@@ -770,9 +765,7 @@ class TorrentsListFragment : UnchainedFragment(), TorrentListListener {
     override fun onClick(item: TorrentItem) {
         viewModel.postEventNotice(ListEvent.TorrentItemClick(item))
     }
-
 }
-
 
 sealed class ListState {
     object UpdateTorrent : ListState()

@@ -32,7 +32,6 @@ import com.github.livingwithhippos.unchained.data.repository.PluginRepository.Co
 import com.github.livingwithhippos.unchained.data.repository.UserRepository
 import com.github.livingwithhippos.unchained.data.repository.VariousApiRepository
 import com.github.livingwithhippos.unchained.lists.view.ListState
-import com.github.livingwithhippos.unchained.lists.view.ListsTabFragment
 import com.github.livingwithhippos.unchained.plugins.model.Plugin
 import com.github.livingwithhippos.unchained.statemachine.authentication.CurrentFSMAuthentication
 import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationEvent
@@ -317,7 +316,6 @@ class MainActivityViewModel @Inject constructor(
                                 FSMAuthenticationState.StartNewLogin
                             )
                         )
-
                     }
                     FSMAuthenticationSideEffect.PostAuthenticatedOpen -> {
                         fsmAuthenticationState.postValue(
@@ -1047,7 +1045,6 @@ class MainActivityViewModel @Inject constructor(
                 }
             }
         }
-
     }
 
     fun clearCache(cacheDir: File) {
@@ -1067,6 +1064,6 @@ class MainActivityViewModel @Inject constructor(
 }
 
 sealed class MainActivityMessage {
-    data class StringID(val id: Int): MainActivityMessage()
-    data class InstalledPlugins(val number: Int): MainActivityMessage()
+    data class StringID(val id: Int) : MainActivityMessage()
+    data class InstalledPlugins(val number: Int) : MainActivityMessage()
 }

@@ -44,7 +44,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.io.File
-import java.io.IOException
 
 @AndroidEntryPoint
 class SearchFragment : UnchainedFragment(), SearchItemListener {
@@ -60,58 +59,60 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
 
         setup(binding)
 
-
         val menuHost: MenuHost = requireActivity()
 
-        menuHost.addMenuProvider(object : MenuProvider {
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menuInflater.inflate(R.menu.search_bar, menu)
-            }
+        menuHost.addMenuProvider(
+            object : MenuProvider {
+                override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                    menuInflater.inflate(R.menu.search_bar, menu)
+                }
 
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                return when (menuItem.itemId) {
-                    R.id.plugins_pack -> {
-                        lifecycleScope.launch {
-                            val cacheDir = context?.cacheDir
+                override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                    return when (menuItem.itemId) {
+                        R.id.plugins_pack -> {
+                            lifecycleScope.launch {
+                                val cacheDir = context?.cacheDir
 
-                            if (cacheDir!=null) {
-                                // clean up old files
-                                // todo: also clear other files, at least ending with zip
-                                File(cacheDir, PLUGINS_PACK_FOLDER).deleteRecursively()
+                                if (cacheDir != null) {
+                                    // clean up old files
+                                    // todo: also clear other files, at least ending with zip
+                                    File(cacheDir, PLUGINS_PACK_FOLDER).deleteRecursively()
 
-                                activityViewModel.downloadFileToCache(
-                                    PLUGINS_PACK_LINK,
-                                    PLUGINS_PACK_NAME,
-                                    cacheDir,
-                                    ".zip"
-                                ).observe(
-                                    viewLifecycleOwner
-                                ) {
-                                    when (it) {
-                                        is DownloadResult.End -> {
-                                            activityViewModel.processPluginsPack(cacheDir, requireContext().filesDir, it.fileName)
-                                        }
-                                        DownloadResult.Failure -> {
-                                            context?.showToast(R.string.error_loading_file)
-                                        }
-                                        is DownloadResult.Progress -> {
-                                            Timber.d("Plugins pack progress: ${it.percent}")
-                                        }
-                                        DownloadResult.WrongURL -> {
-                                            context?.showToast(R.string.error_loading_file)
+                                    activityViewModel.downloadFileToCache(
+                                        PLUGINS_PACK_LINK,
+                                        PLUGINS_PACK_NAME,
+                                        cacheDir,
+                                        ".zip"
+                                    ).observe(
+                                        viewLifecycleOwner
+                                    ) {
+                                        when (it) {
+                                            is DownloadResult.End -> {
+                                                activityViewModel.processPluginsPack(cacheDir, requireContext().filesDir, it.fileName)
+                                            }
+                                            DownloadResult.Failure -> {
+                                                context?.showToast(R.string.error_loading_file)
+                                            }
+                                            is DownloadResult.Progress -> {
+                                                Timber.d("Plugins pack progress: ${it.percent}")
+                                            }
+                                            DownloadResult.WrongURL -> {
+                                                context?.showToast(R.string.error_loading_file)
+                                            }
                                         }
                                     }
                                 }
                             }
+                            true
                         }
-                        true
+                        else -> false
                     }
-                    else -> false
                 }
-            }
-        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+            },
+            viewLifecycleOwner, Lifecycle.State.RESUMED
+        )
 
-    return binding.root
+        return binding.root
     }
 
     private fun setup(binding: FragmentSearchBinding) {

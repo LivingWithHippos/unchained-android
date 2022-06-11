@@ -168,6 +168,5 @@ class FolderListViewModel @Inject constructor(
         const val KEY_LIST_FILTER_TYPE = "filter_list_type"
         const val KEY_LIST_SORTING = "sort_list_type"
         const val KEY_SHOW_FOLDER_FILTERS = "show_folders_filters"
-
     }
 }
