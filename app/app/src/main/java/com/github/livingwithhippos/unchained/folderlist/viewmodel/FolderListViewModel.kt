@@ -17,6 +17,7 @@ import com.github.livingwithhippos.unchained.utilities.postEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -118,7 +119,8 @@ class FolderListViewModel @Inject constructor(
 
         queryJob = viewModelScope.launch {
             delay(500)
-            queryLiveData.postValue(query?.trim() ?: "")
+            if (isActive)
+                queryLiveData.postValue(query?.trim() ?: "")
         }
     }
 

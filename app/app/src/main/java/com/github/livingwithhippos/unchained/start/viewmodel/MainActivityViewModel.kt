@@ -53,6 +53,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -663,7 +664,8 @@ class MainActivityViewModel @Inject constructor(
         refreshJob = viewModelScope.launch {
             // secondsDelay*950L -> expiration time - 5%
             delay(secondsDelay * 950L)
-            refreshToken()
+            if (isActive)
+                refreshToken()
         }
     }
 

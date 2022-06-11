@@ -66,6 +66,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 /**
@@ -112,7 +113,8 @@ class ListsTabFragment : UnchainedFragment() {
 
                             queryJob = lifecycleScope.launch {
                                 delay(500)
-                                viewModel.setListFilter(newText)
+                                if (isActive)
+                                    viewModel.setListFilter(newText)
                             }
                             return true
                         }
