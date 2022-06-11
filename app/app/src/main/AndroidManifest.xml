@@ -336,6 +336,15 @@
                 <data
                     android:scheme="https"
                     android:host="uptobox.com" />
+                <data
+                    android:scheme="https"
+                    android:host="www.youtube.com" />
+                <data
+                    android:scheme="https"
+                    android:host="youtube.com" />
+                <data
+                    android:scheme="https"
+                    android:host="youtu.be" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
