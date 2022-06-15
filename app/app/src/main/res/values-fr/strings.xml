@@ -251,7 +251,7 @@
     <string name="category_tv">Série télévisée</string>
     <string name="category_books">Livres</string>
     <string name="open_github">Ouvrir Github</string>
-    <string name="plugin_description_message">Sur cet écran, vous pourrez rechercher des fichiers torrent et magnet. Outre les plugins de base disponibles, vous en trouverez d\'autres sur Internet avec l\'extension \'.unchained\', téléchargez-les et ouvrez-les avec cette application. Essayez le dépôt officiel de GitHub pour commencer.</string>
+    <string name="plugin_description_message">Sur cet écran, vous pourrez rechercher des fichiers torrents et magnétiques. Outre les plugins de base disponibles, vous pouvez en télécharger d\'autres à partir du menu de cette page.</string>
     <string name="search_plugins">Plugins de recherche</string>
     <string name="get_search_plugins">Obtenir des plugins de recherche</string>
     <string name="delete_plugins">Supprimer les plugins externes</string>
