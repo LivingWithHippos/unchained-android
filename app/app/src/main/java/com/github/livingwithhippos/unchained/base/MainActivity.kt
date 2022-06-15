@@ -24,6 +24,7 @@ import androidx.core.view.MenuProvider
 import androidx.core.view.forEach
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
@@ -115,9 +116,7 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(binding.topAppBar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        if (savedInstanceState == null) {
-            setupBottomNavigationBar()
-        } // Else, need to wait for onRestoreInstanceState
+        setupBottomNavigationBar(binding)
 
         addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
@@ -523,15 +522,12 @@ class MainActivity : AppCompatActivity() {
     /**
      * Called on first creation and when restoring state.
      */
-    private fun setupBottomNavigationBar() {
+    private fun setupBottomNavigationBar(binding: ActivityMainBinding) {
 
-        val navHostFragment = supportFragmentManager.findFragmentById(
+        navController = (supportFragmentManager.findFragmentById(
             R.id.nav_host_fragment
-        ) as NavHostFragment
-        navController = navHostFragment.navController
-
-        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_nav_view)
-        bottomNavigationView.setupWithNavController(navController)
+        ) as NavHostFragment).navController
+        binding.bottomNavView.setupWithNavController(navController)
 
         // Setup the ActionBar with navController and 3 top level destinations
         // these won't show a back/up arrow
@@ -547,45 +543,40 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
     }
 
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
-        // Now that BottomNavigationBar has restored its instance state
-        // and its selectedItemId, we can proceed with setting up the
-        // BottomNavigationBar with Navigation
-        setupBottomNavigationBar()
-    }
-
     override fun onBackPressed() {
         // if the user is pressing back on an "exiting"fragment, show a toast alerting him and wait for him to press back again for confirmation
 
         val currentDestination = navController.currentDestination
         val previousDestination = navController.previousBackStackEntry
 
-        // check if we're pressing back from the user or authentication fragment
-        if (currentDestination?.id == R.id.user_dest || currentDestination?.id == R.id.authentication_dest) {
-            // check the destination for the back action
-            if (previousDestination == null ||
-                previousDestination.destination.id == R.id.authentication_dest ||
-                previousDestination.destination.id == R.id.start_dest ||
-                previousDestination.destination.id == R.id.user_dest ||
-                previousDestination.destination.id == R.id.search_dest
-            ) {
-                // check if it has been 2 seconds since the last time we pressed back
-                val pressedTime = System.currentTimeMillis()
-                val lastPressedTime = viewModel.getLastBackPress()
-                // exit if pressed back twice in EXIT_WAIT_TIME
-                if (pressedTime - lastPressedTime <= EXIT_WAIT_TIME)
-                    finish()
-                // else update the last time the user pressed back
-                else {
-                    viewModel.setLastBackPress(pressedTime)
-                    this.showToast(R.string.press_again_exit)
+        when (currentDestination?.id) {
+            // check if we're pressing back from the user or authentication fragment
+            R.id.user_dest, R.id.authentication_dest -> {
+                // check the destination for the back action
+                if (previousDestination == null ||
+                    previousDestination.destination.id == R.id.authentication_dest ||
+                    previousDestination.destination.id == R.id.start_dest ||
+                    previousDestination.destination.id == R.id.user_dest ||
+                    previousDestination.destination.id == R.id.search_dest
+                ) {
+                    // check if it has been 2 seconds since the last time we pressed back
+                    val pressedTime = System.currentTimeMillis()
+                    val lastPressedTime = viewModel.getLastBackPress()
+                    // exit if pressed back twice in EXIT_WAIT_TIME
+                    if (pressedTime - lastPressedTime <= EXIT_WAIT_TIME)
+                        finish()
+                    // else update the last time the user pressed back
+                    else {
+                        viewModel.setLastBackPress(pressedTime)
+                        this.showToast(R.string.press_again_exit)
+                    }
+                } else {
+                    super.onBackPressed()
                 }
-            } else {
+            }
+            else -> {
                 super.onBackPressed()
             }
-        } else {
-            super.onBackPressed()
         }
     }
 
