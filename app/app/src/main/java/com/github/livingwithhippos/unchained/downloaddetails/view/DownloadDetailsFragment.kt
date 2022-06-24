@@ -207,7 +207,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
     }
 
     override fun onOpenClick(url: String) {
-        openExternalWebPage(url)
+        context?.openExternalWebPage(url)
     }
 
     override fun onOpenWithKodi(url: String) {
@@ -224,7 +224,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
     }
 
     override fun onBrowserStreamsClick(id: String) {
-        openExternalWebPage(RD_STREAMING_URL + id)
+        context?.openExternalWebPage(RD_STREAMING_URL + id)
     }
 
     override fun onDownloadClick(link: String, fileName: String) {

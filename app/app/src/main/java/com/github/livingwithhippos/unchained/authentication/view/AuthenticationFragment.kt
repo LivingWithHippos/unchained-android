@@ -212,7 +212,7 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
     }
 
     override fun onOpenLinkClick(url: String) {
-        openExternalWebPage(url)
+        context?.openExternalWebPage(url)
     }
 
     companion object {
