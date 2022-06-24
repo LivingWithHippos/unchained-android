@@ -35,6 +35,7 @@ import com.github.livingwithhippos.unchained.data.repository.UserRepository
 import com.github.livingwithhippos.unchained.data.repository.VariousApiRepository
 import com.github.livingwithhippos.unchained.lists.view.ListState
 import com.github.livingwithhippos.unchained.plugins.model.Plugin
+import com.github.livingwithhippos.unchained.settings.view.SettingsFragment
 import com.github.livingwithhippos.unchained.statemachine.authentication.CurrentFSMAuthentication
 import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationEvent
 import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationSideEffect
@@ -82,7 +83,7 @@ class MainActivityViewModel @Inject constructor(
     private val protoStore: ProtoStore,
     private val kodiDeviceRepository: KodiDeviceRepository,
     private val customDownloadRepository: CustomDownloadRepository,
-    private val updateRepository: UpdateRepository
+    private val updateRepository: UpdateRepository,
 ) : ViewModel() {
 
     val fsmAuthenticationState = MutableLiveData<Event<FSMAuthenticationState>?>()
@@ -1060,37 +1061,37 @@ class MainActivityViewModel @Inject constructor(
         }
     }
 
+    private fun checkUpdateVersion(localVersion: Int, remoteVersion: Int?, lastVersionChecked: Int, signature: String) {
+        if (remoteVersion != null) {
+            if (remoteVersion > localVersion && remoteVersion > lastVersionChecked) {
+                messageLiveData.postValue(Event(MainActivityMessage.UpdateFound(signature)))
+            }
+            with(preferences.edit()) {
+                putInt(KEY_LAST_UPDATE_VERSION_CHECKED, remoteVersion)
+                apply()
+            }
+        }
+    }
+
     fun checkUpdates(versionCode: Int, signatures: List<String>) {
         viewModelScope.launch {
-            /*
-            scarico file
-            confronto firme
-            avviso activity
-            mostro dialog
-             */
             // ignore errors getting updates?
             // todo: Add a toast if a button to check updates is added
             val updates = updateRepository.getUpdates(SIGNATURE.URL)
             if (updates!=null) {
+                val lastVersionChecked = preferences.getInt(KEY_LAST_UPDATE_VERSION_CHECKED, -1)
                 for (signature in signatures) {
                     when(val upperSignature = signature.uppercase()) {
                         SIGNATURE.F_DROID -> {
-                            if ((updates.fDroid?.versionCode ?: -1) > versionCode) {
-                                Timber.e(updates.fDroid.toString())
-                                messageLiveData.postValue(Event(MainActivityMessage.UpdateFound(upperSignature)))
-                            }
+                            checkUpdateVersion(versionCode,updates.fDroid?.versionCode,lastVersionChecked,upperSignature)
                             break
                         }
                         SIGNATURE.GITHUB -> {
-                            if ((updates.github?.versionCode ?: -1) > versionCode) {
-                                messageLiveData.postValue(Event(MainActivityMessage.UpdateFound(upperSignature)))
-                            }
+                            checkUpdateVersion(versionCode,updates.github?.versionCode,lastVersionChecked,upperSignature)
                             break
                         }
                         SIGNATURE.PLAY_STORE -> {
-                            if ((updates.playStore?.versionCode ?: -1) > versionCode) {
-                                messageLiveData.postValue(Event(MainActivityMessage.UpdateFound(upperSignature)))
-                            }
+                            checkUpdateVersion(versionCode,updates.playStore?.versionCode,lastVersionChecked,upperSignature)
                             break
                         }
                         else -> {
@@ -1109,6 +1110,7 @@ class MainActivityViewModel @Inject constructor(
         const val KEY_LAST_BACK_PRESS = "last_back_press_key"
         const val KEY_REFRESHING_TOKEN = "refreshing_token_key"
         const val KEY_FSM_AUTH_STATE = "fsm_auth_state_key"
+        const val KEY_LAST_UPDATE_VERSION_CHECKED = "last_update_version_checked_key"
     }
 }
 
