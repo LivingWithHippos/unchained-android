@@ -9,6 +9,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.net.Uri
 import android.os.Build
@@ -24,12 +25,12 @@ import androidx.core.view.MenuProvider
 import androidx.core.view.forEach
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.github.livingwithhippos.unchained.BuildConfig
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.model.UserAction
 import com.github.livingwithhippos.unchained.data.repository.PluginRepository.Companion.TYPE_UNCHAINED
@@ -42,20 +43,27 @@ import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityMessage
 import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewModel
 import com.github.livingwithhippos.unchained.statemachine.authentication.CurrentFSMAuthentication
 import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationState
+import com.github.livingwithhippos.unchained.utilities.APP_LINK
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.EventObserver
 import com.github.livingwithhippos.unchained.utilities.SCHEME_HTTP
 import com.github.livingwithhippos.unchained.utilities.SCHEME_HTTPS
 import com.github.livingwithhippos.unchained.utilities.SCHEME_MAGNET
+import com.github.livingwithhippos.unchained.utilities.SIGNATURE
 import com.github.livingwithhippos.unchained.utilities.TelemetryManager
 import com.github.livingwithhippos.unchained.utilities.extension.downloadFile
+import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
+import com.github.livingwithhippos.unchained.utilities.extension.toHex
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.security.MessageDigest
 import javax.inject.Inject
+
 
 /**
  * A [AppCompatActivity] subclass.
@@ -76,6 +84,48 @@ class MainActivity : AppCompatActivity() {
     override fun onStop() {
         TelemetryManager.onStop()
         super.onStop()
+    }
+
+
+    private fun getApplicationSignatures(packageName: String = getPackageName()): List<String> {
+        val signatureList: List<String>
+        try {
+            val digest = MessageDigest.getInstance("SHA")
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                // New signature
+                val sig = packageManager.getPackageInfo(
+                    packageName,
+                    PackageManager.GET_SIGNING_CERTIFICATES
+                ).signingInfo
+                signatureList = if (sig.hasMultipleSigners()) {
+                    // Send all with apkContentsSigners
+                    sig.apkContentsSigners.map {
+                        digest.update(it.toByteArray())
+                        digest.digest().toHex()
+                    }
+                } else {
+                    // Send one with signingCertificateHistory
+                    sig.signingCertificateHistory.map {
+                        digest.update(it.toByteArray())
+                        digest.digest().toHex()
+                    }
+                }
+            } else {
+                val sig = packageManager.getPackageInfo(
+                    packageName,
+                    PackageManager.GET_SIGNATURES
+                ).signatures
+                signatureList = sig.map {
+                    digest.update(it.toByteArray())
+                    digest.digest().toHex()
+                }
+            }
+
+            return signatureList
+        } catch (e: Exception) {
+            Timber.e("Error while getting package signatures: ${e.message}")
+        }
+        return emptyList()
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
@@ -109,7 +159,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -307,6 +356,20 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
                 null -> {}
+                is MainActivityMessage.UpdateFound -> {
+                    when (content.signature) {
+                        SIGNATURE.F_DROID -> {
+                            showUpdateDialog(getString(R.string.fdroid_update_description), APP_LINK.F_DROID)
+                        }
+                        SIGNATURE.PLAY_STORE -> {
+                            showUpdateDialog(getString(R.string.playstore_update_description), APP_LINK.PLAY_STORE)
+                        }
+                        SIGNATURE.GITHUB -> {
+                            showUpdateDialog(getString(R.string.github_update_description), APP_LINK.GITHUB)
+                        }
+                        else -> {}
+                    }
+                }
             }
         }
 
@@ -335,6 +398,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         viewModel.clearCache(applicationContext.cacheDir)
+
+        viewModel.checkUpdates(BuildConfig.VERSION_CODE, getApplicationSignatures())
     }
 
     override fun onResume() {
@@ -371,6 +436,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp(appBarConfiguration)
     }
@@ -578,6 +644,22 @@ class MainActivity : AppCompatActivity() {
                 super.onBackPressed()
             }
         }
+    }
+
+    private fun showUpdateDialog(description: String, link: String) {
+
+        // passing the baseContext or applicationContext cause a crash in the release version build
+        // java.lang.IllegalArgumentException:
+        // The style on this component requires your app theme to be Theme.AppCompat (or a descendant).
+        MaterialAlertDialogBuilder(this)
+            .setTitle(getString(R.string.new_update))
+            .setMessage(description)
+            .setNegativeButton(getString(R.string.close)) { _, _ ->
+            }
+            .setPositiveButton(getString(R.string.open)) { _, _ ->
+                this.openExternalWebPage(link)
+            }
+            .show()
     }
 
     companion object {

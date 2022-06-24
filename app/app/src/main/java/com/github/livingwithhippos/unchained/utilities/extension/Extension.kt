@@ -428,3 +428,5 @@ fun AssetManager.smartList(path: String): Array<String>? {
             return this.list(path.dropLast(1))
     return result
 }
+
+fun ByteArray.toHex(): String = joinToString(separator = "") { eachByte -> "%02x".format(eachByte) }
