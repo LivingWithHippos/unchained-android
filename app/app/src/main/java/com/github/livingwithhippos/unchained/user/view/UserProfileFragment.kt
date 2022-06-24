@@ -73,21 +73,21 @@ class UserProfileFragment : UnchainedFragment() {
                             putBoolean(KEY_REFERRAL_USE, false)
                             apply()
                         }
-                        openExternalWebPage(ACCOUNT_LINK)
+                        context?.openExternalWebPage(ACCOUNT_LINK)
                     }
                     .setPositiveButton(getString(R.string.accept)) { _, _ ->
                         with(preferences.edit()) {
                             putBoolean(KEY_REFERRAL_USE, true)
                             apply()
                         }
-                        openExternalWebPage(REFERRAL_LINK)
+                        context?.openExternalWebPage(REFERRAL_LINK)
                     }
                     .show()
             } else {
                 if (preferences.getBoolean(KEY_REFERRAL_USE, false))
-                    openExternalWebPage(REFERRAL_LINK)
+                    context?.openExternalWebPage(REFERRAL_LINK)
                 else
-                    openExternalWebPage(ACCOUNT_LINK)
+                    context?.openExternalWebPage(ACCOUNT_LINK)
             }
         }
 

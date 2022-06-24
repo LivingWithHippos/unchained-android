@@ -7,6 +7,7 @@ import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Build
+import android.os.Build.VERSION_CODES
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -29,10 +30,12 @@ import com.github.livingwithhippos.unchained.data.repository.HostsRepository
 import com.github.livingwithhippos.unchained.data.repository.KodiDeviceRepository
 import com.github.livingwithhippos.unchained.data.repository.PluginRepository
 import com.github.livingwithhippos.unchained.data.repository.PluginRepository.Companion.TYPE_UNCHAINED
+import com.github.livingwithhippos.unchained.data.repository.UpdateRepository
 import com.github.livingwithhippos.unchained.data.repository.UserRepository
 import com.github.livingwithhippos.unchained.data.repository.VariousApiRepository
 import com.github.livingwithhippos.unchained.lists.view.ListState
 import com.github.livingwithhippos.unchained.plugins.model.Plugin
+import com.github.livingwithhippos.unchained.settings.view.SettingsFragment
 import com.github.livingwithhippos.unchained.statemachine.authentication.CurrentFSMAuthentication
 import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationEvent
 import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationSideEffect
@@ -41,6 +44,7 @@ import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.PLUGINS_PACK_FOLDER
 import com.github.livingwithhippos.unchained.utilities.PRIVATE_TOKEN
+import com.github.livingwithhippos.unchained.utilities.SIGNATURE
 import com.github.livingwithhippos.unchained.utilities.UnzipUtils
 import com.github.livingwithhippos.unchained.utilities.extension.getDownloadedFileUri
 import com.github.livingwithhippos.unchained.utilities.extension.isMagnet
@@ -78,7 +82,8 @@ class MainActivityViewModel @Inject constructor(
     private val pluginRepository: PluginRepository,
     private val protoStore: ProtoStore,
     private val kodiDeviceRepository: KodiDeviceRepository,
-    private val customDownloadRepository: CustomDownloadRepository
+    private val customDownloadRepository: CustomDownloadRepository,
+    private val updateRepository: UpdateRepository,
 ) : ViewModel() {
 
     val fsmAuthenticationState = MutableLiveData<Event<FSMAuthenticationState>?>()
@@ -1056,16 +1061,61 @@ class MainActivityViewModel @Inject constructor(
         }
     }
 
+    private fun checkUpdateVersion(localVersion: Int, remoteVersion: Int?, lastVersionChecked: Int, signature: String) {
+        if (remoteVersion != null) {
+            if (remoteVersion > localVersion && remoteVersion > lastVersionChecked) {
+                messageLiveData.postValue(Event(MainActivityMessage.UpdateFound(signature)))
+            }
+            with(preferences.edit()) {
+                putInt(KEY_LAST_UPDATE_VERSION_CHECKED, remoteVersion)
+                apply()
+            }
+        }
+    }
+
+    fun checkUpdates(versionCode: Int, signatures: List<String>) {
+        viewModelScope.launch {
+            // ignore errors getting updates?
+            // todo: Add a toast if a button to check updates is added
+            val updates = updateRepository.getUpdates(SIGNATURE.URL)
+            if (updates!=null) {
+                val lastVersionChecked = preferences.getInt(KEY_LAST_UPDATE_VERSION_CHECKED, -1)
+                for (signature in signatures) {
+                    when(val upperSignature = signature.uppercase()) {
+                        SIGNATURE.F_DROID -> {
+                            checkUpdateVersion(versionCode,updates.fDroid?.versionCode,lastVersionChecked,upperSignature)
+                            break
+                        }
+                        SIGNATURE.GITHUB -> {
+                            checkUpdateVersion(versionCode,updates.github?.versionCode,lastVersionChecked,upperSignature)
+                            break
+                        }
+                        SIGNATURE.PLAY_STORE -> {
+                            checkUpdateVersion(versionCode,updates.playStore?.versionCode,lastVersionChecked,upperSignature)
+                            break
+                        }
+                        else -> {
+                            // report to countly?
+                            Timber.e("Unknown apk signature $upperSignature")
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     companion object {
         const val KEY_TORRENT_DOWNLOAD_ID = "torrent_download_id_key"
         const val KEY_PLUGIN_DOWNLOAD_ID = "plugin_download_id_key"
         const val KEY_LAST_BACK_PRESS = "last_back_press_key"
         const val KEY_REFRESHING_TOKEN = "refreshing_token_key"
         const val KEY_FSM_AUTH_STATE = "fsm_auth_state_key"
+        const val KEY_LAST_UPDATE_VERSION_CHECKED = "last_update_version_checked_key"
     }
 }
 
 sealed class MainActivityMessage {
     data class StringID(val id: Int) : MainActivityMessage()
     data class InstalledPlugins(val number: Int) : MainActivityMessage()
+    data class UpdateFound(val signature: String) : MainActivityMessage()
 }

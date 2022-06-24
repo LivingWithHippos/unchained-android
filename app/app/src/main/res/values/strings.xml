@@ -601,4 +601,8 @@
     <string name="invalid_package">Invalid package</string>
     <string name="delete_all_downloads">Delete all downloads</string>
     <string name="delete_all_torrents">Delete all torrents</string>
+    <string name="fdroid_update_description">A new app version has been found on F-Droid</string>
+    <string name="playstore_update_description">A newer app version has been found on the Play Store</string>
+    <string name="github_update_description">A new app version has been found on Github</string>
+    <string name="new_update">Update available</string>
 </resources>

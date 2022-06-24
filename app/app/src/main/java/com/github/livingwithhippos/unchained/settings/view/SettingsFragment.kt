@@ -91,7 +91,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
     private fun setupKodi() {
 
         findPreference<Preference>("kodi_remote_control_info")?.setOnPreferenceClickListener {
-            openExternalWebPage("https://kodi.wiki/view/Settings/Services/Control")
+            context?.openExternalWebPage("https://kodi.wiki/view/Settings/Services/Control") ?: false
         }
         findPreference<Preference>("kodi_list_editor")?.setOnPreferenceClickListener {
             openKodiManagementDialog()
@@ -137,8 +137,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     override fun onPreferenceTreeClick(preference: Preference): Boolean {
         when (preference.key) {
-            "feedback" -> openExternalWebPage(FEEDBACK_URL)
-            "license" -> openExternalWebPage(GPLV3_URL)
+            "feedback" -> context?.openExternalWebPage(FEEDBACK_URL)
+            "license" -> context?.openExternalWebPage(GPLV3_URL)
             "credits" -> openCreditsDialog()
             "terms" -> openTermsDialog()
             "privacy" -> openPrivacyDialog()
@@ -146,7 +146,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 viewModel.updateRegexps()
                 context?.showToast(R.string.updating_link_matcher)
             }
-            "open_github_plugins" -> openExternalWebPage(PLUGINS_URL)
+            "open_github_plugins" -> context?.openExternalWebPage(PLUGINS_URL)
             "test_kodi" -> testKodiConnection()
             "delete_external_plugins" -> {
                 val removedPlugins = viewModel.removeExternalPlugins(requireContext())

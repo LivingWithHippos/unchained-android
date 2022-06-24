@@ -353,7 +353,7 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
                     setPositiveButton(R.string.open_github) { _, _ ->
                         viewModel.setPluginDialogNeeded(false)
                         // User clicked OK button
-                        openExternalWebPage(PLUGINS_URL)
+                        context.openExternalWebPage(PLUGINS_URL)
                     }
                     setNegativeButton(R.string.close) { _, _ ->
                         viewModel.setPluginDialogNeeded(false)

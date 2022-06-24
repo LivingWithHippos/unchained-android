@@ -37,7 +37,7 @@ class SearchItemFragment : UnchainedFragment(), LinkItemListener {
 
         binding.linkCaption.setOnClickListener {
             if (item.link != null)
-                openExternalWebPage(item.link)
+                context?.openExternalWebPage(item.link)
         }
 
         val adapter = LinkItemAdapter(this)

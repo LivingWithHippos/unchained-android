@@ -24,6 +24,9 @@ import com.github.livingwithhippos.unchained.data.remote.TorrentsApi
 import com.github.livingwithhippos.unchained.data.remote.UnrestrictApi
 import com.github.livingwithhippos.unchained.data.remote.UnrestrictApiHelper
 import com.github.livingwithhippos.unchained.data.remote.UnrestrictApiHelperImpl
+import com.github.livingwithhippos.unchained.data.remote.UpdateApi
+import com.github.livingwithhippos.unchained.data.remote.UpdateApiHelper
+import com.github.livingwithhippos.unchained.data.remote.UpdateApiHelperImpl
 import com.github.livingwithhippos.unchained.data.remote.UserApi
 import com.github.livingwithhippos.unchained.data.remote.UserApiHelper
 import com.github.livingwithhippos.unchained.data.remote.UserApiHelperImpl
@@ -268,6 +271,18 @@ object ApiFactory {
     @Provides
     @Singleton
     fun provideVariousApiHelper(apiHelper: VariousApiHelperImpl): VariousApiHelper =
+        apiHelper
+
+    // update api injection
+    @Provides
+    @Singleton
+    fun provideUpdateApi(@ApiRetrofit retrofit: Retrofit): UpdateApi {
+        return retrofit.create(UpdateApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideUpdateApiHelper(apiHelper: UpdateApiHelperImpl): UpdateApiHelper =
         apiHelper
 
     // custom download injection

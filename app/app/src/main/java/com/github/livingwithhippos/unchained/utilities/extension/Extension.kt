@@ -218,14 +218,14 @@ fun Uri.getFileName(context: Context): String {
  * @param showErrorToast: set to true if an error toast should be displayed
  * @return true if the passed url is correct, false otherwise
  */
-fun Fragment.openExternalWebPage(url: String, showErrorToast: Boolean = true): Boolean {
+fun Context.openExternalWebPage(url: String, showErrorToast: Boolean = true): Boolean {
     // this pattern accepts everything that is something.tld since there were too many new tlds and Google gave up updating their regex
     if (url.isWebUrl()) {
         val webIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
         startActivity(webIntent)
         return true
     } else if (showErrorToast)
-        context?.showToast(R.string.invalid_url)
+        showToast(R.string.invalid_url)
 
     return false
 }
@@ -428,3 +428,5 @@ fun AssetManager.smartList(path: String): Array<String>? {
             return this.list(path.dropLast(1))
     return result
 }
+
+fun ByteArray.toHex(): String = joinToString(separator = "") { eachByte -> "%02x".format(eachByte) }

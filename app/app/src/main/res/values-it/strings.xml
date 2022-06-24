@@ -387,4 +387,8 @@
     <string name="invalid_package">Package non valido</string>
     <string name="delete_all_downloads">Elimina tutti i download</string>
     <string name="delete_all_torrents">Elimina tutti i torrent</string>
+    <string name="playstore_update_description">Una versione più recente della app è stata trovata sul Play Store</string>
+    <string name="new_update">Aggiornamento disponibile</string>
+    <string name="github_update_description">Una versione più recente della app è stata trovata su Github</string>
+    <string name="fdroid_update_description">Una versione più recente della app è stata trovata su F-Droid</string>
 </resources>
