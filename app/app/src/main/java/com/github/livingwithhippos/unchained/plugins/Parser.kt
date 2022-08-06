@@ -354,6 +354,7 @@ class Parser(
             magnets = magnets.toList(),
             torrents = torrents.toList(),
             hosting = hosting.toList(),
+            isCached = false
         )
     }
 
@@ -489,6 +490,7 @@ class Parser(
                             magnets = magnets.toList(),
                             torrents = torrents.toList(),
                             hosting = hosting.toList(),
+                            isCached = false
                         )
                     )
             }
@@ -746,7 +748,8 @@ class Parser(
                         parseCommonSize(size.getOrNull(index)),
                         if (magnets.getOrNull(index) != null) listOf(magnets[index]) else emptyList(),
                         if (torrents.getOrNull(index) != null) listOf(torrents[index]) else emptyList(),
-                        if (hosting.getOrNull(index) != null) listOf(hosting[index]) else emptyList()
+                        if (hosting.getOrNull(index) != null) listOf(hosting[index]) else emptyList(),
+                        false
                     )
                 )
             }

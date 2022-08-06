@@ -15,6 +15,7 @@ data class ScrapedItem(
     val magnets: List<String>,
     val torrents: List<String>,
     val hosting: List<String>,
+    var isCached: Boolean = false
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString()!!,
@@ -25,7 +26,8 @@ data class ScrapedItem(
         parcel.readDouble(),
         parcel.createStringArrayList() ?: emptyList(),
         parcel.createStringArrayList() ?: emptyList(),
-        parcel.createStringArrayList() ?: emptyList()
+        parcel.createStringArrayList() ?: emptyList(),
+        parcel.readBoolean(),
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -38,6 +40,7 @@ data class ScrapedItem(
         parcel.writeStringList(magnets)
         parcel.writeStringList(torrents)
         parcel.writeStringList(hosting)
+        parcel.writeBoolean(isCached)
     }
 
     override fun describeContents(): Int {

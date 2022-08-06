@@ -31,6 +31,7 @@ import com.github.livingwithhippos.unchained.plugins.model.ScrapedItem
 import com.github.livingwithhippos.unchained.search.model.SearchItemAdapter
 import com.github.livingwithhippos.unchained.search.model.SearchItemListener
 import com.github.livingwithhippos.unchained.search.viewmodel.SearchViewModel
+import com.github.livingwithhippos.unchained.utilities.MAGNET_PATTERN
 import com.github.livingwithhippos.unchained.utilities.PLUGINS_PACK_FOLDER
 import com.github.livingwithhippos.unchained.utilities.PLUGINS_PACK_LINK
 import com.github.livingwithhippos.unchained.utilities.PLUGINS_PACK_NAME
@@ -49,6 +50,8 @@ import java.io.File
 class SearchFragment : UnchainedFragment(), SearchItemListener {
 
     private val viewModel: SearchViewModel by viewModels()
+
+    private val magnetPattern = Regex(MAGNET_PATTERN, RegexOption.IGNORE_CASE)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -201,6 +204,12 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
         binding.tfSearch.setEndIconOnClickListener {
             performSearch(binding, adapter)
         }
+
+        viewModel.cacheLiveData.observe(viewLifecycleOwner) {
+            if (it.isNotEmpty()) {
+                submitCachedList(it, adapter)
+            }
+        }
     }
 
     private fun showSortingPopup(
@@ -268,12 +277,14 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
                     searchAdapter.notifyDataSetChanged()
                 }
                 is ParserResult.SearchStarted -> {
+                    searchAdapter.submitList(emptyList())
                     binding.sortingButton.visibility = View.INVISIBLE
                     binding.loadingCircle.visibility = View.VISIBLE
                 }
                 is ParserResult.SearchFinished -> {
                     binding.loadingCircle.visibility = View.INVISIBLE
                     binding.sortingButton.visibility = View.VISIBLE
+                    // update the data with cached results
                 }
                 is ParserResult.EmptyInnerLinks -> {
                     context?.showToast(R.string.no_links)
@@ -282,7 +293,8 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
                     binding.sortingButton.visibility = View.VISIBLE
                 }
                 else -> {
-                    Timber.d(result.toString())
+                    Timber.d("Unexpected result: $result")
+                    searchAdapter.submitList(emptyList())
                     binding.loadingCircle.visibility = View.INVISIBLE
                     binding.sortingButton.visibility = View.VISIBLE
                 }
@@ -299,6 +311,16 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
             FolderListFragment.TAG_SORT_SIZE_ASC -> R.drawable.icon_sort_size_asc
             else -> R.drawable.icon_sort_default
         }
+    }
+
+    private fun submitCachedList(cache: Set<String>, adapter: SearchItemAdapter) {
+        // alternatively get results from the viewModel
+        val items = adapter.currentList.map { it.apply {
+            val btih = magnetPattern.find(it.magnets.first())?.groupValues?.get(1)?.uppercase()
+            if (cache.contains(btih))
+                isCached = true
+        } }
+        submitSortedList(adapter, items)
     }
 
     private fun submitSortedList(

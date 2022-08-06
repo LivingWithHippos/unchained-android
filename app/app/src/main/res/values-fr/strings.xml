@@ -395,4 +395,5 @@
     <string name="new_update">Mise à jour disponible</string>
     <string name="github_update_description">Une nouvelle version de l\'application a été trouvée sur Github</string>
     <string name="fdroid_update_description">Une nouvelle version de l\'application a été trouvée sur F-Droid</string>
+    <string name="cached">En cachette</string>
 </resources>
