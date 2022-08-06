@@ -27,7 +27,7 @@ data class ScrapedItem(
         parcel.createStringArrayList() ?: emptyList(),
         parcel.createStringArrayList() ?: emptyList(),
         parcel.createStringArrayList() ?: emptyList(),
-        parcel.readBoolean(),
+        parcel.readByte() != 0.toByte(),
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -40,7 +40,7 @@ data class ScrapedItem(
         parcel.writeStringList(magnets)
         parcel.writeStringList(torrents)
         parcel.writeStringList(hosting)
-        parcel.writeBoolean(isCached)
+        parcel.writeByte(if (isCached) 1 else 0)
     }
 
     override fun describeContents(): Int {
