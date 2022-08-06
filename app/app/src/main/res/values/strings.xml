@@ -605,4 +605,5 @@
     <string name="playstore_update_description">A newer app version has been found on the Play Store</string>
     <string name="github_update_description">A new app version has been found on Github</string>
     <string name="new_update">Update available</string>
+    <string name="cached">Cached</string>
 </resources>

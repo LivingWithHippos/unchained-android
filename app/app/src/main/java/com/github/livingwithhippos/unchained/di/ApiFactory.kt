@@ -2,7 +2,9 @@ package com.github.livingwithhippos.unchained.di
 
 import android.content.SharedPreferences
 import com.github.livingwithhippos.unchained.BuildConfig
+import com.github.livingwithhippos.unchained.data.model.CachedTorrentAdapter
 import com.github.livingwithhippos.unchained.data.model.EmptyBodyInterceptor
+import com.github.livingwithhippos.unchained.data.model.RdCache
 import com.github.livingwithhippos.unchained.data.remote.AuthApiHelper
 import com.github.livingwithhippos.unchained.data.remote.AuthApiHelperImpl
 import com.github.livingwithhippos.unchained.data.remote.AuthenticationApi
@@ -169,6 +171,7 @@ object ApiFactory {
     @ApiRetrofit
     fun apiRetrofit(@ClassicClient okHttpClient: OkHttpClient): Retrofit {
         val moshi = Moshi.Builder()
+            .add(CachedTorrentAdapter.factory<Map<String, RdCache>>())
             .add(KotlinJsonAdapterFactory())
             .build()
 

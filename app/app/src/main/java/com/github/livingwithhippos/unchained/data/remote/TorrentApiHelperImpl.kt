@@ -1,6 +1,8 @@
 package com.github.livingwithhippos.unchained.data.remote
 
 import com.github.livingwithhippos.unchained.data.model.AvailableHost
+import com.github.livingwithhippos.unchained.data.model.InstantAvailability
+import com.github.livingwithhippos.unchained.data.model.RdCache
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.data.model.UploadedTorrent
 import okhttp3.RequestBody
@@ -40,4 +42,9 @@ class TorrentApiHelperImpl @Inject constructor(private val torrentsApi: Torrents
 
     override suspend fun deleteTorrent(token: String, id: String) =
         torrentsApi.deleteTorrent(token, id)
+
+    override suspend fun getInstantAvailability(
+        token: String,
+        url: String
+    ): Response<Map<String, RdCache>> = torrentsApi.getInstantAvailability(token, url)
 }

@@ -1,6 +1,8 @@
 package com.github.livingwithhippos.unchained.data.repository
 
 import com.github.livingwithhippos.unchained.data.model.AvailableHost
+import com.github.livingwithhippos.unchained.data.model.InstantAvailability
+import com.github.livingwithhippos.unchained.data.model.RdCache
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkException
 import com.github.livingwithhippos.unchained.data.model.UploadedTorrent
@@ -143,6 +145,24 @@ class TorrentsRepository @Inject constructor(private val torrentApiHelper: Torre
                 )
             },
             errorMessage = "Error deleting Torrent"
+        )
+
+        return response
+    }
+
+    suspend fun getInstantAvailability(
+        token: String,
+        url: String
+    ): EitherResult<UnchainedNetworkException, Map<String, RdCache>> {
+
+        val response = eitherApiResult(
+            call = {
+                torrentApiHelper.getInstantAvailability(
+                    token = "Bearer $token",
+                    url = url
+                )
+            },
+            errorMessage = "Error getting cached torrent files"
         )
 
         return response

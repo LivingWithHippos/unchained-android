@@ -7,7 +7,6 @@ import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Build
-import android.os.Build.VERSION_CODES
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -21,6 +20,8 @@ import com.github.livingwithhippos.unchained.data.model.ApiConversionError
 import com.github.livingwithhippos.unchained.data.model.EmptyBodyError
 import com.github.livingwithhippos.unchained.data.model.KodiDevice
 import com.github.livingwithhippos.unchained.data.model.NetworkError
+import com.github.livingwithhippos.unchained.data.model.RdCache
+import com.github.livingwithhippos.unchained.data.model.CachedTorrentAdapter
 import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkException
 import com.github.livingwithhippos.unchained.data.model.User
 import com.github.livingwithhippos.unchained.data.model.UserAction
@@ -30,12 +31,12 @@ import com.github.livingwithhippos.unchained.data.repository.HostsRepository
 import com.github.livingwithhippos.unchained.data.repository.KodiDeviceRepository
 import com.github.livingwithhippos.unchained.data.repository.PluginRepository
 import com.github.livingwithhippos.unchained.data.repository.PluginRepository.Companion.TYPE_UNCHAINED
+import com.github.livingwithhippos.unchained.data.repository.TorrentsRepository
 import com.github.livingwithhippos.unchained.data.repository.UpdateRepository
 import com.github.livingwithhippos.unchained.data.repository.UserRepository
 import com.github.livingwithhippos.unchained.data.repository.VariousApiRepository
 import com.github.livingwithhippos.unchained.lists.view.ListState
 import com.github.livingwithhippos.unchained.plugins.model.Plugin
-import com.github.livingwithhippos.unchained.settings.view.SettingsFragment
 import com.github.livingwithhippos.unchained.statemachine.authentication.CurrentFSMAuthentication
 import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationEvent
 import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationSideEffect
@@ -50,6 +51,8 @@ import com.github.livingwithhippos.unchained.utilities.extension.getDownloadedFi
 import com.github.livingwithhippos.unchained.utilities.extension.isMagnet
 import com.github.livingwithhippos.unchained.utilities.extension.isTorrent
 import com.github.livingwithhippos.unchained.utilities.postEvent
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.Types
 import com.tinder.StateMachine
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -84,6 +87,7 @@ class MainActivityViewModel @Inject constructor(
     private val kodiDeviceRepository: KodiDeviceRepository,
     private val customDownloadRepository: CustomDownloadRepository,
     private val updateRepository: UpdateRepository,
+    private val torrentsRepository: TorrentsRepository,
 ) : ViewModel() {
 
     val fsmAuthenticationState = MutableLiveData<Event<FSMAuthenticationState>?>()
@@ -1096,7 +1100,7 @@ class MainActivityViewModel @Inject constructor(
                         }
                         else -> {
                             // report to countly?
-                            Timber.e("Unknown apk signature $upperSignature")
+                            Timber.e("Unknown apk signature, may be debugging: $upperSignature")
                         }
                     }
                 }

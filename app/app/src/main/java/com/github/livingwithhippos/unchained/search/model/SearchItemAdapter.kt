@@ -14,7 +14,7 @@ class SearchItemAdapter(listener: SearchItemListener) :
             oldItem.link == newItem.link
 
         override fun areContentsTheSame(oldItem: ScrapedItem, newItem: ScrapedItem): Boolean {
-            return oldItem.magnets.size == newItem.magnets.size && oldItem.torrents.size == newItem.torrents.size
+            return oldItem.magnets.size == newItem.magnets.size && oldItem.torrents.size == newItem.torrents.size && oldItem.isCached == newItem.isCached
         }
     }
 
