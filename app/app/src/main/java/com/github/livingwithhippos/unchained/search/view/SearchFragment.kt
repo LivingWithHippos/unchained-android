@@ -321,6 +321,7 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
                 isCached = true
         } }
         submitSortedList(adapter, items)
+        adapter.notifyDataSetChanged()
     }
 
     private fun submitSortedList(
