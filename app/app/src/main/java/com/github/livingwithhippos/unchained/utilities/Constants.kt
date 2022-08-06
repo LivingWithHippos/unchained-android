@@ -6,6 +6,7 @@ const val OPEN_SOURCE_GRANT_TYPE = "http://oauth.net/grant_type/device/1.0"
 
 const val BASE_URL = "https://api.real-debrid.com/rest/1.0/"
 const val BASE_AUTH_URL = "https://api.real-debrid.com/oauth/v2/"
+const val INSTANT_AVAILABILITY_ENDPOINT = "torrents/instantAvailability"
 const val REFERRAL_LINK = "http://real-debrid.com/?id=78841"
 const val PREMIUM_LINK = "https://real-debrid.com/premium"
 const val ACCOUNT_LINK = "https://real-debrid.com/account"
@@ -23,7 +24,7 @@ const val PRIVATE_TOKEN: String = "private_token"
 const val REMOTE_TRAFFIC_OFF: Int = 0
 const val REMOTE_TRAFFIC_ON: Int = 1
 
-const val MAGNET_PATTERN: String = "magnet:\\?xt=urn:btih:[a-zA-Z0-9]{32}"
+const val MAGNET_PATTERN: String = "magnet:\\?xt=urn:btih:([a-zA-Z0-9]{32,})"
 const val TORRENT_PATTERN: String = "https?://[^\\s]{7,}\\.torrent"
 const val CONTAINER_PATTERN: String = "https?://[^\\s]{7,}\\.(rsdf|ccf3|ccf|dlc)"
 const val CONTAINER_EXTENSION_PATTERN: String = "[^\\s]+\\.(rsdf|ccf3|ccf|dlc)$"
