@@ -373,7 +373,7 @@ class Parser(
             if (match != null)
                 return match.toDouble() * 1024
 
-            match = genericPatter.find(rawSize)?.groupValues?.get(1)
+            match = genericPatter.find(rawSize)?.value
             return match?.toDouble()
         } catch (e: NumberFormatException) {
             return null
