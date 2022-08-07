@@ -2,6 +2,7 @@ package com.github.livingwithhippos.unchained.downloaddetails.view
 
 import android.Manifest
 import android.app.DownloadManager
+import android.content.ActivityNotFoundException
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -41,6 +42,7 @@ import com.github.livingwithhippos.unchained.utilities.extension.openExternalWeb
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 /**
  * A simple [UnchainedFragment] subclass.
@@ -207,7 +209,12 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
     }
 
     override fun onOpenClick(url: String) {
-        context?.openExternalWebPage(url)
+        try {
+            context?.openExternalWebPage(url)
+        } catch (e: ActivityNotFoundException) {
+            Timber.e("Error opening externally a link ${e.message}")
+            context?.showToast(R.string.no_supported_player_found)
+        }
     }
 
     override fun onOpenWithKodi(url: String) {
@@ -224,7 +231,11 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
     }
 
     override fun onBrowserStreamsClick(id: String) {
-        context?.openExternalWebPage(RD_STREAMING_URL + id)
+        try {
+            context?.openExternalWebPage(RD_STREAMING_URL + id)
+        } catch (e: ActivityNotFoundException) {
+            context?.showToast(R.string.browser_not_found)
+        }
     }
 
     override fun onDownloadClick(link: String, fileName: String) {
