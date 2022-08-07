@@ -693,10 +693,6 @@ class Parser(
     ): List<ScrapedItem> {
         val directItems = mutableListOf<ScrapedItem>()
 
-        val magnetRegex = regexes.magnetRegex?.regexps
-        val torrentsRegex = regexes.torrentRegexes?.regexps
-        val hostingRegex = regexes.hostingRegexes?.regexps
-
         val doc: Document = Jsoup.parse(source)
         val entries: Elements = doc.getElementsByClass(parser.entryClass)
         for (entry in entries) {

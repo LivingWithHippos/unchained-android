@@ -219,6 +219,7 @@ fun Uri.getFileName(context: Context): String {
  * @return true if the passed url is correct, false otherwise
  */
 fun Context.openExternalWebPage(url: String, showErrorToast: Boolean = true): Boolean {
+    // todo: check if app supporting this index are available, otherwise android.content.ActivityNotFoundException can be thrown by this
     // this pattern accepts everything that is something.tld since there were too many new tlds and Google gave up updating their regex
     if (url.isWebUrl()) {
         val webIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
