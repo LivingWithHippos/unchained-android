@@ -10,6 +10,7 @@ import com.github.livingwithhippos.unchained.plugins.model.PluginRegexes
 import com.github.livingwithhippos.unchained.plugins.model.RegexpsGroup
 import com.github.livingwithhippos.unchained.plugins.model.ScrapedItem
 import com.github.livingwithhippos.unchained.plugins.model.TableParser
+import com.github.livingwithhippos.unchained.search.view.SearchFragment
 import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Companion.KEY_USE_DOH
 import com.github.livingwithhippos.unchained.utilities.extension.removeWebFormatting
 import kotlinx.coroutines.Dispatchers
@@ -358,22 +359,22 @@ class Parser(
         )
     }
 
-    private fun parseCommonSize(size: String?): Double? {
+    private fun parseCommonSize(rawSize: String?): Double? {
         try {
+            if (rawSize.isNullOrBlank())
+                return null
+            var match = kbPattern.find(rawSize)?.groupValues?.get(1)
+            if (match != null)
+                return match.toDouble() / 1024
+            match = mbPattern.find(rawSize)?.groupValues?.get(1)
+            if (match != null)
+                return match.toDouble()
+            match = gbPattern.find(rawSize)?.groupValues?.get(1)
+            if (match != null)
+                return match.toDouble() * 1024
 
-            size ?: return null
-
-            val numbers = "[\\d.]+".toRegex().find(size)?.value ?: return null
-
-            val baseSize = numbers.toDouble()
-            if (size.contains("gb", ignoreCase = true)) {
-                return baseSize * 1024 * 1024
-            }
-            if (size.contains("mb", ignoreCase = true)) {
-                return baseSize * 1024
-            }
-            // KiloBytes are already at the size I need
-            return baseSize
+            match = genericPatter.find(rawSize)?.groupValues?.get(1)
+            return match?.toDouble()
         } catch (e: NumberFormatException) {
             return null
         }
@@ -790,6 +791,11 @@ class Parser(
          * 2.1: added direct parsing mode
          */
         const val PLUGIN_ENGINE_VERSION: Float = 2.1f
+
+        val kbPattern = "\\s*(\\d\\d*\\.?\\d*)\\s*[kK]".toRegex()
+        val mbPattern = "\\s*(\\d\\d*\\.?\\d*)\\s*[mM]".toRegex()
+        val gbPattern = "\\s*(\\d\\d*\\.?\\d*)\\s*[gG]".toRegex()
+        val genericPatter = "\\d\\d*\\.?\\d*".toRegex()
     }
 }
 
