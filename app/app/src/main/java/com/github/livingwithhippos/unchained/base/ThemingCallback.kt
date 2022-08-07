@@ -31,8 +31,8 @@ class ThemingCallback(val preferences: SharedPreferences) : Application.Activity
         }
         activity.setTheme(themeID)
         // todo: check if this can be avoided, android:navigationBarColor in xml is not working
-        activity.window.statusBarColor = activity.getThemeColor(R.attr.colorSurface)
-        activity.window.navigationBarColor = activity.getThemeColor(R.attr.colorPrimary)
+        activity.window.statusBarColor = activity.getThemeColor(R.attr.customStatusBarColor)
+        activity.window.navigationBarColor = activity.getThemeColor(R.attr.customNavigationBarColor)
     }
 
     override fun onActivityStarted(activity: Activity) {
