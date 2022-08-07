@@ -370,16 +370,20 @@ data class DirectParser(
     @Json(name = "class")
     val className: String?,
     @Json(name = "id")
-    val idName: String?
+    val idName: String?,
+    @Json(name = "entry-class")
+    val entryClass: String
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString(),
         parcel.readString(),
+        parcel.readString() ?: "",
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(className)
         parcel.writeString(idName)
+        parcel.writeString(entryClass)
     }
 
     override fun describeContents(): Int {
