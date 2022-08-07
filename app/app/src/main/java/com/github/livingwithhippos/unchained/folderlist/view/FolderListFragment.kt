@@ -350,7 +350,7 @@ class FolderListFragment : Fragment(), DownloadListListener {
         binding.sortingButton.background = requireContext().getThemedDrawable(sortDrawableID)
 
         binding.sortingButton.setOnClickListener {
-            showSortingPopup(it, R.menu.sorting_popup, adapter, binding.rvFolderList)
+            showSortingPopup(it, R.menu.folder_sorting_popup, adapter, binding.rvFolderList)
         }
 
         // load all the links
