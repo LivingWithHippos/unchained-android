@@ -1,7 +1,6 @@
 package com.github.livingwithhippos.unchained.data.repository
 
 import com.github.livingwithhippos.unchained.data.model.AvailableHost
-import com.github.livingwithhippos.unchained.data.model.InstantAvailability
 import com.github.livingwithhippos.unchained.data.model.RdCache
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkException

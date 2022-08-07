@@ -20,8 +20,6 @@ import com.github.livingwithhippos.unchained.data.model.ApiConversionError
 import com.github.livingwithhippos.unchained.data.model.EmptyBodyError
 import com.github.livingwithhippos.unchained.data.model.KodiDevice
 import com.github.livingwithhippos.unchained.data.model.NetworkError
-import com.github.livingwithhippos.unchained.data.model.RdCache
-import com.github.livingwithhippos.unchained.data.model.CachedTorrentAdapter
 import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkException
 import com.github.livingwithhippos.unchained.data.model.User
 import com.github.livingwithhippos.unchained.data.model.UserAction
@@ -51,8 +49,6 @@ import com.github.livingwithhippos.unchained.utilities.extension.getDownloadedFi
 import com.github.livingwithhippos.unchained.utilities.extension.isMagnet
 import com.github.livingwithhippos.unchained.utilities.extension.isTorrent
 import com.github.livingwithhippos.unchained.utilities.postEvent
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.Types
 import com.tinder.StateMachine
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -1082,20 +1078,20 @@ class MainActivityViewModel @Inject constructor(
             // ignore errors getting updates?
             // todo: Add a toast if a button to check updates is added
             val updates = updateRepository.getUpdates(SIGNATURE.URL)
-            if (updates!=null) {
+            if (updates != null) {
                 val lastVersionChecked = preferences.getInt(KEY_LAST_UPDATE_VERSION_CHECKED, -1)
                 for (signature in signatures) {
-                    when(val upperSignature = signature.uppercase()) {
+                    when (val upperSignature = signature.uppercase()) {
                         SIGNATURE.F_DROID -> {
-                            checkUpdateVersion(versionCode,updates.fDroid?.versionCode,lastVersionChecked,upperSignature)
+                            checkUpdateVersion(versionCode, updates.fDroid?.versionCode, lastVersionChecked, upperSignature)
                             break
                         }
                         SIGNATURE.GITHUB -> {
-                            checkUpdateVersion(versionCode,updates.github?.versionCode,lastVersionChecked,upperSignature)
+                            checkUpdateVersion(versionCode, updates.github?.versionCode, lastVersionChecked, upperSignature)
                             break
                         }
                         SIGNATURE.PLAY_STORE -> {
-                            checkUpdateVersion(versionCode,updates.playStore?.versionCode,lastVersionChecked,upperSignature)
+                            checkUpdateVersion(versionCode, updates.playStore?.versionCode, lastVersionChecked, upperSignature)
                             break
                         }
                         else -> {

@@ -319,11 +319,13 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
 
     private fun submitCachedList(cache: Set<String>, adapter: SearchItemAdapter) {
         // alternatively get results from the viewModel
-        val items = adapter.currentList.map { it.apply {
-            val btih = magnetPattern.find(it.magnets.first())?.groupValues?.get(1)?.uppercase()
-            if (cache.contains(btih))
-                isCached = true
-        } }
+        val items = adapter.currentList.map {
+            it.apply {
+                val btih = magnetPattern.find(it.magnets.first())?.groupValues?.get(1)?.uppercase()
+                if (cache.contains(btih))
+                    isCached = true
+            }
+        }
         submitSortedList(adapter, items)
         adapter.notifyDataSetChanged()
     }

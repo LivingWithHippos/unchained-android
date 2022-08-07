@@ -64,7 +64,6 @@ import timber.log.Timber
 import java.security.MessageDigest
 import javax.inject.Inject
 
-
 /**
  * A [AppCompatActivity] subclass.
  * Shared between all the fragments except for the preferences.
@@ -85,7 +84,6 @@ class MainActivity : AppCompatActivity() {
         TelemetryManager.onStop()
         super.onStop()
     }
-
 
     private fun getApplicationSignatures(packageName: String = getPackageName()): List<String> {
         val signatureList: List<String>
@@ -590,9 +588,11 @@ class MainActivity : AppCompatActivity() {
      */
     private fun setupBottomNavigationBar(binding: ActivityMainBinding) {
 
-        navController = (supportFragmentManager.findFragmentById(
-            R.id.nav_host_fragment
-        ) as NavHostFragment).navController
+        navController = (
+            supportFragmentManager.findFragmentById(
+                R.id.nav_host_fragment
+            ) as NavHostFragment
+            ).navController
         binding.bottomNavView.setupWithNavController(navController)
 
         // Setup the ActionBar with navController and 3 top level destinations

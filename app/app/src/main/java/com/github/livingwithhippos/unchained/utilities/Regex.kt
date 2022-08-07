@@ -1,8 +1,5 @@
 package com.github.livingwithhippos.unchained.utilities
 
-import com.github.livingwithhippos.unchained.plugins.Parser
-
-
 val kbPattern = "\\s*(\\d\\d*\\.?\\d*)\\s*[kK]".toRegex()
 val mbPattern = "\\s*(\\d\\d*\\.?\\d*)\\s*[mM]".toRegex()
 val gbPattern = "\\s*(\\d\\d*\\.?\\d*)\\s*[gG]".toRegex()

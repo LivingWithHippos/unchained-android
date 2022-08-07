@@ -8,7 +8,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.livingwithhippos.unchained.data.local.ProtoStore
-import com.github.livingwithhippos.unchained.data.model.RdCache
 import com.github.livingwithhippos.unchained.data.repository.PluginRepository
 import com.github.livingwithhippos.unchained.data.repository.TorrentsRepository
 import com.github.livingwithhippos.unchained.folderlist.view.FolderListFragment
@@ -47,7 +46,7 @@ class SearchViewModel @Inject constructor(
     private val parsingLiveData = MutableLiveData<ParserResult>()
 
     private val _cacheLiveData = MutableLiveData<Set<String>>()
-    val cacheLiveData : LiveData<Set<String>> = _cacheLiveData
+    val cacheLiveData: LiveData<Set<String>> = _cacheLiveData
 
     private val magnetPattern = Regex(MAGNET_PATTERN, RegexOption.IGNORE_CASE)
 

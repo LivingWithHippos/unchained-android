@@ -10,7 +10,6 @@ import com.squareup.moshi.Types
 import com.squareup.moshi.internal.Util
 import java.lang.reflect.Type
 
-
 class CachedTorrentAdapter(
     private val rdCacheAdapter: JsonAdapter<RdCache>
 ) : JsonAdapter<Map<String, RdCache>>() {
@@ -45,7 +44,7 @@ class CachedTorrentAdapter(
     }
 
     @ToJson
-    override fun toJson(writer: JsonWriter, value_: Map<String, RdCache>?): Unit {
+    override fun toJson(writer: JsonWriter, value_: Map<String, RdCache>?) {
         if (value_ == null) {
             throw NullPointerException("value_ was null! Wrap in .nullSafe() to write nullable values.")
         }

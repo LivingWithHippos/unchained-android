@@ -1,7 +1,6 @@
 package com.github.livingwithhippos.unchained.data.remote
 
 import com.github.livingwithhippos.unchained.data.model.AvailableHost
-import com.github.livingwithhippos.unchained.data.model.InstantAvailability
 import com.github.livingwithhippos.unchained.data.model.RdCache
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.data.model.UploadedTorrent
@@ -92,7 +91,6 @@ interface TorrentsApi {
         @Header("Authorization") token: String,
         @Path("id") id: String,
     ): Response<Unit>
-
 
     /**
      * Check if any file of a torrent/magnet is already cached using their hashes

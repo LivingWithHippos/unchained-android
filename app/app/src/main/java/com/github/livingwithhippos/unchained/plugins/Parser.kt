@@ -10,7 +10,6 @@ import com.github.livingwithhippos.unchained.plugins.model.PluginRegexes
 import com.github.livingwithhippos.unchained.plugins.model.RegexpsGroup
 import com.github.livingwithhippos.unchained.plugins.model.ScrapedItem
 import com.github.livingwithhippos.unchained.plugins.model.TableParser
-import com.github.livingwithhippos.unchained.search.view.SearchFragment
 import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Companion.KEY_USE_DOH
 import com.github.livingwithhippos.unchained.utilities.extension.removeWebFormatting
 import com.github.livingwithhippos.unchained.utilities.parseCommonSize
