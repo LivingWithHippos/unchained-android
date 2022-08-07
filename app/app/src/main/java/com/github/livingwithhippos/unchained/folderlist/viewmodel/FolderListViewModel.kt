@@ -164,7 +164,19 @@ class FolderListViewModel @Inject constructor(
             ?: FolderListFragment.TAG_DEFAULT_SORT
     }
 
+    fun setScrollingAllowed(allow: Boolean) {
+        with(preferences.edit()) {
+            putBoolean(KEY_ALLOW_SCROLLING, allow)
+            apply()
+        }
+    }
+
+    fun getScrollingAllowed(): Boolean {
+        return preferences.getBoolean(KEY_ALLOW_SCROLLING, true)
+    }
+
     companion object {
+        const val KEY_ALLOW_SCROLLING = "allow_scrolling"
         const val KEY_RETRIEVED_LINKS = "retrieve_links"
         const val KEY_LIST_FILTER_SIZE = "filter_list_size"
         const val KEY_LIST_FILTER_TYPE = "filter_list_type"

@@ -286,11 +286,13 @@ class FolderListFragment : Fragment(), DownloadListListener {
 
         // observe the list loading status
         viewModel.folderLiveData.observe(viewLifecycleOwner) {
-            // todo: if I use just getContent() I can restore on reload?
             it.getContentIfNotHandled()?.let { _ ->
                 updateList(adapter)
-                lifecycleScope.launch {
-                    binding.rvFolderList.delayedScrolling(requireContext(), delay = 500)
+                // scroll only if the results are still coming in
+                if (viewModel.getScrollingAllowed()) {
+                    lifecycleScope.launch {
+                        binding.rvFolderList.delayedScrolling(requireContext(), delay = 500)
+                    }
                 }
             }
         }
@@ -323,9 +325,6 @@ class FolderListFragment : Fragment(), DownloadListListener {
 
         viewModel.queryLiveData.observe(viewLifecycleOwner) {
             updateList(adapter)
-            lifecycleScope.launch {
-                binding.rvFolderList.delayedScrolling(requireContext())
-            }
         }
 
         binding.cbFilterSize.setOnCheckedChangeListener { _, isChecked ->
@@ -364,6 +363,11 @@ class FolderListFragment : Fragment(), DownloadListListener {
                 viewModel.retrieveFiles(args.linkList!!.toList())
             }
         }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel.setScrollingAllowed(true)
     }
 
     private fun showSortingPopup(
@@ -499,6 +503,7 @@ class FolderListFragment : Fragment(), DownloadListListener {
     }
 
     override fun onClick(item: DownloadItem) {
+        viewModel.setScrollingAllowed(false)
         val action =
             FolderListFragmentDirections.actionFolderListFragmentToDownloadDetailsDest(item)
         findNavController().navigate(action)
