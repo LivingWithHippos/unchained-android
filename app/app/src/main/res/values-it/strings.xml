@@ -393,6 +393,6 @@
     <string name="fdroid_update_description">Una versione più recente della app è stata trovata su F-Droid</string>
     <string name="cached">In cache</string>
     <string name="seeders">Seeders</string>
-    <string name="no_supported_player_found">Nessuna app con supporto media trovata</string>
+    <string name="no_supported_player_found">Nessuna app con supporto media trovata. Prova con il bottone condividi.</string>
     <string name="browser_not_found">Nessuna app browser trovata</string>
 </resources>

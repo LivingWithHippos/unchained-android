@@ -397,6 +397,6 @@
     <string name="fdroid_update_description">Une nouvelle version de l\'application a été trouvée sur F-Droid</string>
     <string name="cached">En cachette</string>
     <string name="seeders">Seeders</string>
-    <string name="no_supported_player_found">Aucune application supportant ce média n\'a été trouvée</string>
+    <string name="no_supported_player_found">Aucune application supportant ce média n\'a été trouvée. Essayez avec le bouton de partage.</string>
     <string name="browser_not_found">Aucune application de navigateur trouvée</string>
 </resources>

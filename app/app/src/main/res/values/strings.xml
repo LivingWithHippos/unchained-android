@@ -607,6 +607,6 @@
     <string name="new_update">Update available</string>
     <string name="cached">Cached</string>
     <string name="seeders">Seeders</string>
-    <string name="no_supported_player_found">No app supporting this media was found</string>
+    <string name="no_supported_player_found">No app supporting this media was found. Try with the share button.</string>
     <string name="browser_not_found">No browser app found</string>
 </resources>
