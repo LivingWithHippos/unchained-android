@@ -20,4 +20,8 @@
         android:id="@+id/sortBySizeDesc"
         android:icon="@drawable/icon_sort_size_desc"
         android:title="@string/sort_by_size_desc" />
+    <item
+        android:id="@+id/sortBySeeders"
+        android:icon="@drawable/icon_sort_seeders"
+        android:title="@string/seeders" />
 </menu>

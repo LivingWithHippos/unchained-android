@@ -242,6 +242,9 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
                 R.id.sortBySizeDesc -> {
                     viewModel.setListSortPreference(FolderListFragment.TAG_SORT_SIZE_DESC)
                 }
+                R.id.sortBySeeders -> {
+                    viewModel.setListSortPreference(FolderListFragment.TAG_SORT_SEEDERS)
+                }
             }
             // update the list and scroll it to the top
             submitSortedList(searchAdapter, viewModel.getSearchResults())
@@ -309,6 +312,7 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
             FolderListFragment.TAG_SORT_ZA -> R.drawable.icon_sort_za
             FolderListFragment.TAG_SORT_SIZE_DESC -> R.drawable.icon_sort_size_desc
             FolderListFragment.TAG_SORT_SIZE_ASC -> R.drawable.icon_sort_size_asc
+            FolderListFragment.TAG_SORT_SEEDERS -> R.drawable.icon_sort_seeders
             else -> R.drawable.icon_sort_default
         }
     }
@@ -357,6 +361,16 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
                 adapter.submitList(
                     items.sortedBy { item ->
                         item.parsedSize
+                    }
+                )
+            }
+            FolderListFragment.TAG_SORT_SEEDERS -> {
+                adapter.submitList(
+                    items.sortedByDescending { item ->
+                        if (item.seeders != null) {
+                            digitRegex.find(item.seeders)?.value?.toInt()
+                        } else
+                            null
                     }
                 )
             }
@@ -457,5 +471,9 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
         viewModel.stopSearch()
         val action = SearchFragmentDirections.actionSearchDestToSearchItemFragment(item)
         findNavController().navigate(action)
+    }
+
+    companion object {
+        val digitRegex = "\\d+".toRegex()
     }
 }

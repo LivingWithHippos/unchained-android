@@ -510,5 +510,6 @@ class FolderListFragment : Fragment(), DownloadListListener {
         const val TAG_SORT_ZA = "sort_za_tag"
         const val TAG_SORT_SIZE_ASC = "sort_size_asc_tag"
         const val TAG_SORT_SIZE_DESC = "sort_size_desc_tag"
+        const val TAG_SORT_SEEDERS = "sort_seeders_tag"
     }
 }
