@@ -33,6 +33,7 @@ import com.github.livingwithhippos.unchained.data.repository.TorrentsRepository
 import com.github.livingwithhippos.unchained.data.repository.UpdateRepository
 import com.github.livingwithhippos.unchained.data.repository.UserRepository
 import com.github.livingwithhippos.unchained.data.repository.VariousApiRepository
+import com.github.livingwithhippos.unchained.downloaddetails.viewmodel.DownloadDetailsViewModel
 import com.github.livingwithhippos.unchained.lists.view.ListState
 import com.github.livingwithhippos.unchained.plugins.model.Plugin
 import com.github.livingwithhippos.unchained.statemachine.authentication.CurrentFSMAuthentication
@@ -1104,7 +1105,28 @@ class MainActivityViewModel @Inject constructor(
         }
     }
 
+    fun setDownloadFolder(uri: Uri) {
+        uri.describeContents()
+        with(preferences.edit()) {
+            putString(KEY_DOWNLOAD_FOLDER, uri.toString())
+            apply()
+        }
+    }
+
+    fun getDownloadFolder(): Uri? {
+        val folder = preferences.getString(KEY_DOWNLOAD_FOLDER, null)
+        if (folder != null) {
+            try {
+                return Uri.parse(folder)
+            } catch (e: Exception) {
+                Timber.e("Error parsing the saved folder Uri $folder")
+            }
+        }
+        return null
+    }
+
     companion object {
+        const val KEY_DOWNLOAD_FOLDER = "download_folder_key"
         const val KEY_TORRENT_DOWNLOAD_ID = "torrent_download_id_key"
         const val KEY_PLUGIN_DOWNLOAD_ID = "plugin_download_id_key"
         const val KEY_LAST_BACK_PRESS = "last_back_press_key"

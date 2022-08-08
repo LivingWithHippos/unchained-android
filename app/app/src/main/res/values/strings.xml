@@ -609,4 +609,6 @@
     <string name="seeders">Seeders</string>
     <string name="no_supported_player_found">No app supporting this media was found. Try with the share button.</string>
     <string name="browser_not_found">No browser app found</string>
+    <string name="directory_picked">Directory saved. Start the download again.</string>
+    <string name="permission_granted">Permissions granted, Start the download again.</string>
 </resources>

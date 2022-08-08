@@ -155,6 +155,42 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+
+    private val requestPermissionLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted: Boolean ->
+            if (isGranted) {
+                applicationContext.showToast(R.string.permission_granted)
+            } else {
+                applicationContext.showToast(R.string.needs_download_permission)
+            }
+        }
+
+    private val pickDirectoryLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.OpenDocumentTree()
+        ) {
+            if (it != null) {
+                Timber.d("User has picked a folder $it")
+
+                // permanent permissions
+                val contentResolver = applicationContext.contentResolver
+
+                val takeFlags: Int = Intent.FLAG_GRANT_READ_URI_PERMISSION or
+                        Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+
+                contentResolver.takePersistableUriPermission(it, takeFlags)
+
+                viewModel.setDownloadFolder(it)
+
+                applicationContext.showToast(R.string.directory_picked)
+
+            } else {
+                Timber.d("User has not picked a folder")
+            }
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)

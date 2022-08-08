@@ -395,4 +395,6 @@
     <string name="seeders">Seeders</string>
     <string name="no_supported_player_found">Nessuna app con supporto media trovata. Prova con il bottone condividi.</string>
     <string name="browser_not_found">Nessuna app browser trovata</string>
+    <string name="directory_picked">Cartella impostata. Riavvia il download.</string>
+    <string name="permission_granted">Permessi accordati. Riavvia il download.</string>
 </resources>

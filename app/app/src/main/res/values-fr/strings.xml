@@ -399,4 +399,6 @@
     <string name="seeders">Seeders</string>
     <string name="no_supported_player_found">Aucune application supportant ce média n\'a été trouvée. Essayez avec le bouton de partage.</string>
     <string name="browser_not_found">Aucune application de navigateur trouvée</string>
+    <string name="directory_picked">Répertoire sauvegardé. Recommencez le téléchargement.</string>
+    <string name="permission_granted">Permissions accordées, recommencez le téléchargement.</string>
 </resources>
