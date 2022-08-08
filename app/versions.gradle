@@ -22,9 +22,11 @@ versions.kotlin = "1.7.10"
 versions.ktlint = "10.3.0"
 versions.lifecycle = "2.5.1"
 versions.material = "1.6.1"
+versions.modernstorage = "1.0.0-alpha06"
 versions.moshi = "1.13.0"
 versions.navigation = "2.5.1"
 versions.okhttp = "4.10.0"
+versions.okio = "3.2.0"
 versions.paging = "3.1.1"
 versions.protobuf_plugin = "0.8.19"
 versions.protobuf = "3.21.4"
@@ -146,6 +148,11 @@ deps.lifecycle = lifecycle
 
 deps.material = "com.google.android.material:material:$versions.material"
 
+def modernstorage = [:]
+modernstorage.core = "com.google.modernstorage:modernstorage-storage:$versions.modernstorage"
+modernstorage.permissions = "com.google.modernstorage:modernstorage-permissions:$versions.modernstorage"
+deps.modernstorage = modernstorage
+
 def moshi = [:]
 moshi.runtime = "com.squareup.moshi:moshi-kotlin:$versions.moshi"
 moshi.kapt = "com.squareup.moshi:moshi-kotlin-codegen:$versions.moshi"
@@ -169,6 +176,8 @@ okhttp.runtime = "com.squareup.okhttp3:okhttp:$versions.okhttp"
 okhttp.doh = "com.squareup.okhttp3:okhttp-dnsoverhttps:$versions.okhttp"
 okhttp.logging_interceptor = "com.squareup.okhttp3:logging-interceptor:$versions.okhttp"
 deps.okhttp = okhttp
+
+deps.okio = "com.squareup.okio:okio:$versions.okio"
 
 deps.paging_runtime = "androidx.paging:paging-runtime:$versions.paging"
 
