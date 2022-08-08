@@ -611,4 +611,5 @@
     <string name="browser_not_found">No browser app found</string>
     <string name="directory_picked">Directory saved. Start the download again.</string>
     <string name="permission_granted">Permissions granted, Start the download again.</string>
+    <string name="stop">Stop</string>
 </resources>

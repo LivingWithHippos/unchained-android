@@ -1,23 +1,28 @@
 package com.github.livingwithhippos.unchained.base
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.DownloadManager
 import android.content.BroadcastReceiver
+import android.content.ComponentName
 import android.content.ContentResolver.SCHEME_CONTENT
 import android.content.ContentResolver.SCHEME_FILE
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.ServiceConnection
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.IBinder
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -34,6 +39,7 @@ import com.github.livingwithhippos.unchained.BuildConfig
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.model.UserAction
 import com.github.livingwithhippos.unchained.data.repository.PluginRepository.Companion.TYPE_UNCHAINED
+import com.github.livingwithhippos.unchained.data.service.ForegroundDownloadService
 import com.github.livingwithhippos.unchained.data.service.ForegroundTorrentService
 import com.github.livingwithhippos.unchained.data.service.ForegroundTorrentService.Companion.KEY_TORRENT_ID
 import com.github.livingwithhippos.unchained.databinding.ActivityMainBinding
@@ -51,7 +57,7 @@ import com.github.livingwithhippos.unchained.utilities.SCHEME_HTTPS
 import com.github.livingwithhippos.unchained.utilities.SCHEME_MAGNET
 import com.github.livingwithhippos.unchained.utilities.SIGNATURE
 import com.github.livingwithhippos.unchained.utilities.TelemetryManager
-import com.github.livingwithhippos.unchained.utilities.extension.downloadFile
+import com.github.livingwithhippos.unchained.utilities.extension.downloadFileInStandardFolder
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.github.livingwithhippos.unchained.utilities.extension.toHex
@@ -135,6 +141,12 @@ class MainActivity : AppCompatActivity() {
 
     val viewModel: MainActivityViewModel by viewModels()
 
+    // Variable for storing instance of our service class
+    var downloadService: ForegroundDownloadService? = null
+
+    // Boolean to check if our activity is bound to service or not
+    var isDownloadServiceBound: Boolean? = null
+
     @Inject
     lateinit var preferences: SharedPreferences
 
@@ -155,6 +167,42 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Interface for getting the instance of binder from our service class
+     * So client can get instance of our service class and can directly communicate with it.
+     */
+    private val serviceConnection = object : ServiceConnection {
+        override fun onServiceConnected(className: ComponentName, iBinder: IBinder) {
+            Timber.d("ServiceConnection: connected to download service.")
+            // We've bound to MyService, cast the IBinder and get MyBinder instance
+            val binder = iBinder as ForegroundDownloadService.DownloadBinder
+            downloadService = binder.service
+            isDownloadServiceBound = true
+        }
+
+        override fun onServiceDisconnected(arg0: ComponentName) {
+            Timber.d("ServiceConnection: disconnected from download service.")
+            isDownloadServiceBound = false
+        }
+    }
+
+    /**
+     * Used to bind to our service class
+     */
+    private fun bindService() {
+        Intent(this, ForegroundDownloadService::class.java).also { intent ->
+            bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
+        }
+    }
+
+    /**
+     * Used to unbind and stop our service class
+     */
+    private fun unbindService() {
+        Intent(this, ForegroundDownloadService::class.java).also {
+            unbindService(serviceConnection)
+        }
+    }
 
     private val requestPermissionLauncher =
         registerForActivityResult(
@@ -389,7 +437,6 @@ class MainActivity : AppCompatActivity() {
                         currentToast.show()
                     }
                 }
-                null -> {}
                 is MainActivityMessage.UpdateFound -> {
                     when (content.signature) {
                         SIGNATURE.F_DROID -> {
@@ -413,6 +460,38 @@ class MainActivity : AppCompatActivity() {
                         else -> {}
                     }
                 }
+                MainActivityMessage.RequireDownloadFolder -> {
+                    pickDirectoryLauncher.launch(null)
+                }
+                MainActivityMessage.RequireDownloadPermissions -> {
+                    requestPermissionLauncher.launch(
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    )
+                }
+                is MainActivityMessage.DownloadEnqueued -> {
+                    if (isDownloadServiceBound != true) {
+                        lifecycleScope.launch {
+                            bindService()
+                            // needs some time to connect
+                            delay(1000)
+                            if (isDownloadServiceBound == true) {
+                                downloadService?.queueDownload(
+                                    content.source,
+                                    content.folder,
+                                    content.fileName
+                                )
+                            } else {
+                                Timber.e("Error connecting to the download service")
+                            }
+                        }
+                    } else
+                        downloadService?.queueDownload(
+                            content.source,
+                            content.folder,
+                            content.fileName
+                        )
+                }
+                null -> {}
             }
         }
 
@@ -459,8 +538,8 @@ class MainActivity : AppCompatActivity() {
         val pluginName = link.replace("%2F", "/").split("/").last()
         val manager =
             applicationContext.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-        val queuedDownload = manager.downloadFile(
-            link = link,
+        val queuedDownload = manager.downloadFileInStandardFolder(
+            source = Uri.parse(link),
             title = getString(R.string.unchained_plugin_download),
             description = getString(R.string.temporary_plugin_download),
             fileName = pluginName

@@ -56,7 +56,7 @@ class UnchainedApplication : Application() {
             val name = getString(R.string.app_name)
             val descriptionText = getString(R.string.torrent_channel_description)
             val importance = NotificationManager.IMPORTANCE_LOW
-            val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
+            val channel = NotificationChannel(TORRENT_CHANNEL_ID, name, importance).apply {
                 description = descriptionText
             }
             // Register the channel with the system
@@ -67,6 +67,7 @@ class UnchainedApplication : Application() {
     }
 
     companion object {
-        const val CHANNEL_ID = "unchained_torrent_channel"
+        const val TORRENT_CHANNEL_ID = "unchained_torrent_channel"
+        const val DOWNLOAD_CHANNEL_ID = "unchained_download_channel"
     }
 }

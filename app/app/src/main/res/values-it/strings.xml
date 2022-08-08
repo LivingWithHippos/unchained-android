@@ -397,4 +397,5 @@
     <string name="browser_not_found">Nessuna app browser trovata</string>
     <string name="directory_picked">Cartella impostata. Riavvia il download.</string>
     <string name="permission_granted">Permessi accordati. Riavvia il download.</string>
+    <string name="stop">Stop</string>
 </resources>

@@ -3,6 +3,7 @@ package com.github.livingwithhippos.unchained.folderlist.view
 import android.app.DownloadManager
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -41,7 +42,7 @@ import com.github.livingwithhippos.unchained.utilities.DataBindingDetailsLookup
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.extension.copyToClipboard
 import com.github.livingwithhippos.unchained.utilities.extension.delayedScrolling
-import com.github.livingwithhippos.unchained.utilities.extension.downloadFile
+import com.github.livingwithhippos.unchained.utilities.extension.downloadFileInStandardFolder
 import com.github.livingwithhippos.unchained.utilities.extension.getThemedDrawable
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
@@ -90,14 +91,15 @@ class FolderListFragment : Fragment(), DownloadListListener {
     }
 
     private fun downloadAll() {
+        // todo: add custom folder support
         val downloads: List<DownloadItem>? = viewModel.folderLiveData.value?.peekContent()
         if (!downloads.isNullOrEmpty()) {
             var downloadStarted = false
             val manager =
                 requireContext().getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
             downloads.forEach {
-                val queuedDownload = manager.downloadFile(
-                    it.download,
+                val queuedDownload = manager.downloadFileInStandardFolder(
+                    Uri.parse(it.download),
                     it.filename,
                     getString(R.string.app_name)
                 )
@@ -231,13 +233,14 @@ class FolderListFragment : Fragment(), DownloadListListener {
             }
 
             override fun downloadSelectedItems() {
+                // todo: add support for custom folder
                 if (linkTracker.selection.toList().isNotEmpty()) {
                     var downloadStarted = false
                     val manager =
                         requireContext().getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
                     linkTracker.selection.forEach { item ->
-                        val queuedDownload = manager.downloadFile(
-                            item.download,
+                        val queuedDownload = manager.downloadFileInStandardFolder(
+                            Uri.parse(item.download),
                             item.filename,
                             getString(R.string.app_name),
                         )

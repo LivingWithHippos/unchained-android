@@ -6,6 +6,8 @@ import android.content.ActivityNotFoundException
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -15,9 +17,12 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.MimeTypeMap
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
+import androidx.documentfile.provider.DocumentFile
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -36,13 +41,24 @@ import com.github.livingwithhippos.unchained.lists.view.ListState
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.EventObserver
 import com.github.livingwithhippos.unchained.utilities.RD_STREAMING_URL
+import com.github.livingwithhippos.unchained.utilities.download.Downloader
+import com.github.livingwithhippos.unchained.utilities.download.FileWriter
+import com.github.livingwithhippos.unchained.utilities.download.ProgressCallback
 import com.github.livingwithhippos.unchained.utilities.extension.copyToClipboard
-import com.github.livingwithhippos.unchained.utilities.extension.downloadFile
+import com.github.livingwithhippos.unchained.utilities.extension.downloadFileInCustomFolder
+import com.github.livingwithhippos.unchained.utilities.extension.downloadFileInStandardFolder
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import okhttp3.OkHttpClient
 import timber.log.Timber
+import java.net.URL
+import java.net.URLConnection
+import java.security.Permission
 
 /**
  * A simple [UnchainedFragment] subclass.
@@ -54,6 +70,9 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
     private val viewModel: DownloadDetailsViewModel by viewModels()
 
     private val args: DownloadDetailsFragmentArgs by navArgs()
+
+    private val job = Job()
+    private val ioScope = CoroutineScope(Dispatchers.IO + job)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -238,19 +257,124 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         }
     }
 
+    private val tempProgressListener = object: ProgressCallback {
+        override fun onProgress(progress: Double) {
+            Timber.d("Progress: $progress")
+        }
+    }
+
     override fun onDownloadClick(link: String, fileName: String) {
 
-        when (Build.VERSION.SDK_INT) {
-            22 -> {
-                downloadFile(link, fileName)
-            }
-            in 23..28 -> {
-                requestPermissionLauncher.launch(
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE
-                )
-            }
-            else -> {
-                downloadFile(link, fileName)
+        val folder = activityViewModel.getDownloadFolder()
+        if (folder == null) {
+            activityViewModel.requireDownloadFolder()
+        } else {
+            when (Build.VERSION.SDK_INT) {
+                22 -> {
+                    activityViewModel.enqueueDownload(link, folder, fileName)
+                    ioScope.launch {
+                        val folderUri = DocumentFile.fromTreeUri(requireContext(), folder)
+                        if (folderUri != null) {
+
+                            val extension: String = MimeTypeMap.getFileExtensionFromUrl(link)
+                            var mime: String? = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension)
+                            if (mime == null) {
+                                mime = URLConnection.guessContentTypeFromName(link)
+                                /*
+                                if (mime == null) {
+                                    val connection: URLConnection = URL(link).openConnection()
+                                    mime= connection.contentType
+                                }
+                                 */
+                                if (mime == null) {
+                                    mime = "*/*"
+                                }
+                            }
+                            // rimuovi estensione
+                            val newFile: DocumentFile? = folderUri.createFile(mime, fileName)
+                            if (newFile != null) {
+                                val outputStream = requireContext().contentResolver.openOutputStream(newFile.uri)
+                                if (outputStream != null) {
+                                    val client = OkHttpClient()
+                                    val writer = FileWriter(
+                                        outputStream,
+                                        tempProgressListener
+                                    )
+                                    val downloader = Downloader(
+                                        client,
+                                        writer
+                                    )
+                                    downloader.download(link)
+                                } else {
+                                    Timber.e("Outpustream nullo")
+                                }
+                            } else {
+                                Timber.e("newFile nullo")
+                            }
+                        } else {
+                            Timber.e("folderUri nullo")
+                        }
+                    }
+                }
+                in 23..28 -> {
+                    if (ContextCompat.checkSelfPermission(requireContext(),Manifest.permission.WRITE_EXTERNAL_STORAGE) == PERMISSION_GRANTED) {
+                        activityViewModel.enqueueDownload(link, folder, fileName)
+                    } else {
+                        activityViewModel.requireDownloadPermissions()
+                    }
+                }
+                else -> {
+                    activityViewModel.enqueueDownload(link, folder, fileName)
+
+                    ioScope.launch {
+                        val folderUri = DocumentFile.fromTreeUri(requireContext(), folder)
+                        if (folderUri != null) {
+
+                            val extension: String = MimeTypeMap.getFileExtensionFromUrl(link)
+                            var mime: String? = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension)
+                            if (mime == null) {
+                                mime = URLConnection.guessContentTypeFromName(link)
+                                /*
+                                if (mime == null) {
+                                    val connection: URLConnection = URL(link).openConnection()
+                                    mime= connection.contentType
+                                }
+                                 */
+                                if (mime == null) {
+                                    mime = "*/*"
+                                }
+                            }
+                            // rimuovi estensione
+                            try {
+                                val newFile: DocumentFile? = folderUri.createFile(mime!!, fileName)
+                                if (newFile != null) {
+                                    val outputStream = requireContext().contentResolver.openOutputStream(newFile.uri)
+                                    if (outputStream != null) {
+                                        val client = OkHttpClient()
+                                        val writer = FileWriter(
+                                            outputStream,
+                                            tempProgressListener
+                                        )
+                                        val downloader = Downloader(
+                                            client,
+                                            writer
+                                        )
+                                        downloader.download(link)
+                                    } else {
+                                        Timber.e("Outpustream nullo")
+                                    }
+                                } else {
+                                    Timber.e("newFile nullo")
+                                }
+                            } catch (e: SecurityException) {
+                                Timber.e("Permessi cartella mancanti")
+                                e.printStackTrace()
+                            }
+                        } else {
+                            Timber.e("folderUri nullo")
+                        }
+                    }
+                }
             }
         }
     }
@@ -258,8 +382,8 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
     private fun downloadFile(link: String, fileName: String) {
         val manager =
             requireContext().getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-        val queuedDownload = manager.downloadFile(
-            link = link,
+        val queuedDownload = manager.downloadFileInStandardFolder(
+            source = Uri.parse(link),
             title = fileName,
             description = getString(R.string.app_name)
         )
@@ -273,18 +397,25 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         }
     }
 
-    private val requestPermissionLauncher =
-        registerForActivityResult(
-            ActivityResultContracts.RequestPermission()
-        ) { isGranted: Boolean ->
-            if (isGranted) {
-                val link = args.details.download
-                val fileName = args.details.filename
-                downloadFile(link, fileName)
-            } else {
-                context?.showToast(R.string.needs_download_permission)
+    private fun downloadFile(link: String, fileName: String, destination: Uri) {
+
+        val manager =
+            requireContext().getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+        val queuedDownload = manager.downloadFileInCustomFolder(
+            source = Uri.parse(link),
+            title = fileName,
+            description = getString(R.string.app_name),
+            folder = destination
+        )
+        when (queuedDownload) {
+            is EitherResult.Failure -> {
+                context?.showToast(R.string.download_not_started)
+            }
+            is EitherResult.Success -> {
+                context?.showToast(R.string.download_started)
             }
         }
+    }
 
     override fun onShareClick(url: String) {
         val shareIntent = Intent(Intent.ACTION_SEND)
@@ -294,10 +425,9 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
     }
 
     private fun tryStartExternalApp(intent: Intent) {
-
         try {
             startActivity(intent)
-        } catch (e: android.content.ActivityNotFoundException) {
+        } catch (e: ActivityNotFoundException) {
             context?.showToast(R.string.app_not_installed)
         }
     }
@@ -336,7 +466,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
 
                 try {
                     startActivity(mxIntent)
-                } catch (e: android.content.ActivityNotFoundException) {
+                } catch (e: ActivityNotFoundException) {
                     mxIntent.setPackage("com.mxtech.videoplayer.ad")
                     tryStartExternalApp(mxIntent)
                 }

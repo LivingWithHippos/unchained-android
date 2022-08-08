@@ -3,6 +3,7 @@ package com.github.livingwithhippos.unchained.lists.view
 import android.app.DownloadManager
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -55,7 +56,7 @@ import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.EventObserver
 import com.github.livingwithhippos.unchained.utilities.TORRENTS_TAB
 import com.github.livingwithhippos.unchained.utilities.extension.delayedScrolling
-import com.github.livingwithhippos.unchained.utilities.extension.downloadFile
+import com.github.livingwithhippos.unchained.utilities.extension.downloadFileInStandardFolder
 import com.github.livingwithhippos.unchained.utilities.extension.getApiErrorMessage
 import com.github.livingwithhippos.unchained.utilities.extension.getDownloadedFileUri
 import com.github.livingwithhippos.unchained.utilities.extension.getThemedDrawable
@@ -432,13 +433,14 @@ class DownloadsListFragment : UnchainedFragment(), DownloadListListener {
             }
 
             override fun downloadSelectedItems() {
+                // todo: add custom folder support
                 if (downloadTracker.selection.toList().isNotEmpty()) {
                     var downloadStarted = false
                     val manager =
                         requireContext().getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
                     downloadTracker.selection.forEach { item ->
-                        val queuedDownload = manager.downloadFile(
-                            item.download,
+                        val queuedDownload = manager.downloadFileInStandardFolder(
+                            Uri.parse(item.download),
                             item.filename,
                             getString(R.string.app_name),
                         )

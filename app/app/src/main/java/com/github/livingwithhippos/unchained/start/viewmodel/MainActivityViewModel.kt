@@ -33,7 +33,6 @@ import com.github.livingwithhippos.unchained.data.repository.TorrentsRepository
 import com.github.livingwithhippos.unchained.data.repository.UpdateRepository
 import com.github.livingwithhippos.unchained.data.repository.UserRepository
 import com.github.livingwithhippos.unchained.data.repository.VariousApiRepository
-import com.github.livingwithhippos.unchained.downloaddetails.viewmodel.DownloadDetailsViewModel
 import com.github.livingwithhippos.unchained.lists.view.ListState
 import com.github.livingwithhippos.unchained.plugins.model.Plugin
 import com.github.livingwithhippos.unchained.statemachine.authentication.CurrentFSMAuthentication
@@ -1125,6 +1124,18 @@ class MainActivityViewModel @Inject constructor(
         return null
     }
 
+    fun requireDownloadFolder() {
+        messageLiveData.postValue(Event(MainActivityMessage.RequireDownloadFolder))
+    }
+
+    fun requireDownloadPermissions() {
+        messageLiveData.postValue(Event(MainActivityMessage.RequireDownloadPermissions))
+    }
+
+    fun enqueueDownload(url: String, folder: Uri, fileName: String) {
+        messageLiveData.postValue(Event(MainActivityMessage.DownloadEnqueued(url, folder, fileName)))
+    }
+
     companion object {
         const val KEY_DOWNLOAD_FOLDER = "download_folder_key"
         const val KEY_TORRENT_DOWNLOAD_ID = "torrent_download_id_key"
@@ -1140,4 +1151,7 @@ sealed class MainActivityMessage {
     data class StringID(val id: Int) : MainActivityMessage()
     data class InstalledPlugins(val number: Int) : MainActivityMessage()
     data class UpdateFound(val signature: String) : MainActivityMessage()
+    object RequireDownloadFolder: MainActivityMessage()
+    object RequireDownloadPermissions: MainActivityMessage()
+    data class DownloadEnqueued(val source: String, val folder: Uri, val fileName: String) : MainActivityMessage()
 }

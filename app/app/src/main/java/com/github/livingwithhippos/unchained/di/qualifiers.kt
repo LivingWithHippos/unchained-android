@@ -16,6 +16,10 @@ annotation class TorrentNotification
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
+annotation class DownloadNotification
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
 annotation class SummaryNotification
 
 @Qualifier

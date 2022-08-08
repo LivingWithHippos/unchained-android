@@ -117,54 +117,29 @@ fun Fragment.getClipboardText(): String {
     return text
 }
 
-/**
- * Download a file in the public download folder
- *
- * @param link the http link
- * @param title the title to show on the notification
- * @param description the title to show on the notification
- * @param fileName the name to give to the downloaded file, title will be used if this is null
- * @param directory the public directory destination. Defaults to the Downloads directory
- * @return a Long identifying the download or null if an error has occurred
- */
-fun DownloadManager.downloadFile(
-    link: String,
-    title: String,
-    description: String,
-    fileName: String = title,
-    directory: String = Environment.DIRECTORY_DOWNLOADS
-): EitherResult<Exception, Long> = this.downloadFile(
-    Uri.parse(link),
-    title,
-    description,
-    fileName,
-    directory
-)
-
 // todo: move extensions to own file base on dependencies, for example for these ones Either is needed
 /**
  * Download a file in the public download folder
  *
- * @param uri the file Uri
+ * @param source the file Uri
  * @param title the title to show on the notification
  * @param description the title to show on the notification
  * @param fileName the name to give to the downloaded file, title will be used if this is null
  * @param directory the public directory destination. Defaults to the Downloads directory
  * @return a Long identifying the download or null if an error has occurred
  */
-fun DownloadManager.downloadFile(
-    uri: Uri,
+fun DownloadManager.downloadFileInStandardFolder(
+    source: Uri,
     title: String,
     description: String,
-    fileName: String = title,
-    directory: String = Environment.DIRECTORY_DOWNLOADS
+    fileName: String = title
 ): EitherResult<Exception, Long> {
-    val request: DownloadManager.Request = DownloadManager.Request(uri)
+    val request: DownloadManager.Request = DownloadManager.Request(source)
         .setTitle(title)
         .setDescription(description)
         .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
         .setDestinationInExternalPublicDir(
-            directory,
+            Environment.DIRECTORY_DOWNLOADS,
             fileName
         )
 
@@ -172,7 +147,33 @@ fun DownloadManager.downloadFile(
         val downloadID = this.enqueue(request)
         EitherResult.Success(downloadID)
     } catch (e: Exception) {
-        Timber.e("Error starting download of ${uri.path}, exception ${e.message}")
+        Timber.e("Error starting download of ${source.path}, exception ${e.message}")
+        EitherResult.Failure(e)
+    }
+}
+
+fun DownloadManager.downloadFileInCustomFolder(
+    source: Uri,
+    title: String,
+    description: String,
+    fileName: String = title,
+    folder: Uri
+): EitherResult<Exception, Long> {
+    // https://issuetracker.google.com/issues/134858946
+    val destination = Uri.withAppendedPath(folder, fileName)
+    Timber.e(destination.toString())
+    val request: DownloadManager.Request = DownloadManager.Request(source)
+        .setTitle(title)
+        .setDescription(description)
+        .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+        .setDestinationUri(destination)
+
+    return try {
+        val downloadID = this.enqueue(request)
+        EitherResult.Success(downloadID)
+    } catch (e: Exception) {
+        Timber.e("Error starting download in custom folder $destination of ${source.path}, exception ${e.message}")
+        e.printStackTrace()
         EitherResult.Failure(e)
     }
 }
