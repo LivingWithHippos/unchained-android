@@ -192,12 +192,9 @@ class ForegroundDownloadService : LifecycleService() {
         } != null
         if (!hasRunningDownloads) {
             // Start the first queued download
-            val queuedDownload: CustomDownload? = downloads.firstNotNullOfOrNull {
-                if (it.value.status == CurrentDownloadStatus.Queued)
-                    it
-                else
-                    null
-            }?.value
+            val queuedDownload: CustomDownload? = downloads.values.firstOrNull {
+                it.status == CurrentDownloadStatus.Queued
+            }
 
             if (queuedDownload != null) {
 
@@ -215,8 +212,9 @@ class ForegroundDownloadService : LifecycleService() {
                         stopDownloadIntent,
                         PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
                     )
-                
+
                 queuedDownload.status = CurrentDownloadStatus.Running
+                downloads[queuedDownload.source] = queuedDownload
 
                 val outputStream = contentResolver?.openOutputStream(queuedDownload.destination)
                 if (outputStream != null) {
