@@ -161,7 +161,9 @@ class ForegroundDownloadService : LifecycleService() {
                 delay(1000)
                 while (isActive) {
                     updateNotification()
-                    startDownloadIfAvailable()
+                    scope.launch {
+                        startDownloadIfAvailable()
+                    }
                     delay(1000)
                 }
             }
