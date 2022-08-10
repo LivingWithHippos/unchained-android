@@ -272,49 +272,6 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
             when (Build.VERSION.SDK_INT) {
                 22 -> {
                     activityViewModel.enqueueDownload(link, folder, fileName)
-                    ioScope.launch {
-                        val folderUri = DocumentFile.fromTreeUri(requireContext(), folder)
-                        if (folderUri != null) {
-
-                            val extension: String = MimeTypeMap.getFileExtensionFromUrl(link)
-                            var mime: String? = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension)
-                            if (mime == null) {
-                                mime = URLConnection.guessContentTypeFromName(link)
-                                /*
-                                if (mime == null) {
-                                    val connection: URLConnection = URL(link).openConnection()
-                                    mime= connection.contentType
-                                }
-                                 */
-                                if (mime == null) {
-                                    mime = "*/*"
-                                }
-                            }
-                            // rimuovi estensione
-                            val newFile: DocumentFile? = folderUri.createFile(mime, fileName)
-                            if (newFile != null) {
-                                val outputStream = requireContext().contentResolver.openOutputStream(newFile.uri)
-                                if (outputStream != null) {
-                                    val client = OkHttpClient()
-                                    val writer = FileWriter(
-                                        outputStream,
-                                        tempProgressListener
-                                    )
-                                    val downloader = Downloader(
-                                        client,
-                                        writer
-                                    )
-                                    downloader.download(link)
-                                } else {
-                                    Timber.e("Outpustream nullo")
-                                }
-                            } else {
-                                Timber.e("newFile nullo")
-                            }
-                        } else {
-                            Timber.e("folderUri nullo")
-                        }
-                    }
                 }
                 in 23..28 -> {
                     if (ContextCompat.checkSelfPermission(requireContext(),Manifest.permission.WRITE_EXTERNAL_STORAGE) == PERMISSION_GRANTED) {
@@ -325,55 +282,6 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                 }
                 else -> {
                     activityViewModel.enqueueDownload(link, folder, fileName)
-
-                    ioScope.launch {
-                        val folderUri = DocumentFile.fromTreeUri(requireContext(), folder)
-                        if (folderUri != null) {
-
-                            val extension: String = MimeTypeMap.getFileExtensionFromUrl(link)
-                            var mime: String? = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension)
-                            if (mime == null) {
-                                mime = URLConnection.guessContentTypeFromName(link)
-                                /*
-                                if (mime == null) {
-                                    val connection: URLConnection = URL(link).openConnection()
-                                    mime= connection.contentType
-                                }
-                                 */
-                                if (mime == null) {
-                                    mime = "*/*"
-                                }
-                            }
-                            // rimuovi estensione
-                            try {
-                                val newFile: DocumentFile? = folderUri.createFile(mime!!, fileName)
-                                if (newFile != null) {
-                                    val outputStream = requireContext().contentResolver.openOutputStream(newFile.uri)
-                                    if (outputStream != null) {
-                                        val client = OkHttpClient()
-                                        val writer = FileWriter(
-                                            outputStream,
-                                            tempProgressListener
-                                        )
-                                        val downloader = Downloader(
-                                            client,
-                                            writer
-                                        )
-                                        downloader.download(link)
-                                    } else {
-                                        Timber.e("Outpustream nullo")
-                                    }
-                                } else {
-                                    Timber.e("newFile nullo")
-                                }
-                            } catch (e: SecurityException) {
-                                Timber.e("Permessi cartella mancanti")
-                                e.printStackTrace()
-                            }
-                        } else {
-                            Timber.e("folderUri nullo")
-                        }
-                    }
                 }
             }
         }

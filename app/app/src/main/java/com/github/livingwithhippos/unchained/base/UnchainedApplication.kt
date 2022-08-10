@@ -44,25 +44,29 @@ class UnchainedApplication : Application() {
             protoStore.deleteIncompleteCredentials()
         }
 
-        createNotificationChannel()
+        createNotificationChannels()
 
         TelemetryManager.onCreate(this)
     }
 
-    private fun createNotificationChannel() {
+    private fun createNotificationChannels() {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val name = getString(R.string.app_name)
-            val descriptionText = getString(R.string.torrent_channel_description)
-            val importance = NotificationManager.IMPORTANCE_LOW
-            val channel = NotificationChannel(TORRENT_CHANNEL_ID, name, importance).apply {
-                description = descriptionText
+            val torrentChannel = NotificationChannel(TORRENT_CHANNEL_ID, name, NotificationManager.IMPORTANCE_LOW).apply {
+                description = getString(R.string.torrent_channel_description)
             }
-            // Register the channel with the system
             val notificationManager: NotificationManager =
                 getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.createNotificationChannel(channel)
+
+            // Register the channels with the system
+            notificationManager.createNotificationChannel(torrentChannel)
+
+            val downloadChannel = NotificationChannel(DOWNLOAD_CHANNEL_ID, name, NotificationManager.IMPORTANCE_LOW).apply {
+                description = getString(R.string.download_channel_description)
+            }
+            notificationManager.createNotificationChannel(downloadChannel)
         }
     }
 

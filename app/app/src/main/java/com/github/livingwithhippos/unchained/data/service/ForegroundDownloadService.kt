@@ -8,20 +8,24 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Binder
 import android.os.IBinder
-import android.provider.OpenableColumns
 import android.webkit.MimeTypeMap
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationCompat.EXTRA_NOTIFICATION_ID
 import androidx.core.app.NotificationManagerCompat
 import androidx.documentfile.provider.DocumentFile
 import androidx.lifecycle.LifecycleService
-import androidx.lifecycle.lifecycleScope
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.di.DownloadNotification
+import com.github.livingwithhippos.unchained.di.DownloadSummaryNotification
 import com.github.livingwithhippos.unchained.utilities.download.Downloader
 import com.github.livingwithhippos.unchained.utilities.download.FileWriter
 import com.github.livingwithhippos.unchained.utilities.extension.vibrate
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import timber.log.Timber
@@ -34,11 +38,25 @@ class ForegroundDownloadService : LifecycleService() {
     private val downloadBinder = DownloadBinder()
 
     @Inject
+    @DownloadSummaryNotification
+    lateinit var summaryBuilder: NotificationCompat.Builder
+
+    @Inject
     @DownloadNotification
     lateinit var downloadBuilder: NotificationCompat.Builder
 
     @Inject
     lateinit var notificationManager: NotificationManagerCompat
+
+    private var job = Job()
+    private val scope = CoroutineScope(Dispatchers.IO + job)
+
+    private val notificationJob: Job = Job()
+    private val notificationScope = CoroutineScope(Dispatchers.Default + notificationJob)
+
+    var notificationStarted = false
+
+    private val downloads = mutableMapOf<String, CustomDownload>()
 
     /**
      * Binder for the client. It can be used to retrieve this service and call its public methods.
@@ -59,81 +77,95 @@ class ForegroundDownloadService : LifecycleService() {
     }
 
     private fun startForegroundService() {
-        startForeground(SUMMARY_ID, downloadBuilder.build())
+        startForeground(SUMMARY_ID, summaryBuilder.build())
+    }
+
+    private fun getFileDocument(
+        source: String,
+        destinationFolder: Uri,
+        fileName: String
+    ): DocumentFile? {
+
+        val folderUri: DocumentFile? =
+            DocumentFile.fromTreeUri(applicationContext, destinationFolder)
+        if (folderUri != null) {
+            val extension: String = MimeTypeMap.getFileExtensionFromUrl(source)
+            var mime: String? = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension)
+            if (mime == null) {
+                mime = URLConnection.guessContentTypeFromName(source)
+                /*
+                if (mime == null) {
+                    val connection: URLConnection = URL(link).openConnection()
+                    mime= connection.contentType
+                }
+                 */
+                if (mime == null) {
+                    // todo: use other checks or a random mime type
+                    mime = "*/*"
+                }
+            }
+            // todo: check if the extension needs to be removed as the docs say (it does not seem to)
+            return folderUri.createFile(mime, fileName)
+        } else {
+            Timber.e("folderUri was null")
+            return null
+        }
     }
 
     fun queueDownload(source: String, destinationFolder: Uri, fileName: String) {
 
+        val newFile = getFileDocument(source, destinationFolder, fileName)
+        if (newFile == null) {
+            Timber.e("Error getting download location file")
+            return
+        }
         // checking if I already have this download in the queue
-        val replaceDownload = downloads.firstOrNull { it.source == source }
+        val replaceDownload: CustomDownload? = downloads[source]
         if (replaceDownload != null) {
             // in these cases I can restart it eventually
             if (
                 replaceDownload.status == CurrentDownloadStatus.Error
             ) {
-                replaceDownload.destination = destinationFolder
                 replaceDownload.status = CurrentDownloadStatus.Queued
+                replaceDownload.destination = newFile.uri
                 replaceDownload.progress = 0
-                replaceDownload.speed = 0f
+                replaceDownload.downloadedSize = 0
+
+                downloads[source] = replaceDownload
             } else {
+                // todo: decide what to do, even nothing
                 // not replacing anything for a running or stopped download because it could already be partially downloaded
+                Timber.e("Requested download of already queued file in status ${replaceDownload.status}")
             }
 
         } else {
             // new download!
-
-            val folderUri = DocumentFile.fromTreeUri(applicationContext, destinationFolder)
-            if (folderUri != null) {
-
-                val extension: String = MimeTypeMap.getFileExtensionFromUrl(source)
-                var mime: String? = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension)
-                if (mime == null) {
-                    mime = URLConnection.guessContentTypeFromName(source)
-                    /*
-                    if (mime == null) {
-                        val connection: URLConnection = URL(link).openConnection()
-                        mime= connection.contentType
-                    }
-                     */
-                    if (mime == null) {
-                        // todo: use other checks or a random mime type
-                        mime = "*/*"
-                    }
-                }
-                // todo: check if the extension needs to be removed as the docs say (it does not seem to)
-                val newFile: DocumentFile? = folderUri.createFile(mime, fileName)
-                if (newFile != null) {
-                    val outputStream = applicationContext.contentResolver.openOutputStream(newFile.uri)
-                    if (outputStream != null) {
-                        val client = OkHttpClient()
-                        val writer = FileWriter(
-                            outputStream,
-                            tempProgressListener
-                        )
-                        val downloader = Downloader(
-                            client,
-                            writer
-                        )
-                        downloader.download(link)
-                    } else {
-                        Timber.e("Outpustream nullo")
-                    }
-                } else {
-                    Timber.e("newFile nullo")
-                }
-            } else {
-                Timber.e("folderUri nullo")
-            }
-
-            downloads.add(
-                CustomDownload(
-                    source = source,
-                    destination = destination,
-                    title = fileName
-                )
+            downloads[source] = CustomDownload(
+                source = source,
+                destination = newFile.uri,
+                title = fileName
             )
         }
-        startDownloadIfAvailable()
+        scope.launch {
+            startDownloadIfAvailable()
+        }
+        scope.launch {
+            startNotificationLoop()
+        }
+    }
+
+    private suspend fun startNotificationLoop() {
+        if (!notificationStarted) {
+            notificationStarted = true
+            notificationScope.launch {
+                delay(1000)
+                while (isActive) {
+                    updateNotification()
+                    startDownloadIfAvailable()
+                    delay(1000)
+                }
+            }
+        }
     }
 
     inner class CommandReceiver : BroadcastReceiver() {
@@ -152,21 +184,30 @@ class ForegroundDownloadService : LifecycleService() {
     /**
      * Only call this from the mutex lock. I use this to download a single file at once
      */
-    private fun startDownloadIfAvailable() {
+    private suspend fun startDownloadIfAvailable() {
 
         // if I have no running downloads
-        if (downloads.firstOrNull { it.status == CurrentDownloadStatus.Running } == null) {
+        val hasRunningDownloads = downloads.values.firstOrNull {
+            it.status is CurrentDownloadStatus.Running
+        } != null
+        if (!hasRunningDownloads) {
             // Start the first queued download
-            val currentDownload =
-                downloads.firstOrNull { it.status == CurrentDownloadStatus.Queued }
-            if (currentDownload != null) {
+            val queuedDownload: CustomDownload? = downloads.firstNotNullOfOrNull {
+                if (it.value.status == CurrentDownloadStatus.Queued)
+                    it
+                else
+                    null
+            }?.value
+
+            if (queuedDownload != null) {
 
                 val stopDownloadIntent = Intent(this, CommandReceiver::class.java).apply {
                     action = STOP_DOWNLOAD
                     putExtra(EXTRA_NOTIFICATION_ID, 0)
-                    putExtra(CURRENT_DOWNLOAD_TITLE, currentDownload.title)
+                    putExtra(CURRENT_DOWNLOAD_TITLE, queuedDownload.title)
                 }
 
+                // todo: check PendingIntent.FLAG_IMMUTABLE on api 22
                 val stopDownloadPendingIntent: PendingIntent =
                     PendingIntent.getBroadcast(
                         this,
@@ -174,95 +215,126 @@ class ForegroundDownloadService : LifecycleService() {
                         stopDownloadIntent,
                         PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
                     )
+                
+                queuedDownload.status = CurrentDownloadStatus.Running
 
-
-                currentDownload.status = CurrentDownloadStatus.Running
-                val outputStream = contentResolver?.openOutputStream(currentDownload.destination)
+                val outputStream = contentResolver?.openOutputStream(queuedDownload.destination)
                 if (outputStream != null) {
-                    lifecycleScope.launch {
-                        // todo: move collection code to own function
-                        // the collect must be run in another scope to avoid being blocked
-                        launch {
-                            var lastRegisteredTime = System.currentTimeMillis()
-                            var lastRegisteredSize = 0.0
-                            downloader.downloadInfo.collect {
-                                val asd = 3
-                                // todo: collect is not triggered if the data is equal to the previous one (maybe, check)
-                                it.forEach { downloadStatus ->
-                                    if (downloadStatus.key == outputStream.hashCode()) {
-                                        when (downloadStatus.value) {
-                                            is DownloadStatus.Running -> {
-                                                val running =
-                                                    downloadStatus.value as DownloadStatus.Running
-                                                val currentTime = System.currentTimeMillis()
-                                                // update speed every 2 seconds
-                                                if (currentTime - lastRegisteredTime > 2000) {
-                                                    currentDownload.speed =
-                                                        ((running.downloadedSize - lastRegisteredSize) / (currentTime - lastRegisteredTime) / 1000).toFloat()
-                                                    lastRegisteredTime = currentTime
-                                                    lastRegisteredSize = running.downloadedSize
-                                                }
-                                                currentDownload.progress =
-                                                    (running.downloadedSize * 100 / running.totalSize).toInt()
-                                            }
-                                            DownloadStatus.Completed -> {
-                                                currentDownload.status =
-                                                    CurrentDownloadStatus.Completed
-                                                currentDownload.progress = 100
-                                                applicationContext.vibrate()
-                                            }
-                                            is DownloadStatus.Error -> {
-                                                currentDownload.status = CurrentDownloadStatus.Error
-                                            }
-                                            DownloadStatus.Paused -> {
-                                                currentDownload.status =
-                                                    CurrentDownloadStatus.Stopped
-                                            }
-                                            DownloadStatus.Queued -> TODO()
-                                            DownloadStatus.Stopped -> TODO()
-                                        }
+
+                    val client = OkHttpClient()
+                    val writer = FileWriter(
+                        outputStream
+                    )
+                    val downloader = Downloader(
+                        client,
+                        writer
+                    )
+
+                    scope.launch {
+                        writer.state.collect {
+                            when (it) {
+                                DownloadStatus.Completed -> {
+                                    val currentDownload: CustomDownload? =
+                                        downloads[queuedDownload.source]
+                                    if (currentDownload != null) {
+                                        currentDownload.status = CurrentDownloadStatus.Completed
+                                        currentDownload.progress = 100
+                                        downloads[queuedDownload.source] = currentDownload
+                                        // todo: make optional
+                                        applicationContext.vibrate()
                                     }
                                 }
-                                // update the notification
-                                updateNotification(stopDownloadPendingIntent)
+                                is DownloadStatus.Error -> {
+                                    val currentDownload: CustomDownload? =
+                                        downloads[queuedDownload.source]
+                                    if (currentDownload != null) {
+                                        currentDownload.status = CurrentDownloadStatus.Error
+                                        // currentDownload.progress = "0"
+                                        downloads[queuedDownload.source] = currentDownload
+                                        // applicationContext.vibrate()
+                                    }
+                                }
+                                DownloadStatus.Paused -> {
+                                    // todo: implement
+                                    val currentDownload: CustomDownload? =
+                                        downloads[queuedDownload.source]
+                                    if (currentDownload != null) {
+                                        currentDownload.status = CurrentDownloadStatus.Paused
+                                        downloads[queuedDownload.source] = currentDownload
+                                        // applicationContext.vibrate()
+                                    }
+                                }
+                                DownloadStatus.Queued -> {
+                                    // do nothing?
+                                }
+                                DownloadStatus.Stopped -> {
+                                    // todo: implement
+                                    val currentDownload: CustomDownload? =
+                                        downloads[queuedDownload.source]
+                                    if (currentDownload != null) {
+                                        currentDownload.status = CurrentDownloadStatus.Stopped
+                                        downloads[queuedDownload.source] = currentDownload
+                                        // applicationContext.vibrate()
+                                    }
+                                }
+                                is DownloadStatus.Running -> {
+                                    val currentDownload: CustomDownload? =
+                                        downloads[queuedDownload.source]
+                                    if (currentDownload != null) {
+                                        currentDownload.status = CurrentDownloadStatus.Running
+                                        currentDownload.progress = it.percent
+                                        currentDownload.downloadedSize = it.downloadedSize
+
+                                        downloads[queuedDownload.source] = currentDownload
+                                    }
+                                }
                             }
                         }
-                        downloader.downloadFileViaOKHTTP(currentDownload.source, outputStream)
                     }
+
+
+                    // todo: check if this is blocking
+                    // todo: move to download queue manager
+                    downloader.download(queuedDownload.source)
                 } else {
-                    Timber.e("Selected file had null output stream")
+                    Timber.e("Output stream is empty, check permissions etc")
                 }
             } else {
+                Timber.d("Download requested but no queued download available $downloads")
                 // notifications are managed in updateNotification, just skip this one
             }
+        } else {
+            Timber.d("Some downloads are already running $downloads")
         }
     }
 
-    private fun updateNotification(stopDownloadPendingIntent: PendingIntent) {
+    private fun updateNotification() {
 
         val notifications: MutableMap<String, Notification> = mutableMapOf()
 
-        downloads.forEach {
+        downloads.values.forEach {
             when (it.status) {
                 CurrentDownloadStatus.Running -> {
                     downloadBuilder.setProgress(100, it.progress, false)
                         .setContentTitle(
                             getString(
-                                R.string.torrent_in_progress_format,
-                                it.progress,
-                                it.speed
+                                R.string.download_in_progress_format,
+                                it.progress
                             )
                         )
                         .setStyle(NotificationCompat.BigTextStyle().bigText(it.title))
 
-                    // todo: when a Running download notification becomes Completed, make the last Running notification cancellable
+                    // todo: when a Running download notification becomes Completed,
+                    //  make the last Running notification cancellable
 
+                    // todo: need custom stopDownloadPendingIntent
                     if (it.status == CurrentDownloadStatus.Running && it.progress < 100) {
-                        downloadBuilder.setOngoing(true).addAction(
-                            R.drawable.icon_stop,
-                            getString(R.string.stop),
-                            stopDownloadPendingIntent
-                        )
+                        // downloadBuilder.setOngoing(true).addAction(
+                        //     R.drawable.icon_stop,
+                        //     getString(R.string.stop),
+                        //     stopDownloadPendingIntent
+                        // )
+                        downloadBuilder.setOngoing(true)
                     } else
                         downloadBuilder.setOngoing(false)
 
@@ -283,7 +355,8 @@ class ForegroundDownloadService : LifecycleService() {
                     downloadBuilder.setStyle(
                         NotificationCompat.BigTextStyle()
                             .bigText(it.title)
-                    )
+                    ).setOngoing(false)
+                        .setContentTitle(getString(R.string.error))
 
                     notifications[it.source] = downloadBuilder.build()
                 }
@@ -292,7 +365,7 @@ class ForegroundDownloadService : LifecycleService() {
                         .setStyle(
                             NotificationCompat.BigTextStyle()
                                 .bigText(it.title)
-                        ).setOngoing(false)
+                        ).setOngoing(true)
                         .setProgress(0, 0, false)
                         .setContentTitle(getString(R.string.queued))
 
@@ -302,7 +375,8 @@ class ForegroundDownloadService : LifecycleService() {
                     downloadBuilder.setStyle(
                         NotificationCompat.BigTextStyle()
                             .bigText(it.title)
-                    )
+                    ).setOngoing(false)
+                        .setContentTitle(getString(R.string.stopped))
 
                     notifications[it.source] = downloadBuilder.build()
                 }
@@ -310,18 +384,16 @@ class ForegroundDownloadService : LifecycleService() {
                     downloadBuilder.setProgress(100, it.progress, false)
                         .setContentTitle(
                             getString(
-                                R.string.torrent_in_progress_format,
-                                it.progress,
-                                it.speed
+                                R.string.paused
                             )
-                        )
+                        ).setOngoing(true)
                         .setStyle(NotificationCompat.BigTextStyle().bigText(it.title))
 
-                    downloadBuilder.setOngoing(true).addAction(
-                        R.drawable.icon_stop,
-                        getString(R.string.stop),
-                        stopDownloadPendingIntent
-                    )
+                    // downloadBuilder.addAction(
+                    //     R.drawable.icon_play_outline,
+                    //     getString(R.string.restart),
+                    //     stopDownloadPendingIntent
+                    // )
 
                     notifications[it.source] = downloadBuilder.build()
                 }
@@ -335,18 +407,18 @@ class ForegroundDownloadService : LifecycleService() {
         }
 
         // stop serving completed download notifications
-        downloads.removeAll {
-            it.status == CurrentDownloadStatus.Completed ||
-                    it.status == CurrentDownloadStatus.Error
+        downloads.filter {
+            it.value.status is CurrentDownloadStatus.Completed || it.value.status is CurrentDownloadStatus.Error || it.value.status is CurrentDownloadStatus.Stopped
+        }.forEach {
+            downloads.remove(it.value.source)
+            Timber.d("Removing from downloads ${it.value.title}")
         }
 
     }
 
     companion object {
         const val GROUP_KEY_DOWNLOADS: String = "com.github.livingwithhippos.unchained.DOWNLOADS"
-        const val KEY_DOWNLOADS_ID = "downloads_id_key"
         const val SUMMARY_ID: Int = 308
-        val downloads = mutableListOf<CustomDownload>()
 
         const val PAUSE_DOWNLOAD = "pause_download"
         const val RESTART_DOWNLOAD = "restart_download"
@@ -361,7 +433,7 @@ data class CustomDownload(
     var title: String,
     var status: CurrentDownloadStatus = CurrentDownloadStatus.Queued,
     var progress: Int = 0,
-    var speed: Float = 0f
+    var downloadedSize: Long = 0
 )
 
 sealed class CurrentDownloadStatus {
@@ -380,7 +452,8 @@ sealed class DownloadStatus {
     object Completed : DownloadStatus()
     data class Running(
         val totalSize: Double,
-        val downloadedSize: Double,
+        val downloadedSize: Long,
+        val percent: Int,
     ) : DownloadStatus()
 
     data class Error(val type: DownloadErrorType) : DownloadStatus()

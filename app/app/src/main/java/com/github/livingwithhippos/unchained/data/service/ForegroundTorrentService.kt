@@ -18,7 +18,7 @@ import com.github.livingwithhippos.unchained.base.MainActivity
 import com.github.livingwithhippos.unchained.data.local.ProtoStore
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.data.repository.TorrentsRepository
-import com.github.livingwithhippos.unchained.di.SummaryNotification
+import com.github.livingwithhippos.unchained.di.TorrentSummaryNotification
 import com.github.livingwithhippos.unchained.di.TorrentNotification
 import com.github.livingwithhippos.unchained.settings.view.SettingsFragment
 import com.github.livingwithhippos.unchained.utilities.extension.getStatusTranslation
@@ -43,7 +43,7 @@ class ForegroundTorrentService : LifecycleService() {
     private val torrentsLiveData = MutableLiveData<List<TorrentItem>>()
 
     @Inject
-    @SummaryNotification
+    @TorrentSummaryNotification
     lateinit var summaryBuilder: NotificationCompat.Builder
 
     @Inject

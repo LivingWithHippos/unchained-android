@@ -1,5 +1,7 @@
 package com.github.livingwithhippos.unchained.utilities.download
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.io.IOException
@@ -14,7 +16,7 @@ class Downloader(
 ) : AutoCloseable {
 
     @Throws(IOException::class)
-    fun download(url: String): Long {
+    suspend fun download(url: String): Long = withContext(Dispatchers.IO) {
         val request: Request = Request.Builder().url(url).build()
         client.newCall(request).execute()
             .use { response ->
@@ -24,7 +26,7 @@ class Downloader(
                         val length: Double =
                             response.header("Content-Length", "1")?.toDouble() ?: 1.toDouble()
 
-                        return writer.write(responseBody.byteStream(), length)
+                        return@withContext writer.write(responseBody.byteStream(), length)
                     } else {
                         throw IllegalStateException("Response doesn't contain a file")
                     }

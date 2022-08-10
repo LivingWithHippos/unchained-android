@@ -418,6 +418,7 @@
     </plurals>
     <string name="seeders_string_format">seeder/s: %s</string>
     <string name="torrent_in_progress_format">%1$d%% - %2$.2f MB/s</string>
+    <string name="download_in_progress_format">Downloading - %1$d%%</string>
     <string name="download_complete">Download complete</string>
     <string name="unknown_status">Unknown Status</string>
     <string name="downloading_torrent_format">Downloading %1$d torrents</string>
@@ -612,4 +613,9 @@
     <string name="directory_picked">Directory saved. Start the download again.</string>
     <string name="permission_granted">Permissions granted, Start the download again.</string>
     <string name="stop">Stop</string>
+    <string name="stopped">Stopped</string>
+    <string name="paused">Paused</string>
+    <string name="restart">Restart</string>
+    <string name="monitor_downloads">Monitor downloads</string>
+    <string name="download_channel_description">Notification channel for downloads status</string>
 </resources>

@@ -1,5 +1,9 @@
 package com.github.livingwithhippos.unchained.utilities.download
 
+import com.github.livingwithhippos.unchained.data.service.DownloadStatus
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import java.io.BufferedInputStream
 import java.io.IOException
 import java.io.InputStream
@@ -8,10 +12,13 @@ import java.io.OutputStream
 /**
  * Taken from https://www.baeldung.com/java-okhttp-download-binary-file
  */
-class FileWriter(private val outputStream: OutputStream, private val progressCallback: ProgressCallback) : AutoCloseable {
+class FileWriter(private val outputStream: OutputStream) : AutoCloseable {
+
+    private val _state: MutableStateFlow<DownloadStatus> = MutableStateFlow(DownloadStatus.Queued)
+    val state: StateFlow<DownloadStatus> = _state
 
     @Throws(IOException::class)
-    fun write(inputStream: InputStream, length: Double): Long {
+    suspend fun write(inputStream: InputStream, length: Double): Long {
         BufferedInputStream(inputStream).use { input ->
             val dataBuffer =
                 ByteArray(CHUNK_SIZE)
@@ -20,8 +27,9 @@ class FileWriter(private val outputStream: OutputStream, private val progressCal
             while (input.read(dataBuffer).also { readBytes = it } != -1) {
                 totalBytes += readBytes.toLong()
                 outputStream.write(dataBuffer, 0, readBytes)
-                progressCallback.onProgress(totalBytes / length * 100.0)
+                _state.emit(DownloadStatus.Running(length, totalBytes, (totalBytes / length * 100).toInt()))
             }
+            _state.emit(DownloadStatus.Completed)
             return totalBytes
         }
     }

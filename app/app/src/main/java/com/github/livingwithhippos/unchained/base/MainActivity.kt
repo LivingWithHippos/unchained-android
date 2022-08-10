@@ -191,7 +191,7 @@ class MainActivity : AppCompatActivity() {
      */
     private fun bindService() {
         Intent(this, ForegroundDownloadService::class.java).also { intent ->
-            bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
+            isDownloadServiceBound = bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
         }
     }
 
@@ -469,12 +469,18 @@ class MainActivity : AppCompatActivity() {
                     )
                 }
                 is MainActivityMessage.DownloadEnqueued -> {
+
+
                     if (isDownloadServiceBound != true) {
                         lifecycleScope.launch {
                             bindService()
                             // needs some time to connect
                             delay(1000)
                             if (isDownloadServiceBound == true) {
+
+                                val notificationIntent = Intent(applicationContext, ForegroundDownloadService::class.java)
+                                ContextCompat.startForegroundService(applicationContext, notificationIntent)
+
                                 downloadService?.queueDownload(
                                     content.source,
                                     content.folder,
