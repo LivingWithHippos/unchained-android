@@ -38,10 +38,6 @@ class ForegroundDownloadService : LifecycleService() {
     private val downloadBinder = DownloadBinder()
 
     @Inject
-    @DownloadSummaryNotification
-    lateinit var summaryBuilder: NotificationCompat.Builder
-
-    @Inject
     @DownloadNotification
     lateinit var downloadBuilder: NotificationCompat.Builder
 
@@ -72,12 +68,9 @@ class ForegroundDownloadService : LifecycleService() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        startForegroundService()
+        // todo: use this function for initialization
+        // startForegroundService()
         return super.onStartCommand(intent, flags, startId)
-    }
-
-    private fun startForegroundService() {
-        startForeground(SUMMARY_ID, summaryBuilder.build())
     }
 
     private fun getFileDocument(
@@ -304,7 +297,7 @@ class ForegroundDownloadService : LifecycleService() {
                 // notifications are managed in updateNotification, just skip this one
             }
         } else {
-            Timber.d("Some downloads are already running $downloads")
+            // Timber.d("Some downloads are already running")
         }
     }
 
