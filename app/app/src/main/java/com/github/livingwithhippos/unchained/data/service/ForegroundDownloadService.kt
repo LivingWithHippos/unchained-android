@@ -18,6 +18,7 @@ import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.di.DownloadNotification
 import com.github.livingwithhippos.unchained.utilities.download.Downloader
 import com.github.livingwithhippos.unchained.utilities.download.FileWriter
+import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.github.livingwithhippos.unchained.utilities.extension.vibrate
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -109,7 +110,10 @@ class ForegroundDownloadService : LifecycleService() {
         val newFile = getFileDocument(source, destinationFolder, fileName)
         if (newFile == null) {
             Timber.e("Error getting download location file")
+            applicationContext.showToast(R.string.download_queued_error)
             return
+        } else {
+            applicationContext.showToast(R.string.download_queued)
         }
         // checking if I already have this download in the queue
         val replaceDownload: CustomDownload? = downloads[source]
