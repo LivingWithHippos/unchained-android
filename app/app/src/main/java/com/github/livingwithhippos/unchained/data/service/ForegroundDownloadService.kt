@@ -143,6 +143,7 @@ class ForegroundDownloadService : LifecycleService() {
     private fun startNotificationLoop() {
         if (!notificationStarted) {
             notificationStarted = true
+
             notificationScope.launch {
                 delay(1000)
                 while (isActive) {
@@ -165,6 +166,12 @@ class ForegroundDownloadService : LifecycleService() {
                 Timber.d("Ricevuto intent $it")
             }
         }
+    }
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        // todo: need to launch startForegroundService with the intent and notification or this will crash
+        // startForegroundService()
+        return super.onStartCommand(intent, flags, startId)
     }
 
     /**
