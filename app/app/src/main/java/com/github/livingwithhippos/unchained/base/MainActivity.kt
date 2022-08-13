@@ -474,7 +474,8 @@ class MainActivity : AppCompatActivity() {
                     if (isDownloadServiceBound != true) {
                         lifecycleScope.launch {
                             bindService()
-                            // needs some time to connect
+                            // needs some time to connect, careful about the timing because it needs to launch its start in 5 seconds
+                            // or the app could stop responding
                             delay(1000)
                             if (isDownloadServiceBound == true) {
 
