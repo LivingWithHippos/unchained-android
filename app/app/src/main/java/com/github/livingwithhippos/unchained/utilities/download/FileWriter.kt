@@ -1,9 +1,11 @@
 package com.github.livingwithhippos.unchained.utilities.download
 
 import com.github.livingwithhippos.unchained.data.service.DownloadStatus
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.withContext
 import java.io.BufferedInputStream
 import java.io.IOException
 import java.io.InputStream
@@ -18,7 +20,7 @@ class FileWriter(private val outputStream: OutputStream) : AutoCloseable {
     val state: StateFlow<DownloadStatus> = _state
 
     @Throws(IOException::class)
-    suspend fun write(inputStream: InputStream, length: Double): Long {
+    suspend fun write(inputStream: InputStream, length: Double): Long = withContext(Dispatchers.IO){
         BufferedInputStream(inputStream).use { input ->
             val dataBuffer =
                 ByteArray(CHUNK_SIZE)
@@ -30,7 +32,7 @@ class FileWriter(private val outputStream: OutputStream) : AutoCloseable {
                 _state.emit(DownloadStatus.Running(length, totalBytes, (totalBytes / length * 100).toInt()))
             }
             _state.emit(DownloadStatus.Completed)
-            return totalBytes
+            return@withContext totalBytes
         }
     }
 

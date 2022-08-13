@@ -136,24 +136,18 @@ class ForegroundDownloadService : LifecycleService() {
                 title = fileName
             )
         }
-        scope.launch {
-            startDownloadIfAvailable()
-        }
-        scope.launch {
-            startNotificationLoop()
-        }
+        startDownloadIfAvailable()
+        startNotificationLoop()
     }
 
-    private suspend fun startNotificationLoop() {
+    private fun startNotificationLoop() {
         if (!notificationStarted) {
             notificationStarted = true
             notificationScope.launch {
                 delay(1000)
                 while (isActive) {
                     updateNotification()
-                    scope.launch {
-                        startDownloadIfAvailable()
-                    }
+                    startDownloadIfAvailable()
                     delay(1000)
                 }
             }
@@ -176,7 +170,7 @@ class ForegroundDownloadService : LifecycleService() {
     /**
      * Only call this from the mutex lock. I use this to download a single file at once
      */
-    private suspend fun startDownloadIfAvailable() {
+    private fun startDownloadIfAvailable() {
 
         // if I have no running downloads
         val hasRunningDownloads = downloads.values.firstOrNull {
@@ -208,86 +202,86 @@ class ForegroundDownloadService : LifecycleService() {
                 queuedDownload.status = CurrentDownloadStatus.Running
                 downloads[queuedDownload.source] = queuedDownload
 
-                val outputStream = contentResolver?.openOutputStream(queuedDownload.destination)
-                if (outputStream != null) {
+                // todo: check if this is blocking
+                scope.launch {
+                    val outputStream = contentResolver?.openOutputStream(queuedDownload.destination)
+                    if (outputStream != null) {
 
-                    val client = OkHttpClient()
-                    val writer = FileWriter(
-                        outputStream
-                    )
-                    val downloader = Downloader(
-                        client,
-                        writer
-                    )
+                        val client = OkHttpClient()
+                        val writer = FileWriter(
+                            outputStream
+                        )
+                        val downloader = Downloader(
+                            client,
+                            writer
+                        )
 
-                    scope.launch {
-                        writer.state.collect {
-                            when (it) {
-                                DownloadStatus.Completed -> {
-                                    val currentDownload: CustomDownload? =
-                                        downloads[queuedDownload.source]
-                                    if (currentDownload != null) {
-                                        currentDownload.status = CurrentDownloadStatus.Completed
-                                        currentDownload.progress = 100
-                                        downloads[queuedDownload.source] = currentDownload
-                                        // todo: make optional
-                                        applicationContext.vibrate()
+                        scope.launch {
+                            writer.state.collect {
+                                when (it) {
+                                    DownloadStatus.Completed -> {
+                                        val currentDownload: CustomDownload? =
+                                            downloads[queuedDownload.source]
+                                        if (currentDownload != null) {
+                                            currentDownload.status = CurrentDownloadStatus.Completed
+                                            currentDownload.progress = 100
+                                            downloads[queuedDownload.source] = currentDownload
+                                            // todo: make optional
+                                            applicationContext.vibrate()
+                                        }
                                     }
-                                }
-                                is DownloadStatus.Error -> {
-                                    val currentDownload: CustomDownload? =
-                                        downloads[queuedDownload.source]
-                                    if (currentDownload != null) {
-                                        currentDownload.status = CurrentDownloadStatus.Error
-                                        // currentDownload.progress = "0"
-                                        downloads[queuedDownload.source] = currentDownload
-                                        // applicationContext.vibrate()
+                                    is DownloadStatus.Error -> {
+                                        val currentDownload: CustomDownload? =
+                                            downloads[queuedDownload.source]
+                                        if (currentDownload != null) {
+                                            currentDownload.status = CurrentDownloadStatus.Error
+                                            // currentDownload.progress = "0"
+                                            downloads[queuedDownload.source] = currentDownload
+                                            // applicationContext.vibrate()
+                                        }
                                     }
-                                }
-                                DownloadStatus.Paused -> {
-                                    // todo: implement
-                                    val currentDownload: CustomDownload? =
-                                        downloads[queuedDownload.source]
-                                    if (currentDownload != null) {
-                                        currentDownload.status = CurrentDownloadStatus.Paused
-                                        downloads[queuedDownload.source] = currentDownload
-                                        // applicationContext.vibrate()
+                                    DownloadStatus.Paused -> {
+                                        // todo: implement
+                                        val currentDownload: CustomDownload? =
+                                            downloads[queuedDownload.source]
+                                        if (currentDownload != null) {
+                                            currentDownload.status = CurrentDownloadStatus.Paused
+                                            downloads[queuedDownload.source] = currentDownload
+                                            // applicationContext.vibrate()
+                                        }
                                     }
-                                }
-                                DownloadStatus.Queued -> {
-                                    // do nothing?
-                                }
-                                DownloadStatus.Stopped -> {
-                                    // todo: implement
-                                    val currentDownload: CustomDownload? =
-                                        downloads[queuedDownload.source]
-                                    if (currentDownload != null) {
-                                        currentDownload.status = CurrentDownloadStatus.Stopped
-                                        downloads[queuedDownload.source] = currentDownload
-                                        // applicationContext.vibrate()
+                                    DownloadStatus.Queued -> {
+                                        // do nothing?
                                     }
-                                }
-                                is DownloadStatus.Running -> {
-                                    val currentDownload: CustomDownload? =
-                                        downloads[queuedDownload.source]
-                                    if (currentDownload != null) {
-                                        currentDownload.status = CurrentDownloadStatus.Running
-                                        currentDownload.progress = it.percent
-                                        currentDownload.downloadedSize = it.downloadedSize
+                                    DownloadStatus.Stopped -> {
+                                        // todo: implement
+                                        val currentDownload: CustomDownload? =
+                                            downloads[queuedDownload.source]
+                                        if (currentDownload != null) {
+                                            currentDownload.status = CurrentDownloadStatus.Stopped
+                                            downloads[queuedDownload.source] = currentDownload
+                                            // applicationContext.vibrate()
+                                        }
+                                    }
+                                    is DownloadStatus.Running -> {
+                                        val currentDownload: CustomDownload? =
+                                            downloads[queuedDownload.source]
+                                        if (currentDownload != null) {
+                                            currentDownload.status = CurrentDownloadStatus.Running
+                                            currentDownload.progress = it.percent
+                                            currentDownload.downloadedSize = it.downloadedSize
 
-                                        downloads[queuedDownload.source] = currentDownload
+                                            downloads[queuedDownload.source] = currentDownload
+                                        }
                                     }
                                 }
                             }
                         }
+
+                        downloader.download(queuedDownload.source)
+                    } else {
+                        Timber.e("Output stream is empty, check permissions etc")
                     }
-
-
-                    // todo: check if this is blocking
-                    // todo: move to download queue manager
-                    downloader.download(queuedDownload.source)
-                } else {
-                    Timber.e("Output stream is empty, check permissions etc")
                 }
             } else {
                 Timber.d("Download requested but no queued download available $downloads")
