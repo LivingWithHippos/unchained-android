@@ -616,6 +616,5 @@
     <string name="stopped">Stopped</string>
     <string name="paused">Paused</string>
     <string name="restart">Restart</string>
-    <string name="monitor_downloads">Monitor downloads</string>
     <string name="download_channel_description">Notification channel for downloads status</string>
 </resources>

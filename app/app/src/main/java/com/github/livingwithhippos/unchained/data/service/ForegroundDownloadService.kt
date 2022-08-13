@@ -16,7 +16,6 @@ import androidx.documentfile.provider.DocumentFile
 import androidx.lifecycle.LifecycleService
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.di.DownloadNotification
-import com.github.livingwithhippos.unchained.di.DownloadSummaryNotification
 import com.github.livingwithhippos.unchained.utilities.download.Downloader
 import com.github.livingwithhippos.unchained.utilities.download.FileWriter
 import com.github.livingwithhippos.unchained.utilities.extension.vibrate

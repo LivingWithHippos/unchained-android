@@ -61,19 +61,6 @@ object NotificationModule {
 
     @ServiceScoped
     @Provides
-    @DownloadSummaryNotification
-    fun provideDownloadSummaryNotificationBuilder(
-        @ApplicationContext applicationContext: Context
-    ): NotificationCompat.Builder =
-        NotificationCompat.Builder(applicationContext, UnchainedApplication.DOWNLOAD_CHANNEL_ID)
-            .setSmallIcon(R.drawable.logo_no_background)
-            .setContentTitle(applicationContext.getString(R.string.monitor_torrents_download))
-            .setPriority(NotificationCompat.PRIORITY_LOW)
-            .setGroup(GROUP_KEY_DOWNLOADS)
-            .setGroupSummary(true)
-
-    @ServiceScoped
-    @Provides
     fun provideNotificationManager(
         @ApplicationContext applicationContext: Context
     ): NotificationManagerCompat = NotificationManagerCompat.from(applicationContext)
