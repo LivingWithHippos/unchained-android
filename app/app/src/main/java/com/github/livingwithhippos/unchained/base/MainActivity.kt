@@ -88,6 +88,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStop() {
         TelemetryManager.onStop()
+        unbindService()
         super.onStop()
     }
 
@@ -199,9 +200,8 @@ class MainActivity : AppCompatActivity() {
      * Used to unbind and stop our service class
      */
     private fun unbindService() {
-        Intent(this, ForegroundDownloadService::class.java).also {
-            unbindService(serviceConnection)
-        }
+        unbindService(serviceConnection)
+        isDownloadServiceBound = false
     }
 
     private val requestPermissionLauncher =
