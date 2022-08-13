@@ -67,12 +67,6 @@ class ForegroundDownloadService : LifecycleService() {
         return downloadBinder
     }
 
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        // todo: use this function for initialization
-        // startForegroundService()
-        return super.onStartCommand(intent, flags, startId)
-    }
-
     private fun getFileDocument(
         source: String,
         destinationFolder: Uri,
