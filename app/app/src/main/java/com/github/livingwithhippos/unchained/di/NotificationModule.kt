@@ -39,7 +39,7 @@ object NotificationModule {
     ): NotificationCompat.Builder =
         NotificationCompat.Builder(applicationContext, UnchainedApplication.TORRENT_CHANNEL_ID)
             .setSmallIcon(R.drawable.logo_no_background)
-            .setContentTitle(applicationContext.getString(R.string.monitor_downloads))
+            .setContentTitle(applicationContext.getString(R.string.monitor_torrents_download))
             .setPriority(NotificationCompat.PRIORITY_LOW)
             .setGroup(ForegroundTorrentService.GROUP_KEY_TORRENTS)
             .setGroupSummary(true)

@@ -398,4 +398,11 @@
     <string name="directory_picked">Cartella impostata. Riavvia il download.</string>
     <string name="permission_granted">Permessi accordati. Riavvia il download.</string>
     <string name="stop">Stop</string>
+    <string name="download_in_progress_format">Downloading - %1$d%%</string>
+    <string name="stopped">Fermato</string>
+    <string name="paused">In pausa</string>
+    <string name="restart">Riavvia</string>
+    <string name="download_channel_description">Canale notifiche per stato download</string>
+    <string name="download_queued">Download in coda, controlla le notifiche</string>
+    <string name="download_queued_error">Errore avvio download, controlla i permessi</string>
 </resources>

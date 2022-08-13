@@ -617,4 +617,6 @@
     <string name="paused">Paused</string>
     <string name="restart">Restart</string>
     <string name="download_channel_description">Notification channel for downloads status</string>
+    <string name="download_queued">Download queued, check your notifications</string>
+    <string name="download_queued_error">Error queuing download, check permissions</string>
 </resources>
