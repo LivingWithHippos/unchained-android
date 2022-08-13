@@ -200,7 +200,8 @@ class MainActivity : AppCompatActivity() {
      * Used to unbind and stop our service class
      */
     private fun unbindService() {
-        unbindService(serviceConnection)
+        if (isDownloadServiceBound == true)
+            unbindService(serviceConnection)
         isDownloadServiceBound = false
     }
 
