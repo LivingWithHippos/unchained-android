@@ -16,6 +16,7 @@ import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewMod
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import timber.log.Timber
@@ -28,107 +29,128 @@ class DownloadWorker(appContext: Context, workerParams: WorkerParameters) :
     private val scope = CoroutineScope(Dispatchers.IO + job)
 
     override suspend fun doWork(): Result {
+        try {
+            val sourceUrl: String = inputData.getString(MainActivityViewModel.KEY_DOWNLOAD_SOURCE)!!
+            val folderUri: Uri =
+                Uri.parse(inputData.getString(MainActivityViewModel.KEY_FOLDER_URI)!!)
+            val fileName: String = inputData.getString(MainActivityViewModel.KEY_DOWNLOAD_NAME)!!
 
-        val sourceUrl: String = inputData.getString(MainActivityViewModel.KEY_DOWNLOAD_SOURCE)!!
-        val folderUri: Uri = Uri.parse(inputData.getString(MainActivityViewModel.KEY_FOLDER_URI)!!)
-        val fileName: String = inputData.getString(MainActivityViewModel.KEY_DOWNLOAD_NAME)!!
+            val newFile: DocumentFile? = getFileDocument(sourceUrl, folderUri, fileName)
 
-        val newFile: DocumentFile? = getFileDocument(sourceUrl, folderUri, fileName)
-
-        if (newFile == null) {
-            Timber.e("Error getting download location file")
-            return Result.failure()
-        }
+            if (newFile == null) {
+                Timber.e("Error getting download location file")
+                return Result.failure()
+            }
 
 
-        val outputStream = applicationContext.contentResolver.openOutputStream(newFile.uri)
-        if (outputStream == null) {
-            Timber.e("Error getting download uri")
-            return Result.failure()
-        }
+            val outputStream = applicationContext.contentResolver.openOutputStream(newFile.uri)
+            if (outputStream == null) {
+                Timber.e("Error getting download uri")
+                return Result.failure()
+            }
 
-        val notificationID = newFile.hashCode()
+            val notificationID = newFile.hashCode()
 
-        // todo: customize this
-        val client = OkHttpClient()
-        val writer = FileWriter(
-            outputStream
-        )
-        val downloader = Downloader(
-            client,
-            writer
-        )
-        scope.launch {
-            writer.state.collect {
-                // todo: manage progress
+            // todo: customize this
+            val client = OkHttpClient()
+            val writer = FileWriter(
+                outputStream
+            )
+            val downloader = Downloader(
+                client,
+                writer
+            )
 
-                when (it) {
-                    DownloadStatus.Completed -> {
-                        makeStatusNotification(
-                            notificationID,
-                            fileName,
-                            applicationContext.getString(R.string.download_complete),
-                            applicationContext
-                        )
-                    }
-                    is DownloadStatus.Error -> {
-                        makeStatusNotification(
-                            notificationID,
-                            fileName,
-                            applicationContext.getString(R.string.error),
-                            applicationContext
-                        )
-                    }
-                    DownloadStatus.Paused -> {
-                        // todo: add this, it also needs to be onGoing
-                        makeStatusNotification(
-                            notificationID,
-                            fileName,
-                            applicationContext.getString(R.string.paused),
-                            applicationContext
-                        )
-                    }
-                    DownloadStatus.Queued -> {
-                        makeStatusNotification(
-                            notificationID,
-                            fileName,
-                            applicationContext.getString(R.string.queued),
-                            applicationContext
-                        )
-                    }
-                    DownloadStatus.Stopped -> {
-                        makeStatusNotification(
-                            notificationID,
-                            fileName,
-                            applicationContext.getString(R.string.stopped),
-                            applicationContext
-                        )
-                    }
-                    is DownloadStatus.Running -> {
+            var progressCounter = -1
+            var lastNotificationTime = 0L
+            scope.launch {
+                writer.state.collect {
+                    // todo: manage progress
 
-                        makeProgressStatusNotification(
-                            notificationID,
-                            fileName,
-                            applicationContext.getString(
-                                R.string.download_in_progress_format,
-                                it.percent
-                            ),
-                            it.percent,
-                            applicationContext
-                        )
+                    when (it) {
+                        DownloadStatus.Completed -> {
+                            Timber.e("DownloadStatus.Completed")
+                            delay(2000)
+                            Timber.e("DownloadStatus.Completed makeStatusNotification")
+                            makeStatusNotification(
+                                notificationID,
+                                fileName,
+                                applicationContext.getString(R.string.download_complete),
+                                applicationContext
+                            )
+                        }
+                        is DownloadStatus.Error -> {
+                            Timber.e("DownloadStatus.Error")
+                            makeStatusNotification(
+                                notificationID,
+                                fileName,
+                                applicationContext.getString(R.string.error),
+                                applicationContext
+                            )
+                        }
+                        DownloadStatus.Paused -> {
+                            Timber.e("DownloadStatus.Paused")
+                            // todo: add this, it also needs to be onGoing
+                            makeStatusNotification(
+                                notificationID,
+                                fileName,
+                                applicationContext.getString(R.string.paused),
+                                applicationContext
+                            )
+                        }
+                        DownloadStatus.Queued -> {
+                            Timber.e("DownloadStatus.Queued")
+                            makeStatusNotification(
+                                notificationID,
+                                fileName,
+                                applicationContext.getString(R.string.queued),
+                                applicationContext
+                            )
+                        }
+                        DownloadStatus.Stopped -> {
+                            Timber.e("DownloadStatus.Stopped")
+                            makeStatusNotification(
+                                notificationID,
+                                fileName,
+                                applicationContext.getString(R.string.stopped),
+                                applicationContext
+                            )
+                        }
+                        is DownloadStatus.Running -> {
+                            Timber.e("DownloadStatus.Running ${it.percent}")
+                            if (it.percent  < 100 && it.percent != progressCounter && System.currentTimeMillis() - lastNotificationTime > 400) {
+                                lastNotificationTime = System.currentTimeMillis()
+                                Timber.e("DownloadStatus.Running progressCounter $progressCounter")
+                                progressCounter = it.percent
+                                makeProgressStatusNotification(
+                                    notificationID,
+                                    fileName,
+                                    applicationContext.getString(
+                                        R.string.download_in_progress_format,
+                                        it.percent
+                                    ),
+                                    it.percent,
+                                    applicationContext
+                                )
+                            }
+                        }
                     }
                 }
             }
+
+            // this needs to be blocking, see https://developer.android.com/topic/libraries/architecture/workmanager/advanced/coroutineworker
+            val downloadedSize: Long = downloader.download(sourceUrl)
+
+            // todo: get whole size and check if it correspond
+            return if (downloadedSize > 0)
+                Result.success()
+            else
+                Result.failure()
+        } catch (e: java.lang.Exception) {
+            e.printStackTrace()
+            Timber.e("Exception occurred while downloading, ${e.message}")
+            return Result.failure()
         }
-
-        // this needs to be blocking, see https://developer.android.com/topic/libraries/architecture/workmanager/advanced/coroutineworker
-        val downloadedSize: Long = downloader.download(sourceUrl)
-
-        // todo: get whole size and check if it correspond
-        return if (downloadedSize > 0)
-            Result.success()
-        else
-            Result.failure()
 
     }
 
@@ -170,8 +192,9 @@ fun makeStatusNotification(
     id: Int,
     filename: String,
     title: String,
-    context: Context)
-{
+    context: Context
+) {
+
     // Create the notification
     val builder = NotificationCompat.Builder(context, UnchainedApplication.DOWNLOAD_CHANNEL_ID)
         .setSmallIcon(R.drawable.logo_no_background)
@@ -183,6 +206,7 @@ fun makeStatusNotification(
         .setContentTitle(title)
         .setStyle(NotificationCompat.BigTextStyle().bigText(filename))
 
+    Timber.e("makeStatusNotification $title")
     // Show the notification
     NotificationManagerCompat.from(context).notify(id, builder.build())
 }
