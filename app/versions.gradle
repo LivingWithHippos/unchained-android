@@ -42,6 +42,7 @@ versions.test_junit = "1.1.3"
 versions.test_orchestrator = "1.4.1"
 versions.timber = "5.0.1"
 versions.viewpager2 = "1.0.0"
+versions.work = "2.7.1"
 ext.versions = versions
 
 ext.deps = [:]
@@ -94,6 +95,7 @@ dagger.android = "com.google.dagger:dagger-android:$versions.dagger"
 dagger.android_support = "com.google.dagger:dagger-android-support:$versions.dagger"
 dagger.compiler = "com.google.dagger:dagger-compiler:$versions.dagger"
 dagger.android_support_compiler = "com.google.dagger:dagger-android-processor:$versions.dagger"
+dagger.hilt_work = "androidx.hilt:hilt-work:$versions.dagger"
 deps.dagger = dagger
 
 def datastore = [:]
@@ -229,5 +231,9 @@ deps.timber = "com.jakewharton.timber:timber:$versions.timber"
 deps.transition = "androidx.transition:transition:$versions.transition"
 
 deps.viewpager2 = "androidx.viewpager2:viewpager2:$versions.viewpager2"
+
+def work = [:]
+work.core = "androidx.work:work-runtime-ktx:$versions.work"
+deps.work = work
 
 ext.deps = deps

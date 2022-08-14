@@ -256,6 +256,9 @@ dependencies {
     //jsoup
     implementation deps.jsoup
 
+    // work manager
+    implementation deps.work.core
+
     // countly
     debugImplementation deps.countly
 
