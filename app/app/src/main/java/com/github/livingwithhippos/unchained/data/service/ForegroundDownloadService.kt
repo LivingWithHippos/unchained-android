@@ -99,9 +99,9 @@ class ForegroundDownloadService : LifecycleService() {
         }
     }
 
-    fun queueDownload(source: String, destinationFolder: Uri, fileName: String) {
+    fun queueDownload(sourceUrl: String, destinationFolder: Uri, fileName: String) {
 
-        val newFile = getFileDocument(source, destinationFolder, fileName)
+        val newFile = getFileDocument(sourceUrl, destinationFolder, fileName)
         if (newFile == null) {
             Timber.e("Error getting download location file")
             applicationContext.showToast(R.string.download_queued_error)
@@ -110,7 +110,7 @@ class ForegroundDownloadService : LifecycleService() {
             applicationContext.showToast(R.string.download_queued)
         }
         // checking if I already have this download in the queue
-        val replaceDownload: CustomDownload? = downloads[source]
+        val replaceDownload: CustomDownload? = downloads[sourceUrl]
         if (replaceDownload != null) {
             // in these cases I can restart it eventually
             if (
@@ -121,7 +121,7 @@ class ForegroundDownloadService : LifecycleService() {
                 replaceDownload.progress = 0
                 replaceDownload.downloadedSize = 0
 
-                downloads[source] = replaceDownload
+                downloads[sourceUrl] = replaceDownload
             } else {
                 // todo: decide what to do, even nothing
                 // not replacing anything for a running or stopped download because it could already be partially downloaded
@@ -130,8 +130,8 @@ class ForegroundDownloadService : LifecycleService() {
 
         } else {
             // new download!
-            downloads[source] = CustomDownload(
-                source = source,
+            downloads[sourceUrl] = CustomDownload(
+                source = sourceUrl,
                 destination = newFile.uri,
                 title = fileName
             )
@@ -209,7 +209,6 @@ class ForegroundDownloadService : LifecycleService() {
                 queuedDownload.status = CurrentDownloadStatus.Running
                 downloads[queuedDownload.source] = queuedDownload
 
-                // todo: check if this is blocking
                 scope.launch {
                     val outputStream = contentResolver?.openOutputStream(queuedDownload.destination)
                     if (outputStream != null) {
