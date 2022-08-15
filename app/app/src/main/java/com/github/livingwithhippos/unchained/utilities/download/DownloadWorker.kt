@@ -69,18 +69,9 @@ class DownloadWorker(appContext: Context, workerParams: WorkerParameters) :
 
                     when (it) {
                         DownloadStatus.Completed -> {
-                            Timber.e("DownloadStatus.Completed")
-                            delay(2000)
-                            Timber.e("DownloadStatus.Completed makeStatusNotification")
-                            makeStatusNotification(
-                                notificationID,
-                                fileName,
-                                applicationContext.getString(R.string.download_complete),
-                                applicationContext
-                            )
+                            // this is managed below
                         }
                         is DownloadStatus.Error -> {
-                            Timber.e("DownloadStatus.Error")
                             makeStatusNotification(
                                 notificationID,
                                 fileName,
@@ -89,7 +80,6 @@ class DownloadWorker(appContext: Context, workerParams: WorkerParameters) :
                             )
                         }
                         DownloadStatus.Paused -> {
-                            Timber.e("DownloadStatus.Paused")
                             // todo: add this, it also needs to be onGoing
                             makeStatusNotification(
                                 notificationID,
@@ -99,7 +89,6 @@ class DownloadWorker(appContext: Context, workerParams: WorkerParameters) :
                             )
                         }
                         DownloadStatus.Queued -> {
-                            Timber.e("DownloadStatus.Queued")
                             makeStatusNotification(
                                 notificationID,
                                 fileName,
@@ -108,7 +97,6 @@ class DownloadWorker(appContext: Context, workerParams: WorkerParameters) :
                             )
                         }
                         DownloadStatus.Stopped -> {
-                            Timber.e("DownloadStatus.Stopped")
                             makeStatusNotification(
                                 notificationID,
                                 fileName,
@@ -117,8 +105,7 @@ class DownloadWorker(appContext: Context, workerParams: WorkerParameters) :
                             )
                         }
                         is DownloadStatus.Running -> {
-                            Timber.e("DownloadStatus.Running ${it.percent}")
-                            if (it.percent  < 100 && it.percent != progressCounter && System.currentTimeMillis() - lastNotificationTime > 400) {
+                            if (it.percent  < 100 && it.percent != progressCounter && System.currentTimeMillis() - lastNotificationTime > 500) {
                                 lastNotificationTime = System.currentTimeMillis()
                                 Timber.e("DownloadStatus.Running progressCounter $progressCounter")
                                 progressCounter = it.percent
@@ -142,8 +129,15 @@ class DownloadWorker(appContext: Context, workerParams: WorkerParameters) :
             val downloadedSize: Long = downloader.download(sourceUrl)
 
             // todo: get whole size and check if it correspond
-            return if (downloadedSize > 0)
+            return if (downloadedSize > 0) {
+                makeStatusNotification(
+                    notificationID,
+                    fileName,
+                    applicationContext.getString(R.string.download_complete),
+                    applicationContext
+                )
                 Result.success()
+            }
             else
                 Result.failure()
         } catch (e: java.lang.Exception) {
@@ -201,7 +195,9 @@ fun makeStatusNotification(
         .setCategory(NotificationCompat.CATEGORY_PROGRESS)
         .setPriority(NotificationCompat.PRIORITY_DEFAULT)
         .setGroup(ForegroundDownloadService.GROUP_KEY_DOWNLOADS)
-        .setGroupSummary(false)
+            // setting setGroupSummary(false) will prevent this from showing up after the makeProgressStatusNotification one
+        .setGroupSummary(true)
+        .setProgress(0, 0, false)
         .setOngoing(false)
         .setContentTitle(title)
         .setStyle(NotificationCompat.BigTextStyle().bigText(filename))
