@@ -13,6 +13,7 @@ import com.github.livingwithhippos.unchained.base.UnchainedApplication
 import com.github.livingwithhippos.unchained.data.service.DownloadStatus
 import com.github.livingwithhippos.unchained.data.service.ForegroundDownloadService
 import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewModel
+import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -39,6 +40,7 @@ class DownloadWorker(appContext: Context, workerParams: WorkerParameters) :
 
             if (newFile == null) {
                 Timber.e("Error getting download location file")
+                applicationContext.showToast(R.string.download_queued_error)
                 return Result.failure()
             }
 
@@ -46,6 +48,7 @@ class DownloadWorker(appContext: Context, workerParams: WorkerParameters) :
             val outputStream = applicationContext.contentResolver.openOutputStream(newFile.uri)
             if (outputStream == null) {
                 Timber.e("Error getting download uri")
+                applicationContext.showToast(R.string.download_queued_error)
                 return Result.failure()
             }
 
@@ -125,6 +128,7 @@ class DownloadWorker(appContext: Context, workerParams: WorkerParameters) :
                 }
             }
 
+            applicationContext.showToast(R.string.download_queued)
             // this needs to be blocking, see https://developer.android.com/topic/libraries/architecture/workmanager/advanced/coroutineworker
             val downloadedSize: Long = downloader.download(sourceUrl)
 
