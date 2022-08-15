@@ -409,4 +409,9 @@
     <string name="download_channel_description">Canal de notification de l\'état des téléchargements</string>
     <string name="download_queued">Téléchargement en attente, vérifiez vos notifications</string>
     <string name="download_queued_error">Erreur de mise en file d\'attente du téléchargement, vérifiez les permissions</string>
+    <string name="download_manager_default">Gestionnaire de téléchargement par défaut</string>
+    <string name="pick_download_folder">Choisissez le dossier de téléchargement</string>
+    <string name="pick_download_folder_description">Choisissez un dossier pour les téléchargements. Non disponible pour le gestionnaire de téléchargement du système par défaut</string>
+    <string name="download_manager">Gestionnaire de téléchargement</string>
+    <string name="download_manager_description">Choisissez comment télécharger les fichiers</string>
 </resources>

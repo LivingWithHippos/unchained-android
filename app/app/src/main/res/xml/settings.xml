@@ -25,6 +25,24 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory android:title="@string/download">
+
+        <Preference
+            app:key="download_folder_key"
+            app:summary="@string/pick_download_folder_description"
+            app:title="@string/pick_download_folder" />
+
+        <DropDownPreference
+            android:defaultValue="download_manager_okhttp"
+            android:entries="@array/downloader"
+            android:entryValues="@array/downloader_values"
+            android:key="download_manager"
+            android:title="@string/download_manager"
+            app:summary="@string/download_manager_description"
+            app:useSimpleSummaryProvider="true" />
+
+    </PreferenceCategory>
+
     <PreferenceCategory android:title="@string/notifications">
 
         <SwitchPreference

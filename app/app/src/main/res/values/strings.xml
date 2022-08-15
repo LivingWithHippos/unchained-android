@@ -619,4 +619,8 @@
     <string name="download_channel_description">Notification channel for downloads status</string>
     <string name="download_queued">Download queued, check your notifications</string>
     <string name="download_queued_error">Error queuing download, check permissions</string>
+    <string name="pick_download_folder">Pick Download Folder</string>
+    <string name="pick_download_folder_description">Choose a folder for the downloads. Not available for the default system download manager</string>
+    <string name="download_manager">Download manager</string>
+    <string name="download_manager_description">Choose how to download files</string>
 </resources>

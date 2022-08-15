@@ -405,4 +405,9 @@
     <string name="download_channel_description">Canale notifiche per stato download</string>
     <string name="download_queued">Download in coda, controlla le notifiche</string>
     <string name="download_queued_error">Errore avvio download, controlla i permessi</string>
+    <string name="download_manager_default">Gestore di download predefinito</string>
+    <string name="pick_download_folder">Scegli la cartella di download</string>
+    <string name="pick_download_folder_description">Scegli una cartella per i download. Non disponibile per il gestore di downlaod predefinito del sistema</string>
+    <string name="download_manager">Gestore di download</string>
+    <string name="download_manager_description">Scegli come scaricare i file</string>
 </resources>

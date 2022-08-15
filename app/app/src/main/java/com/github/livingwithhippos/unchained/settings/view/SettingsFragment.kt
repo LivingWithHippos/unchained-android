@@ -1,11 +1,13 @@
 package com.github.livingwithhippos.unchained.settings.view
 
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.method.DigitsKeyListener
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.viewModels
 import androidx.preference.EditTextPreference
 import androidx.preference.ListPreference
@@ -20,6 +22,7 @@ import com.github.livingwithhippos.unchained.utilities.PLUGINS_URL
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -32,6 +35,27 @@ class SettingsFragment : PreferenceFragmentCompat() {
     lateinit var preferences: SharedPreferences
 
     private val viewModel: SettingsViewModel by viewModels()
+
+    private val pickDirectoryLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.OpenDocumentTree()
+        ) {
+            if (it != null) {
+                Timber.d("User has picked a folder $it")
+
+                // permanent permissions
+                val contentResolver = requireContext().contentResolver
+
+                val takeFlags: Int = Intent.FLAG_GRANT_READ_URI_PERMISSION or
+                        Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+
+                contentResolver.takePersistableUriPermission(it, takeFlags)
+
+                viewModel.setDownloadFolder(it)
+            } else {
+                Timber.d("User has not picked a folder")
+            }
+        }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.settings, rootKey)
@@ -64,6 +88,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
         setupKodi()
 
         setupVersion()
+
+        findPreference<Preference>("download_folder_key")?.setOnPreferenceClickListener {
+            pickDirectoryLauncher.launch(null)
+            true
+        }
     }
 
     override fun onCreateView(
