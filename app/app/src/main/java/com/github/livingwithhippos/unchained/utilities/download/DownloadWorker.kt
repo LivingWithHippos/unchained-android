@@ -17,8 +17,8 @@ import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import timber.log.Timber
 import java.net.URLConnection
@@ -40,7 +40,7 @@ class DownloadWorker(appContext: Context, workerParams: WorkerParameters) :
 
             if (newFile == null) {
                 Timber.e("Error getting download location file")
-                applicationContext.showToast(R.string.download_queued_error)
+                showToast(R.string.download_queued_error)
                 return Result.failure()
             }
 
@@ -48,7 +48,7 @@ class DownloadWorker(appContext: Context, workerParams: WorkerParameters) :
             val outputStream = applicationContext.contentResolver.openOutputStream(newFile.uri)
             if (outputStream == null) {
                 Timber.e("Error getting download uri")
-                applicationContext.showToast(R.string.download_queued_error)
+                showToast(R.string.download_queued_error)
                 return Result.failure()
             }
 
@@ -108,7 +108,7 @@ class DownloadWorker(appContext: Context, workerParams: WorkerParameters) :
                             )
                         }
                         is DownloadStatus.Running -> {
-                            if (it.percent  < 100 && it.percent != progressCounter && System.currentTimeMillis() - lastNotificationTime > 500) {
+                            if (it.percent < 100 && it.percent != progressCounter && System.currentTimeMillis() - lastNotificationTime > 500) {
                                 lastNotificationTime = System.currentTimeMillis()
                                 Timber.e("DownloadStatus.Running progressCounter $progressCounter")
                                 progressCounter = it.percent
@@ -128,7 +128,7 @@ class DownloadWorker(appContext: Context, workerParams: WorkerParameters) :
                 }
             }
 
-            applicationContext.showToast(R.string.download_queued)
+            showToast(R.string.download_queued)
             // this needs to be blocking, see https://developer.android.com/topic/libraries/architecture/workmanager/advanced/coroutineworker
             val downloadedSize: Long = downloader.download(sourceUrl)
 
@@ -141,8 +141,7 @@ class DownloadWorker(appContext: Context, workerParams: WorkerParameters) :
                     applicationContext
                 )
                 Result.success()
-            }
-            else
+            } else
                 Result.failure()
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
@@ -150,6 +149,10 @@ class DownloadWorker(appContext: Context, workerParams: WorkerParameters) :
             return Result.failure()
         }
 
+    }
+
+    private suspend fun showToast(stringId: Int) = withContext(Dispatchers.Main) {
+        applicationContext.showToast(stringId)
     }
 
 
@@ -199,7 +202,7 @@ fun makeStatusNotification(
         .setCategory(NotificationCompat.CATEGORY_PROGRESS)
         .setPriority(NotificationCompat.PRIORITY_DEFAULT)
         .setGroup(ForegroundDownloadService.GROUP_KEY_DOWNLOADS)
-            // setting setGroupSummary(false) will prevent this from showing up after the makeProgressStatusNotification one
+        // setting setGroupSummary(false) will prevent this from showing up after the makeProgressStatusNotification one
         .setGroupSummary(true)
         .setProgress(0, 0, false)
         .setOngoing(false)
