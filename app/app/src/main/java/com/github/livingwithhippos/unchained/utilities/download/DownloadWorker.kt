@@ -10,10 +10,9 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedApplication
-import com.github.livingwithhippos.unchained.data.service.DownloadStatus
-import com.github.livingwithhippos.unchained.data.service.ForegroundDownloadService
 import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewModel
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
+import com.github.livingwithhippos.unchained.utilities.extension.vibrate
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -140,6 +139,7 @@ class DownloadWorker(appContext: Context, workerParams: WorkerParameters) :
                     applicationContext.getString(R.string.download_complete),
                     applicationContext
                 )
+                applicationContext.vibrate()
                 Result.success()
             } else
                 Result.failure()
@@ -189,6 +189,8 @@ class DownloadWorker(appContext: Context, workerParams: WorkerParameters) :
     }
 }
 
+const val GROUP_KEY_DOWNLOADS: String = "com.github.livingwithhippos.unchained.DOWNLOADS"
+
 fun makeStatusNotification(
     id: Int,
     filename: String,
@@ -201,7 +203,7 @@ fun makeStatusNotification(
         .setSmallIcon(R.drawable.logo_no_background)
         .setCategory(NotificationCompat.CATEGORY_PROGRESS)
         .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-        .setGroup(ForegroundDownloadService.GROUP_KEY_DOWNLOADS)
+        .setGroup(GROUP_KEY_DOWNLOADS)
         // setting setGroupSummary(false) will prevent this from showing up after the makeProgressStatusNotification one
         .setGroupSummary(true)
         .setProgress(0, 0, false)
@@ -226,7 +228,7 @@ fun makeProgressStatusNotification(
         .setSmallIcon(R.drawable.logo_no_background)
         .setCategory(NotificationCompat.CATEGORY_PROGRESS)
         .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-        .setGroup(ForegroundDownloadService.GROUP_KEY_DOWNLOADS)
+        .setGroup(GROUP_KEY_DOWNLOADS)
         .setGroupSummary(true)
         .setOngoing(true)
         .setProgress(100, progress, false)
@@ -235,4 +237,26 @@ fun makeProgressStatusNotification(
 
     // Show the notification
     NotificationManagerCompat.from(context).notify(id, builder.build())
+}
+
+sealed class DownloadStatus {
+    object Queued : DownloadStatus()
+    object Stopped : DownloadStatus()
+    object Paused : DownloadStatus()
+    object Completed : DownloadStatus()
+    data class Running(
+        val totalSize: Double,
+        val downloadedSize: Long,
+        val percent: Int,
+    ) : DownloadStatus()
+
+    data class Error(val type: DownloadErrorType) : DownloadStatus()
+}
+
+sealed class DownloadErrorType {
+    object ResponseError : DownloadErrorType()
+    object Interrupted : DownloadErrorType()
+    object EmptyBody : DownloadErrorType()
+    object ServerUnavailable : DownloadErrorType()
+    object IPBanned : DownloadErrorType()
 }

@@ -1,5 +1,7 @@
 package com.github.livingwithhippos.unchained.start.viewmodel
 
+import android.app.DownloadManager
+import android.app.DownloadManager.Request
 import android.content.Context
 import android.content.SharedPreferences
 import android.net.ConnectivityManager
@@ -7,11 +9,15 @@ import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Build
+import android.os.Environment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import androidx.work.Data
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.local.Credentials
 import com.github.livingwithhippos.unchained.data.local.ProtoStore
@@ -29,7 +35,6 @@ import com.github.livingwithhippos.unchained.data.repository.HostsRepository
 import com.github.livingwithhippos.unchained.data.repository.KodiDeviceRepository
 import com.github.livingwithhippos.unchained.data.repository.PluginRepository
 import com.github.livingwithhippos.unchained.data.repository.PluginRepository.Companion.TYPE_UNCHAINED
-import com.github.livingwithhippos.unchained.data.repository.TorrentsRepository
 import com.github.livingwithhippos.unchained.data.repository.UpdateRepository
 import com.github.livingwithhippos.unchained.data.repository.UserRepository
 import com.github.livingwithhippos.unchained.data.repository.VariousApiRepository
@@ -45,12 +50,16 @@ import com.github.livingwithhippos.unchained.utilities.PLUGINS_PACK_FOLDER
 import com.github.livingwithhippos.unchained.utilities.PRIVATE_TOKEN
 import com.github.livingwithhippos.unchained.utilities.SIGNATURE
 import com.github.livingwithhippos.unchained.utilities.UnzipUtils
+import com.github.livingwithhippos.unchained.utilities.download.DownloadWorker
+import com.github.livingwithhippos.unchained.utilities.extension.downloadFileInStandardFolder
 import com.github.livingwithhippos.unchained.utilities.extension.getDownloadedFileUri
 import com.github.livingwithhippos.unchained.utilities.extension.isMagnet
 import com.github.livingwithhippos.unchained.utilities.extension.isTorrent
+import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.github.livingwithhippos.unchained.utilities.postEvent
 import com.tinder.StateMachine
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -83,7 +92,7 @@ class MainActivityViewModel @Inject constructor(
     private val kodiDeviceRepository: KodiDeviceRepository,
     private val customDownloadRepository: CustomDownloadRepository,
     private val updateRepository: UpdateRepository,
-    private val torrentsRepository: TorrentsRepository,
+    @ApplicationContext applicationContext: Context
 ) : ViewModel() {
 
     val fsmAuthenticationState = MutableLiveData<Event<FSMAuthenticationState>?>()
@@ -106,6 +115,8 @@ class MainActivityViewModel @Inject constructor(
     val linkLiveData = MutableLiveData<Event<String>?>()
 
     val messageLiveData = MutableLiveData<Event<MainActivityMessage>?>()
+
+    private val workManager = WorkManager.getInstance(applicationContext)
 
     private var refreshJob: Job? = null
 
@@ -1061,7 +1072,12 @@ class MainActivityViewModel @Inject constructor(
         }
     }
 
-    private fun checkUpdateVersion(localVersion: Int, remoteVersion: Int?, lastVersionChecked: Int, signature: String) {
+    private fun checkUpdateVersion(
+        localVersion: Int,
+        remoteVersion: Int?,
+        lastVersionChecked: Int,
+        signature: String
+    ) {
         if (remoteVersion != null) {
             if (remoteVersion > localVersion && remoteVersion > lastVersionChecked) {
                 messageLiveData.postValue(Event(MainActivityMessage.UpdateFound(signature)))
@@ -1083,15 +1099,30 @@ class MainActivityViewModel @Inject constructor(
                 for (signature in signatures) {
                     when (val upperSignature = signature.uppercase()) {
                         SIGNATURE.F_DROID -> {
-                            checkUpdateVersion(versionCode, updates.fDroid?.versionCode, lastVersionChecked, upperSignature)
+                            checkUpdateVersion(
+                                versionCode,
+                                updates.fDroid?.versionCode,
+                                lastVersionChecked,
+                                upperSignature
+                            )
                             break
                         }
                         SIGNATURE.GITHUB -> {
-                            checkUpdateVersion(versionCode, updates.github?.versionCode, lastVersionChecked, upperSignature)
+                            checkUpdateVersion(
+                                versionCode,
+                                updates.github?.versionCode,
+                                lastVersionChecked,
+                                upperSignature
+                            )
                             break
                         }
                         SIGNATURE.PLAY_STORE -> {
-                            checkUpdateVersion(versionCode, updates.playStore?.versionCode, lastVersionChecked, upperSignature)
+                            checkUpdateVersion(
+                                versionCode,
+                                updates.playStore?.versionCode,
+                                lastVersionChecked,
+                                upperSignature
+                            )
                             break
                         }
                         else -> {
@@ -1132,8 +1163,51 @@ class MainActivityViewModel @Inject constructor(
         messageLiveData.postValue(Event(MainActivityMessage.RequireDownloadPermissions))
     }
 
-    fun enqueueDownload(url: String, folder: Uri, fileName: String) {
-        messageLiveData.postValue(Event(MainActivityMessage.DownloadEnqueued(url, folder, fileName)))
+    private fun downloadFile(context: Context, link: String, fileName: String) {
+        val manager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+        val queuedDownload = manager.downloadFileInStandardFolder(
+            source = Uri.parse(link),
+            title = fileName,
+            description = context.getString(R.string.app_name)
+        )
+
+        when (queuedDownload) {
+            is EitherResult.Failure -> {
+                context.showToast(R.string.download_not_started)
+            }
+            is EitherResult.Success -> {
+                context.showToast(R.string.download_started)
+            }
+        }
+    }
+
+    fun getDownloadManagerPreference(): String {
+        return preferences.getString("download_manager", "download_manager_okhttp") ?: "download_manager_okhttp"
+    }
+
+    fun startDownloadWorker(data: Data) {
+        val downloadFileRequest = OneTimeWorkRequestBuilder<DownloadWorker>()
+            .setInputData(data)
+            .build()
+
+        workManager.enqueue(downloadFileRequest)
+    }
+
+    fun enqueueDownload(
+        sourceUrl: String,
+        folder: Uri,
+        fileName: String
+    ) {
+        // todo: folder should be nullable for the system download manager
+        messageLiveData.postValue(
+            Event(
+                MainActivityMessage.DownloadEnqueued(
+                    sourceUrl,
+                    folder,
+                    fileName
+                )
+            )
+        )
     }
 
     companion object {
@@ -1144,6 +1218,12 @@ class MainActivityViewModel @Inject constructor(
         const val KEY_REFRESHING_TOKEN = "refreshing_token_key"
         const val KEY_FSM_AUTH_STATE = "fsm_auth_state_key"
         const val KEY_LAST_UPDATE_VERSION_CHECKED = "last_update_version_checked_key"
+
+        const val KEY_FOLDER_URI = "download_folder_key"
+        const val KEY_DOWNLOAD_SOURCE = "download_source_key"
+        const val KEY_DOWNLOAD_NAME = "download_name_key"
+
+        const val DOWNLOAD_WORK_NAME = "work_name_download"
     }
 }
 
@@ -1151,7 +1231,8 @@ sealed class MainActivityMessage {
     data class StringID(val id: Int) : MainActivityMessage()
     data class InstalledPlugins(val number: Int) : MainActivityMessage()
     data class UpdateFound(val signature: String) : MainActivityMessage()
-    object RequireDownloadFolder: MainActivityMessage()
-    object RequireDownloadPermissions: MainActivityMessage()
-    data class DownloadEnqueued(val source: String, val folder: Uri, val fileName: String) : MainActivityMessage()
+    object RequireDownloadFolder : MainActivityMessage()
+    object RequireDownloadPermissions : MainActivityMessage()
+    data class DownloadEnqueued(val source: String, val folder: Uri, val fileName: String) :
+        MainActivityMessage()
 }

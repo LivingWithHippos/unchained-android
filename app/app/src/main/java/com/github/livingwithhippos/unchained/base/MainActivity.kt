@@ -4,20 +4,17 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.DownloadManager
 import android.content.BroadcastReceiver
-import android.content.ComponentName
 import android.content.ContentResolver.SCHEME_CONTENT
 import android.content.ContentResolver.SCHEME_FILE
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.content.ServiceConnection
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.IBinder
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -35,11 +32,11 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import androidx.work.Data
 import com.github.livingwithhippos.unchained.BuildConfig
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.model.UserAction
 import com.github.livingwithhippos.unchained.data.repository.PluginRepository.Companion.TYPE_UNCHAINED
-import com.github.livingwithhippos.unchained.data.service.ForegroundDownloadService
 import com.github.livingwithhippos.unchained.data.service.ForegroundTorrentService
 import com.github.livingwithhippos.unchained.data.service.ForegroundTorrentService.Companion.KEY_TORRENT_ID
 import com.github.livingwithhippos.unchained.databinding.ActivityMainBinding
@@ -88,10 +85,12 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStop() {
         TelemetryManager.onStop()
-        unbindService()
+        // todo: implement for TorrentService
+        // unbindService()
         super.onStop()
     }
 
+    @SuppressLint("PackageManagerGetSignatures")
     private fun getApplicationSignatures(packageName: String = getPackageName()): List<String> {
         val signatureList: List<String>
         try {
@@ -142,12 +141,6 @@ class MainActivity : AppCompatActivity() {
 
     val viewModel: MainActivityViewModel by viewModels()
 
-    // Variable for storing instance of our service class
-    var downloadService: ForegroundDownloadService? = null
-
-    // Boolean to check if our activity is bound to service or not
-    var isDownloadServiceBound: Boolean? = null
-
     @Inject
     lateinit var preferences: SharedPreferences
 
@@ -166,43 +159,6 @@ class MainActivity : AppCompatActivity() {
                 )
             }
         }
-    }
-
-    /**
-     * Interface for getting the instance of binder from our service class
-     * So client can get instance of our service class and can directly communicate with it.
-     */
-    private val serviceConnection = object : ServiceConnection {
-        override fun onServiceConnected(className: ComponentName, iBinder: IBinder) {
-            Timber.d("ServiceConnection: connected to download service.")
-            // We've bound to MyService, cast the IBinder and get MyBinder instance
-            val binder = iBinder as ForegroundDownloadService.DownloadBinder
-            downloadService = binder.service
-            isDownloadServiceBound = true
-        }
-
-        override fun onServiceDisconnected(arg0: ComponentName) {
-            Timber.d("ServiceConnection: disconnected from download service.")
-            isDownloadServiceBound = false
-        }
-    }
-
-    /**
-     * Used to bind to our service class
-     */
-    private fun bindService() {
-        Intent(this, ForegroundDownloadService::class.java).also { intent ->
-            isDownloadServiceBound = bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
-        }
-    }
-
-    /**
-     * Used to unbind and stop our service class
-     */
-    private fun unbindService() {
-        if (isDownloadServiceBound == true)
-            unbindService(serviceConnection)
-        isDownloadServiceBound = false
     }
 
     private val requestPermissionLauncher =
@@ -471,7 +427,49 @@ class MainActivity : AppCompatActivity() {
                 }
                 is MainActivityMessage.DownloadEnqueued -> {
 
+                    when (val dm = viewModel.getDownloadManagerPreference()) {
+                        "download_manager_system" -> {
 
+                            val manager =
+                                applicationContext.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+
+                            val queuedDownload = manager.downloadFileInStandardFolder(
+                                source = Uri.parse(content.source),
+                                title = content.fileName,
+                                description = getString(R.string.app_name),
+                                fileName = content.fileName
+                            )
+                            when (queuedDownload) {
+                                is EitherResult.Failure -> {
+                                    applicationContext.showToast(
+                                        getString(
+                                            R.string.download_not_started_format,
+                                            content.fileName
+                                        )
+                                    )
+                                }
+                                is EitherResult.Success -> {
+                                    applicationContext.showToast(R.string.download_started)
+                                }
+                            }
+                        }
+                        "download_manager_okhttp" -> {
+                            val downloadData: Data = Data.Builder().apply {
+                                putString(
+                                    MainActivityViewModel.KEY_FOLDER_URI,
+                                    content.folder.toString()
+                                )
+                                putString(MainActivityViewModel.KEY_DOWNLOAD_SOURCE, content.source)
+                                putString(MainActivityViewModel.KEY_DOWNLOAD_NAME, content.fileName)
+                            }.build()
+
+                            viewModel.startDownloadWorker(downloadData)
+                        }
+                        else -> {
+                            Timber.e("Unrecognized download manager requested: $dm")
+                        }
+                    }
+                    /*
                     if (isDownloadServiceBound != true) {
                         lifecycleScope.launch {
                             bindService()
@@ -498,6 +496,7 @@ class MainActivity : AppCompatActivity() {
                             content.folder,
                             content.fileName
                         )
+                     */
                 }
                 null -> {}
             }
@@ -721,10 +720,10 @@ class MainActivity : AppCompatActivity() {
     private fun setupBottomNavigationBar(binding: ActivityMainBinding) {
 
         navController = (
-            supportFragmentManager.findFragmentById(
-                R.id.nav_host_fragment
-            ) as NavHostFragment
-            ).navController
+                supportFragmentManager.findFragmentById(
+                    R.id.nav_host_fragment
+                ) as NavHostFragment
+                ).navController
         binding.bottomNavView.setupWithNavController(navController)
 
         // Setup the ActionBar with navController and 3 top level destinations

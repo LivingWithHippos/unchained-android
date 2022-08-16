@@ -29,7 +29,7 @@
     <string name="tropical_sunset" translatable="false">Tropical Sunset</string>
     <string name="player_mpv" translatable="false">MPV</string>
     <string name="player_web_video_cast" translatable="false">Web Video Cast</string>
-    <string name="download_manager_default">Default download manager</string>
+    <string name="download_manager_system">Default download manager</string>
     <string name="download_manager_okhttp" translatable="false">OkHttp</string>
 
     <string-array name="main_screen" >
@@ -58,11 +58,11 @@
         <item>custom_player</item>
     </string-array>
     <string-array name="downloader">
-        <item>@string/download_manager_default</item>
+        <item>@string/download_manager_system</item>
         <item>@string/download_manager_okhttp</item>
     </string-array>
     <string-array name="downloader_values">
-        <item>download_manager_default</item>
+        <item>download_manager_system</item>
         <item>download_manager_okhttp</item>
     </string-array>
 </resources>

@@ -1,8 +1,6 @@
 package com.github.livingwithhippos.unchained.utilities.download
 
-import com.github.livingwithhippos.unchained.data.service.DownloadStatus
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.withContext

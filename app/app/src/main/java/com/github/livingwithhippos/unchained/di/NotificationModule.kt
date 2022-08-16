@@ -5,7 +5,6 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedApplication
-import com.github.livingwithhippos.unchained.data.service.ForegroundDownloadService.Companion.GROUP_KEY_DOWNLOADS
 import com.github.livingwithhippos.unchained.data.service.ForegroundTorrentService
 import dagger.Module
 import dagger.Provides
@@ -42,21 +41,6 @@ object NotificationModule {
             .setContentTitle(applicationContext.getString(R.string.monitor_torrents_download))
             .setPriority(NotificationCompat.PRIORITY_LOW)
             .setGroup(ForegroundTorrentService.GROUP_KEY_TORRENTS)
-            .setGroupSummary(true)
-
-    @ServiceScoped
-    @Provides
-    @DownloadNotification
-    fun provideDownloadNotificationBuilder(
-        @ApplicationContext applicationContext: Context
-    ): NotificationCompat.Builder =
-        NotificationCompat.Builder(applicationContext, UnchainedApplication.DOWNLOAD_CHANNEL_ID)
-            .setSmallIcon(R.drawable.logo_no_background)
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .setCategory(NotificationCompat.CATEGORY_PROGRESS)
-            // ongoing means it can't be swiped away
-            .setOngoing(true)
-            .setGroup(GROUP_KEY_DOWNLOADS)
             .setGroupSummary(true)
 
     @ServiceScoped
