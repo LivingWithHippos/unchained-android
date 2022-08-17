@@ -43,7 +43,6 @@ class DownloadWorker(appContext: Context, workerParams: WorkerParameters) :
                 return Result.failure()
             }
 
-
             val outputStream = applicationContext.contentResolver.openOutputStream(newFile.uri)
             if (outputStream == null) {
                 Timber.e("Error getting download uri")
@@ -148,13 +147,11 @@ class DownloadWorker(appContext: Context, workerParams: WorkerParameters) :
             Timber.e("Exception occurred while downloading, ${e.message}")
             return Result.failure()
         }
-
     }
 
     private suspend fun showToast(stringId: Int) = withContext(Dispatchers.Main) {
         applicationContext.showToast(stringId)
     }
-
 
     private fun getFileDocument(
         sourceUrl: String,

@@ -1,7 +1,6 @@
 package com.github.livingwithhippos.unchained.start.viewmodel
 
 import android.app.DownloadManager
-import android.app.DownloadManager.Request
 import android.content.Context
 import android.content.SharedPreferences
 import android.net.ConnectivityManager
@@ -9,7 +8,6 @@ import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Build
-import android.os.Environment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel

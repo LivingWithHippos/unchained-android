@@ -6,7 +6,6 @@ import android.content.ActivityNotFoundException
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.net.Uri
 import android.os.Build
@@ -17,12 +16,9 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.MimeTypeMap
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
-import androidx.documentfile.provider.DocumentFile
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -41,8 +37,6 @@ import com.github.livingwithhippos.unchained.lists.view.ListState
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.EventObserver
 import com.github.livingwithhippos.unchained.utilities.RD_STREAMING_URL
-import com.github.livingwithhippos.unchained.utilities.download.Downloader
-import com.github.livingwithhippos.unchained.utilities.download.FileWriter
 import com.github.livingwithhippos.unchained.utilities.download.ProgressCallback
 import com.github.livingwithhippos.unchained.utilities.extension.copyToClipboard
 import com.github.livingwithhippos.unchained.utilities.extension.downloadFileInCustomFolder
@@ -54,11 +48,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import okhttp3.OkHttpClient
 import timber.log.Timber
-import java.net.URL
-import java.net.URLConnection
-import java.security.Permission
 
 /**
  * A simple [UnchainedFragment] subclass.
@@ -257,7 +247,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         }
     }
 
-    private val tempProgressListener = object: ProgressCallback {
+    private val tempProgressListener = object : ProgressCallback {
         override fun onProgress(progress: Double) {
             Timber.d("Progress: $progress")
         }
@@ -274,7 +264,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                     activityViewModel.enqueueDownload(link, folder, fileName)
                 }
                 in 23..28 -> {
-                    if (ContextCompat.checkSelfPermission(requireContext(),Manifest.permission.WRITE_EXTERNAL_STORAGE) == PERMISSION_GRANTED) {
+                    if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PERMISSION_GRANTED) {
                         activityViewModel.enqueueDownload(link, folder, fileName)
                     } else {
                         activityViewModel.requireDownloadPermissions()

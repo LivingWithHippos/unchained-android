@@ -29,7 +29,6 @@ object NotificationModule {
             .setOngoing(true)
             .setGroup(ForegroundTorrentService.GROUP_KEY_TORRENTS)
 
-
     @ServiceScoped
     @Provides
     @TorrentSummaryNotification

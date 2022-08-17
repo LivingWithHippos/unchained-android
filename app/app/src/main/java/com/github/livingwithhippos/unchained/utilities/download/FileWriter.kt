@@ -18,7 +18,7 @@ class FileWriter(private val outputStream: OutputStream) : AutoCloseable {
     val state: StateFlow<DownloadStatus> = _state
 
     @Throws(IOException::class)
-    suspend fun write(inputStream: InputStream, length: Double): Long = withContext(Dispatchers.IO){
+    suspend fun write(inputStream: InputStream, length: Double): Long = withContext(Dispatchers.IO) {
         BufferedInputStream(inputStream).use { input ->
             val dataBuffer =
                 ByteArray(CHUNK_SIZE)

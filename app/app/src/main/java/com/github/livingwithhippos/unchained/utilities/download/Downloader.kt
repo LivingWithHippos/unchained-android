@@ -5,7 +5,6 @@ import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.io.IOException
-import javax.inject.Inject
 
 /**
  * Taken from https://www.baeldung.com/java-okhttp-download-binary-file
