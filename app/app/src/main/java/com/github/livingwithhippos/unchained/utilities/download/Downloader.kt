@@ -1,5 +1,6 @@
 package com.github.livingwithhippos.unchained.utilities.download
 
+import android.accounts.NetworkErrorException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
@@ -30,7 +31,7 @@ class Downloader(
                         throw IllegalStateException("Response doesn't contain a file")
                     }
                 } else {
-                    throw IllegalStateException("Response not successful")
+                    throw NetworkErrorException("Response not successful: ${response.code}")
                 }
             }
     }
