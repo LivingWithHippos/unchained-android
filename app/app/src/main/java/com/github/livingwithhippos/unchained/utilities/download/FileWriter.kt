@@ -17,6 +17,8 @@ class FileWriter(private val outputStream: OutputStream) : AutoCloseable {
     private val _state: MutableStateFlow<DownloadStatus> = MutableStateFlow(DownloadStatus.Queued)
     val state: StateFlow<DownloadStatus> = _state
 
+    var stopDownload = false
+
     @Throws(IOException::class)
     suspend fun write(inputStream: InputStream, length: Double): Long = withContext(Dispatchers.IO) {
         BufferedInputStream(inputStream).use { input ->
@@ -24,12 +26,15 @@ class FileWriter(private val outputStream: OutputStream) : AutoCloseable {
                 ByteArray(CHUNK_SIZE)
             var readBytes: Int
             var totalBytes: Long = 0
-            while (input.read(dataBuffer).also { readBytes = it } != -1) {
+            while (input.read(dataBuffer).also { readBytes = it } != -1 && !stopDownload) {
                 totalBytes += readBytes.toLong()
                 outputStream.write(dataBuffer, 0, readBytes)
                 _state.emit(DownloadStatus.Running(length, totalBytes, (totalBytes / length * 100).toInt()))
             }
-            _state.emit(DownloadStatus.Completed)
+            if (!stopDownload)
+                _state.emit(DownloadStatus.Completed)
+            else
+                _state.emit(DownloadStatus.Stopped)
             return@withContext totalBytes
         }
     }

@@ -39,4 +39,8 @@ class Downloader(
     override fun close() {
         writer.close()
     }
+
+    fun stop() {
+        writer.stopDownload = true
+    }
 }
