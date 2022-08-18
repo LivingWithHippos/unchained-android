@@ -35,11 +35,17 @@ class DownloadWorker(appContext: Context, workerParams: WorkerParameters) :
                 Uri.parse(inputData.getString(MainActivityViewModel.KEY_FOLDER_URI)!!)
             val fileName: String = inputData.getString(MainActivityViewModel.KEY_DOWNLOAD_NAME)!!
 
-            val newFile: DocumentFile? = getFileDocument(sourceUrl, folderUri, fileName)
+        try {
+            val newFile: DocumentFile? = try {
+                getFileDocument(sourceUrl, folderUri, fileName)
+            } catch (ex: SecurityException) {
+                Timber.e("User has removed folder permissions")
+                null
+            }
 
             if (newFile == null) {
                 Timber.e("Error getting download location file")
-                showToast(R.string.download_queued_error)
+                showToast(R.string.pick_download_folder)
                 return Result.failure()
             }
 

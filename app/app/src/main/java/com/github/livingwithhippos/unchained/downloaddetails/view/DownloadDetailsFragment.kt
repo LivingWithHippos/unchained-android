@@ -255,8 +255,9 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
 
     override fun onDownloadClick(link: String, fileName: String) {
 
-        val folder = activityViewModel.getDownloadFolder()
+        val folder: Uri? = activityViewModel.getDownloadFolder()
         if (folder == null) {
+            // this could pass if the user has reset the app permissions somehow
             activityViewModel.requireDownloadFolder()
         } else {
             when (Build.VERSION.SDK_INT) {
