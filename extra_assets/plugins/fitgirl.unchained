@@ -1,0 +1,50 @@
+{
+  "engine_version": 2.2,
+  "version": 1.0,
+  "url": "https://fitgirl-repacks.site",
+  "name": "fitgirl",
+  "description": "Parser for fitgirl-repacks.site",
+  "supported_categories": {
+    "all": "None"
+  },
+  "search": {
+    "no_category": "https://fitgirl-repacks.site/page/${page}/?s=${query}",
+    "page_start": 1
+  },
+  "download": {
+    "internal": {
+      "link": {
+        "regex_use": "first",
+        "regexps": [
+          {
+            "regex": "entry-title[^<]+<a\\s+href=\"([^\"]+)",
+            "group": 1,
+            "slug_type": "complete"
+          }
+        ]
+      }
+    },
+    "regexes": {
+      "name": {
+        "regex_use": "first",
+        "regexps": [
+          {
+            "regex": "entry-title[^>]+>([^<]+)",
+            "group": 1,
+            "slug_type": "complete"
+          }
+        ]
+      },
+      "magnet": {
+        "regex_use": "all",
+        "regexps": [
+          {
+            "regex": "href=\"(magnet:\\?xt=urn:btih:[^\"]+)",
+            "group": 1,
+            "slug_type": "complete"
+          }
+        ]
+      }
+    }
+  }
+}
