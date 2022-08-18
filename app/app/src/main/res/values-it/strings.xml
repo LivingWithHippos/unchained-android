@@ -410,4 +410,5 @@
     <string name="pick_download_folder_description">Scegli una cartella per i download. Non disponibile per il gestore di downlaod predefinito del sistema</string>
     <string name="download_manager">Gestore di download</string>
     <string name="download_manager_description">Scegli come scaricare i file</string>
+    <string name="download_link_expired">Problemi di rete o link di download scaduto. Generane un altro</string>
 </resources>

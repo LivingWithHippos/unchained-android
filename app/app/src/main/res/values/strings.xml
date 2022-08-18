@@ -623,4 +623,5 @@
     <string name="pick_download_folder_description">Choose a folder for the downloads. Not available for the default system download manager</string>
     <string name="download_manager">Download manager</string>
     <string name="download_manager_description">Choose how to download files</string>
+    <string name="download_link_expired">Network issues or download link expired. Generate another one.</string>
 </resources>
