@@ -1,11 +1,11 @@
 package com.github.livingwithhippos.unchained.utilities.download
 
-import android.content.BroadcastReceiver
+import android.app.Notification
 import android.content.Context
-import android.content.Intent
 import android.net.Uri
 import android.webkit.MimeTypeMap
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.documentfile.provider.DocumentFile
 import androidx.work.CoroutineWorker
 import androidx.work.ForegroundInfo
@@ -34,8 +34,10 @@ class DownloadWorker(appContext: Context, workerParams: WorkerParameters) :
     var shutdown = false
 
     override suspend fun doWork(): Result {
-        val sourceUrl: String = inputData.getString(MainActivityViewModel.KEY_DOWNLOAD_SOURCE) ?: return Result.failure()
-        val fileName: String = inputData.getString(MainActivityViewModel.KEY_DOWNLOAD_NAME) ?: return Result.failure()
+        val sourceUrl: String = inputData.getString(MainActivityViewModel.KEY_DOWNLOAD_SOURCE)
+            ?: return Result.failure()
+        val fileName: String =
+            inputData.getString(MainActivityViewModel.KEY_DOWNLOAD_NAME) ?: return Result.failure()
 
         val folderUri: Uri =
             Uri.parse(inputData.getString(MainActivityViewModel.KEY_FOLDER_URI)!!)
@@ -53,11 +55,12 @@ class DownloadWorker(appContext: Context, workerParams: WorkerParameters) :
             return Result.failure()
         }
 
+        // this id is used with setForeground, any notification with this id will be removed when the worker ends
         val notificationID = newFile.hashCode()
+        // this id is used for notifications that shouldn't be removed when the worker stops (e.g. download stopped/crashed/completed)
+        val externalNotificationID = sourceUrl.hashCode()
 
         try {
-
-
             val outputStream = applicationContext.contentResolver.openOutputStream(newFile.uri)
             if (outputStream == null) {
                 Timber.e("Error getting download uri")
@@ -86,21 +89,20 @@ class DownloadWorker(appContext: Context, workerParams: WorkerParameters) :
                                 // this is managed below
                             }
                             is DownloadStatus.Error -> {
-                                setForeground(
-                                    makeStatusNotification(
-                                        id,
-                                        notificationID,
-                                        fileName,
-                                        applicationContext.getString(R.string.error),
-                                        applicationContext,
-                                        false
-                                    )
+                                val notification = makeStatusNotification(
+                                    id,
+                                    fileName,
+                                    applicationContext.getString(R.string.error),
+                                    applicationContext,
+                                    onGoing = false,
+                                    stopAction = false
                                 )
-
+                                NotificationManagerCompat.from(applicationContext)
+                                    .notify(externalNotificationID, notification)
                             }
                             DownloadStatus.Paused -> {
                                 setForeground(
-                                    makeStatusNotification(
+                                    makeStatusForegroundInfo(
                                         id,
                                         notificationID,
                                         fileName,
@@ -111,7 +113,7 @@ class DownloadWorker(appContext: Context, workerParams: WorkerParameters) :
                             }
                             DownloadStatus.Queued -> {
                                 setForeground(
-                                    makeStatusNotification(
+                                    makeStatusForegroundInfo(
                                         id,
                                         notificationID,
                                         fileName,
@@ -121,25 +123,25 @@ class DownloadWorker(appContext: Context, workerParams: WorkerParameters) :
                                 )
                             }
                             DownloadStatus.Stopped -> {
-                                setForeground(
-                                    makeStatusNotification(
-                                        id,
-                                        notificationID,
-                                        fileName,
-                                        applicationContext.getString(R.string.stopped),
-                                        applicationContext,
-                                        false
-                                    )
+                                val notification = makeStatusNotification(
+                                    id,
+                                    fileName,
+                                    applicationContext.getString(R.string.stopped),
+                                    applicationContext,
+                                    onGoing = false,
+                                    stopAction = false
                                 )
+                                NotificationManagerCompat.from(applicationContext)
+                                    .notify(externalNotificationID, notification)
                             }
                             is DownloadStatus.Running -> {
-                                if (it.percent < 100 && it.percent != progressCounter && System.currentTimeMillis() - lastNotificationTime > 500) {
+                                if (it.percent < 100 && it.percent != progressCounter && System.currentTimeMillis() - lastNotificationTime > 500 && !isStopped) {
                                     lastNotificationTime = System.currentTimeMillis()
                                     progressCounter = it.percent
 
 
                                     setForeground(
-                                        makeProgressStatusNotification(
+                                        makeProgressForegroundInfo(
                                             id,
                                             notificationID,
                                             fileName,
@@ -167,16 +169,19 @@ class DownloadWorker(appContext: Context, workerParams: WorkerParameters) :
 
             // todo: get whole size and check if it correspond
             return if (downloadedSize > 0) {
-                setForeground(
-                    makeStatusNotification(
-                        id,
-                        notificationID,
-                        fileName,
-                        applicationContext.getString(R.string.download_complete),
-                        applicationContext,
-                        false
-                    )
+                // returning a result will terminate the worker and any notification created with setForeground will disappear,
+                // so we use the system notification manager to notify of completed/stopped/error downloads
+
+                val notification = makeStatusNotification(
+                    id,
+                    fileName,
+                    applicationContext.getString(R.string.download_complete),
+                    applicationContext,
+                    onGoing = false,
+                    stopAction = false
                 )
+                NotificationManagerCompat.from(applicationContext)
+                    .notify(externalNotificationID, notification)
                 applicationContext.vibrate()
                 Result.success()
             } else
@@ -248,18 +253,15 @@ const val GROUP_KEY_DOWNLOADS: String = "com.github.livingwithhippos.unchained.D
 // see https://developer.android.com/topic/libraries/architecture/workmanager/advanced/long-running
 fun makeStatusNotification(
     workerId: UUID,
-    id: Int,
     filename: String,
     title: String,
     context: Context,
-    onGoing: Boolean = true
-): ForegroundInfo {
+    onGoing: Boolean = true,
+    stopAction: Boolean = true
+): Notification {
 
-    // This PendingIntent can be used to cancel the worker
-    val stopIntent = WorkManager.getInstance(context)
-        .createCancelPendingIntent(workerId)
     // Create the notification
-    val notification = NotificationCompat.Builder(context, UnchainedApplication.DOWNLOAD_CHANNEL_ID)
+    return NotificationCompat.Builder(context, UnchainedApplication.DOWNLOAD_CHANNEL_ID)
         .setSmallIcon(R.drawable.logo_no_background)
         .setCategory(NotificationCompat.CATEGORY_PROGRESS)
         .setPriority(NotificationCompat.PRIORITY_DEFAULT)
@@ -270,29 +272,44 @@ fun makeStatusNotification(
         .setOngoing(onGoing)
         .setContentTitle(title)
         // todo:check if .setContentText(progress) is the same
-        .setStyle(NotificationCompat.BigTextStyle().bigText(filename))
-        .addAction(R.drawable.icon_stop, context.getString(R.string.stop), stopIntent)
+        .setStyle(NotificationCompat.BigTextStyle().bigText(filename)).apply {
+            if (stopAction) {
+                // This PendingIntent can be used to cancel the worker
+                val stopIntent = WorkManager.getInstance(context)
+                    .createCancelPendingIntent(workerId)
+
+                addAction(R.drawable.icon_stop, context.getString(R.string.stop), stopIntent)
+            }
+        }
         .build()
 
+}
+
+fun makeStatusForegroundInfo(
+    workerId: UUID,
+    id: Int,
+    filename: String,
+    title: String,
+    context: Context,
+    onGoing: Boolean = true
+): ForegroundInfo {
+    val notification = makeStatusNotification(workerId, filename, title, context, onGoing)
     return ForegroundInfo(id, notification)
 }
 
 fun makeProgressStatusNotification(
     workerId: UUID,
-    id: Int,
     filename: String,
     progress: Int,
-    context: Context
-): ForegroundInfo {
+    context: Context,
+    stopAction: Boolean = true
+): Notification {
     val title = context.getString(
         R.string.download_in_progress_format,
         progress
     )
-    // This PendingIntent can be used to cancel the worker
-    val stopIntent = WorkManager.getInstance(context)
-        .createCancelPendingIntent(workerId)
     // Create the notification
-    val notification = NotificationCompat.Builder(context, UnchainedApplication.DOWNLOAD_CHANNEL_ID)
+    return NotificationCompat.Builder(context, UnchainedApplication.DOWNLOAD_CHANNEL_ID)
         .setSmallIcon(R.drawable.logo_no_background)
         .setCategory(NotificationCompat.CATEGORY_PROGRESS)
         .setPriority(NotificationCompat.PRIORITY_DEFAULT)
@@ -303,9 +320,27 @@ fun makeProgressStatusNotification(
         .setContentTitle(title)
         // todo:check if .setContentText(progress) is the same
         .setStyle(NotificationCompat.BigTextStyle().bigText(filename))
-        .addAction(R.drawable.icon_stop, context.getString(R.string.stop), stopIntent)
+        .apply {
+            if (stopAction) {
+                // This PendingIntent can be used to cancel the worker
+                val stopIntent = WorkManager.getInstance(context)
+                    .createCancelPendingIntent(workerId)
+
+                addAction(R.drawable.icon_stop, context.getString(R.string.stop), stopIntent)
+            }
+        }
         .build()
 
+}
+
+fun makeProgressForegroundInfo(
+    workerId: UUID,
+    id: Int,
+    filename: String,
+    progress: Int,
+    context: Context
+): ForegroundInfo {
+    val notification = makeProgressStatusNotification(workerId, filename, progress, context)
     return ForegroundInfo(id, notification)
 }
 
