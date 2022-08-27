@@ -33,7 +33,7 @@
             app:title="@string/pick_download_folder" />
 
         <DropDownPreference
-            android:defaultValue="download_manager_okhttp"
+            android:defaultValue="download_manager_system"
             android:entries="@array/downloader"
             android:entryValues="@array/downloader_values"
             android:key="download_manager"
