@@ -1,7 +1,6 @@
 def versions = [:]
-versions.android_gradle_plugin = "7.2.2"
+versions.android_gradle_plugin = "7.3.0-rc01"
 versions.annotations = "1.3.0"
-// todo: test, version 1.4.0 crashes with minSDK 22
 versions.appcompat = "1.5.0"
 versions.arch_core = "2.1.0"
 versions.atsl_core = "1.3.0"
@@ -16,7 +15,7 @@ versions.espresso = "3.4.0"
 versions.datastore = "1.0.0"
 versions.flexbox = "3.0.0"
 versions.fragment = "1.4.1"
-versions.jsoup = "1.15.2"
+versions.jsoup = "1.15.3"
 versions.junit = "4.13.2"
 versions.kotlin = "1.7.10"
 versions.ktlint = "10.3.0"
