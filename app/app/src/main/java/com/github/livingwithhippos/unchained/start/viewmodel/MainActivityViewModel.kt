@@ -12,8 +12,10 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import androidx.work.Constraints
 import androidx.work.Data
 import androidx.work.ExistingWorkPolicy
+import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequest
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
@@ -1163,10 +1165,26 @@ class MainActivityViewModel @Inject constructor(
     }
 
     fun getDownloadManagerPreference(): String {
-        return preferences.getString(PreferenceKeys.DownloadManager.KEY, PreferenceKeys.DownloadManager.SYSTEM) ?: PreferenceKeys.DownloadManager.SYSTEM
+        return preferences.getString(
+            PreferenceKeys.DownloadManager.KEY,
+            PreferenceKeys.DownloadManager.SYSTEM
+        ) ?: PreferenceKeys.DownloadManager.SYSTEM
     }
 
     fun startDownloadWorker(content: MainActivityMessage.DownloadEnqueued, folder: Uri) {
+
+        val unmeteredConnectionOnly =
+            preferences.getBoolean(PreferenceKeys.DownloadManager.UNMETERED_ONLY_KEY, false)
+
+        val constraints = Constraints.Builder()
+            .apply {
+            if (unmeteredConnectionOnly)
+                setRequiredNetworkType(NetworkType.UNMETERED)
+            else
+                setRequiredNetworkType(NetworkType.CONNECTED)
+            }
+            .setRequiresStorageNotLow(true)
+            .build()
 
         val data: Data = Data.Builder().apply {
             putString(
@@ -1186,6 +1204,7 @@ class MainActivityViewModel @Inject constructor(
         val downloadFileRequest = OneTimeWorkRequestBuilder<DownloadWorker>()
             .addTag(content.source)
             .setInputData(data)
+            .setConstraints(constraints)
             .build()
 
         // use KEEP or REPLACE
@@ -1193,6 +1212,19 @@ class MainActivityViewModel @Inject constructor(
     }
 
     fun startMultipleDownloadWorkers(folder: Uri, downloads: List<DownloadItem>) {
+
+        val unmeteredConnectionOnly =
+            preferences.getBoolean(PreferenceKeys.DownloadManager.UNMETERED_ONLY_KEY, false)
+
+        val constraints = Constraints.Builder()
+            .apply {
+                if (unmeteredConnectionOnly)
+                    setRequiredNetworkType(NetworkType.UNMETERED)
+                else
+                    setRequiredNetworkType(NetworkType.CONNECTED)
+            }
+            .setRequiresStorageNotLow(true)
+            .build()
 
         val work: List<OneTimeWorkRequest> = downloads.map {
 
@@ -1207,6 +1239,7 @@ class MainActivityViewModel @Inject constructor(
 
             OneTimeWorkRequestBuilder<DownloadWorker>()
                 .setInputData(data)
+                .setConstraints(constraints)
                 .addTag(it.download)
                 .build()
         }
@@ -1266,8 +1299,9 @@ sealed class MainActivityMessage {
     data class UpdateFound(val signature: String) : MainActivityMessage()
     object RequireDownloadFolder : MainActivityMessage()
     object RequireDownloadPermissions : MainActivityMessage()
-    data class DownloadEnqueued(val source: String, val fileName: String):
+    data class DownloadEnqueued(val source: String, val fileName: String) :
         MainActivityMessage()
-    data class MultipleDownloadsEnqueued(val downloads: List<DownloadItem>):
+
+    data class MultipleDownloadsEnqueued(val downloads: List<DownloadItem>) :
         MainActivityMessage()
 }

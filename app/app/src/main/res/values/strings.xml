@@ -625,4 +625,8 @@
     <string name="download_manager">Download manager</string>
     <string name="download_manager_description">Choose how to download files</string>
     <string name="download_link_expired">Network issues or download link expired. Generate another one.</string>
+    <string name="custom_downloader_options">Custom downloader options</string>
+    <string name="custom_downloader_options_description">These options are not available for the default download manager</string>
+    <string name="unmetered_downloads">Downloads on unmetered connections</string>
+    <string name="unmetered_downloads_description">Start downloads only on unmetered connection (such as wi-fi)</string>
 </resources>

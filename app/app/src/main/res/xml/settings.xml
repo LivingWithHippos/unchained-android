@@ -27,11 +27,6 @@
 
     <PreferenceCategory android:title="@string/download">
 
-        <Preference
-            app:key="download_folder_key"
-            app:summary="@string/pick_download_folder_description"
-            app:title="@string/pick_download_folder" />
-
         <DropDownPreference
             android:defaultValue="download_manager_system"
             android:entries="@array/downloader"
@@ -40,6 +35,21 @@
             android:title="@string/download_manager"
             app:summary="@string/download_manager_description"
             app:useSimpleSummaryProvider="true" />
+
+        <Preference
+            app:summary="@string/custom_downloader_options_description"
+            app:title="@string/custom_downloader_options" />
+
+        <Preference
+            app:key="download_folder_key"
+            app:summary="@string/pick_download_folder_description"
+            app:title="@string/pick_download_folder" />
+
+        <SwitchPreference
+            android:defaultValue="false"
+            app:key="download_only_on_unmetered"
+            app:summary="@string/unmetered_downloads_description"
+            app:title="@string/unmetered_downloads" />
 
     </PreferenceCategory>
 
