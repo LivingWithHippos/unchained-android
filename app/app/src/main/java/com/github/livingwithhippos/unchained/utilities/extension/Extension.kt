@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.DownloadManager
 import android.content.ClipData
+import android.content.ClipDescription.MIMETYPE_TEXT_HTML
 import android.content.ClipDescription.MIMETYPE_TEXT_PLAIN
 import android.content.ClipboardManager
 import android.content.ContentResolver.SCHEME_CONTENT
@@ -105,14 +106,21 @@ fun Fragment.copyToClipboard(label: String, text: String) {
 fun Fragment.getClipboardText(): String {
     val clipboard = requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
     var text = ""
-    if (clipboard.hasPrimaryClip() && clipboard.primaryClipDescription?.hasMimeType(
-            MIMETYPE_TEXT_PLAIN
-        ) == true
+    if (
+        clipboard.hasPrimaryClip()
+        && (
+                clipboard.primaryClipDescription?.hasMimeType(
+                    MIMETYPE_TEXT_PLAIN
+                ) == true
+                        || clipboard.primaryClipDescription?.hasMimeType(
+                    MIMETYPE_TEXT_HTML
+                ) == true
+                )
     ) {
         val item = clipboard.primaryClip!!.getItemAt(0)
         text = item.text.toString()
     } else {
-        Timber.d("Clipboard was empty or did not contain any text mime type.")
+        Timber.d("Clipboard was empty or did not contain any text mime type: ${clipboard.primaryClipDescription}")
     }
     return text
 }
