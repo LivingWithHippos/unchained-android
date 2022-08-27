@@ -257,44 +257,6 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         activityViewModel.enqueueDownload(link, fileName)
     }
 
-    private fun downloadFile(link: String, fileName: String) {
-        val manager =
-            requireContext().getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-        val queuedDownload = manager.downloadFileInStandardFolder(
-            source = Uri.parse(link),
-            title = fileName,
-            description = getString(R.string.app_name)
-        )
-        when (queuedDownload) {
-            is EitherResult.Failure -> {
-                context?.showToast(R.string.download_not_started)
-            }
-            is EitherResult.Success -> {
-                context?.showToast(R.string.download_started)
-            }
-        }
-    }
-
-    private fun downloadFile(link: String, fileName: String, destination: Uri) {
-
-        val manager =
-            requireContext().getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-        val queuedDownload = manager.downloadFileInCustomFolder(
-            source = Uri.parse(link),
-            title = fileName,
-            description = getString(R.string.app_name),
-            folder = destination
-        )
-        when (queuedDownload) {
-            is EitherResult.Failure -> {
-                context?.showToast(R.string.download_not_started)
-            }
-            is EitherResult.Success -> {
-                context?.showToast(R.string.download_started)
-            }
-        }
-    }
-
     override fun onShareClick(url: String) {
         val shareIntent = Intent(Intent.ACTION_SEND)
         shareIntent.type = "text/plain"

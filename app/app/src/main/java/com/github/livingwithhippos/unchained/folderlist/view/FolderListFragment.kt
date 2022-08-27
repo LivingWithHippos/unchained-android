@@ -217,33 +217,13 @@ class FolderListFragment : UnchainedFragment(), DownloadListListener {
             }
 
             override fun downloadSelectedItems() {
-                // todo: add support for custom folder
-                if (linkTracker.selection.toList().isNotEmpty()) {
-                    var downloadStarted = false
-                    val manager =
-                        requireContext().getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-                    linkTracker.selection.forEach { item ->
-                        val queuedDownload = manager.downloadFileInStandardFolder(
-                            Uri.parse(item.download),
-                            item.filename,
-                            getString(R.string.app_name),
-                        )
-                        when (queuedDownload) {
-                            is EitherResult.Failure -> {
-                                context?.showToast(
-                                    getString(
-                                        R.string.download_not_started_format,
-                                        item.filename
-                                    )
-                                )
-                            }
-                            is EitherResult.Success -> {
-                                downloadStarted = true
-                            }
-                        }
+                val downloads: List<DownloadItem> = linkTracker.selection.toList()
+                if (downloads.isNotEmpty()) {
+                    if (downloads.size == 1) {
+                        activityViewModel.enqueueDownload(downloads.first().download, downloads.first().filename)
+                    } else {
+                        activityViewModel.enqueueDownloads(downloads)
                     }
-                    if (downloadStarted)
-                        context?.showToast(R.string.download_started)
                 } else
                     context?.showToast(R.string.select_one_item)
             }
