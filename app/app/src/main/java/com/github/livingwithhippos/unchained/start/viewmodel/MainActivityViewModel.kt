@@ -1276,6 +1276,10 @@ class MainActivityViewModel @Inject constructor(
         )
     }
 
+    fun getDownloadOnUnmeteredOnlyPreference(): Boolean {
+        return preferences.getBoolean(PreferenceKeys.DownloadManager.UNMETERED_ONLY_KEY, false)
+    }
+
     companion object {
         const val KEY_DOWNLOAD_FOLDER = "download_folder_key"
         const val KEY_TORRENT_DOWNLOAD_ID = "torrent_download_id_key"

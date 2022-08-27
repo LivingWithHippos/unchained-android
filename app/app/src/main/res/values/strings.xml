@@ -629,4 +629,5 @@
     <string name="custom_downloader_options_description">These options are not available for the default download manager</string>
     <string name="unmetered_downloads">Downloads on unmetered connections</string>
     <string name="unmetered_downloads_description">Start downloads only on unmetered connection (such as wi-fi)</string>
+    <string name="download_on_metered_connection">Download delayed (metered connection)</string>
 </resources>

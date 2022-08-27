@@ -12,6 +12,7 @@ import android.content.IntentFilter
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.content.res.Configuration
+import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -471,11 +472,19 @@ class MainActivity : AppCompatActivity() {
                             PreferenceKeys.DownloadManager.OKHTTP -> {
 
                                 val folder = viewModel.getDownloadFolder()
-                                if (folder != null)
+                                if (folder != null) {
+                                    if (viewModel.getDownloadOnUnmeteredOnlyPreference()) {
+                                        val connectivityManager =
+                                            applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+                                        if (connectivityManager.isActiveNetworkMetered) {
+                                            applicationContext.showToast(R.string.download_on_metered_connection)
+                                        }
+                                    }
                                     viewModel.startMultipleDownloadWorkers(
                                         folder,
                                         content.downloads
                                     )
+                                }
                                 else
                                     viewModel.requireDownloadFolder()
                             }
@@ -522,11 +531,21 @@ class MainActivity : AppCompatActivity() {
                             PreferenceKeys.DownloadManager.OKHTTP -> {
 
                                 val folder = viewModel.getDownloadFolder()
-                                if (folder != null)
+                                if (folder != null) {
+
+                                    if (viewModel.getDownloadOnUnmeteredOnlyPreference()) {
+                                        val connectivityManager =
+                                            applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+                                        if (connectivityManager.isActiveNetworkMetered) {
+                                            applicationContext.showToast(R.string.download_on_metered_connection)
+                                        }
+                                    }
+
                                     viewModel.startDownloadWorker(
                                         content,
                                         folder
                                     )
+                                }
                                 else
                                     viewModel.requireDownloadFolder()
 

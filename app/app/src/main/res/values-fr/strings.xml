@@ -420,4 +420,5 @@
     <string name="custom_downloader_options_description">Ces options ne sont pas disponibles pour le gestionnaire de téléchargement par défaut</string>
     <string name="unmetered_downloads">Téléchargements sur des connexions non mesurées</string>
     <string name="unmetered_downloads_description">Lancez les téléchargements uniquement sur une connexion non mesurée (comme le wi-fi)</string>
+    <string name="download_on_metered_connection">Téléchargement retardé (connexion avec compteur)</string>
 </resources>
