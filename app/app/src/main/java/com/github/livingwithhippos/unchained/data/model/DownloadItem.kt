@@ -39,24 +39,45 @@ data class DownloadItem(
     val id: String,
     @Json(name = "filename")
     val filename: String,
+    /**
+     * Mime Type of the file, guessed by the file extension
+     */
     @Json(name = "mimeType")
     val mimeType: String?,
+    /**
+     * bytes, 0 if unknown
+     */
     @Json(name = "filesize")
     val fileSize: Long,
+    /**
+     * Original link, use "generated" to download this file
+     */
     @Json(name = "link")
     val link: String,
+    /**
+     * Host main domain
+     */
     @Json(name = "host")
     val host: String,
     @Json(name = "host_icon")
     val hostIcon: String?,
+    /**
+     * Max Chunks allowed
+     */
     @Json(name = "chunks")
     val chunks: Int,
     @Json(name = "crc")
     val crc: Int?,
+    /**
+     * Generated link to be used for downloading
+     */
     @Json(name = "download")
     val download: String,
     @Json(name = "streamable")
     val streamable: Int?,
+    /**
+     * jsonDate
+     */
     @Json(name = "generated")
     val generated: String?,
     @Json(name = "type")

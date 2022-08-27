@@ -321,9 +321,12 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
         // alternatively get results from the viewModel
         val items = adapter.currentList.map {
             it.apply {
-                val btih = magnetPattern.find(it.magnets.first())?.groupValues?.get(1)?.uppercase()
-                if (cache.contains(btih))
-                    isCached = true
+                if (it.magnets.isNotEmpty()) {
+                    val btih = magnetPattern.find(it.magnets.first())?.groupValues?.getOrNull(1)
+                        ?.uppercase()
+                    if (cache.contains(btih))
+                        isCached = true
+                }
             }
         }
         submitSortedList(adapter, items)

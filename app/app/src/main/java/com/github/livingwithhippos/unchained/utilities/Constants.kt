@@ -105,3 +105,12 @@ object APP_LINK {
     const val F_DROID = "https://f-droid.org/packages/com.github.livingwithhippos.unchained/"
     const val GITHUB = "https://github.com/LivingWithHippos/unchained-android/releases"
 }
+
+object PreferenceKeys {
+    object DownloadManager {
+        const val KEY =  "download_manager"
+        const val SYSTEM = "download_manager_system"
+        const val OKHTTP = "download_manager_okhttp"
+        const val UNMETERED_ONLY_KEY = "download_only_on_unmetered"
+    }
+}

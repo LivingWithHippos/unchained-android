@@ -19,21 +19,21 @@ App to interact with [Real Debrid](https://real-debrid.com/) APIs.
 
 Real Debrid is a service to download files from hosting websites and the torrent network.
 Files are downloaded directly on their servers that you can then use for your downloads.
-They provide high speeds without premium accounts for a lot of services like Mega and RapidGator
-and can also stream media files directly. It offers a cheap premium service.
+They provide high speeds for a lot of services like Mega and RapidGator without needing 
+all their premium accounts, and can also stream media files directly. 
+**N.B. Real Debrid is a (cheap) paid service**
 
 ### Features :memo:
 
 You can take a look at the project [here](https://github.com/LivingWithHippos/unchained-android/projects/1) for general status.
 
-- [x] user info
-- [x] themes support
-- [x] hoster support
+- [x] magnets/torrents support
+- [x] file hosting services support
+- [x] streaming support (needs a player that supports streaming like mpv or VLC)
+- [x] search websites for files with plugins
 - [x] containers support
-- [x] magnets support
-- [x] torrent support
-- [x] streaming support (needs a player that supports streaming like VLC)
-- [x] search magnet and torrents
+- [x] user info
+- [x] themes
 
 ### Screenshots :iphone:
 
@@ -47,10 +47,14 @@ You can take a look at the project [here](https://github.com/LivingWithHippos/un
 You have multiple options to install Unchained for Android:
 
 1. Get the [latest published release](https://github.com/LivingWithHippos/unchained-android/releases) from GitHub
-2. Get the latest build's zipped APK (possibly unstable) from [this link](https://nightly.link/LivingWithHippos/unchained-android/workflows/build.yaml/master) (master branch only) or from one of the [Actions](https://github.com/LivingWithHippos/unchained-android/actions) (you need to be logged in GitHub): click on the latest working workflow and scroll to the bottom of the summary section, extract the APK and install it
+2. Get the latest build's zipped APK from the one of Github's [Actions](https://github.com/LivingWithHippos/unchained-android/actions) (you may need to be logged in GitHub): click on the latest working workflow (not from the master branch) and scroll to the bottom of the summary section, extract the APK and install it
 3. Get the [Play Store release](https://play.google.com/store/apps/details?id=com.github.livingwithhippos.unchained)
+4. Get the [F Droid release](https://f-droid.org/packages/com.github.livingwithhippos.unchained/)
 
 ### Developing and Contributing :writing_hand:
+
+## [![Repography logo](https://images.repography.com/logo.svg)](https://repography.com) /
+[![Issue status graph](https://images.repography.com/28505435/LivingWithHippos/unchained-android/recent-activity/9be46c12746e55ef26535ea523c2bda5_issues.svg)](https://github.com/LivingWithHippos/unchained-android/issues)
 
 
 Contributions are welcome. You can use the [discussion tab](https://github.com/LivingWithHippos/unchained-android/discussions) to ask for help setting up the project. At the moment at least Android Studio 2021.1.1 is needed to build the project.

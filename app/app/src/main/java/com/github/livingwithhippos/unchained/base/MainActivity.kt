@@ -1,5 +1,6 @@
 package com.github.livingwithhippos.unchained.base
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.DownloadManager
 import android.content.BroadcastReceiver
@@ -11,6 +12,7 @@ import android.content.IntentFilter
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.content.res.Configuration
+import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -18,9 +20,11 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.content.PermissionChecker.PERMISSION_GRANTED
 import androidx.core.view.MenuProvider
 import androidx.core.view.forEach
 import androidx.lifecycle.lifecycleScope
@@ -46,12 +50,13 @@ import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuth
 import com.github.livingwithhippos.unchained.utilities.APP_LINK
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.EventObserver
+import com.github.livingwithhippos.unchained.utilities.PreferenceKeys
 import com.github.livingwithhippos.unchained.utilities.SCHEME_HTTP
 import com.github.livingwithhippos.unchained.utilities.SCHEME_HTTPS
 import com.github.livingwithhippos.unchained.utilities.SCHEME_MAGNET
 import com.github.livingwithhippos.unchained.utilities.SIGNATURE
 import com.github.livingwithhippos.unchained.utilities.TelemetryManager
-import com.github.livingwithhippos.unchained.utilities.extension.downloadFile
+import com.github.livingwithhippos.unchained.utilities.extension.downloadFileInStandardFolder
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.github.livingwithhippos.unchained.utilities.extension.toHex
@@ -82,9 +87,12 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStop() {
         TelemetryManager.onStop()
+        // todo: implement for TorrentService
+        // unbindService()
         super.onStop()
     }
 
+    @SuppressLint("PackageManagerGetSignatures")
     private fun getApplicationSignatures(packageName: String = getPackageName()): List<String> {
         val signatureList: List<String>
         try {
@@ -154,6 +162,40 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
+    private val requestPermissionLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted: Boolean ->
+            if (isGranted) {
+                applicationContext.showToast(R.string.permission_granted)
+            } else {
+                applicationContext.showToast(R.string.needs_download_permission)
+            }
+        }
+
+    private val pickDirectoryLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.OpenDocumentTree()
+        ) {
+            if (it != null) {
+                Timber.d("User has picked a folder $it")
+
+                // permanent permissions
+                val contentResolver = applicationContext.contentResolver
+
+                val takeFlags: Int = Intent.FLAG_GRANT_READ_URI_PERMISSION or
+                        Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+
+                contentResolver.takePersistableUriPermission(it, takeFlags)
+
+                viewModel.setDownloadFolder(it)
+
+                applicationContext.showToast(R.string.directory_picked)
+            } else {
+                Timber.d("User has not picked a folder")
+            }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -353,21 +395,168 @@ class MainActivity : AppCompatActivity() {
                         currentToast.show()
                     }
                 }
-                null -> {}
                 is MainActivityMessage.UpdateFound -> {
                     when (content.signature) {
                         SIGNATURE.F_DROID -> {
-                            showUpdateDialog(getString(R.string.fdroid_update_description), APP_LINK.F_DROID)
+                            showUpdateDialog(
+                                getString(R.string.fdroid_update_description),
+                                APP_LINK.F_DROID
+                            )
                         }
                         SIGNATURE.PLAY_STORE -> {
-                            showUpdateDialog(getString(R.string.playstore_update_description), APP_LINK.PLAY_STORE)
+                            showUpdateDialog(
+                                getString(R.string.playstore_update_description),
+                                APP_LINK.PLAY_STORE
+                            )
                         }
                         SIGNATURE.GITHUB -> {
-                            showUpdateDialog(getString(R.string.github_update_description), APP_LINK.GITHUB)
+                            showUpdateDialog(
+                                getString(R.string.github_update_description),
+                                APP_LINK.GITHUB
+                            )
                         }
                         else -> {}
                     }
                 }
+                MainActivityMessage.RequireDownloadFolder -> {
+                    pickDirectoryLauncher.launch(null)
+                }
+                MainActivityMessage.RequireDownloadPermissions -> {
+                    requestPermissionLauncher.launch(
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    )
+                }
+                is MainActivityMessage.MultipleDownloadsEnqueued -> {
+
+                    if (
+                        Build.VERSION.SDK_INT in 23..28 &&
+                        ContextCompat.checkSelfPermission(
+                            applicationContext,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE
+                        ) != PERMISSION_GRANTED
+                    ) {
+                        viewModel.requireDownloadPermissions()
+                    } else {
+
+                        when (val dm = viewModel.getDownloadManagerPreference()) {
+                            PreferenceKeys.DownloadManager.SYSTEM -> {
+                                val manager =
+                                    applicationContext.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+                                var downloadsStarted = 0
+                                content.downloads.forEach { download ->
+
+                                    val queuedDownload = manager.downloadFileInStandardFolder(
+                                        source = Uri.parse(download.download),
+                                        title = download.filename,
+                                        description = getString(R.string.app_name),
+                                        fileName = download.filename
+                                    )
+                                    when (queuedDownload) {
+                                        is EitherResult.Failure -> {
+                                            Timber.e("Error queuing ${download.link}: ${queuedDownload.failure.message}")
+                                        }
+                                        is EitherResult.Success -> {
+                                            downloadsStarted++
+                                        }
+                                    }
+                                }
+
+                                applicationContext?.showToast(
+                                    getString(
+                                        R.string.multiple_downloads_enqueued_format,
+                                        downloadsStarted,
+                                        content.downloads.size
+                                    )
+                                )
+                            }
+                            PreferenceKeys.DownloadManager.OKHTTP -> {
+
+                                val folder = viewModel.getDownloadFolder()
+                                if (folder != null) {
+                                    if (viewModel.getDownloadOnUnmeteredOnlyPreference()) {
+                                        val connectivityManager =
+                                            applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+                                        if (connectivityManager.isActiveNetworkMetered) {
+                                            applicationContext.showToast(R.string.download_on_metered_connection)
+                                        }
+                                    }
+                                    viewModel.startMultipleDownloadWorkers(
+                                        folder,
+                                        content.downloads
+                                    )
+                                }
+                                else
+                                    viewModel.requireDownloadFolder()
+                            }
+                        }
+                    }
+                }
+                is MainActivityMessage.DownloadEnqueued -> {
+
+                    if (
+                        Build.VERSION.SDK_INT in 23..28 &&
+                        ContextCompat.checkSelfPermission(
+                            applicationContext,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE
+                        ) != PERMISSION_GRANTED
+                    ) {
+                        viewModel.requireDownloadPermissions()
+                    } else {
+                        when (val dm = viewModel.getDownloadManagerPreference()) {
+                            PreferenceKeys.DownloadManager.SYSTEM -> {
+
+                                val manager =
+                                    applicationContext.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+
+                                val queuedDownload = manager.downloadFileInStandardFolder(
+                                    source = Uri.parse(content.source),
+                                    title = content.fileName,
+                                    description = getString(R.string.app_name),
+                                    fileName = content.fileName
+                                )
+                                when (queuedDownload) {
+                                    is EitherResult.Failure -> {
+                                        applicationContext.showToast(
+                                            getString(
+                                                R.string.download_not_started_format,
+                                                content.fileName
+                                            )
+                                        )
+                                    }
+                                    is EitherResult.Success -> {
+                                        applicationContext.showToast(R.string.download_started)
+                                    }
+                                }
+                            }
+                            PreferenceKeys.DownloadManager.OKHTTP -> {
+
+                                val folder = viewModel.getDownloadFolder()
+                                if (folder != null) {
+
+                                    if (viewModel.getDownloadOnUnmeteredOnlyPreference()) {
+                                        val connectivityManager =
+                                            applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+                                        if (connectivityManager.isActiveNetworkMetered) {
+                                            applicationContext.showToast(R.string.download_on_metered_connection)
+                                        }
+                                    }
+
+                                    viewModel.startDownloadWorker(
+                                        content,
+                                        folder
+                                    )
+                                }
+                                else
+                                    viewModel.requireDownloadFolder()
+
+                            }
+                            else -> {
+                                Timber.e("Unrecognized download manager requested: $dm")
+                            }
+                        }
+                    }
+                }
+                null -> {}
             }
         }
 
@@ -414,8 +603,8 @@ class MainActivity : AppCompatActivity() {
         val pluginName = link.replace("%2F", "/").split("/").last()
         val manager =
             applicationContext.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-        val queuedDownload = manager.downloadFile(
-            link = link,
+        val queuedDownload = manager.downloadFileInStandardFolder(
+            source = Uri.parse(link),
             title = getString(R.string.unchained_plugin_download),
             description = getString(R.string.temporary_plugin_download),
             fileName = pluginName
@@ -589,10 +778,10 @@ class MainActivity : AppCompatActivity() {
     private fun setupBottomNavigationBar(binding: ActivityMainBinding) {
 
         navController = (
-            supportFragmentManager.findFragmentById(
-                R.id.nav_host_fragment
-            ) as NavHostFragment
-            ).navController
+                supportFragmentManager.findFragmentById(
+                    R.id.nav_host_fragment
+                ) as NavHostFragment
+                ).navController
         binding.bottomNavView.setupWithNavController(navController)
 
         // Setup the ActionBar with navController and 3 top level destinations

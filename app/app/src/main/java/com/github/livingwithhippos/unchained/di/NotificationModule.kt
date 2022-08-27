@@ -23,7 +23,7 @@ object NotificationModule {
     fun provideTorrentNotificationBuilder(
         @ApplicationContext applicationContext: Context
     ): NotificationCompat.Builder =
-        NotificationCompat.Builder(applicationContext, UnchainedApplication.CHANNEL_ID)
+        NotificationCompat.Builder(applicationContext, UnchainedApplication.TORRENT_CHANNEL_ID)
             .setSmallIcon(R.drawable.logo_no_background)
             .setPriority(NotificationCompat.PRIORITY_LOW)
             .setOngoing(true)
@@ -31,11 +31,11 @@ object NotificationModule {
 
     @ServiceScoped
     @Provides
-    @SummaryNotification
-    fun provideSummaryNotificationBuilder(
+    @TorrentSummaryNotification
+    fun provideTorrentSummaryNotificationBuilder(
         @ApplicationContext applicationContext: Context
     ): NotificationCompat.Builder =
-        NotificationCompat.Builder(applicationContext, UnchainedApplication.CHANNEL_ID)
+        NotificationCompat.Builder(applicationContext, UnchainedApplication.TORRENT_CHANNEL_ID)
             .setSmallIcon(R.drawable.logo_no_background)
             .setContentTitle(applicationContext.getString(R.string.monitor_torrents_download))
             .setPriority(NotificationCompat.PRIORITY_LOW)

@@ -3,6 +3,7 @@ package com.github.livingwithhippos.unchained.lists.view
 import android.app.DownloadManager
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -55,7 +56,7 @@ import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.EventObserver
 import com.github.livingwithhippos.unchained.utilities.TORRENTS_TAB
 import com.github.livingwithhippos.unchained.utilities.extension.delayedScrolling
-import com.github.livingwithhippos.unchained.utilities.extension.downloadFile
+import com.github.livingwithhippos.unchained.utilities.extension.downloadFileInStandardFolder
 import com.github.livingwithhippos.unchained.utilities.extension.getApiErrorMessage
 import com.github.livingwithhippos.unchained.utilities.extension.getDownloadedFileUri
 import com.github.livingwithhippos.unchained.utilities.extension.getThemedDrawable
@@ -432,32 +433,13 @@ class DownloadsListFragment : UnchainedFragment(), DownloadListListener {
             }
 
             override fun downloadSelectedItems() {
-                if (downloadTracker.selection.toList().isNotEmpty()) {
-                    var downloadStarted = false
-                    val manager =
-                        requireContext().getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-                    downloadTracker.selection.forEach { item ->
-                        val queuedDownload = manager.downloadFile(
-                            item.download,
-                            item.filename,
-                            getString(R.string.app_name),
-                        )
-                        when (queuedDownload) {
-                            is EitherResult.Failure -> {
-                                context?.showToast(
-                                    getString(
-                                        R.string.download_not_started_format,
-                                        item.filename
-                                    )
-                                )
-                            }
-                            is EitherResult.Success -> {
-                                downloadStarted = true
-                            }
-                        }
+                val downloads: List<DownloadItem> = downloadTracker.selection.toList()
+                if (downloads.isNotEmpty()) {
+                    if (downloads.size == 1) {
+                        activityViewModel.enqueueDownload(downloads.first().download, downloads.first().filename)
+                    } else {
+                        activityViewModel.enqueueDownloads(downloads)
                     }
-                    if (downloadStarted)
-                        context?.showToast(R.string.download_started)
                 } else
                     context?.showToast(R.string.select_one_item)
             }

@@ -77,7 +77,7 @@
             android:id="@+id/cbLink"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:checked="@{auth.userCode == null ? false : true, default=true}"
+            android:checked="@{auth.userCode == null ? false : true, default=false}"
             android:clickable="false"
             android:focusable="false"
             android:text="@{auth.userCode == null ? @string/waiting_link : @string/link_loaded, default=@string/link_loaded}"

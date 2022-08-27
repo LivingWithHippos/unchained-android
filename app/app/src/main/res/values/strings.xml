@@ -418,6 +418,7 @@
     </plurals>
     <string name="seeders_string_format">seeder/s: %s</string>
     <string name="torrent_in_progress_format">%1$d%% - %2$.2f MB/s</string>
+    <string name="download_in_progress_format">Downloading - %1$d%%</string>
     <string name="download_complete">Download complete</string>
     <string name="unknown_status">Unknown Status</string>
     <string name="downloading_torrent_format">Downloading %1$d torrents</string>
@@ -502,6 +503,7 @@
     <string name="download_started">Download started, check the notification bar</string>
     <string name="download_not_started">Error during download initialization</string>
     <string name="download_not_started_format">Error initializing download of %s</string>
+    <string name="multiple_downloads_enqueued_format">"%d out of %d downloads enqueued correctly "</string>
     <string name="needs_download_permission">Unchained needs the storage permission to download files directly</string>
     <string name="kodi" translatable="false">Kodi</string>
     <string name="test_connection">Test the connection</string>
@@ -609,4 +611,23 @@
     <string name="seeders">Seeders</string>
     <string name="no_supported_player_found">No app supporting this media was found. Try with the share button.</string>
     <string name="browser_not_found">No browser app found</string>
+    <string name="directory_picked">Directory saved. Start the download again.</string>
+    <string name="permission_granted">Permissions granted, Start the download again.</string>
+    <string name="stop">Stop</string>
+    <string name="stopped">Stopped</string>
+    <string name="paused">Paused</string>
+    <string name="restart">Restart</string>
+    <string name="download_channel_description">Notification channel for downloads status</string>
+    <string name="download_queued">Download queued, check your notifications</string>
+    <string name="download_queued_error">Error queuing download, check permissions</string>
+    <string name="pick_download_folder">Pick Download Folder</string>
+    <string name="pick_download_folder_description">Choose a folder for the downloads. Not available for the default system download manager</string>
+    <string name="download_manager">Download manager</string>
+    <string name="download_manager_description">Choose how to download files</string>
+    <string name="download_link_expired">Network issues or download link expired. Generate another one.</string>
+    <string name="custom_downloader_options">Custom downloader options</string>
+    <string name="custom_downloader_options_description">These options are not available for the default download manager</string>
+    <string name="unmetered_downloads">Downloads on unmetered connections</string>
+    <string name="unmetered_downloads_description">Start downloads only on unmetered connection (such as wi-fi)</string>
+    <string name="download_on_metered_connection">Download delayed (metered connection)</string>
 </resources>

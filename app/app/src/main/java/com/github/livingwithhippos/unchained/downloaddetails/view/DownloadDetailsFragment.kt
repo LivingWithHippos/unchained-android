@@ -6,6 +6,7 @@ import android.content.ActivityNotFoundException
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -15,7 +16,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.setFragmentResultListener
@@ -36,11 +37,16 @@ import com.github.livingwithhippos.unchained.lists.view.ListState
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.EventObserver
 import com.github.livingwithhippos.unchained.utilities.RD_STREAMING_URL
+import com.github.livingwithhippos.unchained.utilities.download.ProgressCallback
 import com.github.livingwithhippos.unchained.utilities.extension.copyToClipboard
-import com.github.livingwithhippos.unchained.utilities.extension.downloadFile
+import com.github.livingwithhippos.unchained.utilities.extension.downloadFileInCustomFolder
+import com.github.livingwithhippos.unchained.utilities.extension.downloadFileInStandardFolder
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -54,6 +60,9 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
     private val viewModel: DownloadDetailsViewModel by viewModels()
 
     private val args: DownloadDetailsFragmentArgs by navArgs()
+
+    private val job = Job()
+    private val ioScope = CoroutineScope(Dispatchers.IO + job)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -238,53 +247,15 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         }
     }
 
+    private val tempProgressListener = object : ProgressCallback {
+        override fun onProgress(progress: Double) {
+            Timber.d("Progress: $progress")
+        }
+    }
+
     override fun onDownloadClick(link: String, fileName: String) {
-
-        when (Build.VERSION.SDK_INT) {
-            22 -> {
-                downloadFile(link, fileName)
-            }
-            in 23..28 -> {
-                requestPermissionLauncher.launch(
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE
-                )
-            }
-            else -> {
-                downloadFile(link, fileName)
-            }
-        }
+        activityViewModel.enqueueDownload(link, fileName)
     }
-
-    private fun downloadFile(link: String, fileName: String) {
-        val manager =
-            requireContext().getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-        val queuedDownload = manager.downloadFile(
-            link = link,
-            title = fileName,
-            description = getString(R.string.app_name)
-        )
-        when (queuedDownload) {
-            is EitherResult.Failure -> {
-                context?.showToast(R.string.download_not_started)
-            }
-            is EitherResult.Success -> {
-                context?.showToast(R.string.download_started)
-            }
-        }
-    }
-
-    private val requestPermissionLauncher =
-        registerForActivityResult(
-            ActivityResultContracts.RequestPermission()
-        ) { isGranted: Boolean ->
-            if (isGranted) {
-                val link = args.details.download
-                val fileName = args.details.filename
-                downloadFile(link, fileName)
-            } else {
-                context?.showToast(R.string.needs_download_permission)
-            }
-        }
 
     override fun onShareClick(url: String) {
         val shareIntent = Intent(Intent.ACTION_SEND)
@@ -294,10 +265,9 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
     }
 
     private fun tryStartExternalApp(intent: Intent) {
-
         try {
             startActivity(intent)
-        } catch (e: android.content.ActivityNotFoundException) {
+        } catch (e: ActivityNotFoundException) {
             context?.showToast(R.string.app_not_installed)
         }
     }
@@ -336,7 +306,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
 
                 try {
                     startActivity(mxIntent)
-                } catch (e: android.content.ActivityNotFoundException) {
+                } catch (e: ActivityNotFoundException) {
                     mxIntent.setPackage("com.mxtech.videoplayer.ad")
                     tryStartExternalApp(mxIntent)
                 }
