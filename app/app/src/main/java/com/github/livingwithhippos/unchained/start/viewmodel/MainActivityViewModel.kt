@@ -1,6 +1,5 @@
 package com.github.livingwithhippos.unchained.start.viewmodel
 
-import android.app.DownloadManager
 import android.content.Context
 import android.content.SharedPreferences
 import android.net.ConnectivityManager
@@ -14,6 +13,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.work.Data
+import androidx.work.ExistingWorkPolicy
+import androidx.work.OneTimeWorkRequest
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import com.github.livingwithhippos.unchained.R
@@ -21,6 +22,7 @@ import com.github.livingwithhippos.unchained.data.local.Credentials
 import com.github.livingwithhippos.unchained.data.local.ProtoStore
 import com.github.livingwithhippos.unchained.data.model.APIError
 import com.github.livingwithhippos.unchained.data.model.ApiConversionError
+import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.data.model.EmptyBodyError
 import com.github.livingwithhippos.unchained.data.model.KodiDevice
 import com.github.livingwithhippos.unchained.data.model.NetworkError
@@ -46,14 +48,13 @@ import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.PLUGINS_PACK_FOLDER
 import com.github.livingwithhippos.unchained.utilities.PRIVATE_TOKEN
+import com.github.livingwithhippos.unchained.utilities.PreferenceKeys
 import com.github.livingwithhippos.unchained.utilities.SIGNATURE
 import com.github.livingwithhippos.unchained.utilities.UnzipUtils
 import com.github.livingwithhippos.unchained.utilities.download.DownloadWorker
-import com.github.livingwithhippos.unchained.utilities.extension.downloadFileInStandardFolder
 import com.github.livingwithhippos.unchained.utilities.extension.getDownloadedFileUri
 import com.github.livingwithhippos.unchained.utilities.extension.isMagnet
 import com.github.livingwithhippos.unchained.utilities.extension.isTorrent
-import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.github.livingwithhippos.unchained.utilities.postEvent
 import com.tinder.StateMachine
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -1161,39 +1162,61 @@ class MainActivityViewModel @Inject constructor(
         messageLiveData.postValue(Event(MainActivityMessage.RequireDownloadPermissions))
     }
 
-    private fun downloadFile(context: Context, link: String, fileName: String) {
-        val manager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-        val queuedDownload = manager.downloadFileInStandardFolder(
-            source = Uri.parse(link),
-            title = fileName,
-            description = context.getString(R.string.app_name)
-        )
-
-        when (queuedDownload) {
-            is EitherResult.Failure -> {
-                context.showToast(R.string.download_not_started)
-            }
-            is EitherResult.Success -> {
-                context.showToast(R.string.download_started)
-            }
-        }
-    }
-
     fun getDownloadManagerPreference(): String {
-        return preferences.getString("download_manager", "download_manager_okhttp") ?: "download_manager_okhttp"
+        return preferences.getString(PreferenceKeys.DownloadManager.KEY, PreferenceKeys.DownloadManager.SYSTEM) ?: PreferenceKeys.DownloadManager.SYSTEM
     }
 
-    fun startDownloadWorker(data: Data) {
+    fun startDownloadWorker(content: MainActivityMessage.DownloadEnqueued, folder: Uri) {
+
+        val data: Data = Data.Builder().apply {
+            putString(
+                KEY_FOLDER_URI,
+                folder.toString()
+            )
+            putString(
+                KEY_DOWNLOAD_SOURCE,
+                content.source
+            )
+            putString(
+                KEY_DOWNLOAD_NAME,
+                content.fileName
+            )
+        }.build()
+
         val downloadFileRequest = OneTimeWorkRequestBuilder<DownloadWorker>()
+            .addTag(content.source)
             .setInputData(data)
             .build()
 
-        workManager.enqueue(downloadFileRequest)
+        // use KEEP or REPLACE
+        workManager.enqueueUniqueWork(content.source, ExistingWorkPolicy.KEEP, downloadFileRequest)
+    }
+
+    fun startMultipleDownloadWorkers(folder: Uri, downloads: List<DownloadItem>) {
+
+        val work: List<OneTimeWorkRequest> = downloads.map {
+
+            val data = Data.Builder().apply {
+                putString(
+                    KEY_FOLDER_URI,
+                    folder.toString()
+                )
+                putString(KEY_DOWNLOAD_SOURCE, it.download)
+                putString(KEY_DOWNLOAD_NAME, it.filename)
+            }.build()
+
+            OneTimeWorkRequestBuilder<DownloadWorker>()
+                .setInputData(data)
+                .addTag(it.download)
+                .build()
+        }
+
+        // use KEEP or REPLACE
+        workManager.enqueue(work)
     }
 
     fun enqueueDownload(
         sourceUrl: String,
-        folder: Uri,
         fileName: String
     ) {
         // todo: folder should be nullable for the system download manager
@@ -1201,8 +1224,20 @@ class MainActivityViewModel @Inject constructor(
             Event(
                 MainActivityMessage.DownloadEnqueued(
                     sourceUrl,
-                    folder,
                     fileName
+                )
+            )
+        )
+    }
+
+    fun enqueueDownloads(
+        downloads: List<DownloadItem>
+    ) {
+        // todo: folder should be nullable for the system download manager
+        messageLiveData.postValue(
+            Event(
+                MainActivityMessage.MultipleDownloadsEnqueued(
+                    downloads
                 )
             )
         )
@@ -1231,6 +1266,8 @@ sealed class MainActivityMessage {
     data class UpdateFound(val signature: String) : MainActivityMessage()
     object RequireDownloadFolder : MainActivityMessage()
     object RequireDownloadPermissions : MainActivityMessage()
-    data class DownloadEnqueued(val source: String, val folder: Uri, val fileName: String) :
+    data class DownloadEnqueued(val source: String, val fileName: String):
+        MainActivityMessage()
+    data class MultipleDownloadsEnqueued(val downloads: List<DownloadItem>):
         MainActivityMessage()
 }

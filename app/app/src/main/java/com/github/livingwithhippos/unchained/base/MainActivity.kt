@@ -23,6 +23,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.content.PermissionChecker.PERMISSION_GRANTED
 import androidx.core.view.MenuProvider
 import androidx.core.view.forEach
 import androidx.lifecycle.lifecycleScope
@@ -32,7 +33,6 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import androidx.work.Data
 import com.github.livingwithhippos.unchained.BuildConfig
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.model.UserAction
@@ -49,6 +49,7 @@ import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuth
 import com.github.livingwithhippos.unchained.utilities.APP_LINK
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.EventObserver
+import com.github.livingwithhippos.unchained.utilities.PreferenceKeys
 import com.github.livingwithhippos.unchained.utilities.SCHEME_HTTP
 import com.github.livingwithhippos.unchained.utilities.SCHEME_HTTPS
 import com.github.livingwithhippos.unchained.utilities.SCHEME_MAGNET
@@ -183,7 +184,7 @@ class MainActivity : AppCompatActivity() {
                 val contentResolver = applicationContext.contentResolver
 
                 val takeFlags: Int = Intent.FLAG_GRANT_READ_URI_PERMISSION or
-                    Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                        Intent.FLAG_GRANT_WRITE_URI_PERMISSION
 
                 contentResolver.takePersistableUriPermission(it, takeFlags)
 
@@ -424,78 +425,117 @@ class MainActivity : AppCompatActivity() {
                         Manifest.permission.WRITE_EXTERNAL_STORAGE
                     )
                 }
-                is MainActivityMessage.DownloadEnqueued -> {
+                is MainActivityMessage.MultipleDownloadsEnqueued -> {
 
-                    when (val dm = viewModel.getDownloadManagerPreference()) {
-                        "download_manager_system" -> {
+                    if (
+                        Build.VERSION.SDK_INT in 23..28 &&
+                        ContextCompat.checkSelfPermission(
+                            applicationContext,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE
+                        ) != PERMISSION_GRANTED
+                    ) {
+                        viewModel.requireDownloadPermissions()
+                    } else {
 
-                            val manager =
-                                applicationContext.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+                        when (val dm = viewModel.getDownloadManagerPreference()) {
+                            PreferenceKeys.DownloadManager.SYSTEM -> {
+                                val manager =
+                                    applicationContext.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+                                var downloadsStarted = 0
+                                content.downloads.forEach { download ->
 
-                            val queuedDownload = manager.downloadFileInStandardFolder(
-                                source = Uri.parse(content.source),
-                                title = content.fileName,
-                                description = getString(R.string.app_name),
-                                fileName = content.fileName
-                            )
-                            when (queuedDownload) {
-                                is EitherResult.Failure -> {
-                                    applicationContext.showToast(
-                                        getString(
-                                            R.string.download_not_started_format,
-                                            content.fileName
-                                        )
+                                    val queuedDownload = manager.downloadFileInStandardFolder(
+                                        source = Uri.parse(download.download),
+                                        title = download.filename,
+                                        description = getString(R.string.app_name),
+                                        fileName = download.filename
                                     )
+                                    when (queuedDownload) {
+                                        is EitherResult.Failure -> {
+                                            Timber.e("Error queuing ${download.link}: ${queuedDownload.failure.message}")
+                                        }
+                                        is EitherResult.Success -> {
+                                            downloadsStarted++
+                                        }
+                                    }
                                 }
-                                is EitherResult.Success -> {
-                                    applicationContext.showToast(R.string.download_started)
-                                }
-                            }
-                        }
-                        "download_manager_okhttp" -> {
-                            val downloadData: Data = Data.Builder().apply {
-                                putString(
-                                    MainActivityViewModel.KEY_FOLDER_URI,
-                                    content.folder.toString()
-                                )
-                                putString(MainActivityViewModel.KEY_DOWNLOAD_SOURCE, content.source)
-                                putString(MainActivityViewModel.KEY_DOWNLOAD_NAME, content.fileName)
-                            }.build()
 
-                            viewModel.startDownloadWorker(downloadData)
-                        }
-                        else -> {
-                            Timber.e("Unrecognized download manager requested: $dm")
+                                applicationContext?.showToast(
+                                    getString(
+                                        R.string.multiple_downloads_enqueued_format,
+                                        downloadsStarted,
+                                        content.downloads.size
+                                    )
+                                )
+                            }
+                            PreferenceKeys.DownloadManager.OKHTTP -> {
+
+                                val folder = viewModel.getDownloadFolder()
+                                if (folder != null)
+                                    viewModel.startMultipleDownloadWorkers(
+                                        folder,
+                                        content.downloads
+                                    )
+                                else
+                                    viewModel.requireDownloadFolder()
+                            }
                         }
                     }
-                    /*
-                    if (isDownloadServiceBound != true) {
-                        lifecycleScope.launch {
-                            bindService()
-                            // needs some time to connect, careful about the timing because it needs to launch its start in 5 seconds
-                            // or the app could stop responding
-                            delay(1000)
-                            if (isDownloadServiceBound == true) {
+                }
+                is MainActivityMessage.DownloadEnqueued -> {
 
-                                val notificationIntent = Intent(applicationContext, ForegroundDownloadService::class.java)
-                                ContextCompat.startForegroundService(applicationContext, notificationIntent)
+                    if (
+                        Build.VERSION.SDK_INT in 23..28 &&
+                        ContextCompat.checkSelfPermission(
+                            applicationContext,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE
+                        ) != PERMISSION_GRANTED
+                    ) {
+                        viewModel.requireDownloadPermissions()
+                    } else {
+                        when (val dm = viewModel.getDownloadManagerPreference()) {
+                            PreferenceKeys.DownloadManager.SYSTEM -> {
 
-                                downloadService?.queueDownload(
-                                    content.source,
-                                    content.folder,
-                                    content.fileName
+                                val manager =
+                                    applicationContext.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+
+                                val queuedDownload = manager.downloadFileInStandardFolder(
+                                    source = Uri.parse(content.source),
+                                    title = content.fileName,
+                                    description = getString(R.string.app_name),
+                                    fileName = content.fileName
                                 )
-                            } else {
-                                Timber.e("Error connecting to the download service")
+                                when (queuedDownload) {
+                                    is EitherResult.Failure -> {
+                                        applicationContext.showToast(
+                                            getString(
+                                                R.string.download_not_started_format,
+                                                content.fileName
+                                            )
+                                        )
+                                    }
+                                    is EitherResult.Success -> {
+                                        applicationContext.showToast(R.string.download_started)
+                                    }
+                                }
+                            }
+                            PreferenceKeys.DownloadManager.OKHTTP -> {
+
+                                val folder = viewModel.getDownloadFolder()
+                                if (folder != null)
+                                    viewModel.startDownloadWorker(
+                                        content,
+                                        folder
+                                    )
+                                else
+                                    viewModel.requireDownloadFolder()
+
+                            }
+                            else -> {
+                                Timber.e("Unrecognized download manager requested: $dm")
                             }
                         }
-                    } else
-                        downloadService?.queueDownload(
-                            content.source,
-                            content.folder,
-                            content.fileName
-                        )
-                     */
+                    }
                 }
                 null -> {}
             }
@@ -719,10 +759,10 @@ class MainActivity : AppCompatActivity() {
     private fun setupBottomNavigationBar(binding: ActivityMainBinding) {
 
         navController = (
-            supportFragmentManager.findFragmentById(
-                R.id.nav_host_fragment
-            ) as NavHostFragment
-            ).navController
+                supportFragmentManager.findFragmentById(
+                    R.id.nav_host_fragment
+                ) as NavHostFragment
+                ).navController
         binding.bottomNavView.setupWithNavController(navController)
 
         // Setup the ActionBar with navController and 3 top level destinations

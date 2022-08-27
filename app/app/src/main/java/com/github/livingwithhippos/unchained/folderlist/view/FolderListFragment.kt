@@ -1,9 +1,12 @@
 package com.github.livingwithhippos.unchained.folderlist.view
 
+import android.Manifest
 import android.app.DownloadManager
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -13,10 +16,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.MenuRes
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.content.ContextCompat
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.core.widget.addTextChangedListener
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -27,6 +30,7 @@ import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.selection.StorageStrategy
 import androidx.recyclerview.widget.RecyclerView
 import com.github.livingwithhippos.unchained.R
+import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.data.model.APIError
 import com.github.livingwithhippos.unchained.data.model.ApiConversionError
 import com.github.livingwithhippos.unchained.data.model.DownloadItem
@@ -46,14 +50,20 @@ import com.github.livingwithhippos.unchained.utilities.extension.downloadFileInS
 import com.github.livingwithhippos.unchained.utilities.extension.getThemedDrawable
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @AndroidEntryPoint
-class FolderListFragment : Fragment(), DownloadListListener {
+class FolderListFragment : UnchainedFragment(), DownloadListListener {
 
     private val viewModel: FolderListViewModel by viewModels()
     private val args: FolderListFragmentArgs by navArgs()
+
+    private val job = Job()
+    private val scope = CoroutineScope(Dispatchers.Default + job)
 
     private val mediaRegex =
         "\\.(webm|avi|mkv|ogg|MTS|M2TS|TS|mov|wmv|mp4|m4p|m4v|mp2|mpe|mpv|mpg|mpeg|m2v|3gp)$".toRegex()
@@ -91,35 +101,9 @@ class FolderListFragment : Fragment(), DownloadListListener {
     }
 
     private fun downloadAll() {
-        // todo: add custom folder support
         val downloads: List<DownloadItem>? = viewModel.folderLiveData.value?.peekContent()
         if (!downloads.isNullOrEmpty()) {
-            var downloadStarted = false
-            val manager =
-                requireContext().getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-            downloads.forEach {
-                val queuedDownload = manager.downloadFileInStandardFolder(
-                    Uri.parse(it.download),
-                    it.filename,
-                    getString(R.string.app_name)
-                )
-                when (queuedDownload) {
-                    is EitherResult.Failure -> {
-                        context?.showToast(
-                            getString(
-                                R.string.download_not_started_format,
-                                it.filename
-                            )
-                        )
-                    }
-                    is EitherResult.Success -> {
-                        downloadStarted = true
-                    }
-                }
-            }
-
-            if (downloadStarted)
-                context?.showToast(R.string.download_started)
+            activityViewModel.enqueueDownloads(downloads)
         }
     }
 

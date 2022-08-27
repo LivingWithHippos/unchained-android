@@ -254,28 +254,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
     }
 
     override fun onDownloadClick(link: String, fileName: String) {
-
-        val folder: Uri? = activityViewModel.getDownloadFolder()
-        if (folder == null) {
-            // this could pass if the user has reset the app permissions somehow
-            activityViewModel.requireDownloadFolder()
-        } else {
-            when (Build.VERSION.SDK_INT) {
-                22 -> {
-                    activityViewModel.enqueueDownload(link, folder, fileName)
-                }
-                in 23..28 -> {
-                    if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PERMISSION_GRANTED) {
-                        activityViewModel.enqueueDownload(link, folder, fileName)
-                    } else {
-                        activityViewModel.requireDownloadPermissions()
-                    }
-                }
-                else -> {
-                    activityViewModel.enqueueDownload(link, folder, fileName)
-                }
-            }
-        }
+        activityViewModel.enqueueDownload(link, fileName)
     }
 
     private fun downloadFile(link: String, fileName: String) {
