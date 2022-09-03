@@ -319,4 +319,11 @@
     <string name="loading_container_file">Cargando el archivo del contenedor…</string>
     <string name="sending_crash_report">Unchained acaba de crashear.
 \nEnviando informe de caída…</string>
+    <string name="file_type_format">Tipo: %1$s</string>
+    <string name="image_resolution_error">Error de resolución de Imagen</string>
+    <string name="torrent_already_active">El torrent ya esta activo</string>
+    <string name="logout">Cerrar sesión</string>
+    <string name="account_page">Cuenta</string>
+    <string name="login_type_open">Logueado con el token abierto. Algunas características como transcodificar no están disponibles.</string>
+    <string name="login_type_private">Logueado con token privado. Todas las características están disponibles.</string>
 </resources>
