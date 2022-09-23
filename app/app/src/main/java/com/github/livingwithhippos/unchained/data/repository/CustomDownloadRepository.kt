@@ -23,6 +23,7 @@ class CustomDownloadRepository @Inject constructor(private val customDownloadHel
         suffix: String? = null
     ): Flow<DownloadResult> = channelFlow {
         if (url.isWebUrl()) {
+            // todo: use the FileWriter and Downloader helper classes
             val call = customDownloadHelper.getFile(url)
             if (call.isSuccessful) {
                 val body = call.body()
