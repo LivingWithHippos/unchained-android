@@ -71,6 +71,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.io.File
+import java.io.FileNotFoundException
 import java.io.IOException
 import java.util.regex.Matcher
 import java.util.regex.Pattern
@@ -1042,24 +1043,18 @@ class MainActivityViewModel @Inject constructor(
     }
 
     fun processPluginsPack(cacheDir: File, pluginsDir: File, fileName: String) {
-        try {
-            viewModelScope.launch {
-                withContext(Dispatchers.IO) {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                try {
                     val cacheFile = File(cacheDir, fileName)
                     UnzipUtils.unzip(cacheFile, File(cacheDir, PLUGINS_PACK_FOLDER))
                     Timber.d("Zip pack extracted")
                     installPluginsPack(cacheDir, pluginsDir)
-                }
-            }
-        } catch (exception: Exception) {
-            when (exception) {
-                is IOException -> {
+                } catch (exception: IOException) {
                     Timber.e("Plugins pack IOException error with the file: ${exception.message}")
-                }
-                is java.io.FileNotFoundException -> {
+                } catch (exception: FileNotFoundException) {
                     Timber.e("Plugins pack: file not found: ${exception.message}")
-                }
-                else -> {
+                } catch (exception: Exception) {
                     Timber.e("Plugins pack: Other error getting the file: ${exception.message}")
                 }
             }
@@ -1178,10 +1173,10 @@ class MainActivityViewModel @Inject constructor(
 
         val constraints = Constraints.Builder()
             .apply {
-            if (unmeteredConnectionOnly)
-                setRequiredNetworkType(NetworkType.UNMETERED)
-            else
-                setRequiredNetworkType(NetworkType.CONNECTED)
+                if (unmeteredConnectionOnly)
+                    setRequiredNetworkType(NetworkType.UNMETERED)
+                else
+                    setRequiredNetworkType(NetworkType.CONNECTED)
             }
             .setRequiresStorageNotLow(true)
             .build()
