@@ -19,6 +19,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
@@ -207,7 +208,7 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
             performSearch(binding, adapter)
         }
 
-        viewModel.cacheLiveData.observe(viewLifecycleOwner) {
+        activityViewModel.cacheLiveData.observe(viewLifecycleOwner) {
             submitCachedList(it, adapter)
         }
     }
@@ -269,6 +270,7 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
         ).observe(viewLifecycleOwner) { result ->
             when (result) {
                 is ParserResult.SingleResult -> {
+                    // does this work without an append?
                     submitSortedList(
                         searchAdapter,
                         listOf(result.value)
@@ -285,6 +287,7 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
                     binding.loadingCircle.visibility = View.VISIBLE
                 }
                 is ParserResult.SearchFinished -> {
+                    activityViewModel.checkTorrentCache(searchAdapter.currentList)
                     binding.loadingCircle.visibility = View.INVISIBLE
                     binding.sortingButton.visibility = View.VISIBLE
                     // update the data with cached results

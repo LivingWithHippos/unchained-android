@@ -199,6 +199,7 @@ fun TextView.setFileSize(size: Long) {
             R.string.file_size_format_gb,
             size.toFloat() / 1024 / 1024 / 1024
         )
+        // todo: shorten this
         else -> this.context.getString(R.string.size_error)
     }
 }

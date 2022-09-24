@@ -47,11 +47,6 @@ class SearchViewModel @Inject constructor(
     val pluginLiveData = MutableLiveData<Pair<List<Plugin>, Int>>()
     private val parsingLiveData = MutableLiveData<ParserResult>()
 
-    private val _cacheLiveData = MutableLiveData<InstantAvailability>()
-    val cacheLiveData: LiveData<InstantAvailability> = _cacheLiveData
-
-    private val magnetPattern = Regex(MAGNET_PATTERN, RegexOption.IGNORE_CASE)
-
     fun completeSearch(
         query: String,
         pluginName: String,
@@ -85,7 +80,6 @@ class SearchViewModel @Inject constructor(
                             parsingLiveData.value = it
                         }
                         is ParserResult.SearchFinished -> {
-                            checkRDCache(results)
                             parsingLiveData.value = it
                         }
                         else -> parsingLiveData.value = it
@@ -96,43 +90,6 @@ class SearchViewModel @Inject constructor(
         } else {
             parsingLiveData.value = ParserResult.MissingPlugin
             return parsingLiveData
-        }
-    }
-
-    private fun checkRDCache(scrapedItems: List<ScrapedItem>) {
-        if (scrapedItems.isNotEmpty()) {
-            viewModelScope.launch {
-                val token = protoStore.getCredentials().accessToken
-                val builder = StringBuilder(BASE_URL)
-                builder.append(INSTANT_AVAILABILITY_ENDPOINT)
-                scrapedItems.forEach { item ->
-                    item.magnets.forEach { magnet ->
-                        val btih = magnetPattern.find(magnet)?.groupValues?.get(1)
-                        if (!btih.isNullOrBlank()) {
-                            builder.append("/")
-                            builder.append(btih)
-                        }
-                    }
-                }
-                if (builder.length > (BASE_URL.length + INSTANT_AVAILABILITY_ENDPOINT.length)) {
-                    val cache = torrentsRepository.getInstantAvailability(token, builder.toString())
-                    if (cache is EitherResult.Success) {
-                        if (cache.success.cachedTorrents.isNotEmpty()) {
-                            _cacheLiveData.postValue(cache.success)
-                            setCacheResults(cache.success)
-                        } else {
-                            setCacheResults(null)
-                        }
-                    } else {
-                        setCacheResults(null)
-                    }
-                } else {
-                    Timber.e("Error creating instant availability query: $builder")
-                }
-            }
-        } else {
-            Timber.d("No search result found")
-            setCacheResults(null)
         }
     }
 

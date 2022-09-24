@@ -7,6 +7,7 @@ import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Build
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -31,23 +32,30 @@ import com.github.livingwithhippos.unchained.data.model.NetworkError
 import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkException
 import com.github.livingwithhippos.unchained.data.model.User
 import com.github.livingwithhippos.unchained.data.model.UserAction
+import com.github.livingwithhippos.unchained.data.model.cache.InstantAvailability
 import com.github.livingwithhippos.unchained.data.repository.AuthenticationRepository
 import com.github.livingwithhippos.unchained.data.repository.CustomDownloadRepository
 import com.github.livingwithhippos.unchained.data.repository.HostsRepository
 import com.github.livingwithhippos.unchained.data.repository.KodiDeviceRepository
 import com.github.livingwithhippos.unchained.data.repository.PluginRepository
 import com.github.livingwithhippos.unchained.data.repository.PluginRepository.Companion.TYPE_UNCHAINED
+import com.github.livingwithhippos.unchained.data.repository.TorrentsRepository
 import com.github.livingwithhippos.unchained.data.repository.UpdateRepository
 import com.github.livingwithhippos.unchained.data.repository.UserRepository
 import com.github.livingwithhippos.unchained.data.repository.VariousApiRepository
 import com.github.livingwithhippos.unchained.lists.view.ListState
 import com.github.livingwithhippos.unchained.plugins.model.Plugin
+import com.github.livingwithhippos.unchained.plugins.model.ScrapedItem
+import com.github.livingwithhippos.unchained.search.viewmodel.SearchViewModel
 import com.github.livingwithhippos.unchained.statemachine.authentication.CurrentFSMAuthentication
 import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationEvent
 import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationSideEffect
 import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationState
+import com.github.livingwithhippos.unchained.utilities.BASE_URL
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.Event
+import com.github.livingwithhippos.unchained.utilities.INSTANT_AVAILABILITY_ENDPOINT
+import com.github.livingwithhippos.unchained.utilities.MAGNET_PATTERN
 import com.github.livingwithhippos.unchained.utilities.PLUGINS_PACK_FOLDER
 import com.github.livingwithhippos.unchained.utilities.PRIVATE_TOKEN
 import com.github.livingwithhippos.unchained.utilities.PreferenceKeys
@@ -93,9 +101,12 @@ class MainActivityViewModel @Inject constructor(
     private val protoStore: ProtoStore,
     private val kodiDeviceRepository: KodiDeviceRepository,
     private val customDownloadRepository: CustomDownloadRepository,
+    private val torrentsRepository: TorrentsRepository,
     private val updateRepository: UpdateRepository,
     @ApplicationContext applicationContext: Context
 ) : ViewModel() {
+
+    private val magnetPattern = Regex(MAGNET_PATTERN, RegexOption.IGNORE_CASE)
 
     val fsmAuthenticationState = MutableLiveData<Event<FSMAuthenticationState>?>()
     private val credentialsFlow = protoStore.credentialsFlow
@@ -117,6 +128,10 @@ class MainActivityViewModel @Inject constructor(
     val linkLiveData = MutableLiveData<Event<String>?>()
 
     val messageLiveData = MutableLiveData<Event<MainActivityMessage>?>()
+
+    // todo: use this with other livedatas
+    private val _cacheLiveData = MutableLiveData<InstantAvailability>()
+    val cacheLiveData: LiveData<InstantAvailability> = _cacheLiveData
 
     private val workManager = WorkManager.getInstance(applicationContext)
 
@@ -411,6 +426,47 @@ class MainActivityViewModel @Inject constructor(
                 }
             }
         }
+
+    fun checkTorrentCache(scrapedItems: List<ScrapedItem>) {
+        if (scrapedItems.isNotEmpty()) {
+            viewModelScope.launch {
+                val token = protoStore.getCredentials().accessToken
+                val builder = StringBuilder(BASE_URL)
+                builder.append(INSTANT_AVAILABILITY_ENDPOINT)
+                scrapedItems.forEach { item ->
+                    item.magnets.forEach { magnet ->
+                        val btih = magnetPattern.find(magnet)?.groupValues?.get(1)
+                        if (!btih.isNullOrBlank()) {
+                            builder.append("/")
+                            builder.append(btih)
+                        }
+                    }
+                }
+                if (builder.length > (BASE_URL.length + INSTANT_AVAILABILITY_ENDPOINT.length)) {
+                    val cache = torrentsRepository.getInstantAvailability(token, builder.toString())
+                    if (cache is EitherResult.Success) {
+                        if (cache.success.cachedTorrents.isNotEmpty()) {
+                            _cacheLiveData.postValue(cache.success)
+                            setCacheResults(cache.success)
+                        } else {
+                            setCacheResults(null)
+                        }
+                    } else {
+                        setCacheResults(null)
+                    }
+                } else {
+                    Timber.d("Skipping empty cache query: $builder")
+                }
+            }
+        } else {
+            Timber.d("No search result found")
+            setCacheResults(null)
+        }
+    }
+
+    private fun setCacheResults(cache: InstantAvailability?) {
+        savedStateHandle[SearchViewModel.KEY_CACHE] = cache
+    }
 
     fun checkCredentials() {
         viewModelScope.launch {
