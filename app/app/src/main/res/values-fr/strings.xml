@@ -421,4 +421,6 @@
     <string name="unmetered_downloads">Téléchargements sur des connexions non mesurées</string>
     <string name="unmetered_downloads_description">Lancez les téléchargements uniquement sur une connexion non mesurée (comme le wi-fi)</string>
     <string name="download_on_metered_connection">Téléchargement retardé (connexion avec compteur)</string>
+    <string name="leechers">Leechers</string>
+    <string name="size">Taille</string>
 </resources>
