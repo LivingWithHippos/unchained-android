@@ -17,7 +17,7 @@ data class InstantAvailability(
 
 @Parcelize
 data class CachedTorrent(
-    val key: String,
+    val btih: String,
     // i may have a list of providers, for now I always see only "rd"
     val cachedAlternatives: List<CachedAlternative>
 ): Parcelable

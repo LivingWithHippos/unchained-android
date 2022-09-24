@@ -1,10 +1,10 @@
 package com.github.livingwithhippos.unchained.data.repository
 
 import com.github.livingwithhippos.unchained.data.model.AvailableHost
-import com.github.livingwithhippos.unchained.data.model.RdCache
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkException
 import com.github.livingwithhippos.unchained.data.model.UploadedTorrent
+import com.github.livingwithhippos.unchained.data.model.cache.InstantAvailability
 import com.github.livingwithhippos.unchained.data.remote.TorrentApiHelper
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -152,7 +152,7 @@ class TorrentsRepository @Inject constructor(private val torrentApiHelper: Torre
     suspend fun getInstantAvailability(
         token: String,
         url: String
-    ): EitherResult<UnchainedNetworkException, Map<String, RdCache>> {
+    ): EitherResult<UnchainedNetworkException, InstantAvailability> {
 
         val response = eitherApiResult(
             call = {

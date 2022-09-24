@@ -234,21 +234,3 @@ data class AvailableHost(
         }
     }
 }
-
-@JsonClass(generateAdapter = true)
-data class InstantAvailability(
-    val keys: Map<String, Any?>,
-)
-
-@JsonClass(generateAdapter = true)
-data class RdCache(
-    val rd: List<Map<String, TorrentFile>>,
-)
-
-@JsonClass(generateAdapter = true)
-data class TorrentFile(
-    @Json(name = "filename")
-    val fileName: String,
-    @Json(name = "filesize")
-    val fileSize: Long
-)
