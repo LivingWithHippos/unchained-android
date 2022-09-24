@@ -22,6 +22,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
+import com.github.livingwithhippos.unchained.data.model.cache.CachedTorrent
 import com.github.livingwithhippos.unchained.data.model.cache.InstantAvailability
 import com.github.livingwithhippos.unchained.data.repository.DownloadResult
 import com.github.livingwithhippos.unchained.databinding.FragmentSearchBinding
@@ -318,14 +319,22 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
 
     private fun submitCachedList(cache: InstantAvailability, adapter: SearchItemAdapter) {
         // alternatively get results from the viewModel
-        val items = adapter.currentList.map {
+        val items: List<ScrapedItem> = adapter.currentList.map {
             it.apply {
                 if (it.magnets.isNotEmpty()) {
-                    val btih = magnetPattern.find(it.magnets.first())?.groupValues?.getOrNull(1)
-                        ?.uppercase()
-                    for (tor in cache.cachedTorrents) {
-                        if (tor.btih.equals(btih, ignoreCase = true))
-                            isCached = true
+                    // parse all the magnets found
+                    for (magnet in it.magnets) {
+                        val btih = magnetPattern.find(magnet)?.groupValues?.getOrNull(1)
+                        for (torrent in cache.cachedTorrents) {
+                            if (torrent.btih.equals(btih, ignoreCase = true)) {
+                                isCached = true
+                                break
+                            }
+                        }
+                        // stopping at first cache hit
+                        if (isCached) {
+                            break
+                        }
                     }
                 }
             }
