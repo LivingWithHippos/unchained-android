@@ -4,6 +4,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: "androidx.navigation.safeargs.kotlin"
 apply plugin: 'com.google.protobuf'
+apply plugin: 'kotlin-parcelize'
 
 protobuf {
     protoc {
