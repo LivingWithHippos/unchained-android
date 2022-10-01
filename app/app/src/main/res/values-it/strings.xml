@@ -419,4 +419,7 @@
     <string name="download_on_metered_connection">Download rinviato (connessione a consumo)</string>
     <string name="leechers">Leechers</string>
     <string name="size">Dimensione</string>
+    <string name="next">Successivo</string>
+    <string name="previous">Precedente</string>
+    <string name="pick_cache">Scegli cache</string>
 </resources>

@@ -105,5 +105,16 @@
             app:argType="android.net.Uri"
             app:nullable="true"
             android:defaultValue="@null" />
+        <action
+            android:id="@+id/action_newDownloadFragment_to_torrentProcessingFragment"
+            app:destination="@id/torrentProcessingFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/torrentProcessingFragment"
+        android:name="com.github.livingwithhippos.unchained.newdownload.view.TorrentProcessingFragment"
+        android:label="TorrentProcessingFragment" >
+        <argument
+            android:name="link"
+            app:argType="string" />
     </fragment>
 </navigation>

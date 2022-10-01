@@ -632,4 +632,12 @@
     <string name="download_on_metered_connection">Download delayed (metered connection)</string>
     <string name="leechers">Leechers</string>
     <string name="size">Size</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+    <string name="pick_cache">Pick Cache</string>
+    <string name="checking_cache">Checking Cache</string>
+    <string name="ready">Ready</string>
+    <string name="cache">Cache</string>
+    <string name="download_cache">Download Cache</string>
+    <string name="select_files">Select files</string>
 </resources>

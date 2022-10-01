@@ -113,6 +113,8 @@ class NewDownloadFragment : UnchainedFragment() {
             EventObserver { torrent ->
                 // new torrent item, alert the list fragment that it needs updating
                 activityViewModel.setListState(ListState.UpdateTorrent)
+                // check the id with /torrents/info/{id} to get the has, the check caching with
+                // /torrents/instantAvailability/{hash}
                 val action =
                     NewDownloadFragmentDirections.actionNewDownloadDestToTorrentDetailsFragment(
                         torrent.id
@@ -249,10 +251,14 @@ class NewDownloadFragment : UnchainedFragment() {
             if (authState is FSMAuthenticationState.AuthenticatedPrivateToken || authState is FSMAuthenticationState.AuthenticatedOpenToken) {
                 val link: String = binding.tiLink.text.toString().trim()
                 when {
-                    // this must be before the link.isWebUrl() check
+                    // this must be before the link.isWebUrl() check or it won't trigger
                     link.isTorrent() -> {
-                        viewModel.postMessage(getString(R.string.loading_torrent))
-                        enableButtons(binding, false)
+                        val action =
+                            NewDownloadFragmentDirections.actionNewDownloadFragmentToTorrentProcessingFragment(link)
+                        findNavController().navigate(action)
+
+                        // viewModel.postMessage(getString(R.string.loading_torrent))
+                        // enableButtons(binding, false)
                         /**
                          * DownloadManager does not support insecure (https) links anymore
                          * to add support for it, follow these instructions
@@ -263,7 +269,7 @@ class NewDownloadFragment : UnchainedFragment() {
                          ) else link
                          downloadTorrent(Uri.parse(secureLink))
                          */
-                        downloadTorrentToCache(binding, link)
+                        // downloadTorrentToCache(binding, link)
                     }
                     link.isWebUrl() -> {
                         viewModel.postMessage(getString(R.string.loading_host_link))
@@ -284,9 +290,12 @@ class NewDownloadFragment : UnchainedFragment() {
                         )
                     }
                     link.isMagnet() -> {
-                        viewModel.postMessage(getString(R.string.loading_magnet_link))
-                        enableButtons(binding, false)
-                        viewModel.fetchAddedMagnet(link)
+                        val action =
+                            NewDownloadFragmentDirections.actionNewDownloadFragmentToTorrentProcessingFragment(link)
+                        findNavController().navigate(action)
+                        //viewModel.postMessage(getString(R.string.loading_magnet_link))
+                        //enableButtons(binding, false)
+                        //viewModel.fetchAddedMagnet(link)
                     }
                     link.isBlank() -> {
                         viewModel.postMessage(getString(R.string.please_insert_url))
@@ -295,6 +304,7 @@ class NewDownloadFragment : UnchainedFragment() {
                         viewModel.unrestrictContainer(link)
                     }
                     link.split("\n").firstOrNull()?.trim()?.isWebUrl() == true -> {
+                        // todo: support list of magnets/torrents
                         val splitLinks: List<String> =
                             link.split("\n").map { it.trim() }.filter { it.length > 10 }
                         viewModel.postMessage(getString(R.string.loading))
@@ -392,6 +402,7 @@ class NewDownloadFragment : UnchainedFragment() {
                             loadContainer(binding, link)
                         }
                         link.path?.endsWith(".torrent", ignoreCase = true) == true -> {
+                            // todo: move to TorrentProcessingFragment
                             loadTorrent(binding, link)
                         }
                         else -> Timber.e("Unsupported content/file passed to NewDownloadFragment")
