@@ -22,6 +22,7 @@ class LinkItemAdapter(listener: LinkItemListener) :
 
 interface LinkItemListener {
     fun onClick(item: LinkItem)
+    fun onLongClick(item: LinkItem): Boolean
 }
 
 data class LinkItem(

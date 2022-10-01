@@ -17,7 +17,9 @@ import com.github.livingwithhippos.unchained.search.model.LinkItemAdapter
 import com.github.livingwithhippos.unchained.search.model.LinkItemListener
 import com.github.livingwithhippos.unchained.search.viewmodel.SearchViewModel
 import com.github.livingwithhippos.unchained.utilities.MAGNET_PATTERN
+import com.github.livingwithhippos.unchained.utilities.extension.copyToClipboard
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
+import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -35,12 +37,13 @@ class SearchItemFragment : UnchainedFragment(), LinkItemListener {
     ): View {
         val binding = FragmentSearchItemBinding.inflate(inflater, container, false)
 
-        val item: ScrapedItem = args.item
-        setup(binding, item)
+        setup(binding)
         return binding.root
     }
 
-    private fun setup(binding: FragmentSearchItemBinding, item: ScrapedItem) {
+    private fun setup(binding: FragmentSearchItemBinding) {
+        val item: ScrapedItem = args.item
+
         binding.item = item
 
         binding.linkCaption.setOnClickListener {
@@ -74,5 +77,11 @@ class SearchItemFragment : UnchainedFragment(), LinkItemListener {
 
     override fun onClick(item: LinkItem) {
         activityViewModel.downloadSupportedLink(item.link)
+    }
+
+    override fun onLongClick(item: LinkItem): Boolean {
+        copyToClipboard(getString(R.string.link), item.link)
+        context?.showToast(R.string.link_copied)
+        return true
     }
 }
