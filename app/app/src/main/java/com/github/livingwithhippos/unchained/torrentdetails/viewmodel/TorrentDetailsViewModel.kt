@@ -38,6 +38,7 @@ class TorrentDetailsViewModel @Inject constructor(
             val torrentData =
                 torrentsRepository.getTorrentInfo(token, torrentID)
             torrentLiveData.postValue(Event(torrentData))
+            // todo: remove this for files selection
             if (torrentData?.status == "waiting_files_selection")
                 torrentsRepository.selectFiles(token, torrentID)
         }

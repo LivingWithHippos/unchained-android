@@ -107,6 +107,7 @@ object APP_LINK {
 }
 
 object PreferenceKeys {
+    // todo: move all keys here
     object DownloadManager {
         const val KEY =  "download_manager"
         const val SYSTEM = "download_manager_system"
