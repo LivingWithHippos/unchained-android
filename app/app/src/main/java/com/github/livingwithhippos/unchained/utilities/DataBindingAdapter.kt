@@ -20,7 +20,7 @@ import com.github.livingwithhippos.unchained.BR
  */
 abstract class DataBindingAdapter<T, U>(
     diffCallback: DiffUtil.ItemCallback<T>,
-    val listener: U? = null
+    val listener: U
 ) :
     ListAdapter<T, DataBindingViewHolder<T, U>>(diffCallback) {
 
@@ -31,8 +31,9 @@ abstract class DataBindingAdapter<T, U>(
         return DataBindingViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: DataBindingViewHolder<T, U>, position: Int) =
+    override fun onBindViewHolder(holder: DataBindingViewHolder<T, U>, position: Int) {
         holder.bind(getItem(position), listener)
+    }
 }
 
 /**
@@ -66,6 +67,47 @@ abstract class DataBindingTrackedAdapter<T : Any, U>(
     }
 }
 
+class DataBindingViewHolder<T, U>(private val binding: ViewDataBinding) :
+    RecyclerView.ViewHolder(binding.root) {
+
+    fun bind(item: T, listener: U?) {
+        binding.setVariable(BR.item, item)
+        if (listener != null)
+            binding.setVariable(BR.listener, listener)
+        binding.executePendingBindings()
+    }
+}
+
+/**
+ * A [DataBindingViewHolder] subclass.
+ * Allows for a generic list of items with data binding without listeners
+ */
+abstract class DataBindingStaticAdapter<T>(
+    diffCallback: DiffUtil.ItemCallback<T>
+) :
+    ListAdapter<T, DataBindingStaticViewHolder<T>>(diffCallback) {
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DataBindingStaticViewHolder<T> {
+        val layoutInflater = LayoutInflater.from(parent.context)
+        val binding =
+            DataBindingUtil.inflate<ViewDataBinding>(layoutInflater, viewType, parent, false)
+        return DataBindingStaticViewHolder(binding)
+    }
+
+    override fun onBindViewHolder(holder: DataBindingStaticViewHolder<T>, position: Int) {
+        holder.bind(getItem(position))
+    }
+}
+
+class DataBindingStaticViewHolder<T>(private val binding: ViewDataBinding) :
+    RecyclerView.ViewHolder(binding.root) {
+
+    fun bind(item: T) {
+        binding.setVariable(BR.item, item)
+        binding.executePendingBindings()
+    }
+}
+
 /**
  * A [PagingDataAdapter] subclass.
  * Allows for a generic list of items with data binding and Paging support and an optional listener.
@@ -91,16 +133,6 @@ abstract class DataBindingPagingAdapter<T : Any, U>(
     }
 }
 
-class DataBindingViewHolder<T, U>(private val binding: ViewDataBinding) :
-    RecyclerView.ViewHolder(binding.root) {
-
-    fun bind(item: T, listener: U?) {
-        binding.setVariable(BR.item, item)
-        if (listener != null)
-            binding.setVariable(BR.listener, listener)
-        binding.executePendingBindings()
-    }
-}
 
 /**
  * A [PagingDataAdapter] subclass.
