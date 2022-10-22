@@ -20,6 +20,7 @@ versions.junit = "4.13.2"
 versions.kotlin = "1.7.20"
 versions.ktlint = "11.0.0"
 versions.lifecycle = "2.5.1"
+versions.lottie = "5.2.0"
 versions.material = "1.6.1"
 versions.modernstorage = "1.0.0-alpha06"
 versions.moshi = "1.14.0"
@@ -146,6 +147,12 @@ lifecycle.viewmodel_savedstate = "androidx.lifecycle:lifecycle-viewmodel-savedst
 lifecycle.viewmodel_ktx = "androidx.lifecycle:lifecycle-viewmodel-ktx:$versions.lifecycle"
 lifecycle.livedata_ktx = "androidx.lifecycle:lifecycle-livedata-ktx:$versions.lifecycle"
 deps.lifecycle = lifecycle
+
+def lottie = [:]
+lottie.package = "com.airbnb.android"
+lottie.core = "$lottie.package:lottie:$versions.lottie"
+lottie.compose = "$lottie.package:lottie-compose:$versions.lottie"
+deps.lottie = lottie
 
 deps.material = "com.google.android.material:material:$versions.material"
 
