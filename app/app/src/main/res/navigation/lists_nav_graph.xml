@@ -112,7 +112,7 @@
     <fragment
         android:id="@+id/torrentProcessingFragment"
         android:name="com.github.livingwithhippos.unchained.newdownload.view.TorrentProcessingFragment"
-        android:label="TorrentProcessingFragment" >
+        android:label="@string/cache">
         <argument
             android:name="link"
             app:argType="string" />
