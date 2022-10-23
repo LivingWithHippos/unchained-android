@@ -4,21 +4,31 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
+import androidx.navigation.navGraphViewModels
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
+import com.github.livingwithhippos.unchained.data.model.cache.InstantAvailability
 import com.github.livingwithhippos.unchained.databinding.FragmentSearchItemBinding
 import com.github.livingwithhippos.unchained.plugins.model.ScrapedItem
 import com.github.livingwithhippos.unchained.search.model.LinkItem
 import com.github.livingwithhippos.unchained.search.model.LinkItemAdapter
 import com.github.livingwithhippos.unchained.search.model.LinkItemListener
+import com.github.livingwithhippos.unchained.search.viewmodel.SearchViewModel
+import com.github.livingwithhippos.unchained.utilities.MAGNET_PATTERN
+import com.github.livingwithhippos.unchained.utilities.extension.copyToClipboard
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
+import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 @AndroidEntryPoint
 class SearchItemFragment : UnchainedFragment(), LinkItemListener {
 
     private val args: SearchItemFragmentArgs by navArgs()
+
+    private val magnetPattern = Regex(MAGNET_PATTERN, RegexOption.IGNORE_CASE)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -33,6 +43,7 @@ class SearchItemFragment : UnchainedFragment(), LinkItemListener {
 
     private fun setup(binding: FragmentSearchItemBinding) {
         val item: ScrapedItem = args.item
+
         binding.item = item
 
         binding.linkCaption.setOnClickListener {
@@ -44,8 +55,16 @@ class SearchItemFragment : UnchainedFragment(), LinkItemListener {
         binding.linkList.adapter = adapter
 
         val links = mutableListOf<LinkItem>()
+
+        val cache: List<String> = activityViewModel.cacheLiveData.value?.cachedTorrents?.map {
+            it.btih
+        } ?: emptyList()
         item.magnets.forEach {
-            links.add(LinkItem(getString(R.string.magnet), it.substringBefore("&"), it))
+            val btih = magnetPattern.find(it)?.groupValues?.getOrNull(1)?.lowercase()
+            if (btih != null && cache.contains(btih))
+                links.add(LinkItem(getString(R.string.magnet), it.substringBefore("&"), it,true))
+            else
+                links.add(LinkItem(getString(R.string.magnet), it.substringBefore("&"), it))
         }
         item.torrents.forEach {
             links.add(LinkItem(getString(R.string.torrent), it, it))
@@ -58,5 +77,11 @@ class SearchItemFragment : UnchainedFragment(), LinkItemListener {
 
     override fun onClick(item: LinkItem) {
         activityViewModel.downloadSupportedLink(item.link)
+    }
+
+    override fun onLongClick(item: LinkItem): Boolean {
+        copyToClipboard(getString(R.string.link), item.link)
+        context?.showToast(R.string.link_copied)
+        return true
     }
 }

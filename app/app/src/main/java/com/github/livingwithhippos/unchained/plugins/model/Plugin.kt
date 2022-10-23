@@ -5,6 +5,7 @@ import android.os.Parcelable
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
+// todo: replace all the Parcelable with the kotlin library
 @JsonClass(generateAdapter = true)
 data class Plugin(
     @Json(name = "engine_version")

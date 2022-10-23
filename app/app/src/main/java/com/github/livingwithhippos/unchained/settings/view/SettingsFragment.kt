@@ -2,6 +2,8 @@ package com.github.livingwithhippos.unchained.settings.view
 
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.text.method.DigitsKeyListener
 import android.view.LayoutInflater
@@ -149,9 +151,13 @@ class SettingsFragment : PreferenceFragmentCompat() {
         }
     }
 
+    @Suppress("DEPRECATION")
     private fun setupVersion() {
-
-        val pi = context?.packageManager?.getPackageInfo(requireContext().packageName, 0)
+        val pi = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            context?.packageManager?.getPackageInfo(requireContext().packageName, PackageManager.PackageInfoFlags.of(0))
+        } else {
+            context?.packageManager?.getPackageInfo(requireContext().packageName, 0)
+        }
         val version = pi?.versionName
         val versionPreference = findPreference<Preference>("app_version")
         versionPreference?.summary = version

@@ -400,7 +400,7 @@
     <string name="no_supported_player_found">Aucune application supportant ce média n\'a été trouvée. Essayez avec le bouton de partage.</string>
     <string name="browser_not_found">Aucune application de navigateur trouvée</string>
     <string name="directory_picked">Répertoire sauvegardé. Recommencez le téléchargement.</string>
-    <string name="permission_granted">Permissions accordées, recommencez le téléchargement.</string>
+    <string name="download_permission_granted">Permissions accordées, recommencez le téléchargement.</string>
     <string name="stop">Arrêter</string>
     <string name="download_in_progress_format">Téléchargement - %1$d%%</string>
     <string name="stopped">Stoppé</string>
@@ -409,6 +409,8 @@
     <string name="download_channel_description">Canal de notification de l\'état des téléchargements</string>
     <string name="download_queued">Téléchargement en attente, vérifiez vos notifications</string>
     <string name="download_queued_error">Erreur de mise en file d\'attente du téléchargement, vérifiez les permissions</string>
+    <string name="selecting_all_files">Sélection de tous les fichiers, veuillez patienter…</string>
+    <string name="selecting_picked_cache">Sélection de %1$d fichiers depuis le cache %2$d, veuillez patienter…</string>
     <string name="download_manager_system">Gestionnaire de téléchargement par défaut</string>
     <string name="pick_download_folder">Choisissez le dossier de téléchargement</string>
     <string name="pick_download_folder_description">Choisissez un dossier pour les téléchargements. Non disponible pour le gestionnaire de téléchargement du système par défaut</string>
@@ -421,4 +423,23 @@
     <string name="unmetered_downloads">Téléchargements sur des connexions non mesurées</string>
     <string name="unmetered_downloads_description">Lancez les téléchargements uniquement sur une connexion non mesurée (comme le wi-fi)</string>
     <string name="download_on_metered_connection">Téléchargement retardé (connexion avec compteur)</string>
+    <string name="leechers">Leechers</string>
+    <string name="size">Taille</string>
+    <string name="next">Suivant</string>
+    <string name="previous">Précédent</string>
+    <string name="pick_cache">Sélection du cache</string>
+    <string name="checking_cache">Vérification du cache</string>
+    <string name="ready">Prêt</string>
+    <string name="cache">Cache</string>
+    <string name="select_files">Sélectionner les fichiers</string>
+    <string name="cache_format">Cache #%1$d</string>
+    <string name="total_files">Total des fichiers</string>
+    <string name="total_size">Taille totale</string>
+    <string name="loading_torrent_info">Chargement des fichiers torrent et du cache. Utilisez le bouton \"Télécharger tout\" en bas si vous voulez télécharger tout le contenu.</string>
+    <string name="cache_missing">Aucun cache trouvé</string>
+    <string name="download_selected_cache">Télécharger le cache sélectionné</string>
+    <string name="download_selected_files">Télécharger les fichiers sélectionnés</string>
+    <string name="pass_to_download">Passer aux téléchargements</string>
+    <string name="notifications_permission_denied">Permission refusée. L\'application peut avoir des problèmes d\'affichage des notifications.</string>
+    <string name="notifications_permission_granted">Autorisation de notification accordée</string>
 </resources>

@@ -340,6 +340,7 @@
     <string name="doh_description_message">DNS over HTTPS è un protocollo utilizzato per aumentare la privacy ed evitare l\'intercettazione delle richieste DNS. Se il sito web di un plugin è bloccato a livello di DNS, abilitare DoH può aiutare a bypassarlo. L\'unico provider DoH disponibile al momento è Google. Questa opzione è disabilitata di default e può essere cambiata in qualsiasi momento dal menu delle impostazioni. Questa funzione può causare dei crash.</string>
     <string name="delete_item_title_format">Elimina %s</string>
     <string name="download_selected">Scarica selezione</string>
+    <string name="download_selected_files">Scarica files selezionati</string>
     <string name="delete_selected">Cancella selezione</string>
     <string name="share_selected">Condividi selezione</string>
     <string name="show_folder_filters">Mostra filtri in cartelle</string>
@@ -396,7 +397,7 @@
     <string name="no_supported_player_found">Nessuna app con supporto media trovata. Prova con il bottone condividi.</string>
     <string name="browser_not_found">Nessuna app browser trovata</string>
     <string name="directory_picked">Cartella impostata. Riavvia il download.</string>
-    <string name="permission_granted">Permessi accordati. Riavvia il download.</string>
+    <string name="download_permission_granted">Permessi accordati. Riavvia il download.</string>
     <string name="stop">Stop</string>
     <string name="download_in_progress_format">Downloading - %1$d%%</string>
     <string name="stopped">Fermato</string>
@@ -405,6 +406,8 @@
     <string name="download_channel_description">Canale notifiche per stato download</string>
     <string name="download_queued">Download in coda, controlla le notifiche</string>
     <string name="download_queued_error">Errore avvio download, controlla i permessi</string>
+    <string name="selecting_all_files">Selezionando tutti i files, attendi…</string>
+    <string name="selecting_picked_cache">Selezionando %1$d files dalla cache %2$d, attendi…</string>
     <string name="download_manager_system">Gestore di download predefinito</string>
     <string name="pick_download_folder">Scegli la cartella di download</string>
     <string name="pick_download_folder_description">Scegli una cartella per i download. Non disponibile per il gestore di downlaod predefinito del sistema</string>
@@ -417,4 +420,22 @@
     <string name="unmetered_downloads">Download su connessioni non a consumo</string>
     <string name="unmetered_downloads_description">Avvia i download solo con connessioni non a consumo (come il wi-fi)</string>
     <string name="download_on_metered_connection">Download rinviato (connessione a consumo)</string>
+    <string name="leechers">Leechers</string>
+    <string name="size">Dimensione</string>
+    <string name="next">Successivo</string>
+    <string name="previous">Precedente</string>
+    <string name="pick_cache">Scegli cache</string>
+    <string name="checking_cache">Controllo disponibilità cache</string>
+    <string name="ready">Pronto</string>
+    <string name="cache">Cache</string>
+    <string name="select_files">Seleziona files</string>
+    <string name="cache_format">Cache #%1$d</string>
+    <string name="total_files">Files totali</string>
+    <string name="total_size">Dimensione totale</string>
+    <string name="loading_torrent_info">Caricamento files torrent e cache. Usa scarica tutto sul bottone in basso se vuoi scaricare tutto il contenuto.</string>
+    <string name="cache_missing">Cache non trovata</string>
+    <string name="download_selected_cache">Scarica cache selezionata</string>
+    <string name="pass_to_download">Passa ai download</string>
+    <string name="notifications_permission_denied">Permesso negato. L\'app potrebbe avere dei problemi di notifiche.</string>
+    <string name="notifications_permission_granted">Permessi per notifiche concessi</string>
 </resources>

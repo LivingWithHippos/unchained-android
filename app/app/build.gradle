@@ -4,6 +4,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: "androidx.navigation.safeargs.kotlin"
 apply plugin: 'com.google.protobuf'
+apply plugin: 'kotlin-parcelize'
 
 protobuf {
     protoc {
@@ -35,12 +36,12 @@ if (apiPropertiesFile.exists()) {
 
 android {
 
-    compileSdk 32
+    compileSdk 33
 
     defaultConfig {
         applicationId "com.github.livingwithhippos.unchained"
         minSdk 22
-        targetSdk 32
+        targetSdk 33
         versionCode 32
         versionName "4.40.2-beta"
         // limit resources for a list of locales

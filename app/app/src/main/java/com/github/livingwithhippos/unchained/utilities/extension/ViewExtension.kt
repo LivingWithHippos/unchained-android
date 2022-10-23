@@ -21,11 +21,14 @@ import android.widget.AutoCompleteTextView
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.annotation.DrawableRes
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.viewpager2.widget.ViewPager2
 import com.github.livingwithhippos.unchained.R
+import com.github.livingwithhippos.unchained.utilities.extensionIconMap
 import com.google.android.material.progressindicator.BaseProgressIndicator
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.delay
@@ -199,6 +202,7 @@ fun TextView.setFileSize(size: Long) {
             R.string.file_size_format_gb,
             size.toFloat() / 1024 / 1024 / 1024
         )
+        // todo: shorten this
         else -> this.context.getString(R.string.size_error)
     }
 }
@@ -315,6 +319,15 @@ fun SwipeRefreshLayout.setRefreshThemeColor(themed: Boolean) {
     }
 }
 
+@BindingAdapter("mapDrawable")
+fun ImageView.setDrawableByExtension(fileName: String) {
+    val extension = fileName.substringAfterLast(".").lowercase()
+    if (extensionIconMap.containsKey(extension))
+        this.setImageResource(extensionIconMap.getValue(extension))
+    else
+        this.setImageResource(extensionIconMap.getValue("default"))
+}
+
 /**
  * hides the keyboard when called on a View
  *
@@ -325,4 +338,15 @@ fun View.hideKeyboard() {
             it.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
         inputMethodManager?.hideSoftInputFromWindow(this.windowToken, 0)
     }
+}
+
+/**
+ * Enable or disable user swiping
+ * defaults to false (disabled)
+ * todo: fix, it's throwing a java.lang.StackOverflowError when used
+ * @param enable
+ */
+@BindingAdapter("enableUserTouch")
+fun ViewPager2.enableUserInput(enable: Boolean?) {
+    this.enableUserInput(enable == true)
 }

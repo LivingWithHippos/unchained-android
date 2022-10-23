@@ -43,6 +43,30 @@ import com.squareup.moshi.JsonClass
 ]
 */
 
+/**
+ * Torrent item: this class is used for both the /torrents and /torrents/info/{id} endpoint
+ * even if the returned item are different. For example the info version returns the original file size
+ * and the selected files one, while the /torrents one returns only the original file size
+ * (even if the docs say otherwise)
+ *
+ * @property id
+ * @property filename
+ * @property originalFilename
+ * @property hash
+ * @property bytes
+ * @property originalBytes
+ * @property host
+ * @property split
+ * @property progress
+ * @property status
+ * @property added
+ * @property files
+ * @property links
+ * @property ended
+ * @property speed
+ * @property seeders
+ * @constructor Create empty Torrent item
+ */
 @JsonClass(generateAdapter = true)
 data class TorrentItem(
     @Json(name = "id")
@@ -234,21 +258,3 @@ data class AvailableHost(
         }
     }
 }
-
-@JsonClass(generateAdapter = true)
-data class InstantAvailability(
-    val keys: Map<String, Any?>,
-)
-
-@JsonClass(generateAdapter = true)
-data class RdCache(
-    val rd: List<Map<String, TorrentFile>>,
-)
-
-@JsonClass(generateAdapter = true)
-data class TorrentFile(
-    @Json(name = "filename")
-    val fileName: String,
-    @Json(name = "filesize")
-    val fileSize: Long
-)

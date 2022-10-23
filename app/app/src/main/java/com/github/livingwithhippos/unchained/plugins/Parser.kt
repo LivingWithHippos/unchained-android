@@ -332,14 +332,14 @@ class Parser(
 
         var size: String? = null
         regexes.sizeRegex?.regexps?.forEach { regex ->
-            val sizeSeeders = parseSingle(
+            val currSize = parseSingle(
                 regex,
                 source,
                 baseUrl
             )
 
-            if (!sizeSeeders.isNullOrBlank()) {
-                size = sizeSeeders
+            if (!currSize.isNullOrBlank()) {
+                size = currSize
                 return@forEach
             }
         }

@@ -1,6 +1,7 @@
 package com.github.livingwithhippos.unchained.data.repository
 
 import android.util.Base64
+import com.github.livingwithhippos.unchained.data.local.ProtoStore
 import com.github.livingwithhippos.unchained.data.model.KodiGenericResponse
 import com.github.livingwithhippos.unchained.data.model.KodiItem
 import com.github.livingwithhippos.unchained.data.model.KodiParams
@@ -17,8 +18,9 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class KodiRepository @Inject constructor(
+    private val protoStore: ProtoStore,
     @ClassicClient private val client: OkHttpClient
-) : BaseRepository() {
+) : BaseRepository(protoStore) {
 
     private fun provideRetrofit(baseUrl: String): Retrofit {
         return Retrofit.Builder()

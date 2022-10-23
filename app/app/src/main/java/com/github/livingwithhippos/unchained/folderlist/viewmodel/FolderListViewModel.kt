@@ -26,7 +26,6 @@ class FolderListViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val preferences: SharedPreferences,
     private val unrestrictRepository: UnrestrictRepository,
-    private val protoStore: ProtoStore,
     private val downloadRepository: DownloadRepository
 ) : ViewModel() {
 
@@ -47,10 +46,9 @@ class FolderListViewModel @Inject constructor(
 
     fun retrieveFolderFileList(folderLink: String) {
         viewModelScope.launch {
-            val token = protoStore.getCredentials().accessToken
 
             val filesList: EitherResult<UnchainedNetworkException, List<String>> =
-                unrestrictRepository.getEitherFolderLinks(token, folderLink)
+                unrestrictRepository.getEitherFolderLinks(folderLink)
 
             when (filesList) {
                 is EitherResult.Failure -> errorsLiveData.postEvent(filesList.failure)
@@ -62,7 +60,6 @@ class FolderListViewModel @Inject constructor(
     fun retrieveFiles(links: List<String>) {
         viewModelScope.launch {
 
-            val token = protoStore.getCredentials().accessToken
             // either first time or there were some errors, re-download
             if (links.size != getRetrievedLinks()) {
 
@@ -71,7 +68,7 @@ class FolderListViewModel @Inject constructor(
                 links.forEachIndexed { index, link ->
                     when (
                         val file =
-                            unrestrictRepository.getEitherUnrestrictedLink(token, link)
+                            unrestrictRepository.getEitherUnrestrictedLink(link)
                     ) {
                         is EitherResult.Failure -> {
                             errorsLiveData.postEvent(file.failure)
@@ -104,9 +101,8 @@ class FolderListViewModel @Inject constructor(
 
     fun deleteDownloadList(downloads: List<DownloadItem>) {
         viewModelScope.launch {
-            val token = protoStore.getCredentials().accessToken
             downloads.forEach {
-                val deleted = downloadRepository.deleteDownload(token, it.id)
+                val deleted = downloadRepository.deleteDownload(it.id)
                 if (deleted != null)
                     deletedDownloadLiveData.postEvent(it)
             }

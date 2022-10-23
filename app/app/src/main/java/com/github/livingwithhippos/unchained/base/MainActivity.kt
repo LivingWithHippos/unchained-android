@@ -92,6 +92,7 @@ class MainActivity : AppCompatActivity() {
         super.onStop()
     }
 
+    @Suppress("DEPRECATION")
     @SuppressLint("PackageManagerGetSignatures")
     private fun getApplicationSignatures(packageName: String = getPackageName()): List<String> {
         val signatureList: List<String>
@@ -163,14 +164,26 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private val requestPermissionLauncher =
+    private val requestDownloadPermissionLauncher =
         registerForActivityResult(
             ActivityResultContracts.RequestPermission()
         ) { isGranted: Boolean ->
             if (isGranted) {
-                applicationContext.showToast(R.string.permission_granted)
+                applicationContext.showToast(R.string.download_permission_granted)
             } else {
                 applicationContext.showToast(R.string.needs_download_permission)
+            }
+        }
+
+
+    private val requestNotificationPermissionLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted: Boolean ->
+            if (isGranted) {
+                applicationContext.showToast(R.string.notifications_permission_granted)
+            } else {
+                applicationContext.showToast(R.string.notifications_permission_denied)
             }
         }
 
@@ -422,9 +435,16 @@ class MainActivity : AppCompatActivity() {
                     pickDirectoryLauncher.launch(null)
                 }
                 MainActivityMessage.RequireDownloadPermissions -> {
-                    requestPermissionLauncher.launch(
+                    requestDownloadPermissionLauncher.launch(
                         Manifest.permission.WRITE_EXTERNAL_STORAGE
                     )
+                }
+                MainActivityMessage.RequireNotificationPermissions -> {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        requestNotificationPermissionLauncher.launch(
+                            Manifest.permission.POST_NOTIFICATIONS
+                        )
+                    }
                 }
                 is MainActivityMessage.MultipleDownloadsEnqueued -> {
 
@@ -438,7 +458,7 @@ class MainActivity : AppCompatActivity() {
                         viewModel.requireDownloadPermissions()
                     } else {
 
-                        when (val dm = viewModel.getDownloadManagerPreference()) {
+                        when (viewModel.getDownloadManagerPreference()) {
                             PreferenceKeys.DownloadManager.SYSTEM -> {
                                 val manager =
                                     applicationContext.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
@@ -796,6 +816,29 @@ class MainActivity : AppCompatActivity() {
             )
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
+
+        binding.bottomNavView.setOnItemReselectedListener {
+            if (it.isEnabled) {
+                val currentDestination = navController.currentDestination
+
+                when(it.itemId) {
+                    R.id.navigation_home -> {
+                        // do nothing. There is no other acceptable fragment
+                    }
+                    // if these are enabled I should be logged in already
+                    R.id.navigation_lists -> {
+                        if (currentDestination?.id != R.id.list_tabs_dest) {
+                            navController.popBackStack(R.id.list_tabs_dest, false)
+                        }
+                    }
+                    R.id.navigation_search -> {
+                        if (currentDestination?.id != R.id.search_dest) {
+                            navController.popBackStack(R.id.search_dest, false)
+                        }
+                    }
+                }
+            }
+        }
     }
 
     override fun onBackPressed() {

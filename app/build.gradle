@@ -3,7 +3,7 @@ buildscript {
     apply from: 'versions.gradle'
 
     ext {
-        ktlint_version = '10.3.0'
+        ktlint_version = '11.0.0'
         versions_plugin_version = '0.42.0'
     }
 
@@ -27,6 +27,7 @@ buildscript {
 plugins {
     id "org.jlleitschuh.gradle.ktlint" version "$ktlint_version"
     id "com.github.ben-manes.versions" version "$versions_plugin_version"
+    id 'org.jetbrains.kotlin.android' version '1.7.10' apply false
 }
 
 allprojects {

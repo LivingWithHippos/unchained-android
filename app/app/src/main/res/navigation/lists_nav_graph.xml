@@ -32,6 +32,9 @@
         <action
             android:id="@+id/action_list_tabs_dest_to_newDownloadFragment"
             app:destination="@id/newDownloadFragment" />
+        <action
+            android:id="@+id/action_list_tabs_dest_to_torrentProcessingFragment"
+            app:destination="@id/torrentProcessingFragment" />
     </fragment>
 
     <fragment
@@ -39,9 +42,6 @@
         android:name="com.github.livingwithhippos.unchained.torrentdetails.view.TorrentDetailsFragment"
         android:label="@string/torrent"
         tools:layout="@layout/fragment_torrent_details">
-        <argument
-            android:name="torrentID"
-            app:argType="string" />
         <action
             android:id="@+id/action_torrentDetails_to_download_details_dest"
             app:destination="@id/download_details_dest"
@@ -49,10 +49,16 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right"
-            app:popUpTo="@id/list_tabs_dest" />
+            app:popUpTo="@id/list_tabs_dest"
+            />
         <action
             android:id="@+id/action_torrent_details_to_torrent_folder"
-            app:destination="@id/folderListFragment" />
+            app:destination="@id/folderListFragment"
+            app:popUpTo="@id/list_tabs_dest"
+            />
+        <argument
+            android:name="item"
+            app:argType="com.github.livingwithhippos.unchained.data.model.TorrentItem" />
     </fragment>
     <fragment
         android:id="@+id/folderListFragment"
@@ -83,7 +89,8 @@
         <action
             android:id="@+id/action_new_download_dest_to_folderListFragment"
             app:destination="@id/folderListFragment"
-            app:popUpTo="@id/list_tabs_dest" />
+            app:popUpTo="@id/list_tabs_dest"
+            />
         <action
             android:id="@+id/actionUnrestrictDownloadToDetailsFragment"
             app:destination="@id/download_details_dest"
@@ -91,7 +98,8 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right"
-            app:popUpTo="@id/list_tabs_dest" />
+            app:popUpTo="@id/list_tabs_dest"
+            />
         <action
             android:id="@+id/action_new_download_dest_to_torrentDetailsFragment"
             app:destination="@id/torrent_details_dest"
@@ -99,11 +107,38 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right"
-            app:popUpTo="@id/list_tabs_dest" />
+            app:popUpTo="@id/list_tabs_dest"
+            />
         <argument
             android:name="externalUri"
             app:argType="android.net.Uri"
             app:nullable="true"
             android:defaultValue="@null" />
+        <action
+            android:id="@+id/action_newDownloadFragment_to_torrentProcessingFragment"
+            app:destination="@id/torrentProcessingFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/torrentProcessingFragment"
+        android:name="com.github.livingwithhippos.unchained.newdownload.view.TorrentProcessingFragment"
+        android:label="@string/torrent"
+        tools:layout="@layout/fragment_torrent_processing">
+        <argument
+            android:name="link"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="@null"
+            />
+        <action
+            android:id="@+id/action_torrentProcessingFragment_to_torrent_details_dest"
+            app:destination="@id/torrent_details_dest"
+            app:popUpTo="@id/list_tabs_dest"
+            />
+        <argument
+            android:name="torrentID"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="@null"
+            />
     </fragment>
 </navigation>

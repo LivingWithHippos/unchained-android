@@ -612,7 +612,7 @@
     <string name="no_supported_player_found">No app supporting this media was found. Try with the share button.</string>
     <string name="browser_not_found">No browser app found</string>
     <string name="directory_picked">Directory saved. Start the download again.</string>
-    <string name="permission_granted">Permissions granted, Start the download again.</string>
+    <string name="download_permission_granted">Permissions granted, Start the download again.</string>
     <string name="stop">Stop</string>
     <string name="stopped">Stopped</string>
     <string name="paused">Paused</string>
@@ -630,4 +630,25 @@
     <string name="unmetered_downloads">Downloads on unmetered connections</string>
     <string name="unmetered_downloads_description">Start downloads only on unmetered connection (such as wi-fi)</string>
     <string name="download_on_metered_connection">Download delayed (metered connection)</string>
+    <string name="leechers">Leechers</string>
+    <string name="size">Size</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+    <string name="pick_cache">Pick Cache</string>
+    <string name="checking_cache">Checking Cache</string>
+    <string name="ready">Ready</string>
+    <string name="cache">Cache</string>
+    <string name="download_selected_cache">Download Selected Cache</string>
+    <string name="select_files">Select files</string>
+    <string name="cache_format">Cache #%1$d</string>
+    <string name="total_files">Total files</string>
+    <string name="total_size">Total size</string>
+    <string name="loading_torrent_info">Loading torrent files and cache. Use the download all button on the bottom if you want to download all the content.</string>
+    <string name="cache_missing">No cache found</string>
+    <string name="selecting_all_files">Selecting all files, please wait…</string>
+    <string name="selecting_picked_cache">Selecting %1$d files from cache %2$d, please wait…</string>
+    <string name="download_selected_files">Download selected files</string>
+    <string name="pass_to_download">Pass to downloads</string>
+    <string name="notifications_permission_denied">Permission denied. The app may have issue displaying notifications.</string>
+    <string name="notifications_permission_granted">Notifications permission granted</string>
 </resources>

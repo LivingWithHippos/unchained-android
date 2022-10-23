@@ -1,10 +1,11 @@
 package com.github.livingwithhippos.unchained.data.repository
 
+import com.github.livingwithhippos.unchained.data.local.ProtoStore
 import com.github.livingwithhippos.unchained.data.model.AvailableHost
-import com.github.livingwithhippos.unchained.data.model.RdCache
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkException
 import com.github.livingwithhippos.unchained.data.model.UploadedTorrent
+import com.github.livingwithhippos.unchained.data.model.cache.InstantAvailability
 import com.github.livingwithhippos.unchained.data.remote.TorrentApiHelper
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -13,10 +14,14 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import timber.log.Timber
 import javax.inject.Inject
 
-class TorrentsRepository @Inject constructor(private val torrentApiHelper: TorrentApiHelper) :
-    BaseRepository() {
+class TorrentsRepository @Inject constructor(
+    private val protoStore: ProtoStore,
+    private val torrentApiHelper: TorrentApiHelper
+) :
+    BaseRepository(protoStore) {
 
-    suspend fun getAvailableHosts(token: String): List<AvailableHost>? {
+    suspend fun getAvailableHosts(): List<AvailableHost>? {
+        val token = getToken()
         val hostResponse: List<AvailableHost>? = safeApiCall(
             call = { torrentApiHelper.getAvailableHosts(token = "Bearer $token") },
             errorMessage = "Error Retrieving Available Hosts"
@@ -26,9 +31,9 @@ class TorrentsRepository @Inject constructor(private val torrentApiHelper: Torre
     }
 
     suspend fun getTorrentInfo(
-        token: String,
         id: String
     ): TorrentItem? {
+        val token = getToken()
         val torrentResponse: TorrentItem? = safeApiCall(
             call = {
                 torrentApiHelper.getTorrentInfo(
@@ -43,10 +48,10 @@ class TorrentsRepository @Inject constructor(private val torrentApiHelper: Torre
     }
 
     suspend fun addTorrent(
-        token: String,
         binaryTorrent: ByteArray,
         host: String
     ): EitherResult<UnchainedNetworkException, UploadedTorrent> {
+        val token = getToken()
 
         val requestBody: RequestBody = binaryTorrent.toRequestBody(
             "application/octet-stream".toMediaTypeOrNull(),
@@ -69,10 +74,10 @@ class TorrentsRepository @Inject constructor(private val torrentApiHelper: Torre
     }
 
     suspend fun addMagnet(
-        token: String,
         magnet: String,
         host: String
     ): EitherResult<UnchainedNetworkException, UploadedTorrent> {
+        val token = getToken()
         val torrentResponse = eitherApiResult(
             call = {
                 torrentApiHelper.addMagnet(
@@ -88,12 +93,12 @@ class TorrentsRepository @Inject constructor(private val torrentApiHelper: Torre
     }
 
     suspend fun getTorrentsList(
-        token: String,
         offset: Int? = null,
         page: Int? = 1,
         limit: Int? = 50,
         filter: String? = null
     ): List<TorrentItem> {
+        val token = getToken()
 
         val torrentsResponse: List<TorrentItem>? = safeApiCall(
             call = {
@@ -112,14 +117,14 @@ class TorrentsRepository @Inject constructor(private val torrentApiHelper: Torre
     }
 
     suspend fun selectFiles(
-        token: String,
         id: String,
         files: String = "all"
-    ) {
+    ): EitherResult<UnchainedNetworkException, Unit> {
+        val token = getToken()
 
         Timber.d("Selecting files for torrent: $id")
         // this call has no return type
-        safeApiCall(
+        val response = eitherApiResult(
             call = {
                 torrentApiHelper.selectFiles(
                     token = "Bearer $token",
@@ -129,12 +134,14 @@ class TorrentsRepository @Inject constructor(private val torrentApiHelper: Torre
             },
             errorMessage = "Error Selecting Torrent Files"
         )
+
+        return response
     }
 
     suspend fun deleteTorrent(
-        token: String,
         id: String
     ): EitherResult<UnchainedNetworkException, Unit> {
+        val token = getToken()
 
         val response = eitherApiResult(
             call = {
@@ -150,9 +157,9 @@ class TorrentsRepository @Inject constructor(private val torrentApiHelper: Torre
     }
 
     suspend fun getInstantAvailability(
-        token: String,
         url: String
-    ): EitherResult<UnchainedNetworkException, Map<String, RdCache>> {
+    ): EitherResult<UnchainedNetworkException, InstantAvailability> {
+        val token = getToken()
 
         val response = eitherApiResult(
             call = {

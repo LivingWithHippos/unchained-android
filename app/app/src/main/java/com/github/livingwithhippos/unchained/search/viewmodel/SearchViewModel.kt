@@ -8,6 +8,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.livingwithhippos.unchained.data.local.ProtoStore
+import com.github.livingwithhippos.unchained.data.model.cache.InstantAvailability
 import com.github.livingwithhippos.unchained.data.repository.PluginRepository
 import com.github.livingwithhippos.unchained.data.repository.TorrentsRepository
 import com.github.livingwithhippos.unchained.folderlist.view.FolderListFragment
@@ -27,6 +28,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -44,11 +46,6 @@ class SearchViewModel @Inject constructor(
 
     val pluginLiveData = MutableLiveData<Pair<List<Plugin>, Int>>()
     private val parsingLiveData = MutableLiveData<ParserResult>()
-
-    private val _cacheLiveData = MutableLiveData<Set<String>>()
-    val cacheLiveData: LiveData<Set<String>> = _cacheLiveData
-
-    private val magnetPattern = Regex(MAGNET_PATTERN, RegexOption.IGNORE_CASE)
 
     fun completeSearch(
         query: String,
@@ -77,13 +74,12 @@ class SearchViewModel @Inject constructor(
                             setSearchResults(results)
                         }
                         is ParserResult.SearchStarted -> {
-                            clearCacheResults()
+                            setCacheResults(null)
                             clearSearchResults()
                             results.clear()
                             parsingLiveData.value = it
                         }
                         is ParserResult.SearchFinished -> {
-                            checkRDCache(results)
                             parsingLiveData.value = it
                         }
                         else -> parsingLiveData.value = it
@@ -94,37 +90,6 @@ class SearchViewModel @Inject constructor(
         } else {
             parsingLiveData.value = ParserResult.MissingPlugin
             return parsingLiveData
-        }
-    }
-
-    private fun checkRDCache(scrapedItems: List<ScrapedItem>) {
-        if (scrapedItems.isNotEmpty()) {
-            viewModelScope.launch {
-                val currentCache = mutableSetOf<String>()
-                val token = protoStore.getCredentials().accessToken
-                val builder = StringBuilder(BASE_URL)
-                builder.append(INSTANT_AVAILABILITY_ENDPOINT)
-                scrapedItems.forEach { item ->
-                    item.magnets.forEach { magnet ->
-                        val btih = magnetPattern.find(magnet)?.groupValues?.get(1)
-                        if (!btih.isNullOrBlank()) {
-                            builder.append("/")
-                            builder.append(btih)
-                        }
-                    }
-                }
-                if (builder.length > (BASE_URL.length + INSTANT_AVAILABILITY_ENDPOINT.length)) {
-                    val cache = torrentsRepository.getInstantAvailability(token, builder.toString())
-                    if (cache is EitherResult.Success) {
-                        if (cache.success.isNotEmpty()) {
-                            val cachedIDs: Set<String> = cache.success.keys.map { it.uppercase() }.toSet()
-                            currentCache.addAll(cachedIDs)
-                        }
-                    }
-                }
-                _cacheLiveData.postValue(currentCache)
-                setCacheResults(currentCache)
-            }
         }
     }
 
@@ -145,39 +110,20 @@ class SearchViewModel @Inject constructor(
         savedStateHandle[KEY_RESULTS] = results
     }
 
-    private fun appendSearchResults(results: List<ScrapedItem>) {
-        val newCache = mutableListOf<ScrapedItem>()
-        newCache.addAll(getSearchResults())
-        newCache.addAll(results)
-        savedStateHandle[KEY_RESULTS] = newCache
-    }
-
     private fun clearSearchResults() {
         savedStateHandle[KEY_RESULTS] = emptyList<ScrapedItem>()
     }
 
-    private fun setCacheResults(cache: Set<String>) {
+    private fun setCacheResults(cache: InstantAvailability?) {
         savedStateHandle[KEY_CACHE] = cache
     }
 
-    private fun appendCacheResults(cache: Set<String>) {
-        val newCache = mutableSetOf<String>()
-        newCache.addAll(getCacheResults())
-        newCache.addAll(cache)
-        // as Set<String> probably not necessary
-        savedStateHandle[KEY_CACHE] = newCache as Set<String>
-    }
-
-    fun getCacheResults(): Set<String> {
-        try {
-            return savedStateHandle.get<Set<String>>(KEY_CACHE) ?: emptySet()
+    fun getCacheResults(): InstantAvailability? {
+        return try {
+            savedStateHandle.get<InstantAvailability>(KEY_CACHE)
         } catch (e: java.lang.ClassCastException) {
-            return emptySet()
+            null
         }
-    }
-
-    private fun clearCacheResults() {
-        savedStateHandle[KEY_CACHE] = emptySet<String>()
     }
 
     fun getPlugins(): List<Plugin> {

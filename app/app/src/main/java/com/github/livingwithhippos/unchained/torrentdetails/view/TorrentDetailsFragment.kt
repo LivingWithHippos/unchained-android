@@ -13,7 +13,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.github.livingwithhippos.unchained.R
@@ -32,8 +31,6 @@ import com.github.livingwithhippos.unchained.utilities.extension.getApiErrorMess
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.github.livingwithhippos.unchained.utilities.loadingStatusList
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 /**
  * A simple [Fragment] subclass.
@@ -94,22 +91,11 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
         torrentBinding.statusTranslation = statusTranslation
         torrentBinding.listener = this
 
-        var firstTorrentStatus: String? = null
-
         viewModel.torrentLiveData.observe(
             viewLifecycleOwner,
             EventObserver {
                 it?.let { torrent ->
                     torrentBinding.torrent = torrent
-                    if (loadingStatusList.contains(torrent.status))
-                        fetchTorrent()
-                    // save the last retrieved status
-                    if (firstTorrentStatus == null)
-                        firstTorrentStatus = torrent.status
-                    // if the torrent wasn't initially in a downloaded status and reached the downloaded status un-restrict it
-                    // possibly let the user enable this from settings
-                    if (torrent.status == "downloaded" && firstTorrentStatus != "downloaded")
-                        torrentBinding.bDownload.performClick()
                 }
             }
         )
@@ -127,7 +113,7 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
 
         setFragmentResultListener("deleteActionKey") { _, bundle ->
             if (bundle.getBoolean("deleteConfirmation"))
-                viewModel.deleteTorrent(args.torrentID)
+                viewModel.deleteTorrent(args.item.id)
         }
 
         viewModel.downloadLiveData.observe(
@@ -166,17 +152,13 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
             }
         )
 
-        viewModel.fetchTorrentDetails(args.torrentID)
+        torrentBinding.torrent = args.item
+
+        // maybe load and save the latest retrieved one in the view-model?
+        if (loadingStatusList.contains(args.item.status))
+            viewModel.pollTorrentStatus(args.item.id)
 
         return torrentBinding.root
-    }
-
-    // fetch the torrent info every 2 seconds
-    private fun fetchTorrent(delay: Long = 1000) {
-        lifecycleScope.launch {
-            delay(delay)
-            viewModel.fetchTorrentDetails(args.torrentID)
-        }
     }
 
     override fun onDownloadClick(item: TorrentItem) {
@@ -188,7 +170,7 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
             )
             findNavController().navigate(action)
         } else {
-            viewModel.downloadTorrent()
+            viewModel.downloadTorrent(item)
         }
     }
 

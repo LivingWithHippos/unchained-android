@@ -1,9 +1,9 @@
 package com.github.livingwithhippos.unchained.data.remote
 
 import com.github.livingwithhippos.unchained.data.model.AvailableHost
-import com.github.livingwithhippos.unchained.data.model.RdCache
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.data.model.UploadedTorrent
+import com.github.livingwithhippos.unchained.data.model.cache.InstantAvailability
 import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.Body
@@ -102,5 +102,5 @@ interface TorrentsApi {
     suspend fun getInstantAvailability(
         @Header("Authorization") token: String,
         @Url url: String
-    ): Response<Map<String, RdCache>>
+    ): Response<InstantAvailability>
 }

@@ -15,7 +15,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.MainActivity
-import com.github.livingwithhippos.unchained.data.local.ProtoStore
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.data.repository.TorrentsRepository
 import com.github.livingwithhippos.unchained.di.TorrentNotification
@@ -34,9 +33,6 @@ class ForegroundTorrentService : LifecycleService() {
 
     @Inject
     lateinit var torrentRepository: TorrentsRepository
-
-    @Inject
-    lateinit var protoStore: ProtoStore
 
     private val torrentBinder = TorrentBinder()
 
@@ -160,9 +156,7 @@ class ForegroundTorrentService : LifecycleService() {
     }
 
     private suspend fun getTorrentList(max: Int = 30): List<TorrentItem> {
-        // todo: manage token values
-        val token = protoStore.getCredentials().accessToken
-        return torrentRepository.getTorrentsList(token, limit = max)
+        return torrentRepository.getTorrentsList(limit = max)
     }
 
     private fun updateNotification(items: List<TorrentItem>) {
@@ -219,6 +213,7 @@ class ForegroundTorrentService : LifecycleService() {
         summaryBuilder.setContentText(getString(R.string.downloading_torrent_format, items.size))
 
         notificationManager.apply {
+            // todo: manage permission
             notifications.forEach { (id, notification) ->
                 notify(id.hashCode(), notification)
             }

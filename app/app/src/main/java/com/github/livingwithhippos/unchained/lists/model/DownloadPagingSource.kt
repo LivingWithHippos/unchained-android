@@ -12,22 +12,18 @@ private const val DOWNLOAD_STARTING_PAGE_INDEX = 1
 
 class DownloadPagingSource(
     private val downloadRepository: DownloadRepository,
-    private val protoStore: ProtoStore,
     private val query: String,
 ) : PagingSource<Int, DownloadItem>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, DownloadItem> {
         val page = params.key ?: DOWNLOAD_STARTING_PAGE_INDEX
-        val token = protoStore.getCredentials().accessToken
-        if (token.length < 5)
-            throw IllegalArgumentException("Error loading token: $token")
 
         return try {
             val response =
                 if (query.isBlank())
-                    downloadRepository.getDownloads(token, null, page, params.loadSize)
+                    downloadRepository.getDownloads(null, page, params.loadSize)
                 else
-                    downloadRepository.getDownloads(token, null, page, params.loadSize)
+                    downloadRepository.getDownloads(null, page, params.loadSize)
                         .filter { it.filename.contains(query, ignoreCase = true) }
 
             LoadResult.Page(
