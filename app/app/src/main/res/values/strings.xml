@@ -645,4 +645,7 @@
     <string name="total_size">Total size</string>
     <string name="loading_torrent_info">Loading torrent files and cache. Use the download all button on the bottom if you want to download all the content.</string>
     <string name="cache_missing">No cache found</string>
+    <string name="selecting_all_files">Selecting all files, please wait…</string>
+    <string name="selecting_picked_cache">Selecting %1$d files from cache %2$d, please wait…</string>
+    <string name="download_selected_files">Download selected files</string>
 </resources>

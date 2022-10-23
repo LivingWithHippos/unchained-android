@@ -86,7 +86,13 @@ class TorrentProcessingFragment : UnchainedFragment() {
                         binding.tvStatus.text = getString(R.string.checking_cache)
                         val hash = content.item.hash.lowercase()
                         //  Check if the activity already has the torrent cache, otherwise check it again
-                        val currentCache: CachedTorrent? = activityViewModel.cacheLiveData.value?.cachedTorrents?.firstOrNull { tor -> tor.btih.equals(hash, ignoreCase = true) }
+                        val currentCache: CachedTorrent? =
+                            activityViewModel.cacheLiveData.value?.cachedTorrents?.firstOrNull { tor ->
+                                tor.btih.equals(
+                                    hash,
+                                    ignoreCase = true
+                                )
+                            }
                         if (
                             currentCache != null
                         ) {
@@ -122,10 +128,24 @@ class TorrentProcessingFragment : UnchainedFragment() {
                     Timber.d("Cached torrent not found")
                 }
                 is TorrentEvent.FilesSelected -> {
-                    val action = TorrentProcessingFragmentDirections.actionTorrentProcessingFragmentToTorrentDetailsDest(
-                        item = content.torrent
-                    )
+                    val action =
+                        TorrentProcessingFragmentDirections.actionTorrentProcessingFragmentToTorrentDetailsDest(
+                            item = content.torrent
+                        )
                     findNavController().navigate(action)
+                }
+                TorrentEvent.DownloadAll -> {
+                    binding.tvStatus.text = getString(R.string.selecting_all_files)
+                    binding.tvLoadingTorrent.visibility = View.INVISIBLE
+                    binding.loadingLayout.visibility = View.VISIBLE
+                    binding.loadedLayout.visibility = View.INVISIBLE
+                }
+                is TorrentEvent.DownloadCache -> {
+                    binding.tvStatus.text =
+                        getString(R.string.selecting_picked_cache, content.files, content.position)
+                    binding.tvLoadingTorrent.visibility = View.INVISIBLE
+                    binding.loadingLayout.visibility = View.VISIBLE
+                    binding.loadedLayout.visibility = View.INVISIBLE
                 }
             }
         }
@@ -137,7 +157,7 @@ class TorrentProcessingFragment : UnchainedFragment() {
         val tabLayout: TabLayout = view.findViewById(R.id.pickerTabs)
         val viewPager: ViewPager2 = view.findViewById(R.id.pickerPager)
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
-            when(position) {
+            when (position) {
                 POSITION_FILE_PICKER -> {
                     tab.text = getString(R.string.select_files)
                 }
@@ -204,12 +224,20 @@ class TorrentProcessingFragment : UnchainedFragment() {
             when (menuItem.itemId) {
                 R.id.download_cache -> {
                     val pick = activityViewModel.getCurrentTorrentCachePick()
-                    if (pick!=null) {
-                        val pickedCache: CachedAlternative? = viewModel.getCache()?.cachedAlternatives?.getOrNull(pick.second)
+                    if (pick != null) {
+                        val pickedCache: CachedAlternative? =
+                            viewModel.getCache()?.cachedAlternatives?.getOrNull(pick.second)
                         if (pickedCache != null) {
-                            val selectedFiles = pickedCache.cachedFiles.joinToString(separator = ","){
-                                it.id.toString()
-                            }
+                            viewModel.triggerTorrentEvent(
+                                TorrentEvent.DownloadCache(
+                                    pick.second + 1,
+                                    pickedCache.cachedFiles.count()
+                                )
+                            )
+                            val selectedFiles =
+                                pickedCache.cachedFiles.joinToString(separator = ",") {
+                                    it.id.toString()
+                                }
                             Timber.e("Selected files: $selectedFiles from cache $pickedCache")
                             viewModel.startSelectionLoop(selectedFiles)
                             // todo: disable buttons and show loading interface
@@ -222,8 +250,8 @@ class TorrentProcessingFragment : UnchainedFragment() {
                     }
                 }
                 R.id.download_all -> {
+                    viewModel.triggerTorrentEvent(TorrentEvent.DownloadAll)
                     viewModel.startSelectionLoop()
-                    // todo: disable buttons and show loading interface
                 }
                 R.id.manual_pick -> {
                     // TODO()
@@ -249,14 +277,17 @@ class TorrentProcessingFragment : UnchainedFragment() {
 }
 
 
-class TorrentFilePagerAdapter(fragment: Fragment, private val viewModel: TorrentProcessingViewModel) :
+class TorrentFilePagerAdapter(
+    fragment: Fragment,
+    private val viewModel: TorrentProcessingViewModel
+) :
     FragmentStateAdapter(fragment) {
     override fun getItemCount(): Int = 2
 
     override fun createFragment(position: Int): Fragment {
         return if (position == POSITION_FILE_PICKER) {
             TorrentFilePickerFragment.newInstance(viewModel.getTorrentDetails())
-        } else  {
+        } else {
             TorrentCachePickerFragment.newInstance(viewModel.getCache(), viewModel.getTorrentID()!!)
         }
     }

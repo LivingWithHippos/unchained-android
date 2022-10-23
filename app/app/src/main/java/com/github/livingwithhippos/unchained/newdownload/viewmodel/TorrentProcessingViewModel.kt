@@ -180,6 +180,10 @@ class TorrentProcessingViewModel @Inject constructor(
         }, 0, 1000)
     }
 
+    fun triggerTorrentEvent(event: TorrentEvent) {
+        torrentLiveData.postEvent(event)
+    }
+
     companion object {
         const val KEY_CACHE = "cache_key"
         const val KEY_CURRENT_TORRENT = "current_torrent_key"
@@ -193,4 +197,6 @@ sealed class TorrentEvent {
     data class CacheHit(val cache: CachedTorrent) : TorrentEvent()
     object CacheMiss : TorrentEvent()
     data class FilesSelected(val torrent: TorrentItem) : TorrentEvent()
+    object DownloadAll : TorrentEvent()
+    data class DownloadCache(val position: Int, val files: Int) : TorrentEvent()
 }

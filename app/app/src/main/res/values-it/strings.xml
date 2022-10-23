@@ -340,6 +340,7 @@
     <string name="doh_description_message">DNS over HTTPS è un protocollo utilizzato per aumentare la privacy ed evitare l\'intercettazione delle richieste DNS. Se il sito web di un plugin è bloccato a livello di DNS, abilitare DoH può aiutare a bypassarlo. L\'unico provider DoH disponibile al momento è Google. Questa opzione è disabilitata di default e può essere cambiata in qualsiasi momento dal menu delle impostazioni. Questa funzione può causare dei crash.</string>
     <string name="delete_item_title_format">Elimina %s</string>
     <string name="download_selected">Scarica selezione</string>
+    <string name="download_selected_files">Scarica files selezionati</string>
     <string name="delete_selected">Cancella selezione</string>
     <string name="share_selected">Condividi selezione</string>
     <string name="show_folder_filters">Mostra filtri in cartelle</string>
@@ -405,6 +406,8 @@
     <string name="download_channel_description">Canale notifiche per stato download</string>
     <string name="download_queued">Download in coda, controlla le notifiche</string>
     <string name="download_queued_error">Errore avvio download, controlla i permessi</string>
+    <string name="selecting_all_files">Selezionando tutti i files, attendi…</string>
+    <string name="selecting_picked_cache">Selezionando %1$d files dalla cache %2$d, attendi…</string>
     <string name="download_manager_system">Gestore di download predefinito</string>
     <string name="pick_download_folder">Scegli la cartella di download</string>
     <string name="pick_download_folder_description">Scegli una cartella per i download. Non disponibile per il gestore di downlaod predefinito del sistema</string>

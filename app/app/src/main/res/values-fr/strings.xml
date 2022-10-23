@@ -409,6 +409,8 @@
     <string name="download_channel_description">Canal de notification de l\'état des téléchargements</string>
     <string name="download_queued">Téléchargement en attente, vérifiez vos notifications</string>
     <string name="download_queued_error">Erreur de mise en file d\'attente du téléchargement, vérifiez les permissions</string>
+    <string name="selecting_all_files">Sélection de tous les fichiers, veuillez patienter…</string>
+    <string name="selecting_picked_cache">Sélection de %1$d fichiers depuis le cache %2$d, veuillez patienter…</string>
     <string name="download_manager_system">Gestionnaire de téléchargement par défaut</string>
     <string name="pick_download_folder">Choisissez le dossier de téléchargement</string>
     <string name="pick_download_folder_description">Choisissez un dossier pour les téléchargements. Non disponible pour le gestionnaire de téléchargement du système par défaut</string>
@@ -436,4 +438,5 @@
     <string name="loading_torrent_info">Chargement des fichiers torrent et du cache. Utilisez le bouton \"Télécharger tout\" en bas si vous voulez télécharger tout le contenu.</string>
     <string name="cache_missing">Aucun cache trouvé</string>
     <string name="download_selected_cache">Télécharger le cache sélectionné</string>
+    <string name="download_selected_files">Télécharger les fichiers sélectionnés</string>
 </resources>
