@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.github.livingwithhippos.unchained.R
+import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.data.model.cache.CachedTorrent
 import com.github.livingwithhippos.unchained.databinding.FragmentTorrentCachePickerBinding
 import com.google.android.material.tabs.TabLayout
@@ -16,9 +17,10 @@ import com.google.android.material.tabs.TabLayoutMediator
 
 private const val CACHE_LIST_KEY = "key_cache_list"
 
-class TorrentCachePickerFragment : Fragment() {
+class TorrentCachePickerFragment : UnchainedFragment() {
 
     private lateinit var cache: CachedTorrent
+    private lateinit var torrentID: String
 
     @Suppress("DEPRECATION")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,6 +33,7 @@ class TorrentCachePickerFragment : Fragment() {
             } else {
                 it.getParcelable(CACHE_LIST_KEY)!!
             }
+            torrentID = it.getString(KEY_TORRENT_ID) ?: ""
         }
     }
 
@@ -43,6 +46,17 @@ class TorrentCachePickerFragment : Fragment() {
         val cacheAdapter =
             CachePagerAdapter(this, cache)
         binding.cachePager.adapter = cacheAdapter
+        binding.cacheTabs.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                activityViewModel.setCurrentTorrentCachePick(torrentID, tab?.position ?: 0)
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab?) {
+            }
+        })
 
         return binding.root
     }
@@ -58,12 +72,16 @@ class TorrentCachePickerFragment : Fragment() {
     }
 
     companion object {
+        const val KEY_CACHE_INDEX = "cache_index_key"
+        const val KEY_TORRENT_ID = "torrent_id_key"
+
         @JvmStatic
-        fun newInstance(cache: CachedTorrent?) =
+        fun newInstance(cache: CachedTorrent?, torrentID: String) =
             TorrentCachePickerFragment().apply {
                 if (cache != null)
                     arguments = Bundle().apply {
                         putParcelable(CACHE_LIST_KEY, cache)
+                        putString(KEY_TORRENT_ID, torrentID)
                     }
             }
     }

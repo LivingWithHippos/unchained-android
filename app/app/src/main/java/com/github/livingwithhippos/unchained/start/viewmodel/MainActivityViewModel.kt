@@ -45,6 +45,7 @@ import com.github.livingwithhippos.unchained.data.repository.UpdateRepository
 import com.github.livingwithhippos.unchained.data.repository.UserRepository
 import com.github.livingwithhippos.unchained.data.repository.VariousApiRepository
 import com.github.livingwithhippos.unchained.lists.view.ListState
+import com.github.livingwithhippos.unchained.newdownload.view.TorrentCachePickerFragment.Companion.KEY_CACHE_INDEX
 import com.github.livingwithhippos.unchained.plugins.model.Plugin
 import com.github.livingwithhippos.unchained.plugins.model.ScrapedItem
 import com.github.livingwithhippos.unchained.search.viewmodel.SearchViewModel
@@ -466,6 +467,24 @@ class MainActivityViewModel @Inject constructor(
 
     private fun setCacheResults(cache: InstantAvailability?) {
         savedStateHandle[SearchViewModel.KEY_CACHE] = cache
+    }
+
+    /**
+     * Set current torrent cache pick, see TorrentCachePicker
+     *
+     * @param id
+     * @param cacheIndex
+     */
+    fun setCurrentTorrentCachePick(id: String, cacheIndex: Int) {
+        savedStateHandle[KEY_CACHE_INDEX] = Pair(id, cacheIndex)
+    }
+
+    fun clearCurrentTorrentCachePick() {
+        savedStateHandle[KEY_CACHE_INDEX] = null
+    }
+
+    fun getCurrentTorrentCachePick(): Pair<String, Int>? {
+        return savedStateHandle[KEY_CACHE_INDEX]
     }
 
     fun checkCredentials() {

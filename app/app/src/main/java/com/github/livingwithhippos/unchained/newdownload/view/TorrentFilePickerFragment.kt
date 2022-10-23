@@ -40,9 +40,9 @@ class TorrentFilePickerFragment : Fragment() {
         fun newInstance(torrent: TorrentItem?) =
             TorrentFilePickerFragment().apply {
                 if (torrent !=  null)
-                arguments = Bundle().apply {
-                    putParcelable(ARG_TORRENT, torrent)
-                }
+                    arguments = Bundle().apply {
+                        putParcelable(ARG_TORRENT, torrent)
+                    }
             }
     }
 }
