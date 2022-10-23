@@ -5,6 +5,7 @@ import android.content.ContentResolver.SCHEME_CONTENT
 import android.content.ContentResolver.SCHEME_FILE
 import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -246,7 +247,9 @@ class NewDownloadFragment : UnchainedFragment() {
                     // this must be before the link.isWebUrl() check or it won't trigger
                     link.isTorrent() -> {
                         val action =
-                            NewDownloadFragmentDirections.actionNewDownloadFragmentToTorrentProcessingFragment(link = link)
+                            NewDownloadFragmentDirections.actionNewDownloadFragmentToTorrentProcessingFragment(
+                                link = link
+                            )
                         findNavController().navigate(action)
 
                         // viewModel.postMessage(getString(R.string.loading_torrent))
@@ -255,11 +258,11 @@ class NewDownloadFragment : UnchainedFragment() {
                          * DownloadManager does not support insecure (https) links anymore
                          * to add support for it, follow these instructions
                          * [https://stackoverflow.com/a/50834600]
-                         val secureLink = if (link.startsWith("http://")) link.replaceFirst(
-                         "http:",
-                         "https:"
-                         ) else link
-                         downloadTorrent(Uri.parse(secureLink))
+                        val secureLink = if (link.startsWith("http://")) link.replaceFirst(
+                        "http:",
+                        "https:"
+                        ) else link
+                        downloadTorrent(Uri.parse(secureLink))
                          */
                         // downloadTorrentToCache(binding, link)
                     }
@@ -390,16 +393,46 @@ class NewDownloadFragment : UnchainedFragment() {
                     binding.bUnrestrict.performClick()
                 }
                 SCHEME_CONTENT, SCHEME_FILE -> {
-                    when {
-                        // check if it's a container
-                        CONTAINER_EXTENSION_PATTERN.toRegex().matches(link.path ?: "") -> {
-                            loadContainer(binding, link)
+
+                    var handled = false
+
+                    requireContext().contentResolver.query(
+                        link,
+                        arrayOf(MediaStore.MediaColumns.DISPLAY_NAME),
+                        null,
+                        null,
+                        null
+                    )?.use { metaCursor ->
+                        if (metaCursor.moveToFirst()) {
+                            val fileName = metaCursor.getString(0);
+                            Timber.d("Torrent shared file found: $fileName")
+                            when {
+                                // check if it's a container
+                                CONTAINER_EXTENSION_PATTERN.toRegex().matches(fileName ?: "") -> {
+                                    handled = true
+                                    loadContainer(binding, link)
+                                }
+                                fileName.endsWith(".torrent", ignoreCase = true) -> {
+                                    handled = true
+                                    loadTorrent(binding, link)
+                                }
+                            }
                         }
-                        link.path?.endsWith(".torrent", ignoreCase = true) == true -> {
-                            // todo: move to TorrentProcessingFragment
-                            loadTorrent(binding, link)
+                    }
+
+                    if (!handled) {
+                        when {
+                            // check if it's a container
+                            CONTAINER_EXTENSION_PATTERN.toRegex().matches(link.path ?: "") -> {
+                                loadContainer(binding, link)
+                            }
+                            link.path?.endsWith(".torrent", ignoreCase = true) == true -> {
+                                loadTorrent(binding, link)
+                            }
+                            else -> Timber.e("Unsupported content/file passed to NewDownloadFragment: $link")
                         }
-                        else -> Timber.e("Unsupported content/file passed to NewDownloadFragment")
+                    } else {
+                        // do nothing
                     }
                 }
                 SCHEME_HTTP, SCHEME_HTTPS -> {
