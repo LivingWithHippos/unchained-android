@@ -11,9 +11,18 @@ import com.github.livingwithhippos.unchained.data.repository.TorrentsRepository
 import com.github.livingwithhippos.unchained.data.repository.UnrestrictRepository
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.Event
+import com.github.livingwithhippos.unchained.utilities.endedStatusList
+import com.github.livingwithhippos.unchained.utilities.extension.cancelIfActive
 import com.github.livingwithhippos.unchained.utilities.postEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -23,7 +32,6 @@ import javax.inject.Inject
 @HiltViewModel
 class TorrentDetailsViewModel @Inject constructor(
     private val torrentsRepository: TorrentsRepository,
-    private val protoStore: ProtoStore,
     private val unrestrictRepository: UnrestrictRepository
 ) : ViewModel() {
 
@@ -32,31 +40,34 @@ class TorrentDetailsViewModel @Inject constructor(
     val downloadLiveData = MutableLiveData<Event<DownloadItem?>>()
     val errorsLiveData = MutableLiveData<Event<List<UnchainedNetworkException>>>()
 
-    fun fetchTorrentDetails(torrentID: String) {
-        viewModelScope.launch {
-            val token = getToken()
-            val torrentData =
-                torrentsRepository.getTorrentInfo(token, torrentID)
-            torrentLiveData.postValue(Event(torrentData))
-            // todo: remove this for files selection
-            if (torrentData?.status == "waiting_files_selection")
-                torrentsRepository.selectFiles(token, torrentID)
+    private var job = Job()
+
+    fun pollTorrentStatus(id: String) {
+        // todo: test if I need to recreate a job when it is cancelled
+        job.cancelIfActive()
+        job = Job()
+
+        val scope = CoroutineScope(job + Dispatchers.IO)
+
+        scope.launch {
+            /// maybe job.isActive?
+            while (isActive) {
+                val torrentData = torrentsRepository.getTorrentInfo(id)
+                if (endedStatusList.contains(torrentData?.status))
+                    job.cancelIfActive()
+
+                delay(2000)
+            }
         }
     }
 
-    private suspend fun getToken(): String {
-        val token = protoStore.getCredentials().accessToken
-        if (token.isBlank() || token.length < 5)
-            throw IllegalArgumentException("Loaded token was empty or wrong: $token")
-
-        return token
+    fun stopPolling() {
+        job.cancelIfActive()
     }
 
     fun deleteTorrent(id: String) {
         viewModelScope.launch {
-            val token = getToken()
-            val deleted = torrentsRepository.deleteTorrent(token, id)
-            when (deleted) {
+            when (val deleted = torrentsRepository.deleteTorrent(id)) {
                 is EitherResult.Failure -> {
                     errorsLiveData.postEvent(listOf(deleted.failure))
                 }
@@ -69,11 +80,10 @@ class TorrentDetailsViewModel @Inject constructor(
 
     fun downloadTorrent() {
         viewModelScope.launch {
-            val token = protoStore.getCredentials().accessToken
             torrentLiveData.value?.let { torrent ->
                 val links = torrent.peekContent()?.links
                 if (links != null) {
-                    val items = unrestrictRepository.getUnrestrictedLinkList(token, links)
+                    val items = unrestrictRepository.getUnrestrictedLinkList(links)
 
                     val values =
                         items.filterIsInstance<EitherResult.Success<DownloadItem>>()

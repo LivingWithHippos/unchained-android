@@ -638,6 +638,11 @@
     <string name="checking_cache">Checking Cache</string>
     <string name="ready">Ready</string>
     <string name="cache">Cache</string>
-    <string name="download_cache">Download Cache</string>
+    <string name="download_selected_cache">Download Selected Cache</string>
     <string name="select_files">Select files</string>
+    <string name="cache_format">Cache #%1$d</string>
+    <string name="total_files">Total files</string>
+    <string name="total_size">Total size</string>
+    <string name="loading_torrent_info">Loading torrent files and cache. Use the download all button on the bottom if you want to download all the content.</string>
+    <string name="cache_missing">No cache found</string>
 </resources>

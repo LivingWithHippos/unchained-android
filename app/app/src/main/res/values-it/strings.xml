@@ -422,4 +422,14 @@
     <string name="next">Successivo</string>
     <string name="previous">Precedente</string>
     <string name="pick_cache">Scegli cache</string>
+    <string name="checking_cache">Controllo disponibilità cache</string>
+    <string name="ready">Pronto</string>
+    <string name="cache">Cache</string>
+    <string name="select_files">Seleziona files</string>
+    <string name="cache_format">Cache #%1$d</string>
+    <string name="total_files">Files totali</string>
+    <string name="total_size">Dimensione totale</string>
+    <string name="loading_torrent_info">Caricamento files torrent e cache. Usa scarica tutto sul bottone in basso se vuoi scaricare tutto il contenuto.</string>
+    <string name="cache_missing">Cache non trovata</string>
+    <string name="download_selected_cache">Scarica cache selezionata</string>
 </resources>

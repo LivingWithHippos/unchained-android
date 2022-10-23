@@ -32,6 +32,9 @@
         <action
             android:id="@+id/action_list_tabs_dest_to_newDownloadFragment"
             app:destination="@id/newDownloadFragment" />
+        <action
+            android:id="@+id/action_list_tabs_dest_to_torrentProcessingFragment"
+            app:destination="@id/torrentProcessingFragment" />
     </fragment>
 
     <fragment
@@ -39,9 +42,6 @@
         android:name="com.github.livingwithhippos.unchained.torrentdetails.view.TorrentDetailsFragment"
         android:label="@string/torrent"
         tools:layout="@layout/fragment_torrent_details">
-        <argument
-            android:name="torrentID"
-            app:argType="string" />
         <action
             android:id="@+id/action_torrentDetails_to_download_details_dest"
             app:destination="@id/download_details_dest"
@@ -53,6 +53,9 @@
         <action
             android:id="@+id/action_torrent_details_to_torrent_folder"
             app:destination="@id/folderListFragment" />
+        <argument
+            android:name="item"
+            app:argType="com.github.livingwithhippos.unchained.data.model.TorrentItem" />
     </fragment>
     <fragment
         android:id="@+id/folderListFragment"
@@ -112,9 +115,22 @@
     <fragment
         android:id="@+id/torrentProcessingFragment"
         android:name="com.github.livingwithhippos.unchained.newdownload.view.TorrentProcessingFragment"
-        android:label="@string/cache">
+        android:label="@string/torrent"
+        tools:layout="@layout/fragment_torrent_processing">
         <argument
             android:name="link"
-            app:argType="string" />
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="@null"
+            />
+        <action
+            android:id="@+id/action_torrentProcessingFragment_to_torrent_details_dest"
+            app:destination="@id/torrent_details_dest" />
+        <argument
+            android:name="torrentID"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="@null"
+            />
     </fragment>
 </navigation>

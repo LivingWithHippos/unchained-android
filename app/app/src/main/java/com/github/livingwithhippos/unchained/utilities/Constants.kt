@@ -1,5 +1,8 @@
 package com.github.livingwithhippos.unchained.utilities
 
+import androidx.annotation.DrawableRes
+import com.github.livingwithhippos.unchained.R
+
 const val OPEN_SOURCE_CLIENT_ID = "X245A4XAIBGVM"
 
 const val OPEN_SOURCE_GRANT_TYPE = "http://oauth.net/grant_type/device/1.0"
@@ -76,11 +79,17 @@ val errorMap = mapOf(
 )
 
 // Torrent status list
-
-val endedStatusList = listOf("magnet_error", "downloaded", "error", "virus", "dead")
-
 // possible status are magnet_error, magnet_conversion, waiting_files_selection,
 // queued, downloading, downloaded, error, virus, compressing, uploading, dead
+
+/**
+ * Statuses the torrent is not going to advance from
+ */
+val endedStatusList = listOf("magnet_error", "downloaded", "error", "virus", "dead")
+
+/**
+ * Statuses the torrent will advance from
+ */
 val loadingStatusList = listOf(
     "downloading",
     "magnet_conversion",
@@ -88,6 +97,14 @@ val loadingStatusList = listOf(
     "queued",
     "compressing",
     "uploading"
+)
+
+/**
+ * Statuses where the torrent hasn't had its file selected yet
+ */
+val beforeSelectionStatusList = listOf(
+    "magnet_conversion",
+    "waiting_files_selection",
 )
 
 const val DOWNLOADS_TAB = 0
@@ -115,3 +132,78 @@ object PreferenceKeys {
         const val UNMETERED_ONLY_KEY = "download_only_on_unmetered"
     }
 }
+
+/**
+ * Used to map file extension and their icon
+ */
+val extensionIconMap: Map<String, Int> = mapOf(
+    // this will be used as default value if no extension is recognized
+    "default" to R.drawable.icon_file,
+    // ARCHIVES
+    "zip" to R.drawable.icon_archive,
+    "rar" to R.drawable.icon_archive,
+    "7z" to R.drawable.icon_archive,
+    "tar" to R.drawable.icon_archive,
+    "gz" to R.drawable.icon_archive,
+    "arj" to R.drawable.icon_archive,
+    "deb" to R.drawable.icon_archive,
+    "pkg" to R.drawable.icon_archive,
+    "rpm" to R.drawable.icon_archive,
+    // AUDIO
+    "aif" to R.drawable.icon_audio,
+    "cda" to R.drawable.icon_audio,
+    "mid" to R.drawable.icon_audio,
+    "midi" to R.drawable.icon_audio,
+    "mp3" to R.drawable.icon_audio,
+    "mpa" to R.drawable.icon_audio,
+    "ogg" to R.drawable.icon_audio,
+    "wav" to R.drawable.icon_audio,
+    "wma" to R.drawable.icon_audio,
+    "wpl" to R.drawable.icon_audio,
+    // PICTURES
+    "ai" to R.drawable.icon_image,
+    "bmp" to R.drawable.icon_image,
+    "gif" to R.drawable.icon_image,
+    "ico" to R.drawable.icon_image,
+    "jpeg" to R.drawable.icon_image,
+    "jpg" to R.drawable.icon_image,
+    "png" to R.drawable.icon_image,
+    "psd" to R.drawable.icon_image,
+    "ps" to R.drawable.icon_image,
+    "svg" to R.drawable.icon_image,
+    "tiff" to R.drawable.icon_image,
+    "tif" to R.drawable.icon_image,
+    "raw" to R.drawable.icon_image,
+    // VIDEOS
+    "3g2" to R.drawable.icon_movie,
+    "3gp" to R.drawable.icon_movie,
+    "avi" to R.drawable.icon_movie,
+    "flv" to R.drawable.icon_movie,
+    "h264" to R.drawable.icon_movie,
+    "m4v" to R.drawable.icon_movie,
+    "mkv" to R.drawable.icon_movie,
+    "mov" to R.drawable.icon_movie,
+    "mp4" to R.drawable.icon_movie,
+    "mpg" to R.drawable.icon_movie,
+    "mpeg" to R.drawable.icon_movie,
+    "rm" to R.drawable.icon_movie,
+    "swf" to R.drawable.icon_movie,
+    "vob" to R.drawable.icon_movie,
+    "wmv" to R.drawable.icon_movie,
+    // CAPTIONS
+    "srt" to R.drawable.icon_subtitles,
+    "scc" to R.drawable.icon_subtitles,
+    "vtt" to R.drawable.icon_subtitles,
+    "itt" to R.drawable.icon_subtitles,
+    "smi" to R.drawable.icon_subtitles,
+    "sami" to R.drawable.icon_subtitles,
+    "sbv" to R.drawable.icon_subtitles,
+    "aaf" to R.drawable.icon_subtitles,
+    "mcc" to R.drawable.icon_subtitles,
+    "mxf" to R.drawable.icon_subtitles,
+    "asc" to R.drawable.icon_subtitles,
+    "stl" to R.drawable.icon_subtitles,
+    "scr" to R.drawable.icon_subtitles,
+    "sub" to R.drawable.icon_subtitles,
+    "idx" to R.drawable.icon_subtitles,
+)

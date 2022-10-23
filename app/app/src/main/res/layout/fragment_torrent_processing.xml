@@ -1,110 +1,108 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-        <import type="android.view.View" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.google.android.material.progressindicator.LinearProgressIndicator
-            android:id="@+id/progressBar"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/loadingLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:indeterminate="true"
-            app:indicatorColor="?attr/colorPrimary"
-            app:layout_constraintBottom_toTopOf="@id/tvStatus"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:trackThickness="7dp" />
-
-        <TextView
-            style="@style/TextAppearance.UnchainedTheme.Body2"
-            android:id="@+id/tvStatus"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:text="@string/uploading"
-            android:textAlignment="center"
-            app:layout_constraintBottom_toTopOf="@id/cachePicker"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/progressBar" />
-
-        <LinearLayout
-            tools:ignore="HardcodedText"
-            android:id="@+id/cachePicker"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:flow_verticalAlign="center"
-            app:layout_constraintTop_toBottomOf="@id/tvStatus"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/rvCacheList">
-
-            <Button
-                android:id="@+id/bPreviousCache"
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:text="&lt;"
-                />
+            android:layout_height="match_parent">
 
             <TextView
-                style="@style/TextAppearance.UnchainedTheme.Body1"
-                android:id="@+id/tvPickCache"
+                android:id="@+id/tvLoadingTorrent"
+                style="@style/TextAppearance.UnchainedTheme.Body2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="5dp"
+                android:maxWidth="200dp"
+                android:text="@string/loading_torrent_info"
+                android:textAlignment="center"
+                app:layout_constraintBottom_toTopOf="@id/loadingCircle"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed" />
+
+            <com.google.android.material.progressindicator.CircularProgressIndicator
+                android:id="@+id/loadingCircle"
+                style="@style/Widget.MaterialComponents.CircularProgressIndicator"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:text="@string/pick_cache"
-                />
+                android:layout_margin="20dp"
+                android:indeterminate="true"
+                app:indicatorColor="?attr/colorPrimary"
+                app:layout_constraintBottom_toTopOf="@id/tvStatus"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvLoadingTorrent"
+                app:layout_constraintVertical_chainStyle="packed"
+                app:trackCornerRadius="20dp" />
 
-            <Button
-                android:id="@+id/bNextCache"
-                android:layout_width="100dp"
+            <TextView
+                android:id="@+id/tvStatus"
+                style="@style/TextAppearance.UnchainedTheme.Body2"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="&gt;"
-                />
+                android:layout_marginHorizontal="20dp"
+                android:maxWidth="200dp"
+                android:text="@string/uploading"
+                android:textAlignment="center"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/loadingCircle" />
 
-        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvCacheList"
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/loadedLayout"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            tools:listitem="@layout/item_cache_file"
-            android:scrollbars="vertical"
-            android:layout_gravity="center_horizontal"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintTop_toBottomOf="@id/cachePicker"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            android:layout_height="match_parent"
+            android:visibility="invisible"
+            >
 
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/pickerTabs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/pickerPager"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tabMode="fixed">
+
+            </com.google.android.material.tabs.TabLayout>
+
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/pickerPager"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/pickerTabs" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fabDownload"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="15dp"
+            android:layout_gravity="bottom|end"
             android:layout_marginEnd="15dp"
+            android:layout_marginBottom="15dp"
             android:clickable="true"
             android:contentDescription="@string/download"
             android:focusable="true"
-            app:srcCompat="@drawable/icon_download"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:srcCompat="@drawable/icon_download" />
 
+    </FrameLayout>
 
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

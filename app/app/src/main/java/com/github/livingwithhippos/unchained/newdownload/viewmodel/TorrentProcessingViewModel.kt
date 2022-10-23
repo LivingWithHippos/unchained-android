@@ -64,6 +64,14 @@ class TorrentProcessingViewModel @Inject constructor(
         }
     }
 
+    fun getTorrentDetails(): TorrentItem? {
+        return savedStateHandle[KEY_CURRENT_TORRENT]
+    }
+
+    fun setTorrentDetails(item: TorrentItem) {
+        savedStateHandle[KEY_CURRENT_TORRENT] = item
+    }
+
     fun checkTorrentCache(hash: String) {
         viewModelScope.launch {
             val builder = StringBuilder(BASE_URL)
@@ -76,19 +84,27 @@ class TorrentProcessingViewModel @Inject constructor(
                     Timber.e("Failed getting cache for hash $hash ${cache.failure}")
                 }
                 is EitherResult.Success -> {
-                    if (cache.success.cachedTorrents.isNotEmpty()) {
-                        torrentLiveData.postEvent(TorrentEvent.Availability(cache.success))
-                        savedStateHandle[KEY_CACHE] = cache.success
-                    } else {
-                        torrentLiveData.postEvent(TorrentEvent.CacheMiss)
-                    }
+                    triggerCacheResult(cache.success.cachedTorrents.firstOrNull())
                 }
             }
         }
     }
 
-    fun getCache(): InstantAvailability? {
+    fun triggerCacheResult(cache: CachedTorrent?) {
+        if (cache != null) {
+            torrentLiveData.postEvent(TorrentEvent.CacheHit(cache))
+            savedStateHandle[KEY_CACHE] = cache
+        } else {
+            torrentLiveData.postEvent(TorrentEvent.CacheMiss)
+        }
+    }
+
+    fun getCache(): CachedTorrent? {
         return savedStateHandle[KEY_CACHE]
+    }
+
+    fun setCache(cache: CachedTorrent) {
+        savedStateHandle[KEY_CACHE] = cache
     }
 
     fun setCacheIndex(index: Int) {
@@ -102,7 +118,7 @@ class TorrentProcessingViewModel @Inject constructor(
     fun downloadCache() {
         viewModelScope.launch {
             val cache = getCache()
-            val item: TorrentItem? = savedStateHandle[KEY_CURRENT_TORRENT]
+            val item: TorrentItem? = getTorrentDetails()
             if (cache!=null && item != null) {
                 val index = getCacheIndex()
 
@@ -155,6 +171,6 @@ class TorrentProcessingViewModel @Inject constructor(
 sealed class TorrentEvent {
     data class Uploaded(val torrent: UploadedTorrent) : TorrentEvent()
     data class Updated(val item: TorrentItem) : TorrentEvent()
-    data class Availability(val cache: InstantAvailability) : TorrentEvent()
+    data class CacheHit(val cache: CachedTorrent) : TorrentEvent()
     object CacheMiss: TorrentEvent()
 }

@@ -80,7 +80,7 @@ class NewDownloadFragment : UnchainedFragment() {
 
     private fun setupObservers(binding: NewDownloadFragmentBinding) {
 
-        viewModel.linkLiveData.observe(
+        viewModel.downloadLiveData.observe(
             viewLifecycleOwner,
             EventObserver { linkDetails ->
                 // new download item, alert the list fragment that it needs updating
@@ -108,22 +108,7 @@ class NewDownloadFragment : UnchainedFragment() {
             }
         )
 
-        viewModel.torrentLiveData.observe(
-            viewLifecycleOwner,
-            EventObserver { torrent ->
-                // new torrent item, alert the list fragment that it needs updating
-                activityViewModel.setListState(ListState.UpdateTorrent)
-                // check the id with /torrents/info/{id} to get the has, the check caching with
-                // /torrents/instantAvailability/{hash}
-                val action =
-                    NewDownloadFragmentDirections.actionNewDownloadDestToTorrentDetailsFragment(
-                        torrent.id
-                    )
-                findNavController().navigate(action)
-            }
-        )
-
-        viewModel.containerLiveData.observe(
+        viewModel.linkLiveData.observe(
             viewLifecycleOwner,
             EventObserver { link ->
                 when (link) {
@@ -140,6 +125,13 @@ class NewDownloadFragment : UnchainedFragment() {
                     }
                     is Link.RetrievalError -> {
                         viewModel.postMessage(getString(R.string.error_parsing_container))
+                    }
+                    is Link.Torrent -> {
+                        val action =
+                            NewDownloadFragmentDirections.actionNewDownloadFragmentToTorrentProcessingFragment(
+                                torrentID = link.upload.id
+                            )
+                        findNavController().navigate(action)
                     }
                     else -> {
                     }
@@ -254,7 +246,7 @@ class NewDownloadFragment : UnchainedFragment() {
                     // this must be before the link.isWebUrl() check or it won't trigger
                     link.isTorrent() -> {
                         val action =
-                            NewDownloadFragmentDirections.actionNewDownloadFragmentToTorrentProcessingFragment(link)
+                            NewDownloadFragmentDirections.actionNewDownloadFragmentToTorrentProcessingFragment(link = link)
                         findNavController().navigate(action)
 
                         // viewModel.postMessage(getString(R.string.loading_torrent))
@@ -291,7 +283,9 @@ class NewDownloadFragment : UnchainedFragment() {
                     }
                     link.isMagnet() -> {
                         val action =
-                            NewDownloadFragmentDirections.actionNewDownloadFragmentToTorrentProcessingFragment(link)
+                            NewDownloadFragmentDirections.actionNewDownloadFragmentToTorrentProcessingFragment(
+                                link = link
+                            )
                         findNavController().navigate(action)
                         //viewModel.postMessage(getString(R.string.loading_magnet_link))
                         //enableButtons(binding, false)
@@ -425,6 +419,35 @@ class NewDownloadFragment : UnchainedFragment() {
         }
     }
 
+    private fun loadCachedTorrent(
+        binding: NewDownloadFragmentBinding,
+        cacheDir: File,
+        fileName: String
+    ) {
+        try {
+            viewModel.postMessage(getString(R.string.loading_torrent_file))
+            val cacheFile = File(cacheDir, fileName)
+            cacheFile.inputStream().use { inputStream ->
+                val buffer: ByteArray = inputStream.readBytes()
+                viewModel.fetchUploadedTorrent(buffer)
+            }
+        } catch (exception: Exception) {
+            when (exception) {
+                is java.io.FileNotFoundException -> {
+                    Timber.e("Torrent conversion: file not found: ${exception.message}")
+                }
+                is IOException -> {
+                    Timber.e("Torrent conversion: IOException error getting the file: ${exception.message}")
+                }
+                else -> {
+                    Timber.e("Torrent conversion: Other error getting the file: ${exception.message}")
+                }
+            }
+            enableButtons(binding, true)
+            viewModel.postMessage(getString(R.string.error_loading_torrent))
+        }
+    }
+
     private fun loadTorrent(binding: NewDownloadFragmentBinding, uri: Uri) {
         // https://developer.android.com/training/data-storage/shared/documents-files#open
         try {
@@ -435,11 +458,11 @@ class NewDownloadFragment : UnchainedFragment() {
             }
         } catch (exception: Exception) {
             when (exception) {
-                is IOException -> {
-                    Timber.e("Torrent conversion: IOException error getting the file: ${exception.message}")
-                }
                 is java.io.FileNotFoundException -> {
                     Timber.e("Torrent conversion: file not found: ${exception.message}")
+                }
+                is IOException -> {
+                    Timber.e("Torrent conversion: IOException error getting the file: ${exception.message}")
                 }
                 else -> {
                     Timber.e("Torrent conversion: Other error getting the file: ${exception.message}")
@@ -464,11 +487,11 @@ class NewDownloadFragment : UnchainedFragment() {
             }
         } catch (exception: Exception) {
             when (exception) {
-                is IOException -> {
-                    Timber.e("Container conversion: IOException error getting the file: ${exception.message}")
-                }
                 is java.io.FileNotFoundException -> {
                     Timber.e("Container conversion: file not found: ${exception.message}")
+                }
+                is IOException -> {
+                    Timber.e("Container conversion: IOException error getting the file: ${exception.message}")
                 }
                 else -> {
                     Timber.e("Container conversion: Other error getting the file: ${exception.message}")
@@ -476,35 +499,6 @@ class NewDownloadFragment : UnchainedFragment() {
             }
             enableButtons(binding, true)
             viewModel.postMessage(getString(R.string.error_loading_file))
-        }
-    }
-
-    private fun loadCachedTorrent(
-        binding: NewDownloadFragmentBinding,
-        cacheDir: File,
-        fileName: String
-    ) {
-        try {
-            viewModel.postMessage(getString(R.string.loading_torrent_file))
-            val cacheFile = File(cacheDir, fileName)
-            cacheFile.inputStream().use { inputStream ->
-                val buffer: ByteArray = inputStream.readBytes()
-                viewModel.fetchUploadedTorrent(buffer)
-            }
-        } catch (exception: Exception) {
-            when (exception) {
-                is IOException -> {
-                    Timber.e("Torrent conversion: IOException error getting the file: ${exception.message}")
-                }
-                is java.io.FileNotFoundException -> {
-                    Timber.e("Torrent conversion: file not found: ${exception.message}")
-                }
-                else -> {
-                    Timber.e("Torrent conversion: Other error getting the file: ${exception.message}")
-                }
-            }
-            enableButtons(binding, true)
-            viewModel.postMessage(getString(R.string.error_loading_torrent))
         }
     }
 

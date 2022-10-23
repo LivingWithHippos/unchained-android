@@ -423,4 +423,17 @@
     <string name="download_on_metered_connection">Téléchargement retardé (connexion avec compteur)</string>
     <string name="leechers">Leechers</string>
     <string name="size">Taille</string>
+    <string name="next">Suivant</string>
+    <string name="previous">Précédent</string>
+    <string name="pick_cache">Sélection du cache</string>
+    <string name="checking_cache">Vérification du cache</string>
+    <string name="ready">Prêt</string>
+    <string name="cache">Cache</string>
+    <string name="select_files">Sélectionner les fichiers</string>
+    <string name="cache_format">Cache #%1$d</string>
+    <string name="total_files">Total des fichiers</string>
+    <string name="total_size">Taille totale</string>
+    <string name="loading_torrent_info">Chargement des fichiers torrent et du cache. Utilisez le bouton \"Télécharger tout\" en bas si vous voulez télécharger tout le contenu.</string>
+    <string name="cache_missing">Aucun cache trouvé</string>
+    <string name="download_selected_cache">Télécharger le cache sélectionné</string>
 </resources>
