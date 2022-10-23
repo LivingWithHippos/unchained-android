@@ -3,7 +3,6 @@ package com.github.livingwithhippos.unchained.torrentdetails.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.livingwithhippos.unchained.data.local.ProtoStore
 import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkException
@@ -21,8 +20,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import java.util.*
 import javax.inject.Inject
 
 /**
@@ -78,25 +75,23 @@ class TorrentDetailsViewModel @Inject constructor(
         }
     }
 
-    fun downloadTorrent() {
+    fun downloadTorrent(torrent: TorrentItem) {
         viewModelScope.launch {
-            torrentLiveData.value?.let { torrent ->
-                val links = torrent.peekContent()?.links
-                if (links != null) {
-                    val items = unrestrictRepository.getUnrestrictedLinkList(links)
+            val links = torrent.links
+            if (links.isNotEmpty()) {
+                val items = unrestrictRepository.getUnrestrictedLinkList(links)
 
-                    val values =
-                        items.filterIsInstance<EitherResult.Success<DownloadItem>>()
-                            .map { it.success }
-                    val errors =
-                        items.filterIsInstance<EitherResult.Failure<UnchainedNetworkException>>()
-                            .map { it.failure }
+                val values =
+                    items.filterIsInstance<EitherResult.Success<DownloadItem>>()
+                        .map { it.success }
+                val errors =
+                    items.filterIsInstance<EitherResult.Failure<UnchainedNetworkException>>()
+                        .map { it.failure }
 
-                    // since the torrent want to open a download details page we oen only the first link
-                    downloadLiveData.postEvent(values.firstOrNull())
-                    if (errors.isNotEmpty())
-                        errorsLiveData.postEvent(errors)
-                }
+                // since the torrent want to open a download details page we oen only the first link
+                downloadLiveData.postEvent(values.firstOrNull())
+                if (errors.isNotEmpty())
+                    errorsLiveData.postEvent(errors)
             }
         }
     }

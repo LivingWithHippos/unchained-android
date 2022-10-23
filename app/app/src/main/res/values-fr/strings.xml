@@ -439,4 +439,5 @@
     <string name="cache_missing">Aucun cache trouvé</string>
     <string name="download_selected_cache">Télécharger le cache sélectionné</string>
     <string name="download_selected_files">Télécharger les fichiers sélectionnés</string>
+    <string name="pass_to_download">Passer aux téléchargements</string>
 </resources>

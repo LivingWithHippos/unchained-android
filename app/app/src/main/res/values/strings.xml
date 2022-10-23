@@ -648,4 +648,5 @@
     <string name="selecting_all_files">Selecting all files, please wait…</string>
     <string name="selecting_picked_cache">Selecting %1$d files from cache %2$d, please wait…</string>
     <string name="download_selected_files">Download selected files</string>
+    <string name="pass_to_download">Pass to downloads</string>
 </resources>

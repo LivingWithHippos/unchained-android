@@ -13,7 +13,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.github.livingwithhippos.unchained.R
@@ -32,8 +31,6 @@ import com.github.livingwithhippos.unchained.utilities.extension.getApiErrorMess
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.github.livingwithhippos.unchained.utilities.loadingStatusList
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 /**
  * A simple [Fragment] subclass.
@@ -173,7 +170,7 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
             )
             findNavController().navigate(action)
         } else {
-            viewModel.downloadTorrent()
+            viewModel.downloadTorrent(item)
         }
     }
 

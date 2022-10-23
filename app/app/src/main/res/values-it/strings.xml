@@ -435,4 +435,5 @@
     <string name="loading_torrent_info">Caricamento files torrent e cache. Usa scarica tutto sul bottone in basso se vuoi scaricare tutto il contenuto.</string>
     <string name="cache_missing">Cache non trovata</string>
     <string name="download_selected_cache">Scarica cache selezionata</string>
+    <string name="pass_to_download">Passa ai download</string>
 </resources>

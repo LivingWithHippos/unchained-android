@@ -218,19 +218,19 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
-                    <!-- todo: find out how to scale the progressbar drawable height to match width=100-->
-                    <ProgressBar
+                    <com.google.android.material.progressindicator.CircularProgressIndicator
                         android:id="@+id/pbDownload"
-                        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                        style="@style/Widget.MaterialComponents.CircularProgressIndicator"
+                        android:indeterminate="false"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:indeterminate="false"
-                        android:max="100"
-                        android:minWidth="70dp"
-                        android:minHeight="60dp"
-                        android:progress="@{torrent.progress}"
-                        android:progressDrawable="@drawable/download_progressbar"
-                        app:progressColor="@{@color/streaming_background}" />
+                        android:layout_marginEnd="10dp"
+                        app:trackCornerRadius="20dp"
+                        app:indicatorColor="?attr/colorPrimary"
+                        android:progress="@{torrent.progress, default=60}"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
 
                 </FrameLayout>
 
@@ -246,7 +246,7 @@
             android:layout_height="wrap_content"
             android:onClick="@{() -> listener.onDownloadClick(torrent)}"
             android:layout_marginBottom="20dp"
-            android:text="@string/open"
+            android:text="@string/pass_to_download"
             android:minLines="3"
             android:visibility="@{torrent.status.equalsIgnoreCase(`downloaded`) ? View.VISIBLE : View.GONE}"
             android:layout_gravity="center_horizontal"
