@@ -442,4 +442,5 @@
     <string name="pass_to_download">Passer aux téléchargements</string>
     <string name="notifications_permission_denied">Permission refusée. L\'application peut avoir des problèmes d\'affichage des notifications.</string>
     <string name="notifications_permission_granted">Autorisation de notification accordée</string>
+    <string name="content_description_reselect_torrent_files">Resélectionner les fichiers torrent</string>
 </resources>
