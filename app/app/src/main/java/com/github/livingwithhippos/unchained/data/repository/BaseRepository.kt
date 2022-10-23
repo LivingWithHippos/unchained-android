@@ -1,5 +1,6 @@
 package com.github.livingwithhippos.unchained.data.repository
 
+import com.github.livingwithhippos.unchained.data.local.ProtoStore
 import com.github.livingwithhippos.unchained.data.model.APIError
 import com.github.livingwithhippos.unchained.data.model.ApiConversionError
 import com.github.livingwithhippos.unchained.data.model.EmptyBodyError
@@ -19,7 +20,7 @@ import java.io.IOException
  * Base repository class to be extended by other repositories.
  * Manages the calls between retrofit and the actual repositories.
  */
-open class BaseRepository {
+open class BaseRepository(private val protoStore: ProtoStore) {
 
     // todo: inject this
     private val jsonAdapter: JsonAdapter<APIError> = Moshi.Builder()
@@ -95,5 +96,13 @@ open class BaseRepository {
                 return@withContext EitherResult.Failure(NetworkError(-1, errorMessage))
             }
         }
+    }
+
+    suspend fun getToken(): String {
+        val token = protoStore.getCredentials().accessToken
+        if (token.isBlank() || token.length < 5)
+            throw IllegalArgumentException("Loaded token was empty or wrong: $token")
+
+        return token
     }
 }

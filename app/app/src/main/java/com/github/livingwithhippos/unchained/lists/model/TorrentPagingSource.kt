@@ -13,22 +13,18 @@ private const val TORRENT_STARTING_PAGE_INDEX = 1
  */
 class TorrentPagingSource(
     private val torrentsRepository: TorrentsRepository,
-    private val protoStore: ProtoStore,
     private val query: String,
 ) : PagingSource<Int, TorrentItem>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, TorrentItem> {
         val page = params.key ?: TORRENT_STARTING_PAGE_INDEX
-        val token = protoStore.getCredentials().accessToken
-        if (token.length < 5)
-            throw IllegalArgumentException("Error loading token: $token")
 
         return try {
             val response =
                 if (query.isBlank())
-                    torrentsRepository.getTorrentsList(token, null, page, params.loadSize)
+                    torrentsRepository.getTorrentsList( null, page, params.loadSize)
                 else
-                    torrentsRepository.getTorrentsList(token, null, page, params.loadSize)
+                    torrentsRepository.getTorrentsList(null, page, params.loadSize)
                         .filter { it.filename.contains(query, ignoreCase = true) }
 
             LoadResult.Page(

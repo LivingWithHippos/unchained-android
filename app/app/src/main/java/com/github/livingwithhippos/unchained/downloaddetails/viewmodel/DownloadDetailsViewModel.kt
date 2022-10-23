@@ -25,7 +25,6 @@ class DownloadDetailsViewModel @Inject constructor(
     private val preferences: SharedPreferences,
     private val streamingRepository: StreamingRepository,
     private val downloadRepository: DownloadRepository,
-    private val protoStore: ProtoStore,
     private val kodiRepository: KodiRepository,
     private val kodiDeviceRepository: KodiDeviceRepository,
 ) : ViewModel() {
@@ -36,18 +35,14 @@ class DownloadDetailsViewModel @Inject constructor(
 
     fun fetchStreamingInfo(id: String) {
         viewModelScope.launch {
-            val token = protoStore.getCredentials().accessToken
-            if (token.isBlank())
-                throw IllegalArgumentException("Loaded token was empty: $token")
-            val streamingInfo = streamingRepository.getStreams(token, id)
+            val streamingInfo = streamingRepository.getStreams(id)
             streamLiveData.postValue(streamingInfo)
         }
     }
 
     fun deleteDownload(id: String) {
         viewModelScope.launch {
-            val token = protoStore.getCredentials().accessToken
-            val deleted = downloadRepository.deleteDownload(token, id)
+            val deleted = downloadRepository.deleteDownload(id)
             if (deleted == null)
                 deletedDownloadLiveData.postEvent(-1)
             else

@@ -12,7 +12,6 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.liveData
-import com.github.livingwithhippos.unchained.data.local.ProtoStore
 import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkException
@@ -37,7 +36,6 @@ class ListTabsViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val downloadRepository: DownloadRepository,
     private val torrentsRepository: TorrentsRepository,
-    private val protoStore: ProtoStore,
     private val unrestrictRepository: UnrestrictRepository
 ) : ViewModel() {
 
@@ -48,14 +46,14 @@ class ListTabsViewModel @Inject constructor(
     val downloadsLiveData: LiveData<PagingData<DownloadItem>> =
         Transformations.switchMap(queryLiveData) { query: String ->
             Pager(PagingConfig(pageSize = 50, initialLoadSize = 100)) {
-                DownloadPagingSource(downloadRepository, protoStore, query)
+                DownloadPagingSource(downloadRepository, query)
             }.liveData.cachedIn(viewModelScope)
         }
 
     val torrentsLiveData: LiveData<PagingData<TorrentItem>> =
         Transformations.switchMap(queryLiveData) { query: String ->
             Pager(PagingConfig(pageSize = 50, initialLoadSize = 100)) {
-                TorrentPagingSource(torrentsRepository, protoStore, query)
+                TorrentPagingSource(torrentsRepository, query)
             }.liveData.cachedIn(viewModelScope)
         }
 
@@ -68,10 +66,14 @@ class ListTabsViewModel @Inject constructor(
 
     val eventLiveData = MutableLiveData<Event<ListEvent>>()
 
-    fun downloadTorrent(torrent: TorrentItem) {
+    /**
+     * Un restrict a torrent and move it to the download section
+     *
+     * @param torrent
+     */
+    fun unrestrictTorrent(torrent: TorrentItem) {
         viewModelScope.launch {
-            val token = protoStore.getCredentials().accessToken
-            val items = unrestrictRepository.getUnrestrictedLinkList(token, torrent.links)
+            val items = unrestrictRepository.getUnrestrictedLinkList(torrent.links)
             val values =
                 items.filterIsInstance<EitherResult.Success<DownloadItem>>().map { it.success }
             val errors =
@@ -86,8 +88,7 @@ class ListTabsViewModel @Inject constructor(
 
     fun downloadTorrentFolder(torrent: TorrentItem) {
         viewModelScope.launch {
-            val token = protoStore.getCredentials().accessToken
-            val items = unrestrictRepository.getUnrestrictedLinkList(token, torrent.links)
+            val items = unrestrictRepository.getUnrestrictedLinkList(torrent.links)
             val values =
                 items.filterIsInstance<EitherResult.Success<DownloadItem>>().map { it.success }
             val errors =
@@ -102,8 +103,7 @@ class ListTabsViewModel @Inject constructor(
 
     fun deleteTorrent(id: String) {
         viewModelScope.launch {
-            val token = protoStore.getCredentials().accessToken
-            val deleted = torrentsRepository.deleteTorrent(token, id)
+            val deleted = torrentsRepository.deleteTorrent(id)
             when (deleted) {
                 is EitherResult.Failure -> {
                     errorsLiveData.postEvent(listOf(deleted.failure))
@@ -118,8 +118,7 @@ class ListTabsViewModel @Inject constructor(
 
     fun deleteDownload(id: String) {
         viewModelScope.launch {
-            val token = protoStore.getCredentials().accessToken
-            val deleted = downloadRepository.deleteDownload(token, id)
+            val deleted = downloadRepository.deleteDownload(id)
             if (deleted == null)
                 deletedDownloadLiveData.postEvent(DOWNLOAD_NOT_DELETED)
             else
@@ -146,10 +145,9 @@ class ListTabsViewModel @Inject constructor(
 
             deletedDownloadLiveData.postEvent(0)
             var page = 1
-            val token = protoStore.getCredentials().accessToken
             val completeDownloadList = mutableListOf<DownloadItem>()
             do {
-                val downloads = downloadRepository.getDownloads(token, 0, page++, 50)
+                val downloads = downloadRepository.getDownloads(0, page++, 50)
                 completeDownloadList.addAll(downloads)
             } while (downloads.size >= 50)
 
@@ -158,7 +156,7 @@ class ListTabsViewModel @Inject constructor(
                 if (completeDownloadList.size / 10 < 15) 15 else completeDownloadList.size / 10
 
             completeDownloadList.forEachIndexed { index, item ->
-                downloadRepository.deleteDownload(token, item.id)
+                downloadRepository.deleteDownload(item.id)
                 if ((index + 1) % progressIndicator == 0)
                     deletedDownloadLiveData.postEvent(index + 1)
             }
@@ -169,11 +167,10 @@ class ListTabsViewModel @Inject constructor(
 
     fun deleteAllTorrents() {
         viewModelScope.launch {
-            val token = protoStore.getCredentials().accessToken
             do {
-                val torrents = torrentsRepository.getTorrentsList(token, 0, 1, 50)
+                val torrents = torrentsRepository.getTorrentsList(0, 1, 50)
                 torrents.forEach {
-                    torrentsRepository.deleteTorrent(token, it.id)
+                    torrentsRepository.deleteTorrent( it.id)
                 }
             } while (torrents.size >= 50)
 
@@ -183,9 +180,8 @@ class ListTabsViewModel @Inject constructor(
 
     fun deleteTorrents(torrents: List<TorrentItem>) {
         viewModelScope.launch {
-            val token = protoStore.getCredentials().accessToken
             torrents.forEach {
-                torrentsRepository.deleteTorrent(token, it.id)
+                torrentsRepository.deleteTorrent( it.id)
             }
             if (torrents.size > 1)
                 deletedTorrentLiveData.postEvent(TORRENTS_DELETED)
@@ -197,15 +193,14 @@ class ListTabsViewModel @Inject constructor(
     fun downloadItems(torrents: List<TorrentItem>) {
         torrents.filter { it.status == "downloaded" }
             .forEach {
-                downloadTorrent(it)
+                unrestrictTorrent(it)
             }
     }
 
     fun deleteDownloads(downloads: List<DownloadItem>) {
         viewModelScope.launch {
-            val token = protoStore.getCredentials().accessToken
             downloads.forEach {
-                downloadRepository.deleteDownload(token, it.id)
+                downloadRepository.deleteDownload( it.id)
             }
             if (downloads.size > 1)
                 deletedDownloadLiveData.postEvent(DOWNLOADS_DELETED)

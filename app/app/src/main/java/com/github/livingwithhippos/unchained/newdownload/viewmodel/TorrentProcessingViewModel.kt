@@ -8,10 +8,9 @@ import com.github.livingwithhippos.unchained.data.local.ProtoStore
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkException
 import com.github.livingwithhippos.unchained.data.model.UploadedTorrent
+import com.github.livingwithhippos.unchained.data.model.cache.CachedTorrent
 import com.github.livingwithhippos.unchained.data.model.cache.InstantAvailability
 import com.github.livingwithhippos.unchained.data.repository.TorrentsRepository
-import com.github.livingwithhippos.unchained.data.repository.UnrestrictRepository
-import com.github.livingwithhippos.unchained.plugins.model.ScrapedItem
 import com.github.livingwithhippos.unchained.utilities.BASE_URL
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.Event
@@ -26,30 +25,20 @@ import javax.inject.Inject
 @HiltViewModel
 class TorrentProcessingViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
-    private val torrentsRepository: TorrentsRepository,
-    private val protoStore: ProtoStore
+    private val torrentsRepository: TorrentsRepository
 ) : ViewModel() {
 
     val networkExceptionLiveData = MutableLiveData<Event<UnchainedNetworkException>>()
     val torrentLiveData = MutableLiveData<Event<TorrentEvent>>()
 
-    private suspend fun getToken(): String {
-        val token = protoStore.getCredentials().accessToken
-        if (token.isBlank() || token.length < 5)
-            throw IllegalArgumentException("Loaded token was empty or wrong: $token")
-
-        return token
-    }
-
     fun fetchAddedMagnet(magnet: String) {
         viewModelScope.launch {
-            val token = getToken()
-            val availableHosts = torrentsRepository.getAvailableHosts(token)
+            val availableHosts = torrentsRepository.getAvailableHosts()
             if (availableHosts.isNullOrEmpty()) {
                 Timber.e("Error fetching available hosts")
             } else {
                 val addedMagnet =
-                    torrentsRepository.addMagnet(token, magnet, availableHosts.first().host)
+                    torrentsRepository.addMagnet(magnet, availableHosts.first().host)
                 when (addedMagnet) {
                     is EitherResult.Failure -> {
                         networkExceptionLiveData.postEvent(addedMagnet.failure)
@@ -64,15 +53,11 @@ class TorrentProcessingViewModel @Inject constructor(
 
     fun fetchTorrentDetails(torrentID: String) {
         viewModelScope.launch {
-            val token = getToken()
-            val torrentData: TorrentItem? = torrentsRepository.getTorrentInfo(token, torrentID)
+            val torrentData: TorrentItem? = torrentsRepository.getTorrentInfo(torrentID)
             // todo: replace using either
             if (torrentData != null) {
                 savedStateHandle[KEY_CURRENT_TORRENT] = torrentData
                 torrentLiveData.postEvent(TorrentEvent.Updated(torrentData))
-                // todo: remove this for files selection
-                //if (torrentData.status == "waiting_files_selection")
-                //    torrentsRepository.selectFiles(token, torrentID)
             } else {
                 Timber.e("Retrieved torrent info were null for id $torrentID")
             }
@@ -81,13 +66,12 @@ class TorrentProcessingViewModel @Inject constructor(
 
     fun checkTorrentCache(hash: String) {
         viewModelScope.launch {
-            val token = getToken()
             val builder = StringBuilder(BASE_URL)
             builder.append(INSTANT_AVAILABILITY_ENDPOINT)
             builder.append("/")
             builder.append(hash)
             when (val cache =
-                torrentsRepository.getInstantAvailability(token, builder.toString())) {
+                torrentsRepository.getInstantAvailability(builder.toString())) {
                 is EitherResult.Failure -> {
                     Timber.e("Failed getting cache for hash $hash ${cache.failure}")
                 }
@@ -120,14 +104,13 @@ class TorrentProcessingViewModel @Inject constructor(
             val cache = getCache()
             val item: TorrentItem? = savedStateHandle[KEY_CURRENT_TORRENT]
             if (cache!=null && item != null) {
-                val token = getToken()
                 val index = getCacheIndex()
-                val fileIDs = cache.cachedTorrents.first().cachedAlternatives[index].cachedFiles.joinToString(separator = ",") {
+
+                val fileIDs = cache.cachedAlternatives[index].cachedFiles.joinToString(separator = ",") {
                     it.id.toString()
                 }
                 // todo: add polling to check this
                 torrentsRepository.selectFiles(
-                    token,
                     item.id,
                     fileIDs
                 )
@@ -140,11 +123,9 @@ class TorrentProcessingViewModel @Inject constructor(
             val cache = getCache()
             val item: TorrentItem? = savedStateHandle[KEY_CURRENT_TORRENT]
             if (cache!=null && item != null) {
-                val token = getToken()
                 val index = getCacheIndex()
                 // todo: add polling to check this
                 torrentsRepository.selectFiles(
-                    token,
                     item.id
                 )
             }

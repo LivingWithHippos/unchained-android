@@ -29,6 +29,7 @@ import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.data.model.EmptyBodyError
 import com.github.livingwithhippos.unchained.data.model.KodiDevice
 import com.github.livingwithhippos.unchained.data.model.NetworkError
+import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkException
 import com.github.livingwithhippos.unchained.data.model.User
 import com.github.livingwithhippos.unchained.data.model.UserAction
@@ -93,12 +94,12 @@ import javax.inject.Inject
 class MainActivityViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val preferences: SharedPreferences,
+    private val protoStore: ProtoStore,
     private val authRepository: AuthenticationRepository,
     private val userRepository: UserRepository,
     private val variousApiRepository: VariousApiRepository,
     private val hostsRepository: HostsRepository,
     private val pluginRepository: PluginRepository,
-    private val protoStore: ProtoStore,
     private val kodiDeviceRepository: KodiDeviceRepository,
     private val customDownloadRepository: CustomDownloadRepository,
     private val torrentsRepository: TorrentsRepository,
@@ -115,7 +116,7 @@ class MainActivityViewModel @Inject constructor(
 
     val downloadedFileLiveData = MutableLiveData<Event<Long>>()
 
-    val notificationTorrentLiveData = MutableLiveData<Event<String>>()
+    val notificationTorrentLiveData = MutableLiveData<Event<TorrentItem>>()
 
     val listStateLiveData = MutableLiveData<Event<ListState>>()
 
@@ -430,7 +431,6 @@ class MainActivityViewModel @Inject constructor(
     fun checkTorrentCache(scrapedItems: List<ScrapedItem>) {
         if (scrapedItems.isNotEmpty()) {
             viewModelScope.launch {
-                val token = protoStore.getCredentials().accessToken
                 val builder = StringBuilder(BASE_URL)
                 builder.append(INSTANT_AVAILABILITY_ENDPOINT)
                 scrapedItems.forEach { item ->
@@ -443,7 +443,7 @@ class MainActivityViewModel @Inject constructor(
                     }
                 }
                 if (builder.length > (BASE_URL.length + INSTANT_AVAILABILITY_ENDPOINT.length)) {
-                    val cache = torrentsRepository.getInstantAvailability(token, builder.toString())
+                    val cache = torrentsRepository.getInstantAvailability(builder.toString())
                     if (cache is EitherResult.Success) {
                         if (cache.success.cachedTorrents.isNotEmpty()) {
                             _cacheLiveData.postValue(cache.success)
@@ -526,7 +526,7 @@ class MainActivityViewModel @Inject constructor(
             val c = protoStore.getCredentials()
             if (!c.refreshToken.isNullOrEmpty() && c.refreshToken != PRIVATE_TOKEN) {
                 // setUnauthenticated()
-                variousApiRepository.disableToken(c.accessToken)
+                variousApiRepository.disableToken()
             }
         }
     }
@@ -806,7 +806,13 @@ class MainActivityViewModel @Inject constructor(
     }
 
     fun addTorrentId(torrentID: String) {
-        notificationTorrentLiveData.postEvent(torrentID)
+        viewModelScope.launch {
+            val torrent: TorrentItem? = torrentsRepository.getTorrentInfo(torrentID)
+            if (torrent != null)
+                notificationTorrentLiveData.postEvent(torrent)
+            else
+                Timber.e("Could not retrieve torrent data from click on notification, id $torrentID")
+        }
     }
 
     fun addPlugin(context: Context, data: Uri) {
