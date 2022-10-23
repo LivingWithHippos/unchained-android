@@ -90,16 +90,38 @@
 
                 <TextView
                     android:id="@+id/tvSize"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="File Size"
                     fileSize="@{torrent.bytes}"
-                    android:textColor="?attr/colorPrimary"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintEnd_toStartOf="@id/loadingCircle"
+                    app:layout_constraintEnd_toStartOf="@id/tvSizeSeparator"
                     app:layout_constraintStart_toStartOf="@id/tvStatus"
                     app:layout_constraintTop_toBottomOf="@+id/tvStatus"
+                    tools:ignore="HardcodedText" />
+
+                <TextView
+                    android:id="@+id/tvSizeSeparator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:text="/"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/tvSize"
+                    android:visibility="@{torrent.originalBytes != torrent.bytes ? View.VISIBLE : View.INVISIBLE}"
+                    tools:ignore="HardcodedText" />
+
+                <TextView
+                    android:id="@+id/tvOriginalSize"
+                    fileSize="@{torrent.originalBytes}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:text="20 MB"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/tvSizeSeparator"
+                    android:visibility="@{torrent.originalBytes != torrent.bytes ? View.VISIBLE : View.INVISIBLE}"
                     tools:ignore="HardcodedText" />
 
                 <com.google.android.material.progressindicator.CircularProgressIndicator
