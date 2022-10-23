@@ -219,11 +219,17 @@ class TorrentProcessingFragment : UnchainedFragment() {
         val popup = PopupMenu(requireContext(), v)
         popup.menuInflater.inflate(menuRes, popup.menu)
 
+        val pick = activityViewModel.getCurrentTorrentCachePick()
+        if (pick == null)
+            popup.menu.findItem(R.id.download_cache).isEnabled = false
+
+        // todo:implement
+        popup.menu.findItem(R.id.manual_pick).isEnabled = false
+
         popup.setOnMenuItemClickListener { menuItem: MenuItem ->
             // Respond to menu item click.
             when (menuItem.itemId) {
                 R.id.download_cache -> {
-                    val pick = activityViewModel.getCurrentTorrentCachePick()
                     if (pick != null) {
                         val pickedCache: CachedAlternative? =
                             viewModel.getCache()?.cachedAlternatives?.getOrNull(pick.second)
