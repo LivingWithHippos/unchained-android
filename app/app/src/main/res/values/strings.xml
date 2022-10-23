@@ -612,7 +612,7 @@
     <string name="no_supported_player_found">No app supporting this media was found. Try with the share button.</string>
     <string name="browser_not_found">No browser app found</string>
     <string name="directory_picked">Directory saved. Start the download again.</string>
-    <string name="permission_granted">Permissions granted, Start the download again.</string>
+    <string name="download_permission_granted">Permissions granted, Start the download again.</string>
     <string name="stop">Stop</string>
     <string name="stopped">Stopped</string>
     <string name="paused">Paused</string>
@@ -649,4 +649,6 @@
     <string name="selecting_picked_cache">Selecting %1$d files from cache %2$d, please wait…</string>
     <string name="download_selected_files">Download selected files</string>
     <string name="pass_to_download">Pass to downloads</string>
+    <string name="notifications_permission_denied">Permission denied. The app may have issue displaying notifications.</string>
+    <string name="notifications_permission_granted">Notifications permission granted</string>
 </resources>

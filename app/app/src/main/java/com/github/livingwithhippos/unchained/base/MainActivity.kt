@@ -164,14 +164,26 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private val requestPermissionLauncher =
+    private val requestDownloadPermissionLauncher =
         registerForActivityResult(
             ActivityResultContracts.RequestPermission()
         ) { isGranted: Boolean ->
             if (isGranted) {
-                applicationContext.showToast(R.string.permission_granted)
+                applicationContext.showToast(R.string.download_permission_granted)
             } else {
                 applicationContext.showToast(R.string.needs_download_permission)
+            }
+        }
+
+
+    private val requestNotificationPermissionLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted: Boolean ->
+            if (isGranted) {
+                applicationContext.showToast(R.string.notifications_permission_granted)
+            } else {
+                applicationContext.showToast(R.string.notifications_permission_denied)
             }
         }
 
@@ -423,9 +435,16 @@ class MainActivity : AppCompatActivity() {
                     pickDirectoryLauncher.launch(null)
                 }
                 MainActivityMessage.RequireDownloadPermissions -> {
-                    requestPermissionLauncher.launch(
+                    requestDownloadPermissionLauncher.launch(
                         Manifest.permission.WRITE_EXTERNAL_STORAGE
                     )
+                }
+                MainActivityMessage.RequireNotificationPermissions -> {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        requestNotificationPermissionLauncher.launch(
+                            Manifest.permission.POST_NOTIFICATIONS
+                        )
+                    }
                 }
                 is MainActivityMessage.MultipleDownloadsEnqueued -> {
 
@@ -801,7 +820,6 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNavView.setOnItemReselectedListener {
             if (it.isEnabled) {
                 val currentDestination = navController.currentDestination
-                val previousDestination = navController.previousBackStackEntry
 
                 when(it.itemId) {
                     R.id.navigation_home -> {

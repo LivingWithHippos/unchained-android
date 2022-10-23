@@ -400,7 +400,7 @@
     <string name="no_supported_player_found">Aucune application supportant ce média n\'a été trouvée. Essayez avec le bouton de partage.</string>
     <string name="browser_not_found">Aucune application de navigateur trouvée</string>
     <string name="directory_picked">Répertoire sauvegardé. Recommencez le téléchargement.</string>
-    <string name="permission_granted">Permissions accordées, recommencez le téléchargement.</string>
+    <string name="download_permission_granted">Permissions accordées, recommencez le téléchargement.</string>
     <string name="stop">Arrêter</string>
     <string name="download_in_progress_format">Téléchargement - %1$d%%</string>
     <string name="stopped">Stoppé</string>
@@ -440,4 +440,6 @@
     <string name="download_selected_cache">Télécharger le cache sélectionné</string>
     <string name="download_selected_files">Télécharger les fichiers sélectionnés</string>
     <string name="pass_to_download">Passer aux téléchargements</string>
+    <string name="notifications_permission_denied">Permission refusée. L\'application peut avoir des problèmes d\'affichage des notifications.</string>
+    <string name="notifications_permission_granted">Autorisation de notification accordée</string>
 </resources>

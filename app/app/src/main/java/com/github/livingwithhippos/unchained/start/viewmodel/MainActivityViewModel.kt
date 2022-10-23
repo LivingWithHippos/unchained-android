@@ -1240,6 +1240,15 @@ class MainActivityViewModel @Inject constructor(
         messageLiveData.postValue(Event(MainActivityMessage.RequireDownloadPermissions))
     }
 
+    fun requireNotificationPermissions(callDelay: Boolean = true) {
+        viewModelScope.launch {
+            if (callDelay) {
+                delay(500)
+            }
+            messageLiveData.postValue(Event(MainActivityMessage.RequireNotificationPermissions))
+        }
+    }
+
     fun getDownloadManagerPreference(): String {
         return preferences.getString(
             PreferenceKeys.DownloadManager.KEY,
@@ -1379,6 +1388,7 @@ sealed class MainActivityMessage {
     data class UpdateFound(val signature: String) : MainActivityMessage()
     object RequireDownloadFolder : MainActivityMessage()
     object RequireDownloadPermissions : MainActivityMessage()
+    object RequireNotificationPermissions : MainActivityMessage()
     data class DownloadEnqueued(val source: String, val fileName: String) :
         MainActivityMessage()
 

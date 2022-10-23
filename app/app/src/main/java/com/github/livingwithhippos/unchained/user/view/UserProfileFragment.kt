@@ -1,10 +1,14 @@
 package com.github.livingwithhippos.unchained.user.view
 
+import android.Manifest
 import android.content.SharedPreferences
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import androidx.core.content.PermissionChecker
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -123,6 +127,16 @@ class UserProfileFragment : UnchainedFragment() {
 
         userBinding.bLogout.setOnClickListener {
             activityViewModel.logout()
+        }
+
+        if (
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+            ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.POST_NOTIFICATIONS
+            ) != PermissionChecker.PERMISSION_GRANTED
+        ) {
+            activityViewModel.requireNotificationPermissions()
         }
 
         return userBinding.root

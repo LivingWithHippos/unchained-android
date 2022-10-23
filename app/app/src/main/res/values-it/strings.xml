@@ -397,7 +397,7 @@
     <string name="no_supported_player_found">Nessuna app con supporto media trovata. Prova con il bottone condividi.</string>
     <string name="browser_not_found">Nessuna app browser trovata</string>
     <string name="directory_picked">Cartella impostata. Riavvia il download.</string>
-    <string name="permission_granted">Permessi accordati. Riavvia il download.</string>
+    <string name="download_permission_granted">Permessi accordati. Riavvia il download.</string>
     <string name="stop">Stop</string>
     <string name="download_in_progress_format">Downloading - %1$d%%</string>
     <string name="stopped">Fermato</string>
@@ -436,4 +436,6 @@
     <string name="cache_missing">Cache non trovata</string>
     <string name="download_selected_cache">Scarica cache selezionata</string>
     <string name="pass_to_download">Passa ai download</string>
+    <string name="notifications_permission_denied">Permesso negato. L\'app potrebbe avere dei problemi di notifiche.</string>
+    <string name="notifications_permission_granted">Permessi per notifiche concessi</string>
 </resources>
