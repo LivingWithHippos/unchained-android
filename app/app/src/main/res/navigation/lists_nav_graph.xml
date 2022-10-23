@@ -125,7 +125,8 @@
             />
         <action
             android:id="@+id/action_torrentProcessingFragment_to_torrent_details_dest"
-            app:destination="@id/torrent_details_dest" />
+            app:destination="@id/torrent_details_dest"
+            app:popUpTo="@id/list_tabs_dest" />
         <argument
             android:name="torrentID"
             app:argType="string"
