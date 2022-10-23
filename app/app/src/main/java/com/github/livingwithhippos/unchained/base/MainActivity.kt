@@ -797,6 +797,30 @@ class MainActivity : AppCompatActivity() {
             )
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
+
+        binding.bottomNavView.setOnItemReselectedListener {
+            if (it.isEnabled) {
+                val currentDestination = navController.currentDestination
+                val previousDestination = navController.previousBackStackEntry
+
+                when(it.itemId) {
+                    R.id.navigation_home -> {
+                        // do nothing. There is no other acceptable fragment
+                    }
+                    // if these are enabled I should be logged in already
+                    R.id.navigation_lists -> {
+                        if (currentDestination?.id != R.id.list_tabs_dest) {
+                            navController.popBackStack(R.id.list_tabs_dest, false)
+                        }
+                    }
+                    R.id.navigation_search -> {
+                        if (currentDestination?.id != R.id.search_dest) {
+                            navController.popBackStack(R.id.search_dest, false)
+                        }
+                    }
+                }
+            }
+        }
     }
 
     override fun onBackPressed() {
