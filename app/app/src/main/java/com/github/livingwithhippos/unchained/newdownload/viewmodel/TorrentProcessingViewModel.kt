@@ -52,6 +52,7 @@ class TorrentProcessingViewModel @Inject constructor(
                         networkExceptionLiveData.postEvent(addedMagnet.failure)
                     }
                     is EitherResult.Success -> {
+                        setTorrentID(addedMagnet.success.id)
                         torrentLiveData.postEvent(TorrentEvent.Uploaded(addedMagnet.success))
                     }
                 }
@@ -60,6 +61,9 @@ class TorrentProcessingViewModel @Inject constructor(
     }
 
     fun fetchTorrentDetails(torrentID: String) {
+
+        setTorrentID(torrentID)
+
         viewModelScope.launch {
             val torrentData: TorrentItem? = torrentsRepository.getTorrentInfo(torrentID)
             // todo: replace using either
@@ -186,6 +190,30 @@ class TorrentProcessingViewModel @Inject constructor(
         torrentLiveData.postEvent(event)
     }
 
+
+
+    fun fetchUploadedTorrent(binaryTorrent: ByteArray) {
+        viewModelScope.launch {
+            val availableHosts = torrentsRepository.getAvailableHosts()
+            if (availableHosts.isNullOrEmpty()) {
+                Timber.e("Error fetching available hosts")
+                torrentLiveData.postEvent(TorrentEvent.DownloadedFileFailure)
+            } else {
+                val uploadedTorrent =
+                    torrentsRepository.addTorrent(binaryTorrent, availableHosts.first().host)
+                when (uploadedTorrent) {
+                    is EitherResult.Failure -> {
+                        networkExceptionLiveData.postEvent(uploadedTorrent.failure)
+                        torrentLiveData.postEvent(TorrentEvent.DownloadedFileFailure)
+                    }
+                    is EitherResult.Success -> {
+                        fetchTorrentDetails(uploadedTorrent.success.id)
+                    }
+                }
+            }
+        }
+    }
+
     companion object {
         const val KEY_CACHE = "cache_key"
         const val KEY_CURRENT_TORRENT = "current_torrent_key"
@@ -201,4 +229,7 @@ sealed class TorrentEvent {
     data class FilesSelected(val torrent: TorrentItem) : TorrentEvent()
     object DownloadAll : TorrentEvent()
     data class DownloadCache(val position: Int, val files: Int) : TorrentEvent()
+    object DownloadedFileSuccess: TorrentEvent()
+    object DownloadedFileFailure: TorrentEvent()
+    data class DownloadedFileProgress(val progress: Int): TorrentEvent()
 }

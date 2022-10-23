@@ -1090,7 +1090,7 @@ class MainActivityViewModel @Inject constructor(
         }
     }
 
-    suspend fun downloadFileToCache(
+    fun downloadFileToCache(
         link: String,
         fileName: String,
         cacheDir: File,

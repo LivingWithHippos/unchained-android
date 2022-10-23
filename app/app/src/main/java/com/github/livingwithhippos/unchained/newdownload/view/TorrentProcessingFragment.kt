@@ -9,6 +9,7 @@ import android.widget.PopupMenu
 import androidx.annotation.MenuRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.adapter.FragmentStateAdapter
@@ -17,7 +18,9 @@ import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.data.model.cache.CachedAlternative
 import com.github.livingwithhippos.unchained.data.model.cache.CachedTorrent
+import com.github.livingwithhippos.unchained.data.repository.DownloadResult
 import com.github.livingwithhippos.unchained.databinding.FragmentTorrentProcessingBinding
+import com.github.livingwithhippos.unchained.databinding.NewDownloadFragmentBinding
 import com.github.livingwithhippos.unchained.newdownload.view.TorrentProcessingFragment.Companion.POSITION_FILE_PICKER
 import com.github.livingwithhippos.unchained.newdownload.viewmodel.TorrentEvent
 import com.github.livingwithhippos.unchained.newdownload.viewmodel.TorrentProcessingViewModel
@@ -28,7 +31,12 @@ import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.io.File
+import java.io.IOException
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 
 /**
  * This fragments is shown after a user uploads a torrent or a magnet.
@@ -63,7 +71,6 @@ class TorrentProcessingFragment : UnchainedFragment() {
                 }
                 is TorrentEvent.Uploaded -> {
                     binding.tvStatus.text = getString(R.string.loading_torrent)
-                    viewModel.setTorrentID(content.torrent.id)
                     // get torrent info
                     viewModel.fetchTorrentDetails(content.torrent.id)
                     // todo: add a loop so this is repeated if it fails, instead of wasting the fragment
@@ -147,6 +154,24 @@ class TorrentProcessingFragment : UnchainedFragment() {
                     binding.loadingLayout.visibility = View.VISIBLE
                     binding.loadedLayout.visibility = View.INVISIBLE
                 }
+                TorrentEvent.DownloadedFileFailure -> {
+                    binding.tvStatus.text = getString(R.string.error_loading_torrent)
+                    binding.tvLoadingTorrent.visibility = View.INVISIBLE
+                    binding.loadingCircle.isIndeterminate = false
+                    binding.loadingCircle.progress = 100
+                    binding.loadingLayout.visibility = View.VISIBLE
+                    binding.loadedLayout.visibility = View.INVISIBLE
+
+                }
+                is TorrentEvent.DownloadedFileProgress -> {
+                    binding.tvStatus.text = getString(R.string.downloading_torrent)
+                    binding.loadingCircle.isIndeterminate = false
+                    binding.loadingCircle.progress = content.progress
+
+                }
+                TorrentEvent.DownloadedFileSuccess -> {
+                    // do nothing
+                }
             }
         }
 
@@ -187,7 +212,6 @@ class TorrentProcessingFragment : UnchainedFragment() {
         if (args.torrentID != null) {
             // we are loading an already available torrent
             args.torrentID?.let {
-                viewModel.setTorrentID(it)
                 viewModel.fetchTorrentDetails(it)
             }
         } else if (args.link != null) {
@@ -196,6 +220,7 @@ class TorrentProcessingFragment : UnchainedFragment() {
                 when {
                     it.isTorrent() -> {
                         Timber.d("Found torrent $it")
+                        downloadTorrentToCache(it)
                     }
                     args.link.isMagnet() -> {
                         Timber.d("Found magnet $it")
@@ -244,7 +269,7 @@ class TorrentProcessingFragment : UnchainedFragment() {
                                 pickedCache.cachedFiles.joinToString(separator = ",") {
                                     it.id.toString()
                                 }
-                            Timber.e("Selected files: $selectedFiles from cache $pickedCache")
+
                             viewModel.startSelectionLoop(selectedFiles)
                             // todo: disable buttons and show loading interface
                         } else {
@@ -274,6 +299,61 @@ class TorrentProcessingFragment : UnchainedFragment() {
         }
         // Show the popup menu.
         popup.show()
+    }
+
+    private fun downloadTorrentToCache(link: String) {
+        val nameRegex = "/([^/]+\\.torrent)\$"
+        val m: Matcher = Pattern.compile(nameRegex).matcher(link)
+        val torrentName = if (m.find()) m.group(1) else null
+        val cacheDir = context?.cacheDir
+        if (!torrentName.isNullOrBlank() && cacheDir != null) {
+            activityViewModel.downloadFileToCache(link, torrentName, cacheDir).observe(
+                viewLifecycleOwner
+            ) {
+                when (it) {
+                    is DownloadResult.End -> {
+                        viewModel.triggerTorrentEvent(TorrentEvent.DownloadedFileSuccess)
+                        loadCachedTorrent(cacheDir, it.fileName)
+                    }
+                    DownloadResult.Failure -> {
+                        viewModel.triggerTorrentEvent(TorrentEvent.DownloadedFileFailure)
+                    }
+                    is DownloadResult.Progress -> {
+                        viewModel.triggerTorrentEvent(TorrentEvent.DownloadedFileProgress(it.percent))
+                    }
+                    DownloadResult.WrongURL -> {
+                        viewModel.triggerTorrentEvent(TorrentEvent.DownloadedFileFailure)
+                    }
+                }
+            }
+        }
+    }
+
+
+    private fun loadCachedTorrent(
+        cacheDir: File,
+        fileName: String
+    ) {
+        try {
+            val cacheFile = File(cacheDir, fileName)
+            cacheFile.inputStream().use { inputStream ->
+                val buffer: ByteArray = inputStream.readBytes()
+                viewModel.fetchUploadedTorrent(buffer)
+            }
+        } catch (exception: Exception) {
+            viewModel.triggerTorrentEvent(TorrentEvent.DownloadedFileFailure)
+            when (exception) {
+                is java.io.FileNotFoundException -> {
+                    Timber.e("Torrent conversion: file not found: ${exception.message}")
+                }
+                is IOException -> {
+                    Timber.e("Torrent conversion: IOException error getting the file: ${exception.message}")
+                }
+                else -> {
+                    Timber.e("Torrent conversion: Other error getting the file: ${exception.message}")
+                }
+            }
+        }
     }
 
     companion object {

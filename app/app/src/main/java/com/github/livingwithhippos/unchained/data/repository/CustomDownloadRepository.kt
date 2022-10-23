@@ -20,7 +20,7 @@ class CustomDownloadRepository @Inject constructor(
     ) :
     BaseRepository(protoStore) {
 
-    suspend fun downloadToCache(
+    fun downloadToCache(
         url: String,
         fileName: String,
         cacheDir: File,

@@ -49,10 +49,13 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right"
-            app:popUpTo="@id/list_tabs_dest" />
+            app:popUpTo="@id/list_tabs_dest"
+            />
         <action
             android:id="@+id/action_torrent_details_to_torrent_folder"
-            app:destination="@id/folderListFragment" />
+            app:destination="@id/folderListFragment"
+            app:popUpTo="@id/list_tabs_dest"
+            />
         <argument
             android:name="item"
             app:argType="com.github.livingwithhippos.unchained.data.model.TorrentItem" />
@@ -86,7 +89,8 @@
         <action
             android:id="@+id/action_new_download_dest_to_folderListFragment"
             app:destination="@id/folderListFragment"
-            app:popUpTo="@id/list_tabs_dest" />
+            app:popUpTo="@id/list_tabs_dest"
+            />
         <action
             android:id="@+id/actionUnrestrictDownloadToDetailsFragment"
             app:destination="@id/download_details_dest"
@@ -94,7 +98,8 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right"
-            app:popUpTo="@id/list_tabs_dest" />
+            app:popUpTo="@id/list_tabs_dest"
+            />
         <action
             android:id="@+id/action_new_download_dest_to_torrentDetailsFragment"
             app:destination="@id/torrent_details_dest"
@@ -102,7 +107,8 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right"
-            app:popUpTo="@id/list_tabs_dest" />
+            app:popUpTo="@id/list_tabs_dest"
+            />
         <argument
             android:name="externalUri"
             app:argType="android.net.Uri"
@@ -126,7 +132,8 @@
         <action
             android:id="@+id/action_torrentProcessingFragment_to_torrent_details_dest"
             app:destination="@id/torrent_details_dest"
-            app:popUpTo="@id/list_tabs_dest" />
+            app:popUpTo="@id/list_tabs_dest"
+            />
         <argument
             android:name="torrentID"
             app:argType="string"
