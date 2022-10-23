@@ -191,7 +191,6 @@ class TorrentProcessingViewModel @Inject constructor(
     }
 
 
-
     fun fetchUploadedTorrent(binaryTorrent: ByteArray) {
         viewModelScope.launch {
             val availableHosts = torrentsRepository.getAvailableHosts()
@@ -229,7 +228,7 @@ sealed class TorrentEvent {
     data class FilesSelected(val torrent: TorrentItem) : TorrentEvent()
     object DownloadAll : TorrentEvent()
     data class DownloadCache(val position: Int, val files: Int) : TorrentEvent()
-    object DownloadedFileSuccess: TorrentEvent()
-    object DownloadedFileFailure: TorrentEvent()
-    data class DownloadedFileProgress(val progress: Int): TorrentEvent()
+    object DownloadedFileSuccess : TorrentEvent()
+    object DownloadedFileFailure : TorrentEvent()
+    data class DownloadedFileProgress(val progress: Int) : TorrentEvent()
 }

@@ -2,12 +2,11 @@ package com.github.livingwithhippos.unchained.newdownload.view
 
 import android.os.Build
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import com.github.livingwithhippos.unchained.data.model.cache.CachedAlternative
-import com.github.livingwithhippos.unchained.data.model.cache.CachedTorrent
 import com.github.livingwithhippos.unchained.databinding.FragmentCacheBinding
 import com.github.livingwithhippos.unchained.newdownload.model.CacheFileAdapter
 import com.github.livingwithhippos.unchained.utilities.extension.setFileSize
@@ -39,7 +38,7 @@ class TorrentCacheListFragment() : Fragment() {
         val listsAdapter = CacheFileAdapter()
         binding.rvCacheList.adapter = listsAdapter
 
-        cache?.let {currCache ->
+        cache?.let { currCache ->
             listsAdapter.submitList(currCache.cachedFiles.sortedByDescending { it.fileSize })
 
             val totalSize: Long = currCache.cachedFiles.sumOf { it.fileSize }

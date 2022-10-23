@@ -2,10 +2,10 @@ package com.github.livingwithhippos.unchained.newdownload.view
 
 import android.os.Build
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.github.livingwithhippos.unchained.R
@@ -46,7 +46,7 @@ class TorrentCachePickerFragment : UnchainedFragment() {
         val cacheAdapter =
             CachePagerAdapter(this, cache)
         binding.cachePager.adapter = cacheAdapter
-        binding.cacheTabs.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {
+        binding.cacheTabs.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 activityViewModel.setCurrentTorrentCachePick(torrentID, tab?.position ?: 0)
             }

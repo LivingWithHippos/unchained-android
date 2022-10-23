@@ -9,7 +9,6 @@ import android.widget.PopupMenu
 import androidx.annotation.MenuRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.adapter.FragmentStateAdapter
@@ -20,7 +19,6 @@ import com.github.livingwithhippos.unchained.data.model.cache.CachedAlternative
 import com.github.livingwithhippos.unchained.data.model.cache.CachedTorrent
 import com.github.livingwithhippos.unchained.data.repository.DownloadResult
 import com.github.livingwithhippos.unchained.databinding.FragmentTorrentProcessingBinding
-import com.github.livingwithhippos.unchained.databinding.NewDownloadFragmentBinding
 import com.github.livingwithhippos.unchained.newdownload.view.TorrentProcessingFragment.Companion.POSITION_FILE_PICKER
 import com.github.livingwithhippos.unchained.newdownload.viewmodel.TorrentEvent
 import com.github.livingwithhippos.unchained.newdownload.viewmodel.TorrentProcessingViewModel
@@ -31,7 +29,6 @@ import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.io.File
 import java.io.IOException
@@ -40,12 +37,6 @@ import java.util.regex.Pattern
 
 /**
  * This fragments is shown after a user uploads a torrent or a magnet.
- * 1. Show uploading/loading status
- * 2. Check caching
- * 3. Let the user pick a cached version
- * 4. Let the user download all files or select which files
- * 5. Apply the modifications and send the user to the torrent details fragment
- * todo: the torrent details fragment needs to let the user do 3/4 if the torrent is still in "select files" mode
  */
 @AndroidEntryPoint
 class TorrentProcessingFragment : UnchainedFragment() {
@@ -79,7 +70,6 @@ class TorrentProcessingFragment : UnchainedFragment() {
                     // torrent loaded
                     if (activityViewModel.getCurrentTorrentCachePick()?.first != content.item.id) {
                         // clear up old cache
-                        // todo: add to onDestroy
                         activityViewModel.clearCurrentTorrentCachePick()
                     }
                     // check if we are already beyond file selection
@@ -178,6 +168,11 @@ class TorrentProcessingFragment : UnchainedFragment() {
         return binding.root
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        activityViewModel.clearCurrentTorrentCachePick()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val tabLayout: TabLayout = view.findViewById(R.id.pickerTabs)
         val viewPager: ViewPager2 = view.findViewById(R.id.pickerPager)
@@ -200,12 +195,6 @@ class TorrentProcessingFragment : UnchainedFragment() {
         binding.pickerPager.isUserInputEnabled = false
 
         binding.fabDownload.setOnClickListener {
-            /**
-             * todo: load based on status, maybe also on active tab
-             * - loading info: download all
-             * - loading cache or no cache: download all, download selected
-             * - cache available: download all, download selected, download cache
-             */
             showMenu(it, R.menu.download_mode_picker)
         }
 
@@ -271,7 +260,6 @@ class TorrentProcessingFragment : UnchainedFragment() {
                                 }
 
                             viewModel.startSelectionLoop(selectedFiles)
-                            // todo: disable buttons and show loading interface
                         } else {
                             Timber.e("No cache corresponding to index ${pick.first} found")
                         }

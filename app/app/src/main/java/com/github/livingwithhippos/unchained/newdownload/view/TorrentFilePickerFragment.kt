@@ -2,10 +2,10 @@ package com.github.livingwithhippos.unchained.newdownload.view
 
 import android.os.Build
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
 
@@ -39,7 +39,7 @@ class TorrentFilePickerFragment : Fragment() {
         @JvmStatic
         fun newInstance(torrent: TorrentItem?) =
             TorrentFilePickerFragment().apply {
-                if (torrent !=  null)
+                if (torrent != null)
                     arguments = Bundle().apply {
                         putParcelable(ARG_TORRENT, torrent)
                     }

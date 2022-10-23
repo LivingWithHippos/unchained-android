@@ -59,7 +59,6 @@ import java.util.regex.Pattern
 @AndroidEntryPoint
 class NewDownloadFragment : UnchainedFragment() {
 
-    // todo: switch to the navigation scoped ViewModel to manage the transition between fragments
     // if we receive an intent and new download is already selected and showing a DownloadDetailsFragment, it may not trigger the observers in this class
     private val viewModel: NewDownloadViewModel by viewModels()
 
@@ -238,8 +237,6 @@ class NewDownloadFragment : UnchainedFragment() {
     private fun setupClickListeners(binding: NewDownloadFragmentBinding) {
         // add the unrestrict button listener
         binding.bUnrestrict.setOnClickListener {
-
-            // todo: check if opening from the browser trigger the ExpiredToken option
             val authState = activityViewModel.getAuthenticationMachineState()
             if (authState is FSMAuthenticationState.AuthenticatedPrivateToken || authState is FSMAuthenticationState.AuthenticatedOpenToken) {
                 val link: String = binding.tiLink.text.toString().trim()
@@ -408,7 +405,7 @@ class NewDownloadFragment : UnchainedFragment() {
                             Timber.d("Torrent shared file found: $fileName")
                             when {
                                 // check if it's a container
-                                CONTAINER_EXTENSION_PATTERN.toRegex().matches(fileName ?: "") -> {
+                                CONTAINER_EXTENSION_PATTERN.toRegex().matches(fileName) -> {
                                     handled = true
                                     loadContainer(binding, link)
                                 }
