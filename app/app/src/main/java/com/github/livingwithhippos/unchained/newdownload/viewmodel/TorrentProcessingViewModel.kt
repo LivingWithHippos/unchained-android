@@ -157,7 +157,9 @@ class TorrentProcessingViewModel @Inject constructor(
                             selected = true
                         }
                     }
-                } else {
+                }
+
+                if (selected) {
                     val torrentItem: TorrentItem? = torrentsRepository.getTorrentInfo(id)
                     if (torrentItem != null) {
                         if (!beforeSelectionStatusList.contains(torrentItem.status)) {
