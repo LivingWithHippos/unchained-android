@@ -92,6 +92,7 @@ class MainActivity : AppCompatActivity() {
         super.onStop()
     }
 
+    @Suppress("DEPRECATION")
     @SuppressLint("PackageManagerGetSignatures")
     private fun getApplicationSignatures(packageName: String = getPackageName()): List<String> {
         val signatureList: List<String>
@@ -438,7 +439,7 @@ class MainActivity : AppCompatActivity() {
                         viewModel.requireDownloadPermissions()
                     } else {
 
-                        when (val dm = viewModel.getDownloadManagerPreference()) {
+                        when (viewModel.getDownloadManagerPreference()) {
                             PreferenceKeys.DownloadManager.SYSTEM -> {
                                 val manager =
                                     applicationContext.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
