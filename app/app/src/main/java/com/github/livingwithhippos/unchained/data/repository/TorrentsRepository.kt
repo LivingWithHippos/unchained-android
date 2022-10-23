@@ -119,12 +119,12 @@ class TorrentsRepository @Inject constructor(
     suspend fun selectFiles(
         id: String,
         files: String = "all"
-    ) {
+    ): EitherResult<UnchainedNetworkException, Unit> {
         val token = getToken()
 
         Timber.d("Selecting files for torrent: $id")
         // this call has no return type
-        safeApiCall(
+        val response = eitherApiResult(
             call = {
                 torrentApiHelper.selectFiles(
                     token = "Bearer $token",
@@ -134,6 +134,8 @@ class TorrentsRepository @Inject constructor(
             },
             errorMessage = "Error Selecting Torrent Files"
         )
+
+        return response
     }
 
     suspend fun deleteTorrent(
