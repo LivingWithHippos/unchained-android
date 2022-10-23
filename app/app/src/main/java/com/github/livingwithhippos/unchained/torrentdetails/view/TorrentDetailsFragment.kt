@@ -25,6 +25,7 @@ import com.github.livingwithhippos.unchained.data.model.NetworkError
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.databinding.FragmentTorrentDetailsBinding
 import com.github.livingwithhippos.unchained.lists.view.ListState
+import com.github.livingwithhippos.unchained.newdownload.view.NewDownloadFragmentDirections
 import com.github.livingwithhippos.unchained.torrentdetails.viewmodel.TorrentDetailsViewModel
 import com.github.livingwithhippos.unchained.utilities.EventObserver
 import com.github.livingwithhippos.unchained.utilities.extension.getApiErrorMessage
@@ -64,6 +65,15 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
                         R.id.delete -> {
                             val dialog = DeleteDialogFragment()
                             dialog.show(parentFragmentManager, "DeleteDialogFragment")
+                            true
+                        }
+                        R.id.reselect -> {
+                            val link = "magnet:?xt=urn:btih:${args.item.hash}"
+                            val action =
+                                TorrentDetailsFragmentDirections.actionTorrentDetailsDestToTorrentProcessingFragment(
+                                    link = link
+                                )
+                            findNavController().navigate(action)
                             true
                         }
                         else -> false

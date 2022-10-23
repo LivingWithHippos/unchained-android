@@ -59,6 +59,11 @@
         <argument
             android:name="item"
             app:argType="com.github.livingwithhippos.unchained.data.model.TorrentItem" />
+        <action
+            android:id="@+id/action_torrent_details_dest_to_torrentProcessingFragment"
+            app:destination="@id/torrentProcessingFragment"
+            app:popUpTo="@id/list_tabs_dest"
+            />
     </fragment>
     <fragment
         android:id="@+id/folderListFragment"

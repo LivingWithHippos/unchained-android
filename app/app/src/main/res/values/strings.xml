@@ -651,4 +651,6 @@
     <string name="pass_to_download">Pass to downloads</string>
     <string name="notifications_permission_denied">Permission denied. The app may have issue displaying notifications.</string>
     <string name="notifications_permission_granted">Notifications permission granted</string>
+    <string name="content_description_reselect_torrent_files">Reselect the torrent files</string>
+    <string name="reselect_torrent_files">Reselect files</string>
 </resources>
