@@ -438,4 +438,6 @@
     <string name="pass_to_download">Passa ai download</string>
     <string name="notifications_permission_denied">Permesso negato. L\'app potrebbe avere dei problemi di notifiche.</string>
     <string name="notifications_permission_granted">Permessi per notifiche concessi</string>
+    <string name="content_description_reselect_torrent_files">Riseleziona file del torrent</string>
+    <string name="reselect_torrent_files">Riseleziona files</string>
 </resources>
