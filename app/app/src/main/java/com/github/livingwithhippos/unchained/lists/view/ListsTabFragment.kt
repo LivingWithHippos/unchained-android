@@ -13,7 +13,6 @@ import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
@@ -52,7 +51,6 @@ import com.github.livingwithhippos.unchained.utilities.DataBindingDetailsLookup
 import com.github.livingwithhippos.unchained.utilities.EventObserver
 import com.github.livingwithhippos.unchained.utilities.TORRENTS_TAB
 import com.github.livingwithhippos.unchained.utilities.beforeSelectionStatusList
-import com.github.livingwithhippos.unchained.utilities.endedStatusList
 import com.github.livingwithhippos.unchained.utilities.extension.delayedScrolling
 import com.github.livingwithhippos.unchained.utilities.extension.getApiErrorMessage
 import com.github.livingwithhippos.unchained.utilities.extension.getDownloadedFileUri
@@ -434,12 +432,19 @@ class DownloadsListFragment : UnchainedFragment(), DownloadListListener {
                 val downloads: List<DownloadItem> = downloadTracker.selection.toList()
                 if (downloads.isNotEmpty()) {
                     if (downloads.size == 1) {
-                        activityViewModel.enqueueDownload(downloads.first().download, downloads.first().filename)
+                        activityViewModel.enqueueDownload(
+                            downloads.first().download,
+                            downloads.first().filename
+                        )
                     } else {
                         activityViewModel.enqueueDownloads(downloads)
                     }
                 } else
                     context?.showToast(R.string.select_one_item)
+            }
+
+            override fun openSelectedDetails() {
+                // used only in torrent view
             }
         }
 
@@ -604,6 +609,11 @@ class TorrentsListFragment : UnchainedFragment(), TorrentListListener {
                 override fun onSelectionChanged() {
                     super.onSelectionChanged()
                     binding.selectedTorrents = torrentTracker.selection.size()
+                    if (torrentTracker.selection.size() == 1) {
+                        binding.bDetailsSelected.visibility = View.VISIBLE
+                    } else {
+                        binding.bDetailsSelected.visibility = View.GONE
+                    }
                 }
             })
 
@@ -625,6 +635,20 @@ class TorrentsListFragment : UnchainedFragment(), TorrentListListener {
                     viewModel.downloadItems(torrentTracker.selection.toList())
                 } else
                     context?.showToast(R.string.select_one_item)
+            }
+
+            override fun openSelectedDetails() {
+                if (torrentTracker.selection.toList().size == 1) {
+                    val item: TorrentItem = torrentTracker.selection.toList().first()
+                    val action = if (beforeSelectionStatusList.contains(item.status))
+                        ListsTabFragmentDirections.actionListTabsDestToTorrentProcessingFragment(
+                            torrentID = item.id
+                        )
+                    else
+                        ListsTabFragmentDirections.actionListsTabToTorrentDetails(item)
+                    findNavController().navigate(action)
+                } else
+                    Timber.e("Somehow user triggered openSelectedDetails with a selection size of ${torrentTracker.selection.toList().size}")
             }
         }
 
@@ -753,9 +777,10 @@ class TorrentsListFragment : UnchainedFragment(), TorrentListListener {
 
             } else if (beforeSelectionStatusList.contains(item.status)) {
                 // go to torrent processing since it is still loading
-                val action = ListsTabFragmentDirections.actionListTabsDestToTorrentProcessingFragment(
-                    torrentID = item.id
-                )
+                val action =
+                    ListsTabFragmentDirections.actionListTabsDestToTorrentProcessingFragment(
+                        torrentID = item.id
+                    )
                 if (controller.currentDestination?.id == R.id.list_tabs_dest)
                     controller.navigate(action)
                 else
@@ -782,4 +807,5 @@ interface SelectedItemsButtonsListener {
     fun deleteSelectedItems()
     fun shareSelectedItems()
     fun downloadSelectedItems()
+    fun openSelectedDetails()
 }

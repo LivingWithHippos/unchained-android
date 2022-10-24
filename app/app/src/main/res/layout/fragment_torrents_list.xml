@@ -64,6 +64,18 @@
                 android:onClick="@{() -> listener.downloadSelectedItems()}"
                 android:tooltipText="@string/download_selected" />
 
+            <ImageButton
+                android:id="@+id/bDetailsSelected"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="10dp"
+                android:backgroundTint="@android:color/transparent"
+                android:contentDescription="@string/torrent_details"
+                android:src="@drawable/icon_info"
+                android:visibility="gone"
+                android:onClick="@{() -> listener.openSelectedDetails()}"
+                android:tooltipText="@string/torrent_details" />
+
         </LinearLayout>
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout

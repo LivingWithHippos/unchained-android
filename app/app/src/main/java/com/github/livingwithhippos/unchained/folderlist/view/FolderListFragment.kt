@@ -227,6 +227,10 @@ class FolderListFragment : UnchainedFragment(), DownloadListListener {
                 } else
                     context?.showToast(R.string.select_one_item)
             }
+
+            override fun openSelectedDetails() {
+                // not implemented at the moment
+            }
         }
 
         binding.cbSelectAll.setOnCheckedChangeListener { _, isChecked ->
