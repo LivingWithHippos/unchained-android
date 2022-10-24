@@ -4,6 +4,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: "androidx.navigation.safeargs.kotlin"
 apply plugin: 'com.google.protobuf'
+apply plugin: 'com.mikepenz.aboutlibraries.plugin'
 apply plugin: 'kotlin-parcelize'
 
 protobuf {
@@ -262,6 +263,10 @@ dependencies {
 
     // countly
     debugImplementation deps.countly
+
+    // about
+    implementation deps.aboutlibraries.core
+    implementation deps.aboutlibraries.ui
 
     // test
     androidTestImplementation deps.test.core_ktx

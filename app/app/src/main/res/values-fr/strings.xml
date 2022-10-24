@@ -85,6 +85,8 @@
     <string name="rd_settings_link_description">Gérez vos paramètres utilisateur, statut Premium et convertissez des points depuis la page de votre compte.</string>
     <string name="settings">Paramètres</string>
     <string name="content_description_settings">Paramètres pour l’application</string>
+    <string name="about">À propos de</string>
+    <string name="content_description_about">Détails de l\'application</string>
     <string name="error_unrestricting_download">Erreur lors du retrait de la restriction du téléchargement</string>
     <string name="internal_error">Erreur interne</string>
     <string name="bad_parameter_value">Valeur du paramètre incorrecte</string>
