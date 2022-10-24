@@ -85,6 +85,8 @@
     <string name="rd_settings_link_description">Gestisci le impostazioni, stato premium e converti i punti nella tua pagina account.</string>
     <string name="settings">Impostazioni</string>
     <string name="content_description_settings">Impostazioni della applicazione</string>
+    <string name="about">Informazioni</string>
+    <string name="content_description_about">Dettagli sull\'app</string>
     <string name="error_unrestricting_download">Errore durante lo sblocco del download</string>
     <string name="internal_error">Error interno</string>
     <string name="bad_parameter_value">Valore parametro errato</string>

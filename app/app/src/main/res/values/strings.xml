@@ -91,7 +91,7 @@
     <string name="settings">Settings</string>
     <string name="content_description_settings">Settings for the application</string>
     <string name="about">About</string>
-    <string name="content_description_about">Details about application</string>
+    <string name="content_description_about">Details about the app</string>
     <string name="error_unrestricting_download">Error while un-restricting the download</string>
     <string name="internal_error">Internal error</string>
     <string name="bad_parameter_value">Bad parameter value</string>
