@@ -1,12 +1,13 @@
 package com.github.livingwithhippos.unchained.plugins.model
 
-import android.os.Parcel
 import android.os.Parcelable
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import kotlinx.parcelize.Parcelize
 
 // todo: replace all the Parcelable with the kotlin library
 @JsonClass(generateAdapter = true)
+@Parcelize
 data class Plugin(
     @Json(name = "engine_version")
     val engineVersion: Float,
@@ -26,47 +27,10 @@ data class Plugin(
     val search: PluginSearch,
     @Json(name = "download")
     val download: PluginDownload
-) : Parcelable {
-    constructor(parcel: Parcel) : this(
-        parcel.readFloat(),
-        parcel.readFloat(),
-        parcel.readString()!!,
-        parcel.readString()!!,
-        parcel.readString(),
-        parcel.readString(),
-        parcel.readParcelable(SupportedCategories::class.java.classLoader)!!,
-        parcel.readParcelable(PluginSearch::class.java.classLoader)!!,
-        parcel.readParcelable(PluginDownload::class.java.classLoader)!!
-    )
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeFloat(engineVersion)
-        parcel.writeFloat(version)
-        parcel.writeString(url)
-        parcel.writeString(name)
-        parcel.writeString(description)
-        parcel.writeString(author)
-        parcel.writeParcelable(supportedCategories, flags)
-        parcel.writeParcelable(search, flags)
-        parcel.writeParcelable(download, flags)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<Plugin> {
-        override fun createFromParcel(parcel: Parcel): Plugin {
-            return Plugin(parcel)
-        }
-
-        override fun newArray(size: Int): Array<Plugin?> {
-            return arrayOfNulls(size)
-        }
-    }
-}
+) : Parcelable
 
 @JsonClass(generateAdapter = true)
+@Parcelize
 data class SupportedCategories(
     @Json(name = "all")
     val all: String,
@@ -84,45 +48,10 @@ data class SupportedCategories(
     val tv: String?,
     @Json(name = "books")
     val books: String?
-) : Parcelable {
-    constructor(parcel: Parcel) : this(
-        parcel.readString() ?: "",
-        parcel.readString(),
-        parcel.readString(),
-        parcel.readString(),
-        parcel.readString(),
-        parcel.readString(),
-        parcel.readString(),
-        parcel.readString()
-    )
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(all)
-        parcel.writeString(anime)
-        parcel.writeString(software)
-        parcel.writeString(games)
-        parcel.writeString(movies)
-        parcel.writeString(music)
-        parcel.writeString(tv)
-        parcel.writeString(books)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<SupportedCategories> {
-        override fun createFromParcel(parcel: Parcel): SupportedCategories {
-            return SupportedCategories(parcel)
-        }
-
-        override fun newArray(size: Int): Array<SupportedCategories?> {
-            return arrayOfNulls(size)
-        }
-    }
-}
+) : Parcelable
 
 @JsonClass(generateAdapter = true)
+@Parcelize
 data class PluginSearch(
     @Json(name = "category")
     val urlCategory: String?,
@@ -130,35 +59,10 @@ data class PluginSearch(
     val urlNoCategory: String,
     @Json(name = "page_start")
     val pageStart: Int? = 1
-) : Parcelable {
-    constructor(parcel: Parcel) : this(
-        parcel.readString(),
-        parcel.readString()!!,
-        parcel.readValue(Int::class.java.classLoader) as? Int
-    )
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(urlCategory)
-        parcel.writeString(urlNoCategory)
-        parcel.writeValue(pageStart)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<PluginSearch> {
-        override fun createFromParcel(parcel: Parcel): PluginSearch {
-            return PluginSearch(parcel)
-        }
-
-        override fun newArray(size: Int): Array<PluginSearch?> {
-            return arrayOfNulls(size)
-        }
-    }
-}
+) : Parcelable
 
 @JsonClass(generateAdapter = true)
+@Parcelize
 data class PluginDownload(
     @Json(name = "internal")
     val internalParser: InternalParser?,
@@ -170,71 +74,19 @@ data class PluginDownload(
     val indirectTableLink: TableParser?,
     @Json(name = "regexes")
     val regexes: PluginRegexes
-) : Parcelable {
-    constructor(parcel: Parcel) : this(
-        parcel.readParcelable(InternalParser::class.java.classLoader),
-        parcel.readParcelable(TableParser::class.java.classLoader),
-        parcel.readParcelable(TableParser::class.java.classLoader),
-        parcel.readParcelable(TableParser::class.java.classLoader),
-        parcel.readParcelable(PluginRegexes::class.java.classLoader)!!
-    )
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeParcelable(internalParser, flags)
-        parcel.writeParcelable(directParser, flags)
-        parcel.writeParcelable(tableLink, flags)
-        parcel.writeParcelable(indirectTableLink, flags)
-        parcel.writeParcelable(regexes, flags)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<PluginDownload> {
-        override fun createFromParcel(parcel: Parcel): PluginDownload {
-            return PluginDownload(parcel)
-        }
-
-        override fun newArray(size: Int): Array<PluginDownload?> {
-            return arrayOfNulls(size)
-        }
-    }
-}
+) : Parcelable
 
 @JsonClass(generateAdapter = true)
+@Parcelize
 data class RegexpsGroup(
     @Json(name = "regex_use")
     val regexUse: String = "first",
     @Json(name = "regexps")
     val regexps: List<CustomRegex>
-) : Parcelable {
-    constructor(parcel: Parcel) : this(
-        parcel.readString()!!,
-        parcel.createTypedArrayList(CustomRegex)!!
-    )
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(regexUse)
-        parcel.writeTypedList(regexps)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<RegexpsGroup> {
-        override fun createFromParcel(parcel: Parcel): RegexpsGroup {
-            return RegexpsGroup(parcel)
-        }
-
-        override fun newArray(size: Int): Array<RegexpsGroup?> {
-            return arrayOfNulls(size)
-        }
-    }
-}
+) : Parcelable
 
 @JsonClass(generateAdapter = true)
+@Parcelize
 data class CustomRegex(
     @Json(name = "regex")
     val regex: String,
@@ -244,93 +96,24 @@ data class CustomRegex(
     val slugType: String = "complete",
     @Json(name = "other")
     val other: String?
-) : Parcelable {
-    constructor(parcel: Parcel) : this(
-        parcel.readString() ?: "",
-        parcel.readInt(),
-        parcel.readString() ?: "",
-        parcel.readString()
-    )
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(regex)
-        parcel.writeInt(group)
-        parcel.writeString(slugType)
-        parcel.writeString(other)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<CustomRegex> {
-        override fun createFromParcel(parcel: Parcel): CustomRegex {
-            return CustomRegex(parcel)
-        }
-
-        override fun newArray(size: Int): Array<CustomRegex?> {
-            return arrayOfNulls(size)
-        }
-    }
-}
+) : Parcelable
 
 @JsonClass(generateAdapter = true)
+@Parcelize
 data class InternalParser(
     @Json(name = "link")
     val link: RegexpsGroup
-) : Parcelable {
-    constructor(parcel: Parcel) : this(
-        parcel.readParcelable(RegexpsGroup::class.java.classLoader)!!
-    )
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeParcelable(link, flags)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<InternalParser> {
-        override fun createFromParcel(parcel: Parcel): InternalParser {
-            return InternalParser(parcel)
-        }
-
-        override fun newArray(size: Int): Array<InternalParser?> {
-            return arrayOfNulls(size)
-        }
-    }
-}
+) : Parcelable
 
 @JsonClass(generateAdapter = true)
+@Parcelize
 data class Internal(
     @Json(name = "link")
     val link: RegexpsGroup
-) : Parcelable {
-    constructor(parcel: Parcel) : this(
-        parcel.readParcelable(RegexpsGroup::class.java.classLoader)!!
-    )
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeParcelable(link, flags)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<Internal> {
-        override fun createFromParcel(parcel: Parcel): Internal {
-            return Internal(parcel)
-        }
-
-        override fun newArray(size: Int): Array<Internal?> {
-            return arrayOfNulls(size)
-        }
-    }
-}
+) : Parcelable
 
 @JsonClass(generateAdapter = true)
+@Parcelize
 data class TableParser(
     @Json(name = "class")
     val className: String?,
@@ -338,35 +121,10 @@ data class TableParser(
     val idName: String?,
     @Json(name = "columns")
     val columns: Columns
-) : Parcelable {
-    constructor(parcel: Parcel) : this(
-        parcel.readString(),
-        parcel.readString(),
-        parcel.readParcelable(Columns::class.java.classLoader)!!
-    )
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(className)
-        parcel.writeString(idName)
-        parcel.writeParcelable(columns, flags)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<TableParser> {
-        override fun createFromParcel(parcel: Parcel): TableParser {
-            return TableParser(parcel)
-        }
-
-        override fun newArray(size: Int): Array<TableParser?> {
-            return arrayOfNulls(size)
-        }
-    }
-}
+) : Parcelable
 
 @JsonClass(generateAdapter = true)
+@Parcelize
 data class DirectParser(
     @Json(name = "class")
     val className: String?,
@@ -374,35 +132,10 @@ data class DirectParser(
     val idName: String?,
     @Json(name = "entry-class")
     val entryClass: String
-) : Parcelable {
-    constructor(parcel: Parcel) : this(
-        parcel.readString(),
-        parcel.readString(),
-        parcel.readString() ?: "",
-    )
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(className)
-        parcel.writeString(idName)
-        parcel.writeString(entryClass)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<TableParser> {
-        override fun createFromParcel(parcel: Parcel): TableParser {
-            return TableParser(parcel)
-        }
-
-        override fun newArray(size: Int): Array<TableParser?> {
-            return arrayOfNulls(size)
-        }
-    }
-}
+) : Parcelable
 
 @JsonClass(generateAdapter = true)
+@Parcelize
 data class PluginRegexes(
     @Json(name = "name")
     val nameRegex: RegexpsGroup,
@@ -420,45 +153,10 @@ data class PluginRegexes(
     val hostingRegexes: RegexpsGroup?,
     @Json(name = "details")
     val detailsRegex: RegexpsGroup?
-) : Parcelable {
-    constructor(parcel: Parcel) : this(
-        parcel.readParcelable(RegexpsGroup::class.java.classLoader)!!,
-        parcel.readParcelable(RegexpsGroup::class.java.classLoader),
-        parcel.readParcelable(RegexpsGroup::class.java.classLoader),
-        parcel.readParcelable(RegexpsGroup::class.java.classLoader),
-        parcel.readParcelable(RegexpsGroup::class.java.classLoader),
-        parcel.readParcelable(RegexpsGroup::class.java.classLoader),
-        parcel.readParcelable(RegexpsGroup::class.java.classLoader),
-        parcel.readParcelable(RegexpsGroup::class.java.classLoader)
-    )
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeParcelable(nameRegex, flags)
-        parcel.writeParcelable(seedersRegex, flags)
-        parcel.writeParcelable(leechersRegex, flags)
-        parcel.writeParcelable(sizeRegex, flags)
-        parcel.writeParcelable(magnetRegex, flags)
-        parcel.writeParcelable(torrentRegexes, flags)
-        parcel.writeParcelable(hostingRegexes, flags)
-        parcel.writeParcelable(detailsRegex, flags)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<PluginRegexes> {
-        override fun createFromParcel(parcel: Parcel): PluginRegexes {
-            return PluginRegexes(parcel)
-        }
-
-        override fun newArray(size: Int): Array<PluginRegexes?> {
-            return arrayOfNulls(size)
-        }
-    }
-}
+) : Parcelable
 
 @JsonClass(generateAdapter = true)
+@Parcelize
 data class Columns(
     @Json(name = "name_column")
     val nameColumn: Int?,
@@ -476,40 +174,4 @@ data class Columns(
     val detailsColumn: Int?,
     @Json(name = "hosting_column")
     val hostingColumn: Int?
-) : Parcelable {
-    constructor(parcel: Parcel) : this(
-        parcel.readValue(Int::class.java.classLoader) as? Int,
-        parcel.readValue(Int::class.java.classLoader) as? Int,
-        parcel.readValue(Int::class.java.classLoader) as? Int,
-        parcel.readValue(Int::class.java.classLoader) as? Int,
-        parcel.readValue(Int::class.java.classLoader) as? Int,
-        parcel.readValue(Int::class.java.classLoader) as? Int,
-        parcel.readValue(Int::class.java.classLoader) as? Int,
-        parcel.readValue(Int::class.java.classLoader) as? Int
-    )
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeValue(nameColumn)
-        parcel.writeValue(seedersColumn)
-        parcel.writeValue(leechersColumn)
-        parcel.writeValue(sizeColumn)
-        parcel.writeValue(magnetColumn)
-        parcel.writeValue(torrentColumn)
-        parcel.writeValue(detailsColumn)
-        parcel.writeValue(hostingColumn)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<Columns> {
-        override fun createFromParcel(parcel: Parcel): Columns {
-            return Columns(parcel)
-        }
-
-        override fun newArray(size: Int): Array<Columns?> {
-            return arrayOfNulls(size)
-        }
-    }
-}
+) : Parcelable

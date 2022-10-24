@@ -1,6 +1,5 @@
 package com.github.livingwithhippos.unchained.settings.viewmodel
 
-import android.os.Parcel
 import android.os.Parcelable
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -15,6 +14,7 @@ import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.postEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import kotlinx.parcelize.Parcelize
 import javax.inject.Inject
 
 @HiltViewModel
@@ -104,6 +104,7 @@ class KodiManagementViewModel @Inject constructor(
     }
 }
 
+@Parcelize
 data class TempKodiDevice(
     val name: String,
     val address: String,
@@ -111,37 +112,4 @@ data class TempKodiDevice(
     val username: String?,
     val password: String?,
     val isDefault: Boolean = false,
-) : Parcelable {
-    constructor(parcel: Parcel) : this(
-        parcel.readString() ?: "kodi device",
-        parcel.readString() ?: "",
-        parcel.readInt(),
-        parcel.readString(),
-        parcel.readString(),
-        parcel.readByte() != 0.toByte()
-    ) {
-    }
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(name)
-        parcel.writeString(address)
-        parcel.writeInt(port)
-        parcel.writeString(username)
-        parcel.writeString(password)
-        parcel.writeByte(if (isDefault) 1 else 0)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<TempKodiDevice> {
-        override fun createFromParcel(parcel: Parcel): TempKodiDevice {
-            return TempKodiDevice(parcel)
-        }
-
-        override fun newArray(size: Int): Array<TempKodiDevice?> {
-            return arrayOfNulls(size)
-        }
-    }
-}
+) : Parcelable

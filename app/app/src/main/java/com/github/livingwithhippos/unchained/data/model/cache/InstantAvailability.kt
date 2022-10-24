@@ -9,30 +9,29 @@ import com.squareup.moshi.ToJson
 import kotlinx.parcelize.Parcelize
 import timber.log.Timber
 
-// todo: apply @Parcelize to all the current Parcelable objects
 @Parcelize
 data class InstantAvailability(
     val cachedTorrents: List<CachedTorrent>
-): Parcelable
+) : Parcelable
 
 @Parcelize
 data class CachedTorrent(
     val btih: String,
     // i may have a list of providers, for now I always see only "rd"
     val cachedAlternatives: List<CachedAlternative>
-): Parcelable
+) : Parcelable
 
 @Parcelize
 data class CachedAlternative(
     val cachedFiles: List<CachedFile>
-): Parcelable
+) : Parcelable
 
 @Parcelize
 data class CachedFile(
     val id: Long,
     val fileName: String,
     val fileSize: Long
-): Parcelable
+) : Parcelable
 
 class CachedRequestAdapter : JsonAdapter<InstantAvailability>() {
 

@@ -1,9 +1,7 @@
 package com.github.livingwithhippos.unchained.plugins.model
 
-import android.os.Parcel
 import android.os.Parcelable
 import androidx.annotation.Keep
-import com.github.livingwithhippos.unchained.data.model.cache.CachedTorrent
 import kotlinx.parcelize.Parcelize
 
 @Keep
