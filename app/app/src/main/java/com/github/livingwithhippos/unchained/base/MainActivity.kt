@@ -61,6 +61,7 @@ import com.github.livingwithhippos.unchained.utilities.extension.openExternalWeb
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.github.livingwithhippos.unchained.utilities.extension.toHex
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.mikepenz.aboutlibraries.LibsBuilder
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
@@ -646,6 +647,25 @@ class MainActivity : AppCompatActivity() {
 
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp(appBarConfiguration)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.settings -> {
+                openSettings()
+                true
+            }
+            R.id.about -> {
+                LibsBuilder()
+                    .withAboutAppName(getString(R.string.app_name))
+                    .withAboutIconShown(true)
+                    .withAboutVersionShown(true)
+                    .withActivityTitle(getString(R.string.about))
+                    .start(this)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     private fun getIntentData() {

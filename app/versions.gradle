@@ -42,6 +42,7 @@ versions.test_junit = "1.1.3"
 versions.test_orchestrator = "1.4.1"
 versions.timber = "5.0.1"
 versions.viewpager2 = "1.0.0"
+versions.aboutlibraries = "10.5.1"
 versions.work = "2.7.1"
 ext.versions = versions
 
@@ -241,5 +242,12 @@ deps.viewpager2 = "androidx.viewpager2:viewpager2:$versions.viewpager2"
 def work = [:]
 work.core = "androidx.work:work-runtime-ktx:$versions.work"
 deps.work = work
+
+def aboutlibraries = [:]
+aboutlibraries.plugin = "com.mikepenz.aboutlibraries.plugin:aboutlibraries-plugin:$versions.aboutlibraries"
+aboutlibraries.core = "com.mikepenz:aboutlibraries-core:$versions.aboutlibraries"
+aboutlibraries.ui = "com.mikepenz:aboutlibraries:$versions.aboutlibraries"
+
+deps.aboutlibraries = aboutlibraries
 
 ext.deps = deps

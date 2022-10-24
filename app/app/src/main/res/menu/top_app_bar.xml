@@ -8,4 +8,12 @@
         android:title="@string/settings"
         android:orderInCategory="99"
         app:showAsAction="never" />
+
+    <item
+        android:id="@+id/about"
+        android:contentDescription="@string/content_description_about"
+        android:title="@string/about"
+        android:orderInCategory="99"
+        app:showAsAction="never" />
+
 </menu>
