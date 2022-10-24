@@ -16,11 +16,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Run tests
         run: ./gradlew lintDebug
       - name: Save lint reports
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         # artifacts are zipped together in the end
         with:
             name: lint-debug-report
@@ -30,11 +30,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Run tests
         run: ./gradlew lintRelease
       - name: Save lint reports
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         # artifacts are zipped together in the end
         with:
             name: lint-release-report
@@ -43,7 +43,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Retrieve keystore for apk signing
         env:
             ENCODED_KEYSTORE: ${{ secrets.KEYSTORE }}
@@ -58,7 +58,7 @@ jobs:
             KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: ./gradlew clean assembleRelease --stacktrace
       - name: Save apk
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
             name: apk
             path: /home/runner/work/unchained-android/unchained-android/app/app/build/outputs/apk/release/*.apk
@@ -66,7 +66,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Retrieve keystore for apk signing
         env:
             ENCODED_KEYSTORE: ${{ secrets.KEYSTORE }}
@@ -81,7 +81,7 @@ jobs:
             KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: ./gradlew clean assembleDebug --stacktrace
       - name: Save apk
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
             name: apk-debug
             path: /home/runner/work/unchained-android/unchained-android/app/app/build/outputs/apk/debug/*.apk
