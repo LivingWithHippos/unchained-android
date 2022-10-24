@@ -58,7 +58,7 @@ jobs:
             KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: ./gradlew clean assembleRelease --stacktrace
       - name: Save apk
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
             name: apk
             path: /home/runner/work/unchained-android/unchained-android/app/app/build/outputs/apk/release/*.apk
