@@ -655,4 +655,6 @@
     <string name="notifications_permission_granted">Notifications permission granted</string>
     <string name="content_description_reselect_torrent_files">Reselect the torrent files</string>
     <string name="reselect_torrent_files">Reselect files</string>
+    <string name="selected_files">Selected files</string>
+    <string name="selected_size">Selected size</string>
 </resources>

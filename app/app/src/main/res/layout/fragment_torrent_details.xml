@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <!-- Remember to update the other version of this file -->
+
         <import type="android.view.View" />
 
         <import type="java.util.List" />
@@ -29,6 +29,11 @@
 
     </data>
 
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
     <LinearLayout
         android:id="@+id/rootLayout"
         android:layout_width="match_parent"
@@ -42,119 +47,200 @@
             style="@style/TextAppearance.UnchainedTheme.Headline5"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
             android:layout_margin="20dp"
             android:ellipsize="end"
             android:maxLines="3"
-            android:text="@{torrent.filename, default=`File Name`}"
-            android:layout_gravity="center_horizontal"/>
+            android:text="@{torrent.filename, default=`File Name`}" />
 
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cvTorrentDetails"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
             android:layout_margin="20dp"
             android:checkable="false"
             android:clickable="false"
             android:focusable="true"
-            app:cardElevation="5dp"
             app:cardCornerRadius="10dp"
-            android:layout_gravity="center_horizontal">
+            app:cardElevation="5dp">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="25dp">
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
 
-                <TextView
-                    android:id="@+id/tvStatusTitle"
-                    style="@style/TextAppearance.UnchainedTheme.Overline"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/rd_status"
-                    app:layout_constraintBottom_toTopOf="@+id/tvStatus"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/tvStatus"
-                    style="@style/TextAppearance.UnchainedTheme.Headline6"
-                    android:layout_width="0dp"
+                    <TextView
+                        style="@style/TextAppearance.UnchainedTheme.Body2"
+                        android:textAlignment="center"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="3dp"
+                        android:layout_weight="1"
+                        android:maxLines="2"
+                        android:text="@string/status" />
+
+                    <TextView
+                        style="@style/TextAppearance.UnchainedTheme.Body2"
+                        android:textAlignment="center"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="3dp"
+                        android:layout_weight="1"
+                        android:maxLines="2"
+                        android:text="@string/download" />
+
+                    <TextView
+                        style="@style/TextAppearance.UnchainedTheme.Body2"
+                        android:textAlignment="center"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="3dp"
+                        android:layout_weight="1"
+                        android:maxLines="2"
+                        android:text="@string/size" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@{statusTranslation[torrent.status], default=`Torrent Status`}"
-                    android:textStyle="bold"
-                    app:layout_constraintBottom_toTopOf="@+id/tvSize"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toStartOf="@id/tvStatusTitle"
-                    app:layout_constraintEnd_toStartOf="@id/loadingCircle"
-                    app:layout_constraintTop_toBottomOf="@+id/tvStatusTitle" />
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/tvSize"
-                    android:layout_width="wrap_content"
+                    <TextView
+                        android:textAlignment="center"
+                        style="@style/TextAppearance.UnchainedTheme.Headline7"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@{statusTranslation[torrent.status], default=`Queued`}"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:textAlignment="center"
+                        style="@style/TextAppearance.UnchainedTheme.Headline7"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@{@string/percent_format(torrent.progress), default=`75 %`}"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:textAlignment="center"
+                        style="@style/TextAppearance.UnchainedTheme.Headline7"
+                        fileSize="@{torrent.originalBytes}"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="12215,84 MB"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginVertical="10dp"
+                    android:background="?android:attr/listDivider" />
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="File Size"
-                    fileSize="@{torrent.bytes}"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintEnd_toStartOf="@id/tvSizeSeparator"
-                    app:layout_constraintStart_toStartOf="@id/tvStatus"
-                    app:layout_constraintTop_toBottomOf="@+id/tvStatus"
-                    tools:ignore="HardcodedText" />
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/tvSizeSeparator"
-                    android:layout_width="wrap_content"
+                    <TextView
+                        android:textAlignment="center"
+                        style="@style/TextAppearance.UnchainedTheme.Body2"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="3dp"
+                        android:layout_weight="1"
+                        android:maxLines="2"
+                        android:text="@string/selected_size" />
+
+                    <TextView
+                        android:textAlignment="center"
+                        style="@style/TextAppearance.UnchainedTheme.Body2"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="3dp"
+                        android:layout_weight="1"
+                        android:maxLines="2"
+                        android:text="@string/total_files" />
+
+                    <TextView
+                        android:textAlignment="center"
+                        style="@style/TextAppearance.UnchainedTheme.Body2"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="3dp"
+                        android:layout_weight="1"
+                        android:maxLines="2"
+                        android:text="@string/selected_files" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:text="/"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/tvSize"
-                    android:visibility="@{torrent.originalBytes != torrent.bytes ? View.VISIBLE : View.INVISIBLE}"
-                    tools:ignore="HardcodedText" />
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/tvOriginalSize"
-                    fileSize="@{torrent.originalBytes}"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:text="20 MB"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/tvSizeSeparator"
-                    android:visibility="@{torrent.originalBytes != torrent.bytes ? View.VISIBLE : View.INVISIBLE}"
-                    tools:ignore="HardcodedText" />
+                    <TextView
+                        android:textAlignment="center"
+                        style="@style/TextAppearance.UnchainedTheme.Headline7"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        fileSize="@{torrent.bytes}"
+                        android:text="123 MB"
+                        android:textStyle="bold" />
 
+                    <TextView
+                        android:id="@+id/tvTotalFiles"
+                        android:textAlignment="center"
+                        style="@style/TextAppearance.UnchainedTheme.Headline7"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="14"
+                        android:textStyle="bold" />
 
-                <com.google.android.material.progressindicator.CircularProgressIndicator
-                    android:id="@+id/loadingCircle"
-                    style="@style/Widget.MaterialComponents.CircularProgressIndicator"
-                    android:indeterminate="true"
-                    android:visibility="@{loadingStatusList.contains(torrent.status) &amp;&amp; !torrent.status.equalsIgnoreCase(`downloading`) ? View.VISIBLE : View.GONE}"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="10dp"
-                    app:trackCornerRadius="20dp"
-                    app:indicatorColor="?attr/colorPrimary"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                    <TextView
+                        android:id="@+id/tvSelectedFilesNumber"
+                        android:textAlignment="center"
+                        style="@style/TextAppearance.UnchainedTheme.Headline6"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="3"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
+
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cvDownloadDetails"
             android:layout_width="match_parent"
-            app:layout_constraintWidth_max="400dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
             android:layout_margin="20dp"
             android:checkable="false"
             android:clickable="false"
             android:focusable="true"
-            app:cardElevation="5dp"
-            app:cardCornerRadius="10dp"
             android:visibility="@{torrent.status.equalsIgnoreCase(`downloading`) ? View.VISIBLE : View.GONE}"
-            android:layout_gravity="center_horizontal" >
+            app:cardCornerRadius="10dp"
+            app:cardElevation="5dp"
+            app:layout_constraintWidth_max="400dp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -176,19 +262,19 @@
                     style="@style/TextAppearance.UnchainedTheme.Overline"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:visibility="@{torrent.progress >=0 &amp;&amp; torrent.progress &lt;100 ? View.VISIBLE : View.GONE, default=visible}"
-                    android:text="@{@string/percent_format(torrent.progress), default=`90%`}"
                     android:layout_marginStart="5dp"
+                    android:text="@{@string/percent_format(torrent.progress), default=`90%`}"
+                    android:visibility="@{torrent.progress >=0 &amp;&amp; torrent.progress &lt;100 ? View.VISIBLE : View.GONE, default=visible}"
                     app:layout_constraintBottom_toBottomOf="@+id/tvDownloadOverline"
                     app:layout_constraintStart_toEndOf="@id/tvDownloadOverline" />
 
                 <TextView
                     android:id="@+id/tvSpeed"
                     style="@style/TextAppearance.UnchainedTheme.Headline6"
+                    downloadSpeed="@{torrent.speed}"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="%1$d kb/s"
-                    downloadSpeed="@{torrent.speed}"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toTopOf="@+id/tvSeeders"
                     app:layout_constraintEnd_toStartOf="@id/flProgress"
@@ -198,16 +284,16 @@
                     tools:ignore="HardcodedText" />
 
 
-                    <TextView
-                        android:id="@+id/tvSeeders"
-                        style="@style/TextAppearance.AppCompat.Body1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:layout_constraintStart_toStartOf="@id/tvSpeed"
-                        app:layout_constraintTop_toBottomOf="@+id/tvSpeed"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        android:text="@{torrent.seeders == null ? `` : @plurals/seeders_format(torrent.seeders, torrent.seeders), default=`%1$d seeders`}"
-                        android:visibility="@{torrent.seeders == null ? View.GONE : View.VISIBLE}" />
+                <TextView
+                    android:id="@+id/tvSeeders"
+                    style="@style/TextAppearance.AppCompat.Body1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{torrent.seeders == null ? `` : @plurals/seeders_format(torrent.seeders, torrent.seeders), default=`%1$d seeders`}"
+                    android:visibility="@{torrent.seeders == null ? View.GONE : View.VISIBLE}"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="@id/tvSpeed"
+                    app:layout_constraintTop_toBottomOf="@+id/tvSpeed" />
 
                 <FrameLayout
                     android:id="@+id/flProgress"
@@ -221,16 +307,16 @@
                     <com.google.android.material.progressindicator.CircularProgressIndicator
                         android:id="@+id/pbDownload"
                         style="@style/Widget.MaterialComponents.CircularProgressIndicator"
-                        android:indeterminate="false"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="10dp"
-                        app:trackCornerRadius="20dp"
-                        app:indicatorColor="?attr/colorPrimary"
+                        android:indeterminate="false"
                         android:progress="@{torrent.progress, default=60}"
+                        app:indicatorColor="?attr/colorPrimary"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"/>
+                        app:trackCornerRadius="20dp" />
 
                 </FrameLayout>
 
@@ -242,19 +328,21 @@
             android:id="@+id/bDownload"
             style="@style/Widget.MaterialComponents.Button.Icon"
             android:layout_width="wrap_content"
-            android:minWidth="150dp"
             android:layout_height="wrap_content"
-            android:onClick="@{() -> listener.onDownloadClick(torrent)}"
-            android:layout_marginBottom="20dp"
-            android:text="@string/pass_to_download"
-            android:minLines="3"
-            android:visibility="@{torrent.status.equalsIgnoreCase(`downloaded`) ? View.VISIBLE : View.GONE}"
             android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="20dp"
+            android:minWidth="150dp"
+            android:minLines="3"
+            android:onClick="@{() -> listener.onDownloadClick(torrent)}"
+            android:text="@string/pass_to_download"
+            android:visibility="@{torrent.status.equalsIgnoreCase(`downloaded`) ? View.VISIBLE : View.GONE}"
             app:icon="@drawable/icon_open_external"
-            app:layout_constraintStart_toStartOf="@id/cvDetails"
             app:layout_constraintEnd_toStartOf="@id/bCopy"
+            app:layout_constraintStart_toStartOf="@id/cvDetails"
             app:layout_constraintTop_toBottomOf="@id/cvDetails" />
 
 
     </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
 </layout>

@@ -446,4 +446,6 @@
     <string name="notifications_permission_granted">Autorisation de notification accordée</string>
     <string name="content_description_reselect_torrent_files">Resélectionner les fichiers torrent</string>
     <string name="reselect_torrent_files">Re-sélectionner les fichiers</string>
+    <string name="selected_files">Fichiers sélectionnés</string>
+    <string name="selected_size">Taille sélectionnée</string>
 </resources>

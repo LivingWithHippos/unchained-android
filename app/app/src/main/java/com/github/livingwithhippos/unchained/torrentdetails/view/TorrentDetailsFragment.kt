@@ -25,13 +25,13 @@ import com.github.livingwithhippos.unchained.data.model.NetworkError
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.databinding.FragmentTorrentDetailsBinding
 import com.github.livingwithhippos.unchained.lists.view.ListState
-import com.github.livingwithhippos.unchained.newdownload.view.NewDownloadFragmentDirections
 import com.github.livingwithhippos.unchained.torrentdetails.viewmodel.TorrentDetailsViewModel
 import com.github.livingwithhippos.unchained.utilities.EventObserver
 import com.github.livingwithhippos.unchained.utilities.extension.getApiErrorMessage
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.github.livingwithhippos.unchained.utilities.loadingStatusList
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 /**
  * A simple [Fragment] subclass.
@@ -106,6 +106,10 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
             EventObserver {
                 it?.let { torrent ->
                     torrentBinding.torrent = torrent
+                    val selectedFiles: Int =
+                        torrent.files?.count { file -> file.selected == 1 } ?: 0
+                    torrentBinding.tvSelectedFilesNumber.text = selectedFiles.toString()
+                    torrentBinding.tvTotalFiles.text = (torrent.files?.count() ?: 0).toString()
                 }
             }
         )
@@ -167,6 +171,9 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
         // maybe load and save the latest retrieved one in the view-model?
         if (loadingStatusList.contains(args.item.status))
             viewModel.pollTorrentStatus(args.item.id)
+        else {
+            viewModel.getFullTorrentInfo(args.item.id)
+        }
 
         return torrentBinding.root
     }
