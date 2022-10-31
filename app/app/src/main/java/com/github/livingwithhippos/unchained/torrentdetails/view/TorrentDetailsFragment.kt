@@ -31,7 +31,6 @@ import com.github.livingwithhippos.unchained.utilities.extension.getApiErrorMess
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.github.livingwithhippos.unchained.utilities.loadingStatusList
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 
 /**
  * A simple [Fragment] subclass.
@@ -100,6 +99,7 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
         torrentBinding.loadingStatusList = loadingStatusList
         torrentBinding.statusTranslation = statusTranslation
         torrentBinding.listener = this
+
 
         viewModel.torrentLiveData.observe(
             viewLifecycleOwner,
