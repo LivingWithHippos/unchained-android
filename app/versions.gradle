@@ -13,6 +13,7 @@ versions.countly = "22.06.0"
 versions.dagger = "2.44"
 versions.espresso = "3.4.0"
 versions.datastore = "1.0.0"
+versions.fast_adapter = "5.7.0"
 versions.flexbox = "3.0.0"
 versions.fragment = "1.5.4"
 versions.jsoup = "1.15.3"
@@ -112,6 +113,20 @@ deps.espresso = espresso
 
 deps.flexbox = "com.google.android.flexbox:flexbox:$versions.flexbox"
 
+def fast_adapter = [:]
+fast_adapter.base = "com.mikepenz:fastadapter"
+fast_adapter.core = "${fast_adapter.base}:${versions.fast_adapter}"
+fast_adapter.expandable = "${fast_adapter.base}-extensions-expandable:${versions.fast_adapter}"
+fast_adapter.binding = "${fast_adapter.base}-extensions-binding:${versions.fast_adapter}"
+fast_adapter.diff = "${fast_adapter.base}-extensions-diff:${versions.fast_adapter}"
+fast_adapter.drag = "${fast_adapter.base}-extensions-drag:${versions.fast_adapter}"
+fast_adapter.paged = "${fast_adapter.base}-extensions-paged:${versions.fast_adapter}"
+fast_adapter.scroll = "${fast_adapter.base}-extensions-scroll:${versions.fast_adapter}"
+fast_adapter.swipe = "${fast_adapter.base}-extensions-swipe:${versions.fast_adapter}"
+fast_adapter.ui = "${fast_adapter.base}-extensions-ui:${versions.fast_adapter}"
+fast_adapter.utils = "${fast_adapter.base}-extensions-utils:${versions.fast_adapter}"
+deps.fast_adapter = fast_adapter
+
 def fragment = [:]
 fragment.runtime = "androidx.fragment:fragment:${versions.fragment}"
 fragment.runtime_ktx = "androidx.fragment:fragment-ktx:${versions.fragment}"
@@ -167,8 +182,6 @@ moshi.runtime = "com.squareup.moshi:moshi-kotlin:$versions.moshi"
 moshi.kapt = "com.squareup.moshi:moshi-kotlin-codegen:$versions.moshi"
 deps.moshi = moshi
 
-deps.mock_web_server = "com.squareup.okhttp3:mockwebserver:$versions.mockwebserver"
-
 def navigation = [:]
 navigation.runtime = "androidx.navigation:navigation-runtime:$versions.navigation"
 navigation.runtime_ktx = "androidx.navigation:navigation-runtime-ktx:$versions.navigation"
@@ -183,6 +196,7 @@ deps.navigation = navigation
 def okhttp = [:]
 okhttp.runtime = "com.squareup.okhttp3:okhttp:$versions.okhttp"
 okhttp.doh = "com.squareup.okhttp3:okhttp-dnsoverhttps:$versions.okhttp"
+okhttp.mock_web_server = "com.squareup.okhttp3:mockwebserver:$versions.mockwebserver"
 okhttp.logging_interceptor = "com.squareup.okhttp3:logging-interceptor:$versions.okhttp"
 deps.okhttp = okhttp
 
