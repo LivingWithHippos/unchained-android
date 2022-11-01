@@ -116,6 +116,10 @@ LWeoBVVmaYAiZ3oGaLAV9sV2dvY62XxdCF
 - DaisyF8
 - Roadhouse
 
+#### Translators
+
+- edgarpatronperez (spanish)
+
 #### Media
 
 Logo and symbols inspired by [minimal logo design set](https://www.rawpixel.com/image/843352/minimal-logo-designs-set) offered by [rawpixel.com](https://www.rawpixel.com)
