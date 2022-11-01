@@ -11,6 +11,7 @@ import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.github.livingwithhippos.unchained.BR
 
 // todo: test implementing class with Nothing as generic value to avoid passing listeners
@@ -68,7 +69,7 @@ abstract class DataBindingTrackedAdapter<T : Any, U>(
 }
 
 class DataBindingViewHolder<T, U>(private val binding: ViewDataBinding) :
-    RecyclerView.ViewHolder(binding.root) {
+    ViewHolder(binding.root) {
 
     fun bind(item: T, listener: U?) {
         binding.setVariable(BR.item, item)
@@ -87,7 +88,10 @@ abstract class DataBindingStaticAdapter<T>(
 ) :
     ListAdapter<T, DataBindingStaticViewHolder<T>>(diffCallback) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DataBindingStaticViewHolder<T> {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): DataBindingStaticViewHolder<T> {
         val layoutInflater = LayoutInflater.from(parent.context)
         val binding =
             DataBindingUtil.inflate<ViewDataBinding>(layoutInflater, viewType, parent, false)
@@ -100,7 +104,7 @@ abstract class DataBindingStaticAdapter<T>(
 }
 
 class DataBindingStaticViewHolder<T>(private val binding: ViewDataBinding) :
-    RecyclerView.ViewHolder(binding.root) {
+    ViewHolder(binding.root) {
 
     fun bind(item: T) {
         binding.setVariable(BR.item, item)
@@ -165,7 +169,7 @@ abstract class DataBindingPagingTrackedAdapter<T : Any, U>(
 }
 
 class DataBindingTrackedViewHolder<T, U>(private val binding: ViewDataBinding) :
-    RecyclerView.ViewHolder(binding.root) {
+    ViewHolder(binding.root) {
 
     var mItem: T? = null
 
