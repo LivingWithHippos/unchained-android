@@ -338,14 +338,3 @@ fun View.hideKeyboard() {
         inputMethodManager?.hideSoftInputFromWindow(this.windowToken, 0)
     }
 }
-
-/**
- * Enable or disable user swiping
- * defaults to false (disabled)
- * todo: fix, it's throwing a java.lang.StackOverflowError when used
- * @param enable
- */
-@BindingAdapter("enableUserTouch")
-fun ViewPager2.enableUserInput(enable: Boolean?) {
-    this.enableUserInput(enable == true)
-}
