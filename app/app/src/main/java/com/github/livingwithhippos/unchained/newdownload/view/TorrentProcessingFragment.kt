@@ -110,13 +110,17 @@ class TorrentProcessingFragment : UnchainedFragment() {
                     cachedTorrent = content.cache
 
                     if (content.cache.cachedAlternatives.isNotEmpty()) {
-                        // cache found, enable tab swiping
+                        // cache found, enable tab swiping and clicking
                         binding.pickerPager.isUserInputEnabled = true
+
+                        binding.pickerTabs.getTabAt(0)?.view?.isClickable = true
+                        binding.pickerTabs.getTabAt(1)?.view?.isClickable = true
                     } else {
                         context?.showToast(R.string.cache_missing)
                     }
                 }
                 TorrentEvent.CacheMiss -> {
+                    // fixme: here or above here got triggered but the views were still swipable
                     context?.showToast(R.string.cache_missing)
 
                     binding.loadingLayout.visibility = View.INVISIBLE
@@ -177,6 +181,11 @@ class TorrentProcessingFragment : UnchainedFragment() {
         val tabLayout: TabLayout = view.findViewById(R.id.pickerTabs)
         val viewPager: ViewPager2 = view.findViewById(R.id.pickerPager)
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+            /**
+             * disable clicking until the data and cache are loaded
+             */
+            tab.view.isClickable = false
+
             when (position) {
                 POSITION_FILE_PICKER -> {
                     tab.text = getString(R.string.select_files)
@@ -187,11 +196,13 @@ class TorrentProcessingFragment : UnchainedFragment() {
             }
         }.attach()
 
+
         super.onViewCreated(view, savedInstanceState)
     }
 
     private fun setup(binding: FragmentTorrentProcessingBinding) {
 
+        // disable swiping until the data and cache are loaded
         binding.pickerPager.isUserInputEnabled = false
 
         binding.fabDownload.setOnClickListener {
