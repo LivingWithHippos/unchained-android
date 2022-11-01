@@ -121,7 +121,9 @@
             android:defaultValue="@null" />
         <action
             android:id="@+id/action_newDownloadFragment_to_torrentProcessingFragment"
-            app:destination="@id/torrentProcessingFragment" />
+            app:destination="@id/torrentProcessingFragment"
+            app:popUpTo="@id/list_tabs_dest"
+            />
     </fragment>
     <fragment
         android:id="@+id/torrentProcessingFragment"
