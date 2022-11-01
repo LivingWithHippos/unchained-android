@@ -1,4 +1,4 @@
-package com.github.livingwithhippos.unchained.newdownload.view
+package com.github.livingwithhippos.unchained.torrentfilepicker.view
 
 import android.os.Build
 import android.os.Bundle
@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.github.livingwithhippos.unchained.data.model.cache.CachedAlternative
 import com.github.livingwithhippos.unchained.databinding.FragmentCacheBinding
-import com.github.livingwithhippos.unchained.newdownload.model.CacheFileAdapter
+import com.github.livingwithhippos.unchained.torrentfilepicker.model.CacheFileAdapter
 import com.github.livingwithhippos.unchained.utilities.extension.setFileSize
 
 

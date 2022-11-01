@@ -12,6 +12,7 @@ import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.data.model.cache.CachedTorrent
 import com.github.livingwithhippos.unchained.databinding.FragmentTorrentCachePickerBinding
+import com.github.livingwithhippos.unchained.torrentfilepicker.view.TorrentCacheListFragment
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 

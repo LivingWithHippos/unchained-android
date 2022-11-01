@@ -1,4 +1,4 @@
-package com.github.livingwithhippos.unchained.newdownload.model
+package com.github.livingwithhippos.unchained.torrentfilepicker.model
 
 import androidx.recyclerview.widget.DiffUtil
 import com.github.livingwithhippos.unchained.R

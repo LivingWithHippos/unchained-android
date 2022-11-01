@@ -22,6 +22,7 @@ import com.github.livingwithhippos.unchained.databinding.FragmentTorrentProcessi
 import com.github.livingwithhippos.unchained.newdownload.view.TorrentProcessingFragment.Companion.POSITION_FILE_PICKER
 import com.github.livingwithhippos.unchained.newdownload.viewmodel.TorrentEvent
 import com.github.livingwithhippos.unchained.newdownload.viewmodel.TorrentProcessingViewModel
+import com.github.livingwithhippos.unchained.torrentfilepicker.view.TorrentFilePickerFragment
 import com.github.livingwithhippos.unchained.utilities.beforeSelectionStatusList
 import com.github.livingwithhippos.unchained.utilities.extension.isMagnet
 import com.github.livingwithhippos.unchained.utilities.extension.isTorrent
