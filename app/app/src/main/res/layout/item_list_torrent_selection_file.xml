@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:text=""
             android:checked="@{item.selected}"
-            android:onCheckedChanged="@{() -> listener.onSelectedFile(item)}"
+            android:onClick="@{() -> listener.onSelectedFile(item)}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"

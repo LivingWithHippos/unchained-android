@@ -104,8 +104,8 @@ class TorrentFilePickerFragment : Fragment(), TorrentContentListener {
             folderNode?.let {
                 val newSelected = !it.value.selected
                 it.value.selected = newSelected
-                Timber.d("Set ${it.value.name} as ${it.value.selected}")
                 Node.traverseDepthFirst(it) { item ->
+                    Timber.d("Set ${item.name} as $newSelected")
                     item.selected = newSelected
                 }
             }
