@@ -419,7 +419,7 @@
     <string name="download_manager">Gestionnaire de téléchargement</string>
     <string name="download_manager_description">Choisissez comment télécharger les fichiers</string>
     <string name="download_link_expired">Problèmes de réseau ou lien de téléchargement expiré. Générez-en un autre.</string>
-    <string name="multiple_downloads_enqueued_format">"%d téléchargements sur %d mis en file d'attente correctement "</string>
+    <string name="multiple_downloads_enqueued_format">%1$d téléchargements sur %2$d mis en file d\'attente correctement</string>
     <string name="custom_downloader_options">Options de téléchargement personnalisées</string>
     <string name="custom_downloader_options_description">Ces options ne sont pas disponibles pour le gestionnaire de téléchargement par défaut</string>
     <string name="unmetered_downloads">Téléchargements sur des connexions non mesurées</string>

@@ -416,7 +416,7 @@
     <string name="download_manager">Gestore di download</string>
     <string name="download_manager_description">Scegli come scaricare i file</string>
     <string name="download_link_expired">Problemi di rete o link di download scaduto. Generane un altro</string>
-    <string name="multiple_downloads_enqueued_format">%d downloads su %d accodati correttamente</string>
+    <string name="multiple_downloads_enqueued_format">%1$d downloads su %2$d accodati correttamente</string>
     <string name="custom_downloader_options">Opzioni per gestore download</string>
     <string name="custom_downloader_options_description">Queste opzioni non sono disponibili per il gestore di download di default</string>
     <string name="unmetered_downloads">Download su connessioni non a consumo</string>
