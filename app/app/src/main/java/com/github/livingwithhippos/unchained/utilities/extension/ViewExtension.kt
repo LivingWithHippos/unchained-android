@@ -21,7 +21,6 @@ import android.widget.AutoCompleteTextView
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.annotation.DrawableRes
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
@@ -338,15 +337,4 @@ fun View.hideKeyboard() {
             it.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
         inputMethodManager?.hideSoftInputFromWindow(this.windowToken, 0)
     }
-}
-
-/**
- * Enable or disable user swiping
- * defaults to false (disabled)
- * todo: fix, it's throwing a java.lang.StackOverflowError when used
- * @param enable
- */
-@BindingAdapter("enableUserTouch")
-fun ViewPager2.enableUserInput(enable: Boolean?) {
-    this.enableUserInput(enable == true)
 }

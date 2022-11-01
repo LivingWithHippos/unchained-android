@@ -49,7 +49,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 val contentResolver = requireContext().contentResolver
 
                 val takeFlags: Int = Intent.FLAG_GRANT_READ_URI_PERMISSION or
-                    Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                        Intent.FLAG_GRANT_WRITE_URI_PERMISSION
 
                 contentResolver.takePersistableUriPermission(it, takeFlags)
 
@@ -122,7 +122,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
     private fun setupKodi() {
 
         findPreference<Preference>("kodi_remote_control_info")?.setOnPreferenceClickListener {
-            context?.openExternalWebPage("https://kodi.wiki/view/Settings/Services/Control") ?: false
+            context?.openExternalWebPage("https://kodi.wiki/view/Settings/Services/Control")
+                ?: false
         }
         findPreference<Preference>("kodi_list_editor")?.setOnPreferenceClickListener {
             openKodiManagementDialog()
@@ -154,7 +155,10 @@ class SettingsFragment : PreferenceFragmentCompat() {
     @Suppress("DEPRECATION")
     private fun setupVersion() {
         val pi = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            context?.packageManager?.getPackageInfo(requireContext().packageName, PackageManager.PackageInfoFlags.of(0))
+            context?.packageManager?.getPackageInfo(
+                requireContext().packageName,
+                PackageManager.PackageInfoFlags.of(0)
+            )
         } else {
             context?.packageManager?.getPackageInfo(requireContext().packageName, 0)
         }

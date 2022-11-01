@@ -39,6 +39,14 @@ class TorrentDetailsViewModel @Inject constructor(
 
     private var job = Job()
 
+    fun getFullTorrentInfo(id: String) {
+        viewModelScope.launch {
+            val torrentData = torrentsRepository.getTorrentInfo(id)
+            if (torrentData != null)
+                torrentLiveData.postEvent(torrentData)
+        }
+    }
+
     fun pollTorrentStatus(id: String) {
         // todo: test if I need to recreate a job when it is cancelled
         job.cancelIfActive()
@@ -50,6 +58,8 @@ class TorrentDetailsViewModel @Inject constructor(
             /// maybe job.isActive?
             while (isActive) {
                 val torrentData = torrentsRepository.getTorrentInfo(id)
+                if (torrentData != null)
+                    torrentLiveData.postEvent(torrentData)
                 if (endedStatusList.contains(torrentData?.status))
                     job.cancelIfActive()
 

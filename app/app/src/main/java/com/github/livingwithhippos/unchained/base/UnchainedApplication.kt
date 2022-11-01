@@ -54,7 +54,11 @@ class UnchainedApplication : Application() {
         // the NotificationChannel class is new and not in the support library
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val name = getString(R.string.app_name)
-            val torrentChannel = NotificationChannel(TORRENT_CHANNEL_ID, name, NotificationManager.IMPORTANCE_LOW).apply {
+            val torrentChannel = NotificationChannel(
+                TORRENT_CHANNEL_ID,
+                name,
+                NotificationManager.IMPORTANCE_LOW
+            ).apply {
                 description = getString(R.string.torrent_channel_description)
             }
             val notificationManager: NotificationManager =
@@ -63,7 +67,11 @@ class UnchainedApplication : Application() {
             // Register the channels with the system
             notificationManager.createNotificationChannel(torrentChannel)
 
-            val downloadChannel = NotificationChannel(DOWNLOAD_CHANNEL_ID, name, NotificationManager.IMPORTANCE_LOW).apply {
+            val downloadChannel = NotificationChannel(
+                DOWNLOAD_CHANNEL_ID,
+                name,
+                NotificationManager.IMPORTANCE_LOW
+            ).apply {
                 description = getString(R.string.download_channel_description)
             }
             notificationManager.createNotificationChannel(downloadChannel)

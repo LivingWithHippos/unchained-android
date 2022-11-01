@@ -1,4 +1,4 @@
-package com.github.livingwithhippos.unchained.newdownload.view
+package com.github.livingwithhippos.unchained.torrentfilepicker.view
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.annotation.MenuRes
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.adapter.FragmentStateAdapter
@@ -19,9 +19,13 @@ import com.github.livingwithhippos.unchained.data.model.cache.CachedAlternative
 import com.github.livingwithhippos.unchained.data.model.cache.CachedTorrent
 import com.github.livingwithhippos.unchained.data.repository.DownloadResult
 import com.github.livingwithhippos.unchained.databinding.FragmentTorrentProcessingBinding
-import com.github.livingwithhippos.unchained.newdownload.view.TorrentProcessingFragment.Companion.POSITION_FILE_PICKER
-import com.github.livingwithhippos.unchained.newdownload.viewmodel.TorrentEvent
-import com.github.livingwithhippos.unchained.newdownload.viewmodel.TorrentProcessingViewModel
+import com.github.livingwithhippos.unchained.lists.view.ListState
+import com.github.livingwithhippos.unchained.torrentdetails.model.TorrentFileItem
+import com.github.livingwithhippos.unchained.torrentdetails.model.TorrentFileItem.Companion.TYPE_FOLDER
+import com.github.livingwithhippos.unchained.torrentfilepicker.view.TorrentProcessingFragment.Companion.POSITION_FILE_PICKER
+import com.github.livingwithhippos.unchained.torrentfilepicker.viewmodel.TorrentEvent
+import com.github.livingwithhippos.unchained.torrentfilepicker.viewmodel.TorrentProcessingViewModel
+import com.github.livingwithhippos.unchained.utilities.Node
 import com.github.livingwithhippos.unchained.utilities.beforeSelectionStatusList
 import com.github.livingwithhippos.unchained.utilities.extension.isMagnet
 import com.github.livingwithhippos.unchained.utilities.extension.isTorrent
@@ -42,7 +46,9 @@ import java.util.regex.Pattern
 class TorrentProcessingFragment : UnchainedFragment() {
 
     private val args: TorrentProcessingFragmentArgs by navArgs()
-    private val viewModel: TorrentProcessingViewModel by viewModels()
+
+    // https://developer.android.com/training/dependency-injection/hilt-jetpack#viewmodel-navigation
+    private val viewModel: TorrentProcessingViewModel by hiltNavGraphViewModels(R.id.navigation_lists)
 
     private var cachedTorrent: CachedTorrent? = null
 
@@ -57,9 +63,6 @@ class TorrentProcessingFragment : UnchainedFragment() {
 
         viewModel.torrentLiveData.observe(viewLifecycleOwner) {
             when (val content = it.getContentIfNotHandled()) {
-                null -> {
-                    // reloaded fragment, close?
-                }
                 is TorrentEvent.Uploaded -> {
                     binding.tvStatus.text = getString(R.string.loading_torrent)
                     // get torrent info
@@ -110,13 +113,17 @@ class TorrentProcessingFragment : UnchainedFragment() {
                     cachedTorrent = content.cache
 
                     if (content.cache.cachedAlternatives.isNotEmpty()) {
-                        // cache found, enable tab swiping
+                        // cache found, enable tab swiping and clicking
                         binding.pickerPager.isUserInputEnabled = true
+
+                        binding.pickerTabs.getTabAt(0)?.view?.isClickable = true
+                        binding.pickerTabs.getTabAt(1)?.view?.isClickable = true
                     } else {
                         context?.showToast(R.string.cache_missing)
                     }
                 }
                 TorrentEvent.CacheMiss -> {
+                    // fixme: here or above here got triggered but the views were still swipable
                     context?.showToast(R.string.cache_missing)
 
                     binding.loadingLayout.visibility = View.INVISIBLE
@@ -125,6 +132,7 @@ class TorrentProcessingFragment : UnchainedFragment() {
                     Timber.d("Cached torrent not found")
                 }
                 is TorrentEvent.FilesSelected -> {
+                    activityViewModel.setListState(ListState.UpdateTorrent)
                     val action =
                         TorrentProcessingFragmentDirections.actionTorrentProcessingFragmentToTorrentDetailsDest(
                             item = content.torrent
@@ -140,6 +148,12 @@ class TorrentProcessingFragment : UnchainedFragment() {
                 is TorrentEvent.DownloadCache -> {
                     binding.tvStatus.text =
                         getString(R.string.selecting_picked_cache, content.files, content.position)
+                    binding.tvLoadingTorrent.visibility = View.INVISIBLE
+                    binding.loadingLayout.visibility = View.VISIBLE
+                    binding.loadedLayout.visibility = View.INVISIBLE
+                }
+                is TorrentEvent.DownloadSelection -> {
+                    binding.tvStatus.text = getString(R.string.selecting_picked_files, content.filesNumber)
                     binding.tvLoadingTorrent.visibility = View.INVISIBLE
                     binding.loadingLayout.visibility = View.VISIBLE
                     binding.loadedLayout.visibility = View.INVISIBLE
@@ -162,6 +176,10 @@ class TorrentProcessingFragment : UnchainedFragment() {
                 TorrentEvent.DownloadedFileSuccess -> {
                     // do nothing
                 }
+                else -> {
+                    Timber.d("Found unknown torrentLiveData event $content")
+                    // reloaded fragment, close?
+                }
             }
         }
 
@@ -177,6 +195,11 @@ class TorrentProcessingFragment : UnchainedFragment() {
         val tabLayout: TabLayout = view.findViewById(R.id.pickerTabs)
         val viewPager: ViewPager2 = view.findViewById(R.id.pickerPager)
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+            /**
+             * disable clicking until the data and cache are loaded
+             */
+            tab.view.isClickable = false
+
             when (position) {
                 POSITION_FILE_PICKER -> {
                     tab.text = getString(R.string.select_files)
@@ -187,11 +210,13 @@ class TorrentProcessingFragment : UnchainedFragment() {
             }
         }.attach()
 
+
         super.onViewCreated(view, savedInstanceState)
     }
 
     private fun setup(binding: FragmentTorrentProcessingBinding) {
 
+        // disable swiping until the data and cache are loaded
         binding.pickerPager.isUserInputEnabled = false
 
         binding.fabDownload.setOnClickListener {
@@ -237,8 +262,9 @@ class TorrentProcessingFragment : UnchainedFragment() {
         if (pick == null)
             popup.menu.findItem(R.id.download_cache).isEnabled = false
 
-        // todo:implement
-        popup.menu.findItem(R.id.manual_pick).isEnabled = false
+        val lastSelection: Node<TorrentFileItem>? = viewModel.structureLiveData.value?.peekContent()
+        if (lastSelection == null)
+            popup.menu.findItem(R.id.manual_pick).isEnabled = false
 
         popup.setOnMenuItemClickListener { menuItem: MenuItem ->
             // Respond to menu item click.
@@ -273,7 +299,30 @@ class TorrentProcessingFragment : UnchainedFragment() {
                     viewModel.startSelectionLoop()
                 }
                 R.id.manual_pick -> {
-                    // TODO()
+
+                    if (lastSelection != null) {
+                        var counter = 0
+                        val selectedFiles = StringBuffer()
+                        Node.traverseBreadthFirst(lastSelection) {
+                            if (it.selected && it.id != TYPE_FOLDER) {
+                                selectedFiles.append(it.id)
+                                selectedFiles.append(",")
+                                counter++
+                            }
+                        }
+
+                        if (counter==0) {
+                            context?.showToast(R.string.select_one_item)
+                        } else {
+                            if (selectedFiles.last() == ","[0])
+                                selectedFiles.deleteCharAt(selectedFiles.lastIndex)
+
+                            viewModel.triggerTorrentEvent(TorrentEvent.DownloadSelection(counter))
+                            viewModel.startSelectionLoop(selectedFiles.toString())
+                        }
+                    } else {
+                        Timber.e("Last files selection should not have been null")
+                    }
                 }
                 else -> {
                     Timber.e("Unknown menu button pressed: $menuItem")
@@ -360,7 +409,7 @@ class TorrentFilePagerAdapter(
 
     override fun createFragment(position: Int): Fragment {
         return if (position == POSITION_FILE_PICKER) {
-            TorrentFilePickerFragment.newInstance(viewModel.getTorrentDetails())
+            TorrentFilePickerFragment.newInstance()
         } else {
             TorrentCachePickerFragment.newInstance(viewModel.getCache(), viewModel.getTorrentID()!!)
         }

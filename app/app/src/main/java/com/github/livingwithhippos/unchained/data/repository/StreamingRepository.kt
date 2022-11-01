@@ -7,7 +7,8 @@ import javax.inject.Inject
 
 class StreamingRepository @Inject constructor(
     private val protoStore: ProtoStore,
-    private val streamingApiHelper: StreamingApiHelper) :
+    private val streamingApiHelper: StreamingApiHelper
+) :
     BaseRepository(protoStore) {
 
     suspend fun getStreams(id: String): Stream? {

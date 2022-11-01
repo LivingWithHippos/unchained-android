@@ -19,11 +19,9 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
-import com.github.livingwithhippos.unchained.data.model.cache.CachedTorrent
 import com.github.livingwithhippos.unchained.data.model.cache.InstantAvailability
 import com.github.livingwithhippos.unchained.data.repository.DownloadResult
 import com.github.livingwithhippos.unchained.databinding.FragmentSearchBinding
@@ -95,7 +93,11 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
                                     ) {
                                         when (it) {
                                             is DownloadResult.End -> {
-                                                activityViewModel.processPluginsPack(cacheDir, requireContext().filesDir, it.fileName)
+                                                activityViewModel.processPluginsPack(
+                                                    cacheDir,
+                                                    requireContext().filesDir,
+                                                    it.fileName
+                                                )
                                             }
                                             DownloadResult.Failure -> {
                                                 context?.showToast(R.string.error_loading_file)

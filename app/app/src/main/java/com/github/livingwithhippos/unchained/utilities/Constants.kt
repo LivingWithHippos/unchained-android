@@ -1,6 +1,5 @@
 package com.github.livingwithhippos.unchained.utilities
 
-import androidx.annotation.DrawableRes
 import com.github.livingwithhippos.unchained.R
 
 const val OPEN_SOURCE_CLIENT_ID = "X245A4XAIBGVM"
@@ -13,7 +12,8 @@ const val INSTANT_AVAILABILITY_ENDPOINT = "torrents/instantAvailability"
 const val REFERRAL_LINK = "http://real-debrid.com/?id=78841"
 const val PREMIUM_LINK = "https://real-debrid.com/premium"
 const val ACCOUNT_LINK = "https://real-debrid.com/account"
-const val PLUGINS_PACK_LINK = "https://github.com/LivingWithHippos/unchained-android/raw/master/extra_assets/plugins/unchained_plugins_pack.zip"
+const val PLUGINS_PACK_LINK =
+    "https://github.com/LivingWithHippos/unchained-android/raw/master/extra_assets/plugins/unchained_plugins_pack.zip"
 const val PLUGINS_PACK_NAME = "unchained_plugins_pack.zip"
 const val PLUGINS_PACK_FOLDER = "pack"
 
@@ -111,14 +111,16 @@ const val DOWNLOADS_TAB = 0
 const val TORRENTS_TAB = 1
 
 object SIGNATURE {
-    const val URL = "https://gist.githubusercontent.com/LivingWithHippos/5525e73f0439d06c1c3ff4f9484e35dd/raw/f97b79e706aa67d729806039d49f80aba4042793/unchained_versions.json"
+    const val URL =
+        "https://gist.githubusercontent.com/LivingWithHippos/5525e73f0439d06c1c3ff4f9484e35dd/raw/f97b79e706aa67d729806039d49f80aba4042793/unchained_versions.json"
     const val PLAY_STORE = "31F17448AA3888B63ED04EB5F965E3F70C12592F"
     const val F_DROID = "412DABCABBDB75A82FF66F767C71EE045C02275B"
     const val GITHUB = "0E7BE3FA6B47C20394517C568570E10761A0A4FA"
 }
 
 object APP_LINK {
-    const val PLAY_STORE = "https://play.google.com/store/apps/details?id=com.github.livingwithhippos.unchained"
+    const val PLAY_STORE =
+        "https://play.google.com/store/apps/details?id=com.github.livingwithhippos.unchained"
     const val F_DROID = "https://f-droid.org/packages/com.github.livingwithhippos.unchained/"
     const val GITHUB = "https://github.com/LivingWithHippos/unchained-android/releases"
 }
@@ -126,7 +128,7 @@ object APP_LINK {
 object PreferenceKeys {
     // todo: move all keys here
     object DownloadManager {
-        const val KEY =  "download_manager"
+        const val KEY = "download_manager"
         const val SYSTEM = "download_manager_system"
         const val OKHTTP = "download_manager_okhttp"
         const val UNMETERED_ONLY_KEY = "download_only_on_unmetered"

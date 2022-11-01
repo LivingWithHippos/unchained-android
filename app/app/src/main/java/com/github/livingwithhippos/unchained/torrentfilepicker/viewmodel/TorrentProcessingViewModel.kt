@@ -1,4 +1,4 @@
-package com.github.livingwithhippos.unchained.newdownload.viewmodel
+package com.github.livingwithhippos.unchained.torrentfilepicker.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
@@ -10,10 +10,12 @@ import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkExceptio
 import com.github.livingwithhippos.unchained.data.model.UploadedTorrent
 import com.github.livingwithhippos.unchained.data.model.cache.CachedTorrent
 import com.github.livingwithhippos.unchained.data.repository.TorrentsRepository
+import com.github.livingwithhippos.unchained.torrentdetails.model.TorrentFileItem
 import com.github.livingwithhippos.unchained.utilities.BASE_URL
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.INSTANT_AVAILABILITY_ENDPOINT
+import com.github.livingwithhippos.unchained.utilities.Node
 import com.github.livingwithhippos.unchained.utilities.beforeSelectionStatusList
 import com.github.livingwithhippos.unchained.utilities.extension.cancelIfActive
 import com.github.livingwithhippos.unchained.utilities.postEvent
@@ -36,6 +38,7 @@ class TorrentProcessingViewModel @Inject constructor(
 
     val networkExceptionLiveData = MutableLiveData<Event<UnchainedNetworkException>>()
     val torrentLiveData = MutableLiveData<Event<TorrentEvent>>()
+    val structureLiveData = MutableLiveData<Event<Node<TorrentFileItem>>>()
 
     private var job = Job()
 
@@ -68,7 +71,7 @@ class TorrentProcessingViewModel @Inject constructor(
             val torrentData: TorrentItem? = torrentsRepository.getTorrentInfo(torrentID)
             // todo: replace using either
             if (torrentData != null) {
-                savedStateHandle[KEY_CURRENT_TORRENT] = torrentData
+                setTorrentDetails(torrentData)
                 torrentLiveData.postEvent(TorrentEvent.TorrentInfo(torrentData))
             } else {
                 Timber.e("Retrieved torrent info were null for id $torrentID")
@@ -107,7 +110,7 @@ class TorrentProcessingViewModel @Inject constructor(
         return savedStateHandle[KEY_CURRENT_TORRENT]
     }
 
-    fun setTorrentDetails(item: TorrentItem) {
+    private fun setTorrentDetails(item: TorrentItem) {
         savedStateHandle[KEY_CURRENT_TORRENT] = item
     }
 
@@ -115,7 +118,7 @@ class TorrentProcessingViewModel @Inject constructor(
         return savedStateHandle[KEY_CURRENT_TORRENT_ID]
     }
 
-    fun setTorrentID(id: String) {
+    private fun setTorrentID(id: String) {
         savedStateHandle[KEY_CURRENT_TORRENT_ID] = id
     }
 
@@ -123,8 +126,13 @@ class TorrentProcessingViewModel @Inject constructor(
         return savedStateHandle[KEY_CACHE]
     }
 
-    fun setCache(cache: CachedTorrent) {
+    private fun setCache(cache: CachedTorrent) {
         savedStateHandle[KEY_CACHE] = cache
+    }
+
+    fun updateTorrentStructure(structure: Node<TorrentFileItem>?) {
+        if (structure != null)
+            structureLiveData.postEvent(structure)
     }
 
     fun startSelectionLoop(files: String = "all") {
@@ -217,6 +225,7 @@ class TorrentProcessingViewModel @Inject constructor(
         const val KEY_CACHE = "cache_key"
         const val KEY_CURRENT_TORRENT = "current_torrent_key"
         const val KEY_CURRENT_TORRENT_ID = "current_torrent_id_key"
+        const val KEY_CURRENT_TORRENT_STRUCTURE = "current_torrent_structure_key"
     }
 }
 
@@ -228,6 +237,7 @@ sealed class TorrentEvent {
     data class FilesSelected(val torrent: TorrentItem) : TorrentEvent()
     object DownloadAll : TorrentEvent()
     data class DownloadCache(val position: Int, val files: Int) : TorrentEvent()
+    data class DownloadSelection(val filesNumber: Int) : TorrentEvent()
     object DownloadedFileSuccess : TorrentEvent()
     object DownloadedFileFailure : TorrentEvent()
     data class DownloadedFileProgress(val progress: Int) : TorrentEvent()

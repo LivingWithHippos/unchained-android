@@ -1,4 +1,4 @@
-package com.github.livingwithhippos.unchained.newdownload.view
+package com.github.livingwithhippos.unchained.torrentfilepicker.view
 
 import android.os.Build
 import android.os.Bundle

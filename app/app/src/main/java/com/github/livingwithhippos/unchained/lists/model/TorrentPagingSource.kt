@@ -1,6 +1,5 @@
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.github.livingwithhippos.unchained.data.local.ProtoStore
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.data.repository.TorrentsRepository
 import retrofit2.HttpException
@@ -22,7 +21,7 @@ class TorrentPagingSource(
         return try {
             val response =
                 if (query.isBlank())
-                    torrentsRepository.getTorrentsList( null, page, params.loadSize)
+                    torrentsRepository.getTorrentsList(null, page, params.loadSize)
                 else
                     torrentsRepository.getTorrentsList(null, page, params.loadSize)
                         .filter { it.filename.contains(query, ignoreCase = true) }

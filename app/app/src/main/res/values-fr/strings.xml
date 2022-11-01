@@ -413,13 +413,14 @@
     <string name="download_queued_error">Erreur de mise en file d\'attente du téléchargement, vérifiez les permissions</string>
     <string name="selecting_all_files">Sélection de tous les fichiers, veuillez patienter…</string>
     <string name="selecting_picked_cache">Sélection de %1$d fichiers depuis le cache %2$d, veuillez patienter…</string>
+    <string name="selecting_picked_files">Sélection de %1$d fichiers, veuillez patienter...</string>
     <string name="download_manager_system">Gestionnaire de téléchargement par défaut</string>
     <string name="pick_download_folder">Choisissez le dossier de téléchargement</string>
     <string name="pick_download_folder_description">Choisissez un dossier pour les téléchargements. Non disponible pour le gestionnaire de téléchargement du système par défaut</string>
     <string name="download_manager">Gestionnaire de téléchargement</string>
     <string name="download_manager_description">Choisissez comment télécharger les fichiers</string>
     <string name="download_link_expired">Problèmes de réseau ou lien de téléchargement expiré. Générez-en un autre.</string>
-    <string name="multiple_downloads_enqueued_format">"%d téléchargements sur %d mis en file d'attente correctement "</string>
+    <string name="multiple_downloads_enqueued_format">%1$d téléchargements sur %2$d mis en file d\'attente correctement</string>
     <string name="custom_downloader_options">Options de téléchargement personnalisées</string>
     <string name="custom_downloader_options_description">Ces options ne sont pas disponibles pour le gestionnaire de téléchargement par défaut</string>
     <string name="unmetered_downloads">Téléchargements sur des connexions non mesurées</string>
@@ -446,4 +447,6 @@
     <string name="notifications_permission_granted">Autorisation de notification accordée</string>
     <string name="content_description_reselect_torrent_files">Resélectionner les fichiers torrent</string>
     <string name="reselect_torrent_files">Re-sélectionner les fichiers</string>
+    <string name="selected_files">Fichiers sélectionnés</string>
+    <string name="selected_size">Taille sélectionnée</string>
 </resources>

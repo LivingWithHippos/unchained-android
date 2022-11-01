@@ -15,12 +15,12 @@ class KodiDeviceAdapter(listener: KodiDeviceListener) :
 
         override fun areContentsTheSame(oldItem: KodiDevice, newItem: KodiDevice): Boolean =
             oldItem.address == newItem.address &&
-                oldItem.port == newItem.port &&
-                oldItem.name == newItem.name &&
-                // these are not shown in the layout at the moment
-                // oldItem.username == newItem.username &&
-                // oldItem.password == newItem.password &&
-                oldItem.isDefault == newItem.isDefault
+                    oldItem.port == newItem.port &&
+                    oldItem.name == newItem.name &&
+                    // these are not shown in the layout at the moment
+                    // oldItem.username == newItem.username &&
+                    // oldItem.password == newItem.password &&
+                    oldItem.isDefault == newItem.isDefault
     }
 
     override fun getItemViewType(position: Int) = R.layout.item_list_kodi_device

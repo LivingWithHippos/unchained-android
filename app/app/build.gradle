@@ -244,6 +244,7 @@ dependencies {
 
     //hilt
     implementation deps.dagger.hilt_android
+    implementation deps.dagger.hilt_navigation
     kapt deps.dagger.hilt_compiler
 
     // paging

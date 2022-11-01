@@ -42,7 +42,8 @@ class KodiSocket @Inject constructor(private val client: OkHttpClient) {
                     super.onFailure(webSocket, t, response)
                     trySend(
                         WebSocketEvents.ConnectionError(
-                            t.message ?: response?.message ?: "Failure using the websocket for url $url"
+                            t.message ?: response?.message
+                            ?: "Failure using the websocket for url $url"
                         )
                     )
                 }

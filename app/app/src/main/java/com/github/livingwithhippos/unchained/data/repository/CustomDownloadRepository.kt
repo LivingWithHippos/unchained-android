@@ -17,7 +17,7 @@ import javax.inject.Inject
 class CustomDownloadRepository @Inject constructor(
     private val protoStore: ProtoStore,
     private val customDownloadHelper: CustomDownloadHelper
-    ) :
+) :
     BaseRepository(protoStore) {
 
     fun downloadToCache(

@@ -83,18 +83,18 @@ open class BaseRepository(private val protoStore: ProtoStore) {
             return@withContext if (body != null)
                 EitherResult.Success(body)
             else
-                // todo: some calls return nothing and this is actually a Success, manage them
-                /**
-                 * /disable_access_token
-                 * /downloads/delete/{id}
-                 * /torrents/selectFiles/{id}
-                 * /torrents/delete/{id}
-                 * /settings/update
-                 * /settings/convertPoints
-                 * /settings/changePassword
-                 * /settings/avatarFile
-                 * /settings/avatarDelete
-                 */
+            // todo: some calls return nothing and this is actually a Success, manage them
+            /**
+             * /disable_access_token
+             * /downloads/delete/{id}
+             * /torrents/selectFiles/{id}
+             * /torrents/delete/{id}
+             * /settings/update
+             * /settings/convertPoints
+             * /settings/changePassword
+             * /settings/avatarFile
+             * /settings/avatarDelete
+             */
                 EitherResult.Failure(EmptyBodyError(code))
         } else {
             try {
@@ -105,7 +105,12 @@ open class BaseRepository(private val protoStore: ProtoStore) {
                     EitherResult.Failure(ApiConversionError(-1))
             } catch (e: IOException) {
                 // todo: analyze error to return code
-                return@withContext EitherResult.Failure(NetworkError(-1, "$errorMessage, http code $code"))
+                return@withContext EitherResult.Failure(
+                    NetworkError(
+                        -1,
+                        "$errorMessage, http code $code"
+                    )
+                )
             }
         }
     }

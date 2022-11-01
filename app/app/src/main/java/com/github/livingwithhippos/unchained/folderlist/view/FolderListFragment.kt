@@ -1,12 +1,6 @@
 package com.github.livingwithhippos.unchained.folderlist.view
 
-import android.Manifest
-import android.app.DownloadManager
-import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -16,7 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.MenuRes
 import androidx.appcompat.widget.PopupMenu
-import androidx.core.content.ContextCompat
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.core.widget.addTextChangedListener
@@ -43,10 +36,8 @@ import com.github.livingwithhippos.unchained.folderlist.viewmodel.FolderListView
 import com.github.livingwithhippos.unchained.lists.view.DownloadListListener
 import com.github.livingwithhippos.unchained.lists.view.SelectedItemsButtonsListener
 import com.github.livingwithhippos.unchained.utilities.DataBindingDetailsLookup
-import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.extension.copyToClipboard
 import com.github.livingwithhippos.unchained.utilities.extension.delayedScrolling
-import com.github.livingwithhippos.unchained.utilities.extension.downloadFileInStandardFolder
 import com.github.livingwithhippos.unchained.utilities.extension.getThemedDrawable
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
@@ -220,7 +211,10 @@ class FolderListFragment : UnchainedFragment(), DownloadListListener {
                 val downloads: List<DownloadItem> = linkTracker.selection.toList()
                 if (downloads.isNotEmpty()) {
                     if (downloads.size == 1) {
-                        activityViewModel.enqueueDownload(downloads.first().download, downloads.first().filename)
+                        activityViewModel.enqueueDownload(
+                            downloads.first().download,
+                            downloads.first().filename
+                        )
                     } else {
                         activityViewModel.enqueueDownloads(downloads)
                     }
