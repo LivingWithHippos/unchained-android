@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.annotation.MenuRes
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.adapter.FragmentStateAdapter
@@ -43,7 +43,9 @@ import java.util.regex.Pattern
 class TorrentProcessingFragment : UnchainedFragment() {
 
     private val args: TorrentProcessingFragmentArgs by navArgs()
-    private val viewModel: TorrentProcessingViewModel by viewModels()
+
+    // https://developer.android.com/training/dependency-injection/hilt-jetpack#viewmodel-navigation
+    private val viewModel: TorrentProcessingViewModel by hiltNavGraphViewModels(R.id.navigation_lists)
 
     private var cachedTorrent: CachedTorrent? = null
 
@@ -58,9 +60,6 @@ class TorrentProcessingFragment : UnchainedFragment() {
 
         viewModel.torrentLiveData.observe(viewLifecycleOwner) {
             when (val content = it.getContentIfNotHandled()) {
-                null -> {
-                    // reloaded fragment, close?
-                }
                 is TorrentEvent.Uploaded -> {
                     binding.tvStatus.text = getString(R.string.loading_torrent)
                     // get torrent info
@@ -166,6 +165,10 @@ class TorrentProcessingFragment : UnchainedFragment() {
                 }
                 TorrentEvent.DownloadedFileSuccess -> {
                     // do nothing
+                }
+                else -> {
+                    Timber.d("Found unknown torrentLiveData event $content")
+                    // reloaded fragment, close?
                 }
             }
         }
@@ -372,7 +375,7 @@ class TorrentFilePagerAdapter(
 
     override fun createFragment(position: Int): Fragment {
         return if (position == POSITION_FILE_PICKER) {
-            TorrentFilePickerFragment.newInstance(viewModel.getTorrentDetails())
+            TorrentFilePickerFragment.newInstance()
         } else {
             TorrentCachePickerFragment.newInstance(viewModel.getCache(), viewModel.getTorrentID()!!)
         }
