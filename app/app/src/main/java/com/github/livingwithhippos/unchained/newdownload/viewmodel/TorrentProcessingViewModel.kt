@@ -68,7 +68,7 @@ class TorrentProcessingViewModel @Inject constructor(
             val torrentData: TorrentItem? = torrentsRepository.getTorrentInfo(torrentID)
             // todo: replace using either
             if (torrentData != null) {
-                savedStateHandle[KEY_CURRENT_TORRENT] = torrentData
+                setTorrentDetails(torrentData)
                 torrentLiveData.postEvent(TorrentEvent.TorrentInfo(torrentData))
             } else {
                 Timber.e("Retrieved torrent info were null for id $torrentID")
