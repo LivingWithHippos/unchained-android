@@ -1,7 +1,9 @@
 package com.github.livingwithhippos.unchained
 
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
-import com.github.livingwithhippos.unchained.torrentdetails.model.getFilesTree
+import com.github.livingwithhippos.unchained.torrentdetails.model.TorrentFileItem
+import com.github.livingwithhippos.unchained.torrentdetails.model.getFilesNodes
+import com.github.livingwithhippos.unchained.utilities.Node
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import org.junit.Test
@@ -16,7 +18,7 @@ class TestTorrentFileParser {
     private val jsonAdapter: JsonAdapter<TorrentItem> = moshi.adapter(TorrentItem::class.java)
 
     @Test
-    fun torrentItemFiles() {
+    fun torrentItemNodes() {
         val json = """
     {
 	"id": "XGYA5QSAA7JI4",
@@ -3574,10 +3576,44 @@ class TestTorrentFileParser {
     """.trimIndent()
         val item: TorrentItem = jsonAdapter.fromJson(json)!!
 
-        val torrentStructure = getFilesTree(item)
-        val ids = torrentStructure.getAllChildrenFilesID()
+        val torrentStructure: Node<TorrentFileItem> = getFilesNodes(item, false)
 
-        assert(ids.size == 589)
-        assert(torrentStructure.getChildByValue(47)?.key.equals("03-notes-on-c-harvey_jp2.zip"))
+        print(torrentStructure)
+        assert(torrentStructure.children.isNotEmpty())
+    }
+    @Test
+    fun testSingleTorrentFile() {
+            val json = """
+        {"id": "C46XUVV45KHTA",
+            "filename": "PlaneShift-v0.6.3-x64.exe",
+            "original_filename": "PlaneShift-v0.6.3-x64.exe",
+            "hash": "8307bf1f543fa33e7b9e49f8492443a3b20e0c7d",
+            "bytes": 1007432683,
+            "original_bytes": 1007432683,
+            "host": "real-debrid.com",
+            "split": 2000,
+            "progress": 100,
+            "status": "downloaded",
+            "added": "2022-10-31T10:39:02.000Z",
+            "files": [
+            {
+                "id": 1,
+                "path": "\/PlaneShift-v0.6.3-x64.exe",
+                "bytes": 1007432683,
+                "selected": 1
+            }
+            ],
+            "links": [
+            "https:\/\/real-debrid.com\/d\/AKYOSR2XYW5NM"
+            ],
+            "ended": "2022-10-31T10:43:07.000Z"
+        }
+        """.trimIndent()
+        val item: TorrentItem = jsonAdapter.fromJson(json)!!
+
+        val torrentStructure: Node<TorrentFileItem> = getFilesNodes(item, false)
+
+        println(torrentStructure)
+        assert(torrentStructure.children.isNotEmpty())
     }
 }
