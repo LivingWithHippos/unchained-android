@@ -105,11 +105,7 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
         torrentBinding.statusTranslation = statusTranslation
         torrentBinding.listener = this
 
-        val adapter = TorrentContentFilesAdapter(object : TorrentContentListener {
-            override fun selectItem(item: TorrentFileItem) {
-                // not used, kept so that the adapter can be reused in the torrent files selection
-            }
-        })
+        val adapter = TorrentContentFilesAdapter()
         torrentBinding.rvFileList.adapter = adapter
 
         viewModel.torrentLiveData.observe(

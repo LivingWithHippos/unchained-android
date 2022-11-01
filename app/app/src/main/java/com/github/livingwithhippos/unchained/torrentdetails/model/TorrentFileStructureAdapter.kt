@@ -5,6 +5,7 @@ import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.torrentdetails.model.TorrentFileItem.Companion.TYPE_FOLDER
 import com.github.livingwithhippos.unchained.utilities.DataBindingAdapter
+import com.github.livingwithhippos.unchained.utilities.DataBindingStaticAdapter
 import com.github.livingwithhippos.unchained.utilities.Node
 
 data class TorrentFileItem(
@@ -105,8 +106,8 @@ interface TorrentContentListener {
     fun selectItem(item: TorrentFileItem)
 }
 
-class TorrentContentFilesAdapter(listener: TorrentContentListener) :
-    DataBindingAdapter<TorrentFileItem, TorrentContentListener>(DiffCallback(), listener) {
+class TorrentContentFilesAdapter :
+    DataBindingStaticAdapter<TorrentFileItem>(DiffCallback()) {
 
     class DiffCallback : DiffUtil.ItemCallback<TorrentFileItem>() {
         override fun areItemsTheSame(
@@ -133,5 +134,36 @@ class TorrentContentFilesAdapter(listener: TorrentContentListener) :
             R.layout.item_list_torrent_directory
         else
             R.layout.item_list_torrent_file
+    }
+}
+
+class TorrentContentFilesSelectionAdapter(listener: TorrentContentListener) :
+    DataBindingAdapter<TorrentFileItem, TorrentContentListener>(DiffCallback(), listener) {
+
+    class DiffCallback : DiffUtil.ItemCallback<TorrentFileItem>() {
+        override fun areItemsTheSame(
+            oldItem: TorrentFileItem,
+            newItem: TorrentFileItem
+        ): Boolean {
+            return oldItem.absolutePath == newItem.absolutePath &&
+                    oldItem.name == newItem.name &&
+                    oldItem.id == newItem.id
+        }
+
+        override fun areContentsTheSame(
+            oldItem: TorrentFileItem,
+            newItem: TorrentFileItem
+        ): Boolean {
+            // content is not dynamic unless selected is added
+            return true
+        }
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        val item: TorrentFileItem = this.getItem(position)
+        return if (item.id == TYPE_FOLDER)
+            R.layout.item_list_torrent_selection_directory
+        else
+            R.layout.item_list_torrent_selection_file
     }
 }
