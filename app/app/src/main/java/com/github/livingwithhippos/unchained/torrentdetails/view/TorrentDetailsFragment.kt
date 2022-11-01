@@ -7,10 +7,12 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.github.livingwithhippos.unchained.R
@@ -23,15 +25,17 @@ import com.github.livingwithhippos.unchained.data.model.NetworkError
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.databinding.FragmentTorrentDetailsBinding
 import com.github.livingwithhippos.unchained.lists.view.ListState
-import com.github.livingwithhippos.unchained.lists.view.ListsTabFragment
+import com.github.livingwithhippos.unchained.torrentdetails.model.TorrentContentFilesAdapter
+import com.github.livingwithhippos.unchained.torrentdetails.model.TorrentContentListener
+import com.github.livingwithhippos.unchained.torrentdetails.model.TorrentFileItem
+import com.github.livingwithhippos.unchained.torrentdetails.model.getFilesNodes
 import com.github.livingwithhippos.unchained.torrentdetails.viewmodel.TorrentDetailsViewModel
 import com.github.livingwithhippos.unchained.utilities.EventObserver
+import com.github.livingwithhippos.unchained.utilities.Node
 import com.github.livingwithhippos.unchained.utilities.extension.getApiErrorMessage
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.github.livingwithhippos.unchained.utilities.loadingStatusList
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 /**
  * A simple [Fragment] subclass.
@@ -44,33 +48,44 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
 
     private val args: TorrentDetailsFragmentArgs by navArgs()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.torrent_details_bar, menu)
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.delete -> {
-                val dialog = DeleteDialogFragment()
-                dialog.show(parentFragmentManager, "DeleteDialogFragment")
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         val torrentBinding = FragmentTorrentDetailsBinding.inflate(inflater, container, false)
+
+        val menuHost: MenuHost = requireActivity()
+
+        menuHost.addMenuProvider(
+            object : MenuProvider {
+                override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                    // Add menu items here
+                    menuInflater.inflate(R.menu.torrent_details_bar, menu)
+                }
+
+                override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                    return when (menuItem.itemId) {
+                        R.id.delete -> {
+                            val dialog = DeleteDialogFragment()
+                            dialog.show(parentFragmentManager, "DeleteDialogFragment")
+                            true
+                        }
+                        R.id.reselect -> {
+                            val link = "magnet:?xt=urn:btih:${args.item.hash}"
+                            val action =
+                                TorrentDetailsFragmentDirections.actionTorrentDetailsDestToTorrentProcessingFragment(
+                                    link = link
+                                )
+                            findNavController().navigate(action)
+                            true
+                        }
+                        else -> false
+                    }
+                }
+            },
+            viewLifecycleOwner, Lifecycle.State.RESUMED
+        )
 
         val statusTranslation = mapOf(
             "magnet_error" to getString(R.string.magnet_error),
@@ -90,22 +105,38 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
         torrentBinding.statusTranslation = statusTranslation
         torrentBinding.listener = this
 
-        var firstTorrentStatus: String? = null
+        val adapter = TorrentContentFilesAdapter()
+        torrentBinding.rvFileList.adapter = adapter
 
         viewModel.torrentLiveData.observe(
             viewLifecycleOwner,
             EventObserver {
                 it?.let { torrent ->
                     torrentBinding.torrent = torrent
-                    if (loadingStatusList.contains(torrent.status))
-                        fetchTorrent()
-                    // save the last retrieved status
-                    if (firstTorrentStatus == null)
-                        firstTorrentStatus = torrent.status
-                    // if the torrent wasn't initially in a downloaded status and reached the downloaded status un-restrict it
-                    // possibly let the user enable this from settings
-                    if (torrent.status == "downloaded" && firstTorrentStatus != "downloaded")
-                        torrentBinding.bDownload.performClick()
+                    val selectedFiles: Int =
+                        torrent.files?.count { file -> file.selected == 1 } ?: 0
+                    torrentBinding.tvSelectedFilesNumber.text = selectedFiles.toString()
+                    torrentBinding.tvTotalFiles.text = (torrent.files?.count() ?: 0).toString()
+
+                    // Data should not change between updates so we should just populate it once
+                    if (adapter.itemCount == 0) {
+                        val torrentStructure: Node<TorrentFileItem> =
+                            getFilesNodes(torrent, selectedOnly = true)
+                        // show list only if it's populated enough
+                        if (torrentStructure.children.size > 0) {
+                            val filesList = mutableListOf<TorrentFileItem>()
+                            var skippedFirst = false
+                            Node.traverseDepthFirst(torrentStructure) { item ->
+                                // avoid root item "/"
+                                if (!skippedFirst)
+                                    skippedFirst = true
+                                else
+                                    filesList.add(item)
+                            }
+                            adapter.submitList(filesList)
+                            torrentBinding.cvSelectedTorrentFiles.visibility = View.VISIBLE
+                        }
+                    }
                 }
             }
         )
@@ -123,7 +154,7 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
 
         setFragmentResultListener("deleteActionKey") { _, bundle ->
             if (bundle.getBoolean("deleteConfirmation"))
-                viewModel.deleteTorrent(args.torrentID)
+                viewModel.deleteTorrent(args.item.id)
         }
 
         viewModel.downloadLiveData.observe(
@@ -162,17 +193,16 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
             }
         )
 
-        viewModel.fetchTorrentDetails(args.torrentID)
+        torrentBinding.torrent = args.item
+
+        // maybe load and save the latest retrieved one in the view-model?
+        if (loadingStatusList.contains(args.item.status))
+            viewModel.pollTorrentStatus(args.item.id)
+        else {
+            viewModel.getFullTorrentInfo(args.item.id)
+        }
 
         return torrentBinding.root
-    }
-
-    // fetch the torrent info every 2 seconds
-    private fun fetchTorrent(delay: Long = 1000) {
-        lifecycleScope.launch {
-            delay(delay)
-            viewModel.fetchTorrentDetails(args.torrentID)
-        }
     }
 
     override fun onDownloadClick(item: TorrentItem) {
@@ -184,7 +214,7 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
             )
             findNavController().navigate(action)
         } else {
-            viewModel.downloadTorrent()
+            viewModel.downloadTorrent(item)
         }
     }
 

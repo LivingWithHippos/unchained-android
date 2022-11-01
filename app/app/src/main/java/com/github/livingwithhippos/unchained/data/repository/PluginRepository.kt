@@ -217,7 +217,6 @@ class PluginRepository @Inject constructor(
             null
         }
 
-
     suspend fun readPluginFile(pluginFile: File): Plugin? =
         withContext(Dispatchers.IO) {
             try {

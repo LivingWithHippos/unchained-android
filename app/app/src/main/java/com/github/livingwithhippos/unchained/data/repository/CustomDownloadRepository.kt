@@ -1,5 +1,6 @@
 package com.github.livingwithhippos.unchained.data.repository
 
+import com.github.livingwithhippos.unchained.data.local.ProtoStore
 import com.github.livingwithhippos.unchained.data.remote.CustomDownloadHelper
 import com.github.livingwithhippos.unchained.utilities.extension.isWebUrl
 import kotlinx.coroutines.Dispatchers
@@ -13,16 +14,20 @@ import java.io.InputStream
 import java.io.OutputStream
 import javax.inject.Inject
 
-class CustomDownloadRepository @Inject constructor(private val customDownloadHelper: CustomDownloadHelper) :
-    BaseRepository() {
+class CustomDownloadRepository @Inject constructor(
+    private val protoStore: ProtoStore,
+    private val customDownloadHelper: CustomDownloadHelper
+) :
+    BaseRepository(protoStore) {
 
-    suspend fun downloadToCache(
+    fun downloadToCache(
         url: String,
         fileName: String,
         cacheDir: File,
         suffix: String? = null
     ): Flow<DownloadResult> = channelFlow {
         if (url.isWebUrl()) {
+            // todo: use the FileWriter and Downloader helper classes
             val call = customDownloadHelper.getFile(url)
             if (call.isSuccessful) {
                 val body = call.body()
@@ -59,7 +64,6 @@ class CustomDownloadRepository @Inject constructor(private val customDownloadHel
                             // todo: add check for fileSizeDownloaded and fileSize difference
                             outputStream.flush()
                             successfulDownload = true
-
                         } catch (e: IOException) {
                             send(DownloadResult.Failure)
                             sentEnding = true
@@ -77,7 +81,6 @@ class CustomDownloadRepository @Inject constructor(private val customDownloadHel
             } else send(DownloadResult.Failure)
         } else send(DownloadResult.WrongURL)
     }
-
 }
 
 sealed class DownloadResult {

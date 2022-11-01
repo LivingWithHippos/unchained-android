@@ -22,10 +22,12 @@ class LinkItemAdapter(listener: LinkItemListener) :
 
 interface LinkItemListener {
     fun onClick(item: LinkItem)
+    fun onLongClick(item: LinkItem): Boolean
 }
 
 data class LinkItem(
     val type: String,
     val name: String,
-    val link: String
+    val link: String,
+    var cached: Boolean = false
 )

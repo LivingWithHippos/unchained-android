@@ -10,4 +10,10 @@
         android:title="@string/delete"
         app:showAsAction="ifRoom" />
 
+    <item
+        android:id="@+id/reselect"
+        android:contentDescription="@string/content_description_reselect_torrent_files"
+        android:title="@string/reselect_torrent_files"
+        app:showAsAction="never" />
+
 </menu>

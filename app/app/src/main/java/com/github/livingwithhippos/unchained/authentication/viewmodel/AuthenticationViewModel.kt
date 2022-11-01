@@ -61,7 +61,6 @@ class AuthenticationViewModel @Inject constructor(
                 }
             }
         }
-
     }
 
     fun fetchToken() {

@@ -25,7 +25,9 @@ import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.viewpager2.widget.ViewPager2
 import com.github.livingwithhippos.unchained.R
+import com.github.livingwithhippos.unchained.utilities.extensionIconMap
 import com.google.android.material.progressindicator.BaseProgressIndicator
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.delay
@@ -199,6 +201,7 @@ fun TextView.setFileSize(size: Long) {
             R.string.file_size_format_gb,
             size.toFloat() / 1024 / 1024 / 1024
         )
+        // todo: shorten this
         else -> this.context.getString(R.string.size_error)
     }
 }
@@ -313,6 +316,15 @@ fun SwipeRefreshLayout.setRefreshThemeColor(themed: Boolean) {
         val backgroundColor = typedValue.data
         setProgressBackgroundColorSchemeColor(backgroundColor)
     }
+}
+
+@BindingAdapter("mapDrawable")
+fun ImageView.setDrawableByExtension(fileName: String) {
+    val extension = fileName.substringAfterLast(".").lowercase()
+    if (extensionIconMap.containsKey(extension))
+        this.setImageResource(extensionIconMap.getValue(extension))
+    else
+        this.setImageResource(extensionIconMap.getValue("default"))
 }
 
 /**

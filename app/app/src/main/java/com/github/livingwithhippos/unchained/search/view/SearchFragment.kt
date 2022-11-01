@@ -13,12 +13,16 @@ import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import androidx.annotation.MenuRes
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
+import com.github.livingwithhippos.unchained.data.model.cache.InstantAvailability
 import com.github.livingwithhippos.unchained.data.repository.DownloadResult
 import com.github.livingwithhippos.unchained.databinding.FragmentSearchBinding
 import com.github.livingwithhippos.unchained.folderlist.view.FolderListFragment
@@ -28,6 +32,7 @@ import com.github.livingwithhippos.unchained.plugins.model.ScrapedItem
 import com.github.livingwithhippos.unchained.search.model.SearchItemAdapter
 import com.github.livingwithhippos.unchained.search.model.SearchItemListener
 import com.github.livingwithhippos.unchained.search.viewmodel.SearchViewModel
+import com.github.livingwithhippos.unchained.utilities.MAGNET_PATTERN
 import com.github.livingwithhippos.unchained.utilities.PLUGINS_PACK_FOLDER
 import com.github.livingwithhippos.unchained.utilities.PLUGINS_PACK_LINK
 import com.github.livingwithhippos.unchained.utilities.PLUGINS_PACK_NAME
@@ -41,64 +46,13 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.io.File
-import java.io.IOException
 
 @AndroidEntryPoint
 class SearchFragment : UnchainedFragment(), SearchItemListener {
 
     private val viewModel: SearchViewModel by viewModels()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.search_bar, menu)
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.plugins_pack -> {
-                lifecycleScope.launch {
-                    val cacheDir = context?.cacheDir
-
-                    if (cacheDir!=null) {
-                        // clean up old files
-                        // todo: also clear other files, at least ending with zip
-                        File(cacheDir, PLUGINS_PACK_FOLDER).deleteRecursively()
-
-                        activityViewModel.downloadFileToCache(
-                            PLUGINS_PACK_LINK,
-                            PLUGINS_PACK_NAME,
-                            cacheDir,
-                            ".zip"
-                        ).observe(
-                            viewLifecycleOwner
-                        ) {
-                            when (it) {
-                                is DownloadResult.End -> {
-                                    activityViewModel.processPluginsPack(cacheDir, requireContext().filesDir, it.fileName)
-                                }
-                                DownloadResult.Failure -> {
-                                    context?.showToast(R.string.error_loading_file)
-                                }
-                                is DownloadResult.Progress -> {
-                                    Timber.d("Plugins pack progress: ${it.percent}")
-                                }
-                                DownloadResult.WrongURL -> {
-                                    context?.showToast(R.string.error_loading_file)
-                                }
-                            }
-                        }
-                    }
-                }
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
+    private val magnetPattern = Regex(MAGNET_PATTERN, RegexOption.IGNORE_CASE)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -108,6 +62,64 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
         val binding = FragmentSearchBinding.inflate(inflater, container, false)
 
         setup(binding)
+
+        val menuHost: MenuHost = requireActivity()
+
+        menuHost.addMenuProvider(
+            object : MenuProvider {
+                override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                    menuInflater.inflate(R.menu.search_bar, menu)
+                }
+
+                override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                    return when (menuItem.itemId) {
+                        R.id.plugins_pack -> {
+                            context?.showToast(R.string.downloading)
+                            lifecycleScope.launch {
+                                val cacheDir = context?.cacheDir
+
+                                if (cacheDir != null) {
+                                    // clean up old files
+                                    // todo: also clear other files, at least ending with zip
+                                    File(cacheDir, PLUGINS_PACK_FOLDER).deleteRecursively()
+
+                                    activityViewModel.downloadFileToCache(
+                                        PLUGINS_PACK_LINK,
+                                        PLUGINS_PACK_NAME,
+                                        cacheDir,
+                                        ".zip"
+                                    ).observe(
+                                        viewLifecycleOwner
+                                    ) {
+                                        when (it) {
+                                            is DownloadResult.End -> {
+                                                activityViewModel.processPluginsPack(
+                                                    cacheDir,
+                                                    requireContext().filesDir,
+                                                    it.fileName
+                                                )
+                                            }
+                                            DownloadResult.Failure -> {
+                                                context?.showToast(R.string.error_loading_file)
+                                            }
+                                            is DownloadResult.Progress -> {
+                                                Timber.d("Plugins pack progress: ${it.percent}")
+                                            }
+                                            DownloadResult.WrongURL -> {
+                                                context?.showToast(R.string.error_loading_file)
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            true
+                        }
+                        else -> false
+                    }
+                }
+            },
+            viewLifecycleOwner, Lifecycle.State.RESUMED
+        )
 
         return binding.root
     }
@@ -197,6 +209,10 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
         binding.tfSearch.setEndIconOnClickListener {
             performSearch(binding, adapter)
         }
+
+        activityViewModel.cacheLiveData.observe(viewLifecycleOwner) {
+            submitCachedList(it, adapter)
+        }
     }
 
     private fun showSortingPopup(
@@ -229,6 +245,9 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
                 R.id.sortBySizeDesc -> {
                     viewModel.setListSortPreference(FolderListFragment.TAG_SORT_SIZE_DESC)
                 }
+                R.id.sortBySeeders -> {
+                    viewModel.setListSortPreference(FolderListFragment.TAG_SORT_SEEDERS)
+                }
             }
             // update the list and scroll it to the top
             submitSortedList(searchAdapter, viewModel.getSearchResults())
@@ -253,6 +272,7 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
         ).observe(viewLifecycleOwner) { result ->
             when (result) {
                 is ParserResult.SingleResult -> {
+                    // does this work without an append?
                     submitSortedList(
                         searchAdapter,
                         listOf(result.value)
@@ -264,12 +284,15 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
                     searchAdapter.notifyDataSetChanged()
                 }
                 is ParserResult.SearchStarted -> {
+                    searchAdapter.submitList(emptyList())
                     binding.sortingButton.visibility = View.INVISIBLE
                     binding.loadingCircle.visibility = View.VISIBLE
                 }
                 is ParserResult.SearchFinished -> {
+                    activityViewModel.checkTorrentCache(searchAdapter.currentList)
                     binding.loadingCircle.visibility = View.INVISIBLE
                     binding.sortingButton.visibility = View.VISIBLE
+                    // update the data with cached results
                 }
                 is ParserResult.EmptyInnerLinks -> {
                     context?.showToast(R.string.no_links)
@@ -278,7 +301,8 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
                     binding.sortingButton.visibility = View.VISIBLE
                 }
                 else -> {
-                    Timber.d(result.toString())
+                    Timber.d("Unexpected result: $result")
+                    searchAdapter.submitList(emptyList())
                     binding.loadingCircle.visibility = View.INVISIBLE
                     binding.sortingButton.visibility = View.VISIBLE
                 }
@@ -293,8 +317,35 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
             FolderListFragment.TAG_SORT_ZA -> R.drawable.icon_sort_za
             FolderListFragment.TAG_SORT_SIZE_DESC -> R.drawable.icon_sort_size_desc
             FolderListFragment.TAG_SORT_SIZE_ASC -> R.drawable.icon_sort_size_asc
+            FolderListFragment.TAG_SORT_SEEDERS -> R.drawable.icon_sort_seeders
             else -> R.drawable.icon_sort_default
         }
+    }
+
+    private fun submitCachedList(cache: InstantAvailability, adapter: SearchItemAdapter) {
+        // alternatively get results from the viewModel
+        val items: List<ScrapedItem> = adapter.currentList.map {
+            it.apply {
+                if (it.magnets.isNotEmpty()) {
+                    // parse all the magnets found
+                    for (magnet in it.magnets) {
+                        val btih = magnetPattern.find(magnet)?.groupValues?.getOrNull(1)
+                        for (torrent in cache.cachedTorrents) {
+                            if (torrent.btih.equals(btih, ignoreCase = true)) {
+                                isCached = true
+                                break
+                            }
+                        }
+                        // stopping at first cache hit
+                        if (isCached) {
+                            break
+                        }
+                    }
+                }
+            }
+        }
+        submitSortedList(adapter, items)
+        adapter.notifyDataSetChanged()
     }
 
     private fun submitSortedList(
@@ -333,6 +384,16 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
                     }
                 )
             }
+            FolderListFragment.TAG_SORT_SEEDERS -> {
+                adapter.submitList(
+                    items.sortedByDescending { item ->
+                        if (item.seeders != null) {
+                            digitRegex.find(item.seeders)?.value?.toInt()
+                        } else
+                            null
+                    }
+                )
+            }
             else -> {
                 adapter.submitList(items)
             }
@@ -349,7 +410,7 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
                     setPositiveButton(R.string.open_github) { _, _ ->
                         viewModel.setPluginDialogNeeded(false)
                         // User clicked OK button
-                        openExternalWebPage(PLUGINS_URL)
+                        context.openExternalWebPage(PLUGINS_URL)
                     }
                     setNegativeButton(R.string.close) { _, _ ->
                         viewModel.setPluginDialogNeeded(false)
@@ -430,5 +491,9 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
         viewModel.stopSearch()
         val action = SearchFragmentDirections.actionSearchDestToSearchItemFragment(item)
         findNavController().navigate(action)
+    }
+
+    companion object {
+        val digitRegex = "\\d+".toRegex()
     }
 }

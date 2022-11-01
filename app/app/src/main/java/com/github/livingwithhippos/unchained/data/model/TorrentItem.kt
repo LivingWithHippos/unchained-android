@@ -1,9 +1,9 @@
 package com.github.livingwithhippos.unchained.data.model
 
-import android.os.Parcel
 import android.os.Parcelable
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import kotlinx.parcelize.Parcelize
 
 /*
 [
@@ -43,7 +43,32 @@ import com.squareup.moshi.JsonClass
 ]
 */
 
+/**
+ * Torrent item: this class is used for both the /torrents and /torrents/info/{id} endpoint
+ * even if the returned item are different. For example the info version returns the original file size
+ * and the selected files one, while the /torrents one returns only the original file size
+ * (even if the docs say otherwise)
+ *
+ * @property id
+ * @property filename
+ * @property originalFilename
+ * @property hash
+ * @property bytes
+ * @property originalBytes
+ * @property host
+ * @property split
+ * @property progress
+ * @property status
+ * @property added
+ * @property files
+ * @property links
+ * @property ended
+ * @property speed
+ * @property seeders
+ * @constructor Create empty Torrent item
+ */
 @JsonClass(generateAdapter = true)
+@Parcelize
 data class TorrentItem(
     @Json(name = "id")
     val id: String,
@@ -77,61 +102,10 @@ data class TorrentItem(
     val speed: Int?,
     @Json(name = "seeders")
     val seeders: Int?
-) : Parcelable {
-    constructor(parcel: Parcel) : this(
-        parcel.readString()!!,
-        parcel.readString()!!,
-        parcel.readString(),
-        parcel.readString()!!,
-        parcel.readLong(),
-        parcel.readValue(Long::class.java.classLoader) as? Long,
-        parcel.readString()!!,
-        parcel.readInt(),
-        parcel.readInt(),
-        parcel.readString()!!,
-        parcel.readString()!!,
-        parcel.createTypedArrayList(InnerTorrentFile),
-        parcel.createStringArrayList() ?: emptyList(),
-        parcel.readString(),
-        parcel.readValue(Int::class.java.classLoader) as? Int,
-        parcel.readValue(Int::class.java.classLoader) as? Int
-    )
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(id)
-        parcel.writeString(filename)
-        parcel.writeString(originalFilename)
-        parcel.writeString(hash)
-        parcel.writeLong(bytes)
-        parcel.writeValue(originalBytes)
-        parcel.writeString(host)
-        parcel.writeInt(split)
-        parcel.writeInt(progress)
-        parcel.writeString(status)
-        parcel.writeString(added)
-        parcel.writeTypedList(files)
-        parcel.writeStringList(links)
-        parcel.writeString(ended)
-        parcel.writeValue(speed)
-        parcel.writeValue(seeders)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<TorrentItem> {
-        override fun createFromParcel(parcel: Parcel): TorrentItem {
-            return TorrentItem(parcel)
-        }
-
-        override fun newArray(size: Int): Array<TorrentItem?> {
-            return arrayOfNulls(size)
-        }
-    }
-}
+) : Parcelable
 
 @JsonClass(generateAdapter = true)
+@Parcelize
 data class InnerTorrentFile(
     @Json(name = "id")
     val id: Int,
@@ -141,96 +115,22 @@ data class InnerTorrentFile(
     val bytes: Long,
     @Json(name = "selected")
     val selected: Int
-) : Parcelable {
-    constructor(parcel: Parcel) : this(
-        parcel.readInt(),
-        parcel.readString() ?: "",
-        parcel.readLong(),
-        parcel.readInt()
-    )
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeInt(id)
-        parcel.writeString(path)
-        parcel.writeLong(bytes)
-        parcel.writeInt(selected)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<InnerTorrentFile> {
-        override fun createFromParcel(parcel: Parcel): InnerTorrentFile {
-            return InnerTorrentFile(parcel)
-        }
-
-        override fun newArray(size: Int): Array<InnerTorrentFile?> {
-            return arrayOfNulls(size)
-        }
-    }
-}
+) : Parcelable
 
 @JsonClass(generateAdapter = true)
+@Parcelize
 data class UploadedTorrent(
     @Json(name = "id")
     val id: String,
     @Json(name = "uri")
     val uri: String
-) : Parcelable {
-    constructor(parcel: Parcel) : this(
-        parcel.readString() ?: "",
-        parcel.readString() ?: ""
-    )
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(id)
-        parcel.writeString(uri)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<UploadedTorrent> {
-        override fun createFromParcel(parcel: Parcel): UploadedTorrent {
-            return UploadedTorrent(parcel)
-        }
-
-        override fun newArray(size: Int): Array<UploadedTorrent?> {
-            return arrayOfNulls(size)
-        }
-    }
-}
+) : Parcelable
 
 @JsonClass(generateAdapter = true)
+@Parcelize
 data class AvailableHost(
     @Json(name = "host")
     val host: String,
     @Json(name = "max_file_size")
     val maxFileSize: Int
-) : Parcelable {
-    constructor(parcel: Parcel) : this(
-        parcel.readString() ?: "",
-        parcel.readInt()
-    )
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(host)
-        parcel.writeInt(maxFileSize)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<AvailableHost> {
-        override fun createFromParcel(parcel: Parcel): AvailableHost {
-            return AvailableHost(parcel)
-        }
-
-        override fun newArray(size: Int): Array<AvailableHost?> {
-            return arrayOfNulls(size)
-        }
-    }
-}
+) : Parcelable

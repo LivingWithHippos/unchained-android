@@ -1,5 +1,6 @@
 package com.github.livingwithhippos.unchained.data.repository
 
+import com.github.livingwithhippos.unchained.data.local.ProtoStore
 import com.github.livingwithhippos.unchained.data.model.Authentication
 import com.github.livingwithhippos.unchained.data.model.Secrets
 import com.github.livingwithhippos.unchained.data.model.Token
@@ -8,8 +9,11 @@ import com.github.livingwithhippos.unchained.data.remote.AuthApiHelper
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import javax.inject.Inject
 
-class AuthenticationRepository @Inject constructor(private val apiHelper: AuthApiHelper) :
-    BaseRepository() {
+class AuthenticationRepository @Inject constructor(
+    private val protoStore: ProtoStore,
+    private val apiHelper: AuthApiHelper
+) :
+    BaseRepository(protoStore) {
 
     suspend fun getVerificationCode(): Authentication? {
 

@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.settings.view.SettingsFragment
+import com.github.livingwithhippos.unchained.utilities.extension.getThemeColor
 
 class ThemingCallback(val preferences: SharedPreferences) : Application.ActivityLifecycleCallbacks {
 
@@ -26,9 +27,12 @@ class ThemingCallback(val preferences: SharedPreferences) : Application.Activity
             "tropical_sunset" -> R.style.Theme_TropicalSunset
             "black_n_white" -> R.style.Theme_BlackAndWhite
             "waves_01" -> R.style.Theme_Wave01
-            else -> R.style.Theme_Unchained
+            else -> R.style.Theme_Wave01
         }
         activity.setTheme(themeID)
+        // todo: check if this can be avoided, android:navigationBarColor in xml is not working
+        activity.window.statusBarColor = activity.getThemeColor(R.attr.customStatusBarColor)
+        activity.window.navigationBarColor = activity.getThemeColor(R.attr.customNavigationBarColor)
     }
 
     override fun onActivityStarted(activity: Activity) {

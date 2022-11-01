@@ -21,7 +21,6 @@ class KodiDeviceAdapter(listener: KodiDeviceListener) :
                     // oldItem.username == newItem.username &&
                     // oldItem.password == newItem.password &&
                     oldItem.isDefault == newItem.isDefault
-
     }
 
     override fun getItemViewType(position: Int) = R.layout.item_list_kodi_device

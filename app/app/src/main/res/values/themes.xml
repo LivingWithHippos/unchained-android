@@ -145,6 +145,9 @@
         <!-- custom ones -->
         <!-- app background, implement to change it from colorBackground -->
         <item name="mainBackground">@drawable/bg_solid</item>
+        <!-- Status (top) and navigation bar (bottom) color-->
+        <item name="customStatusBarColor">?attr/colorSurface</item>
+        <item name="customNavigationBarColor">?attr/colorPrimary</item>
     </style>
 
     <style name="Base.Theme.MaterialThemeBuilder" parent="Theme.MaterialComponents.DayNight.NoActionBar">

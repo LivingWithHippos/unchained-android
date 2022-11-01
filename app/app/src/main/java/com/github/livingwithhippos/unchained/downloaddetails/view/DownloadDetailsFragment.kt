@@ -1,12 +1,9 @@
 package com.github.livingwithhippos.unchained.downloaddetails.view
 
-import android.Manifest
-import android.app.DownloadManager
+import android.content.ActivityNotFoundException
 import android.content.ComponentName
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -14,9 +11,11 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import com.github.livingwithhippos.unchained.R
@@ -29,17 +28,18 @@ import com.github.livingwithhippos.unchained.downloaddetails.model.AlternativeDo
 import com.github.livingwithhippos.unchained.downloaddetails.viewmodel.DownloadDetailsMessage
 import com.github.livingwithhippos.unchained.downloaddetails.viewmodel.DownloadDetailsViewModel
 import com.github.livingwithhippos.unchained.lists.view.ListState
-import com.github.livingwithhippos.unchained.lists.view.ListsTabFragment
-import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.EventObserver
 import com.github.livingwithhippos.unchained.utilities.RD_STREAMING_URL
+import com.github.livingwithhippos.unchained.utilities.download.ProgressCallback
 import com.github.livingwithhippos.unchained.utilities.extension.copyToClipboard
-import com.github.livingwithhippos.unchained.utilities.extension.downloadFile
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-
+import timber.log.Timber
 
 /**
  * A simple [UnchainedFragment] subclass.
@@ -52,12 +52,42 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
 
     private val args: DownloadDetailsFragmentArgs by navArgs()
 
+    private val job = Job()
+    private val ioScope = CoroutineScope(Dispatchers.IO + job)
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         val detailsBinding = FragmentDownloadDetailsBinding.inflate(inflater, container, false)
+
+        val menuHost: MenuHost = requireActivity()
+
+        menuHost.addMenuProvider(
+            object : MenuProvider {
+                override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                    menuInflater.inflate(R.menu.download_details_bar, menu)
+                }
+
+                override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                    return when (menuItem.itemId) {
+                        R.id.delete -> {
+                            val dialog = DeleteDialogFragment()
+                            val bundle = Bundle()
+                            val title =
+                                getString(R.string.delete_item_title_format, args.details.filename)
+                            bundle.putString("title", title)
+                            dialog.arguments = bundle
+                            dialog.show(parentFragmentManager, "DeleteDialogFragment")
+                            true
+                        }
+                        else -> false
+                    }
+                }
+            },
+            viewLifecycleOwner, Lifecycle.State.RESUMED
+        )
 
         detailsBinding.details = args.details
         detailsBinding.listener = this
@@ -77,9 +107,11 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         detailsBinding.showKodi = viewModel.getButtonVisibilityPreference(SHOW_KODI_BUTTON)
         detailsBinding.showLocalPlay = viewModel.getButtonVisibilityPreference(SHOW_MEDIA_BUTTON)
         detailsBinding.showLoadStream = viewModel.getButtonVisibilityPreference(
-            SHOW_LOAD_STREAM_BUTTON)
+            SHOW_LOAD_STREAM_BUTTON
+        )
         detailsBinding.showStreamBrowser = viewModel.getButtonVisibilityPreference(
-            SHOW_STREAM_BROWSER_BUTTON)
+            SHOW_STREAM_BROWSER_BUTTON
+        )
 
         viewModel.streamLiveData.observe(
             viewLifecycleOwner
@@ -172,38 +204,18 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         return detailsBinding.root
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.download_details_bar, menu)
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.delete -> {
-                val dialog = DeleteDialogFragment()
-                val bundle = Bundle()
-                val title = getString(R.string.delete_item_title_format, args.details.filename)
-                bundle.putString("title", title)
-                dialog.arguments = bundle
-                dialog.show(parentFragmentManager, "DeleteDialogFragment")
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-
     override fun onCopyClick(text: String) {
         copyToClipboard("Real-Debrid Download Link", text)
         context?.showToast(R.string.link_copied)
     }
 
     override fun onOpenClick(url: String) {
-        openExternalWebPage(url)
+        try {
+            context?.openExternalWebPage(url)
+        } catch (e: ActivityNotFoundException) {
+            Timber.e("Error opening externally a link ${e.message}")
+            context?.showToast(R.string.no_supported_player_found)
+        }
     }
 
     override fun onOpenWithKodi(url: String) {
@@ -220,56 +232,22 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
     }
 
     override fun onBrowserStreamsClick(id: String) {
-        openExternalWebPage(RD_STREAMING_URL + id)
+        try {
+            context?.openExternalWebPage(RD_STREAMING_URL + id)
+        } catch (e: ActivityNotFoundException) {
+            context?.showToast(R.string.browser_not_found)
+        }
+    }
+
+    private val tempProgressListener = object : ProgressCallback {
+        override fun onProgress(progress: Double) {
+            Timber.d("Progress: $progress")
+        }
     }
 
     override fun onDownloadClick(link: String, fileName: String) {
-
-        when (Build.VERSION.SDK_INT) {
-            22 -> {
-                downloadFile(link, fileName)
-            }
-            in 23..28 -> {
-                requestPermissionLauncher.launch(
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE
-                )
-            }
-            else -> {
-                downloadFile(link, fileName)
-            }
-        }
+        activityViewModel.enqueueDownload(link, fileName)
     }
-
-    private fun downloadFile(link: String, fileName: String) {
-        val manager =
-            requireContext().getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-        val queuedDownload = manager.downloadFile(
-            link = link,
-            title = fileName,
-            description = getString(R.string.app_name)
-        )
-        when (queuedDownload) {
-            is EitherResult.Failure -> {
-                context?.showToast(R.string.download_not_started)
-            }
-            is EitherResult.Success -> {
-                context?.showToast(R.string.download_started)
-            }
-        }
-    }
-
-    private val requestPermissionLauncher =
-        registerForActivityResult(
-            ActivityResultContracts.RequestPermission()
-        ) { isGranted: Boolean ->
-            if (isGranted) {
-                val link = args.details.download
-                val fileName = args.details.filename
-                downloadFile(link, fileName)
-            } else {
-                context?.showToast(R.string.needs_download_permission)
-            }
-        }
 
     override fun onShareClick(url: String) {
         val shareIntent = Intent(Intent.ACTION_SEND)
@@ -279,21 +257,25 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
     }
 
     private fun tryStartExternalApp(intent: Intent) {
-
         try {
             startActivity(intent)
-        } catch (e: android.content.ActivityNotFoundException) {
+        } catch (e: ActivityNotFoundException) {
             context?.showToast(R.string.app_not_installed)
         }
     }
 
-    private fun createMediaIntent(appPackage: String, url: String, component: ComponentName? = null, dataType: String = "video/*"): Intent {
+    private fun createMediaIntent(
+        appPackage: String,
+        url: String,
+        component: ComponentName? = null,
+        dataType: String = "video/*"
+    ): Intent {
 
         val uri = Uri.parse(url)
         val intent = Intent(Intent.ACTION_VIEW)
         intent.setPackage(appPackage)
         intent.setDataAndTypeAndNormalize(uri, dataType)
-        if (component!=null)
+        if (component != null)
             intent.component = component
 
         return intent
@@ -302,10 +284,13 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
     override fun onSendToPlayer(url: String) {
         when (viewModel.getDefaultPlayer()) {
             "vlc" -> {
-                val vlcIntent = createMediaIntent("org.videolan.vlc", url, ComponentName(
-                    "org.videolan.vlc",
-                    "org.videolan.vlc.gui.video.VideoPlayerActivity"
-                ))
+                val vlcIntent = createMediaIntent(
+                    "org.videolan.vlc", url,
+                    ComponentName(
+                        "org.videolan.vlc",
+                        "org.videolan.vlc.gui.video.VideoPlayerActivity"
+                    )
+                )
 
                 tryStartExternalApp(vlcIntent)
             }
@@ -318,7 +303,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
 
                 try {
                     startActivity(mxIntent)
-                } catch (e: android.content.ActivityNotFoundException) {
+                } catch (e: ActivityNotFoundException) {
                     mxIntent.setPackage("com.mxtech.videoplayer.ad")
                     tryStartExternalApp(mxIntent)
                 }
@@ -329,7 +314,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
             }
             "custom_player" -> {
                 val customPlayerPackage = viewModel.getCustomPlayerPreference()
-                if (customPlayerPackage.isNullOrBlank()) {
+                if (customPlayerPackage.isBlank()) {
                     context?.showToast(R.string.invalid_package)
                 } else {
                     val customIntent = createMediaIntent(customPlayerPackage, url)

@@ -1,7 +1,5 @@
 package com.github.livingwithhippos.unchained.lists.view
 
-import android.app.DownloadManager
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,9 +9,11 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.setFragmentResultListener
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -48,11 +48,10 @@ import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuth
 import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationState
 import com.github.livingwithhippos.unchained.utilities.DOWNLOADS_TAB
 import com.github.livingwithhippos.unchained.utilities.DataBindingDetailsLookup
-import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.EventObserver
 import com.github.livingwithhippos.unchained.utilities.TORRENTS_TAB
+import com.github.livingwithhippos.unchained.utilities.beforeSelectionStatusList
 import com.github.livingwithhippos.unchained.utilities.extension.delayedScrolling
-import com.github.livingwithhippos.unchained.utilities.extension.downloadFile
 import com.github.livingwithhippos.unchained.utilities.extension.getApiErrorMessage
 import com.github.livingwithhippos.unchained.utilities.extension.getDownloadedFileUri
 import com.github.livingwithhippos.unchained.utilities.extension.getThemedDrawable
@@ -63,7 +62,9 @@ import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 /**
  * A simple [UnchainedFragment] subclass.
@@ -84,6 +85,58 @@ class ListsTabFragment : UnchainedFragment() {
     ): View {
         val binding: FragmentTabListsBinding =
             FragmentTabListsBinding.inflate(inflater, container, false)
+
+        val menuHost: MenuHost = requireActivity()
+
+        menuHost.addMenuProvider(
+            object : MenuProvider {
+                override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                    menuInflater.inflate(R.menu.lists_bar, menu)
+
+                    val searchItem = menu.findItem(R.id.search)
+                    val searchView = searchItem.actionView as SearchView
+                    // listens to the user typing in the search bar
+
+                    searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                        // since there is a 500ms delay on new queries, this will help if the user types something and press search in less than half sec. May be unnecessary. The value is checked anyway in the ViewModel to avoid reloading with the same query as the last one.
+                        override fun onQueryTextSubmit(query: String?): Boolean {
+                            viewModel.setListFilter(query)
+                            return true
+                        }
+
+                        override fun onQueryTextChange(newText: String?): Boolean {
+                            // simulate debounce
+                            queryJob?.cancel()
+
+                            queryJob = lifecycleScope.launch {
+                                delay(500)
+                                if (isActive)
+                                    viewModel.setListFilter(newText)
+                            }
+                            return true
+                        }
+                    })
+                }
+
+                override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                    return when (menuItem.itemId) {
+                        R.id.search -> {
+                            true
+                        }
+                        R.id.delete_all_downloads -> {
+                            showDeleteAllDialog(DOWNLOADS_TAB)
+                            true
+                        }
+                        R.id.delete_all_torrents -> {
+                            showDeleteAllDialog(TORRENTS_TAB)
+                            true
+                        }
+                        else -> false
+                    }
+                }
+            },
+            viewLifecycleOwner, Lifecycle.State.RESUMED
+        )
 
         val listsAdapter = ListsAdapter(this)
         binding.listPager.adapter = listsAdapter
@@ -174,12 +227,12 @@ class ListsTabFragment : UnchainedFragment() {
                                         )
                                     findNavController().navigate(action)
                                 } else
-                                    viewModel.downloadTorrent(event.item)
+                                    viewModel.unrestrictTorrent(event.item)
                             }
                             // open the torrent details fragment
                             else -> {
                                 val action =
-                                    ListsTabFragmentDirections.actionListsTabToTorrentDetails(event.item.id)
+                                    ListsTabFragmentDirections.actionListsTabToTorrentDetails(event.item)
                                 var loop = 0
 
                                 val controller = findNavController()
@@ -195,7 +248,7 @@ class ListsTabFragment : UnchainedFragment() {
                     }
                     is ListEvent.OpenTorrent -> {
                         val action =
-                            ListsTabFragmentDirections.actionListsTabToTorrentDetails(event.id)
+                            ListsTabFragmentDirections.actionListsTabToTorrentDetails(event.item)
 
                         // workaround to avoid issues when the dialog still hasn't been popped from the navigation stack
                         val controller = findNavController()
@@ -219,10 +272,8 @@ class ListsTabFragment : UnchainedFragment() {
                         }
                     }
                 }
-
             }
         )
-
 
         viewModel.errorsLiveData.observe(
             viewLifecycleOwner,
@@ -274,57 +325,6 @@ class ListsTabFragment : UnchainedFragment() {
         }.attach()
 
         super.onViewCreated(view, savedInstanceState)
-    }
-
-    // menu-related functions
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.lists_bar, menu)
-        super.onCreateOptionsMenu(menu, inflater)
-
-        val searchItem = menu.findItem(R.id.search)
-        val searchView = searchItem.actionView as SearchView
-        // listens to the user typing in the search bar
-
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            // since there is a 500ms delay on new queries, this will help if the user types something and press search in less than half sec. May be unnecessary. The value is checked anyway in the ViewModel to avoid reloading with the same query as the last one.
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                viewModel.setListFilter(query)
-                return true
-            }
-
-            override fun onQueryTextChange(newText: String?): Boolean {
-                // simulate debounce
-                queryJob?.cancel()
-
-                queryJob = lifecycleScope.launch {
-                    delay(500)
-                    viewModel.setListFilter(newText)
-                }
-                return true
-            }
-        })
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.search -> {
-                true
-            }
-            R.id.delete_all_downloads -> {
-                showDeleteAllDialog(DOWNLOADS_TAB)
-                true
-            }
-            R.id.delete_all_torrents -> {
-                showDeleteAllDialog(TORRENTS_TAB)
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
     }
 
     private fun showDeleteAllDialog(selectedTab: Int) {
@@ -429,34 +429,22 @@ class DownloadsListFragment : UnchainedFragment(), DownloadListListener {
             }
 
             override fun downloadSelectedItems() {
-                if (downloadTracker.selection.toList().isNotEmpty()) {
-                    var downloadStarted = false
-                    val manager =
-                        requireContext().getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-                    downloadTracker.selection.forEach { item ->
-                        val queuedDownload = manager.downloadFile(
-                            item.download,
-                            item.filename,
-                            getString(R.string.app_name),
+                val downloads: List<DownloadItem> = downloadTracker.selection.toList()
+                if (downloads.isNotEmpty()) {
+                    if (downloads.size == 1) {
+                        activityViewModel.enqueueDownload(
+                            downloads.first().download,
+                            downloads.first().filename
                         )
-                        when (queuedDownload) {
-                            is EitherResult.Failure -> {
-                                context?.showToast(
-                                    getString(
-                                        R.string.download_not_started_format,
-                                        item.filename
-                                    )
-                                )
-                            }
-                            is EitherResult.Success -> {
-                                downloadStarted = true
-                            }
-                        }
+                    } else {
+                        activityViewModel.enqueueDownloads(downloads)
                     }
-                    if (downloadStarted)
-                        context?.showToast(R.string.download_started)
                 } else
                     context?.showToast(R.string.select_one_item)
+            }
+
+            override fun openSelectedDetails() {
+                // used only in torrent view
             }
         }
 
@@ -512,7 +500,7 @@ class DownloadsListFragment : UnchainedFragment(), DownloadListListener {
             viewLifecycleOwner,
             EventObserver { links ->
                 // todo: if it gets emptied null/empty should be processed too
-                if (!links.isNullOrEmpty()) {
+                if (links.isNotEmpty()) {
                     // simulate list refresh
                     binding.srLayout.isRefreshing = true
                     // refresh items, when returned they'll stop the animation
@@ -540,15 +528,6 @@ class DownloadsListFragment : UnchainedFragment(), DownloadListListener {
                 }
             }
         )
-
-        setFragmentResultListener("downloadActionKey") { _, bundle ->
-            bundle.getString("deletedDownloadKey")?.let {
-                viewModel.deleteDownload(it)
-            }
-            bundle.getParcelable<DownloadItem>("openedDownloadItem")?.let {
-                onClick(it)
-            }
-        }
 
         viewModel.deletedDownloadLiveData.observe(
             viewLifecycleOwner,
@@ -630,6 +609,11 @@ class TorrentsListFragment : UnchainedFragment(), TorrentListListener {
                 override fun onSelectionChanged() {
                     super.onSelectionChanged()
                     binding.selectedTorrents = torrentTracker.selection.size()
+                    if (torrentTracker.selection.size() == 1) {
+                        binding.bDetailsSelected.visibility = View.VISIBLE
+                    } else {
+                        binding.bDetailsSelected.visibility = View.GONE
+                    }
                 }
             })
 
@@ -651,6 +635,20 @@ class TorrentsListFragment : UnchainedFragment(), TorrentListListener {
                     viewModel.downloadItems(torrentTracker.selection.toList())
                 } else
                     context?.showToast(R.string.select_one_item)
+            }
+
+            override fun openSelectedDetails() {
+                if (torrentTracker.selection.toList().size == 1) {
+                    val item: TorrentItem = torrentTracker.selection.toList().first()
+                    val action = if (beforeSelectionStatusList.contains(item.status))
+                        ListsTabFragmentDirections.actionListTabsDestToTorrentProcessingFragment(
+                            torrentID = item.id
+                        )
+                    else
+                        ListsTabFragmentDirections.actionListsTabToTorrentDetails(item)
+                    findNavController().navigate(action)
+                } else
+                    Timber.e("Somehow user triggered openSelectedDetails with a selection size of ${torrentTracker.selection.toList().size}")
             }
         }
 
@@ -746,27 +744,58 @@ class TorrentsListFragment : UnchainedFragment(), TorrentListListener {
             }
         )
 
-        setFragmentResultListener("torrentActionKey") { _, bundle ->
-            bundle.getString("deletedTorrentKey")?.let {
-                viewModel.deleteTorrent(it)
-            }
-            bundle.getString("openedTorrentItem")?.let {
-                viewModel.postEventNotice(ListEvent.OpenTorrent(it))
-            }
-            bundle.getParcelable<TorrentItem>("downloadedTorrentItem")?.let {
-                onClick(it)
-            }
-        }
-
         return binding.root
     }
 
     override fun onClick(item: TorrentItem) {
-        viewModel.postEventNotice(ListEvent.TorrentItemClick(item))
+
+        // this was used to wait for some loading, can't remember the use case anymore
+        // maybe a link share or a notification click?
+        var loop = 0
+
+        lifecycleScope.launch {
+            val controller = findNavController()
+            while (loop++ < 20 && controller.currentDestination?.id != R.id.list_tabs_dest) {
+                delay(100)
+            }
+
+            if (item.status == "downloaded") {
+                // unrestrict and move to download tab
+                if (item.links.size > 1) {
+                    val action =
+                        ListsTabFragmentDirections.actionListTabsDestToFolderListFragment2(
+                            folder = null,
+                            torrent = item,
+                            linkList = null
+                        )
+                    if (controller.currentDestination?.id == R.id.list_tabs_dest)
+                        controller.navigate(action)
+                    else
+                        Timber.e("Correct tab was not ready within 2 seconds after clicking torrent $item")
+                } else
+                    viewModel.unrestrictTorrent(item)
+
+            } else if (beforeSelectionStatusList.contains(item.status)) {
+                // go to torrent processing since it is still loading
+                val action =
+                    ListsTabFragmentDirections.actionListTabsDestToTorrentProcessingFragment(
+                        torrentID = item.id
+                    )
+                if (controller.currentDestination?.id == R.id.list_tabs_dest)
+                    controller.navigate(action)
+                else
+                    Timber.e("Correct tab was not ready within 2 seconds after clicking torrent $item")
+            } else {
+                // go to torrent details
+                val action = ListsTabFragmentDirections.actionListsTabToTorrentDetails(item)
+                if (controller.currentDestination?.id == R.id.list_tabs_dest)
+                    controller.navigate(action)
+                else
+                    Timber.e("Correct tab was not ready within 2 seconds after clicking torrent $item")
+            }
+        }
     }
-
 }
-
 
 sealed class ListState {
     object UpdateTorrent : ListState()
@@ -778,4 +807,5 @@ interface SelectedItemsButtonsListener {
     fun deleteSelectedItems()
     fun shareSelectedItems()
     fun downloadSelectedItems()
+    fun openSelectedDetails()
 }

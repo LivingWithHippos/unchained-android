@@ -1,13 +1,9 @@
 package com.github.livingwithhippos.unchained.downloaddetails.viewmodel
 
-import android.content.Intent
 import android.content.SharedPreferences
-import android.net.Uri
-import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.livingwithhippos.unchained.data.local.ProtoStore
 import com.github.livingwithhippos.unchained.data.model.Stream
 import com.github.livingwithhippos.unchained.data.repository.DownloadRepository
 import com.github.livingwithhippos.unchained.data.repository.KodiDeviceRepository
@@ -28,7 +24,6 @@ class DownloadDetailsViewModel @Inject constructor(
     private val preferences: SharedPreferences,
     private val streamingRepository: StreamingRepository,
     private val downloadRepository: DownloadRepository,
-    private val protoStore: ProtoStore,
     private val kodiRepository: KodiRepository,
     private val kodiDeviceRepository: KodiDeviceRepository,
 ) : ViewModel() {
@@ -39,18 +34,14 @@ class DownloadDetailsViewModel @Inject constructor(
 
     fun fetchStreamingInfo(id: String) {
         viewModelScope.launch {
-            val token = protoStore.getCredentials().accessToken
-            if (token.isBlank())
-                throw IllegalArgumentException("Loaded token was empty: $token")
-            val streamingInfo = streamingRepository.getStreams(token, id)
+            val streamingInfo = streamingRepository.getStreams(id)
             streamLiveData.postValue(streamingInfo)
         }
     }
 
     fun deleteDownload(id: String) {
         viewModelScope.launch {
-            val token = protoStore.getCredentials().accessToken
-            val deleted = downloadRepository.deleteDownload(token, id)
+            val deleted = downloadRepository.deleteDownload(id)
             if (deleted == null)
                 deletedDownloadLiveData.postEvent(-1)
             else
@@ -62,7 +53,13 @@ class DownloadDetailsViewModel @Inject constructor(
         viewModelScope.launch {
             val device = kodiDeviceRepository.getDefault()
             if (device != null) {
-                val response = kodiRepository.openUrl(device.address, device.port, url, device.username, device.password)
+                val response = kodiRepository.openUrl(
+                    device.address,
+                    device.port,
+                    url,
+                    device.username,
+                    device.password
+                )
                 if (response != null)
                     messageLiveData.postEvent(DownloadDetailsMessage.KodiSuccess)
                 else

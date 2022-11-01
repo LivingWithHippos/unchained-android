@@ -1,6 +1,6 @@
 {
-  "engine_version": 2.0,
-  "version": 1.0,
+  "engine_version": 2.2,
+  "version": 2.0,
   "url": "https://rlsbb.to",
   "name": "rlsbb",
   "description": "Parser for rlsbb.to",
@@ -12,18 +12,16 @@
     "page_start": 1
   },
   "download": {
-    "table_indirect": {
-      "class": "table-striped",
-      "columns": {
-        "details_column": 2
-      }
+    "direct": {
+      "id": "post-wrapper",
+      "entry-class": "entry-data-wrapper"
     },
     "regexes": {
       "details": {
         "regex_use": "first",
         "regexps": [
           {
-            "regex": "href=\"(https?://(ww(w|\\d+))?(old\\d*\\.)?rlsbb\\.(to|ru)/[^\"]+)",
+            "regex": "entry-title[^<]+<a\\s+href=\"(https?://(ww(w|\\d+))?(old\\d*\\.)?rlsbb[^\"]+)",
             "group": 1,
             "slug_type": "complete"
           }
@@ -33,7 +31,7 @@
         "regex_use": "first",
         "regexps": [
           {
-            "regex": "class=\"entry-title\">([^<]+)",
+            "regex": "entry-title[^<]+<[^>]+>([^<]+)",
             "group": 1,
             "slug_type": "complete"
           },
@@ -57,6 +55,10 @@
           },
           {
             "regex": "href=\"(https?://(www\\.)?nitroflare\\.com/view/[\\w]+/[^\"]+)",
+            "group": 1
+          },
+          {
+            "regex": "href=\"(https?://(www\\.)?nitro\\.download/view/[\\w]+/[^\"]+)",
             "group": 1
           },
           {

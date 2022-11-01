@@ -28,26 +28,34 @@
         app:cardCornerRadius="10dp"
         app:cardElevation="3dp" >
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="vertical"
             android:padding="20dp">
+
+            <TextView
+                android:id="@+id/tvCached"
+                style="@style/TextAppearance.UnchainedTheme.Overline"
+                android:visibility="@{item.isCached ? View.VISIBLE : View.GONE}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/cached"
+                />
 
 
             <TextView
                 android:id="@+id/tvName"
                 style="@style/TextAppearance.UnchainedTheme.Body1"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@{item.name.trim(), default=`File Name`}"
                 android:textSize="14sp"
                 android:maxLines="3"
                 android:ellipsize="middle"
                 android:layout_marginEnd="5dp"
-                app:layout_constraintBottom_toTopOf="@+id/linksLayout"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                />
 
 
             <LinearLayout
@@ -55,9 +63,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/tvName"
-                app:layout_constraintTop_toBottomOf="@+id/tvName"
                 >
 
 
@@ -106,8 +111,7 @@
 
             </LinearLayout>
 
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
 
     </com.google.android.material.card.MaterialCardView>
 </layout>

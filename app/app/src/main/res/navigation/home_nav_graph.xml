@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation_home"
     app:startDestination="@id/start_dest"
-    tools:ignore="UnusedNavigation">
+    >
 
     <fragment
         android:id="@+id/start_dest"
@@ -14,13 +14,11 @@
         <action
             android:id="@+id/action_startFragment_to_authenticationFragment"
             app:destination="@id/authentication_dest"
-            app:popUpTo="@id/start_dest"
-            app:popUpToInclusive="true"/>
+            app:popUpTo="@id/start_dest"/>
         <action
             android:id="@+id/action_startFragment_to_userProfileFragment"
             app:destination="@id/user_dest"
-            app:popUpTo="@id/start_dest"
-            app:popUpToInclusive="true" />
+            app:popUpTo="@id/start_dest" />
     </fragment>
     <fragment
         android:id="@+id/authentication_dest"
@@ -30,8 +28,7 @@
         <action
             android:id="@+id/actionAuthenticationToUser"
             app:destination="@id/user_dest"
-            app:popUpTo="@id/start_dest"
-            app:popUpToInclusive="true"  />
+            app:popUpTo="@id/start_dest" />
     </fragment>
     <fragment
         android:id="@+id/user_dest"
@@ -41,12 +38,10 @@
         <action
             android:id="@+id/action_user_to_authentication_fragment"
             app:destination="@id/authentication_dest"
-            app:popUpTo="@id/authentication_dest"
-            app:popUpToInclusive="true"/>
+            app:popUpTo="@id/authentication_dest"/>
         <action
             android:id="@+id/action_user_to_start_fragment"
             app:destination="@id/start_dest"
-            app:popUpTo="@id/start_dest"
-            app:popUpToInclusive="true"/>
+            app:popUpTo="@id/start_dest"/>
     </fragment>
 </navigation>

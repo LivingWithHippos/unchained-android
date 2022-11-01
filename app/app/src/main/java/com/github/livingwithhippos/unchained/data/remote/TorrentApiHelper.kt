@@ -3,6 +3,7 @@ package com.github.livingwithhippos.unchained.data.remote
 import com.github.livingwithhippos.unchained.data.model.AvailableHost
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.data.model.UploadedTorrent
+import com.github.livingwithhippos.unchained.data.model.cache.InstantAvailability
 import okhttp3.RequestBody
 import retrofit2.Response
 
@@ -45,4 +46,9 @@ interface TorrentApiHelper {
         token: String,
         id: String
     ): Response<Unit>
+
+    suspend fun getInstantAvailability(
+        token: String,
+        url: String
+    ): Response<InstantAvailability>
 }

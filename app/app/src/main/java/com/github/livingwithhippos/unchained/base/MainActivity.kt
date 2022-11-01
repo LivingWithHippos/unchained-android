@@ -1,5 +1,6 @@
 package com.github.livingwithhippos.unchained.base
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.DownloadManager
 import android.content.BroadcastReceiver
@@ -9,22 +10,31 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import android.content.res.Configuration
+import android.net.ConnectivityManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.view.Menu
+import android.view.MenuInflater
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.content.PermissionChecker.PERMISSION_GRANTED
+import androidx.core.view.MenuProvider
 import androidx.core.view.forEach
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
+import com.github.livingwithhippos.unchained.BuildConfig
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.model.UserAction
 import com.github.livingwithhippos.unchained.data.repository.PluginRepository.Companion.TYPE_UNCHAINED
@@ -36,23 +46,28 @@ import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Comp
 import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityMessage
 import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewModel
 import com.github.livingwithhippos.unchained.statemachine.authentication.CurrentFSMAuthentication
-import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationEvent
 import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationState
+import com.github.livingwithhippos.unchained.utilities.APP_LINK
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.EventObserver
+import com.github.livingwithhippos.unchained.utilities.PreferenceKeys
 import com.github.livingwithhippos.unchained.utilities.SCHEME_HTTP
 import com.github.livingwithhippos.unchained.utilities.SCHEME_HTTPS
 import com.github.livingwithhippos.unchained.utilities.SCHEME_MAGNET
+import com.github.livingwithhippos.unchained.utilities.SIGNATURE
 import com.github.livingwithhippos.unchained.utilities.TelemetryManager
-import com.github.livingwithhippos.unchained.utilities.extension.downloadFile
-import com.github.livingwithhippos.unchained.utilities.extension.isWebUrl
-import com.github.livingwithhippos.unchained.utilities.extension.setupWithNavController
+import com.github.livingwithhippos.unchained.utilities.extension.downloadFileInStandardFolder
+import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
+import com.github.livingwithhippos.unchained.utilities.extension.toHex
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.mikepenz.aboutlibraries.LibsBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.security.MessageDigest
 import javax.inject.Inject
 
 /**
@@ -62,6 +77,9 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var navController: NavController
+    private lateinit var appBarConfiguration: AppBarConfiguration
+
     // countly crash reporter set up. Debug mode only
     override fun onStart() {
         super.onStart()
@@ -70,16 +88,58 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStop() {
         TelemetryManager.onStop()
+        // todo: implement for TorrentService
+        // unbindService()
         super.onStop()
+    }
+
+    @Suppress("DEPRECATION")
+    @SuppressLint("PackageManagerGetSignatures")
+    private fun getApplicationSignatures(packageName: String = getPackageName()): List<String> {
+        val signatureList: List<String>
+        try {
+            val digest = MessageDigest.getInstance("SHA")
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                // New signature
+                val sig = packageManager.getPackageInfo(
+                    packageName,
+                    PackageManager.GET_SIGNING_CERTIFICATES
+                ).signingInfo
+                signatureList = if (sig.hasMultipleSigners()) {
+                    // Send all with apkContentsSigners
+                    sig.apkContentsSigners.map {
+                        digest.update(it.toByteArray())
+                        digest.digest().toHex()
+                    }
+                } else {
+                    // Send one with signingCertificateHistory
+                    sig.signingCertificateHistory.map {
+                        digest.update(it.toByteArray())
+                        digest.digest().toHex()
+                    }
+                }
+            } else {
+                val sig = packageManager.getPackageInfo(
+                    packageName,
+                    PackageManager.GET_SIGNATURES
+                ).signatures
+                signatureList = sig.map {
+                    digest.update(it.toByteArray())
+                    digest.digest().toHex()
+                }
+            }
+
+            return signatureList
+        } catch (e: Exception) {
+            Timber.e("Error while getting package signatures: ${e.message}")
+        }
+        return emptyList()
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         TelemetryManager.onConfigurationChanged(newConfig)
     }
-
-    private var currentNavController: LiveData<NavController>? = null
-    private lateinit var appBarConfiguration: AppBarConfiguration
 
     private lateinit var binding: ActivityMainBinding
 
@@ -105,30 +165,87 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private val requestDownloadPermissionLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted: Boolean ->
+            if (isGranted) {
+                applicationContext.showToast(R.string.download_permission_granted)
+            } else {
+                applicationContext.showToast(R.string.needs_download_permission)
+            }
+        }
+
+
+    private val requestNotificationPermissionLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted: Boolean ->
+            if (isGranted) {
+                applicationContext.showToast(R.string.notifications_permission_granted)
+            } else {
+                applicationContext.showToast(R.string.notifications_permission_denied)
+            }
+        }
+
+    private val pickDirectoryLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.OpenDocumentTree()
+        ) {
+            if (it != null) {
+                Timber.d("User has picked a folder $it")
+
+                // permanent permissions
+                val contentResolver = applicationContext.contentResolver
+
+                val takeFlags: Int = Intent.FLAG_GRANT_READ_URI_PERMISSION or
+                        Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+
+                contentResolver.takePersistableUriPermission(it, takeFlags)
+
+                viewModel.setDownloadFolder(it)
+
+                applicationContext.showToast(R.string.directory_picked)
+            } else {
+                Timber.d("User has not picked a folder")
+            }
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         setSupportActionBar(binding.topAppBar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        if (savedInstanceState == null) {
-            setupBottomNavigationBar()
-        } // Else, need to wait for onRestoreInstanceState
+        setupBottomNavigationBar(binding)
 
-        // list of fragments with no back arrow
-        appBarConfiguration = AppBarConfiguration(
-            setOf(
-                R.id.authentication_dest,
-                R.id.start_dest,
-                R.id.user_dest,
-                R.id.list_tabs_dest,
-                R.id.search_dest
-            ),
-            null
-        )
+        addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                // Add menu items here
+                menuInflater.inflate(R.menu.top_app_bar, menu)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                return when (menuItem.itemId) {
+                    R.id.settings -> {
+                        openSettings()
+                        true
+                    }
+                    R.id.about -> {
+                        LibsBuilder()
+                            .withAboutAppName(getString(R.string.app_name))
+                            .withAboutIconShown(true)
+                            .withAboutVersionShown(true)
+                            .withActivityTitle(getString(R.string.about))
+                            .start(this@MainActivity)
+                        true
+                    }
+                    else -> false
+                }
+            }
+        })
 
         viewModel.fsmAuthenticationState.observe(
             this
@@ -200,7 +317,7 @@ class MainActivity : AppCompatActivity() {
             is FSMAuthenticationState.AuthenticatedPrivateToken, FSMAuthenticationState.AuthenticatedOpenToken -> {
                 // we probably stopped and restored the app, do the same actions
                 // in the viewModel.fsmAuthenticationState.observe for these states
-                
+
                 // unlock the bottom menu
                 enableAllBottomNavItems()
             }
@@ -275,19 +392,197 @@ class MainActivity : AppCompatActivity() {
         ) {
             when (val content = it?.getContentIfNotHandled()) {
                 is MainActivityMessage.InstalledPlugins -> {
-                    currentToast.cancel()
-                    currentToast.setText(
-                        getString(
-                            R.string.n_plugins_installed,
-                            content.number
+                    lifecycleScope.launch {
+                        currentToast.cancel()
+                        // calling cancel stops the toast from showing on api 22 maybe others
+                        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M) {
+                            delay(200)
+                        }
+                        currentToast.setText(
+                            getString(
+                                R.string.n_plugins_installed,
+                                content.number
+                            )
                         )
-                    )
-                    currentToast.show()
+                        currentToast.show()
+                    }
                 }
                 is MainActivityMessage.StringID -> {
-                    currentToast.cancel()
-                    currentToast.setText(getString(content.id))
-                    currentToast.show()
+                    lifecycleScope.launch {
+                        currentToast.cancel()
+                        // calling cancel stops the toast from showing on api 22 maybe others
+                        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M) {
+                            delay(200)
+                        }
+                        currentToast.setText(getString(content.id))
+                        currentToast.show()
+                    }
+                }
+                is MainActivityMessage.UpdateFound -> {
+                    when (content.signature) {
+                        SIGNATURE.F_DROID -> {
+                            showUpdateDialog(
+                                getString(R.string.fdroid_update_description),
+                                APP_LINK.F_DROID
+                            )
+                        }
+                        SIGNATURE.PLAY_STORE -> {
+                            showUpdateDialog(
+                                getString(R.string.playstore_update_description),
+                                APP_LINK.PLAY_STORE
+                            )
+                        }
+                        SIGNATURE.GITHUB -> {
+                            showUpdateDialog(
+                                getString(R.string.github_update_description),
+                                APP_LINK.GITHUB
+                            )
+                        }
+                        else -> {}
+                    }
+                }
+                MainActivityMessage.RequireDownloadFolder -> {
+                    pickDirectoryLauncher.launch(null)
+                }
+                MainActivityMessage.RequireDownloadPermissions -> {
+                    requestDownloadPermissionLauncher.launch(
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    )
+                }
+                MainActivityMessage.RequireNotificationPermissions -> {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        requestNotificationPermissionLauncher.launch(
+                            Manifest.permission.POST_NOTIFICATIONS
+                        )
+                    }
+                }
+                is MainActivityMessage.MultipleDownloadsEnqueued -> {
+
+                    if (
+                        Build.VERSION.SDK_INT in 23..28 &&
+                        ContextCompat.checkSelfPermission(
+                            applicationContext,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE
+                        ) != PERMISSION_GRANTED
+                    ) {
+                        viewModel.requireDownloadPermissions()
+                    } else {
+
+                        when (viewModel.getDownloadManagerPreference()) {
+                            PreferenceKeys.DownloadManager.SYSTEM -> {
+                                val manager =
+                                    applicationContext.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+                                var downloadsStarted = 0
+                                content.downloads.forEach { download ->
+
+                                    val queuedDownload = manager.downloadFileInStandardFolder(
+                                        source = Uri.parse(download.download),
+                                        title = download.filename,
+                                        description = getString(R.string.app_name),
+                                        fileName = download.filename
+                                    )
+                                    when (queuedDownload) {
+                                        is EitherResult.Failure -> {
+                                            Timber.e("Error queuing ${download.link}: ${queuedDownload.failure.message}")
+                                        }
+                                        is EitherResult.Success -> {
+                                            downloadsStarted++
+                                        }
+                                    }
+                                }
+
+                                applicationContext?.showToast(
+                                    getString(
+                                        R.string.multiple_downloads_enqueued_format,
+                                        downloadsStarted,
+                                        content.downloads.size
+                                    )
+                                )
+                            }
+                            PreferenceKeys.DownloadManager.OKHTTP -> {
+
+                                val folder = viewModel.getDownloadFolder()
+                                if (folder != null) {
+                                    if (viewModel.getDownloadOnUnmeteredOnlyPreference()) {
+                                        val connectivityManager =
+                                            applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+                                        if (connectivityManager.isActiveNetworkMetered) {
+                                            applicationContext.showToast(R.string.download_on_metered_connection)
+                                        }
+                                    }
+                                    viewModel.startMultipleDownloadWorkers(
+                                        folder,
+                                        content.downloads
+                                    )
+                                } else
+                                    viewModel.requireDownloadFolder()
+                            }
+                        }
+                    }
+                }
+                is MainActivityMessage.DownloadEnqueued -> {
+
+                    if (
+                        Build.VERSION.SDK_INT in 23..28 &&
+                        ContextCompat.checkSelfPermission(
+                            applicationContext,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE
+                        ) != PERMISSION_GRANTED
+                    ) {
+                        viewModel.requireDownloadPermissions()
+                    } else {
+                        when (val dm = viewModel.getDownloadManagerPreference()) {
+                            PreferenceKeys.DownloadManager.SYSTEM -> {
+
+                                val manager =
+                                    applicationContext.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+
+                                val queuedDownload = manager.downloadFileInStandardFolder(
+                                    source = Uri.parse(content.source),
+                                    title = content.fileName,
+                                    description = getString(R.string.app_name),
+                                    fileName = content.fileName
+                                )
+                                when (queuedDownload) {
+                                    is EitherResult.Failure -> {
+                                        applicationContext.showToast(
+                                            getString(
+                                                R.string.download_not_started_format,
+                                                content.fileName
+                                            )
+                                        )
+                                    }
+                                    is EitherResult.Success -> {
+                                        applicationContext.showToast(R.string.download_started)
+                                    }
+                                }
+                            }
+                            PreferenceKeys.DownloadManager.OKHTTP -> {
+
+                                val folder = viewModel.getDownloadFolder()
+                                if (folder != null) {
+
+                                    if (viewModel.getDownloadOnUnmeteredOnlyPreference()) {
+                                        val connectivityManager =
+                                            applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+                                        if (connectivityManager.isActiveNetworkMetered) {
+                                            applicationContext.showToast(R.string.download_on_metered_connection)
+                                        }
+                                    }
+
+                                    viewModel.startDownloadWorker(
+                                        content,
+                                        folder
+                                    )
+                                } else
+                                    viewModel.requireDownloadFolder()
+
+                            }
+                            else -> {
+                                Timber.e("Unrecognized download manager requested: $dm")
+                            }
+                        }
+                    }
                 }
                 null -> {}
             }
@@ -318,6 +613,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         viewModel.clearCache(applicationContext.cacheDir)
+
+        viewModel.checkUpdates(BuildConfig.VERSION_CODE, getApplicationSignatures())
     }
 
     override fun onResume() {
@@ -334,8 +631,8 @@ class MainActivity : AppCompatActivity() {
         val pluginName = link.replace("%2F", "/").split("/").last()
         val manager =
             applicationContext.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-        val queuedDownload = manager.downloadFile(
-            link = link,
+        val queuedDownload = manager.downloadFileInStandardFolder(
+            source = Uri.parse(link),
             title = getString(R.string.unchained_plugin_download),
             description = getString(R.string.temporary_plugin_download),
             fileName = pluginName
@@ -355,24 +652,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        val inflater = menuInflater
-        inflater.inflate(R.menu.top_app_bar, menu)
-        return true
-    }
-
     override fun onSupportNavigateUp(): Boolean {
-        return currentNavController?.value?.navigateUp(appBarConfiguration) ?: false
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.settings -> {
-                openSettings()
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
+        return navController.navigateUp(appBarConfiguration)
     }
 
     private fun getIntentData() {
@@ -522,50 +803,61 @@ class MainActivity : AppCompatActivity() {
     /**
      * Called on first creation and when restoring state.
      */
-    private fun setupBottomNavigationBar() {
-        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_nav_view)
+    private fun setupBottomNavigationBar(binding: ActivityMainBinding) {
 
-        val navGraphIds = listOf(
-            R.navigation.home_nav_graph,
-            R.navigation.lists_nav_graph,
-            R.navigation.search_nav_graph,
+        navController = (
+                supportFragmentManager.findFragmentById(
+                    R.id.nav_host_fragment
+                ) as NavHostFragment
+                ).navController
+        binding.bottomNavView.setupWithNavController(navController)
+
+        // Setup the ActionBar with navController and 3 top level destinations
+        // these won't show a back/up arrow
+        appBarConfiguration = AppBarConfiguration(
+            setOf(
+                R.id.authentication_dest,
+                R.id.start_dest,
+                R.id.user_dest,
+                R.id.list_tabs_dest,
+                R.id.search_dest
+            )
         )
+        setupActionBarWithNavController(navController, appBarConfiguration)
 
-        // Setup the bottom navigation view with a list of navigation graphs
-        val controller = bottomNavigationView.setupWithNavController(
-            navGraphIds = navGraphIds,
-            fragmentManager = supportFragmentManager,
-            containerId = R.id.nav_host_fragment,
-            intent = intent
-        )
+        binding.bottomNavView.setOnItemReselectedListener {
+            if (it.isEnabled) {
+                val currentDestination = navController.currentDestination
 
-        // Whenever the selected controller changes, setup the action bar.
-        controller.observe(
-            this
-        ) { navController ->
-            setupActionBarWithNavController(navController, appBarConfiguration)
+                when (it.itemId) {
+                    R.id.navigation_home -> {
+                        // do nothing. There is no other acceptable fragment
+                    }
+                    // if these are enabled I should be logged in already
+                    R.id.navigation_lists -> {
+                        if (currentDestination?.id != R.id.list_tabs_dest) {
+                            navController.popBackStack(R.id.list_tabs_dest, false)
+                        }
+                    }
+                    R.id.navigation_search -> {
+                        if (currentDestination?.id != R.id.search_dest) {
+                            navController.popBackStack(R.id.search_dest, false)
+                        }
+                    }
+                }
+            }
         }
-        currentNavController = controller
-    }
-
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
-        // Now that BottomNavigationBar has restored its instance state
-        // and its selectedItemId, we can proceed with setting up the
-        // BottomNavigationBar with Navigation
-        setupBottomNavigationBar()
     }
 
     override fun onBackPressed() {
         // if the user is pressing back on an "exiting"fragment, show a toast alerting him and wait for him to press back again for confirmation
-        val navController = currentNavController?.value
 
-        if (navController != null) {
-            val currentDestination = navController.currentDestination
-            val previousDestination = navController.previousBackStackEntry
+        val currentDestination = navController.currentDestination
+        val previousDestination = navController.previousBackStackEntry
 
+        when (currentDestination?.id) {
             // check if we're pressing back from the user or authentication fragment
-            if (currentDestination?.id == R.id.user_dest || currentDestination?.id == R.id.authentication_dest) {
+            R.id.user_dest, R.id.authentication_dest -> {
                 // check the destination for the back action
                 if (previousDestination == null ||
                     previousDestination.destination.id == R.id.authentication_dest ||
@@ -587,11 +879,27 @@ class MainActivity : AppCompatActivity() {
                 } else {
                     super.onBackPressed()
                 }
-            } else {
+            }
+            else -> {
                 super.onBackPressed()
             }
-        } else
-            super.onBackPressed()
+        }
+    }
+
+    private fun showUpdateDialog(description: String, link: String) {
+
+        // passing the baseContext or applicationContext cause a crash in the release version build
+        // java.lang.IllegalArgumentException:
+        // The style on this component requires your app theme to be Theme.AppCompat (or a descendant).
+        MaterialAlertDialogBuilder(this)
+            .setTitle(getString(R.string.new_update))
+            .setMessage(description)
+            .setNegativeButton(getString(R.string.close)) { _, _ ->
+            }
+            .setPositiveButton(getString(R.string.open)) { _, _ ->
+                this.openExternalWebPage(link)
+            }
+            .show()
     }
 
     companion object {

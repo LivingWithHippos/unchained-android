@@ -1,5 +1,6 @@
 package com.github.livingwithhippos.unchained.data.repository
 
+import com.github.livingwithhippos.unchained.data.local.ProtoStore
 import com.github.livingwithhippos.unchained.data.model.APIError
 import com.github.livingwithhippos.unchained.data.model.ApiConversionError
 import com.github.livingwithhippos.unchained.data.model.EmptyBodyError
@@ -19,7 +20,7 @@ import java.io.IOException
  * Base repository class to be extended by other repositories.
  * Manages the calls between retrofit and the actual repositories.
  */
-open class BaseRepository {
+open class BaseRepository(private val protoStore: ProtoStore) {
 
     // todo: inject this
     private val jsonAdapter: JsonAdapter<APIError> = Moshi.Builder()
@@ -76,13 +77,25 @@ open class BaseRepository {
         } catch (e: Exception) {
             return@withContext EitherResult.Failure(NetworkError(-1, errorMessage))
         }
-
+        val code = response.code()
         if (response.isSuccessful) {
-            val body = response.body()
+            val body: T? = response.body()
             return@withContext if (body != null)
                 EitherResult.Success(body)
             else
-                EitherResult.Failure(EmptyBodyError(response.code()))
+            // todo: some calls return nothing and this is actually a Success, manage them
+            /**
+             * /disable_access_token
+             * /downloads/delete/{id}
+             * /torrents/selectFiles/{id}
+             * /torrents/delete/{id}
+             * /settings/update
+             * /settings/convertPoints
+             * /settings/changePassword
+             * /settings/avatarFile
+             * /settings/avatarDelete
+             */
+                EitherResult.Failure(EmptyBodyError(code))
         } else {
             try {
                 val error: APIError? = jsonAdapter.fromJson(response.errorBody()!!.string())
@@ -92,8 +105,26 @@ open class BaseRepository {
                     EitherResult.Failure(ApiConversionError(-1))
             } catch (e: IOException) {
                 // todo: analyze error to return code
-                return@withContext EitherResult.Failure(NetworkError(-1, errorMessage))
+                return@withContext EitherResult.Failure(
+                    NetworkError(
+                        -1,
+                        "$errorMessage, http code $code"
+                    )
+                )
             }
         }
+    }
+
+    /**
+     * Get the access token saved in the db. Used by most calls to RD APIs
+     * Throws an exception if token is missing or malformed
+     * @return the token string
+     */
+    suspend fun getToken(): String {
+        val token = protoStore.getCredentials().accessToken
+        if (token.isBlank() || token.length < 5)
+            throw IllegalArgumentException("Loaded token was empty or wrong: $token")
+
+        return token
     }
 }

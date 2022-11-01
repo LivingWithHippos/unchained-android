@@ -7,57 +7,81 @@ import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Build
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import androidx.work.Constraints
+import androidx.work.Data
+import androidx.work.ExistingWorkPolicy
+import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequest
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.local.Credentials
 import com.github.livingwithhippos.unchained.data.local.ProtoStore
 import com.github.livingwithhippos.unchained.data.model.APIError
 import com.github.livingwithhippos.unchained.data.model.ApiConversionError
+import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.data.model.EmptyBodyError
 import com.github.livingwithhippos.unchained.data.model.KodiDevice
 import com.github.livingwithhippos.unchained.data.model.NetworkError
+import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkException
 import com.github.livingwithhippos.unchained.data.model.User
 import com.github.livingwithhippos.unchained.data.model.UserAction
+import com.github.livingwithhippos.unchained.data.model.cache.InstantAvailability
 import com.github.livingwithhippos.unchained.data.repository.AuthenticationRepository
 import com.github.livingwithhippos.unchained.data.repository.CustomDownloadRepository
 import com.github.livingwithhippos.unchained.data.repository.HostsRepository
 import com.github.livingwithhippos.unchained.data.repository.KodiDeviceRepository
 import com.github.livingwithhippos.unchained.data.repository.PluginRepository
 import com.github.livingwithhippos.unchained.data.repository.PluginRepository.Companion.TYPE_UNCHAINED
+import com.github.livingwithhippos.unchained.data.repository.TorrentsRepository
+import com.github.livingwithhippos.unchained.data.repository.UpdateRepository
 import com.github.livingwithhippos.unchained.data.repository.UserRepository
 import com.github.livingwithhippos.unchained.data.repository.VariousApiRepository
 import com.github.livingwithhippos.unchained.lists.view.ListState
-import com.github.livingwithhippos.unchained.lists.view.ListsTabFragment
+import com.github.livingwithhippos.unchained.torrentfilepicker.view.TorrentCachePickerFragment.Companion.KEY_CACHE_INDEX
 import com.github.livingwithhippos.unchained.plugins.model.Plugin
+import com.github.livingwithhippos.unchained.plugins.model.ScrapedItem
+import com.github.livingwithhippos.unchained.search.viewmodel.SearchViewModel
 import com.github.livingwithhippos.unchained.statemachine.authentication.CurrentFSMAuthentication
 import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationEvent
 import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationSideEffect
 import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationState
+import com.github.livingwithhippos.unchained.utilities.BASE_URL
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.Event
+import com.github.livingwithhippos.unchained.utilities.INSTANT_AVAILABILITY_ENDPOINT
+import com.github.livingwithhippos.unchained.utilities.MAGNET_PATTERN
 import com.github.livingwithhippos.unchained.utilities.PLUGINS_PACK_FOLDER
 import com.github.livingwithhippos.unchained.utilities.PRIVATE_TOKEN
+import com.github.livingwithhippos.unchained.utilities.PreferenceKeys
+import com.github.livingwithhippos.unchained.utilities.SIGNATURE
 import com.github.livingwithhippos.unchained.utilities.UnzipUtils
+import com.github.livingwithhippos.unchained.utilities.download.DownloadWorker
 import com.github.livingwithhippos.unchained.utilities.extension.getDownloadedFileUri
 import com.github.livingwithhippos.unchained.utilities.extension.isMagnet
 import com.github.livingwithhippos.unchained.utilities.extension.isTorrent
 import com.github.livingwithhippos.unchained.utilities.postEvent
 import com.tinder.StateMachine
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.io.File
+import java.io.FileNotFoundException
 import java.io.IOException
 import java.util.regex.Matcher
 import java.util.regex.Pattern
@@ -71,15 +95,20 @@ import javax.inject.Inject
 class MainActivityViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val preferences: SharedPreferences,
+    private val protoStore: ProtoStore,
     private val authRepository: AuthenticationRepository,
     private val userRepository: UserRepository,
     private val variousApiRepository: VariousApiRepository,
     private val hostsRepository: HostsRepository,
     private val pluginRepository: PluginRepository,
-    private val protoStore: ProtoStore,
     private val kodiDeviceRepository: KodiDeviceRepository,
-    private val customDownloadRepository: CustomDownloadRepository
+    private val customDownloadRepository: CustomDownloadRepository,
+    private val torrentsRepository: TorrentsRepository,
+    private val updateRepository: UpdateRepository,
+    @ApplicationContext applicationContext: Context
 ) : ViewModel() {
+
+    private val magnetPattern = Regex(MAGNET_PATTERN, RegexOption.IGNORE_CASE)
 
     val fsmAuthenticationState = MutableLiveData<Event<FSMAuthenticationState>?>()
     private val credentialsFlow = protoStore.credentialsFlow
@@ -88,7 +117,7 @@ class MainActivityViewModel @Inject constructor(
 
     val downloadedFileLiveData = MutableLiveData<Event<Long>>()
 
-    val notificationTorrentLiveData = MutableLiveData<Event<String>>()
+    val notificationTorrentLiveData = MutableLiveData<Event<TorrentItem>>()
 
     val listStateLiveData = MutableLiveData<Event<ListState>>()
 
@@ -101,6 +130,12 @@ class MainActivityViewModel @Inject constructor(
     val linkLiveData = MutableLiveData<Event<String>?>()
 
     val messageLiveData = MutableLiveData<Event<MainActivityMessage>?>()
+
+    // todo: use this with other livedatas
+    private val _cacheLiveData = MutableLiveData<InstantAvailability>()
+    val cacheLiveData: LiveData<InstantAvailability> = _cacheLiveData
+
+    private val workManager = WorkManager.getInstance(applicationContext)
 
     private var refreshJob: Job? = null
 
@@ -317,7 +352,6 @@ class MainActivityViewModel @Inject constructor(
                                 FSMAuthenticationState.StartNewLogin
                             )
                         )
-
                     }
                     FSMAuthenticationSideEffect.PostAuthenticatedOpen -> {
                         fsmAuthenticationState.postValue(
@@ -395,6 +429,64 @@ class MainActivityViewModel @Inject constructor(
             }
         }
 
+    fun checkTorrentCache(scrapedItems: List<ScrapedItem>) {
+        if (scrapedItems.isNotEmpty()) {
+            viewModelScope.launch {
+                val builder = StringBuilder(BASE_URL)
+                builder.append(INSTANT_AVAILABILITY_ENDPOINT)
+                scrapedItems.forEach { item ->
+                    item.magnets.forEach { magnet ->
+                        val btih = magnetPattern.find(magnet)?.groupValues?.get(1)
+                        if (!btih.isNullOrBlank()) {
+                            builder.append("/")
+                            builder.append(btih)
+                        }
+                    }
+                }
+                if (builder.length > (BASE_URL.length + INSTANT_AVAILABILITY_ENDPOINT.length)) {
+                    val cache = torrentsRepository.getInstantAvailability(builder.toString())
+                    if (cache is EitherResult.Success) {
+                        if (cache.success.cachedTorrents.isNotEmpty()) {
+                            _cacheLiveData.postValue(cache.success)
+                            setCacheResults(cache.success)
+                        } else {
+                            setCacheResults(null)
+                        }
+                    } else {
+                        setCacheResults(null)
+                    }
+                } else {
+                    Timber.d("Skipping empty cache query: $builder")
+                }
+            }
+        } else {
+            Timber.d("No search result found")
+            setCacheResults(null)
+        }
+    }
+
+    private fun setCacheResults(cache: InstantAvailability?) {
+        savedStateHandle[SearchViewModel.KEY_CACHE] = cache
+    }
+
+    /**
+     * Set current torrent cache pick, see TorrentCachePicker
+     *
+     * @param id
+     * @param cacheIndex
+     */
+    fun setCurrentTorrentCachePick(id: String, cacheIndex: Int) {
+        savedStateHandle[KEY_CACHE_INDEX] = Pair(id, cacheIndex)
+    }
+
+    fun clearCurrentTorrentCachePick() {
+        savedStateHandle[KEY_CACHE_INDEX] = null
+    }
+
+    fun getCurrentTorrentCachePick(): Pair<String, Int>? {
+        return savedStateHandle[KEY_CACHE_INDEX]
+    }
+
     fun checkCredentials() {
         viewModelScope.launch {
             // todo: how to do this
@@ -453,7 +545,7 @@ class MainActivityViewModel @Inject constructor(
             val c = protoStore.getCredentials()
             if (!c.refreshToken.isNullOrEmpty() && c.refreshToken != PRIVATE_TOKEN) {
                 // setUnauthenticated()
-                variousApiRepository.disableToken(c.accessToken)
+                variousApiRepository.disableToken()
             }
         }
     }
@@ -665,7 +757,8 @@ class MainActivityViewModel @Inject constructor(
         refreshJob = viewModelScope.launch {
             // secondsDelay*950L -> expiration time - 5%
             delay(secondsDelay * 950L)
-            refreshToken()
+            if (isActive)
+                refreshToken()
         }
     }
 
@@ -732,7 +825,13 @@ class MainActivityViewModel @Inject constructor(
     }
 
     fun addTorrentId(torrentID: String) {
-        notificationTorrentLiveData.postEvent(torrentID)
+        viewModelScope.launch {
+            val torrent: TorrentItem? = torrentsRepository.getTorrentInfo(torrentID)
+            if (torrent != null)
+                notificationTorrentLiveData.postEvent(torrent)
+            else
+                Timber.e("Could not retrieve torrent data from click on notification, id $torrentID")
+        }
     }
 
     fun addPlugin(context: Context, data: Uri) {
@@ -991,7 +1090,7 @@ class MainActivityViewModel @Inject constructor(
         }
     }
 
-    suspend fun downloadFileToCache(
+    fun downloadFileToCache(
         link: String,
         fileName: String,
         cacheDir: File,
@@ -1025,29 +1124,22 @@ class MainActivityViewModel @Inject constructor(
     }
 
     fun processPluginsPack(cacheDir: File, pluginsDir: File, fileName: String) {
-        try {
-            viewModelScope.launch {
-                withContext(Dispatchers.IO) {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                try {
                     val cacheFile = File(cacheDir, fileName)
                     UnzipUtils.unzip(cacheFile, File(cacheDir, PLUGINS_PACK_FOLDER))
                     Timber.d("Zip pack extracted")
                     installPluginsPack(cacheDir, pluginsDir)
-                }
-            }
-        } catch (exception: Exception) {
-            when (exception) {
-                is IOException -> {
+                } catch (exception: IOException) {
                     Timber.e("Plugins pack IOException error with the file: ${exception.message}")
-                }
-                is java.io.FileNotFoundException -> {
+                } catch (exception: FileNotFoundException) {
                     Timber.e("Plugins pack: file not found: ${exception.message}")
-                }
-                else -> {
+                } catch (exception: Exception) {
                     Timber.e("Plugins pack: Other error getting the file: ${exception.message}")
                 }
             }
         }
-
     }
 
     fun clearCache(cacheDir: File) {
@@ -1057,16 +1149,249 @@ class MainActivityViewModel @Inject constructor(
         }
     }
 
+    private fun checkUpdateVersion(
+        localVersion: Int,
+        remoteVersion: Int?,
+        lastVersionChecked: Int,
+        signature: String
+    ) {
+        if (remoteVersion != null) {
+            if (remoteVersion > localVersion && remoteVersion > lastVersionChecked) {
+                messageLiveData.postValue(Event(MainActivityMessage.UpdateFound(signature)))
+            }
+            with(preferences.edit()) {
+                putInt(KEY_LAST_UPDATE_VERSION_CHECKED, remoteVersion)
+                apply()
+            }
+        }
+    }
+
+    fun checkUpdates(versionCode: Int, signatures: List<String>) {
+        viewModelScope.launch {
+            // ignore errors getting updates?
+            // todo: Add a toast if a button to check updates is added
+            val updates = updateRepository.getUpdates(SIGNATURE.URL)
+            if (updates != null) {
+                val lastVersionChecked = preferences.getInt(KEY_LAST_UPDATE_VERSION_CHECKED, -1)
+                for (signature in signatures) {
+                    when (val upperSignature = signature.uppercase()) {
+                        SIGNATURE.F_DROID -> {
+                            checkUpdateVersion(
+                                versionCode,
+                                updates.fDroid?.versionCode,
+                                lastVersionChecked,
+                                upperSignature
+                            )
+                            break
+                        }
+                        SIGNATURE.GITHUB -> {
+                            checkUpdateVersion(
+                                versionCode,
+                                updates.github?.versionCode,
+                                lastVersionChecked,
+                                upperSignature
+                            )
+                            break
+                        }
+                        SIGNATURE.PLAY_STORE -> {
+                            checkUpdateVersion(
+                                versionCode,
+                                updates.playStore?.versionCode,
+                                lastVersionChecked,
+                                upperSignature
+                            )
+                            break
+                        }
+                        else -> {
+                            // report to countly?
+                            Timber.e("Unknown apk signature, may be debugging: $upperSignature")
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    fun setDownloadFolder(uri: Uri) {
+        uri.describeContents()
+        with(preferences.edit()) {
+            putString(KEY_DOWNLOAD_FOLDER, uri.toString())
+            apply()
+        }
+    }
+
+    fun getDownloadFolder(): Uri? {
+        val folder = preferences.getString(KEY_DOWNLOAD_FOLDER, null)
+        if (folder != null) {
+            try {
+                return Uri.parse(folder)
+            } catch (e: Exception) {
+                Timber.e("Error parsing the saved folder Uri $folder")
+            }
+        }
+        return null
+    }
+
+    fun requireDownloadFolder() {
+        messageLiveData.postValue(Event(MainActivityMessage.RequireDownloadFolder))
+    }
+
+    fun requireDownloadPermissions() {
+        messageLiveData.postValue(Event(MainActivityMessage.RequireDownloadPermissions))
+    }
+
+    fun requireNotificationPermissions(callDelay: Boolean = true) {
+        viewModelScope.launch {
+            if (callDelay) {
+                delay(500)
+            }
+            messageLiveData.postValue(Event(MainActivityMessage.RequireNotificationPermissions))
+        }
+    }
+
+    fun getDownloadManagerPreference(): String {
+        return preferences.getString(
+            PreferenceKeys.DownloadManager.KEY,
+            PreferenceKeys.DownloadManager.SYSTEM
+        ) ?: PreferenceKeys.DownloadManager.SYSTEM
+    }
+
+    fun startDownloadWorker(content: MainActivityMessage.DownloadEnqueued, folder: Uri) {
+
+        val unmeteredConnectionOnly =
+            preferences.getBoolean(PreferenceKeys.DownloadManager.UNMETERED_ONLY_KEY, false)
+
+        val constraints = Constraints.Builder()
+            .apply {
+                if (unmeteredConnectionOnly)
+                    setRequiredNetworkType(NetworkType.UNMETERED)
+                else
+                    setRequiredNetworkType(NetworkType.CONNECTED)
+            }
+            .setRequiresStorageNotLow(true)
+            .build()
+
+        val data: Data = Data.Builder().apply {
+            putString(
+                KEY_FOLDER_URI,
+                folder.toString()
+            )
+            putString(
+                KEY_DOWNLOAD_SOURCE,
+                content.source
+            )
+            putString(
+                KEY_DOWNLOAD_NAME,
+                content.fileName
+            )
+        }.build()
+
+        val downloadFileRequest = OneTimeWorkRequestBuilder<DownloadWorker>()
+            .addTag(content.source)
+            .setInputData(data)
+            .setConstraints(constraints)
+            .build()
+
+        // use KEEP or REPLACE
+        workManager.enqueueUniqueWork(content.source, ExistingWorkPolicy.KEEP, downloadFileRequest)
+    }
+
+    fun startMultipleDownloadWorkers(folder: Uri, downloads: List<DownloadItem>) {
+
+        val unmeteredConnectionOnly =
+            preferences.getBoolean(PreferenceKeys.DownloadManager.UNMETERED_ONLY_KEY, false)
+
+        val constraints = Constraints.Builder()
+            .apply {
+                if (unmeteredConnectionOnly)
+                    setRequiredNetworkType(NetworkType.UNMETERED)
+                else
+                    setRequiredNetworkType(NetworkType.CONNECTED)
+            }
+            .setRequiresStorageNotLow(true)
+            .build()
+
+        val work: List<OneTimeWorkRequest> = downloads.map {
+
+            val data = Data.Builder().apply {
+                putString(
+                    KEY_FOLDER_URI,
+                    folder.toString()
+                )
+                putString(KEY_DOWNLOAD_SOURCE, it.download)
+                putString(KEY_DOWNLOAD_NAME, it.filename)
+            }.build()
+
+            OneTimeWorkRequestBuilder<DownloadWorker>()
+                .setInputData(data)
+                .setConstraints(constraints)
+                .addTag(it.download)
+                .build()
+        }
+
+        // use KEEP or REPLACE
+        workManager.enqueue(work)
+    }
+
+    fun enqueueDownload(
+        sourceUrl: String,
+        fileName: String
+    ) {
+        // todo: folder should be nullable for the system download manager
+        messageLiveData.postValue(
+            Event(
+                MainActivityMessage.DownloadEnqueued(
+                    sourceUrl,
+                    fileName
+                )
+            )
+        )
+    }
+
+    fun enqueueDownloads(
+        downloads: List<DownloadItem>
+    ) {
+        // todo: folder should be nullable for the system download manager
+        messageLiveData.postValue(
+            Event(
+                MainActivityMessage.MultipleDownloadsEnqueued(
+                    downloads
+                )
+            )
+        )
+    }
+
+    fun getDownloadOnUnmeteredOnlyPreference(): Boolean {
+        return preferences.getBoolean(PreferenceKeys.DownloadManager.UNMETERED_ONLY_KEY, false)
+    }
+
     companion object {
+        const val KEY_DOWNLOAD_FOLDER = "download_folder_key"
         const val KEY_TORRENT_DOWNLOAD_ID = "torrent_download_id_key"
         const val KEY_PLUGIN_DOWNLOAD_ID = "plugin_download_id_key"
         const val KEY_LAST_BACK_PRESS = "last_back_press_key"
         const val KEY_REFRESHING_TOKEN = "refreshing_token_key"
         const val KEY_FSM_AUTH_STATE = "fsm_auth_state_key"
+        const val KEY_LAST_UPDATE_VERSION_CHECKED = "last_update_version_checked_key"
+
+        const val KEY_FOLDER_URI = "download_folder_key"
+        const val KEY_DOWNLOAD_SOURCE = "download_source_key"
+        const val KEY_DOWNLOAD_NAME = "download_name_key"
+
+        const val DOWNLOAD_WORK_NAME = "work_name_download"
     }
 }
 
 sealed class MainActivityMessage {
-    data class StringID(val id: Int): MainActivityMessage()
-    data class InstalledPlugins(val number: Int): MainActivityMessage()
+    data class StringID(val id: Int) : MainActivityMessage()
+    data class InstalledPlugins(val number: Int) : MainActivityMessage()
+    data class UpdateFound(val signature: String) : MainActivityMessage()
+    object RequireDownloadFolder : MainActivityMessage()
+    object RequireDownloadPermissions : MainActivityMessage()
+    object RequireNotificationPermissions : MainActivityMessage()
+    data class DownloadEnqueued(val source: String, val fileName: String) :
+        MainActivityMessage()
+
+    data class MultipleDownloadsEnqueued(val downloads: List<DownloadItem>) :
+        MainActivityMessage()
 }

@@ -15,9 +15,11 @@ class TorrentListPagingAdapter(listener: TorrentListListener) :
 
         override fun areContentsTheSame(oldItem: TorrentItem, newItem: TorrentItem): Boolean {
             // check the torrent progress
-            return oldItem.progress == oldItem.progress &&
+            return oldItem.progress == newItem.progress &&
                     // check the torrent status
-                    oldItem.status == oldItem.status
+                    oldItem.status == newItem.status &&
+                    // may be triggered by different cache
+                    oldItem.bytes == newItem.bytes
         }
     }
 

@@ -1,5 +1,6 @@
 package com.github.livingwithhippos.unchained.data.repository
 
+import com.github.livingwithhippos.unchained.data.local.ProtoStore
 import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkException
 import com.github.livingwithhippos.unchained.data.remote.UnrestrictApiHelper
@@ -10,15 +11,18 @@ import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import javax.inject.Inject
 
-class UnrestrictRepository @Inject constructor(private val unrestrictApiHelper: UnrestrictApiHelper) :
-    BaseRepository() {
+class UnrestrictRepository @Inject constructor(
+    private val protoStore: ProtoStore,
+    private val unrestrictApiHelper: UnrestrictApiHelper
+) :
+    BaseRepository(protoStore) {
 
     suspend fun getEitherUnrestrictedLink(
-        token: String,
         link: String,
         password: String? = null,
         remote: Int? = null
     ): EitherResult<UnchainedNetworkException, DownloadItem> {
+        val token = getToken()
 
         val linkResponse = eitherApiResult(
             call = {
@@ -36,7 +40,6 @@ class UnrestrictRepository @Inject constructor(private val unrestrictApiHelper: 
     }
 
     suspend fun getUnrestrictedLinkList(
-        token: String,
         linksList: List<String>,
         password: String? = null,
         remote: Int? = null,
@@ -45,7 +48,7 @@ class UnrestrictRepository @Inject constructor(private val unrestrictApiHelper: 
         val unrestrictedLinks =
             mutableListOf<EitherResult<UnchainedNetworkException, DownloadItem>>()
         linksList.forEach {
-            unrestrictedLinks.add(getEitherUnrestrictedLink(token, it, password, remote))
+            unrestrictedLinks.add(getEitherUnrestrictedLink(it, password, remote))
             // just to be on the safe side...
             delay(callDelay)
         }
@@ -53,11 +56,11 @@ class UnrestrictRepository @Inject constructor(private val unrestrictApiHelper: 
     }
 
     suspend fun getEitherUnrestrictedFolder(
-        token: String,
         link: String,
         password: String? = null,
         remote: Int? = null
     ): List<EitherResult<UnchainedNetworkException, DownloadItem>> {
+        val token = getToken()
 
         val folderResponse: EitherResult<UnchainedNetworkException, List<String>> = eitherApiResult(
             call = {
@@ -71,7 +74,6 @@ class UnrestrictRepository @Inject constructor(private val unrestrictApiHelper: 
 
         return when (folderResponse) {
             is EitherResult.Success -> getUnrestrictedLinkList(
-                token,
                 folderResponse.success,
                 password,
                 remote
@@ -81,9 +83,9 @@ class UnrestrictRepository @Inject constructor(private val unrestrictApiHelper: 
     }
 
     suspend fun getEitherFolderLinks(
-        token: String,
         link: String
     ): EitherResult<UnchainedNetworkException, List<String>> {
+        val token = getToken()
 
         val folderResponse: EitherResult<UnchainedNetworkException, List<String>> = eitherApiResult(
             call = {
@@ -99,9 +101,9 @@ class UnrestrictRepository @Inject constructor(private val unrestrictApiHelper: 
     }
 
     suspend fun uploadContainer(
-        token: String,
         container: ByteArray
     ): EitherResult<UnchainedNetworkException, List<String>> {
+        val token = getToken()
 
         val requestBody: RequestBody = container.toRequestBody(
             "application/octet-stream".toMediaTypeOrNull(),
@@ -123,9 +125,9 @@ class UnrestrictRepository @Inject constructor(private val unrestrictApiHelper: 
     }
 
     suspend fun getContainerLinks(
-        token: String,
         link: String
     ): List<String>? {
+        val token = getToken()
 
         val containerResponse = safeApiCall(
             call = {

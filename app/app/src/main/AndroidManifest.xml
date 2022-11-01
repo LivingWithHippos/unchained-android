@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
@@ -243,399 +244,85 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data
-                    android:scheme="https"
-                    android:host="docs.google.com" />
-                <data
-                    android:scheme="https"
-                    android:host="drive.google.com" />
-                <data
-                    android:scheme="https"
-                    android:host="4shared.com" />
-                <data
-                    android:scheme="https"
-                    android:host="filefactory.com" />
-                <data
-                    android:scheme="https"
-                    android:host="1fichier.com" />
-                <data
-                    android:scheme="https"
-                    android:host="rapidgator.net" />
-                <data
-                    android:scheme="https"
-                    android:host="uploaded.to" />
-                <data
-                    android:scheme="https"
-                    android:host="ul.to" />
-                <data
-                    android:scheme="https"
-                    android:host="uploaded.net" />
-                <data
-                    android:scheme="https"
-                    android:host="ul.net" />
-                <data
-                    android:scheme="https"
-                    android:host="turbobit.net" />
-                <data
-                    android:scheme="https"
-                    android:host="turbobit5.net" />
-                <data
-                    android:scheme="https"
-                    android:host="turbobit.cc" />
-                <data
-                    android:scheme="https"
-                    android:host="turbobit5.cc" />
-                <data
-                    android:scheme="https"
-                    android:host="turbobit.pw" />
-                <data
-                    android:scheme="https"
-                    android:host="turbobit5.pw" />
-                <data
-                    android:scheme="https"
-                    android:host="turbo.to" />
-                <data
-                    android:scheme="https"
-                    android:host="turb.to" />
-                <data
-                    android:scheme="https"
-                    android:host="turb.cc" />
-                <data
-                    android:scheme="https"
-                    android:host="safelinking.net" />
-                <data
-                    android:scheme="https"
-                    android:host="mediafire.com" />
-                <data
-                    android:scheme="https"
-                    android:host="soundcloud.com" />
-                <data
-                    android:scheme="https"
-                    android:host="mega.co.nz" />
-                <data
-                    android:scheme="https"
-                    android:host="mega.nz" />
-                <data
-                    android:scheme="https"
-                    android:host="ncrypt.in" />
-                <data
-                    android:scheme="https"
-                    android:host="protected.to" />
-                <data
-                    android:scheme="https"
-                    android:host="adf.ly" />
-                <data
-                    android:scheme="https"
-                    android:host="linksave.in" />
-                <data
-                    android:scheme="https"
-                    android:host="ed-protect.org" />
-                <data
-                    android:scheme="https"
-                    android:host="go4up.com" />
-                <data
-                    android:scheme="https"
-                    android:host="uptobox.com" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+                <data android:scheme="http" />
+                <data android:scheme="https" />
 
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:host="1fichier.com" />
+                <data android:host="2shared.com" />
+                <data android:host="4shared.com" />
 
-                <data
-                    android:scheme="https"
-                    android:host="docs.google.com" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+                <data android:host="adf.ly" />
+                <data android:host="alfafile.net" />
+                <data android:host="alfafile.net" />
+                <data android:host="alterupload.cjoint.net" />
+                <data android:host="alterupload.com" />
+                <data android:host="anzfile.net" />
 
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:host="backin.net" />
+                <data android:host="bayfiles.com" />
+                <data android:host="bdupload.asia" />
+                <data android:host="brupload.net" />
+                <data android:host="btafile.com" />
 
-                <data
-                    android:scheme="https"
-                    android:host="drive.google.com" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+                <data android:host="catshare.net" />
+                <data android:host="clicknupload.me" />
 
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:host="desfichiers.com" />
+                <data android:host="dfichiers.com" />
+                <data android:host="dl.bdupload.in" />
+                <data android:host="dl4free.com" />
+                <data android:host="docs.google.com" />
+                <data android:host="drive.google.com" />
 
-                <data
-                    android:scheme="https"
-                    android:host="4shared.com" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+                <data android:host="ed-protect.org" />
 
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:host="filefactory.com" />
 
-                <data
-                    android:scheme="https"
-                    android:host="filefactory.com" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+                <data android:host="go4up.com" />
 
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:host="linksave.in" />
 
-                <data
-                    android:scheme="https"
-                    android:host="1fichier.com" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+                <data android:host="mediafire.com" />
+                <data android:host="mega.co.nz" />
+                <data android:host="mega.nz" />
+                <data android:host="megadl.fr" />
+                <data android:host="mesfichiers.org" />
 
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:host="ncrypt.in" />
+                <data android:host="nitro.download" />
+                <data android:host="nitroflare.com" />
 
-                <data
-                    android:scheme="https"
-                    android:host="rapidgator.net" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+                <data android:host="piecejointe.net" />
+                <data android:host="pjointe.com" />
+                <data android:host="protected.to" />
+                
+                <data android:host="rapidgator.net" />
 
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:host="safelinking.net" />
 
-                <data
-                    android:scheme="https"
-                    android:host="uploaded.to" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+                <data android:host="soundcloud.com" />
 
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:host="tenvoi.com" />
+                <data android:host="turb.cc" />
+                <data android:host="turb.to" />
+                <data android:host="turbo.to" />
+                <data android:host="turbobit.cc" />
+                <data android:host="turbobit.net" />
+                <data android:host="turbobit.pw" />
+                <data android:host="turbobit5.cc" />
+                <data android:host="turbobit5.net" />
+                <data android:host="turbobit5.pw" />
 
-                <data
-                    android:scheme="https"
-                    android:host="ul.to" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+                <data android:host="ul.net" />
+                <data android:host="ul.to" />
+                <data android:host="uploaded.net" />
+                <data android:host="uploaded.to" />
+                <data android:host="uploadgig.com" />
+                <data android:host="uptobox.com" />
 
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:scheme="https"
-                    android:host="uploaded.net" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:scheme="https"
-                    android:host="ul.net" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:scheme="https"
-                    android:host="turbobit.net" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:scheme="https"
-                    android:host="turbobit5.net" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:scheme="https"
-                    android:host="turbobit.cc" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:scheme="https"
-                    android:host="turbobit5.cc" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:scheme="https"
-                    android:host="turbobit.pw" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:scheme="https"
-                    android:host="turbobit5.pw" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:scheme="https"
-                    android:host="turbo.to" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:scheme="https"
-                    android:host="turb.to" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:scheme="https"
-                    android:host="turb.cc" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:scheme="https"
-                    android:host="safelinking.net" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:scheme="https"
-                    android:host="mediafire.com" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:scheme="https"
-                    android:host="soundcloud.com" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:scheme="https"
-                    android:host="mega.co.nz" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:scheme="https"
-                    android:host="mega.nz" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:scheme="https"
-                    android:host="ncrypt.in" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:scheme="https"
-                    android:host="protected.to" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:scheme="https"
-                    android:host="adf.ly" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:scheme="https"
-                    android:host="linksave.in" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:scheme="https"
-                    android:host="ed-protect.org" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:scheme="https"
-                    android:host="go4up.com" />
+                <data android:host="www.youtube.com" />
+                <data android:host="youtu.be" />
+                <data android:host="youtube.com" />
             </intent-filter>
         </activity>
 

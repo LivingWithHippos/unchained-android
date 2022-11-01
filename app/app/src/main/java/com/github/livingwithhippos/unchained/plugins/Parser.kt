@@ -12,6 +12,7 @@ import com.github.livingwithhippos.unchained.plugins.model.ScrapedItem
 import com.github.livingwithhippos.unchained.plugins.model.TableParser
 import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Companion.KEY_USE_DOH
 import com.github.livingwithhippos.unchained.utilities.extension.removeWebFormatting
+import com.github.livingwithhippos.unchained.utilities.parseCommonSize
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
@@ -21,6 +22,7 @@ import okhttp3.Response
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
+import org.jsoup.select.Elements
 import timber.log.Timber
 
 class Parser(
@@ -330,14 +332,14 @@ class Parser(
 
         var size: String? = null
         regexes.sizeRegex?.regexps?.forEach { regex ->
-            val sizeSeeders = parseSingle(
+            val currSize = parseSingle(
                 regex,
                 source,
                 baseUrl
             )
 
-            if (!sizeSeeders.isNullOrBlank()) {
-                size = sizeSeeders
+            if (!currSize.isNullOrBlank()) {
+                size = currSize
                 return@forEach
             }
         }
@@ -354,28 +356,8 @@ class Parser(
             magnets = magnets.toList(),
             torrents = torrents.toList(),
             hosting = hosting.toList(),
+            isCached = false
         )
-    }
-
-    private fun parseCommonSize(size: String?): Double? {
-        try {
-
-            size ?: return null
-
-            val numbers = "[\\d.]+".toRegex().find(size)?.value ?: return null
-
-            val baseSize = numbers.toDouble()
-            if (size.contains("gb", ignoreCase = true)) {
-                return baseSize * 1024 * 1024
-            }
-            if (size.contains("mb", ignoreCase = true)) {
-                return baseSize * 1024
-            }
-            // KiloBytes are already at the size I need
-            return baseSize
-        } catch (e: NumberFormatException) {
-            return null
-        }
     }
 
     private fun parseTable(
@@ -489,6 +471,7 @@ class Parser(
                             magnets = magnets.toList(),
                             torrents = torrents.toList(),
                             hosting = hosting.toList(),
+                            isCached = false
                         )
                     )
             }
@@ -703,55 +686,50 @@ class Parser(
     }
 
     private fun parseDirect(
-        directParser: DirectParser?,
+        parser: DirectParser,
         regexes: PluginRegexes,
         source: String,
         url: String
     ): List<ScrapedItem> {
-        // todo: implement class and id filtering
-        // todo: implement more robust method to parse multiple links for a single source
-        // maybe let the class filtering separate all of the pieces like a row
         val directItems = mutableListOf<ScrapedItem>()
 
-        val nameRegex = regexes.nameRegex.regexps
-        val names = parseList(nameRegex, source, url)
-        val magnetRegex = regexes.magnetRegex?.regexps
-        val magnets = parseList(magnetRegex, source, url)
-        val torrentsRegex = regexes.torrentRegexes?.regexps
-        val torrents = parseList(torrentsRegex, source, url)
-        val hostingRegex = regexes.hostingRegexes?.regexps
-        val hosting = parseList(hostingRegex, source, url)
+        val doc: Document = Jsoup.parse(source)
+        val entries: Elements = doc.getElementsByClass(parser.entryClass)
+        for (entry in entries) {
+            // val wholeText =  entry.wholeText()
+            // val data =  entry.data()
+            val html = entry.html()
 
-        if (names.isNotEmpty() && (magnets.isNotEmpty() || torrents.isNotEmpty() || hosting.isNotEmpty())) {
+            val name = parseSingle(regexes.nameRegex, html, url)
+            val magnets: List<String> = parseList(regexes.magnetRegex, html, url)
+            val torrents: List<String> = parseList(regexes.torrentRegexes, html, url)
+            val hosting: List<String> = parseList(regexes.hostingRegexes, html, url)
 
-            val seedersRegex = regexes.seedersRegex?.regexps
-            val seeders = parseList(seedersRegex, source, url)
-            val leechersRegex = regexes.leechersRegex?.regexps
-            val leechers = parseList(leechersRegex, source, url)
-            val sizeRegex = regexes.sizeRegex?.regexps
-            val size = parseList(sizeRegex, source, url)
-            val detailsRegex = regexes.detailsRegex?.regexps
-            val details = parseList(detailsRegex, source, url)
+            if (!name.isNullOrBlank() && (magnets.isNotEmpty() || torrents.isNotEmpty() || hosting.isNotEmpty())) {
 
-            // checking the max size of combinations between names, torrents, hosting and magnets I can find
-            val maxSize: Int = minOf(names.size, maxOf(magnets.size, torrents.size, hosting.size))
-            for (index in 0..maxSize) {
+                val seeders = parseSingle(regexes.seedersRegex, html, url)
+                val leechers = parseSingle(regexes.leechersRegex, html, url)
+                val size = parseSingle(regexes.sizeRegex, html, url)
+                val details = parseSingle(regexes.detailsRegex, html, url)
+
                 directItems.add(
                     ScrapedItem(
-                        names[index],
-                        details.getOrNull(index),
-                        seeders.getOrNull(index),
-                        leechers.getOrNull(index),
-                        size.getOrNull(index),
-                        parseCommonSize(size.getOrNull(index)),
-                        if (magnets.getOrNull(index) != null) listOf(magnets[index]) else emptyList(),
-                        if (torrents.getOrNull(index) != null) listOf(torrents[index]) else emptyList(),
-                        if (hosting.getOrNull(index) != null) listOf(hosting[index]) else emptyList()
+                        name,
+                        details,
+                        seeders,
+                        leechers,
+                        size,
+                        parseCommonSize(size),
+                        magnets,
+                        torrents,
+                        hosting,
+                        false
                     )
                 )
             }
-            return directItems
-        } else return emptyList()
+        }
+
+        return directItems
     }
 
     private fun getCategory(plugin: Plugin, category: String): String? {
@@ -785,8 +763,9 @@ class Parser(
          * 1.2: added table_indirect
          * 2.0: use array for all regexps
          * 2.1: added direct parsing mode
+         * 2.2: added entry class to direct parsing mode (required)
          */
-        const val PLUGIN_ENGINE_VERSION: Float = 2.1f
+        const val PLUGIN_ENGINE_VERSION: Float = 2.2f
     }
 }
 

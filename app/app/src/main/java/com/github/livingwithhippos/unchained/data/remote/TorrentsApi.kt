@@ -3,6 +3,7 @@ package com.github.livingwithhippos.unchained.data.remote
 import com.github.livingwithhippos.unchained.data.model.AvailableHost
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.data.model.UploadedTorrent
+import com.github.livingwithhippos.unchained.data.model.cache.InstantAvailability
 import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.Body
@@ -15,6 +16,7 @@ import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
+import retrofit2.http.Url
 
 /**
  * This interface is used by Retrofit to manage all the REST calls to the torrents endpoints
@@ -89,4 +91,16 @@ interface TorrentsApi {
         @Header("Authorization") token: String,
         @Path("id") id: String,
     ): Response<Unit>
+
+    /**
+     * Check if any file of a torrent/magnet is already cached using their hashes
+     * Hashes must be passed like this:
+     *  https://api.real-debrid.com/rest/1.0/torrents/instantAvailability/HASH_1/HASH_2/HASH_3
+     *  etc. for any
+     */
+    @GET
+    suspend fun getInstantAvailability(
+        @Header("Authorization") token: String,
+        @Url url: String
+    ): Response<InstantAvailability>
 }

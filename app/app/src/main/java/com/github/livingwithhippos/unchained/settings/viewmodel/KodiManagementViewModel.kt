@@ -1,6 +1,5 @@
 package com.github.livingwithhippos.unchained.settings.viewmodel
 
-import android.os.Parcel
 import android.os.Parcelable
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -15,6 +14,7 @@ import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.postEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import kotlinx.parcelize.Parcelize
 import javax.inject.Inject
 
 @HiltViewModel
@@ -36,7 +36,7 @@ class KodiManagementViewModel @Inject constructor(
 
     fun updateDevice(device: KodiDevice, oldDeviceName: String) {
         viewModelScope.launch {
-            val inserted = deviceRepository.update(device, oldDeviceName)
+            deviceRepository.update(device, oldDeviceName)
             // if the device was default and now it's not the add above will overwrite it.
             // if the device was not default and now it is this will clear the old default
             if (device.isDefault) {
@@ -49,7 +49,7 @@ class KodiManagementViewModel @Inject constructor(
         viewModelScope.launch {
             // if the device was default and now it's not the add above will overwrite it.
             // if the device was not default and now it is this will clear the old default
-            val inserted = deviceRepository.add(device)
+            deviceRepository.add(device)
         }
     }
 
@@ -67,15 +67,17 @@ class KodiManagementViewModel @Inject constructor(
     }
 
     fun setCurrentDevice(device: KodiDevice) {
-        savedStateHandle.set(KEY_SAVED_DEVICE,
-        TempKodiDevice(
-            device.name,
-            device.address,
-            device.port,
-            device.username,
-            device.password,
-            device.isDefault
-        ))
+        savedStateHandle.set(
+            KEY_SAVED_DEVICE,
+            TempKodiDevice(
+                device.name,
+                device.address,
+                device.port,
+                device.username,
+                device.password,
+                device.isDefault
+            )
+        )
     }
 
     fun getCurrentDevice(): KodiDevice? {
@@ -98,10 +100,11 @@ class KodiManagementViewModel @Inject constructor(
     }
 
     companion object {
-        const val KEY_SAVED_DEVICE="saved_item_key"
+        const val KEY_SAVED_DEVICE = "saved_item_key"
     }
 }
 
+@Parcelize
 data class TempKodiDevice(
     val name: String,
     val address: String,
@@ -109,37 +112,4 @@ data class TempKodiDevice(
     val username: String?,
     val password: String?,
     val isDefault: Boolean = false,
-): Parcelable {
-    constructor(parcel: Parcel) : this(
-        parcel.readString() ?: "kodi device",
-        parcel.readString()?: "",
-        parcel.readInt(),
-        parcel.readString(),
-        parcel.readString(),
-        parcel.readByte() != 0.toByte()
-    ) {
-    }
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(name)
-        parcel.writeString(address)
-        parcel.writeInt(port)
-        parcel.writeString(username)
-        parcel.writeString(password)
-        parcel.writeByte(if (isDefault) 1 else 0)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<TempKodiDevice> {
-        override fun createFromParcel(parcel: Parcel): TempKodiDevice {
-            return TempKodiDevice(parcel)
-        }
-
-        override fun newArray(size: Int): Array<TempKodiDevice?> {
-            return arrayOfNulls(size)
-        }
-    }
-}
+) : Parcelable

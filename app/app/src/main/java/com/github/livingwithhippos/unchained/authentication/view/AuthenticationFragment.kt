@@ -157,8 +157,6 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
                     activityViewModel.updateCredentialsAccessToken(token.accessToken)
                     activityViewModel.updateCredentialsRefreshToken(token.refreshToken)
                     activityViewModel.transitionAuthenticationMachine(FSMAuthenticationEvent.OnOpenTokenLoaded)
-
-
                 }
             }
         )
@@ -214,7 +212,7 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
     }
 
     override fun onOpenLinkClick(url: String) {
-        openExternalWebPage(url)
+        context?.openExternalWebPage(url)
     }
 
     companion object {

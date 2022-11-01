@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <import type="android.view.View" />
 
         <variable
             name="item"
@@ -27,6 +28,7 @@
         app:cardCornerRadius="10dp"
         app:cardElevation="5dp"
         android:onClick="@{() -> listener.onClick(item)}"
+        android:onLongClick="@{() -> listener.onLongClick(item)}"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -47,6 +49,18 @@
                 android:text="@{item.type, default=`Torrent`}"
                 app:layout_constraintBottom_toTopOf="@id/link"
                 app:layout_constraintTop_toTopOf="parent"
+                />
+
+            <TextView
+                android:id="@+id/cached"
+                style="@style/TextAppearance.UnchainedTheme.Overline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                app:layout_constraintStart_toEndOf="@id/type"
+                android:text="@string/cached"
+                app:layout_constraintTop_toTopOf="parent"
+                android:visibility="@{item.cached == false ? View.GONE : View.VISIBLE}"
                 />
 
             <TextView

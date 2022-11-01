@@ -80,13 +80,17 @@
     // "direct" is one of the parsing methods.
     // parse directly from the search page when the structure containing them is not a table
     // usable when torrent/magnet links are directly on the search page
-    // uses the regexes structure to retrieve the various informations
+    // and each entry is inside a class specified by "entry-class"
+    // uses the regexes structure to retrieve the information
     "direct": {
         // both of these are optional, direct can be left empty
         // restrict the search to a particular class (the first one will be used). Ignored if id is set.
       "class": "container",
       // restrict the search to a particular id. if id is set class will be ignored
       "id": "table-id",
+      // restrict the search of a single entry data inside a single item class.
+      // This is NOT OPTIONAL, we need it to separate the data on a single page
+      "entry-class": "entry-class-name"
     },
     // "table_direct" is one of the parsing methods.
     // parse directly from an html table in the search page

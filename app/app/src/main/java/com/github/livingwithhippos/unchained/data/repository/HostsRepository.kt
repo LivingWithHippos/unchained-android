@@ -1,6 +1,7 @@
 package com.github.livingwithhippos.unchained.data.repository
 
 import com.github.livingwithhippos.unchained.data.local.HostRegexDao
+import com.github.livingwithhippos.unchained.data.local.ProtoStore
 import com.github.livingwithhippos.unchained.data.model.Host
 import com.github.livingwithhippos.unchained.data.model.HostRegex
 import com.github.livingwithhippos.unchained.data.model.REGEX_TYPE_FOLDER
@@ -11,15 +12,16 @@ import java.util.regex.PatternSyntaxException
 import javax.inject.Inject
 
 class HostsRepository @Inject constructor(
+    private val protoStore: ProtoStore,
     private val hostsApiHelper: HostsApiHelper,
     private val hostRegexDao: HostRegexDao
 ) :
-    BaseRepository() {
+    BaseRepository(protoStore) {
 
-    suspend fun getHostsStatus(token: String): Host? {
+    suspend fun getHostsStatus(): Host? {
 
         val hostResponse = safeApiCall(
-            call = { hostsApiHelper.getHostsStatus("Bearer $token") },
+            call = { hostsApiHelper.getHostsStatus("Bearer ${getToken()}") },
             errorMessage = "Error Fetching Streaming Info"
         )
 

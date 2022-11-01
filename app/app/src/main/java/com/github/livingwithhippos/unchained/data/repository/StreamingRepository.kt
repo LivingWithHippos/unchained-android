@@ -1,16 +1,20 @@
 package com.github.livingwithhippos.unchained.data.repository
 
+import com.github.livingwithhippos.unchained.data.local.ProtoStore
 import com.github.livingwithhippos.unchained.data.model.Stream
 import com.github.livingwithhippos.unchained.data.remote.StreamingApiHelper
 import javax.inject.Inject
 
-class StreamingRepository @Inject constructor(private val streamingApiHelper: StreamingApiHelper) :
-    BaseRepository() {
+class StreamingRepository @Inject constructor(
+    private val protoStore: ProtoStore,
+    private val streamingApiHelper: StreamingApiHelper
+) :
+    BaseRepository(protoStore) {
 
-    suspend fun getStreams(token: String, id: String): Stream? {
+    suspend fun getStreams(id: String): Stream? {
 
         val streamResponse = safeApiCall(
-            call = { streamingApiHelper.getStreams("Bearer $token", id) },
+            call = { streamingApiHelper.getStreams("Bearer ${getToken()}", id) },
             errorMessage = "Error Fetching Streaming Info"
         )
 

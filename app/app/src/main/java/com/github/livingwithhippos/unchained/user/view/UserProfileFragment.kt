@@ -1,10 +1,14 @@
 package com.github.livingwithhippos.unchained.user.view
 
+import android.Manifest
 import android.content.SharedPreferences
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import androidx.core.content.PermissionChecker
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -73,21 +77,21 @@ class UserProfileFragment : UnchainedFragment() {
                             putBoolean(KEY_REFERRAL_USE, false)
                             apply()
                         }
-                        openExternalWebPage(ACCOUNT_LINK)
+                        context?.openExternalWebPage(ACCOUNT_LINK)
                     }
                     .setPositiveButton(getString(R.string.accept)) { _, _ ->
                         with(preferences.edit()) {
                             putBoolean(KEY_REFERRAL_USE, true)
                             apply()
                         }
-                        openExternalWebPage(REFERRAL_LINK)
+                        context?.openExternalWebPage(REFERRAL_LINK)
                     }
                     .show()
             } else {
                 if (preferences.getBoolean(KEY_REFERRAL_USE, false))
-                    openExternalWebPage(REFERRAL_LINK)
+                    context?.openExternalWebPage(REFERRAL_LINK)
                 else
-                    openExternalWebPage(ACCOUNT_LINK)
+                    context?.openExternalWebPage(ACCOUNT_LINK)
             }
         }
 
@@ -123,6 +127,16 @@ class UserProfileFragment : UnchainedFragment() {
 
         userBinding.bLogout.setOnClickListener {
             activityViewModel.logout()
+        }
+
+        if (
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+            ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.POST_NOTIFICATIONS
+            ) != PermissionChecker.PERMISSION_GRANTED
+        ) {
+            activityViewModel.requireNotificationPermissions()
         }
 
         return userBinding.root

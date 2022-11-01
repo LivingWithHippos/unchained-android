@@ -4,7 +4,12 @@
 
 # Unchained for Android
 
-[![License](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)    [![Kotlin Version](https://img.shields.io/badge/kotlin-1.5.30-blue)](http://kotlinlang.org/)    [![API](https://img.shields.io/badge/API-22%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=22)    [![Build Status](https://img.shields.io/github/workflow/status/LivingWithHippos/unchained-android/Build)](https://github.com/LivingWithHippos/unchained-android/actions)    [![Play Store](https://img.shields.io/badge/play%20store-available-brightgreen)](https://play.google.com/store/apps/details?id=com.github.livingwithhippos.unchained) [![translated](https://localization.professiona.li/widgets/unchained-for-android/-/strings/svg-badge.svg)](https://localization.professiona.li/engage/unchained-for-android/)
+[![License](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)   [![API](https://img.shields.io/badge/API-22%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=22)    [![Build Status](https://img.shields.io/github/workflow/status/LivingWithHippos/unchained-android/Build)](https://github.com/LivingWithHippos/unchained-android/actions)    [![Play Store](https://img.shields.io/badge/play%20store-available-brightgreen)](https://play.google.com/store/apps/details?id=com.github.livingwithhippos.unchained)      [![F Droid](https://img.shields.io/f-droid/v/com.github.livingwithhippos.unchained)](https://f-droid.org/packages/com.github.livingwithhippos.unchained/) [![translated](https://localization.professiona.li/widgets/unchained-for-android/-/strings/svg-badge.svg)](https://localization.professiona.li/engage/unchained-for-android/)
+
+
+<a href='https://f-droid.org/packages/com.github.livingwithhippos.unchained/'><img  alt='Get it on F Droid' src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" height="75"/></a>  <a href='https://play.google.com/store/apps/details?id=com.github.livingwithhippos.unchained'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png' height="75"/></a> 
+
+
 
 
 
@@ -14,21 +19,21 @@ App to interact with [Real Debrid](https://real-debrid.com/) APIs.
 
 Real Debrid is a service to download files from hosting websites and the torrent network.
 Files are downloaded directly on their servers that you can then use for your downloads.
-They provide high speeds without premium accounts for a lot of services like Mega and RapidGator
-and can also stream media files directly. It offers a cheap premium service.
+They provide high speeds for a lot of services like Mega and RapidGator without needing 
+all their premium accounts, and can also stream media files directly. 
+**N.B. Real Debrid is a (cheap) paid service**
 
 ### Features :memo:
 
 You can take a look at the project [here](https://github.com/LivingWithHippos/unchained-android/projects/1) for general status.
 
-- [x] user info
-- [x] themes support
-- [x] hoster support
+- [x] magnets/torrents support
+- [x] file hosting services support
+- [x] streaming support (needs a player that supports streaming like mpv or VLC)
+- [x] search websites for files with plugins
 - [x] containers support
-- [x] magnets support
-- [x] torrent support
-- [x] streaming support (needs a player that supports streaming like VLC)
-- [x] search magnet and torrents
+- [x] user info
+- [x] themes
 
 ### Screenshots :iphone:
 
@@ -47,6 +52,9 @@ You have multiple options to install Unchained for Android:
 4. Get the app on [F-Droid](https://f-droid.org/packages/com.github.livingwithhippos.unchained/)
 
 ### Developing and Contributing :writing_hand:
+
+## [![Repography logo](https://images.repography.com/logo.svg)](https://repography.com) /
+[![Issue status graph](https://images.repography.com/28505435/LivingWithHippos/unchained-android/recent-activity/9be46c12746e55ef26535ea523c2bda5_issues.svg)](https://github.com/LivingWithHippos/unchained-android/issues)
 
 
 Contributions are welcome. You can use the [discussion tab](https://github.com/LivingWithHippos/unchained-android/discussions) to ask for help setting up the project. At the moment at least Android Studio 2021.1.1 is needed to build the project.
@@ -107,6 +115,10 @@ LWeoBVVmaYAiZ3oGaLAV9sV2dvY62XxdCF
 
 - DaisyF8
 - Roadhouse
+
+#### Translators
+
+- edgarpatronperez (spanish)
 
 #### Media
 

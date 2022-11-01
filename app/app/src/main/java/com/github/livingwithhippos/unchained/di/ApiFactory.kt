@@ -3,6 +3,7 @@ package com.github.livingwithhippos.unchained.di
 import android.content.SharedPreferences
 import com.github.livingwithhippos.unchained.BuildConfig
 import com.github.livingwithhippos.unchained.data.model.EmptyBodyInterceptor
+import com.github.livingwithhippos.unchained.data.model.cache.CachedRequestAdapter
 import com.github.livingwithhippos.unchained.data.remote.AuthApiHelper
 import com.github.livingwithhippos.unchained.data.remote.AuthApiHelperImpl
 import com.github.livingwithhippos.unchained.data.remote.AuthenticationApi
@@ -24,6 +25,9 @@ import com.github.livingwithhippos.unchained.data.remote.TorrentsApi
 import com.github.livingwithhippos.unchained.data.remote.UnrestrictApi
 import com.github.livingwithhippos.unchained.data.remote.UnrestrictApiHelper
 import com.github.livingwithhippos.unchained.data.remote.UnrestrictApiHelperImpl
+import com.github.livingwithhippos.unchained.data.remote.UpdateApi
+import com.github.livingwithhippos.unchained.data.remote.UpdateApiHelper
+import com.github.livingwithhippos.unchained.data.remote.UpdateApiHelperImpl
 import com.github.livingwithhippos.unchained.data.remote.UserApi
 import com.github.livingwithhippos.unchained.data.remote.UserApiHelper
 import com.github.livingwithhippos.unchained.data.remote.UserApiHelperImpl
@@ -166,6 +170,7 @@ object ApiFactory {
     @ApiRetrofit
     fun apiRetrofit(@ClassicClient okHttpClient: OkHttpClient): Retrofit {
         val moshi = Moshi.Builder()
+            .add(CachedRequestAdapter())
             .add(KotlinJsonAdapterFactory())
             .build()
 
@@ -268,6 +273,18 @@ object ApiFactory {
     @Provides
     @Singleton
     fun provideVariousApiHelper(apiHelper: VariousApiHelperImpl): VariousApiHelper =
+        apiHelper
+
+    // update api injection
+    @Provides
+    @Singleton
+    fun provideUpdateApi(@ApiRetrofit retrofit: Retrofit): UpdateApi {
+        return retrofit.create(UpdateApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideUpdateApiHelper(apiHelper: UpdateApiHelperImpl): UpdateApiHelper =
         apiHelper
 
     // custom download injection

@@ -1,11 +1,15 @@
 package com.github.livingwithhippos.unchained.settings.view
 
+import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.text.method.DigitsKeyListener
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.viewModels
 import androidx.preference.EditTextPreference
 import androidx.preference.ListPreference
@@ -20,6 +24,7 @@ import com.github.livingwithhippos.unchained.utilities.PLUGINS_URL
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -32,6 +37,27 @@ class SettingsFragment : PreferenceFragmentCompat() {
     lateinit var preferences: SharedPreferences
 
     private val viewModel: SettingsViewModel by viewModels()
+
+    private val pickDirectoryLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.OpenDocumentTree()
+        ) {
+            if (it != null) {
+                Timber.d("User has picked a folder $it")
+
+                // permanent permissions
+                val contentResolver = requireContext().contentResolver
+
+                val takeFlags: Int = Intent.FLAG_GRANT_READ_URI_PERMISSION or
+                        Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+
+                contentResolver.takePersistableUriPermission(it, takeFlags)
+
+                viewModel.setDownloadFolder(it)
+            } else {
+                Timber.d("User has not picked a folder")
+            }
+        }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.settings, rootKey)
@@ -64,6 +90,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
         setupKodi()
 
         setupVersion()
+
+        findPreference<Preference>("download_folder_key")?.setOnPreferenceClickListener {
+            pickDirectoryLauncher.launch(null)
+            true
+        }
     }
 
     override fun onCreateView(
@@ -91,7 +122,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
     private fun setupKodi() {
 
         findPreference<Preference>("kodi_remote_control_info")?.setOnPreferenceClickListener {
-            openExternalWebPage("https://kodi.wiki/view/Settings/Services/Control")
+            context?.openExternalWebPage("https://kodi.wiki/view/Settings/Services/Control")
+                ?: false
         }
         findPreference<Preference>("kodi_list_editor")?.setOnPreferenceClickListener {
             openKodiManagementDialog()
@@ -120,9 +152,16 @@ class SettingsFragment : PreferenceFragmentCompat() {
         }
     }
 
+    @Suppress("DEPRECATION")
     private fun setupVersion() {
-
-        val pi = context?.packageManager?.getPackageInfo(requireContext().packageName, 0)
+        val pi = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            context?.packageManager?.getPackageInfo(
+                requireContext().packageName,
+                PackageManager.PackageInfoFlags.of(0)
+            )
+        } else {
+            context?.packageManager?.getPackageInfo(requireContext().packageName, 0)
+        }
         val version = pi?.versionName
         val versionPreference = findPreference<Preference>("app_version")
         versionPreference?.summary = version
@@ -137,8 +176,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     override fun onPreferenceTreeClick(preference: Preference): Boolean {
         when (preference.key) {
-            "feedback" -> openExternalWebPage(FEEDBACK_URL)
-            "license" -> openExternalWebPage(GPLV3_URL)
+            "feedback" -> context?.openExternalWebPage(FEEDBACK_URL)
+            "license" -> context?.openExternalWebPage(GPLV3_URL)
             "credits" -> openCreditsDialog()
             "terms" -> openTermsDialog()
             "privacy" -> openPrivacyDialog()
@@ -146,7 +185,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 viewModel.updateRegexps()
                 context?.showToast(R.string.updating_link_matcher)
             }
-            "open_github_plugins" -> openExternalWebPage(PLUGINS_URL)
+            "open_github_plugins" -> context?.openExternalWebPage(PLUGINS_URL)
             "test_kodi" -> testKodiConnection()
             "delete_external_plugins" -> {
                 val removedPlugins = viewModel.removeExternalPlugins(requireContext())

@@ -7,7 +7,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.livingwithhippos.unchained.data.local.ProtoStore
+import com.github.livingwithhippos.unchained.data.model.cache.InstantAvailability
 import com.github.livingwithhippos.unchained.data.repository.PluginRepository
+import com.github.livingwithhippos.unchained.data.repository.TorrentsRepository
 import com.github.livingwithhippos.unchained.folderlist.view.FolderListFragment
 import com.github.livingwithhippos.unchained.folderlist.viewmodel.FolderListViewModel
 import com.github.livingwithhippos.unchained.plugins.Parser
@@ -15,19 +18,12 @@ import com.github.livingwithhippos.unchained.plugins.ParserResult
 import com.github.livingwithhippos.unchained.plugins.model.Plugin
 import com.github.livingwithhippos.unchained.plugins.model.ScrapedItem
 import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Companion.KEY_USE_DOH
-import com.github.livingwithhippos.unchained.utilities.PLUGINS_PACK_FOLDER
-import com.github.livingwithhippos.unchained.utilities.UnzipUtils
 import com.github.livingwithhippos.unchained.utilities.extension.cancelIfActive
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import timber.log.Timber
-import java.io.File
-import java.io.IOException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -35,14 +31,16 @@ class SearchViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val preferences: SharedPreferences,
     private val pluginRepository: PluginRepository,
-    private val parser: Parser
+    private val torrentsRepository: TorrentsRepository,
+    private val parser: Parser,
+    private val protoStore: ProtoStore
 ) : ViewModel() {
 
     // used to simulate a debounce effect while typing on the search bar
     private var job: Job? = null
 
     val pluginLiveData = MutableLiveData<Pair<List<Plugin>, Int>>()
-    val parsingLiveData = MutableLiveData<ParserResult>()
+    private val parsingLiveData = MutableLiveData<ParserResult>()
 
     fun completeSearch(
         query: String,
@@ -55,7 +53,6 @@ class SearchViewModel @Inject constructor(
         if (plugin != null) {
             val results = mutableListOf<ScrapedItem>()
             // empty saved results on new searches
-            saveSearchResults(results)
             job?.cancelIfActive()
             job = parser.completeSearch(plugin, query, category, page)
                 .onEach {
@@ -63,11 +60,22 @@ class SearchViewModel @Inject constructor(
                         is ParserResult.SingleResult -> {
                             results.add(it.value)
                             parsingLiveData.value = ParserResult.Results(results)
-                            saveSearchResults(results)
+                            setSearchResults(results)
                         }
                         is ParserResult.Results -> {
+                            // here I have all the results at once
                             parsingLiveData.value = it
-                            saveSearchResults(it.values)
+                            results.addAll(it.values)
+                            setSearchResults(results)
+                        }
+                        is ParserResult.SearchStarted -> {
+                            setCacheResults(null)
+                            clearSearchResults()
+                            results.clear()
+                            parsingLiveData.value = it
+                        }
+                        is ParserResult.SearchFinished -> {
+                            parsingLiveData.value = it
                         }
                         else -> parsingLiveData.value = it
                     }
@@ -93,8 +101,24 @@ class SearchViewModel @Inject constructor(
         return savedStateHandle.get<List<ScrapedItem>>(KEY_RESULTS) ?: emptyList()
     }
 
-    private fun saveSearchResults(results: List<ScrapedItem>) {
-        savedStateHandle.set(KEY_RESULTS, results)
+    private fun setSearchResults(results: List<ScrapedItem>) {
+        savedStateHandle[KEY_RESULTS] = results
+    }
+
+    private fun clearSearchResults() {
+        savedStateHandle[KEY_RESULTS] = emptyList<ScrapedItem>()
+    }
+
+    private fun setCacheResults(cache: InstantAvailability?) {
+        savedStateHandle[KEY_CACHE] = cache
+    }
+
+    fun getCacheResults(): InstantAvailability? {
+        return try {
+            savedStateHandle.get<InstantAvailability>(KEY_CACHE)
+        } catch (e: java.lang.ClassCastException) {
+            null
+        }
     }
 
     fun getPlugins(): List<Plugin> {
@@ -102,7 +126,7 @@ class SearchViewModel @Inject constructor(
     }
 
     private fun setPlugins(plugins: List<Plugin>) {
-        savedStateHandle.set(KEY_PLUGINS, plugins)
+        savedStateHandle[KEY_PLUGINS] = plugins
     }
 
     fun stopSearch() {
@@ -164,7 +188,9 @@ class SearchViewModel @Inject constructor(
     }
 
     companion object {
-        const val KEY_RESULTS = "results_key"
+        // todo: these needs to be moved to a single object because if I reuse the same keys for two objects I'll get the wrong result
+        const val KEY_RESULTS = "search_results_key"
+        const val KEY_CACHE = "search_cache_key"
         const val KEY_PLUGINS = "plugins_key"
         const val KEY_LAST_SELECTED_PLUGIN = "plugin_last_selected_key"
         const val KEY_PLUGIN_DIALOG_NEEDED = "plugin_dialog_needed_key"

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/download_cache"
+        android:title="@string/download_selected_cache" />
+    <item android:id="@+id/download_all"
+        android:title="@string/download_all" />
+    <item android:id="@+id/manual_pick"
+        android:title="@string/download_selected_files" />
+</menu>

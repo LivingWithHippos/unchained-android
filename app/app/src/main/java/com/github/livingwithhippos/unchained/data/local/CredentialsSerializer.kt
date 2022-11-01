@@ -13,7 +13,6 @@ import java.io.OutputStream
 object CredentialsSerializer : Serializer<CurrentCredential> {
     override val defaultValue: CurrentCredential = CurrentCredential.getDefaultInstance()
 
-    @Suppress("BlockingMethodInNonBlockingContext")
     override suspend fun readFrom(input: InputStream): CurrentCredential {
         try {
             return CurrentCredential.parseFrom(input)
@@ -22,7 +21,6 @@ object CredentialsSerializer : Serializer<CurrentCredential> {
         }
     }
 
-    @Suppress("BlockingMethodInNonBlockingContext")
     override suspend fun writeTo(t: CurrentCredential, output: OutputStream) = t.writeTo(output)
 }
 

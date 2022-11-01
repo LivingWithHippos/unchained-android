@@ -7,11 +7,10 @@ import javax.inject.Inject
 
 class KodiDeviceRepository @Inject constructor(
     private val kodiDeviceDao: KodiDeviceDao
-) : BaseRepository() {
+) {
 
     val devicesFlow: Flow<List<KodiDevice>>
         get() = kodiDeviceDao.getAllDevicesFlow()
-
 
     suspend fun getDevices(): List<KodiDevice> {
         return kodiDeviceDao.getAllDevices()
