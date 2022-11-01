@@ -125,7 +125,7 @@
     </fragment>
     <fragment
         android:id="@+id/torrentProcessingFragment"
-        android:name="com.github.livingwithhippos.unchained.newdownload.view.TorrentProcessingFragment"
+        android:name="com.github.livingwithhippos.unchained.torrentfilepicker.view.TorrentProcessingFragment"
         android:label="@string/torrent"
         tools:layout="@layout/fragment_torrent_processing">
         <argument

@@ -1,4 +1,4 @@
-package com.github.livingwithhippos.unchained.newdownload.view
+package com.github.livingwithhippos.unchained.torrentfilepicker.view
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -19,10 +19,9 @@ import com.github.livingwithhippos.unchained.data.model.cache.CachedAlternative
 import com.github.livingwithhippos.unchained.data.model.cache.CachedTorrent
 import com.github.livingwithhippos.unchained.data.repository.DownloadResult
 import com.github.livingwithhippos.unchained.databinding.FragmentTorrentProcessingBinding
-import com.github.livingwithhippos.unchained.newdownload.view.TorrentProcessingFragment.Companion.POSITION_FILE_PICKER
-import com.github.livingwithhippos.unchained.newdownload.viewmodel.TorrentEvent
-import com.github.livingwithhippos.unchained.newdownload.viewmodel.TorrentProcessingViewModel
-import com.github.livingwithhippos.unchained.torrentfilepicker.view.TorrentFilePickerFragment
+import com.github.livingwithhippos.unchained.torrentfilepicker.view.TorrentProcessingFragment.Companion.POSITION_FILE_PICKER
+import com.github.livingwithhippos.unchained.torrentfilepicker.viewmodel.TorrentEvent
+import com.github.livingwithhippos.unchained.torrentfilepicker.viewmodel.TorrentProcessingViewModel
 import com.github.livingwithhippos.unchained.utilities.beforeSelectionStatusList
 import com.github.livingwithhippos.unchained.utilities.extension.isMagnet
 import com.github.livingwithhippos.unchained.utilities.extension.isTorrent

@@ -1,4 +1,4 @@
-package com.github.livingwithhippos.unchained.newdownload.viewmodel
+package com.github.livingwithhippos.unchained.torrentfilepicker.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
