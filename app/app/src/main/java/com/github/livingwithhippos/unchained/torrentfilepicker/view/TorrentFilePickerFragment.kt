@@ -13,8 +13,10 @@ import com.github.livingwithhippos.unchained.newdownload.viewmodel.TorrentProces
 import com.github.livingwithhippos.unchained.torrentdetails.model.TorrentContentFilesSelectionAdapter
 import com.github.livingwithhippos.unchained.torrentdetails.model.TorrentContentListener
 import com.github.livingwithhippos.unchained.torrentdetails.model.TorrentFileItem
+import com.github.livingwithhippos.unchained.torrentdetails.model.TorrentFileItem.Companion.TYPE_FOLDER
 import com.github.livingwithhippos.unchained.torrentdetails.model.getFilesNodes
 import com.github.livingwithhippos.unchained.utilities.Node
+import timber.log.Timber
 
 private const val ARG_TORRENT = "torrent_arg"
 
@@ -22,6 +24,8 @@ class TorrentFilePickerFragment : Fragment(), TorrentContentListener {
 
     // https://developer.android.com/training/dependency-injection/hilt-jetpack#viewmodel-navigation
     private val viewModel: TorrentProcessingViewModel by hiltNavGraphViewModels(R.id.navigation_lists)
+
+    private var currentStructure: Node<TorrentFileItem>? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,16 +40,22 @@ class TorrentFilePickerFragment : Fragment(), TorrentContentListener {
             when (val content = it.peekContent()) {
                 is TorrentEvent.TorrentInfo -> {
 
-                    val torrentStructure: Node<TorrentFileItem> =
-                        getFilesNodes(content.item, selectedOnly = false)
-                    // show list only if it's populated enough
-                    if (torrentStructure.children.size > 0) {
-                        val filesList = mutableListOf<TorrentFileItem>()
-                        Node.traverseDepthFirst(torrentStructure) { item ->
-                            filesList.add(item)
+                    if (currentStructure == null) {
+                        val torrentStructure: Node<TorrentFileItem> =
+                            getFilesNodes(content.item, selectedOnly = false)
+                        if (torrentStructure.children.size > 0) {
+                            currentStructure = torrentStructure
+                            viewModel.updateTorrentStructure(torrentStructure)
                         }
-                        adapter.submitList(filesList)
                     }
+                }
+                is TorrentEvent.TorrentStructureUpdate -> {
+                    val filesList = mutableListOf<TorrentFileItem>()
+                    Node.traverseDepthFirst(content.structure) { item ->
+                        filesList.add(item)
+                    }
+                    adapter.submitList(filesList)
+                    adapter.notifyDataSetChanged()
                 }
                 else -> {
                     // not used by this fragment
@@ -60,11 +70,48 @@ class TorrentFilePickerFragment : Fragment(), TorrentContentListener {
 
     companion object {
         @JvmStatic
-        fun newInstance() =
-            TorrentFilePickerFragment()
+        fun newInstance() = TorrentFilePickerFragment()
     }
 
-    override fun selectItem(item: TorrentFileItem) {
-        TODO("Not yet implemented")
+    override fun onSelectedFile(item: TorrentFileItem) {
+        Timber.d("selected file $item was ${item.selected}")
+        currentStructure?.let { structure ->
+            Node.traverseDepthFirst(structure) {
+                if (it.id == item.id) {
+                    it.selected = !it.selected
+                }
+            }
+        }
+    }
+
+    override fun onSelectedFolder(item: TorrentFileItem) {
+        Timber.d("selected folder $item")
+        currentStructure?.let { structure ->
+
+            var folderNode: Node<TorrentFileItem>? = null
+            Node.traverseNodeDepthFirst(structure) {
+                if (
+                    it.value.absolutePath == item.absolutePath &&
+                    it.value.name == item.name &&
+                    it.value.id == TYPE_FOLDER &&
+                    item.id == TYPE_FOLDER
+                ) {
+                    folderNode = it
+                    return@traverseNodeDepthFirst
+                }
+            }
+
+            folderNode?.let {
+                val newSelected = !it.value.selected
+                it.value.selected = newSelected
+                Timber.d("Set ${it.value.name} as ${it.value.selected}")
+                Node.traverseDepthFirst(it) { item ->
+                    item.selected = newSelected
+                }
+            }
+
+        }
+
+        viewModel.updateTorrentStructure(currentStructure)
     }
 }

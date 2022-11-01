@@ -12,6 +12,7 @@ data class TorrentFileItem(
     val id: Int,
     val absolutePath: String,
     val bytes: Long,
+    var selected: Boolean,
     val name: String
 ) {
     override fun equals(other: Any?): Boolean {
@@ -43,6 +44,7 @@ fun getFilesNodes(
             TYPE_FOLDER,
             "",
             0,
+            selected = false,
             "/"
         )
     )
@@ -62,6 +64,7 @@ fun getFilesNodes(
                                 file.id,
                                 paths.dropLast(1).joinToString("/"),
                                 file.bytes,
+                                selected = file.selected == 1,
                                 value
                             )
                         )
@@ -76,6 +79,7 @@ fun getFilesNodes(
                                     TYPE_FOLDER,
                                     paths.subList(0, index + 1).joinToString("/"),
                                     0,
+                                    selected = false,
                                     value
                                 )
                             )
@@ -94,6 +98,7 @@ fun getFilesNodes(
                 TYPE_FOLDER,
                 "",
                 0,
+                selected = false,
                 "/"
             )
         )
@@ -103,7 +108,8 @@ fun getFilesNodes(
 }
 
 interface TorrentContentListener {
-    fun selectItem(item: TorrentFileItem)
+    fun onSelectedFile(item: TorrentFileItem)
+    fun onSelectedFolder(item: TorrentFileItem)
 }
 
 class TorrentContentFilesAdapter :
@@ -145,17 +151,16 @@ class TorrentContentFilesSelectionAdapter(listener: TorrentContentListener) :
             oldItem: TorrentFileItem,
             newItem: TorrentFileItem
         ): Boolean {
-            return oldItem.absolutePath == newItem.absolutePath &&
+            return oldItem.id == newItem.id &&
                     oldItem.name == newItem.name &&
-                    oldItem.id == newItem.id
+                    oldItem.absolutePath == newItem.absolutePath
         }
 
         override fun areContentsTheSame(
             oldItem: TorrentFileItem,
             newItem: TorrentFileItem
         ): Boolean {
-            // content is not dynamic unless selected is added
-            return true
+            return oldItem.selected == newItem.selected
         }
     }
 

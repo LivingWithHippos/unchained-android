@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:tools="http://schemas.android.com/tools"
+<layout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
@@ -19,6 +19,29 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp">
 
+        <CheckBox
+            android:id="@+id/cbSelectDirectory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:onCheckedChanged="@{() -> listener.onSelectedFolder(item)}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/ivIcon"
+            />
+
+        <ImageView
+            android:id="@+id/ivIcon"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/icon_folder"
+            app:layout_constraintStart_toEndOf="@id/cbSelectDirectory"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/tvDirectoryName"
+            />
+
         <TextView
             android:id="@+id/tvDirectoryName"
             style="@style/TextAppearance.UnchainedTheme.Body1"
@@ -34,15 +57,5 @@
             app:layout_constraintEnd_toEndOf="parent"
             />
 
-        <ImageView
-            android:id="@+id/ivIcon"
-            android:layout_width="40dp"
-            android:layout_height="wrap_content"
-            app:srcCompat="@drawable/icon_folder"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/tvDirectoryName"
-            />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

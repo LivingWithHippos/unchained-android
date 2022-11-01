@@ -18,15 +18,13 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp">
 
-        <TextView
-            android:id="@+id/tvFileID"
-            style="@style/TextAppearance.UnchainedTheme.Body2"
-            android:layout_width="40dp"
-            android:layout_height="0dp"
-            android:text="@{item.id + ``, default=`1234`}"
-            android:textAlignment="center"
-            android:textStyle="bold"
-            android:gravity="center"
+        <CheckBox
+            android:id="@+id/cbSelectFile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:checked="@{item.selected}"
+            android:onCheckedChanged="@{() -> listener.onSelectedFile(item)}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -42,7 +40,7 @@
             android:maxLines="3"
             android:text="@{item.name, default=`File item name`}"
             android:ellipsize="middle"
-            app:layout_constraintStart_toEndOf="@id/tvFileID"
+            app:layout_constraintStart_toEndOf="@id/cbSelectFile"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@id/tvFileSize"/>

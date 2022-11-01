@@ -166,6 +166,9 @@ class TorrentProcessingFragment : UnchainedFragment() {
                 TorrentEvent.DownloadedFileSuccess -> {
                     // do nothing
                 }
+                is TorrentEvent.TorrentStructureUpdate -> {
+                    // used by the other sub fragment
+                }
                 else -> {
                     Timber.d("Found unknown torrentLiveData event $content")
                     // reloaded fragment, close?
