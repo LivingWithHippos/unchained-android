@@ -38,6 +38,7 @@ class TorrentProcessingViewModel @Inject constructor(
 
     val networkExceptionLiveData = MutableLiveData<Event<UnchainedNetworkException>>()
     val torrentLiveData = MutableLiveData<Event<TorrentEvent>>()
+    val structureLiveData = MutableLiveData<Event<Node<TorrentFileItem>>>()
 
     private var job = Job()
 
@@ -109,7 +110,7 @@ class TorrentProcessingViewModel @Inject constructor(
         return savedStateHandle[KEY_CURRENT_TORRENT]
     }
 
-    fun setTorrentDetails(item: TorrentItem) {
+    private fun setTorrentDetails(item: TorrentItem) {
         savedStateHandle[KEY_CURRENT_TORRENT] = item
     }
 
@@ -117,7 +118,7 @@ class TorrentProcessingViewModel @Inject constructor(
         return savedStateHandle[KEY_CURRENT_TORRENT_ID]
     }
 
-    fun setTorrentID(id: String) {
+    private fun setTorrentID(id: String) {
         savedStateHandle[KEY_CURRENT_TORRENT_ID] = id
     }
 
@@ -125,13 +126,13 @@ class TorrentProcessingViewModel @Inject constructor(
         return savedStateHandle[KEY_CACHE]
     }
 
-    fun setCache(cache: CachedTorrent) {
+    private fun setCache(cache: CachedTorrent) {
         savedStateHandle[KEY_CACHE] = cache
     }
 
     fun updateTorrentStructure(structure: Node<TorrentFileItem>?) {
         if (structure != null)
-            torrentLiveData.postEvent(TorrentEvent.TorrentStructureUpdate(structure))
+            structureLiveData.postEvent(structure)
     }
 
     fun startSelectionLoop(files: String = "all") {
@@ -236,8 +237,8 @@ sealed class TorrentEvent {
     data class FilesSelected(val torrent: TorrentItem) : TorrentEvent()
     object DownloadAll : TorrentEvent()
     data class DownloadCache(val position: Int, val files: Int) : TorrentEvent()
+    data class DownloadSelection(val filesNumber: Int) : TorrentEvent()
     object DownloadedFileSuccess : TorrentEvent()
     object DownloadedFileFailure : TorrentEvent()
     data class DownloadedFileProgress(val progress: Int) : TorrentEvent()
-    data class TorrentStructureUpdate(val structure: Node<TorrentFileItem>) : TorrentEvent()
 }

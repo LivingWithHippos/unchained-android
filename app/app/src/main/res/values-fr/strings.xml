@@ -413,6 +413,7 @@
     <string name="download_queued_error">Erreur de mise en file d\'attente du téléchargement, vérifiez les permissions</string>
     <string name="selecting_all_files">Sélection de tous les fichiers, veuillez patienter…</string>
     <string name="selecting_picked_cache">Sélection de %1$d fichiers depuis le cache %2$d, veuillez patienter…</string>
+    <string name="selecting_picked_files">Sélection de %1$d fichiers, veuillez patienter...</string>
     <string name="download_manager_system">Gestionnaire de téléchargement par défaut</string>
     <string name="pick_download_folder">Choisissez le dossier de téléchargement</string>
     <string name="pick_download_folder_description">Choisissez un dossier pour les téléchargements. Non disponible pour le gestionnaire de téléchargement du système par défaut</string>

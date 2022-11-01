@@ -19,9 +19,13 @@ import com.github.livingwithhippos.unchained.data.model.cache.CachedAlternative
 import com.github.livingwithhippos.unchained.data.model.cache.CachedTorrent
 import com.github.livingwithhippos.unchained.data.repository.DownloadResult
 import com.github.livingwithhippos.unchained.databinding.FragmentTorrentProcessingBinding
+import com.github.livingwithhippos.unchained.lists.view.ListState
+import com.github.livingwithhippos.unchained.torrentdetails.model.TorrentFileItem
+import com.github.livingwithhippos.unchained.torrentdetails.model.TorrentFileItem.Companion.TYPE_FOLDER
 import com.github.livingwithhippos.unchained.torrentfilepicker.view.TorrentProcessingFragment.Companion.POSITION_FILE_PICKER
 import com.github.livingwithhippos.unchained.torrentfilepicker.viewmodel.TorrentEvent
 import com.github.livingwithhippos.unchained.torrentfilepicker.viewmodel.TorrentProcessingViewModel
+import com.github.livingwithhippos.unchained.utilities.Node
 import com.github.livingwithhippos.unchained.utilities.beforeSelectionStatusList
 import com.github.livingwithhippos.unchained.utilities.extension.isMagnet
 import com.github.livingwithhippos.unchained.utilities.extension.isTorrent
@@ -128,6 +132,7 @@ class TorrentProcessingFragment : UnchainedFragment() {
                     Timber.d("Cached torrent not found")
                 }
                 is TorrentEvent.FilesSelected -> {
+                    activityViewModel.setListState(ListState.UpdateTorrent)
                     val action =
                         TorrentProcessingFragmentDirections.actionTorrentProcessingFragmentToTorrentDetailsDest(
                             item = content.torrent
@@ -143,6 +148,12 @@ class TorrentProcessingFragment : UnchainedFragment() {
                 is TorrentEvent.DownloadCache -> {
                     binding.tvStatus.text =
                         getString(R.string.selecting_picked_cache, content.files, content.position)
+                    binding.tvLoadingTorrent.visibility = View.INVISIBLE
+                    binding.loadingLayout.visibility = View.VISIBLE
+                    binding.loadedLayout.visibility = View.INVISIBLE
+                }
+                is TorrentEvent.DownloadSelection -> {
+                    binding.tvStatus.text = getString(R.string.selecting_picked_files, content.filesNumber)
                     binding.tvLoadingTorrent.visibility = View.INVISIBLE
                     binding.loadingLayout.visibility = View.VISIBLE
                     binding.loadedLayout.visibility = View.INVISIBLE
@@ -164,9 +175,6 @@ class TorrentProcessingFragment : UnchainedFragment() {
                 }
                 TorrentEvent.DownloadedFileSuccess -> {
                     // do nothing
-                }
-                is TorrentEvent.TorrentStructureUpdate -> {
-                    // used by the other sub fragment
                 }
                 else -> {
                     Timber.d("Found unknown torrentLiveData event $content")
@@ -254,8 +262,9 @@ class TorrentProcessingFragment : UnchainedFragment() {
         if (pick == null)
             popup.menu.findItem(R.id.download_cache).isEnabled = false
 
-        // todo:implement
-        popup.menu.findItem(R.id.manual_pick).isEnabled = false
+        val lastSelection: Node<TorrentFileItem>? = viewModel.structureLiveData.value?.peekContent()
+        if (lastSelection == null)
+            popup.menu.findItem(R.id.manual_pick).isEnabled = false
 
         popup.setOnMenuItemClickListener { menuItem: MenuItem ->
             // Respond to menu item click.
@@ -290,7 +299,30 @@ class TorrentProcessingFragment : UnchainedFragment() {
                     viewModel.startSelectionLoop()
                 }
                 R.id.manual_pick -> {
-                    // TODO()
+
+                    if (lastSelection != null) {
+                        var counter = 0
+                        val selectedFiles = StringBuffer()
+                        Node.traverseBreadthFirst(lastSelection) {
+                            if (it.selected && it.id != TYPE_FOLDER) {
+                                selectedFiles.append(it.id)
+                                selectedFiles.append(",")
+                                counter++
+                            }
+                        }
+
+                        if (counter==0) {
+                            context?.showToast(R.string.select_one_item)
+                        } else {
+                            if (selectedFiles.last() == ","[0])
+                                selectedFiles.deleteCharAt(selectedFiles.lastIndex)
+
+                            viewModel.triggerTorrentEvent(TorrentEvent.DownloadSelection(counter))
+                            viewModel.startSelectionLoop(selectedFiles.toString())
+                        }
+                    } else {
+                        Timber.e("Last files selection should not have been null")
+                    }
                 }
                 else -> {
                     Timber.e("Unknown menu button pressed: $menuItem")

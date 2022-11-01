@@ -49,21 +49,23 @@ class TorrentFilePickerFragment : Fragment(), TorrentContentListener {
                         }
                     }
                 }
-                is TorrentEvent.TorrentStructureUpdate -> {
-                    val filesList = mutableListOf<TorrentFileItem>()
-                    Node.traverseDepthFirst(content.structure) { item ->
-                        filesList.add(item)
-                    }
-                    adapter.submitList(filesList)
-                    adapter.notifyDataSetChanged()
-                }
                 else -> {
                     // not used by this fragment
                 }
             }
         }
 
-
+        viewModel.structureLiveData.observe(viewLifecycleOwner) {
+            val content = it.getContentIfNotHandled()
+            if (content != null) {
+                val filesList = mutableListOf<TorrentFileItem>()
+                Node.traverseDepthFirst(content) { item ->
+                    filesList.add(item)
+                }
+                adapter.submitList(filesList)
+                adapter.notifyDataSetChanged()
+            }
+        }
 
         return binding.root
     }
@@ -82,6 +84,7 @@ class TorrentFilePickerFragment : Fragment(), TorrentContentListener {
                 }
             }
         }
+        viewModel.updateTorrentStructure(currentStructure)
     }
 
     override fun onSelectedFolder(item: TorrentFileItem) {

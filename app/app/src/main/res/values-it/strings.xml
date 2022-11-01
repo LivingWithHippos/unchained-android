@@ -410,6 +410,7 @@
     <string name="download_queued_error">Errore avvio download, controlla i permessi</string>
     <string name="selecting_all_files">Selezionando tutti i files, attendi…</string>
     <string name="selecting_picked_cache">Selezionando %1$d files dalla cache %2$d, attendi…</string>
+    <string name="selecting_picked_files">Selezionando %1$d files, attendere…</string>
     <string name="download_manager_system">Gestore di download predefinito</string>
     <string name="pick_download_folder">Scegli la cartella di download</string>
     <string name="pick_download_folder_description">Scegli una cartella per i download. Non disponibile per il gestore di downlaod predefinito del sistema</string>
