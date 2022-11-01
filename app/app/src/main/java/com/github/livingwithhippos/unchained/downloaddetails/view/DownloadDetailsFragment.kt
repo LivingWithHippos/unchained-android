@@ -1,14 +1,9 @@
 package com.github.livingwithhippos.unchained.downloaddetails.view
 
-import android.Manifest
-import android.app.DownloadManager
 import android.content.ActivityNotFoundException
 import android.content.ComponentName
-import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -16,7 +11,6 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.setFragmentResultListener
@@ -34,13 +28,10 @@ import com.github.livingwithhippos.unchained.downloaddetails.model.AlternativeDo
 import com.github.livingwithhippos.unchained.downloaddetails.viewmodel.DownloadDetailsMessage
 import com.github.livingwithhippos.unchained.downloaddetails.viewmodel.DownloadDetailsViewModel
 import com.github.livingwithhippos.unchained.lists.view.ListState
-import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.EventObserver
 import com.github.livingwithhippos.unchained.utilities.RD_STREAMING_URL
 import com.github.livingwithhippos.unchained.utilities.download.ProgressCallback
 import com.github.livingwithhippos.unchained.utilities.extension.copyToClipboard
-import com.github.livingwithhippos.unchained.utilities.extension.downloadFileInCustomFolder
-import com.github.livingwithhippos.unchained.utilities.extension.downloadFileInStandardFolder
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
@@ -84,7 +75,8 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                         R.id.delete -> {
                             val dialog = DeleteDialogFragment()
                             val bundle = Bundle()
-                            val title = getString(R.string.delete_item_title_format, args.details.filename)
+                            val title =
+                                getString(R.string.delete_item_title_format, args.details.filename)
                             bundle.putString("title", title)
                             dialog.arguments = bundle
                             dialog.show(parentFragmentManager, "DeleteDialogFragment")
@@ -272,7 +264,12 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         }
     }
 
-    private fun createMediaIntent(appPackage: String, url: String, component: ComponentName? = null, dataType: String = "video/*"): Intent {
+    private fun createMediaIntent(
+        appPackage: String,
+        url: String,
+        component: ComponentName? = null,
+        dataType: String = "video/*"
+    ): Intent {
 
         val uri = Uri.parse(url)
         val intent = Intent(Intent.ACTION_VIEW)

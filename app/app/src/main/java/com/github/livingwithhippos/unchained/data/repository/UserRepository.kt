@@ -9,7 +9,8 @@ import javax.inject.Inject
 
 class UserRepository @Inject constructor(
     private val protoStore: ProtoStore,
-    private val userApiHelper: UserApiHelper) :
+    private val userApiHelper: UserApiHelper
+) :
     BaseRepository(protoStore) {
 
     suspend fun getUserInfo(token: String): User? {

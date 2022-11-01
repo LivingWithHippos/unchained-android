@@ -4,7 +4,6 @@ import android.content.SharedPreferences
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.livingwithhippos.unchained.data.local.ProtoStore
 import com.github.livingwithhippos.unchained.data.model.Stream
 import com.github.livingwithhippos.unchained.data.repository.DownloadRepository
 import com.github.livingwithhippos.unchained.data.repository.KodiDeviceRepository
@@ -54,7 +53,13 @@ class DownloadDetailsViewModel @Inject constructor(
         viewModelScope.launch {
             val device = kodiDeviceRepository.getDefault()
             if (device != null) {
-                val response = kodiRepository.openUrl(device.address, device.port, url, device.username, device.password)
+                val response = kodiRepository.openUrl(
+                    device.address,
+                    device.port,
+                    url,
+                    device.username,
+                    device.password
+                )
                 if (response != null)
                     messageLiveData.postEvent(DownloadDetailsMessage.KodiSuccess)
                 else

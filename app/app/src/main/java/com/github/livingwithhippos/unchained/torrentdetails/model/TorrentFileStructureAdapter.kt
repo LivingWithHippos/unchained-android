@@ -6,7 +6,6 @@ import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.torrentdetails.model.TorrentFileItem.Companion.TYPE_FOLDER
 import com.github.livingwithhippos.unchained.utilities.DataBindingAdapter
 import com.github.livingwithhippos.unchained.utilities.Node
-import timber.log.Timber
 
 data class TorrentFileItem(
     val id: Int,
@@ -33,7 +32,11 @@ data class TorrentFileItem(
     }
 }
 
-fun getFilesNodes(item: TorrentItem, selectedOnly: Boolean = false, flattenFolders: Boolean = false): Node<TorrentFileItem> {
+fun getFilesNodes(
+    item: TorrentItem,
+    selectedOnly: Boolean = false,
+    flattenFolders: Boolean = false
+): Node<TorrentFileItem> {
     val rootFolder = Node(
         TorrentFileItem(
             TYPE_FOLDER,

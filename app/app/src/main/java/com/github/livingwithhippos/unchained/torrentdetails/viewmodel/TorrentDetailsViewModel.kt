@@ -46,6 +46,7 @@ class TorrentDetailsViewModel @Inject constructor(
                 torrentLiveData.postEvent(torrentData)
         }
     }
+
     fun pollTorrentStatus(id: String) {
         // todo: test if I need to recreate a job when it is cancelled
         job.cancelIfActive()

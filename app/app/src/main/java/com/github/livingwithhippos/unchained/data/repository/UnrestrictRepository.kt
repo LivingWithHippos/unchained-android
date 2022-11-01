@@ -14,7 +14,7 @@ import javax.inject.Inject
 class UnrestrictRepository @Inject constructor(
     private val protoStore: ProtoStore,
     private val unrestrictApiHelper: UnrestrictApiHelper
-    ) :
+) :
     BaseRepository(protoStore) {
 
     suspend fun getEitherUnrestrictedLink(

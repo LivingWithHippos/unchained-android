@@ -61,8 +61,8 @@ import com.github.livingwithhippos.unchained.utilities.extension.openExternalWeb
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.github.livingwithhippos.unchained.utilities.extension.toHex
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.mikepenz.aboutlibraries.LibsBuilder
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.mikepenz.aboutlibraries.LibsBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -514,8 +514,7 @@ class MainActivity : AppCompatActivity() {
                                         folder,
                                         content.downloads
                                     )
-                                }
-                                else
+                                } else
                                     viewModel.requireDownloadFolder()
                             }
                         }
@@ -575,8 +574,7 @@ class MainActivity : AppCompatActivity() {
                                         content,
                                         folder
                                     )
-                                }
-                                else
+                                } else
                                     viewModel.requireDownloadFolder()
 
                             }
@@ -831,7 +829,7 @@ class MainActivity : AppCompatActivity() {
             if (it.isEnabled) {
                 val currentDestination = navController.currentDestination
 
-                when(it.itemId) {
+                when (it.itemId) {
                     R.id.navigation_home -> {
                         // do nothing. There is no other acceptable fragment
                     }

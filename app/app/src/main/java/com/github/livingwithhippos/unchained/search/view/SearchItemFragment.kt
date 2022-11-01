@@ -4,24 +4,19 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
-import androidx.navigation.navGraphViewModels
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
-import com.github.livingwithhippos.unchained.data.model.cache.InstantAvailability
 import com.github.livingwithhippos.unchained.databinding.FragmentSearchItemBinding
 import com.github.livingwithhippos.unchained.plugins.model.ScrapedItem
 import com.github.livingwithhippos.unchained.search.model.LinkItem
 import com.github.livingwithhippos.unchained.search.model.LinkItemAdapter
 import com.github.livingwithhippos.unchained.search.model.LinkItemListener
-import com.github.livingwithhippos.unchained.search.viewmodel.SearchViewModel
 import com.github.livingwithhippos.unchained.utilities.MAGNET_PATTERN
 import com.github.livingwithhippos.unchained.utilities.extension.copyToClipboard
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 
 @AndroidEntryPoint
 class SearchItemFragment : UnchainedFragment(), LinkItemListener {
@@ -62,7 +57,7 @@ class SearchItemFragment : UnchainedFragment(), LinkItemListener {
         item.magnets.forEach {
             val btih = magnetPattern.find(it)?.groupValues?.getOrNull(1)?.lowercase()
             if (btih != null && cache.contains(btih))
-                links.add(LinkItem(getString(R.string.magnet), it.substringBefore("&"), it,true))
+                links.add(LinkItem(getString(R.string.magnet), it.substringBefore("&"), it, true))
             else
                 links.add(LinkItem(getString(R.string.magnet), it.substringBefore("&"), it))
         }

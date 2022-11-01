@@ -170,7 +170,7 @@ class ListTabsViewModel @Inject constructor(
             do {
                 val torrents = torrentsRepository.getTorrentsList(0, 1, 50)
                 torrents.forEach {
-                    torrentsRepository.deleteTorrent( it.id)
+                    torrentsRepository.deleteTorrent(it.id)
                 }
             } while (torrents.size >= 50)
 
@@ -181,7 +181,7 @@ class ListTabsViewModel @Inject constructor(
     fun deleteTorrents(torrents: List<TorrentItem>) {
         viewModelScope.launch {
             torrents.forEach {
-                torrentsRepository.deleteTorrent( it.id)
+                torrentsRepository.deleteTorrent(it.id)
             }
             if (torrents.size > 1)
                 deletedTorrentLiveData.postEvent(TORRENTS_DELETED)
@@ -200,7 +200,7 @@ class ListTabsViewModel @Inject constructor(
     fun deleteDownloads(downloads: List<DownloadItem>) {
         viewModelScope.launch {
             downloads.forEach {
-                downloadRepository.deleteDownload( it.id)
+                downloadRepository.deleteDownload(it.id)
             }
             if (downloads.size > 1)
                 deletedDownloadLiveData.postEvent(DOWNLOADS_DELETED)

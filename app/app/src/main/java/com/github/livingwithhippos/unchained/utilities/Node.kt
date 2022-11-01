@@ -22,12 +22,12 @@ class Node<T>(
             val stack = ArrayDeque<Node<T>>()
             stack.addFirst(rootNode)
 
-            while(stack.isNotEmpty()) {
+            while (stack.isNotEmpty()) {
                 val currentNode = stack.removeFirst()
 
                 action.invoke(currentNode.value)
 
-                for(index in currentNode.children.size - 1 downTo 0) {
+                for (index in currentNode.children.size - 1 downTo 0) {
                     stack.addFirst(currentNode.children[index])
                 }
             }
@@ -40,12 +40,12 @@ class Node<T>(
             val queue = ArrayDeque<Node<T>>()
             queue.addFirst(rootNode)
 
-            while(queue.isNotEmpty()) {
+            while (queue.isNotEmpty()) {
                 val currentNode = queue.removeLast()
 
                 action.invoke(currentNode.value)
 
-                for(childNode in currentNode.children) {
+                for (childNode in currentNode.children) {
                     queue.addFirst(childNode)
                 }
             }

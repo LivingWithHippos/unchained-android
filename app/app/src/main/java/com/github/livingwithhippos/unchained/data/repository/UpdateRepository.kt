@@ -8,7 +8,8 @@ import javax.inject.Inject
 
 class UpdateRepository @Inject constructor(
     private val protoStore: ProtoStore,
-    private val updateApiHelper: UpdateApiHelper) :
+    private val updateApiHelper: UpdateApiHelper
+) :
     BaseRepository(protoStore) {
 
     suspend fun getUpdates(url: String = SIGNATURE.URL): Updates? {
