@@ -175,17 +175,17 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <ImageButton
+            <Button
                 android:id="@+id/bPastePrivateCode"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:background="@drawable/icon_paste"
-                android:contentDescription="@string/paste"
+                android:onClick="@{() -> listener.onPasteCodeClick(tiPrivateCode)}"
+                android:text="@string/paste"
+                app:icon="@drawable/icon_paste"
                 android:nextFocusLeft="@id/tfPrivateCode"
                 android:nextFocusDown="@id/bInsertPrivate"
                 android:nextFocusRight="@id/bInsertPrivate"
-                android:onClick="@{() -> listener.onPasteCodeClick(tiPrivateCode)}"
                 app:layout_constraintBottom_toBottomOf="@id/tfPrivateCode"
                 app:layout_constraintEnd_toEndOf="@+id/tvUsePrivateToken"
                 app:layout_constraintHorizontal_bias="0.5"
