@@ -41,35 +41,50 @@
             android:layout_height="match_parent"
             android:layout_gravity="center_vertical">
 
-            <LinearLayout
-                android:id="@+id/llLinks"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:orientation="vertical"
+            <TextView
+                android:id="@+id/tvLoginMessage"
+                style="@style/TextAppearance.UnchainedTheme.Body1"
+                android:text="@string/login_message_placeholder"
                 android:visibility="@{secrets.clientSecret == null ? View.VISIBLE : View.GONE}"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                android:gravity="center"
+                android:textAlignment="center"
+                app:layout_constraintBottom_toTopOf="@+id/tvAuthenticationLink"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed"
+                />
+
+            <TextView
+                android:id="@+id/tvAuthenticationLink"
+                style="@style/TextAppearance.UnchainedTheme.Body1"
+                android:text="@{auth.directVerificationUrl, default=`https://www.real-debrid.com/ABCD1234DEFGH`}"
+                android:visibility="@{auth.directVerificationUrl != null ? View.VISIBLE : View.GONE}"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                android:autoLink="web"
+                android:gravity="center"
+                android:nextFocusDown="@id/tvUsePrivateToken"
+                android:nextFocusRight="@id/tvUsePrivateToken"
+                android:textAlignment="center"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:scrollHorizontally="true"
                 app:layout_constraintBottom_toTopOf="@+id/cbLink"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_chainStyle="packed">
+                app:layout_constraintVertical_chainStyle="packed"
+                />
 
-                <TextView
-                    android:id="@+id/tvLoginMessage"
-                    style="@style/TextAppearance.UnchainedTheme.Body1"
-                    spannableText="@{auth.directVerificationUrl != null ? loginMessageDirect : loginMessageIndirect}"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="30dp"
-                    android:layout_marginEnd="30dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:nextFocusDown="@id/tvUsePrivateToken"
-                    android:onClick="@{() -> listener.onOpenLinkClick(auth.directVerificationUrl != null ? auth.directVerificationUrl : auth.verificationUrl)}"
-                    android:textAlignment="center" />
-
-            </LinearLayout>
 
             <CheckBox
                 android:id="@+id/cbLink"
@@ -83,7 +98,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/llLinks" />
+                app:layout_constraintTop_toBottomOf="@+id/tvAuthenticationLink" />
 
             <CheckBox
                 android:id="@+id/cbSecret"
@@ -120,7 +135,7 @@
                 android:layout_marginEnd="30dp"
                 android:autoLink="web"
                 android:gravity="center"
-                android:nextFocusUp="@id/tvLoginMessage"
+                android:nextFocusUp="@id/tvAuthenticationLink"
                 android:nextFocusDown="@id/tiPrivateCode"
                 android:text="@string/add_private_token_message"
                 app:layout_constraintBottom_toTopOf="@id/tfPrivateCode"
@@ -139,6 +154,8 @@
                 android:hint="@string/private_token"
                 android:importantForAutofill="no"
                 android:minWidth="200dp"
+                android:nextFocusUp="@id/tvUsePrivateToken"
+                android:nextFocusLeft="@id/tvAuthenticationLink"
                 android:nextFocusRight="@id/bPastePrivateCode"
                 android:nextFocusDown="@id/bInsertPrivate"
                 app:endIconMode="clear_text"
@@ -167,6 +184,7 @@
                 android:contentDescription="@string/paste"
                 android:nextFocusLeft="@id/tfPrivateCode"
                 android:nextFocusDown="@id/bInsertPrivate"
+                android:nextFocusRight="@id/bInsertPrivate"
                 android:onClick="@{() -> listener.onPasteCodeClick(tiPrivateCode)}"
                 app:layout_constraintBottom_toBottomOf="@id/tfPrivateCode"
                 app:layout_constraintEnd_toEndOf="@+id/tvUsePrivateToken"
@@ -182,6 +200,7 @@
                 android:nextFocusUp="@id/tfPrivateCode"
                 android:onClick="@{() -> listener.onSaveCodeClick(tiPrivateCode)}"
                 android:text="@string/save"
+                android:nextFocusLeft="@id/tfPrivateCode"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
