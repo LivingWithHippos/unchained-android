@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- NOTE: keep updated the v26 version of the layout-->
-<layout xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
@@ -38,153 +36,158 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center_vertical">
-
-        <LinearLayout
-            android:id="@+id/llLinks"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:orientation="vertical"
-            android:visibility="@{secrets.clientSecret == null ? View.VISIBLE : View.GONE}"
-            app:layout_constraintBottom_toTopOf="@+id/cbLink"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_chainStyle="packed">
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical">
+
+            <LinearLayout
+                android:id="@+id/llLinks"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:visibility="@{secrets.clientSecret == null ? View.VISIBLE : View.GONE}"
+                app:layout_constraintBottom_toTopOf="@+id/cbLink"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed">
+
+                <TextView
+                    android:id="@+id/tvLoginMessage"
+                    style="@style/TextAppearance.UnchainedTheme.Body1"
+                    spannableText="@{auth.directVerificationUrl != null ? loginMessageDirect : loginMessageIndirect}"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginEnd="30dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:nextFocusDown="@id/tvUsePrivateToken"
+                    android:onClick="@{() -> listener.onOpenLinkClick(auth.directVerificationUrl != null ? auth.directVerificationUrl : auth.verificationUrl)}"
+                    android:textAlignment="center" />
+
+            </LinearLayout>
+
+            <CheckBox
+                android:id="@+id/cbLink"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="@{auth.userCode == null ? false : true, default=true}"
+                android:clickable="false"
+                android:focusable="false"
+                android:text="@{auth.userCode == null ? @string/waiting_link : @string/link_loaded, default=@string/link_loaded}"
+                app:layout_constraintBottom_toTopOf="@+id/cbSecret"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/llLinks" />
+
+            <CheckBox
+                android:id="@+id/cbSecret"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="@{secrets.clientSecret == null ? false : true}"
+                android:clickable="false"
+                android:focusable="false"
+                android:text="@{secrets.clientSecret == null ? @string/waiting_user_auth : @string/obtained_user_auth, default=@string/waiting_user_auth}"
+                app:layout_constraintBottom_toTopOf="@+id/cbToken"
+                app:layout_constraintStart_toStartOf="@+id/cbLink"
+                app:layout_constraintTop_toBottomOf="@+id/cbLink" />
+
+            <CheckBox
+                android:id="@+id/cbToken"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="@{token.accessToken == null ? false : true}"
+                android:clickable="false"
+                android:focusable="false"
+                android:text="@{token.accessToken == null ? @string/waiting_token : @string/obtained_token, default=@string/waiting_token}"
+                app:layout_constraintBottom_toTopOf="@+id/tvUsePrivateToken"
+                app:layout_constraintStart_toStartOf="@+id/cbSecret"
+                app:layout_constraintTop_toBottomOf="@+id/cbSecret" />
+
 
             <TextView
-                android:id="@+id/tvLoginMessage"
-                style="@style/TextAppearance.UnchainedTheme.Body1"
-                android:layout_width="match_parent"
+                android:id="@+id/tvUsePrivateToken"
+                style="@style/TextAppearance.UnchainedTheme.Body2"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="30dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginEnd="30dp"
-                android:textAlignment="center"
-                android:clickable="true"
-                android:focusable="true"
-                android:onClick="@{() -> listener.onOpenLinkClick(auth.directVerificationUrl != null ? auth.directVerificationUrl : auth.verificationUrl)}"
-                spannableText="@{auth.directVerificationUrl != null ? loginMessageDirect : loginMessageIndirect}"
-                />
-
-        </LinearLayout>
-
-        <CheckBox
-            android:id="@+id/cbLink"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:checked="@{auth.userCode == null ? false : true, default=false}"
-            android:clickable="false"
-            android:focusable="false"
-            android:text="@{auth.userCode == null ? @string/waiting_link : @string/link_loaded, default=@string/link_loaded}"
-            app:layout_constraintBottom_toTopOf="@+id/cbSecret"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/llLinks" />
-
-        <CheckBox
-            android:id="@+id/cbSecret"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:checked="@{secrets.clientSecret == null ? false : true}"
-            android:clickable="false"
-            android:focusable="false"
-            android:text="@{secrets.clientSecret == null ? @string/waiting_user_auth : @string/obtained_user_auth, default=@string/waiting_user_auth}"
-            app:layout_constraintBottom_toTopOf="@+id/cbToken"
-            app:layout_constraintStart_toStartOf="@+id/cbLink"
-            app:layout_constraintTop_toBottomOf="@+id/cbLink" />
-
-        <CheckBox
-            android:id="@+id/cbToken"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:checked="@{token.accessToken == null ? false : true}"
-            android:clickable="false"
-            android:focusable="false"
-            android:text="@{token.accessToken == null ? @string/waiting_token : @string/obtained_token, default=@string/waiting_token}"
-            app:layout_constraintBottom_toTopOf="@+id/tvUsePrivateToken"
-            app:layout_constraintStart_toStartOf="@+id/cbSecret"
-            app:layout_constraintTop_toBottomOf="@+id/cbSecret" />
+                android:autoLink="web"
+                android:gravity="center"
+                android:nextFocusUp="@id/tvLoginMessage"
+                android:nextFocusDown="@id/tiPrivateCode"
+                android:text="@string/add_private_token_message"
+                app:layout_constraintBottom_toTopOf="@id/tfPrivateCode"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/cbToken" />
 
 
-        <TextView
-            android:id="@+id/tvUsePrivateToken"
-            style="@style/TextAppearance.UnchainedTheme.Body2"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginStart="30dp"
-            android:layout_marginEnd="30dp"
-            android:autoLink="web"
-            android:gravity="center"
-            android:nextFocusUp="@id/bCopy"
-            android:nextFocusDown="@id/tiPrivateCode"
-            android:text="@string/add_private_token_message"
-            app:layout_constraintBottom_toTopOf="@id/tfPrivateCode"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/cbToken" />
-
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/tfPrivateCode"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="0dp"
-            android:minWidth="200dp"
-            app:layout_constraintWidth_max="600dp"
-            android:layout_marginTop="10dp"
-            android:layout_height="wrap_content"
-            android:hint="@string/private_token"
-            android:importantForAutofill="no"
-            app:endIconMode="clear_text"
-            android:focusable="true"
-            app:layout_constraintBottom_toTopOf="@id/bInsertPrivate"
-            app:layout_constraintEnd_toStartOf="@id/bPastePrivateCode"
-            app:layout_constraintHorizontal_chainStyle="packed"
-            app:layout_constraintStart_toStartOf="@+id/tvUsePrivateToken"
-            app:layout_constraintTop_toBottomOf="@id/tvUsePrivateToken">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/tiPrivateCode"
-                android:layout_width="match_parent"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tfPrivateCode"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
                 android:focusable="true"
-                android:singleLine="true" />
+                android:hint="@string/private_token"
+                android:importantForAutofill="no"
+                android:minWidth="200dp"
+                android:nextFocusRight="@id/bPastePrivateCode"
+                android:nextFocusDown="@id/bInsertPrivate"
+                app:endIconMode="clear_text"
+                app:layout_constraintBottom_toTopOf="@id/bInsertPrivate"
+                app:layout_constraintEnd_toStartOf="@id/bPastePrivateCode"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="@+id/tvUsePrivateToken"
+                app:layout_constraintTop_toBottomOf="@id/tvUsePrivateToken"
+                app:layout_constraintWidth_max="600dp">
 
-        </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/tiPrivateCode"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:focusable="true"
+                    android:singleLine="true" />
 
-        <ImageButton
-            android:id="@+id/bPastePrivateCode"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:layout_marginStart="10dp"
-            android:background="@drawable/icon_paste"
-            android:contentDescription="@string/paste"
-            android:onClick="@{() -> listener.onPasteCodeClick(tiPrivateCode)}"
-            app:layout_constraintBottom_toBottomOf="@id/tfPrivateCode"
-            app:layout_constraintEnd_toEndOf="@+id/tvUsePrivateToken"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@id/tfPrivateCode"
-            app:layout_constraintTop_toTopOf="@id/tfPrivateCode" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-        <Button
-            android:id="@+id/bInsertPrivate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:onClick="@{() -> listener.onSaveCodeClick(tiPrivateCode)}"
-            android:text="@string/save"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tfPrivateCode" />
+            <ImageButton
+                android:id="@+id/bPastePrivateCode"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_marginStart="10dp"
+                android:background="@drawable/icon_paste"
+                android:contentDescription="@string/paste"
+                android:nextFocusLeft="@id/tfPrivateCode"
+                android:nextFocusDown="@id/bInsertPrivate"
+                android:onClick="@{() -> listener.onPasteCodeClick(tiPrivateCode)}"
+                app:layout_constraintBottom_toBottomOf="@id/tfPrivateCode"
+                app:layout_constraintEnd_toEndOf="@+id/tvUsePrivateToken"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@id/tfPrivateCode"
+                app:layout_constraintTop_toTopOf="@id/tfPrivateCode" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <Button
+                android:id="@+id/bInsertPrivate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:nextFocusUp="@id/tfPrivateCode"
+                android:onClick="@{() -> listener.onSaveCodeClick(tiPrivateCode)}"
+                android:text="@string/save"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tfPrivateCode" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.core.widget.NestedScrollView>
 </layout>
