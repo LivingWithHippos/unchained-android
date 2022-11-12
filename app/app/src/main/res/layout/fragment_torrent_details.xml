@@ -61,7 +61,6 @@
                 android:layout_margin="20dp"
                 android:checkable="false"
                 android:clickable="false"
-                android:focusable="true"
                 app:cardCornerRadius="10dp"
                 app:cardElevation="5dp">
 
@@ -237,7 +236,6 @@
                 android:layout_margin="20dp"
                 android:checkable="false"
                 android:clickable="false"
-                android:focusable="true"
                 android:visibility="@{torrent.status.equalsIgnoreCase(`downloading`) ? View.VISIBLE : View.GONE}"
                 app:cardCornerRadius="10dp"
                 app:cardElevation="5dp"
@@ -351,7 +349,6 @@
                 android:layout_margin="20dp"
                 android:checkable="false"
                 android:clickable="false"
-                android:focusable="true"
                 android:visibility="invisible"
                 app:cardCornerRadius="10dp"
                 app:cardElevation="5dp">
