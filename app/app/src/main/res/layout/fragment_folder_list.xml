@@ -58,6 +58,7 @@
             android:hint="@string/search"
             android:importantForAutofill="no"
             app:endIconMode="clear_text"
+            android:nextFocusDown="@id/cbFilterSize"
             app:layout_constraintBottom_toTopOf="@+id/cbFilterSize"
             app:layout_constraintEnd_toStartOf="@id/sortingButton"
             app:layout_constraintHorizontal_bias="0.5"
@@ -86,6 +87,7 @@
             android:background="@drawable/icon_sort_default"
             android:backgroundTint="?android:textColorSecondary"
             android:contentDescription="@string/sort"
+            android:nextFocusDown="@id/cbFilterSize"
             app:layout_constraintBottom_toBottomOf="@id/tfFilter"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/tfFilter"
@@ -95,11 +97,15 @@
             android:id="@+id/cbFilterSize"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
             android:checked="false"
             android:text="@string/only_big_files"
+            android:nextFocusRight="@id/cbFilterType"
+            android:nextFocusDown="@id/cbSelectAll"
+            android:nextFocusUp="@id/tfFilter"
             app:layout_constraintBottom_toTopOf="@+id/llMultiSelection"
             app:layout_constraintEnd_toStartOf="@+id/cbFilterType"
-            app:layout_constraintStart_toStartOf="@id/tfFilter"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tfFilter" />
 
         <CheckBox
@@ -108,6 +114,10 @@
             android:layout_height="wrap_content"
             android:checked="false"
             android:text="@string/filter_type"
+            android:layout_marginEnd="20dp"
+            android:nextFocusDown="@id/cbSelectAll"
+            android:nextFocusUp="@id/tfFilter"
+            android:nextFocusLeft="@id/cbFilterSize"
             app:layout_constraintBottom_toTopOf="@+id/llMultiSelection"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/cbFilterSize"
@@ -132,7 +142,12 @@
                 android:layout_height="wrap_content"
                 android:checked="false"
                 android:tooltipText="@string/select_deselect_all"
-                android:text="@{selectedLinks.toString(), default=`2`}" />
+                android:text="@{selectedLinks.toString(), default=`2`}"
+                android:nextFocusUp="@id/cbFilterSize"
+                android:nextFocusRight="@id/bDeleteSelected"
+                android:nextFocusLeft="@id/cbFilterType"
+                android:nextFocusDown="@id/rvFolderList"
+                />
 
             <ImageButton
                 android:id="@+id/bDeleteSelected"
@@ -143,7 +158,12 @@
                 android:contentDescription="@string/delete"
                 android:onClick="@{() -> listener.deleteSelectedItems()}"
                 android:src="@drawable/icon_delete"
-                android:tooltipText="@string/delete_selected" />
+                android:tooltipText="@string/delete_selected"
+                android:nextFocusUp="@id/cbFilterSize"
+                android:nextFocusRight="@id/bDownloadSelected"
+                android:nextFocusLeft="@id/cbSelectAll"
+                android:nextFocusDown="@id/rvFolderList"
+                />
 
             <ImageButton
                 android:id="@+id/bDownloadSelected"
@@ -154,7 +174,12 @@
                 android:contentDescription="@string/download"
                 android:onClick="@{() -> listener.downloadSelectedItems()}"
                 android:src="@drawable/icon_download"
-                android:tooltipText="@string/download_selected" />
+                android:tooltipText="@string/download_selected"
+                android:nextFocusUp="@id/cbFilterSize"
+                android:nextFocusRight="@id/bShareSelected"
+                android:nextFocusLeft="@id/bDeleteSelected"
+                android:nextFocusDown="@id/rvFolderList"
+                />
 
 
             <ImageButton
@@ -166,7 +191,12 @@
                 android:contentDescription="@string/share"
                 android:onClick="@{() -> listener.shareSelectedItems()}"
                 android:src="@drawable/icon_share"
-                android:tooltipText="@string/share_selected" />
+                android:tooltipText="@string/share_selected"
+                android:nextFocusUp="@id/cbFilterSize"
+                android:nextFocusRight="@id/rvFolderList"
+                android:nextFocusLeft="@id/bDownloadSelected"
+                android:nextFocusDown="@id/rvFolderList"
+                />
         </LinearLayout>
 
         <LinearLayout
@@ -196,6 +226,7 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="center_horizontal"
                 android:scrollbars="vertical"
+                android:nextFocusUp="@id/cbSelectAll"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:listitem="@layout/item_list_download" />
 
