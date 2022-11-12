@@ -231,8 +231,13 @@ fun Context.openExternalWebPage(url: String, showErrorToast: Boolean = true): Bo
     // todo: check if app supporting this index are available, otherwise android.content.ActivityNotFoundException can be thrown by this
     // this pattern accepts everything that is something.tld since there were too many new tlds and Google gave up updating their regex
     if (url.isWebUrl()) {
-        val webIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-        startActivity(webIntent)
+        try {
+            val webIntent =
+                Intent(Intent.ACTION_VIEW, Uri.parse(url)).addCategory(Intent.CATEGORY_BROWSABLE)
+            startActivity(webIntent)
+        } catch (ex: android.content.ActivityNotFoundException) {
+            showToast(R.string.browser_not_found)
+        }
         return true
     } else if (showErrorToast)
         showToast(R.string.invalid_url)
