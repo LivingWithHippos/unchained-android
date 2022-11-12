@@ -373,7 +373,7 @@
     <string name="send_to_player">Invia a lettore</string>
     <string name="missing_default_player">Imposta il lettore di default nell impostazioni</string>
     <string name="ui_settings_summary">Scegli se e come sono mostrate le cose</string>
-    <string name="download_details_button_choice">Scegli quali bottoni mostrare nella scheramata di dettagli download</string>
+    <string name="download_details_button_choice">Scegli quali bottoni mostrare nella schermata di dettagli download</string>
     <string name="external_apps">Applicazioni esterne</string>
     <string name="show_share_button">Mostra bottone condividi</string>
     <string name="show_open_button">Mostra bottone apri</string>
