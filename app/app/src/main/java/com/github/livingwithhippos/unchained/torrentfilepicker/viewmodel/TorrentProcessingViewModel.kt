@@ -27,7 +27,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.*
+import java.util.Timer
 import javax.inject.Inject
 
 @HiltViewModel
@@ -85,8 +85,10 @@ class TorrentProcessingViewModel @Inject constructor(
             builder.append(INSTANT_AVAILABILITY_ENDPOINT)
             builder.append("/")
             builder.append(hash)
-            when (val cache =
-                torrentsRepository.getInstantAvailability(builder.toString())) {
+            when (
+                val cache =
+                    torrentsRepository.getInstantAvailability(builder.toString())
+            ) {
                 is EitherResult.Failure -> {
                     Timber.e("Failed getting cache for hash $hash ${cache.failure}")
                 }
@@ -152,7 +154,7 @@ class TorrentProcessingViewModel @Inject constructor(
         scope.launch {
 
             var selected = false
-            /// maybe job.isActive?
+            // / maybe job.isActive?
             while (isActive) {
                 if (!selected) {
                     when (val selectResponse = torrentsRepository.selectFiles(id, files)) {
@@ -186,18 +188,20 @@ class TorrentProcessingViewModel @Inject constructor(
     }
 
     fun pollTorrentStatus() {
-        Timer().scheduleAtFixedRate(object : TimerTask() {
-            override fun run() {
-                // check if it goes into select files
-                // todo: create a service to do this, check the download one
-            }
-        }, 0, 1000)
+        Timer().scheduleAtFixedRate(
+            object : TimerTask() {
+                override fun run() {
+                    // check if it goes into select files
+                    // todo: create a service to do this, check the download one
+                }
+            },
+            0, 1000
+        )
     }
 
     fun triggerTorrentEvent(event: TorrentEvent) {
         torrentLiveData.postEvent(event)
     }
-
 
     fun fetchUploadedTorrent(binaryTorrent: ByteArray) {
         viewModelScope.launch {

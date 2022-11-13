@@ -49,7 +49,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 val contentResolver = requireContext().contentResolver
 
                 val takeFlags: Int = Intent.FLAG_GRANT_READ_URI_PERMISSION or
-                        Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                    Intent.FLAG_GRANT_WRITE_URI_PERMISSION
 
                 contentResolver.takePersistableUriPermission(it, takeFlags)
 

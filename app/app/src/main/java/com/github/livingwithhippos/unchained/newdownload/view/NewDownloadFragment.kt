@@ -255,11 +255,11 @@ class NewDownloadFragment : UnchainedFragment() {
                          * DownloadManager does not support insecure (https) links anymore
                          * to add support for it, follow these instructions
                          * [https://stackoverflow.com/a/50834600]
-                        val secureLink = if (link.startsWith("http://")) link.replaceFirst(
-                        "http:",
-                        "https:"
-                        ) else link
-                        downloadTorrent(Uri.parse(secureLink))
+                         val secureLink = if (link.startsWith("http://")) link.replaceFirst(
+                         "http:",
+                         "https:"
+                         ) else link
+                         downloadTorrent(Uri.parse(secureLink))
                          */
                         // downloadTorrentToCache(binding, link)
                     }
@@ -287,9 +287,9 @@ class NewDownloadFragment : UnchainedFragment() {
                                 link = link
                             )
                         findNavController().navigate(action)
-                        //viewModel.postMessage(getString(R.string.loading_magnet_link))
-                        //enableButtons(binding, false)
-                        //viewModel.fetchAddedMagnet(link)
+                        // viewModel.postMessage(getString(R.string.loading_magnet_link))
+                        // enableButtons(binding, false)
+                        // viewModel.fetchAddedMagnet(link)
                     }
                     link.isBlank() -> {
                         viewModel.postMessage(getString(R.string.please_insert_url))
@@ -401,7 +401,7 @@ class NewDownloadFragment : UnchainedFragment() {
                         null
                     )?.use { metaCursor ->
                         if (metaCursor.moveToFirst()) {
-                            val fileName = metaCursor.getString(0);
+                            val fileName = metaCursor.getString(0)
                             Timber.d("Torrent shared file found: $fileName")
                             when {
                                 // check if it's a container

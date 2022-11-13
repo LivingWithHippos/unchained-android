@@ -2,9 +2,7 @@ package com.github.livingwithhippos.unchained.settings.view
 
 import android.app.Dialog
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.ImageButton
@@ -17,7 +15,6 @@ import com.github.livingwithhippos.unchained.data.model.KodiDevice
 import com.github.livingwithhippos.unchained.settings.viewmodel.KodiManagementViewModel
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.dialog.MaterialDialogs
 import com.google.android.material.textfield.TextInputEditText
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -36,7 +33,7 @@ class KodiDeviceBottomSheet() : DialogFragment() {
         return activity?.let {
             val builder = MaterialAlertDialogBuilder(it)
             // Get the layout inflater
-            val inflater = requireActivity().layoutInflater;
+            val inflater = requireActivity().layoutInflater
             val view: View = inflater.inflate(R.layout.modal_kodi_device, null, false)
 
             currentDevice?.let {

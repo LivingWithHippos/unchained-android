@@ -165,13 +165,11 @@ class TorrentProcessingFragment : UnchainedFragment() {
                     binding.loadingCircle.progress = 100
                     binding.loadingLayout.visibility = View.VISIBLE
                     binding.loadedLayout.visibility = View.INVISIBLE
-
                 }
                 is TorrentEvent.DownloadedFileProgress -> {
                     binding.tvStatus.text = getString(R.string.downloading_torrent)
                     binding.loadingCircle.isIndeterminate = false
                     binding.loadingCircle.progress = content.progress
-
                 }
                 TorrentEvent.DownloadedFileSuccess -> {
                     // do nothing
@@ -210,7 +208,6 @@ class TorrentProcessingFragment : UnchainedFragment() {
             }
         }.attach()
 
-
         super.onViewCreated(view, savedInstanceState)
     }
 
@@ -248,7 +245,6 @@ class TorrentProcessingFragment : UnchainedFragment() {
         } else {
             throw IllegalArgumentException("No torrent link or torrent id was passed to TorrentProcessingFragment")
         }
-
 
         val adapter = TorrentFilePagerAdapter(this, viewModel)
         binding.pickerPager.adapter = adapter
@@ -289,7 +285,6 @@ class TorrentProcessingFragment : UnchainedFragment() {
                         } else {
                             Timber.e("No cache corresponding to index ${pick.first} found")
                         }
-
                     } else {
                         Timber.e("No cache pick found")
                     }
@@ -311,7 +306,7 @@ class TorrentProcessingFragment : UnchainedFragment() {
                             }
                         }
 
-                        if (counter==0) {
+                        if (counter == 0) {
                             context?.showToast(R.string.select_one_item)
                         } else {
                             if (selectedFiles.last() == ","[0])
@@ -366,7 +361,6 @@ class TorrentProcessingFragment : UnchainedFragment() {
         }
     }
 
-
     private fun loadCachedTorrent(
         cacheDir: File,
         fileName: String
@@ -398,7 +392,6 @@ class TorrentProcessingFragment : UnchainedFragment() {
         const val POSITION_CACHE_PICKER = 1
     }
 }
-
 
 class TorrentFilePagerAdapter(
     fragment: Fragment,

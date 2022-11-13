@@ -176,7 +176,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-
     private val requestNotificationPermissionLauncher =
         registerForActivityResult(
             ActivityResultContracts.RequestPermission()
@@ -199,7 +198,7 @@ class MainActivity : AppCompatActivity() {
                 val contentResolver = applicationContext.contentResolver
 
                 val takeFlags: Int = Intent.FLAG_GRANT_READ_URI_PERMISSION or
-                        Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                    Intent.FLAG_GRANT_WRITE_URI_PERMISSION
 
                 contentResolver.takePersistableUriPermission(it, takeFlags)
 
@@ -576,7 +575,6 @@ class MainActivity : AppCompatActivity() {
                                     )
                                 } else
                                     viewModel.requireDownloadFolder()
-
                             }
                             else -> {
                                 Timber.e("Unrecognized download manager requested: $dm")
@@ -806,10 +804,10 @@ class MainActivity : AppCompatActivity() {
     private fun setupBottomNavigationBar(binding: ActivityMainBinding) {
 
         navController = (
-                supportFragmentManager.findFragmentById(
-                    R.id.nav_host_fragment
-                ) as NavHostFragment
-                ).navController
+            supportFragmentManager.findFragmentById(
+                R.id.nav_host_fragment
+            ) as NavHostFragment
+            ).navController
         binding.bottomNavView.setupWithNavController(navController)
 
         // Setup the ActionBar with navController and 3 top level destinations

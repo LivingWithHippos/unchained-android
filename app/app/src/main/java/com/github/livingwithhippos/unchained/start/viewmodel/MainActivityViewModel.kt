@@ -45,7 +45,6 @@ import com.github.livingwithhippos.unchained.data.repository.UpdateRepository
 import com.github.livingwithhippos.unchained.data.repository.UserRepository
 import com.github.livingwithhippos.unchained.data.repository.VariousApiRepository
 import com.github.livingwithhippos.unchained.lists.view.ListState
-import com.github.livingwithhippos.unchained.torrentfilepicker.view.TorrentCachePickerFragment.Companion.KEY_CACHE_INDEX
 import com.github.livingwithhippos.unchained.plugins.model.Plugin
 import com.github.livingwithhippos.unchained.plugins.model.ScrapedItem
 import com.github.livingwithhippos.unchained.search.viewmodel.SearchViewModel
@@ -53,6 +52,7 @@ import com.github.livingwithhippos.unchained.statemachine.authentication.Current
 import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationEvent
 import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationSideEffect
 import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationState
+import com.github.livingwithhippos.unchained.torrentfilepicker.view.TorrentCachePickerFragment.Companion.KEY_CACHE_INDEX
 import com.github.livingwithhippos.unchained.utilities.BASE_URL
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.Event

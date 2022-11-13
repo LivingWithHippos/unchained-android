@@ -24,7 +24,7 @@ import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import timber.log.Timber
 import java.net.URLConnection
-import java.util.*
+import java.util.UUID
 
 class DownloadWorker(appContext: Context, workerParams: WorkerParameters) :
     CoroutineWorker(appContext, workerParams) {
@@ -139,7 +139,6 @@ class DownloadWorker(appContext: Context, workerParams: WorkerParameters) :
                                     lastNotificationTime = System.currentTimeMillis()
                                     progressCounter = it.percent
 
-
                                     setForeground(
                                         makeProgressForegroundInfo(
                                             id,
@@ -149,7 +148,6 @@ class DownloadWorker(appContext: Context, workerParams: WorkerParameters) :
                                             applicationContext
                                         )
                                     )
-
                                 }
                             }
                         }
@@ -249,7 +247,6 @@ class DownloadWorker(appContext: Context, workerParams: WorkerParameters) :
 
 const val GROUP_KEY_DOWNLOADS: String = "com.github.livingwithhippos.unchained.DOWNLOADS"
 
-
 // see https://developer.android.com/topic/libraries/architecture/workmanager/advanced/long-running
 fun makeStatusNotification(
     workerId: UUID,
@@ -282,7 +279,6 @@ fun makeStatusNotification(
             }
         }
         .build()
-
 }
 
 fun makeStatusForegroundInfo(
@@ -330,7 +326,6 @@ fun makeProgressStatusNotification(
             }
         }
         .build()
-
 }
 
 fun makeProgressForegroundInfo(

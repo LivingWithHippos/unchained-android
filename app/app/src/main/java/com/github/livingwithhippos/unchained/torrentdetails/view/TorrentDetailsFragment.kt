@@ -26,7 +26,6 @@ import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.databinding.FragmentTorrentDetailsBinding
 import com.github.livingwithhippos.unchained.lists.view.ListState
 import com.github.livingwithhippos.unchained.torrentdetails.model.TorrentContentFilesAdapter
-import com.github.livingwithhippos.unchained.torrentdetails.model.TorrentContentListener
 import com.github.livingwithhippos.unchained.torrentdetails.model.TorrentFileItem
 import com.github.livingwithhippos.unchained.torrentdetails.model.getFilesNodes
 import com.github.livingwithhippos.unchained.torrentdetails.viewmodel.TorrentDetailsViewModel

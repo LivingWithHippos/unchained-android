@@ -121,8 +121,8 @@ class TorrentContentFilesAdapter :
             newItem: TorrentFileItem
         ): Boolean {
             return oldItem.absolutePath == newItem.absolutePath &&
-                    oldItem.name == newItem.name &&
-                    oldItem.id == newItem.id
+                oldItem.name == newItem.name &&
+                oldItem.id == newItem.id
         }
 
         override fun areContentsTheSame(
@@ -152,8 +152,8 @@ class TorrentContentFilesSelectionAdapter(listener: TorrentContentListener) :
             newItem: TorrentFileItem
         ): Boolean {
             return oldItem.id == newItem.id &&
-                    oldItem.name == newItem.name &&
-                    oldItem.absolutePath == newItem.absolutePath
+                oldItem.name == newItem.name &&
+                oldItem.absolutePath == newItem.absolutePath
         }
 
         override fun areContentsTheSame(

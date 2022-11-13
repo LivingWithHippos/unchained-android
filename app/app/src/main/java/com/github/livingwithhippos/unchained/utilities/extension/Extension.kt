@@ -107,15 +107,15 @@ fun Fragment.getClipboardText(): String {
     val clipboard = requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
     var text = ""
     if (
-        clipboard.hasPrimaryClip()
-        && (
+        clipboard.hasPrimaryClip() &&
+        (
+            clipboard.primaryClipDescription?.hasMimeType(
+                MIMETYPE_TEXT_PLAIN
+            ) == true ||
                 clipboard.primaryClipDescription?.hasMimeType(
-                    MIMETYPE_TEXT_PLAIN
-                ) == true
-                        || clipboard.primaryClipDescription?.hasMimeType(
-                    MIMETYPE_TEXT_HTML
-                ) == true
-                )
+                MIMETYPE_TEXT_HTML
+            ) == true
+            )
     ) {
         val item = clipboard.primaryClip!!.getItemAt(0)
         text = item.text.toString()

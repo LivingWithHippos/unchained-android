@@ -137,7 +137,6 @@ abstract class DataBindingPagingAdapter<T : Any, U>(
     }
 }
 
-
 /**
  * A [PagingDataAdapter] subclass.
  * Allows for a generic list of items with data binding and Paging support and an optional listener.

@@ -25,7 +25,6 @@ import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import androidx.viewpager2.widget.ViewPager2
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.utilities.extensionIconMap
 import com.google.android.material.progressindicator.BaseProgressIndicator

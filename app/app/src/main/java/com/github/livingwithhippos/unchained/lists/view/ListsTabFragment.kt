@@ -774,7 +774,6 @@ class TorrentsListFragment : UnchainedFragment(), TorrentListListener {
                         Timber.e("Correct tab was not ready within 2 seconds after clicking torrent $item")
                 } else
                     viewModel.unrestrictTorrent(item)
-
             } else if (beforeSelectionStatusList.contains(item.status)) {
                 // go to torrent processing since it is still loading
                 val action =
