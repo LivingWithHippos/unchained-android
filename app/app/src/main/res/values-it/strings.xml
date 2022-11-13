@@ -442,4 +442,5 @@
     <string name="selected_size">Dimensione selezione</string>
     <string name="selecting_picked_files">Selezionando %1$d files, attendere…</string>
     <string name="download_manager_system">Download manager di default</string>
+    <string name="single_torrent_file_available">Unico file disponibile selezionato automaticamente</string>
 </resources>

@@ -70,37 +70,43 @@ class TorrentProcessingFragment : UnchainedFragment() {
                     // todo: add a loop so this is repeated if it fails, instead of wasting the fragment
                 }
                 is TorrentEvent.TorrentInfo -> {
-                    // torrent loaded
-                    if (activityViewModel.getCurrentTorrentCachePick()?.first != content.item.id) {
-                        // clear up old cache
-                        activityViewModel.clearCurrentTorrentCachePick()
-                    }
-                    // check if we are already beyond file selection
-                    if (!beforeSelectionStatusList.contains(content.item.status)) {
-                        val action =
-                            TorrentProcessingFragmentDirections.actionTorrentProcessingFragmentToTorrentDetailsDest(
-                                item = content.item
-                            )
-                        findNavController().navigate(action)
+                    if (content.item.files?.size == 1 && "waiting_files_selection".equals(content.item.status, ignoreCase = true)) {
+                        context?.showToast(R.string.single_torrent_file_available)
+                        viewModel.triggerTorrentEvent(TorrentEvent.DownloadAll)
+                        viewModel.startSelectionLoop()
                     } else {
-                        binding.tvStatus.text = getString(R.string.checking_cache)
-                        val hash = content.item.hash.lowercase()
-                        //  Check if the activity already has the torrent cache, otherwise check it again
-                        val currentCache: CachedTorrent? =
-                            activityViewModel.cacheLiveData.value?.cachedTorrents?.firstOrNull { tor ->
-                                tor.btih.equals(
-                                    hash,
-                                    ignoreCase = true
+                        // torrent loaded
+                        if (activityViewModel.getCurrentTorrentCachePick()?.first != content.item.id) {
+                            // clear up old cache
+                            activityViewModel.clearCurrentTorrentCachePick()
+                        }
+                        // check if we are already beyond file selection
+                        if (!beforeSelectionStatusList.contains(content.item.status)) {
+                            val action =
+                                TorrentProcessingFragmentDirections.actionTorrentProcessingFragmentToTorrentDetailsDest(
+                                    item = content.item
                                 )
-                            }
-                        if (
-                            currentCache != null
-                        ) {
-                            // trigger cache hit without checking it
-                            viewModel.triggerCacheResult(currentCache)
+                            findNavController().navigate(action)
                         } else {
-                            // check this torrent cache again
-                            viewModel.checkTorrentCache(hash)
+                            binding.tvStatus.text = getString(R.string.checking_cache)
+                            val hash = content.item.hash.lowercase()
+                            //  Check if the activity already has the torrent cache, otherwise check it again
+                            val currentCache: CachedTorrent? =
+                                activityViewModel.cacheLiveData.value?.cachedTorrents?.firstOrNull { tor ->
+                                    tor.btih.equals(
+                                        hash,
+                                        ignoreCase = true
+                                    )
+                                }
+                            if (
+                                currentCache != null
+                            ) {
+                                // trigger cache hit without checking it
+                                viewModel.triggerCacheResult(currentCache)
+                            } else {
+                                // check this torrent cache again
+                                viewModel.checkTorrentCache(hash)
+                            }
                         }
                     }
                 }
