@@ -147,15 +147,15 @@
                 android:nextFocusDown="@id/rvFolderList"
                 />
 
-            <ImageButton
+            <Button
                 android:id="@+id/bDeleteSelected"
+                style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_marginStart="10dp"
-                android:backgroundTint="@android:color/transparent"
+                android:paddingStart="13dp"
                 android:contentDescription="@string/delete"
                 android:onClick="@{() -> listener.deleteSelectedItems()}"
-                android:src="@drawable/icon_delete"
+                app:icon="@drawable/icon_delete"
                 android:tooltipText="@string/delete_selected"
                 android:nextFocusUp="@id/cbFilterSize"
                 android:nextFocusRight="@id/bDownloadSelected"
@@ -163,15 +163,15 @@
                 android:nextFocusDown="@id/rvFolderList"
                 />
 
-            <ImageButton
+            <Button
                 android:id="@+id/bDownloadSelected"
+                style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_marginStart="10dp"
-                android:backgroundTint="@android:color/transparent"
+                android:paddingStart="13dp"
                 android:contentDescription="@string/download"
                 android:onClick="@{() -> listener.downloadSelectedItems()}"
-                android:src="@drawable/icon_download"
+                app:icon="@drawable/icon_download"
                 android:tooltipText="@string/download_selected"
                 android:nextFocusUp="@id/cbFilterSize"
                 android:nextFocusRight="@id/bShareSelected"
@@ -179,16 +179,15 @@
                 android:nextFocusDown="@id/rvFolderList"
                 />
 
-
-            <ImageButton
+            <Button
                 android:id="@+id/bShareSelected"
+                style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_marginStart="10dp"
-                android:backgroundTint="@android:color/transparent"
+                android:paddingStart="13dp"
                 android:contentDescription="@string/share"
                 android:onClick="@{() -> listener.shareSelectedItems()}"
-                android:src="@drawable/icon_share"
+                app:icon="@drawable/icon_share"
                 android:tooltipText="@string/share_selected"
                 android:nextFocusUp="@id/cbFilterSize"
                 android:nextFocusRight="@id/rvFolderList"

@@ -27,20 +27,21 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_chainStyle="packed" />
 
-        <ImageButton
+        <Button
             android:id="@+id/deleteDevice"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
+            style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_gravity="center"
             android:layout_marginStart="10dp"
-            android:background="@drawable/icon_delete"
-            android:backgroundTint="?android:textColorSecondary"
+            app:icon="@drawable/icon_delete"
+            app:iconSize="35dp"
             android:contentDescription="@string/delete"
             app:layout_constraintBottom_toBottomOf="@id/tvTitle"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/tvTitle"
             app:layout_constraintTop_toTopOf="@id/tvTitle"
-            app:layout_constraintVertical_bias="1.0" />
+            />
 
         <TextView
             android:id="@+id/tvRules"

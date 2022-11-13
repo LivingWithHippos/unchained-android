@@ -52,12 +52,14 @@
         </com.google.android.material.textfield.TextInputLayout>
 
 
-        <ImageButton
+        <Button
             android:id="@+id/bPasteLink"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
+            style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_marginStart="10dp"
-            android:background="@drawable/icon_paste"
+            app:icon="@drawable/icon_paste"
+            app:iconSize="35dp"
             android:contentDescription="@string/paste"
             app:layout_constraintBottom_toBottomOf="@id/tfLink"
             app:layout_constraintEnd_toEndOf="parent"
@@ -91,13 +93,14 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <ImageButton
+        <Button
             android:id="@+id/bPastePassword"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
+            style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_marginStart="10dp"
-            android:layout_marginBottom="5dp"
-            android:background="@drawable/icon_paste"
+            app:icon="@drawable/icon_paste"
+            app:iconSize="35dp"
             android:contentDescription="@string/paste"
             app:layout_constraintBottom_toBottomOf="@id/tiPassword"
             app:layout_constraintEnd_toEndOf="parent"
