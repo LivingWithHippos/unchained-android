@@ -40,6 +40,7 @@ import com.github.livingwithhippos.unchained.utilities.extension.copyToClipboard
 import com.github.livingwithhippos.unchained.utilities.extension.delayedScrolling
 import com.github.livingwithhippos.unchained.utilities.extension.getThemedDrawable
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -311,7 +312,7 @@ class FolderListFragment : UnchainedFragment(), DownloadListListener {
         // load list sorting status
         val sortTag = viewModel.getListSortPreference()
         val sortDrawableID = getSortingDrawable(sortTag)
-        binding.sortingButton.background = requireContext().getThemedDrawable(sortDrawableID)
+        binding.sortingButton.setImageDrawable(requireContext().getThemedDrawable(sortDrawableID))
 
         binding.sortingButton.setOnClickListener {
             showSortingPopup(it, R.menu.folder_sorting_popup, adapter, binding.rvFolderList)
@@ -346,8 +347,11 @@ class FolderListFragment : UnchainedFragment(), DownloadListListener {
         popup.menuInflater.inflate(menuRes, popup.menu)
 
         popup.setOnMenuItemClickListener { menuItem: MenuItem ->
-            // todo: check if the theme is needed, in case use getSortDrawable and remove from the menu xml the icons
-            v.background = menuItem.icon
+            if (v is FloatingActionButton) {
+                v.setImageDrawable(menuItem.icon)
+            } else {
+                v.background = menuItem.icon
+            }
             // save the new sorting preference
             when (menuItem.itemId) {
                 R.id.sortByDefault -> {
