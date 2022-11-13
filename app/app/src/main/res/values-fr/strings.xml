@@ -206,7 +206,7 @@
     <string name="torrent_in_progress">Téléchargement du torrent en cours</string>
     <plurals name="seeders_format">
         <item quantity="one">%d seeder</item>
-        <item quantity="many">%d seeders</item>
+        <item quantity="other">%d seeders</item>
     </plurals>
     <string name="seeders_string_format">seeder/s: %s</string>
     <string name="torrent_in_progress_format">%1$d%% - %2$.2f Mo/s</string>
@@ -263,19 +263,19 @@
     <string name="no_links">Aucun lien</string>
     <plurals name="magnet_format">
         <item quantity="one">%d magnet</item>
-        <item quantity="many">%d magnets</item>
+        <item quantity="other">%d magnets</item>
     </plurals>
     <plurals name="torrent_format">
         <item quantity="one">%d torrent</item>
-        <item quantity="many">%d torrents</item>
+        <item quantity="other">%d torrents</item>
     </plurals>
     <plurals name="links_format">
         <item quantity="one">%d lien</item>
-        <item quantity="many">%d liens</item>
+        <item quantity="other">%d liens</item>
     </plurals>
     <plurals name="plugins_version_old_format">
         <item quantity="one">%d plugin a besoin d\'une mise à jour. Vérifier si une nouvelle version est disponible</item>
-        <item quantity="many">%d plugins ont besoin d\'une mise à jour. Vérifier une nouvelle version</item>
+        <item quantity="other">%d plugins ont besoin d\'une mise à jour. Vérifier une nouvelle version</item>
     </plurals>
     <string name="n_plugins_installed">%d plugins installés. Redémarrez l\'application pour les utiliser.</string>
     <string name="size_format">taille: %s</string>
@@ -439,6 +439,6 @@
     <string name="reselect_torrent_files">Re-sélectionner les fichiers</string>
     <string name="selected_files">Fichiers sélectionnés</string>
     <string name="selected_size">Taille sélectionnée</string>
-    <string name="selecting_picked_files">Sélection de %1$d fichiers, veuillez patienter…</string>
-    <string name="download_manager_system">Gestionnaire de téléchargement par défaut</string>
+    <string name="selecting_picked_files">Sélection de %1$d fichiers, veuillez patienter...</string>
+    <string name="download_manager_system">Default download manager</string>
 </resources>
