@@ -441,4 +441,5 @@
     <string name="selected_files">Files selezionati</string>
     <string name="selected_size">Dimensione selezione</string>
     <string name="selecting_picked_files">Selezionando %1$d files, attendere…</string>
+    <string name="download_manager_system">Default download manager</string>
 </resources>
