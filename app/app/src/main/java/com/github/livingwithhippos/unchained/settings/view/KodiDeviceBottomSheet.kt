@@ -1,5 +1,6 @@
 package com.github.livingwithhippos.unchained.settings.view
 
+import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,19 +9,21 @@ import android.widget.Button
 import android.widget.CheckBox
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.model.KodiDevice
 import com.github.livingwithhippos.unchained.settings.viewmodel.KodiManagementViewModel
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.dialog.MaterialDialogs
 import com.google.android.material.textfield.TextInputEditText
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class KodiDeviceBottomSheet() : BottomSheetDialogFragment() {
+class KodiDeviceBottomSheet() : DialogFragment() {
 
     private val viewModel: KodiManagementViewModel by viewModels()
 
@@ -29,90 +32,91 @@ class KodiDeviceBottomSheet() : BottomSheetDialogFragment() {
     constructor(device: KodiDevice) : this() {
         currentDevice = device
     }
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        return activity?.let {
+            val builder = MaterialAlertDialogBuilder(it)
+            // Get the layout inflater
+            val inflater = requireActivity().layoutInflater;
+            val view: View = inflater.inflate(R.layout.modal_kodi_device, null, false)
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        val view: View = inflater.inflate(R.layout.modal_kodi_device, container, false)
-
-        currentDevice?.let {
-            viewModel.setCurrentDevice(it)
-        }
-
-        val device = viewModel.getCurrentDevice()
-        if (device != null) {
-            loadDeviceInfo(view, device)
-            view.findViewById<TextView>(R.id.tvTitle).setText(R.string.update_device)
-        }
-
-        view.findViewById<Button>(R.id.bTest).setOnClickListener {
-            val address =
-                view.findViewById<TextInputEditText>(R.id.tiAddress).text.toString().trim()
-            val port = view.findViewById<TextInputEditText>(R.id.tiPort).text.toString().trim()
-                .toIntOrNull()
-            if (address.isEmpty() || port == null) {
-                context?.showToast(R.string.kodi_credentials_incomplete)
-                return@setOnClickListener
-            } else {
-                val password =
-                    view.findViewById<TextInputEditText>(R.id.tiPassword).text.toString().trim()
-                val username =
-                    view.findViewById<TextInputEditText>(R.id.tiUsername).text.toString().trim()
-                viewModel.testKodi(address, port, username, password)
+            currentDevice?.let {
+                viewModel.setCurrentDevice(it)
             }
-        }
 
-        view.findViewById<ImageButton>(R.id.deleteDevice).setOnClickListener {
+            val device = viewModel.getCurrentDevice()
             if (device != null) {
-                lifecycleScope.launch {
-                    viewModel.deleteDevice(device)
-                    context?.showToast(R.string.device_deleted)
+                loadDeviceInfo(view, device)
+                view.findViewById<TextView>(R.id.tvTitle).setText(R.string.update_device)
+            }
+
+            view.findViewById<Button>(R.id.bTest).setOnClickListener {
+                val address =
+                    view.findViewById<TextInputEditText>(R.id.tiAddress).text.toString().trim()
+                val port = view.findViewById<TextInputEditText>(R.id.tiPort).text.toString().trim()
+                    .toIntOrNull()
+                if (address.isEmpty() || port == null) {
+                    context?.showToast(R.string.kodi_credentials_incomplete)
+                    return@setOnClickListener
+                } else {
+                    val password =
+                        view.findViewById<TextInputEditText>(R.id.tiPassword).text.toString().trim()
+                    val username =
+                        view.findViewById<TextInputEditText>(R.id.tiUsername).text.toString().trim()
+                    viewModel.testKodi(address, port, username, password)
+                }
+            }
+
+            view.findViewById<ImageButton>(R.id.deleteDevice).setOnClickListener {
+                if (device != null) {
+                    lifecycleScope.launch {
+                        viewModel.deleteDevice(device)
+                        context?.showToast(R.string.device_deleted)
+                        dismiss()
+                    }
+                } else {
                     dismiss()
                 }
-            } else {
-                dismiss()
             }
-        }
 
-        view.findViewById<Button>(R.id.bSave).setOnClickListener {
-            val name = view.findViewById<TextInputEditText>(R.id.tiName).text.toString().trim()
-            val address =
-                view.findViewById<TextInputEditText>(R.id.tiAddress).text.toString().trim()
-            val port = view.findViewById<TextInputEditText>(R.id.tiPort).text.toString().trim()
-                .toIntOrNull()
+            view.findViewById<Button>(R.id.bSave).setOnClickListener {
+                val name = view.findViewById<TextInputEditText>(R.id.tiName).text.toString().trim()
+                val address =
+                    view.findViewById<TextInputEditText>(R.id.tiAddress).text.toString().trim()
+                val port = view.findViewById<TextInputEditText>(R.id.tiPort).text.toString().trim()
+                    .toIntOrNull()
 
-            if (name.isEmpty() || address.isEmpty() || port == null) {
-                context?.showToast(R.string.kodi_credentials_incomplete)
-                return@setOnClickListener
-            } else {
-                val password =
-                    view.findViewById<TextInputEditText>(R.id.tiPassword).text.toString().trim()
-                val username =
-                    view.findViewById<TextInputEditText>(R.id.tiUsername).text.toString().trim()
-                val isDefault = view.findViewById<CheckBox>(R.id.cbDefault).isChecked
-                // todo: manage same device name being overwritten
-                if (device != null) {
-                    viewModel.updateDevice(
-                        KodiDevice(
-                            name, address, port, username, password, isDefault
-                        ),
-                        device.name
-                    )
+                if (name.isEmpty() || address.isEmpty() || port == null) {
+                    context?.showToast(R.string.kodi_credentials_incomplete)
+                    return@setOnClickListener
                 } else {
-                    viewModel.insertDevice(
-                        KodiDevice(
-                            name, address, port, username, password, isDefault
+                    val password =
+                        view.findViewById<TextInputEditText>(R.id.tiPassword).text.toString().trim()
+                    val username =
+                        view.findViewById<TextInputEditText>(R.id.tiUsername).text.toString().trim()
+                    val isDefault = view.findViewById<CheckBox>(R.id.cbDefault).isChecked
+                    // todo: manage same device name being overwritten
+                    if (device != null) {
+                        viewModel.updateDevice(
+                            KodiDevice(
+                                name, address, port, username, password, isDefault
+                            ),
+                            device.name
                         )
-                    )
+                    } else {
+                        viewModel.insertDevice(
+                            KodiDevice(
+                                name, address, port, username, password, isDefault
+                            )
+                        )
+                    }
+                    context?.showToast(R.string.device_added)
+                    dismiss()
                 }
-                context?.showToast(R.string.device_added)
-                dismiss()
             }
-        }
 
-        return view
+            builder.setView(view)
+            builder.create()
+        } ?: throw IllegalStateException("Activity cannot be null")
     }
 
     private fun loadDeviceInfo(view: View, device: KodiDevice) {
