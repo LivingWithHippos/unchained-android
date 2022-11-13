@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import com.github.livingwithhippos.unchained.data.local.AssetsManager
 import com.github.livingwithhippos.unchained.plugins.model.Plugin
+import com.github.livingwithhippos.unchained.search.model.RemotePlugin
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import kotlinx.coroutines.Dispatchers
@@ -17,10 +18,63 @@ class PluginRepository @Inject constructor(
     private val assetsManager: AssetsManager
 ) {
 
+    // todo: remove all context and use new function assetsManager.getAssetFileInputStream(fileName)
+
     // todo: inject
     private val pluginAdapter: JsonAdapter<Plugin> = Moshi.Builder()
         .build()
         .adapter(Plugin::class.java)
+
+
+    suspend fun getPluginsNew(): Pair<List<Plugin>, Int> =
+        withContext(Dispatchers.IO) {
+
+            /**
+             * get local .json and .unchained files from the search_plugin folder in the assets folder
+             */
+            val jsonFiles = assetsManager.searchFiles(TYPE_JSON, PLUGIN_FOLDER)
+            val unchainedFiles = assetsManager.searchFiles(TYPE_UNCHAINED, PLUGIN_FOLDER)
+            val plugins = mutableListOf<Plugin>()
+
+            var errors = 0
+
+            for (json in jsonFiles) {
+
+                val plugin: Plugin? = getPluginFromPathNew(json)
+
+                if (plugin != null)
+                    plugins.add(plugin)
+                else
+                    errors++
+            }
+
+            for (json in unchainedFiles) {
+
+                val plugin: Plugin? = getPluginFromPathNew(json)
+
+                if (plugin != null)
+                    plugins.add(plugin)
+            }
+
+            /**
+             * get installed .unchained search plugins
+             */
+            assetsManager.getFilesList()?.filter {
+                it.endsWith(TYPE_UNCHAINED, ignoreCase = true)
+            }?.forEach {
+                assetsManager.getFileInputStream(it)?.bufferedReader()?.use { reader ->
+                    try {
+                        val plugin = pluginAdapter.fromJson(reader.readText())
+                        if (plugin != null)
+                            plugins.add(plugin)
+                    } catch (ex: Exception) {
+                        Timber.e("Error reading file in path $it, exception ${ex.message}")
+                    }
+                }
+            }
+
+            Pair(plugins, errors)
+        }
 
     suspend fun getPlugins(context: Context): Pair<List<Plugin>, Int> =
         withContext(Dispatchers.IO) {
@@ -85,6 +139,19 @@ class PluginRepository @Inject constructor(
     private fun getPluginFromPath(context: Context, json: String): Plugin? {
         return try {
             val pluginJSON = context.assets.open(json)
+                .bufferedReader()
+                .use { it.readText() }
+
+            pluginAdapter.fromJson(pluginJSON)
+        } catch (ex: Exception) {
+            Timber.e("Error reading file in path $json, exception ${ex.message}")
+            null
+        }
+    }
+
+    private fun getPluginFromPathNew(json: String): Plugin? {
+        return try {
+            val pluginJSON = assetsManager.getAssetFileInputStream(json)
                 .bufferedReader()
                 .use { it.readText() }
 

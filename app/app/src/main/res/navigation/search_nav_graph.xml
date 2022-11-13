@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_search_dest_to_searchItemFragment"
             app:destination="@id/searchItemFragment" />
+        <action
+            android:id="@+id/action_search_dest_to_pluginsFragment"
+            app:destination="@id/pluginsFragment" />
     </fragment>
     <fragment
         android:id="@+id/searchItemFragment"
@@ -23,4 +26,10 @@
             android:name="item"
             app:argType="com.github.livingwithhippos.unchained.plugins.model.ScrapedItem" />
     </fragment>
+    <fragment
+        android:id="@+id/pluginsFragment"
+        android:name="com.github.livingwithhippos.unchained.search.view.PluginsFragment"
+        android:label="@string/search_plugins"
+        tools:layout="@layout/fragment_plugins"
+        />
 </navigation>

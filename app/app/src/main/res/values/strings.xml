@@ -660,4 +660,9 @@
     <string name="selecting_picked_files">Selecting %1$d files, please wait…</string>
     <string name="download_manager_system">Default download manager</string>
     <string name="single_torrent_file_available">Only available file automatically selected</string>
+    <string name="update_plugins">Update plugins</string>
+    <string name="reload">Reload</string>
+    <string name="update">Update</string>
+    <string name="new_word">New</string>
+    <string name="not_compatible">Not compatible</string>
 </resources>

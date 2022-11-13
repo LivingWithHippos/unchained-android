@@ -442,4 +442,9 @@
     <string name="selecting_picked_files">Seleccionando %1$d archivos, por favor espere…</string>
     <string name="download_manager_system">Gestor de descargas predeterminado</string>
     <string name="single_torrent_file_available">Sólo se selecciona automáticamente el archivo disponible</string>
+    <string name="update_plugins">Actualizar los plugins</string>
+    <string name="reload">Recarga</string>
+    <string name="update">Actualización</string>
+    <string name="new_word">Nuevo</string>
+    <string name="not_compatible">No es compatible</string>
 </resources>
