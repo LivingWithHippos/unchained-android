@@ -98,9 +98,7 @@
             android:layout_gravity="bottom|end"
             android:layout_marginEnd="15dp"
             android:layout_marginBottom="15dp"
-            android:clickable="true"
             android:contentDescription="@string/download"
-            android:focusable="true"
             app:srcCompat="@drawable/icon_download" />
 
     </FrameLayout>

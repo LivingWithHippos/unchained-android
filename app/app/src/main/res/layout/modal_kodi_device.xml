@@ -56,7 +56,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
-        android:focusable="true"
         android:hint="@string/name_required"
         android:importantForAutofill="no"
         app:endIconMode="clear_text"
