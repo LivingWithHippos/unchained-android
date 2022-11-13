@@ -42,6 +42,7 @@ import com.github.livingwithhippos.unchained.utilities.extension.getThemedDrawab
 import com.github.livingwithhippos.unchained.utilities.extension.hideKeyboard
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -226,8 +227,11 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
         popup.menuInflater.inflate(menuRes, popup.menu)
 
         popup.setOnMenuItemClickListener { menuItem: MenuItem ->
-            // todo: check if the theme is needed, in case use getSortDrawable and remove from the menu xml the icons
-            v.background = menuItem.icon
+            if (v is FloatingActionButton) {
+                v.setImageDrawable(menuItem.icon)
+            } else {
+                v.background = menuItem.icon
+            }
             // save the new sorting preference
             when (menuItem.itemId) {
                 R.id.sortByDefault -> {
