@@ -1,8 +1,13 @@
-files:
-  - source: /app/app/src/**/res/values/strings*.xml
-    translation: /%original_path%-%two_letters_code%/%original_file_name%
-    translate_attributes: 0
-  - source: /metadata/en-US/*.txt
-    ignore:
-      - title.txt
-    translation: /fastlane/metadata/android/%locale%/%original_file_name%
+"files" : [
+  {
+    "source": "/app/app/src/**/res/values/strings*.xml",
+    "translation" : "/%original_path%-%two_letters_code%/%original_file_name%",
+  },
+  {
+    "source": "/fastlane/metadata/android/en-US/*.txt",
+    "ignore": [
+      "title.txt"
+    ]
+    "translation" : "/fastlane/metadata/android/%locale%/%original_file_name%",
+  },
+]
