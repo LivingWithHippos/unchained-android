@@ -658,4 +658,5 @@
     <string name="selected_files">Selected files</string>
     <string name="selected_size">Selected size</string>
     <string name="selecting_picked_files">Selecting %1$d files, please wait…</string>
+    <string name="download_manager_system">Default download manager</string>
 </resources>

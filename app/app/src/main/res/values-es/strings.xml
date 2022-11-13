@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="loading_auth_link">Cargando Autenticación…</string>
+    <string name="please_visit">Por favor visite </string>
+    <string name="link">Enlace</string>
     <string name="using_code">Usando el código</string>
     <string name="copy_code">Copiar código</string>
+    <string name="code_copied">Código copiado al portapapeles</string>
     <string name="or_visit">O visite directamente</string>
     <string name="waiting_user_auth">Esperando autorización del usuario</string>
     <string name="obtained_user_auth">Autorización del usuario obtenida!</string>
     <string name="waiting_secret">Esperando clave secreta</string>
+    <string name="waiting_token">Esperando confirmación del TOKEN</string>
     <string name="obtained_token">Token obtenido</string>
     <string name="waiting_link">Cargando enlace de autorización</string>
     <string name="link_loaded">Enlace de autorización cargado</string>
@@ -14,13 +19,16 @@
     <string name="premium_points_format">Puntos de fidelidad: %1$d/1000</string>
     <string name="premium_days_format">Días restantes: %1$d</string>
     <string name="user">Usuario</string>
+    <string name="new_download">Nueva descarga</string>
     <string name="remote_traffic">Tráfico remoto</string>
     <string name="password_optional">Contraseña [Opcional]</string>
     <string name="yes">Sí</string>
     <string name="no">No</string>
     <string name="unrestrict">no restringir</string>
+    <string name="invalid_url">URL inválido</string>
     <string name="loading">Cargando</string>
     <string name="copy">Copiar</string>
+    <string name="open_link">Abrir Enlace</string>
     <string name="copy_link">Copiar enlace</string>
     <string name="link_copied">Enlace copiado</string>
     <string name="links_copied">Enlaces copiados</string>
@@ -30,6 +38,7 @@
     <string name="file_size_format_kb">%1$.2f KB</string>
     <string name="file_size_format_mb">%1$.2f MB</string>
     <string name="file_size_format_gb">%1$.2f GB</string>
+    <string name="selected_file_size_format">%1$d MB / %2$d MB seleccionado</string>
     <string name="size_error">Error al obtener el tamaño del archivo</string>
     <string name="torrent_status_format">Estado: %1$s</string>
     <string name="speed_format_b">%1$d b/s</string>
@@ -39,24 +48,14 @@
     <string name="load_streams">Cargar streams</string>
     <string name="quality">Calidad</string>
     <string name="links">Enlaces</string>
+    <string name="add_private_token_message">También puedes utilizar la clave privada de la API desde https://real-debrid.com/apitoken, que le permitirá utilizar todas las funciones, como el streaming.</string>
     <string name="add_private_token">Añadir clave privada</string>
     <string name="save">Guardar</string>
     <string name="private_token">Token privado</string>
+    <string name="invalid_token">Por favor verifique su token</string>
     <string name="download_details">Detalles de la descarga</string>
     <string name="authenticate">Autenticar</string>
     <string name="upload_torrent">Subir Torrent</string>
-    <string name="download_manager_system">Gestor de descargas predeterminado</string>
-    <string name="loading_auth_link">Cargando Autenticación…</string>
-    <string name="please_visit">"Por favor visite "</string>
-    <string name="link">Enlace</string>
-    <string name="code_copied">Código copiado al portapapeles</string>
-    <string name="waiting_token">Esperando confirmación del TOKEN</string>
-    <string name="new_download">Nueva descarga</string>
-    <string name="invalid_url">URL inválido</string>
-    <string name="open_link">Abrir Enlace</string>
-    <string name="selected_file_size_format">%1$d MB / %2$d MB seleccionado</string>
-    <string name="add_private_token_message">También puedes utilizar la clave privada de la API desde https://real-debrid.com/apitoken, que le permitirá utilizar todas las funciones, como el streaming.</string>
-    <string name="invalid_token">Por favor verifique su token</string>
     <string name="error_loading_torrent">No hay ningún Torrent cargado</string>
     <string name="link_or_magnet">Enlace o Magnet</string>
     <string name="status">Estado</string>
@@ -79,6 +78,8 @@
     <string name="paste">Pegar</string>
     <string name="streamable">Streamable</string>
     <string name="open_stream">Abrir stream</string>
+    <string name="upload_torrent_description">Sube un archivo .Torrent desde tu memoria interna</string>
+    <string name="upload_file_description">Sube un archivo .Torrent o un RSDF, CCF, CCF3 o un contenedor DLC desde tu teléfono</string>
     <string name="details">Detalles</string>
     <string name="file_id_format">ID : %1$s</string>
     <string name="file_type_format">Tipo: %1$s</string>
@@ -94,20 +95,24 @@
     <string name="unknown_method">Método desconocido</string>
     <string name="method_not_allowed">Método no permitido</string>
     <string name="slow_down">Desacelerar</string>
+    <string name="resource_unreachable">Recurso no alcanzable</string>
     <string name="resource_not_found">Recurso no encontrado</string>
     <string name="bad_token">Token erroneo</string>
     <string name="permission_denied">Permiso denegado</string>
     <string name="tfa_needed">Autenticación de dos factores requerida</string>
     <string name="tfa_pending">Autenticación de dos factores pendiente</string>
+    <string name="invalid_login">Login invalido</string>
     <string name="invalid_password">Contraseña invalida</string>
     <string name="account_locked">Cuenta bloqueada</string>
     <string name="account_not_activated">Cuenta no activada</string>
     <string name="unsupported_hoster">Host no soportado</string>
+    <string name="hoster_in_maintenance">Host en mantenimiento</string>
     <string name="hoster_limit_reached">Límite del host alcanzado</string>
     <string name="hoster_temporarily_unavailable">Host temporalmente no disponible</string>
     <string name="hoster_not_available_for_free_users">Host no disponible para usuarios gratuitos</string>
     <string name="too_many_active_downloads">Demasiadas descargas activas</string>
     <string name="ip_Address_not_allowed">Dirección IP no permitida</string>
+    <string name="traffic_exhausted">Tráfico agotado</string>
     <string name="file_unavailable">Archivo no disponible</string>
     <string name="service_unavailable">Servicio no disponible</string>
     <string name="upload_too_big">Subida muy grande</string>
@@ -115,7 +120,7 @@
     <string name="file_not_allowed">Archivo no permitido</string>
     <string name="torrent_too_big">Torrent demasiado grande</string>
     <string name="torrent_file_invalid">Archivo Torrent invalido</string>
-    <string name="upload_torrent_description">Sube un archivo .Torrent desde tu memoria interna</string>
+    <string name="action_already_done">Acción ya hecha</string>
     <string name="image_resolution_error">Error de resolución de la imagen</string>
     <string name="torrent_already_active">Torrent ya está activo</string>
     <string name="logout">Cierre de sesión</string>
@@ -133,9 +138,7 @@
     <string name="terms_title">Condiciones de uso</string>
     <string name="privacy_policy_title">Política de privacidad</string>
     <string name="close">Cerrar</string>
-    <string name="credits_text">
-        <![CDATA[
-            <body>
+    <string name="credits_text"><![CDATA[            <body>
                 <p>
                     Varios proyectos, recursos y personas han contribuido a la creación de esta aplicación. Un agradecimiento a:
                     <br>
@@ -146,8 +149,7 @@
                     </ul>
                 </p>
             </body>
-        ]]>
-    </string>
+        ]]></string>
     <string name="premium_needed">Se requiere una suscripción Premium</string>
     <string name="downloading_torrent">Preparando el torrent, por favor espere…</string>
     <string name="please_insert_url">Por favor, inserte un Magnet o un enlace</string>
@@ -192,7 +194,7 @@
     <string name="app_not_installed">La aplicación no está instalada. Compruebe su configuración.</string>
     <string name="limitations">Error: tu teléfono está limitando la actividad en segundo plano.</string>
     <string name="open_link_format">Abrir el enlace %1$s</string>
-    <string name="copy_link_format">"Copiar enlace %1$s "</string>
+    <string name="copy_link_format">Copiar enlace %1$s </string>
     <string name="open_with_format">Abrir %1$s con Kodi</string>
     <string name="loading_host_link">Cargando el enlace de alojamiento</string>
     <string name="title_debugging">Debug</string>
@@ -208,6 +210,7 @@
     </plurals>
     <string name="seeders_string_format">seeder/s: %s</string>
     <string name="torrent_in_progress_format">%1$d%% - %2$.2f MB/s</string>
+    <string name="download_in_progress_format">Descargando - %1$d%%</string>
     <string name="download_complete">Descarga completa</string>
     <string name="unknown_status">Estado desconocido</string>
     <string name="downloading_torrent_format">Descargando %1$d torrents</string>
@@ -234,8 +237,8 @@
     <string name="folder">Carpeta</string>
     <string name="files_list">Lista de archivos</string>
     <string name="error_loading_folder">Algunos enlaces no se han podido cargar</string>
-    <string name="search_files">Buscar archivos</string>
     <string name="plugin">Plugin</string>
+    <string name="search_files">Buscar archivos</string>
     <string name="magnet">Magnet</string>
     <string name="error_loading_file">Error al cargar el archivo</string>
     <string name="category">Categoría</string>
@@ -254,9 +257,9 @@
     <string name="delete_plugins">Eliminar los plugins externos</string>
     <string name="delete_plugins_summary">Eliminar todos los plugins instalados por el usuario</string>
     <string name="plugin_removed">%1$d plugin/s eliminados</string>
+    <string name="plugin_install_error_newer">El plugin ya está instalado con una versión más reciente</string>
     <string name="plugin_install_installed">Plugin instalado</string>
     <string name="plugin_install_not_installed">Plugin no instalado</string>
-    <string name="plugin_install_error_newer">El plugin ya está instalado con una versión más reciente</string>
     <string name="no_links">No hay enlaces</string>
     <plurals name="magnet_format">
         <item quantity="one">%d magnet</item>
@@ -274,18 +277,21 @@
         <item quantity="one">1 plugin needs an update. Check for a new version</item>
         <item quantity="other">%d plugins need an update. Check for a new version</item>
     </plurals>
+    <string name="n_plugins_installed">%d plugins instalados. Reinicie la aplicación para utilizarlos.</string>
     <string name="size_format">tamaño: %s</string>
     <string name="leechers_string_format">leecher/s: %s</string>
     <string name="delete_all">Borrar todo</string>
     <string name="delete_all_downloads_message">¿Estás seguro de que quieres borrar todas tus descargas? Esta acción no se puede deshacer.</string>
     <string name="delete_all_torrents_message">¿Estás seguro de que quieres borrar todos tus torrents? Esta acción no se puede deshacer.</string>
-    <string name="downloads_removed">Descargas eliminadas</string>
     <string name="torrents_removed">Torrentes eliminados</string>
     <string name="removing_torrents">Eliminación de torrentes…</string>
+    <string name="downloads_removed">Descargas eliminadas</string>
     <string name="removing_downloads">Eliminación de descargas…</string>
     <string name="version">Versión</string>
     <string name="download_started">Se ha iniciado la descarga, comprueba la barra de notificaciones</string>
     <string name="download_not_started">Error durante la inicialización de la descarga</string>
+    <string name="download_not_started_format">Error al inicializar la descarga de %s</string>
+    <string name="multiple_downloads_enqueued_format">%1$d de %2$d descargas en cola correctamente</string>
     <string name="needs_download_permission">Unchained necesita el permiso de almacenamiento para descargar archivos directamente</string>
     <string name="test_connection">Probar la conexión</string>
     <string name="kodi_credentials_incomplete">Al menos la IP y el puerto son necesarios para Kodi</string>
@@ -297,37 +303,30 @@
     <string name="kodi_connection_error">Error de conexión de Kodi</string>
     <string name="port_range_error">El puerto debe estar entre 1 y 65535</string>
     <string name="kodi_configure_credentials">Por favor, configure Kodi en los ajustes de la aplicación</string>
-    <string name="enable_kodi_control">Pulse aquí para ver las instrucciones sobre cómo configurar Kodi para el control remoto (normalmente se activa en sistema->servicios->control). Después de eso, complete los campos requeridos a continuación</string>
-    <string name="only_if_auth">Requerido sólo si la autenticación está habilitada en Kodi</string>
     <string name="kodi_remote_control">Instrucciones del mando a distancia de Kodi</string>
+    <string name="enable_kodi_control">Pulse aquí para ver las instrucciones sobre cómo configurar Kodi para el control remoto (normalmente se activa en sistema-&gt;servicios-&gt;control). Después de eso, complete los campos requeridos a continuación</string>
+    <string name="only_if_auth">Requerido sólo si la autenticación está habilitada en Kodi</string>
     <string name="rd_status">Estatus de Real-Debrid</string>
     <string name="show_kodi">Mostrar el botón Kodi</string>
-    <string name="filter_type">Sólo archivos multimedia</string>
     <string name="only_big_files">Sólo archivos grandes</string>
+    <string name="filter_type">Sólo archivos multimedia</string>
     <string name="sort">Ordenar</string>
     <string name="file_size_filter">Filtro para el tamaño de los archivos</string>
     <string name="file_size_filter_description">Tamaño mínimo en MB para la opción \"Sólo archivos grandes\" en la pantalla de carpetas</string>
     <string name="container">Contenedor</string>
     <string name="error_parsing_container">Error al analizar el contenedor</string>
-    <string name="upload_file_description">Sube un archivo .Torrent o un RSDF, CCF, CCF3 o un contenedor DLC desde tu teléfono</string>
-    <string name="resource_unreachable">Recurso no alcanzable</string>
-    <string name="invalid_login">Login invalido</string>
-    <string name="hoster_in_maintenance">Host en mantenimiento</string>
-    <string name="traffic_exhausted">Tráfico agotado</string>
-    <string name="action_already_done">Acción ya hecha</string>
     <string name="loading_container_file">Cargando archivo contenedor…</string>
     <string name="no_network_connection">No hay conexión a la red</string>
-    <string name="download_not_started_format">Error al inicializar la descarga de %s</string>
     <string name="download_all">Descargar todos</string>
     <string name="sending_crash_report">Unchained acaba de estrellarse.\nEnviando el informe del accidente…</string>
     <string name="upload">Subir a</string>
     <string name="unsupported_file">Archivo no admitido</string>
     <string name="hoster">Hoster</string>
-    <string name="generic_login_error">Se ha producido un error durante el inicio de sesión. Puedes comprobar tu conexión, intentarlo de nuevo dentro de un rato o iniciar sesión desde real-debrid.com para obtener más información.</string>
     <string name="retry_login">Reintentar</string>
+    <string name="generic_login_error">Se ha producido un error durante el inicio de sesión. Puedes comprobar tu conexión, intentarlo de nuevo dentro de un rato o iniciar sesión desde real-debrid.com para obtener más información.</string>
     <string name="retry_later">Reintentar más tarde</string>
-    <string name="get_plugins">Obtenga más plugins</string>
     <string name="content_description_plugins_link">Enlace a la página de plugins</string>
+    <string name="get_plugins">Obtenga más plugins</string>
     <string name="reset_login">Restablecer inicio de sesión</string>
     <string name="sort_by_default">Predeterminado</string>
     <string name="sort_by_az">Alfabético</string>
@@ -338,9 +337,9 @@
     <string name="copy_all">Copiar todo</string>
     <string name="enable_doh">Habilitar DNS sobre HTTPS</string>
     <string name="uses_google_dns">Utiliza Google DNS</string>
+    <string name="doh_description_message">El DNS sobre HTTPS es un protocolo utilizado para aumentar la privacidad y evitar la escucha de las solicitudes de DNS. Si el sitio web de un plugin está bloqueado a nivel de DNS, habilitar DOH puede ayudar a evitarlo. El único proveedor de DOH disponible por el momento es Google. Esta opción está desactivada por defecto y se puede cambiar en cualquier momento desde el menú de configuración. Esta función puede provocar fallos.</string>
     <string name="disable">Desactivar</string>
     <string name="enable">Activar</string>
-    <string name="doh_description_message">El DNS sobre HTTPS es un protocolo utilizado para aumentar la privacidad y evitar la escucha de las solicitudes de DNS. Si el sitio web de un plugin está bloqueado a nivel de DNS, habilitar DOH puede ayudar a evitarlo. El único proveedor de DOH disponible por el momento es Google. Esta opción está desactivada por defecto y se puede cambiar en cualquier momento desde el menú de configuración. Esta función puede provocar fallos.</string>
     <string name="download_selected">Descarga seleccionada</string>
     <string name="delete_selected">Borrar lo seleccionado</string>
     <string name="share_selected">Compartir seleccionado</string>
@@ -382,17 +381,16 @@
     <string name="show_load_stream_button">Mostrar el botón de carga de la transmisión</string>
     <string name="show_stream_browser_button">Botón de mostrar la transmisión en el navegador</string>
     <string name="install_plugins_pack">Instalar el paquete de plugins</string>
-    <string name="n_plugins_installed">%d plugins instalados. Reinicie la aplicación para utilizarlos.</string>
     <string name="install_plugins_pack_summary">Utilice el botón del menú de la pantalla de búsqueda para instalar todos los plugins a la vez</string>
     <string name="custom_media_player">Reproductor multimedia personalizado</string>
     <string name="custom_media_player_summary">Utiliza un paquete reproductor multimedia personalizado como \"org.videolan.vlc\". Puede soportar la compartición directa de archivos multimedia. Recuerda elegir \"custom player\" como preferencia de reproductor multimedia por defecto</string>
     <string name="invalid_package">Paquete no válido</string>
     <string name="delete_all_downloads">Borrar todas las descargas</string>
     <string name="delete_all_torrents">Eliminar todos los torrentes</string>
-    <string name="playstore_update_description">Se ha encontrado una nueva versión de la aplicación en la Play Store</string>
-    <string name="new_update">Actualización disponible</string>
-    <string name="github_update_description">Se ha encontrado una nueva versión de la aplicación en Github</string>
     <string name="fdroid_update_description">Se ha encontrado una nueva versión de la aplicación en F-Droid</string>
+    <string name="playstore_update_description">Se ha encontrado una nueva versión de la aplicación en la Play Store</string>
+    <string name="github_update_description">Se ha encontrado una nueva versión de la aplicación en Github</string>
+    <string name="new_update">Actualización disponible</string>
     <string name="cached">En caché</string>
     <string name="seeders">Seeders</string>
     <string name="no_supported_player_found">No se ha encontrado ninguna aplicación que soporte este medio. Prueba con el botón de compartir.</string>
@@ -400,22 +398,17 @@
     <string name="directory_picked">Directorio guardado. Inicie de nuevo la descarga.</string>
     <string name="download_permission_granted">Permisos concedidos, Inicie la descarga de nuevo.</string>
     <string name="stop">Stop</string>
-    <string name="download_in_progress_format">Descargando - %1$d%%</string>
     <string name="stopped">Detenido</string>
     <string name="paused">Pausado</string>
     <string name="restart">Reiniciar</string>
     <string name="download_channel_description">Canal de notificación del estado de las descargas</string>
     <string name="download_queued">Descarga en cola, comprueba tus notificaciones</string>
     <string name="download_queued_error">Error en la cola de descarga, compruebe los permisos</string>
-    <string name="selecting_all_files">Seleccionando todos los archivos, por favor espere…</string>
-    <string name="selecting_picked_cache">Seleccionando %1$d archivos de la caché %2$d, por favor espere…</string>
-    <string name="selecting_picked_files">Seleccionando %1$d archivos, por favor espere…</string>
     <string name="pick_download_folder">Elija la carpeta de descarga</string>
     <string name="pick_download_folder_description">Elija una carpeta para las descargas. No está disponible para el gestor de descargas del sistema por defecto.</string>
     <string name="download_manager">Gestor de descargas</string>
     <string name="download_manager_description">Elija cómo descargar los archivos</string>
     <string name="download_link_expired">Problemas de red o el enlace de descarga ha caducado. Genere otro.</string>
-    <string name="multiple_downloads_enqueued_format">%1$d de %2$d descargas en cola correctamente</string>
     <string name="custom_downloader_options">Opciones de descarga personalizadas</string>
     <string name="custom_downloader_options_description">Estas opciones no están disponibles para el gestor de descargas por defecto</string>
     <string name="unmetered_downloads">Descargas en conexiones sin medidor</string>
@@ -429,13 +422,15 @@
     <string name="checking_cache">Comprobación de la caché</string>
     <string name="ready">Listo</string>
     <string name="cache">Caché</string>
+    <string name="download_selected_cache">Descarga de la caché seleccionada</string>
     <string name="select_files">Seleccionar archivos</string>
     <string name="cache_format">Caché #%1$d</string>
     <string name="total_files">Total de archivos</string>
     <string name="total_size">Tamaño total</string>
     <string name="loading_torrent_info">Carga de archivos torrent y caché. Utiliza el botón de descargar todo en la parte inferior si quieres descargar todo el contenido.</string>
     <string name="cache_missing">No se ha encontrado ningún caché</string>
-    <string name="download_selected_cache">Descarga de la caché seleccionada</string>
+    <string name="selecting_all_files">Seleccionando todos los archivos, por favor espere…</string>
+    <string name="selecting_picked_cache">Seleccionando %1$d archivos de la caché %2$d, por favor espere…</string>
     <string name="download_selected_files">Descargar los archivos seleccionados</string>
     <string name="pass_to_download">Pase a descargas</string>
     <string name="notifications_permission_denied">Permiso denegado. La aplicación puede tener problemas para mostrar las notificaciones.</string>
@@ -444,4 +439,6 @@
     <string name="reselect_torrent_files">Volver a seleccionar los archivos</string>
     <string name="selected_files">Archivos seleccionados</string>
     <string name="selected_size">Tamaño seleccionado</string>
+    <string name="selecting_picked_files">Seleccionando %1$d archivos, por favor espere…</string>
+    <string name="download_manager_system">Gestor de descargas predeterminado</string>
 </resources>

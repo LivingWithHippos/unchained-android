@@ -29,7 +29,6 @@
     <string name="tropical_sunset" translatable="false">Tropical Sunset</string>
     <string name="player_mpv" translatable="false">MPV</string>
     <string name="player_web_video_cast" translatable="false">Web Video Cast</string>
-    <string name="download_manager_system">Default download manager</string>
     <string name="download_manager_okhttp" translatable="false">OkHttp</string>
 
     <string-array name="main_screen" >
