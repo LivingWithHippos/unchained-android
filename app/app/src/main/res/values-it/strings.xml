@@ -123,7 +123,7 @@
     <string name="action_already_done">Azione già eseguita</string>
     <string name="image_resolution_error">Errore risoluzione immagine</string>
     <string name="torrent_already_active">Torrent già attivo</string>
-    <string name="logout">Logout</string>
+    <string name="logout">Disconnetti</string>
     <string name="account_page">Pagina  account</string>
     <string name="login_type_open">Autorizzato senza codice privato. Alcune funzionalità come il transcoding non saranno disponibili.</string>
     <string name="login_type_private">Autorizzato con codice privato. Tutte le funzionalità sono disponibili.</string>
@@ -210,7 +210,7 @@
     </plurals>
     <string name="seeders_string_format">seeder/s: %s</string>
     <string name="torrent_in_progress_format">%1$d%% - %2$.2f MB/s</string>
-    <string name="download_in_progress_format">Downloading - %1$d%%</string>
+    <string name="download_in_progress_format">Scaricando - %1$d%%</string>
     <string name="download_complete">Download completato</string>
     <string name="unknown_status">Stato sconosciuto</string>
     <string name="downloading_torrent_format">%1$d torrent in download</string>
@@ -441,5 +441,5 @@
     <string name="selected_files">Files selezionati</string>
     <string name="selected_size">Dimensione selezione</string>
     <string name="selecting_picked_files">Selezionando %1$d files, attendere…</string>
-    <string name="download_manager_system">Default download manager</string>
+    <string name="download_manager_system">Download manager predefinito</string>
 </resources>
