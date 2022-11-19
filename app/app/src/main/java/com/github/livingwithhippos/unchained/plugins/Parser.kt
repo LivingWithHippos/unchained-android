@@ -766,6 +766,10 @@ class Parser(
          * 2.2: added entry class to direct parsing mode (required)
          */
         const val PLUGIN_ENGINE_VERSION: Float = 2.2f
+
+        fun isPluginSupported(engineVersion: Double): Boolean {
+            return engineVersion.toInt() == PLUGIN_ENGINE_VERSION.toInt() && PLUGIN_ENGINE_VERSION >= engineVersion
+        }
     }
 }
 

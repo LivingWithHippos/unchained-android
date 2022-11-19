@@ -1,6 +1,7 @@
 package com.github.livingwithhippos.unchained.utilities
 
 import com.github.livingwithhippos.unchained.R
+import com.github.livingwithhippos.unchained.plugins.Parser
 
 const val OPEN_SOURCE_CLIENT_ID = "X245A4XAIBGVM"
 

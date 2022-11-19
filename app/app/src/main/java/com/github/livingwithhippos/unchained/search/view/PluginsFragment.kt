@@ -8,8 +8,11 @@ import androidx.fragment.app.viewModels
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.databinding.FragmentPluginsBinding
+import com.github.livingwithhippos.unchained.plugins.Parser
 import com.github.livingwithhippos.unchained.search.model.PluginItemAdapter
 import com.github.livingwithhippos.unchained.search.model.PluginItemListener
+import com.github.livingwithhippos.unchained.search.model.PluginStatus
+import com.github.livingwithhippos.unchained.search.model.PluginVersion
 import com.github.livingwithhippos.unchained.search.model.RemotePlugin
 import com.github.livingwithhippos.unchained.search.viewmodel.PluginEvent
 import com.github.livingwithhippos.unchained.search.viewmodel.PluginsViewModel
@@ -31,6 +34,34 @@ class PluginsFragment: UnchainedFragment(), PluginItemListener {
 
         val adapter = PluginItemAdapter(this)
         binding.rvPluginsList.adapter = adapter
+
+        binding.bDownloadAll.setOnClickListener {
+            binding.bDownloadAll.isEnabled = false
+            binding.bReload.isEnabled = false
+            val lastValue = viewModel.pluginsLiveData.value?.peekContent()
+            when (lastValue) {
+                is PluginEvent.CheckedPlugins -> {
+                    viewModel.downloadAllPlugins(lastValue.plugins)
+                }
+                is PluginEvent.Repository -> {
+
+                }
+                is PluginEvent.RepositoryError -> {
+                    // try retrieving again?
+                }
+                null -> {
+                    // try retrieving again?
+                }
+            }
+        }
+
+        binding.bReload.setOnClickListener {
+            binding.bDownloadAll.isEnabled = false
+            binding.bReload.isEnabled = false
+            context?.showToast(R.string.checking_plugins)
+            adapter.submitList(emptyList())
+            viewModel.checkRepository()
+        }
 
         viewModel.pluginsLiveData.observe(viewLifecycleOwner) {
             when (val event = it.getContentIfNotHandled()) {
