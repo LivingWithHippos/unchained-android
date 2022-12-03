@@ -76,11 +76,6 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
 
                 override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                     return when (menuItem.itemId) {
-                        R.id.plugins_management -> {
-                            val action = SearchFragmentDirections.actionSearchDestToPluginsFragment()
-                            findNavController().navigate(action)
-                            true
-                        }
                         R.id.plugins_pack -> {
                             context?.showToast(R.string.downloading)
                             lifecycleScope.launch {

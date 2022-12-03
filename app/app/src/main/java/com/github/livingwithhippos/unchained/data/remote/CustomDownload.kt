@@ -1,6 +1,6 @@
 package com.github.livingwithhippos.unchained.data.remote
 
-import com.github.livingwithhippos.unchained.search.model.RemotePlugin
+import com.github.livingwithhippos.unchained.repository.model.JsonPluginRepository
 import com.github.livingwithhippos.unchained.utilities.PLUGINS_PACK_LINK
 import com.github.livingwithhippos.unchained.utilities.PLUGINS_REPOSITORY_LINK
 import okhttp3.ResponseBody
@@ -26,5 +26,5 @@ interface CustomDownload {
     @GET
     suspend fun getPluginsRepository(
         @Url repositoryUrl: String = PLUGINS_REPOSITORY_LINK
-    ): Response<List<RemotePlugin>>
+    ): Response<JsonPluginRepository>
 }

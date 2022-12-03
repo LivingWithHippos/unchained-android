@@ -4,7 +4,6 @@ import android.content.Context
 import android.net.Uri
 import com.github.livingwithhippos.unchained.data.local.AssetsManager
 import com.github.livingwithhippos.unchained.plugins.model.Plugin
-import com.github.livingwithhippos.unchained.search.model.RemotePlugin
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import kotlinx.coroutines.Dispatchers

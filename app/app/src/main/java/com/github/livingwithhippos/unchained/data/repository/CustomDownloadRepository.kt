@@ -3,7 +3,7 @@ package com.github.livingwithhippos.unchained.data.repository
 import com.github.livingwithhippos.unchained.data.local.ProtoStore
 import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkException
 import com.github.livingwithhippos.unchained.data.remote.CustomDownloadHelper
-import com.github.livingwithhippos.unchained.search.model.RemotePlugin
+import com.github.livingwithhippos.unchained.repository.model.JsonPluginRepository
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.PLUGINS_REPOSITORY_LINK
 import com.github.livingwithhippos.unchained.utilities.extension.isWebUrl
@@ -85,14 +85,13 @@ class CustomDownloadRepository @Inject constructor(
             } else send(DownloadResult.Failure)
         } else send(DownloadResult.WrongURL)
     }
-    suspend fun downloadPluginRepository(): EitherResult<UnchainedNetworkException, List<RemotePlugin>> {
 
-        val response = eitherApiResult(
-            call = { customDownloadHelper.getPluginsRepository(PLUGINS_REPOSITORY_LINK) },
+    suspend fun downloadPluginRepository(link: String): EitherResult<UnchainedNetworkException, JsonPluginRepository> {
+
+        return eitherApiResult(
+            call = { customDownloadHelper.getPluginsRepository(link) },
             errorMessage = "Error Fetching plugins repository"
         )
-
-        return response
     }
 }
 

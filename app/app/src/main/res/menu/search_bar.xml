@@ -3,13 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/plugins_management"
-        android:contentDescription="@string/update_plugins"
-        android:icon="@drawable/icon_download"
-        android:title="@string/update_plugins"
-        app:showAsAction="never" />
-
-    <item
         android:id="@+id/plugins_pack"
         android:contentDescription="@string/install_plugins_pack"
         android:icon="@drawable/icon_archive"
