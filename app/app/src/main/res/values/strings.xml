@@ -666,4 +666,5 @@
     <string name="new_word">New</string>
     <string name="not_compatible">Not compatible</string>
     <string name="checking_plugins">Checking plugins...</string>
+    <string name="manage_plugins">Manage plugins</string>
 </resources>

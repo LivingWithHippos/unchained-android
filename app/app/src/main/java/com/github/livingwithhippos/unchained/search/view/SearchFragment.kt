@@ -21,6 +21,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.github.livingwithhippos.unchained.R
+import com.github.livingwithhippos.unchained.authentication.view.AuthenticationFragmentDirections
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.data.model.cache.InstantAvailability
 import com.github.livingwithhippos.unchained.data.repository.DownloadResult
@@ -42,6 +43,7 @@ import com.github.livingwithhippos.unchained.utilities.extension.getThemedDrawab
 import com.github.livingwithhippos.unchained.utilities.extension.hideKeyboard
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -137,6 +139,12 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
             ArrayAdapter(requireContext(), R.layout.plugin_list_item, arrayListOf<String>())
         (binding.pluginPicker.editText as? AutoCompleteTextView)?.setAdapter(pluginAdapter)
 
+        binding.bManagePlugins.setOnClickListener {
+            val action =
+                SearchFragmentDirections.actionSearchDestToRepositoryFragment()
+            findNavController().navigate(action)
+        }
+
         viewModel.pluginLiveData.observe(viewLifecycleOwner) { parsedPlugins ->
 
             val plugins = parsedPlugins.first
@@ -189,9 +197,9 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
         // load the sorting preference if set
         val sortTag = viewModel.getListSortPreference()
         val sortDrawableID = getSortingDrawable(sortTag)
-        binding.sortingButton.background = requireContext().getThemedDrawable(sortDrawableID)
+        (binding.bSorting as MaterialButton).icon = requireContext().getThemedDrawable(sortDrawableID)
 
-        binding.sortingButton.setOnClickListener {
+        binding.bSorting.setOnClickListener {
             showSortingPopup(it, R.menu.sorting_popup, adapter, binding.rvSearchList)
         }
 
@@ -232,10 +240,9 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
         popup.menuInflater.inflate(menuRes, popup.menu)
 
         popup.setOnMenuItemClickListener { menuItem: MenuItem ->
-            if (v is FloatingActionButton) {
-                v.setImageDrawable(menuItem.icon)
-            } else {
-                v.background = menuItem.icon
+            if (v is MaterialButton) {
+                v.icon = menuItem.icon
+                v.text = menuItem.title
             }
             // save the new sorting preference
             when (menuItem.itemId) {
@@ -294,26 +301,25 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
                 }
                 is ParserResult.SearchStarted -> {
                     searchAdapter.submitList(emptyList())
-                    binding.sortingButton.visibility = View.INVISIBLE
-                    binding.loadingCircle.visibility = View.VISIBLE
+                    binding.loadingCircle.isIndeterminate = true
                 }
                 is ParserResult.SearchFinished -> {
                     activityViewModel.checkTorrentCache(searchAdapter.currentList)
-                    binding.loadingCircle.visibility = View.INVISIBLE
-                    binding.sortingButton.visibility = View.VISIBLE
+                    binding.loadingCircle.isIndeterminate = false
+                    binding.loadingCircle.progress = 100
                     // update the data with cached results
                 }
                 is ParserResult.EmptyInnerLinks -> {
                     context?.showToast(R.string.no_links)
                     searchAdapter.submitList(emptyList())
-                    binding.loadingCircle.visibility = View.INVISIBLE
-                    binding.sortingButton.visibility = View.VISIBLE
+                    binding.loadingCircle.isIndeterminate = false
+                    binding.loadingCircle.progress = 100
                 }
                 else -> {
                     Timber.d("Unexpected result: $result")
                     searchAdapter.submitList(emptyList())
-                    binding.loadingCircle.visibility = View.INVISIBLE
-                    binding.sortingButton.visibility = View.VISIBLE
+                    binding.loadingCircle.isIndeterminate = false
+                    binding.loadingCircle.progress = 100
                 }
             }
         }

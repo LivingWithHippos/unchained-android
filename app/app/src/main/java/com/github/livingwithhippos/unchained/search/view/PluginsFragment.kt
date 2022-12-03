@@ -8,11 +8,8 @@ import androidx.fragment.app.viewModels
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.databinding.FragmentPluginsBinding
-import com.github.livingwithhippos.unchained.plugins.Parser
 import com.github.livingwithhippos.unchained.search.model.PluginItemAdapter
 import com.github.livingwithhippos.unchained.search.model.PluginItemListener
-import com.github.livingwithhippos.unchained.search.model.PluginStatus
-import com.github.livingwithhippos.unchained.search.model.PluginVersion
 import com.github.livingwithhippos.unchained.search.model.RemotePlugin
 import com.github.livingwithhippos.unchained.search.viewmodel.PluginEvent
 import com.github.livingwithhippos.unchained.search.viewmodel.PluginsViewModel
@@ -21,7 +18,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
 @AndroidEntryPoint
-class PluginsFragment: UnchainedFragment(), PluginItemListener {
+class PluginsFragment : UnchainedFragment(), PluginItemListener {
 
     private val viewModel: PluginsViewModel by viewModels()
 
@@ -49,6 +46,7 @@ class PluginsFragment: UnchainedFragment(), PluginItemListener {
                 is PluginEvent.RepositoryError -> {
                     // try retrieving again?
                 }
+                is PluginEvent.Downloaded -> TODO()
                 null -> {
                     // try retrieving again?
                 }
@@ -74,6 +72,7 @@ class PluginsFragment: UnchainedFragment(), PluginItemListener {
                 is PluginEvent.CheckedPlugins -> {
                     adapter.submitList(event.plugins)
                 }
+                is PluginEvent.Downloaded -> TODO()
                 null -> {
 
                 }

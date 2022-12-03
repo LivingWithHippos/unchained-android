@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <import type="android.view.View" />
     </data>
 
@@ -16,6 +15,42 @@
         android:padding="20dp"
         tools:context=".search.view.SearchFragment">
 
+        <Button
+            android:id="@+id/bManagePlugins"
+            style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/reload"
+            app:icon="@drawable/icon_settings"
+            android:text="@string/manage_plugins"
+            android:nextFocusDown="@id/tfSearch"
+            android:nextFocusRight="@id/bSorting"
+            app:layout_constraintBottom_toTopOf="@+id/tfSearch"
+            app:layout_constraintEnd_toStartOf="@id/bSorting"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed" />
+
+        <Button
+            android:id="@+id/bSorting"
+            style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/reload"
+            app:icon="@drawable/icon_sort_default"
+            android:text="@string/sort_by_default"
+            android:nextFocusDown="@id/tfSearch"
+            android:nextFocusRight="@id/tfSearch"
+            app:layout_constraintStart_toEndOf="@id/bManagePlugins"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/tfSearch"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintVertical_chainStyle="packed" />
+
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tfSearch"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -26,6 +61,7 @@
             android:importantForAutofill="no"
             app:endIconDrawable="@drawable/icon_search"
             app:endIconMode="custom"
+            android:nextFocusUp="@id/bManagePlugins"
             app:layout_constraintBottom_toTopOf="@+id/pluginPicker"
             app:layout_constraintEnd_toStartOf="@id/loadingCircle"
             app:layout_constraintHorizontal_bias="0.5"
@@ -50,26 +86,15 @@
             android:layout_height="40dp"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
-            android:indeterminate="true"
-            android:visibility="invisible"
+            android:indeterminate="false"
+            android:progress="100"
+            android:focusable="false"
             app:indicatorColor="?attr/colorOnBackground"
             app:trackCornerRadius="20dp"
             app:layout_constraintBottom_toBottomOf="@id/tfSearch"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/tfSearch"
             app:layout_constraintTop_toTopOf="@id/tfSearch" />
-
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/sortingButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/sort"
-                app:srcCompat="@drawable/icon_sort_default"
-                app:layout_constraintBottom_toBottomOf="@id/loadingCircle"
-                app:layout_constraintEnd_toEndOf="@id/loadingCircle"
-                app:layout_constraintStart_toStartOf="@+id/loadingCircle"
-                app:layout_constraintTop_toTopOf="@id/loadingCircle"
-                />
 
 
         <com.google.android.material.textfield.TextInputLayout

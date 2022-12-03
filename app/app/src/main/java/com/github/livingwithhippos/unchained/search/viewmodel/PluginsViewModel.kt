@@ -112,6 +112,7 @@ class PluginsViewModel @Inject constructor(
         viewModelScope.launch {
             val pluginsFolder = File(directory, PLUGINS_PACK_FOLDER)
             customDownloadRepository.downloadToCache(link, fileName, pluginsFolder, suffix).collect {
+                /*
                 when(it) {
                     is DownloadResult.End -> {
                         val plugin = pluginRepository.readPluginFile(it.fileName)
@@ -137,12 +138,14 @@ class PluginsViewModel @Inject constructor(
 
                     }
                 }
+                 */
             }
         }
     }
 
 
     fun processPluginFile(cacheDir: File, fileName: String) {
+        /*
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 try {
@@ -159,9 +162,11 @@ class PluginsViewModel @Inject constructor(
                 }
             }
         }
+         */
     }
 
     fun downloadAllPlugins(plugins: List<RemotePlugin>) {
+        /*
         for (plugin in plugins.filter {
             it.status == PluginStatus.isNew ||
                     it.status == PluginStatus.hasUpdate
@@ -169,6 +174,7 @@ class PluginsViewModel @Inject constructor(
             val version: PluginVersion = plugin.versions.filter { Parser.isPluginSupported(it.engine) }.maxBy { it.plugin }
             viewModel.downloadPlugins(version.link, plugin.id, requireContext().cacheDir,"unchained")
         }
+         */
     }
 
 
