@@ -16,11 +16,61 @@
         android:padding="20dp"
         tools:context=".search.view.RepositoryFragment">
 
-        <!-- TODO: Update blank fragment layout -->
-        <TextView
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tfSearch"
+            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="10dp"
+            android:hint="@string/search"
+            android:importantForAutofill="no"
+            app:endIconMode="clear_text"
+            app:startIconDrawable="@drawable/icon_search"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/filterButton"
+            app:layout_constraintBottom_toTopOf="@id/rvPluginsList"
+            >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tiSearch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionDone"
+                android:singleLine="true" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/filterButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:contentDescription="@string/sort"
+            android:nextFocusRight="@id/cbFilterSize"
+            android:nextFocusDown="@id/cbFilterSize"
+            app:srcCompat="@drawable/icon_sort_default"
+            app:layout_constraintBottom_toBottomOf="@id/tfSearch"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tfSearch"
+            app:layout_constraintTop_toTopOf="@id/tfSearch" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvPluginsList"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="@string/plugin" />
+            android:layout_height="0dp"
+            android:layout_marginTop="20dp"
+            android:layout_gravity="center_horizontal"
+            android:scrollbars="vertical"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/item_plugin_repository_plugin"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tfSearch"
+            />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

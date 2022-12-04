@@ -40,6 +40,7 @@ class Parser(
     }
 
     private fun isPluginSupported(plugin: Plugin): Boolean {
+        // todo: move to public near PLUGIN_ENGINE_VERSION
         return plugin.engineVersion.toInt() == PLUGIN_ENGINE_VERSION.toInt() && PLUGIN_ENGINE_VERSION >= plugin.engineVersion
     }
 

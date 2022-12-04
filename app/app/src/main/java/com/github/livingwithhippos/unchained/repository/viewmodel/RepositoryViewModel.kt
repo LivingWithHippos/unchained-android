@@ -1,13 +1,14 @@
 package com.github.livingwithhippos.unchained.repository.viewmodel
 
-import android.net.Uri
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.livingwithhippos.unchained.data.model.PluginVersion
+import com.github.livingwithhippos.unchained.data.model.RepositoryInfo
+import com.github.livingwithhippos.unchained.data.model.RepositoryPlugin
 import com.github.livingwithhippos.unchained.data.repository.CustomDownloadRepository
 import com.github.livingwithhippos.unchained.data.repository.DatabasePluginRepository
-import com.github.livingwithhippos.unchained.repository.model.JsonPluginRepository
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.postEvent
@@ -45,8 +46,18 @@ class RepositoryViewModel @Inject constructor(
             )
         }
     }
+
+    fun retrieveDatabaseRepositories() {
+        viewModelScope.launch {
+            val repo = pluginsRepository.getFullRepositoriesData()
+            pluginsRepositoryLiveData.postEvent(
+                PluginRepositoryEvent.FullData(repo)
+            )
+        }
+    }
 }
 
 sealed class PluginRepositoryEvent {
     object Updated: PluginRepositoryEvent()
+    data class FullData(val data: Map<RepositoryInfo, Map<RepositoryPlugin, List<PluginVersion>>>) : PluginRepositoryEvent()
 }

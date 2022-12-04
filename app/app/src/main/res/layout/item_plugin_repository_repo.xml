@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="item"
+            type="com.github.livingwithhippos.unchained.repository.model.RepositoryListItem.Repository" />
+
+
+        <variable
+            name="listener"
+            type="com.github.livingwithhippos.unchained.repository.model.PluginListener" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="10dp"
+        android:onClick="@{() ->listener.onRepositoryClick(item)}"
+        android:clickable="true"
+        android:focusable="true"
+        >
+
+        <View
+            android:id="@+id/divider"
+            style="@style/Divider"
+            android:layout_width="0dp"
+            android:layout_height="2dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/ivStatus"
+             />
+
+        <ImageView
+            android:id="@+id/ivStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/repository"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/tvName"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/divider"
+            app:srcCompat="@drawable/icon_apps" />
+
+        <TextView
+            android:id="@+id/tvName"
+            style="@style/TextAppearance.UnchainedTheme.Headline7"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="10dp"
+            android:maxLines="2"
+            android:text="@{item.name, default =`Repository name really long so I can test how multiple lines are rendered`}"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/tvAuthor"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/ivStatus"
+            app:layout_constraintTop_toBottomOf="@id/divider"
+            />
+
+
+        <TextView
+            android:id="@+id/tvVersion"
+            style="@style/TextAppearance.UnchainedTheme.Overline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{item.version + ``, default=`1.02`}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/tvAuthor"
+            app:layout_constraintStart_toStartOf="@+id/tvName"
+            app:layout_constraintTop_toBottomOf="@+id/tvName" />
+
+        <TextView
+            android:id="@+id/tvAuthor"
+            style="@style/TextAppearance.UnchainedTheme.Overline"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="@{item.author, default=`LivingWithHippos`}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tvVersion"
+            app:layout_constraintTop_toBottomOf="@+id/tvName" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
