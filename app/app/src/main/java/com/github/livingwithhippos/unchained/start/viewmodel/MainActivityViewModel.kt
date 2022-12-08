@@ -692,12 +692,8 @@ class MainActivityViewModel @Inject constructor(
         externalLinkLiveData.postEvent(uri)
     }
 
-    fun setDownload(downloadID: Long) {
-        savedStateHandle.set(KEY_TORRENT_DOWNLOAD_ID, downloadID)
-    }
-
     fun setPluginDownload(downloadID: Long) {
-        savedStateHandle.set(KEY_PLUGIN_DOWNLOAD_ID, downloadID)
+        savedStateHandle[KEY_PLUGIN_DOWNLOAD_ID] = downloadID
     }
 
     fun checkTorrentDownload(downloadID: Long) {
