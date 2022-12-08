@@ -1,11 +1,12 @@
 package com.github.livingwithhippos.unchained.repository.view
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.widget.addTextChangedListener
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.data.model.PluginVersion
@@ -20,13 +21,14 @@ import com.github.livingwithhippos.unchained.repository.model.RepositoryListItem
 import com.github.livingwithhippos.unchained.repository.viewmodel.PluginRepositoryEvent
 import com.github.livingwithhippos.unchained.repository.viewmodel.RepositoryViewModel
 import com.github.livingwithhippos.unchained.utilities.EventObserver
+import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
 @AndroidEntryPoint
 class RepositoryFragment : UnchainedFragment(), PluginListener {
 
-    private val viewModel: RepositoryViewModel by viewModels()
+    private val viewModel: RepositoryViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -49,6 +51,9 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
                     is PluginRepositoryEvent.FullData -> {
                         // data loaded from db, load into UI
                         updateList(adapter, it.data)
+                    }
+                    PluginRepositoryEvent.Installed -> {
+                        context?.showToast(R.string.plugin_install_installed)
                     }
                 }
             }
@@ -133,8 +138,22 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
         return engineVersion.toInt() == Parser.PLUGIN_ENGINE_VERSION.toInt() && Parser.PLUGIN_ENGINE_VERSION >= engineVersion
     }
 
-    override fun onPluginClick(plugin: RepositoryListItem.Plugin) {
+    override fun onPluginDownloadClick(plugin: RepositoryListItem.Plugin) {
         Timber.d("Pressed plugin $plugin")
+        when (plugin.status) {
+            PluginStatus.hasUpdate -> {
+                context?.showToast(R.string.downloading)
+                viewModel.downloadPlugin(plugin.link, plugin.repository, requireContext())
+            }
+            PluginStatus.new -> {
+                context?.showToast(R.string.downloading)
+                viewModel.downloadPlugin(plugin.link, plugin.repository, requireContext())
+            }
+        }
+    }
+
+    override fun onPluginRemoveClick(plugin: RepositoryListItem.Plugin) {
+        TODO("Not yet implemented")
     }
 
     override fun onRepositoryClick(repository: RepositoryListItem.Repository) {

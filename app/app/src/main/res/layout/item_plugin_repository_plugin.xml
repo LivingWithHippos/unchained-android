@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+        <import type="android.view.View" />
 
         <variable
             name="item"
@@ -18,7 +19,6 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
         android:paddingVertical="5dp"
-        android:onClick="@{() ->listener.onPluginClick(item)}"
         android:clickable="true"
         android:focusable="true"
         >
@@ -44,10 +44,57 @@
             android:text="@{item.name, default =`Plugin name really long so I can test how multiple lines are rendered`}"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/tvStatus"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/buttonsLayout"
             app:layout_constraintStart_toEndOf="@id/ivStatus"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <com.google.android.flexbox.FlexboxLayout
+            android:id="@+id/buttonsLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            app:alignItems="flex_start"
+            app:flexWrap="wrap"
+            app:justifyContent="space_around"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tvName"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            >
+
+            <Button
+                android:id="@+id/bDownload"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                app:icon="@drawable/icon_download"
+                android:visibility="@{item.status == `new` ? View.VISIBLE : View.GONE}"
+                style="@style/Widget.MaterialComponents.Button.Icon"
+                android:onClick="@{() ->listener.onPluginDownloadClick(item)}"
+                />
+
+            <Button
+                android:id="@+id/bUpdate"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                app:icon="@drawable/icon_reload"
+                android:visibility="@{item.status == `has_update` ? View.VISIBLE : View.GONE}"
+                style="@style/Widget.MaterialComponents.Button.Icon"
+                android:onClick="@{() ->listener.onPluginDownloadClick(item)}"
+                />
+
+            <Button
+                android:id="@+id/bDelete"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                app:icon="@drawable/icon_delete"
+                android:visibility="@{item.status == `has_update` || item.status == `updated` ? View.VISIBLE : View.GONE}"
+                style="@style/Widget.MaterialComponents.Button.Icon"
+                android:onClick="@{() ->listener.onPluginRemoveClick(item)}"
+                />
+
+        </com.google.android.flexbox.FlexboxLayout>
 
         <TextView
             android:id="@+id/tvVersion"
@@ -66,10 +113,12 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
-            android:text="@{item.statusTranslation,default=`new`}"
+            android:text="@{item.statusTranslation, default=`new`}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/tvVersion"
             app:layout_constraintTop_toBottomOf="@+id/tvName" />
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
