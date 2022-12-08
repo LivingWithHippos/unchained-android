@@ -13,9 +13,7 @@ import com.github.livingwithhippos.unchained.data.repository.CustomDownloadRepos
 import com.github.livingwithhippos.unchained.data.repository.DatabasePluginRepository
 import com.github.livingwithhippos.unchained.data.repository.PluginRepository
 import com.github.livingwithhippos.unchained.plugins.model.Plugin
-import com.github.livingwithhippos.unchained.utilities.EitherResult
-import com.github.livingwithhippos.unchained.utilities.Event
-import com.github.livingwithhippos.unchained.utilities.postEvent
+import com.github.livingwithhippos.unchained.utilities.*
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -27,7 +25,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RepositoryViewModel @Inject constructor(
-    private val savedStateHandle: SavedStateHandle,
     private val pluginsRepository: DatabasePluginRepository,
     private val downloadRepository: CustomDownloadRepository,
 ) : ViewModel() {
@@ -85,8 +82,8 @@ class RepositoryViewModel @Inject constructor(
                 }
                 is EitherResult.Success -> {
                     // we use the repo hash as folder name for all the plugins from that repo
-                    val repoName = repository.hashCode().toString()
-                    val filename = result.success.name.replace(Regex("\\s+"),"")  + PluginRepository.TYPE_UNCHAINED
+                    val repoName = getRepositoryString(repository)
+                    val filename = getPluginFilename(result.success.name)
                     try {
                         val pluginFolder = context.getDir("plugins", Context.MODE_PRIVATE)
                         if (!pluginFolder.exists())

@@ -90,8 +90,7 @@ class SearchViewModel @Inject constructor(
 
     fun fetchPlugins(context: Context) {
         viewModelScope.launch {
-            val pluginsResult: Pair<List<Plugin>, Int> = pluginRepository.getPlugins(context)
-            // todo: what
+            val pluginsResult: Pair<List<Plugin>, Int> = pluginRepository.getPluginsNew(context)
             pluginLiveData.postValue(pluginsResult)
             setPlugins(pluginsResult.first)
         }
