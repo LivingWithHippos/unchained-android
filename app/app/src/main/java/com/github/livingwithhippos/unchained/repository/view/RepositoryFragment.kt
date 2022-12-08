@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
@@ -54,6 +55,11 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
         )
 
         viewModel.checkCurrentRepositories()
+
+        // observe the search bar for changes
+        binding.tiSearch.addTextChangedListener {
+            viewModel.filterList(it?.toString())
+        }
 
         return binding.root
     }

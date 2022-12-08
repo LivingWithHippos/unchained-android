@@ -71,4 +71,21 @@ class DatabasePluginRepository @Inject constructor(
         return repositoryDataDao.getAllRepositories()
     }
 
+    suspend fun getFilteredRepositoriesData(query: String): Map<RepositoryInfo, Map<RepositoryPlugin, List<PluginVersion>>> {
+        val pluginsByRepo: Map<RepositoryInfo, List<RepositoryPlugin>> = repositoryDataDao.getPlugins("%$query%")
+        val versionByPlugin: Map<RepositoryPlugin, List<PluginVersion>> = repositoryDataDao.getPluginsVersions()
+        val pluginsMap = mutableMapOf<RepositoryInfo, Map<RepositoryPlugin,List<PluginVersion>>>()
+        for (entry in pluginsByRepo) {
+            // val repo = entry.key
+            val repoPlugins = mutableMapOf<RepositoryPlugin,List<PluginVersion>>()
+            for (plugin in entry.value) {
+                val pluginVersions: List<PluginVersion>? = versionByPlugin[plugin]
+                if (pluginVersions != null)
+                    repoPlugins[plugin] = pluginVersions
+            }
+            pluginsMap[entry.key] = repoPlugins
+        }
+        return pluginsMap
+    }
+
 }

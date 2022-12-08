@@ -55,6 +55,15 @@ class RepositoryViewModel @Inject constructor(
             )
         }
     }
+
+    fun filterList(query: String?) {
+        viewModelScope.launch {
+            val repo = pluginsRepository.getFilteredRepositoriesData(query?.trim() ?: "")
+            pluginsRepositoryLiveData.postEvent(
+                PluginRepositoryEvent.FullData(repo)
+            )
+        }
+    }
 }
 
 sealed class PluginRepositoryEvent {
