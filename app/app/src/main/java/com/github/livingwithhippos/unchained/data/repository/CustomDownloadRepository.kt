@@ -3,6 +3,7 @@ package com.github.livingwithhippos.unchained.data.repository
 import com.github.livingwithhippos.unchained.data.local.ProtoStore
 import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkException
 import com.github.livingwithhippos.unchained.data.remote.CustomDownloadHelper
+import com.github.livingwithhippos.unchained.plugins.model.Plugin
 import com.github.livingwithhippos.unchained.repository.model.JsonPluginRepository
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.PLUGINS_REPOSITORY_LINK
@@ -91,6 +92,13 @@ class CustomDownloadRepository @Inject constructor(
         return eitherApiResult(
             call = { customDownloadHelper.getPluginsRepository(link) },
             errorMessage = "Error Fetching plugins repository"
+        )
+    }
+
+    suspend fun downloadPlugin(link: String): EitherResult<UnchainedNetworkException, Plugin> {
+        return eitherApiResult(
+            call = { customDownloadHelper.getPlugin(link) },
+            errorMessage = "Error fetching plugin"
         )
     }
 }
