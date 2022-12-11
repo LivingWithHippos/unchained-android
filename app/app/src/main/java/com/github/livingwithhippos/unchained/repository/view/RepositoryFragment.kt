@@ -1,6 +1,5 @@
 package com.github.livingwithhippos.unchained.repository.view
 
-import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +13,7 @@ import com.github.livingwithhippos.unchained.data.model.RepositoryInfo
 import com.github.livingwithhippos.unchained.data.model.RepositoryPlugin
 import com.github.livingwithhippos.unchained.databinding.FragmentRepositoryBinding
 import com.github.livingwithhippos.unchained.plugins.Parser
+import com.github.livingwithhippos.unchained.plugins.model.isCompatible
 import com.github.livingwithhippos.unchained.repository.model.PluginListener
 import com.github.livingwithhippos.unchained.repository.model.PluginRepositoryAdapter
 import com.github.livingwithhippos.unchained.repository.model.PluginStatus
@@ -55,6 +55,9 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
                     PluginRepositoryEvent.Installed -> {
                         context?.showToast(R.string.plugin_install_installed)
                     }
+                    PluginRepositoryEvent.NotInstalled -> {
+                        context?.showToast(R.string.plugin_install_not_installed)
+                    }
                 }
             }
         )
@@ -88,7 +91,7 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
                 var latestVersion: PluginVersion? = null
                 // pick the latest compatible version
                 for (version in plugin.value) {
-                    if (isPluginSupported(version.engine))
+                    if (isCompatible(version.engine))
                         if (latestVersion == null || version.version > latestVersion.version)
                             latestVersion = version
                 }
@@ -132,10 +135,6 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
             PluginStatus.incompatible -> getString(R.string.incompatible)
             else -> getString(R.string.unknown_status)
         }
-    }
-
-    private fun isPluginSupported(engineVersion: Double): Boolean {
-        return engineVersion.toInt() == Parser.PLUGIN_ENGINE_VERSION.toInt() && Parser.PLUGIN_ENGINE_VERSION >= engineVersion
     }
 
     override fun onPluginDownloadClick(plugin: RepositoryListItem.Plugin) {

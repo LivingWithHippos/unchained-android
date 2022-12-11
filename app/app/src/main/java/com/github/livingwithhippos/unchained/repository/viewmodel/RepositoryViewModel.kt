@@ -2,15 +2,14 @@ package com.github.livingwithhippos.unchained.repository.viewmodel
 
 import android.content.Context
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.livingwithhippos.unchained.data.model.PluginVersion
 import com.github.livingwithhippos.unchained.data.model.RepositoryInfo
 import com.github.livingwithhippos.unchained.data.model.RepositoryPlugin
-import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.data.repository.CustomDownloadRepository
 import com.github.livingwithhippos.unchained.data.repository.DatabasePluginRepository
+import com.github.livingwithhippos.unchained.data.repository.InstallResult
 import com.github.livingwithhippos.unchained.data.repository.PluginRepository
 import com.github.livingwithhippos.unchained.plugins.model.Plugin
 import com.github.livingwithhippos.unchained.utilities.*
@@ -25,7 +24,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RepositoryViewModel @Inject constructor(
-    private val pluginsRepository: DatabasePluginRepository,
+    private val databasePluginsRepository: DatabasePluginRepository,
+    private val diskPluginsRepository: PluginRepository,
     private val downloadRepository: CustomDownloadRepository,
 ) : ViewModel() {
     val pluginsRepositoryLiveData = MutableLiveData<Event<PluginRepositoryEvent>>()
@@ -36,14 +36,14 @@ class RepositoryViewModel @Inject constructor(
 
     fun checkCurrentRepositories() {
         viewModelScope.launch {
-            val repositories = pluginsRepository.getRepositoriesLink()
+            val repositories = databasePluginsRepository.getRepositoriesLink()
             for (repo in repositories) {
                 when (val info = downloadRepository.downloadPluginRepository(repo.link)) {
                     is EitherResult.Failure -> {
-                        Timber.w("Error downloading repo at ${repo.link}: ${info.failure}")
+                        Timber.e("Error downloading repo at ${repo.link}: ${info.failure}")
                     }
                     is EitherResult.Success -> {
-                        pluginsRepository.saveRepositoryInfo(
+                        databasePluginsRepository.saveRepositoryInfo(
                             repo.link,
                             info.success
                         )
@@ -58,7 +58,7 @@ class RepositoryViewModel @Inject constructor(
 
     fun retrieveDatabaseRepositories() {
         viewModelScope.launch {
-            val repo = pluginsRepository.getFullRepositoriesData()
+            val repo = databasePluginsRepository.getFullRepositoriesData()
             pluginsRepositoryLiveData.postEvent(
                 PluginRepositoryEvent.FullData(repo)
             )
@@ -67,42 +67,50 @@ class RepositoryViewModel @Inject constructor(
 
     fun filterList(query: String?) {
         viewModelScope.launch {
-            val repo = pluginsRepository.getFilteredRepositoriesData(query?.trim() ?: "")
+            val repo = databasePluginsRepository.getFilteredRepositoriesData(query?.trim() ?: "")
             pluginsRepositoryLiveData.postEvent(
                 PluginRepositoryEvent.FullData(repo)
             )
         }
     }
 
-    fun downloadPlugin(link: String, repository: String, context: Context) {
+    /**
+     * Download a plugin, expects  link that can be read as text.
+     * Links are downloaded into the internal app memory. If a repository name is provided
+     * they will be put under a directory related to that repo, otherwise they'll go into a
+     * common custom_repo folder and the url will be used to get the file name, so that a download
+     * to the same link can avoid showing up twice in the download list
+     *
+     * @param link
+     * @param repository: the link to the repository or null if it was downloaded directly
+     * @param context
+     */
+    fun downloadPlugin(link: String, repository: String?, context: Context) {
         viewModelScope.launch {
             when (val result = downloadRepository.downloadPlugin(link)) {
                 is EitherResult.Failure -> {
                     Timber.e("Error downloading plugin at $link:\n${result.failure}")
                 }
                 is EitherResult.Success -> {
-                    // we use the repo hash as folder name for all the plugins from that repo
-                    val repoName = getRepositoryString(repository)
-                    val filename = getPluginFilename(result.success.name)
-                    try {
-                        val pluginFolder = context.getDir("plugins", Context.MODE_PRIVATE)
-                        if (!pluginFolder.exists())
-                            pluginFolder.mkdirs()
+                    val saved = diskPluginsRepository.savePlugin(
+                        context,
+                        result.success,
+                        link,
+                        repository
+                    )
 
-                        val repoFolder = File(pluginFolder, repoName)
-                        if (!repoFolder.exists())
-                            repoFolder.mkdirs()
-
-                        val file = File(repoFolder, filename)
-                        // utf 8 is enough?
-                        file.writeText(jsonAdapter.toJson(result.success))
-
-                        pluginsRepositoryLiveData.postEvent(
+                    when(saved) {
+                        is InstallResult.Error -> pluginsRepositoryLiveData.postEvent(
+                            PluginRepositoryEvent.NotInstalled
+                        )
+                        InstallResult.Incompatible -> pluginsRepositoryLiveData.postEvent(
+                            PluginRepositoryEvent.NotInstalled
+                        )
+                        InstallResult.Installed -> pluginsRepositoryLiveData.postEvent(
                             PluginRepositoryEvent.Installed
                         )
-                    } catch (exception: IOException) {
-                        Timber.e("Error adding the plugin $filename: ${exception.message}")
                     }
+
                 }
             }
         }
@@ -110,7 +118,9 @@ class RepositoryViewModel @Inject constructor(
 }
 
 sealed class PluginRepositoryEvent {
-    object Updated: PluginRepositoryEvent()
-    data class FullData(val data: Map<RepositoryInfo, Map<RepositoryPlugin, List<PluginVersion>>>) : PluginRepositoryEvent()
-    object Installed: PluginRepositoryEvent()
+    object Updated : PluginRepositoryEvent()
+    data class FullData(val data: Map<RepositoryInfo, Map<RepositoryPlugin, List<PluginVersion>>>) :
+        PluginRepositoryEvent()
+    object Installed : PluginRepositoryEvent()
+    object NotInstalled : PluginRepositoryEvent()
 }

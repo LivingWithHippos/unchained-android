@@ -2,10 +2,8 @@ package com.github.livingwithhippos.unchained.data.repository
 
 import android.content.Context
 import android.net.Uri
-import com.github.livingwithhippos.unchained.data.local.AssetsManager
 import com.github.livingwithhippos.unchained.plugins.model.Plugin
-import com.github.livingwithhippos.unchained.utilities.getPluginFilename
-import com.github.livingwithhippos.unchained.utilities.getRepositoryString
+import com.github.livingwithhippos.unchained.utilities.*
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import kotlinx.coroutines.Dispatchers
@@ -15,7 +13,7 @@ import java.io.File
 import java.io.IOException
 import javax.inject.Inject
 
-class PluginRepository {
+class PluginRepository @Inject constructor() {
 
     // todo: remove all context and use new function assetsManager.getAssetFileInputStream(fileName)
 
@@ -219,7 +217,67 @@ class PluginRepository {
             null
         }
 
+    suspend fun savePlugin(context: Context, plugin: Plugin, url: String, repository: String?): InstallResult = withContext(Dispatchers.IO){
+        // we use the repo hash as folder name for all the plugins from that repo
+        val repoName = if (repository != null)
+            getRepositoryString(repository)
+        else
+            PLUGINS_COMMON_REPOSITORY_NAME
+
+        val filename = if (repository != null)
+            getPluginFilename(plugin.name)
+        else
+            getPluginFilenameFromUrl(url)
+
+        try {
+            val pluginFolder = context.getDir("plugins", Context.MODE_PRIVATE)
+            if (!pluginFolder.exists())
+                pluginFolder.mkdirs()
+
+            val repoFolder = File(pluginFolder, repoName)
+            if (!repoFolder.exists())
+                repoFolder.mkdirs()
+
+            val file = File(repoFolder, filename)
+
+            // this will overwrite the file, no deletion needed
+            // utf 8 is enough?
+            file.writeText(pluginAdapter.toJson(plugin))
+
+        } catch (exception: IOException) {
+            Timber.e("Error saving into memory the plugin $filename: ${exception.message}")
+            return@withContext InstallResult.Error(exception)
+        } catch (exception: Exception) {
+            Timber.e("Unknown error adding the plugin $filename: ${exception.message}")
+            return@withContext InstallResult.Error(exception)
+        }
+
+        return@withContext InstallResult.Installed
+    }
+
+    suspend fun savePluginFromDisk(context: Context, data: Uri): InstallResult {
+        val plugin: Plugin? = readPassedPlugin(context, data)
+        if (plugin != null) {
+            if (!plugin.isCompatible())
+                return InstallResult.Incompatible
+            val saved = savePlugin(
+                context,
+                plugin,
+                data.path.toString(),
+                null
+            )
+            return saved
+        }
+        return InstallResult.Error(IllegalArgumentException("Could not load plugin from $data"))
+    }
+
     companion object {
         const val TYPE_UNCHAINED = ".unchained"
     }
+}
+
+sealed class InstallResult {
+    object Installed: InstallResult()
+    data class Error(val exception: Exception): InstallResult()
+    object Incompatible: InstallResult()
 }

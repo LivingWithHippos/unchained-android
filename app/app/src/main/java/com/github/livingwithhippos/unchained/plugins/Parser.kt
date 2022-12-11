@@ -39,11 +39,6 @@ class Parser(
             classicClient
     }
 
-    private fun isPluginSupported(plugin: Plugin): Boolean {
-        // todo: move to public near PLUGIN_ENGINE_VERSION
-        return plugin.engineVersion.toInt() == PLUGIN_ENGINE_VERSION.toInt() && PLUGIN_ENGINE_VERSION >= plugin.engineVersion
-    }
-
     fun completeSearch(plugin: Plugin, query: String, category: String? = null, page: Int = 1) =
         flow {
             if (query.isBlank())
@@ -52,7 +47,7 @@ class Parser(
                 // todo: format queries with other unsupported web characters
                 // todo: check if this works with other plugins, otherwise add it as a json parameter. Possible alternative: %20
                 val currentQuery = query.trim().replace("\\s+".toRegex(), "+")
-                if (!isPluginSupported(plugin)) {
+                if (!plugin.isCompatible()) {
                     emit(ParserResult.PluginVersionUnsupported)
                 } else {
                     val currentCategory =
@@ -768,9 +763,6 @@ class Parser(
          */
         const val PLUGIN_ENGINE_VERSION: Float = 2.2f
 
-        fun isPluginSupported(engineVersion: Double): Boolean {
-            return engineVersion.toInt() == PLUGIN_ENGINE_VERSION.toInt() && PLUGIN_ENGINE_VERSION >= engineVersion
-        }
     }
 }
 

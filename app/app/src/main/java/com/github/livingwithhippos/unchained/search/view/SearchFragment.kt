@@ -66,64 +66,6 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
 
         setup(binding)
 
-        val menuHost: MenuHost = requireActivity()
-
-        menuHost.addMenuProvider(
-            object : MenuProvider {
-                override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                    menuInflater.inflate(R.menu.search_bar, menu)
-                }
-
-                override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                    return when (menuItem.itemId) {
-                        R.id.plugins_pack -> {
-                            context?.showToast(R.string.downloading)
-                            lifecycleScope.launch {
-                                val cacheDir = context?.cacheDir
-
-                                if (cacheDir != null) {
-                                    // clean up old files
-                                    // todo: also clear other files, at least ending with zip
-                                    File(cacheDir, PLUGINS_PACK_FOLDER).deleteRecursively()
-
-                                    activityViewModel.downloadFileToCache(
-                                        PLUGINS_PACK_LINK,
-                                        PLUGINS_PACK_NAME,
-                                        cacheDir,
-                                        ".zip"
-                                    ).observe(
-                                        viewLifecycleOwner
-                                    ) {
-                                        when (it) {
-                                            is DownloadResult.End -> {
-                                                activityViewModel.processPluginsPack(
-                                                    cacheDir,
-                                                    requireContext().filesDir,
-                                                    it.fileName
-                                                )
-                                            }
-                                            DownloadResult.Failure -> {
-                                                context?.showToast(R.string.error_loading_file)
-                                            }
-                                            is DownloadResult.Progress -> {
-                                                Timber.d("Plugins pack progress: ${it.percent}")
-                                            }
-                                            DownloadResult.WrongURL -> {
-                                                context?.showToast(R.string.error_loading_file)
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            true
-                        }
-                        else -> false
-                    }
-                }
-            },
-            viewLifecycleOwner, Lifecycle.State.RESUMED
-        )
-
         return binding.root
     }
 
@@ -417,12 +359,7 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
                 builder.apply {
                     setTitle(R.string.search_plugins)
                     setMessage(R.string.plugin_description_message)
-                    setPositiveButton(R.string.open_github) { _, _ ->
-                        viewModel.setPluginDialogNeeded(false)
-                        // User clicked OK button
-                        context.openExternalWebPage(PLUGINS_URL)
-                    }
-                    setNegativeButton(R.string.close) { _, _ ->
+                    setPositiveButton(R.string.close) { _, _ ->
                         viewModel.setPluginDialogNeeded(false)
                     }
                 }

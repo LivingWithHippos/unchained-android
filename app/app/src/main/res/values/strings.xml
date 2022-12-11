@@ -462,7 +462,7 @@
     <string name="category_tv">TV shows</string>
     <string name="category_books">Books</string>
     <string name="open_github">Open Github</string>
-    <string name="plugin_description_message">On this screen you\'ll be able to search for torrent and magnet files. Aside from the basic plugins available, you can download more from the menu on this page.</string>
+    <string name="plugin_description_message">On this screen you\'ll be able to search for torrent and magnet files. Aside from the basic plugins available, you can download more from the manage page.</string>
     <string name="search_plugins">Search Plugins</string>
     <string name="get_search_plugins">Get search plugins</string>
     <string name="delete_plugins">Delete external plugins</string>
@@ -471,6 +471,7 @@
     <string name="plugin_install_error_newer">The plugin is already installed with a newer version</string>
     <string name="plugin_install_installed">Plugin installed</string>
     <string name="plugin_install_not_installed">Plugin not installed</string>
+    <string name="plugin_install_incompatible">Plugin version not compatible</string>
     <string name="no_links">No links</string>
     <plurals name="magnet_format">
         <item quantity="one">%d magnet</item>

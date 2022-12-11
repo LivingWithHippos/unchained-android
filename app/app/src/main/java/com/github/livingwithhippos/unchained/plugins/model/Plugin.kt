@@ -1,6 +1,7 @@
 package com.github.livingwithhippos.unchained.plugins.model
 
 import android.os.Parcelable
+import com.github.livingwithhippos.unchained.plugins.Parser
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import kotlinx.parcelize.Parcelize
@@ -27,7 +28,15 @@ data class Plugin(
     val search: PluginSearch,
     @Json(name = "download")
     val download: PluginDownload
-) : Parcelable
+) : Parcelable {
+    fun isCompatible(): Boolean {
+        return engineVersion.toInt() == Parser.PLUGIN_ENGINE_VERSION.toInt() && Parser.PLUGIN_ENGINE_VERSION >= engineVersion
+    }
+}
+
+fun isCompatible(engineVersion: Double): Boolean {
+    return engineVersion.toInt() == Parser.PLUGIN_ENGINE_VERSION.toInt() && Parser.PLUGIN_ENGINE_VERSION >= engineVersion
+}
 
 @JsonClass(generateAdapter = true)
 @Parcelize

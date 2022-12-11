@@ -251,7 +251,7 @@
     <string name="category_tv">Serie TV</string>
     <string name="category_books">Libri</string>
     <string name="open_github">Apri Github</string>
-    <string name="plugin_description_message">In questa schermata potrai cercare file torrent e magnet. A parte i plugin di base disponibili, potrai installarne altri dal menu di questa pagina.</string>
+    <string name="plugin_description_message">In questa schermata potrai cercare file torrent e magnet. Oltre ai plugin di base disponibili, potrai installarne altri dal menu di gestione.</string>
     <string name="search_plugins">Plugins di ricerca</string>
     <string name="get_search_plugins">Ottieni plugins di ricerca</string>
     <string name="delete_plugins">Rimuovi plugins esterni</string>
@@ -448,4 +448,10 @@
     <string name="update">Aggiornamento</string>
     <string name="new_word">Nuovo</string>
     <string name="not_compatible">Non compatibile</string>
+    <string name="checking_plugins">Controllo plugins...</string>
+    <string name="manage_plugins">Gestione plugin</string>
+    <string name="repository">Repository</string>
+    <string name="updated">Aggiornato</string>
+    <string name="incompatible">Incompatibile</string>
+    <string name="plugin_install_incompatible">Versione plugin non compatibile</string>
 </resources>

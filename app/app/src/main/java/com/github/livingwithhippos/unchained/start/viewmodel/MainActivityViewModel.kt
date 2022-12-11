@@ -34,18 +34,9 @@ import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkExceptio
 import com.github.livingwithhippos.unchained.data.model.User
 import com.github.livingwithhippos.unchained.data.model.UserAction
 import com.github.livingwithhippos.unchained.data.model.cache.InstantAvailability
-import com.github.livingwithhippos.unchained.data.repository.AuthenticationRepository
-import com.github.livingwithhippos.unchained.data.repository.CustomDownloadRepository
-import com.github.livingwithhippos.unchained.data.repository.HostsRepository
-import com.github.livingwithhippos.unchained.data.repository.KodiDeviceRepository
-import com.github.livingwithhippos.unchained.data.repository.PluginRepository
+import com.github.livingwithhippos.unchained.data.repository.*
 import com.github.livingwithhippos.unchained.data.repository.PluginRepository.Companion.TYPE_UNCHAINED
-import com.github.livingwithhippos.unchained.data.repository.TorrentsRepository
-import com.github.livingwithhippos.unchained.data.repository.UpdateRepository
-import com.github.livingwithhippos.unchained.data.repository.UserRepository
-import com.github.livingwithhippos.unchained.data.repository.VariousApiRepository
 import com.github.livingwithhippos.unchained.lists.view.ListState
-import com.github.livingwithhippos.unchained.plugins.model.Plugin
 import com.github.livingwithhippos.unchained.plugins.model.ScrapedItem
 import com.github.livingwithhippos.unchained.search.viewmodel.SearchViewModel
 import com.github.livingwithhippos.unchained.statemachine.authentication.CurrentFSMAuthentication
@@ -692,47 +683,10 @@ class MainActivityViewModel @Inject constructor(
         externalLinkLiveData.postEvent(uri)
     }
 
-    fun setPluginDownload(downloadID: Long) {
-        savedStateHandle[KEY_PLUGIN_DOWNLOAD_ID] = downloadID
-    }
-
     fun checkTorrentDownload(downloadID: Long) {
         val torrentID = savedStateHandle.get<Long>(KEY_TORRENT_DOWNLOAD_ID)
         if (torrentID == downloadID)
             downloadedFileLiveData.postEvent(torrentID)
-    }
-
-    fun checkPluginDownload(context: Context, downloadID: Long) {
-        val pluginID = savedStateHandle.get<Long>(KEY_PLUGIN_DOWNLOAD_ID)
-        if (pluginID == downloadID) {
-
-            val uri = context.getDownloadedFileUri(pluginID)
-            // no need to recheck the extension since it was checked on download
-            if (uri?.path != null) {
-                viewModelScope.launch {
-
-                    val pluginFile = File(uri.path!!)
-
-                    var installed = false
-
-                    if (pluginFile.exists()) {
-                        pluginFile.bufferedReader().use { reader ->
-                            try {
-                                val source = reader.readText()
-                                installed = pluginRepository.addExternalPlugin(context, source)
-                            } catch (ex: Exception) {
-                                Timber.e("Error reading file in path ${uri.path}, exception ${ex.message}")
-                            }
-                        }
-                    }
-
-                    if (installed)
-                        messageLiveData.postValue(Event(MainActivityMessage.StringID(R.string.plugin_install_installed)))
-                    else
-                        messageLiveData.postValue(Event(MainActivityMessage.StringID(R.string.plugin_install_not_installed)))
-                }
-            }
-        }
     }
 
     // todo: move this stuff to a shared navigationViewModel
@@ -830,62 +784,9 @@ class MainActivityViewModel @Inject constructor(
         }
     }
 
-    fun addPlugin(context: Context, data: Uri) {
-        // check if the plugin is already installed/a newer version.
+    fun addPluginFromDisk(context: Context, data: Uri) {
         viewModelScope.launch {
-            val filename = data.path?.split("/")?.last()
-            val tempPlugin = pluginRepository.readPassedPlugin(context, data)
-            if (filename != null && tempPlugin != null) {
-                val file = File(context.filesDir, filename)
-                // check if we' re overwriting a plugin
-                if (file.exists()) {
-                    val existingPlugin: Plugin? =
-                        pluginRepository.getExternalPlugin(context, filename)
-                    // corrupted file probably, remove and write the new one
-                    if (existingPlugin == null) {
-                        file.delete()
-                        val installed = pluginRepository.addExternalPlugin(context, data)
-                        if (installed)
-                            messageLiveData.postValue(Event(MainActivityMessage.StringID(R.string.plugin_install_installed)))
-                        else
-                            messageLiveData.postValue(Event(MainActivityMessage.StringID(R.string.plugin_install_not_installed)))
-                    } else {
-                        // is it the same plugin?
-                        if (existingPlugin.name == tempPlugin.name) {
-                            // is the version newer?
-                            if (existingPlugin.version < tempPlugin.version) {
-                                file.delete()
-                                val installed = pluginRepository.addExternalPlugin(context, data)
-                                if (installed)
-                                    messageLiveData.postValue(Event(MainActivityMessage.StringID(R.string.plugin_install_installed)))
-                                else
-                                    messageLiveData.postValue(Event(MainActivityMessage.StringID(R.string.plugin_install_not_installed)))
-                            } else {
-                                // installed plugin is newer
-                                messageLiveData.postValue(Event(MainActivityMessage.StringID(R.string.plugin_install_error_newer)))
-                            }
-                        } else {
-                            // same file name for different plugins
-                            val installed = pluginRepository.addExternalPlugin(
-                                context, data,
-                                "_$filename"
-                            )
-                            if (installed)
-                                messageLiveData.postValue(Event(MainActivityMessage.StringID(R.string.plugin_install_installed)))
-                            else
-                                messageLiveData.postValue(Event(MainActivityMessage.StringID(R.string.plugin_install_not_installed)))
-                        }
-                    }
-                } else {
-                    val installed = pluginRepository.addExternalPlugin(context, data)
-                    if (installed)
-                        messageLiveData.postValue(Event(MainActivityMessage.StringID(R.string.plugin_install_installed)))
-                    else
-                        messageLiveData.postValue(Event(MainActivityMessage.StringID(R.string.plugin_install_not_installed)))
-                }
-            } else {
-                messageLiveData.postValue(Event(MainActivityMessage.StringID(R.string.plugin_install_not_installed)))
-            }
+            postPluginInstallResult(pluginRepository.savePluginFromDisk(context, data))
         }
     }
 
@@ -1119,25 +1020,6 @@ class MainActivityViewModel @Inject constructor(
         messageLiveData.postValue(Event(MainActivityMessage.InstalledPlugins(installedPlugins)))
     }
 
-    fun processPluginsPack(cacheDir: File, pluginsDir: File, fileName: String) {
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                try {
-                    val cacheFile = File(cacheDir, fileName)
-                    UnzipUtils.unzip(cacheFile, File(cacheDir, PLUGINS_PACK_FOLDER))
-                    Timber.d("Zip pack extracted")
-                    installPluginsPack(cacheDir, pluginsDir)
-                } catch (exception: IOException) {
-                    Timber.e("Plugins pack IOException error with the file: ${exception.message}")
-                } catch (exception: FileNotFoundException) {
-                    Timber.e("Plugins pack: file not found: ${exception.message}")
-                } catch (exception: Exception) {
-                    Timber.e("Plugins pack: Other error getting the file: ${exception.message}")
-                }
-            }
-        }
-    }
-
     fun clearCache(cacheDir: File) {
         cacheDir.listFiles()?.forEach {
             if (it.name != "image_cache")
@@ -1361,20 +1243,43 @@ class MainActivityViewModel @Inject constructor(
         return preferences.getBoolean(PreferenceKeys.DownloadManager.UNMETERED_ONLY_KEY, false)
     }
 
+    fun downloadPlugin(context: Context, url: String, repositoryURL: String?) {
+        viewModelScope.launch {
+            when (val result = customDownloadRepository.downloadPlugin(url)) {
+                is EitherResult.Failure -> {
+                    Timber.e("Error downloading plugin at $url:\n${result.failure}")
+                }
+                is EitherResult.Success -> {
+                    val installResult = pluginRepository.savePlugin(
+                        context,
+                        result.success,
+                        url,
+                        repositoryURL
+                    )
+                    postPluginInstallResult(installResult)
+                }
+            }
+        }
+    }
+
+    private fun postPluginInstallResult(result: InstallResult) {
+        when (result) {
+            is InstallResult.Error -> messageLiveData.postValue(Event(MainActivityMessage.StringID(R.string.plugin_install_not_installed)))
+            InstallResult.Incompatible -> messageLiveData.postValue(Event(MainActivityMessage.StringID(R.string.plugin_install_incompatible)))
+            InstallResult.Installed -> messageLiveData.postValue(Event(MainActivityMessage.StringID(R.string.plugin_install_installed)))
+        }
+    }
+
     companion object {
         const val KEY_DOWNLOAD_FOLDER = "download_folder_key"
         const val KEY_TORRENT_DOWNLOAD_ID = "torrent_download_id_key"
         const val KEY_PLUGIN_DOWNLOAD_ID = "plugin_download_id_key"
         const val KEY_LAST_BACK_PRESS = "last_back_press_key"
-        const val KEY_REFRESHING_TOKEN = "refreshing_token_key"
-        const val KEY_FSM_AUTH_STATE = "fsm_auth_state_key"
         const val KEY_LAST_UPDATE_VERSION_CHECKED = "last_update_version_checked_key"
 
         const val KEY_FOLDER_URI = "download_folder_key"
         const val KEY_DOWNLOAD_SOURCE = "download_source_key"
         const val KEY_DOWNLOAD_NAME = "download_name_key"
-
-        const val DOWNLOAD_WORK_NAME = "work_name_download"
     }
 }
 
