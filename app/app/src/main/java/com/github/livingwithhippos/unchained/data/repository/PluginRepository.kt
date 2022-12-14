@@ -3,7 +3,10 @@ package com.github.livingwithhippos.unchained.data.repository
 import android.content.Context
 import android.net.Uri
 import com.github.livingwithhippos.unchained.plugins.model.Plugin
-import com.github.livingwithhippos.unchained.utilities.*
+import com.github.livingwithhippos.unchained.utilities.PLUGINS_COMMON_REPOSITORY_NAME
+import com.github.livingwithhippos.unchained.utilities.getPluginFilename
+import com.github.livingwithhippos.unchained.utilities.getPluginFilenameFromUrl
+import com.github.livingwithhippos.unchained.utilities.getRepositoryString
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import kotlinx.coroutines.Dispatchers
@@ -26,9 +29,6 @@ class PluginRepository @Inject constructor() {
     suspend fun getPlugins(context: Context): Pair<List<Plugin>, Int> =
         withContext(Dispatchers.IO) {
 
-            /**
-             * get local .json and .unchained files from the search_plugin folder in the assets folder
-             */
             val pluginFiles = mutableListOf<File>()
             val pluginFolder = context.getDir("plugins", Context.MODE_PRIVATE)
             if (pluginFolder.exists()) {
@@ -57,6 +57,75 @@ class PluginRepository @Inject constructor() {
             }
 
             Pair(plugins, errors)
+        }
+
+    suspend fun getPluginsWithFolders(context: Context): LocalPlugins =
+        withContext(Dispatchers.IO) {
+
+            /**
+             * list of plugin files associated with the repository folder name
+             */
+            val pluginFolder = context.getDir("plugins", Context.MODE_PRIVATE)
+            val pluginRepoFileAssociation = mutableMapOf<String, List<File>>()
+            if (pluginFolder.exists()) {
+                val files = mutableListOf<File>()
+                var repoFolder = ""
+                pluginFolder.walk().forEach {
+                    if (it.isDirectory) {
+                        if (repoFolder != "") {
+                            // finished scanning a directory and passing to a new one
+                            pluginRepoFileAssociation[repoFolder] = files
+                            // todo: check if this changes the saved one
+                            files.clear()
+                        }
+                        repoFolder = it.name
+                        Timber.d("Found folder $repoFolder")
+                    } else if (it.isFile && it.name.endsWith(TYPE_UNCHAINED, ignoreCase = true)) {
+                        Timber.d("Found plugin ${it.name}")
+                        files.add(it)
+                    } else {
+                        Timber.w("Unknown file found: ${it.name}")
+                    }
+                }
+                // we don't pass through the last save in the forEach
+                if (files.isNotEmpty() && repoFolder != "") {
+                    pluginRepoFileAssociation[repoFolder] = files
+                }
+            }
+
+            if (pluginRepoFileAssociation.isEmpty()) {
+                Timber.d("No plugins found")
+                return@withContext LocalPlugins(emptyList(), 0)
+            }
+
+            var errors = 0
+
+            val pluginsData = mutableListOf<LocalPluginFolder>()
+
+            pluginRepoFileAssociation.keys.forEach { repoName ->
+                val repoList = mutableListOf<Plugin>()
+                pluginRepoFileAssociation[repoName]?.forEach { pluginFile ->
+                    try {
+                        val json = pluginFile.readText()
+                        val plugin: Plugin? = pluginAdapter.fromJson(json)
+                        if (plugin != null)
+                            repoList.add(plugin)
+                        else
+                            errors++
+                    } catch (ex: Exception) {
+                        Timber.e("Exception while parsing json plugin: $ex")
+                        errors++
+                    }
+                }
+                pluginsData.add(
+                    LocalPluginFolder(
+                        repoName,
+                        repoList
+                    )
+                )
+            }
+
+            LocalPlugins(pluginsData, errors)
         }
 
     fun removePlugin(context: Context, repository: String, plugin: String) {
@@ -217,7 +286,12 @@ class PluginRepository @Inject constructor() {
             null
         }
 
-    suspend fun savePlugin(context: Context, plugin: Plugin, url: String, repository: String?): InstallResult = withContext(Dispatchers.IO){
+    suspend fun savePlugin(
+        context: Context,
+        plugin: Plugin,
+        url: String,
+        repository: String?
+    ): InstallResult = withContext(Dispatchers.IO) {
         // we use the repo hash as folder name for all the plugins from that repo
         val repoName = if (repository != null)
             getRepositoryString(repository)
@@ -277,7 +351,17 @@ class PluginRepository @Inject constructor() {
 }
 
 sealed class InstallResult {
-    object Installed: InstallResult()
-    data class Error(val exception: Exception): InstallResult()
-    object Incompatible: InstallResult()
+    object Installed : InstallResult()
+    data class Error(val exception: Exception) : InstallResult()
+    object Incompatible : InstallResult()
 }
+
+data class LocalPlugins(
+    val pluginsData: List<LocalPluginFolder>,
+    val errors: Int
+)
+
+data class LocalPluginFolder(
+    val repository: String,
+    val plugins: List<Plugin>
+)
