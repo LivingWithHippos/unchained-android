@@ -12,7 +12,6 @@ import com.github.livingwithhippos.unchained.data.model.PluginVersion
 import com.github.livingwithhippos.unchained.data.model.RepositoryInfo
 import com.github.livingwithhippos.unchained.data.model.RepositoryPlugin
 import com.github.livingwithhippos.unchained.databinding.FragmentRepositoryBinding
-import com.github.livingwithhippos.unchained.plugins.Parser
 import com.github.livingwithhippos.unchained.plugins.model.isCompatible
 import com.github.livingwithhippos.unchained.repository.model.PluginListener
 import com.github.livingwithhippos.unchained.repository.model.PluginRepositoryAdapter
@@ -77,7 +76,7 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
         data: Map<RepositoryInfo, Map<RepositoryPlugin, List<PluginVersion>>>
     ) {
         val plugins = mutableListOf<RepositoryListItem>()
-        for (repository in data){
+        for (repository in data) {
             plugins.add(
                 RepositoryListItem.Repository(
                     link = repository.key.link,
@@ -128,7 +127,7 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
     }
 
     private fun getStatusTranslation(status: String): String {
-        return when(status) {
+        return when (status) {
             PluginStatus.updated -> getString(R.string.updated)
             PluginStatus.hasUpdate -> getString(R.string.new_update)
             PluginStatus.new -> getString(R.string.new_word)

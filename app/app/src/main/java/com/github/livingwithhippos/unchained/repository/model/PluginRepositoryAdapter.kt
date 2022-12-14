@@ -12,7 +12,7 @@ sealed class RepositoryListItem {
         val version: Double,
         val description: String,
         val author: String
-    ): RepositoryListItem()
+    ) : RepositoryListItem()
 
     data class Plugin(
         // repo link used as foreign key to differentiate plugins
@@ -23,18 +23,21 @@ sealed class RepositoryListItem {
         // see PluginStatus
         var status: String,
         var statusTranslation: String
-    ): RepositoryListItem()
+    ) : RepositoryListItem()
 }
 
 object PluginStatus {
     // installed and ready
-    const val updated="updated"
+    const val updated = "updated"
+
     // installed with update available
-    const val hasUpdate="has_update"
+    const val hasUpdate = "has_update"
+
     // new, installable
-    const val new="new"
+    const val new = "new"
+
     // new. not installable
-    const val incompatible="incompatible"
+    const val incompatible = "incompatible"
 }
 
 interface PluginListener {
@@ -43,7 +46,7 @@ interface PluginListener {
     fun onRepositoryClick(repository: RepositoryListItem.Repository)
 }
 
-class PluginRepositoryAdapter(listener: PluginListener):
+class PluginRepositoryAdapter(listener: PluginListener) :
     DataBindingAdapter<RepositoryListItem, PluginListener>(DiffCallback(), listener) {
 
     class DiffCallback : DiffUtil.ItemCallback<RepositoryListItem>() {
@@ -55,7 +58,10 @@ class PluginRepositoryAdapter(listener: PluginListener):
             if (oldItem is RepositoryListItem.Repository && newItem is RepositoryListItem.Repository) {
                 return oldItem.link.equals(newItem.link, ignoreCase = true)
             } else if (oldItem is RepositoryListItem.Plugin && newItem is RepositoryListItem.Plugin) {
-                return oldItem.repository.equals(newItem.repository, ignoreCase = true) && oldItem.link.equals(newItem.link, ignoreCase = true)
+                return oldItem.repository.equals(
+                    newItem.repository,
+                    ignoreCase = true
+                ) && oldItem.link.equals(newItem.link, ignoreCase = true)
             } else
                 return false
         }
