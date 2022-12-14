@@ -23,7 +23,7 @@ class PluginRepository @Inject constructor() {
         .adapter(Plugin::class.java)
 
 
-    suspend fun getPluginsNew(context: Context): Pair<List<Plugin>, Int> =
+    suspend fun getPlugins(context: Context): Pair<List<Plugin>, Int> =
         withContext(Dispatchers.IO) {
 
             /**
