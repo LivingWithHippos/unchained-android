@@ -29,7 +29,7 @@ data class JsonPlugin(
 @JsonClass(generateAdapter = true)
 data class JsonPluginVersion(
     @Json(name = "plugin")
-    val plugin: Double,
+    val plugin: Float,
     @Json(name = "engine")
     val engine: Double,
     @Json(name = "link")

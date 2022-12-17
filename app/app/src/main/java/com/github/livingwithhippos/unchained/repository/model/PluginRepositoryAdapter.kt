@@ -18,7 +18,7 @@ sealed class RepositoryListItem {
         // repo link used as foreign key to differentiate plugins
         val repository: String,
         val name: String,
-        val version: Double,
+        val version: Float,
         val link: String,
         // see PluginStatus
         var status: String,

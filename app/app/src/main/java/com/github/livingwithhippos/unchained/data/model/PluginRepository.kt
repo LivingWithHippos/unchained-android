@@ -73,7 +73,7 @@ data class PluginVersion(
     @ColumnInfo(name = "plugin")
     val plugin: String,
     @ColumnInfo(name = "version")
-    val version: Double,
+    val version: Float,
     @ColumnInfo(name = "engine")
     val engine: Double,
     @ColumnInfo(name = "plugin_link")
