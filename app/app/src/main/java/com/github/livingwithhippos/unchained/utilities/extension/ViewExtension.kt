@@ -334,8 +334,10 @@ fun ImageView.setDrawableByPluginStatus(status: String) {
     return when(status) {
         PluginStatus.updated -> this.setImageResource(R.drawable.icon_check)
         PluginStatus.hasUpdate -> this.setImageResource(R.drawable.icon_reload)
-        PluginStatus.new -> this.setImageResource(R.drawable.icon_new_releases)
+        PluginStatus.hasIncompatibleUpdate -> this.setImageResource(R.drawable.icon_close)
+        PluginStatus.isNew -> this.setImageResource(R.drawable.icon_new_releases)
         PluginStatus.incompatible -> this.setImageResource(R.drawable.icon_close)
+        PluginStatus.unknown -> this.setImageResource(R.drawable.icon_question_mark)
         else -> this.setImageResource(R.drawable.icon_question_mark)
     }
 }

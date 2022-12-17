@@ -129,7 +129,7 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
                     }
 
                     val pickedStatus = when {
-                        isCompatible(pickedVersion.engine) -> PluginStatus.new
+                        isCompatible(pickedVersion.engine) -> PluginStatus.isNew
                         pickedVersion.engine == 0.0 -> PluginStatus.unknown
                         else -> PluginStatus.incompatible
                     }
@@ -168,7 +168,7 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
                         }
 
                         val pickedStatus = when {
-                            isCompatible(pickedVersion.engine) -> PluginStatus.new
+                            isCompatible(pickedVersion.engine) -> PluginStatus.isNew
                             pickedVersion.engine == 0.0 -> PluginStatus.unknown
                             else -> PluginStatus.incompatible
                         }
@@ -183,7 +183,7 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
                                 getPluginItemFromVersion(latestVersion, PluginStatus.incompatible)
                             } else {
                                 // latest compatible version
-                                getPluginItemFromVersion(latestCompatibleVersion, PluginStatus.new)
+                                getPluginItemFromVersion(latestCompatibleVersion, PluginStatus.isNew)
                             }
                         } else {
                             // plugin installed
@@ -222,7 +222,7 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
         return when (status) {
             PluginStatus.updated -> getString(R.string.updated)
             PluginStatus.hasUpdate -> getString(R.string.new_update)
-            PluginStatus.new -> getString(R.string.new_word)
+            PluginStatus.isNew -> getString(R.string.new_word)
             PluginStatus.hasIncompatibleUpdate -> getString(R.string.incompatible_update)
             PluginStatus.incompatible -> getString(R.string.incompatible)
             PluginStatus.unknown -> getString(R.string.unknown_status)
@@ -237,7 +237,7 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
                 context?.showToast(R.string.downloading)
                 viewModel.downloadPlugin(plugin.link, plugin.repository, requireContext())
             }
-            PluginStatus.new -> {
+            PluginStatus.isNew -> {
                 context?.showToast(R.string.downloading)
                 viewModel.downloadPlugin(plugin.link, plugin.repository, requireContext())
             }

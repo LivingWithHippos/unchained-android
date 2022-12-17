@@ -40,7 +40,7 @@ object PluginStatus {
     const val unknown = "unknown"
 
     // new, installable
-    const val new = "new"
+    const val isNew = "new"
 
     // new. not installable
     const val incompatible = "incompatible"
