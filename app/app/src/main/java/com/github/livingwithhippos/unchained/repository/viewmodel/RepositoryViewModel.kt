@@ -8,7 +8,6 @@ import com.github.livingwithhippos.unchained.data.model.PluginVersion
 import com.github.livingwithhippos.unchained.data.model.RepositoryInfo
 import com.github.livingwithhippos.unchained.data.model.RepositoryPlugin
 import com.github.livingwithhippos.unchained.data.repository.*
-import com.github.livingwithhippos.unchained.plugins.model.Plugin
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.postEvent
@@ -24,9 +23,6 @@ class RepositoryViewModel @Inject constructor(
     private val downloadRepository: CustomDownloadRepository,
 ) : ViewModel() {
     val pluginsRepositoryLiveData = MutableLiveData<Event<PluginRepositoryEvent>>()
-
-    private val moshi: Moshi = Moshi.Builder().build()
-    private val jsonAdapter: JsonAdapter<Plugin> = moshi.adapter(Plugin::class.java)
 
 
     fun checkCurrentRepositories() {
@@ -45,26 +41,29 @@ class RepositoryViewModel @Inject constructor(
                     }
                 }
             }
+
             pluginsRepositoryLiveData.postEvent(
                 PluginRepositoryEvent.Updated
             )
         }
     }
 
-    fun retrieveDatabaseRepositories() {
+    fun retrieveDatabaseRepositories(context: Context) {
         viewModelScope.launch {
-            val repo = databasePluginsRepository.getFullRepositoriesData()
+            val repo: Map<RepositoryInfo, Map<RepositoryPlugin, List<PluginVersion>>> = databasePluginsRepository.getFullRepositoriesData()
+            val localPlugins: LocalPlugins = fetchInstalledPlugins(context)
             pluginsRepositoryLiveData.postEvent(
-                PluginRepositoryEvent.FullData(repo)
+                PluginRepositoryEvent.FullData(repo, localPlugins)
             )
         }
     }
 
-    fun filterList(query: String?) {
+    fun filterList(context: Context, query: String?) {
         viewModelScope.launch {
             val repo = databasePluginsRepository.getFilteredRepositoriesData(query?.trim() ?: "")
+            val localPlugins: LocalPlugins = fetchInstalledPlugins(context)
             pluginsRepositoryLiveData.postEvent(
-                PluginRepositoryEvent.FullData(repo)
+                PluginRepositoryEvent.FullData(repo, localPlugins)
             )
         }
     }
@@ -87,35 +86,29 @@ class RepositoryViewModel @Inject constructor(
                     Timber.e("Error downloading plugin at $link:\n${result.failure}")
                 }
                 is EitherResult.Success -> {
-                    val saved = diskPluginsRepository.savePlugin(
+                    val install = diskPluginsRepository.savePlugin(
                         context,
                         result.success,
                         link,
                         repository
                     )
-
-                    when(saved) {
-                        is InstallResult.Error -> pluginsRepositoryLiveData.postEvent(
-                            PluginRepositoryEvent.NotInstalled
-                        )
-                        InstallResult.Incompatible -> pluginsRepositoryLiveData.postEvent(
-                            PluginRepositoryEvent.NotInstalled
-                        )
-                        InstallResult.Installed -> pluginsRepositoryLiveData.postEvent(
-                            PluginRepositoryEvent.Installed
-                        )
-                    }
-
+                    pluginsRepositoryLiveData.postEvent(
+                        PluginRepositoryEvent.Installation(install)
+                    )
                 }
             }
         }
     }
+
+    private suspend fun fetchInstalledPlugins(context: Context) = diskPluginsRepository.getPluginsWithFolders(context)
 }
 
 sealed class PluginRepositoryEvent {
+
+    data class Installation(val result: InstallResult): PluginRepositoryEvent()
     object Updated : PluginRepositoryEvent()
-    data class FullData(val data: Map<RepositoryInfo, Map<RepositoryPlugin, List<PluginVersion>>>) :
-        PluginRepositoryEvent()
-    object Installed : PluginRepositoryEvent()
-    object NotInstalled : PluginRepositoryEvent()
+    data class FullData(
+        val dbData: Map<RepositoryInfo, Map<RepositoryPlugin, List<PluginVersion>>>,
+        val installedData: LocalPlugins
+        ) : PluginRepositoryEvent()
 }

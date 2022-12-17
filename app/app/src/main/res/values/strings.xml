@@ -666,9 +666,10 @@
     <string name="update">Update</string>
     <string name="new_word">New</string>
     <string name="not_compatible">Not compatible</string>
-    <string name="checking_plugins">Checking plugins...</string>
+    <string name="checking_plugins">Checking plugins…</string>
     <string name="manage_plugins">Manage plugins</string>
     <string name="repository">Repository</string>
     <string name="updated">Updated</string>
     <string name="incompatible">Incompatible</string>
+    <string name="incompatible_update">Incompatible update available</string>
 </resources>

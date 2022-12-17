@@ -95,12 +95,12 @@ class PluginRepository @Inject constructor() {
 
             if (pluginRepoFileAssociation.isEmpty()) {
                 Timber.d("No plugins found")
-                return@withContext LocalPlugins(emptyList(), 0)
+                return@withContext LocalPlugins(emptyMap(), 0)
             }
 
             var errors = 0
 
-            val pluginsData = mutableListOf<LocalPluginFolder>()
+            val pluginsData = mutableMapOf<String, List<Plugin>>()
 
             pluginRepoFileAssociation.keys.forEach { repoName ->
                 val repoList = mutableListOf<Plugin>()
@@ -117,12 +117,7 @@ class PluginRepository @Inject constructor() {
                         errors++
                     }
                 }
-                pluginsData.add(
-                    LocalPluginFolder(
-                        repoName,
-                        repoList
-                    )
-                )
+                pluginsData[repoName] = repoList
             }
 
             LocalPlugins(pluginsData, errors)
@@ -357,11 +352,6 @@ sealed class InstallResult {
 }
 
 data class LocalPlugins(
-    val pluginsData: List<LocalPluginFolder>,
+    val pluginsData: Map<String, List<Plugin>>,
     val errors: Int
-)
-
-data class LocalPluginFolder(
-    val repository: String,
-    val plugins: List<Plugin>
 )

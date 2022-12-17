@@ -30,8 +30,14 @@ object PluginStatus {
     // installed and ready
     const val updated = "updated"
 
-    // installed with update available
+    // installed with compatible update available
     const val hasUpdate = "has_update"
+
+    // installed with no compatible update available todo: add translation
+    const val hasIncompatibleUpdate = "has_incompatible_update"
+
+    // no versions in repository todo: add translation
+    const val unknown = "unknown"
 
     // new, installable
     const val new = "new"

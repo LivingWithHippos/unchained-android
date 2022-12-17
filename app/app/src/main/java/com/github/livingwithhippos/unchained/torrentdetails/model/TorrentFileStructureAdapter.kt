@@ -93,6 +93,7 @@ fun getFilesNodes(
     }
 
     if (flattenFolders) {
+        // what was this about
         val newRootFolder = Node(
             TorrentFileItem(
                 TYPE_FOLDER,
