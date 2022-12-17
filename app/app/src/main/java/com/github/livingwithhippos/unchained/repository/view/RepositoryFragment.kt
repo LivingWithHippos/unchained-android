@@ -54,6 +54,7 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
                     is PluginRepositoryEvent.FullData -> {
                         // data loaded from db, load into UI
                         updateList(adapter, it.dbData, it.installedData)
+                        binding.progressBar.isIndeterminate = false
                     }
                     is PluginRepositoryEvent.Installation -> {
                         when (it.result) {
@@ -64,6 +65,8 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
                                 context?.showToast(R.string.plugin_install_incompatible)
                             }
                             InstallResult.Installed -> {
+                                // todo: better way to update a single value? Or check against local only without downloading?
+                                viewModel.checkCurrentRepositories()
                                 context?.showToast(R.string.plugin_install_installed)
                             }
                         }
@@ -71,7 +74,8 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
                     is PluginRepositoryEvent.Uninstalled -> {
                         if (it.result) {
                             context?.showToast(getString(R.string.plugin_removed, 1))
-                            // todo: better way to update a single value?
+                            // todo: better way to update a single value? Or check against local only without downloading?
+                            binding.progressBar.isIndeterminate = true
                             viewModel.checkCurrentRepositories()
                         } else
                             context?.showToast(R.string.plugin_removal_failed)
@@ -80,6 +84,7 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
             }
         )
 
+        binding.progressBar.isIndeterminate = true
         viewModel.checkCurrentRepositories()
 
         // observe the search bar for changes

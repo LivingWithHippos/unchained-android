@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <import type="android.view.View" />
     </data>
 
@@ -13,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center_vertical"
-        android:padding="20dp"
+        android:padding="10dp"
         tools:context=".search.view.RepositoryFragment">
 
 
@@ -22,7 +21,6 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
             android:hint="@string/search"
             android:importantForAutofill="no"
             app:endIconMode="clear_text"
@@ -42,6 +40,18 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
+        <com.google.android.material.progressindicator.LinearProgressIndicator
+            android:id="@+id/progressBar"
+            style="@style/Widget.MaterialComponents.LinearProgressIndicator"
+            android:layout_width="match_parent"
+            android:layout_height="7dp"
+            android:indeterminate="true"
+            app:layout_constraintTop_toBottomOf="@id/tfSearch"
+            app:layout_constraintStart_toStartOf="@id/tfSearch"
+            app:layout_constraintEnd_toEndOf="@id/tfSearch"
+            app:layout_constraintBottom_toTopOf="@id/rvPluginsList"
+            />
+
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvPluginsList"
@@ -53,7 +63,7 @@
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/item_plugin_repository_plugin"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tfSearch"
+            app:layout_constraintTop_toBottomOf="@id/progressBar"
             />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
