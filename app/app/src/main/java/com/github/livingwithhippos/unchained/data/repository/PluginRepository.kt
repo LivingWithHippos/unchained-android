@@ -285,15 +285,15 @@ class PluginRepository @Inject constructor() {
         context: Context,
         plugin: Plugin,
         url: String,
-        repository: String?
+        repositoryURL: String?
     ): InstallResult = withContext(Dispatchers.IO) {
-        // we use the repo hash as folder name for all the plugins from that repo
-        val repoName = if (repository != null)
-            getRepositoryString(repository)
+        // we use the repo link hash as folder name for all the plugins from that repo
+        val repoName = if (repositoryURL != null)
+            getRepositoryString(repositoryURL)
         else
             PLUGINS_COMMON_REPOSITORY_NAME
 
-        val filename = if (repository != null)
+        val filename = if (repositoryURL != null)
             getPluginFilename(plugin.name)
         else
             getPluginFilenameFromUrl(url)

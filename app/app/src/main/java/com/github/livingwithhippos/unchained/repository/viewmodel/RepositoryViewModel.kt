@@ -76,10 +76,10 @@ class RepositoryViewModel @Inject constructor(
      * to the same link can avoid showing up twice in the download list
      *
      * @param link
-     * @param repository: the link to the repository or null if it was downloaded directly
+     * @param repositoryURL: the link to the repository or null if it was downloaded directly
      * @param context
      */
-    fun downloadPlugin(link: String, repository: String?, context: Context) {
+    fun downloadPlugin(link: String, repositoryURL: String?, context: Context) {
         viewModelScope.launch {
             when (val result = downloadRepository.downloadPlugin(link)) {
                 is EitherResult.Failure -> {
@@ -90,7 +90,7 @@ class RepositoryViewModel @Inject constructor(
                         context,
                         result.success,
                         link,
-                        repository
+                        repositoryURL
                     )
                     pluginsRepositoryLiveData.postEvent(
                         PluginRepositoryEvent.Installation(install)

@@ -107,7 +107,7 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
                     author = repository.key.author,
                 )
             )
-            val hashedRepoName = getRepositoryString(repository.key.name)
+            val hashedRepoName = getRepositoryString(repository.key.link)
             // no installed plugins from this repo
             if (installedData.pluginsData[hashedRepoName] == null) {
                 plugins.addAll(repository.value.map {plug ->
