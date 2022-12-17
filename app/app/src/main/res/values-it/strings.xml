@@ -455,4 +455,5 @@
     <string name="incompatible">Incompatibile</string>
     <string name="plugin_install_incompatible">Versione plugin non compatibile</string>
     <string name="incompatible_update">Aggiornamento incompatibile disponibile</string>
+    <string name="plugin_removal_failed">Errore durante la rimozione</string>
 </resources>

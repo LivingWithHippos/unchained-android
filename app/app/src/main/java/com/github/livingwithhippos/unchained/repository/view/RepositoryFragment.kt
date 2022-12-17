@@ -68,6 +68,14 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
                             }
                         }
                     }
+                    is PluginRepositoryEvent.Uninstalled -> {
+                        if (it.result) {
+                            context?.showToast(getString(R.string.plugin_removed, 1))
+                            // todo: better way to update a single value?
+                            viewModel.checkCurrentRepositories()
+                        } else
+                            context?.showToast(R.string.plugin_removal_failed)
+                    }
                 }
             }
         )
@@ -245,10 +253,14 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
     }
 
     override fun onPluginRemoveClick(plugin: RepositoryListItem.Plugin) {
-        TODO("Not yet implemented")
+        viewModel.uninstallPlugin(requireContext(), plugin)
     }
 
     override fun onRepositoryClick(repository: RepositoryListItem.Repository) {
+        // install all plugins
+        // remove all plugins
+        // update all plugins
+        // remove repository (this will uninstall any plugins from this repo)
         Timber.d("Pressed repository $repository")
     }
 }

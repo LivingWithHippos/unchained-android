@@ -8,6 +8,7 @@ import com.github.livingwithhippos.unchained.data.model.PluginVersion
 import com.github.livingwithhippos.unchained.data.model.RepositoryInfo
 import com.github.livingwithhippos.unchained.data.model.RepositoryPlugin
 import com.github.livingwithhippos.unchained.data.repository.*
+import com.github.livingwithhippos.unchained.repository.model.RepositoryListItem
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.postEvent
@@ -68,6 +69,15 @@ class RepositoryViewModel @Inject constructor(
         }
     }
 
+    fun uninstallPlugin(context: Context, plugin: RepositoryListItem.Plugin) {
+        viewModelScope.launch {
+            val result = diskPluginsRepository.removePlugin(context, plugin.repository, plugin.name)
+            pluginsRepositoryLiveData.postEvent(
+                PluginRepositoryEvent.Uninstalled(result)
+            )
+        }
+    }
+
     /**
      * Download a plugin, expects  link that can be read as text.
      * Links are downloaded into the internal app memory. If a repository name is provided
@@ -106,6 +116,7 @@ class RepositoryViewModel @Inject constructor(
 sealed class PluginRepositoryEvent {
 
     data class Installation(val result: InstallResult): PluginRepositoryEvent()
+    data class Uninstalled(val result: Boolean): PluginRepositoryEvent()
     object Updated : PluginRepositoryEvent()
     data class FullData(
         val dbData: Map<RepositoryInfo, Map<RepositoryPlugin, List<PluginVersion>>>,

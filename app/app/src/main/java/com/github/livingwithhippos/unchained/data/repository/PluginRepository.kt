@@ -123,31 +123,33 @@ class PluginRepository @Inject constructor() {
             LocalPlugins(pluginsData, errors)
         }
 
-    fun removePlugin(context: Context, repository: String, plugin: String) {
+    suspend fun removePlugin(context: Context, repository: String, plugin: String): Boolean = withContext(Dispatchers.IO){
         val pluginFolder = context.getDir("plugins", Context.MODE_PRIVATE)
         val repoName = getRepositoryString(repository)
         val filename = getPluginFilename(plugin)
 
         if (!pluginFolder.exists()) {
             Timber.e("Plugin folder not found")
-            return
+            return@withContext false
         }
 
         val repoFolder = File(pluginFolder, repoName)
         if (!repoFolder.exists()) {
             Timber.e("Plugin repository folder not found: $repoName")
-            return
+            return@withContext false
         }
 
         val file = File(repoFolder, filename)
         if (!file.exists()) {
             Timber.e("Plugin file not found: $filename")
-            return
+            return@withContext false
         }
         try {
             file.delete()
+            return@withContext true
         } catch (ex: IOException) {
             Timber.e("Plugin file not deleted: $ex")
+            return@withContext false
         }
     }
 
