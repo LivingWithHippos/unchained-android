@@ -3,10 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <data>
-        <import type="android.view.View" />
-    </data>
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/rootLayout"
         android:layout_width="match_parent"
@@ -14,7 +10,6 @@
         android:layout_gravity="center_vertical"
         android:padding="10dp"
         tools:context=".search.view.RepositoryFragment">
-
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tfSearch"

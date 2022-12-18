@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    tools:ignore="HardcodedText"
+    >
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="300dp"
+            >
+
+            <TextView
+                android:id="@+id/tvName"
+                style="@style/TextAppearance.UnchainedTheme.Headline6"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/repository"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="5dp"
+                android:textAlignment="center"
+                android:background="?attr/colorPrimary"
+                android:textColor="?attr/colorOnPrimary"
+                app:layout_constraintBottom_toTopOf="@id/tvAuthor"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tvAuthor"
+                style="@style/TextAppearance.UnchainedTheme.Overline"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:maxLines="1"
+                android:text="author"
+                android:textAlignment="center"
+                app:layout_constraintBottom_toTopOf="@id/tvDescription"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvName" />
+
+            <TextView
+                android:id="@+id/tvDescription"
+                style="@style/TextAppearance.UnchainedTheme.Body2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="description"
+                android:textAlignment="center"
+                app:layout_constraintBottom_toTopOf="@id/bInstallAll"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvAuthor" />
+
+            <Button
+                android:id="@+id/bInstallAll"
+                style="@style/Widget.MaterialComponents.Button.Icon"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                app:icon="@drawable/icon_download"
+                app:layout_constraintBottom_toTopOf="@id/tvInstallAllDescription"
+                app:layout_constraintEnd_toStartOf="@id/bUpdateAll"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvDescription" />
+
+            <TextView
+                android:id="@+id/tvInstallAllDescription"
+                style="@style/TextAppearance.UnchainedTheme.Caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxWidth="100dp"
+                android:textAlignment="center"
+                android:text="@string/install_all"
+                app:layout_constraintBottom_toTopOf="@id/bUninstallAll"
+                app:layout_constraintEnd_toEndOf="@id/bInstallAll"
+                app:layout_constraintStart_toStartOf="@id/bInstallAll"
+                app:layout_constraintTop_toBottomOf="@id/bInstallAll" />
+
+            <Button
+                android:id="@+id/bUpdateAll"
+                style="@style/Widget.MaterialComponents.Button.Icon"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                app:icon="@drawable/icon_reload"
+                app:layout_constraintBottom_toTopOf="@id/tvUpdateAllDescription"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/bInstallAll"
+                app:layout_constraintTop_toTopOf="@id/bInstallAll" />
+
+            <TextView
+                android:id="@+id/tvUpdateAllDescription"
+                style="@style/TextAppearance.UnchainedTheme.Caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxWidth="100dp"
+                android:textAlignment="center"
+                android:text="@string/update_all"
+                app:layout_constraintBottom_toTopOf="@id/bUninstallRepo"
+                app:layout_constraintEnd_toEndOf="@id/bUpdateAll"
+                app:layout_constraintStart_toStartOf="@id/bUpdateAll"
+                app:layout_constraintTop_toBottomOf="@id/bUpdateAll" />
+
+            <Button
+                android:id="@+id/bUninstallAll"
+                style="@style/Widget.MaterialComponents.Button.Icon"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                app:icon="@drawable/icon_delete"
+                app:layout_constraintBottom_toTopOf="@id/tvUninstallAllDescription"
+                app:layout_constraintEnd_toStartOf="@id/bUninstallRepo"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvInstallAllDescription" />
+
+            <TextView
+                android:id="@+id/tvUninstallAllDescription"
+                style="@style/TextAppearance.UnchainedTheme.Caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxWidth="100dp"
+                android:textAlignment="center"
+                android:layout_marginBottom="10dp"
+                android:text="@string/uninstall_all"
+                app:layout_constraintBottom_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="@id/bUninstallAll"
+                app:layout_constraintStart_toStartOf="@id/bUninstallAll"
+                app:layout_constraintTop_toBottomOf="@id/bUninstallAll" />
+
+            <Button
+                android:id="@+id/bUninstallRepo"
+                style="@style/Widget.MaterialComponents.Button.Icon"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                app:icon="@drawable/icon_close"
+                app:layout_constraintBottom_toTopOf="@id/tvUpdateAllDescription"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/bInstallAll"
+                app:layout_constraintTop_toBottomOf="@id/tvUpdateAllDescription" />
+
+            <TextView
+                android:id="@+id/tvUninstallRepoDescription"
+                style="@style/TextAppearance.UnchainedTheme.Caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxWidth="100dp"
+                android:textAlignment="center"
+                android:layout_marginBottom="10dp"
+                android:text="@string/uninstall_repo"
+                app:layout_constraintEnd_toEndOf="@id/bUninstallRepo"
+                app:layout_constraintStart_toStartOf="@id/bUninstallRepo"
+                app:layout_constraintTop_toBottomOf="@id/bUninstallRepo" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+</LinearLayout>

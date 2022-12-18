@@ -31,6 +31,9 @@ interface RepositoryDataDao {
     @Query("SELECT * from repository")
     suspend fun getAllRepositories(): List<Repository>
 
+    @Query("SELECT * from repository WHERE repository.link = :link LIMIT 1")
+    suspend fun getRepository(link: String): Repository?
+
     @Query("SELECT * from repository WHERE repository.link =:link")
     suspend fun getDefaultRepository(link: String = PLUGINS_REPOSITORY_LINK): List<Repository>
 
@@ -54,11 +57,32 @@ interface RepositoryDataDao {
     suspend fun getPlugins(query: String): Map<RepositoryInfo, List<RepositoryPlugin>>
 
     @Query(
+        "SELECT * FROM repository_info JOIN plugin " +
+                "ON plugin.repository = repository_info.link " +
+                "WHERE repository_info.link = :repositoryUrl"
+    )
+    suspend fun getRepositoryPlugins(repositoryUrl: String): Map<RepositoryInfo, List<RepositoryPlugin>>
+
+    @Query(
         "SELECT * FROM plugin JOIN plugin_version " +
                 "ON plugin.repository = plugin_version.plugin_repository " +
                 "AND plugin.plugin_name = plugin_version.plugin"
     )
     suspend fun getPluginsVersions(): Map<RepositoryPlugin, List<PluginVersion>>
+
+    @Query(
+        "SELECT * FROM plugin JOIN plugin_version " +
+                "ON plugin.repository = plugin_version.plugin_repository " +
+                "AND plugin.plugin_name = plugin_version.plugin " +
+                "WHERE plugin.repository = :repositoryUrl"
+    )
+    suspend fun getRepositoryPluginsData(repositoryUrl: String): Map<RepositoryPlugin, List<PluginVersion>>
+
+    @Query(
+        "SELECT * FROM  plugin_version " +
+                "WHERE plugin_version.plugin_repository = :repositoryUrl "
+    )
+    suspend fun getRepositoryPluginsVersions(repositoryUrl: String): List<PluginVersion>
 
     /*
     @Query(
@@ -72,3 +96,8 @@ interface RepositoryDataDao {
     suspend fun getAll(): Map<RepositoryInfo, List<Map<RepositoryPlugin, List<PluginVersion>>>>
      */
 }
+
+data class LatestPluginVersion(
+    @ColumnInfo(name = "plugin_link") val link: String,
+    @ColumnInfo(name = "version") val version: Float
+)

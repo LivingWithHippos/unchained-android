@@ -3,11 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
         <variable
             name="item"
             type="com.github.livingwithhippos.unchained.repository.model.RepositoryListItem.Repository" />
-
 
         <variable
             name="listener"
@@ -18,7 +16,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginVertical="10dp"
-        android:onClick="@{() ->listener.onRepositoryClick(item)}"
         android:clickable="true"
         android:focusable="true"
         >
@@ -56,9 +53,23 @@
             android:text="@{item.name, default =`Repository name really long so I can test how multiple lines are rendered`}"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/tvAuthor"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/bManage"
             app:layout_constraintStart_toEndOf="@id/ivStatus"
             app:layout_constraintTop_toBottomOf="@id/divider"
+            />
+
+        <Button
+            android:id="@+id/bManage"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
+            app:icon="@drawable/icon_settings"
+            style="@style/Widget.MaterialComponents.Button.Icon"
+            android:onClick="@{() ->listener.onRepositoryClick(item)}"
+            app:layout_constraintStart_toEndOf="@id/tvName"
+            app:layout_constraintTop_toTopOf="@id/tvName"
+            app:layout_constraintBottom_toBottomOf="@id/tvAuthor"
+            app:layout_constraintEnd_toEndOf="parent"
             />
 
 

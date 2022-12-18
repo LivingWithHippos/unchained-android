@@ -111,11 +111,48 @@ class RepositoryViewModel @Inject constructor(
     }
 
     private suspend fun fetchInstalledPlugins(context: Context) = diskPluginsRepository.getPluginsWithFolders(context)
+
+    fun installAllRepositoryPlugins(context: Context, repository: RepositoryListItem.Repository) {
+        viewModelScope.launch {
+            // get plugins from db
+            // filter by repo and compatibility
+            val plugins = databasePluginsRepository.getLatestCompatibleRepositoryPlugins(repository.link)
+            Timber.d(" Compatible plugins: $plugins")
+            var errors = 0
+            val installResults = mutableListOf<InstallResult>()
+            // install all
+            for (plugin in plugins) {
+                when (val result = downloadRepository.downloadPlugin(plugin.link)) {
+                    is EitherResult.Failure -> {
+                        Timber.e("Error downloading plugin at ${plugin.link}:\n${result.failure}")
+                        errors++
+                    }
+                    is EitherResult.Success -> {
+                        val install = diskPluginsRepository.savePlugin(
+                            context,
+                            result.success,
+                            plugin.link,
+                            plugin.repository
+                        )
+                        installResults.add(install)
+                    }
+                }
+            }
+
+            // report errors and installed
+            pluginsRepositoryLiveData.postEvent(
+                PluginRepositoryEvent.MultipleInstallation(errors, installResults)
+            )
+        }
+
+    }
 }
 
 sealed class PluginRepositoryEvent {
 
     data class Installation(val result: InstallResult): PluginRepositoryEvent()
+
+    data class MultipleInstallation(val downloadErrors: Int, val installResults: List<InstallResult>): PluginRepositoryEvent()
     data class Uninstalled(val result: Boolean): PluginRepositoryEvent()
     object Updated : PluginRepositoryEvent()
     data class FullData(

@@ -455,4 +455,10 @@
     <string name="plugin_install_incompatible">Versión del plugin no compatible</string>
     <string name="incompatible_update">Actualización incompatible disponible</string>
     <string name="plugin_removal_failed">Error al desinstalar el plugin</string>
+    <string name="install_all">Instalar todo</string>
+    <string name="uninstall_all">Desinstalar todo</string>
+    <string name="update_all">Actualizar todo</string>
+    <string name="uninstall_repo">Desinstalar repositorio</string>
+    <string name="plugins_installed_format">%1$d plugins instalados</string>
+    <string name="plugins_install_results_format">%1$d plugins instalados, %2$d errores</string>
 </resources>

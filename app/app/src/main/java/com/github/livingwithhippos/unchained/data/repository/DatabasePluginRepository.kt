@@ -5,7 +5,10 @@ import com.github.livingwithhippos.unchained.data.model.PluginVersion
 import com.github.livingwithhippos.unchained.data.model.Repository
 import com.github.livingwithhippos.unchained.data.model.RepositoryInfo
 import com.github.livingwithhippos.unchained.data.model.RepositoryPlugin
+import com.github.livingwithhippos.unchained.plugins.Parser.Companion.PLUGIN_ENGINE_VERSION
+import com.github.livingwithhippos.unchained.plugins.model.isCompatible
 import com.github.livingwithhippos.unchained.repository.model.JsonPluginRepository
+import timber.log.Timber
 import javax.inject.Inject
 
 class DatabasePluginRepository @Inject constructor(
@@ -26,6 +29,23 @@ class DatabasePluginRepository @Inject constructor(
             pluginsMap[entry.key] = repoPlugins
         }
         return pluginsMap
+    }
+
+    suspend fun getLatestCompatibleRepositoryPlugins(link: String): List<PluginVersion> {
+        val repository = repositoryDataDao.getRepository(link)
+        if (repository == null) {
+            return emptyList()
+        } else {
+            val latestVersions: List<PluginVersion> = repositoryDataDao
+                .getRepositoryPluginsVersions(repository.link)
+                .filter { isCompatible(it.engine) }
+                .groupBy { it.plugin }
+                .mapNotNull { entry ->
+                    val maxVersion = entry.value.maxOfOrNull { it.version }
+                    entry.value.firstOrNull { it.version == maxVersion }
+                }
+            return latestVersions
+        }
     }
 
     suspend fun saveRepositoryInfo(link: String, jsonRepository: JsonPluginRepository) {

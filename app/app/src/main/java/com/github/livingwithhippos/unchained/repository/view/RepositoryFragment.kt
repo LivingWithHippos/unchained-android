@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.TextView
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.activityViewModels
 import com.github.livingwithhippos.unchained.R
@@ -23,8 +25,10 @@ import com.github.livingwithhippos.unchained.repository.model.RepositoryListItem
 import com.github.livingwithhippos.unchained.repository.viewmodel.PluginRepositoryEvent
 import com.github.livingwithhippos.unchained.repository.viewmodel.RepositoryViewModel
 import com.github.livingwithhippos.unchained.utilities.EventObserver
+import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.github.livingwithhippos.unchained.utilities.getRepositoryString
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -79,6 +83,23 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
                             viewModel.checkCurrentRepositories()
                         } else
                             context?.showToast(R.string.plugin_removal_failed)
+                    }
+                    is PluginRepositoryEvent.MultipleInstallation -> {
+                        val failures = it.downloadErrors + it.installResults.count { result -> (result is InstallResult.Installed).not() }
+                        val success = it.installResults.count { result -> result is InstallResult.Installed }
+                        if (failures == 0) {
+                            context?.showToast(
+                                getString(
+                                    R.string.plugins_installed_format, success
+                                )
+                            )
+                        } else {
+                            context?.showToast(
+                                getString(
+                                    R.string.plugins_install_results_format, failures, success
+                                )
+                            )
+                        }
                     }
                 }
             }
@@ -262,10 +283,42 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
     }
 
     override fun onRepositoryClick(repository: RepositoryListItem.Repository) {
+        // dialog?
         // install all plugins
         // remove all plugins
         // update all plugins
         // remove repository (this will uninstall any plugins from this repo)
         Timber.d("Pressed repository $repository")
+        activity?.let { activity ->
+            val builder = MaterialAlertDialogBuilder(activity)
+            val inflater = activity.layoutInflater
+            val view = inflater.inflate(R.layout.dialog_manage_repository, null)
+
+            view.findViewById<TextView>(R.id.tvName).text = repository.name
+            view.findViewById<TextView>(R.id.tvAuthor).text = repository.author
+            view.findViewById<TextView>(R.id.tvDescription).text = repository.description
+
+            view.findViewById<Button>(R.id.bInstallAll).setOnClickListener {
+                viewModel.installAllRepositoryPlugins(activity.applicationContext, repository)
+                // todo: close dialog?
+            }
+            view.findViewById<Button>(R.id.bUpdateAll).setOnClickListener {
+                //viewModel.updateAllRepositoryPlugins(repository)
+            }
+            view.findViewById<Button>(R.id.bUninstallAll).setOnClickListener {
+                //viewModel.uninstallAllRepositoryPlugins(repository)
+            }
+            view.findViewById<Button>(R.id.bUninstallRepo).setOnClickListener {
+                //viewModel.uninstallRepository(repository)
+            }
+
+            builder.setView(view)
+                .setNeutralButton(getString(R.string.close)) { dialog, _ ->
+                    dialog.cancel()
+                }
+                .create()
+
+            builder.show()
+        }
     }
 }

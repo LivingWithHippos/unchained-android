@@ -673,4 +673,10 @@
     <string name="incompatible">Incompatible</string>
     <string name="incompatible_update">Incompatible update available</string>
     <string name="plugin_removal_failed">Error uninstalling the plugin</string>
+    <string name="install_all">Install all</string>
+    <string name="uninstall_all">Uninstall all</string>
+    <string name="update_all">Update all</string>
+    <string name="uninstall_repo">Uninstall repository</string>
+    <string name="plugins_installed_format">Installed %1$d plugins</string>
+    <string name="plugins_install_results_format">%1$d plugins installed, %2$d errors</string>
 </resources>
