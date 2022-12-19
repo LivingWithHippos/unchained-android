@@ -303,7 +303,7 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
                 // todo: close dialog?
             }
             view.findViewById<Button>(R.id.bUpdateAll).setOnClickListener {
-                //viewModel.updateAllRepositoryPlugins(repository)
+                viewModel.updateAllRepositoryPlugins(activity.applicationContext, repository)
             }
             view.findViewById<Button>(R.id.bUninstallAll).setOnClickListener {
                 //viewModel.uninstallAllRepositoryPlugins(repository)
