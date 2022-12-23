@@ -188,7 +188,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
             "open_github_plugins" -> context?.openExternalWebPage(PLUGINS_URL)
             "test_kodi" -> testKodiConnection()
             "delete_external_plugins" -> {
-                val removedPlugins = viewModel.removeExternalPlugins(requireContext())
+                val removedPlugins = viewModel.removeAllPlugins(requireContext())
                 if (removedPlugins >= 0)
                     context?.showToast(getString(R.string.plugin_removed, removedPlugins))
                 else

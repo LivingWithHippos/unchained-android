@@ -465,7 +465,7 @@
     <string name="plugin_description_message">On this screen you\'ll be able to search for torrent and magnet files. Aside from the basic plugins available, you can download more from the manage page.</string>
     <string name="search_plugins">Search Plugins</string>
     <string name="get_search_plugins">Get search plugins</string>
-    <string name="delete_plugins">Delete external plugins</string>
+    <string name="delete_plugins">Delete plugins</string>
     <string name="delete_plugins_summary">Remove all the plugins installed by the user</string>
     <string name="plugin_removed">%1$d plugin/s removed</string>
     <string name="plugin_install_error_newer">The plugin is already installed with a newer version</string>
@@ -599,8 +599,8 @@
     <string name="show_download_button">Show download button</string>
     <string name="show_load_stream_button">Show load stream button</string>
     <string name="show_stream_browser_button">Show stream in browser button</string>
-    <string name="install_plugins_pack">Install plugins pack</string>
-    <string name="install_plugins_pack_summary">Use the button in the search screen menu to install all the plugins at once</string>
+    <string name="install_plugins">Install plugins</string>
+    <string name="install_plugins_summary">Use the manage repository button in the search screen menu to install the plugins</string>
     <string name="custom_media_player">Custom media player</string>
     <string name="custom_media_player_summary">Use a custom media player package like \"org.videolan.vlc\". It may support direct sharing of media files. Remember to pick \"custom player\" as default media player preference</string>
     <string name="invalid_package">Invalid package</string>

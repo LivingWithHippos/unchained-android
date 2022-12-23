@@ -254,7 +254,7 @@
     <string name="plugin_description_message">In questa schermata potrai cercare file torrent e magnet. Oltre ai plugin di base disponibili, potrai installarne altri dal menu di gestione.</string>
     <string name="search_plugins">Plugins di ricerca</string>
     <string name="get_search_plugins">Ottieni plugins di ricerca</string>
-    <string name="delete_plugins">Rimuovi plugins esterni</string>
+    <string name="delete_plugins">Rimuovi plugins</string>
     <string name="delete_plugins_summary">Rimuovi tutti i plugin installati dall\'utente</string>
     <string name="plugin_removed">%1$d plugin rimosso/i</string>
     <string name="plugin_install_error_newer">Il plugin ha già un versione più recente installata</string>
@@ -381,8 +381,8 @@
     <string name="show_download_button">Mostra bottone download</string>
     <string name="show_load_stream_button">Mostra bottone carica stream</string>
     <string name="show_stream_browser_button">Mostra bottone stream nel browser</string>
-    <string name="install_plugins_pack">Installa pacchetto plugins</string>
-    <string name="install_plugins_pack_summary">Usa il bottone nel menu della schermata di ricerca per installare il pacchetto completo dei plugins</string>
+    <string name="install_plugins">Installare plugins</string>
+    <string name="install_plugins_summary">Per installare i plugin, utilizzare il pulsante Gestisci repository nel menu della schermata di ricerca</string>
     <string name="custom_media_player">Lettore media personalizzato</string>
     <string name="custom_media_player_summary">Usa il package di un lettore media personalizzato come \"org.videolan.vlc\". Potrebbe supportare la condivisione diretta di media. Ricorda di impostare \"lettore media personalizzato\" come impostazione di lettore media predefinito</string>
     <string name="invalid_package">Package non valido</string>

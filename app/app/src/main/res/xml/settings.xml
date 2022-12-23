@@ -66,13 +66,10 @@
     <PreferenceCategory android:title="@string/search_plugins">
 
         <Preference
-            app:key="github_plugins_pack"
-            app:summary="@string/install_plugins_pack_summary"
-            app:title="@string/install_plugins_pack" />
-
-        <Preference
-            app:key="open_github_plugins"
-            app:title="@string/get_search_plugins" />
+            app:key="install_plugins_instructions"
+            app:summary="@string/install_plugins_summary"
+            app:title="@string/install_plugins"
+            />
 
         <Preference
             app:key="delete_external_plugins"

@@ -254,7 +254,7 @@
     <string name="plugin_description_message">En esta pantalla podrás buscar archivos torrent y magnet. Además de los plugins básicos disponibles, puedes descargar más desde la página de gestión.</string>
     <string name="search_plugins">Buscar plugins</string>
     <string name="get_search_plugins">Obtener plugins de búsqueda</string>
-    <string name="delete_plugins">Eliminar los plugins externos</string>
+    <string name="delete_plugins">Eliminar los plugins</string>
     <string name="delete_plugins_summary">Eliminar todos los plugins instalados por el usuario</string>
     <string name="plugin_removed">%1$d plugin/s eliminados</string>
     <string name="plugin_install_error_newer">El plugin ya está instalado con una versión más reciente</string>
@@ -380,8 +380,8 @@
     <string name="show_download_button">Mostrar botón de descarga</string>
     <string name="show_load_stream_button">Mostrar el botón de carga de la transmisión</string>
     <string name="show_stream_browser_button">Botón de mostrar la transmisión en el navegador</string>
-    <string name="install_plugins_pack">Instalar el paquete de plugins</string>
-    <string name="install_plugins_pack_summary">Utilice el botón del menú de la pantalla de búsqueda para instalar todos los plugins a la vez</string>
+    <string name="install_plugins">Instalar plugins</string>
+    <string name="install_plugins_summary">Utilice el botón de gestión de repositorios en el menú de la pantalla de búsqueda para instalar los plugins</string>
     <string name="custom_media_player">Reproductor multimedia personalizado</string>
     <string name="custom_media_player_summary">Utiliza un paquete reproductor multimedia personalizado como \"org.videolan.vlc\". Puede soportar la compartición directa de archivos multimedia. Recuerda elegir \"custom player\" como preferencia de reproductor multimedia por defecto</string>
     <string name="invalid_package">Paquete no válido</string>

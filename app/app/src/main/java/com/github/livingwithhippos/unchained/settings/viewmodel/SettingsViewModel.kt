@@ -33,8 +33,8 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    fun removeExternalPlugins(context: Context): Int =
-        pluginRepository.removeExternalPlugins(context)
+    fun removeAllPlugins(context: Context): Int =
+        pluginRepository.removeInstalledPlugins(context)
 
     fun testKodi(ip: String, port: Int, username: String?, password: String?) {
         viewModelScope.launch {

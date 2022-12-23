@@ -162,50 +162,25 @@ class PluginRepository @Inject constructor() {
         }
     }
 
-    fun getExternalPlugin(context: Context, filename: String): Plugin? {
-        val file = File(context.filesDir, filename)
-        return getPluginFromJSON(file.readText())
-    }
-
-    fun removeExternalPlugins(context: Context): Int {
+    fun removeInstalledPlugins(context: Context): Int {
         return try {
-            val plugins = context.filesDir.listFiles { _, name ->
-                name.endsWith(TYPE_UNCHAINED, ignoreCase = true)
+            var pluginCounter = 0
+            var deleteCounter = 0
+            val pluginFolder = context.getDir("plugins", Context.MODE_PRIVATE)
+            pluginFolder.walk().forEach {
+                if (it.isFile) {
+                    pluginCounter++
+                    if (it.delete())
+                        deleteCounter++
+                }
             }
-
-            plugins?.forEach {
-                it.delete()
-            }
-
-            plugins?.size ?: -1
+            val deleted = pluginFolder.deleteRecursively()
+            Timber.d("Found $pluginCounter plugins, deleted $deleteCounter plugins. Main directory deleted: $deleted")
+            deleteCounter
         } catch (e: SecurityException) {
             Timber.d("Security exception deleting plugins files: ${e.message}")
             -1
         }
-    }
-
-    suspend fun addExternalPlugin(
-        context: Context,
-        data: Uri,
-        customFileName: String? = null
-    ): Boolean = withContext(Dispatchers.IO) {
-        val filename = customFileName ?: data.path?.replace("%2F", "/")?.split("/")?.last()
-        if (filename != null) {
-            // save the file locally
-            return@withContext try {
-                context.contentResolver.openInputStream(data)?.use { inputStream ->
-                    val buffer: ByteArray = inputStream.readBytes()
-                    context.openFileOutput(filename, Context.MODE_PRIVATE).use {
-                        it.write(buffer)
-                    }
-                }
-                true
-            } catch (exception: Exception) {
-                Timber.e("Error loading the file ${data.path}: ${exception.message}")
-                false
-            }
-        }
-        return@withContext true
     }
 
     suspend fun addExternalPlugin(
@@ -229,27 +204,6 @@ class PluginRepository @Inject constructor() {
         }
         return@withContext true
     }
-
-    suspend fun addExternalPlugin(context: Context, source: String): Boolean =
-        withContext(Dispatchers.IO) {
-
-            val plugin: Plugin? = getPluginFromJSON(source)
-
-            if (plugin != null) {
-                val filename = plugin.name + TYPE_UNCHAINED
-                try {
-                    context.openFileOutput(filename, Context.MODE_PRIVATE).use {
-                        val buffer: ByteArray = source.toByteArray()
-                        it.write(buffer)
-                    }
-                    return@withContext true
-                } catch (exception: IOException) {
-                    Timber.e("Error adding the plugin $filename: ${exception.message}")
-                    false
-                }
-            } else
-                return@withContext false
-        }
 
     suspend fun readPassedPlugin(context: Context, data: Uri): Plugin? =
         withContext(Dispatchers.IO) {

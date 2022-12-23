@@ -254,7 +254,7 @@
     <string name="plugin_description_message">Sur cet écran, vous pourrez rechercher des fichiers torrents et magnétiques. Outre les plugins de base disponibles, vous pouvez en télécharger d\'autres depuis la page de gestion.</string>
     <string name="search_plugins">Plugins de recherche</string>
     <string name="get_search_plugins">Obtenir des plugins de recherche</string>
-    <string name="delete_plugins">Supprimer les plugins externes</string>
+    <string name="delete_plugins">Supprimer les plugins</string>
     <string name="delete_plugins_summary">Supprimer tous les plugins installés par l\'utilisateur</string>
     <string name="plugin_removed">%1$d plugin/s supprimé</string>
     <string name="plugin_install_error_newer">Le plugin est déjà installé avec une version plus récente</string>
@@ -380,8 +380,8 @@
     <string name="show_download_button">Afficher le bouton de téléchargement</string>
     <string name="show_load_stream_button">Afficher le bouton du flux de chargement</string>
     <string name="show_stream_browser_button">Afficher le bouton de flux dans le navigateur</string>
-    <string name="install_plugins_pack">Installer le pack de plugins</string>
-    <string name="install_plugins_pack_summary">Utilisez le bouton du menu de l\'écran de recherche pour installer tous les plugins en une seule fois.</string>
+    <string name="install_plugins">Installer les plugins</string>
+    <string name="install_plugins_summary">Utilisez le bouton de gestion du référentiel dans le menu de l\'écran de recherche pour installer les plugins</string>
     <string name="custom_media_player">Lecteur multimédia personnalisé</string>
     <string name="custom_media_player_summary">Utilisez un paquetage de lecteur multimédia personnalisé comme \"org.videolan.vlc\". Il peut prendre en charge le partage direct des fichiers multimédias. N\'oubliez pas de choisir \"Lecteur multimédia personnalisé\" comme préférence de lecteur multimédia par défaut.</string>
     <string name="invalid_package">Paquet non valide</string>
