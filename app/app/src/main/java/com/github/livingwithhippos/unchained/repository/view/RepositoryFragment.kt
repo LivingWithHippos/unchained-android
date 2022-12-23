@@ -178,7 +178,7 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
                     // latest available compatible version
                     val latestCompatibleVersion: PluginVersion? = onlinePlugin.value.filter{ isCompatible(it.engine) }.maxByOrNull { it.version }
                     // installed version of the online plugin
-                    val installedPlugin: Plugin? = installedData.pluginsData[hashedRepoName]?.firstOrNull { it.name == onlinePlugin.key.name }
+                    val installedPlugin: Plugin? = installedData.pluginsData[hashedRepoName]?.firstOrNull { it.name.equals(onlinePlugin.key.name, ignoreCase = true) }
                     // check if this plugin has available versions (it should)
                     if (latestVersion == null) {
                         Timber.w("BAD PACKAGER! DO NOT RELEASE PLUGINS WITHOUT VERSIONS!  Info: ${onlinePlugin.key}")
