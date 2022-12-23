@@ -17,6 +17,7 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.ThemingCallback.Companion.DAY_ONLY_THEMES
+import com.github.livingwithhippos.unchained.settings.viewmodel.SettingEvent
 import com.github.livingwithhippos.unchained.settings.viewmodel.SettingsViewModel
 import com.github.livingwithhippos.unchained.utilities.FEEDBACK_URL
 import com.github.livingwithhippos.unchained.utilities.GPLV3_URL
@@ -24,6 +25,7 @@ import com.github.livingwithhippos.unchained.utilities.PLUGINS_URL
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -83,6 +85,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
             true
         }
 
+        findPreference<Preference>("user_logout")?.setOnPreferenceClickListener {
+            viewModel.userLogout()
+            true
+        }
+
         findPreference<EditTextPreference>("filter_size_mb")?.setOnBindEditTextListener {
             it.keyListener = DigitsKeyListener.getInstance("0123456789")
         }
@@ -112,6 +119,18 @@ class SettingsFragment : PreferenceFragmentCompat() {
                     context?.showToast(R.string.kodi_connection_error)
                 }
                 null -> {
+                }
+            }
+        }
+
+        viewModel.eventLiveData.observe(viewLifecycleOwner) {
+            when(val content = it.getContentIfNotHandled()) {
+                SettingEvent.Logout -> {
+                    context?.showToast(R.string.user_logged_out)
+                    activity?.finishAffinity();
+                }
+                null -> {
+                    // do nothing
                 }
             }
         }

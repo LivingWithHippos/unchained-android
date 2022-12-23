@@ -481,9 +481,13 @@ class MainActivityViewModel @Inject constructor(
     fun checkCredentials() {
         viewModelScope.launch {
             // todo: how to do this
-            val credentials = protoStore.credentialsFlow.first { it.accessToken.isNotBlank() }
-            val userResult = userRepository.getUserOrError(credentials.accessToken)
-            parseUserResult(userResult, credentials.refreshToken == PRIVATE_TOKEN)
+            val credentials: Credentials.CurrentCredential? = protoStore.credentialsFlow.firstOrNull { it.accessToken.isNotBlank() }
+            if (credentials == null) {
+                recheckAuthenticationStatus()
+            } else {
+                val userResult = userRepository.getUserOrError(credentials.accessToken)
+                parseUserResult(userResult, credentials.refreshToken == PRIVATE_TOKEN)
+            }
         }
     }
 
@@ -493,7 +497,6 @@ class MainActivityViewModel @Inject constructor(
     ) {
         when (user) {
             is EitherResult.Success -> {
-
                 if (isPrivateToken) {
                     transitionAuthenticationMachine(FSMAuthenticationEvent.OnWorkingPrivateToken)
                 } else {
@@ -516,7 +519,7 @@ class MainActivityViewModel @Inject constructor(
         }
     }
 
-    fun recheckAuthenticationStatus() {
+    private fun recheckAuthenticationStatus() {
         when (getAuthenticationMachineState()) {
             FSMAuthenticationState.AuthenticatedOpenToken, FSMAuthenticationState.AuthenticatedPrivateToken, FSMAuthenticationState.RefreshingOpenToken -> {
                 transitionAuthenticationMachine(FSMAuthenticationEvent.OnLogout)

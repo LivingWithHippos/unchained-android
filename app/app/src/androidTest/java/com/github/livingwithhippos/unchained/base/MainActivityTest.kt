@@ -12,7 +12,6 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.MainActivity
 import com.github.livingwithhippos.unchained.base.waitForView
-import org.hamcrest.Matchers.not
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -57,12 +56,5 @@ class MainActivityTest {
         onView(isRoot()).perform(waitForView(R.id.tvMail, 5000))
         onView(withId(R.id.navigation_lists)).perform(click())
         onView(withId(R.id.tabs)).check(matches(isDisplayed()))
-    }
-
-    @Test
-    fun logoutTest() {
-        onView(isRoot()).perform(waitForView(R.id.tvMail, 5000))
-        onView(withId(R.id.bLogout)).perform(click())
-        onView(withId(R.id.cbLink)).check(matches(isDisplayed()))
     }
 }

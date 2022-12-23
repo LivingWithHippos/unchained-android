@@ -728,7 +728,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * simulate a double click on a bottom bar option which will bring us to the first destinatin of that tab.
+     * simulate a double click on a bottom bar option which will bring us to the first destination of that tab.
      *
      * @param destinationID the id of the bottom item to click
      */
