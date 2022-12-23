@@ -4,7 +4,7 @@ import com.github.livingwithhippos.unchained.data.repository.PluginRepository
 
 
 fun getRepositoryString(repository: String): String {
-    return repository.hashCode().toString()
+    return repository.lowercase().hashCode().toString()
 }
 
 fun getPluginFilename(plugin: String): String {
