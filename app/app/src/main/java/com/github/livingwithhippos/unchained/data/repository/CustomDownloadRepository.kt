@@ -1,7 +1,12 @@
 package com.github.livingwithhippos.unchained.data.repository
 
 import com.github.livingwithhippos.unchained.data.local.ProtoStore
+import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkException
 import com.github.livingwithhippos.unchained.data.remote.CustomDownloadHelper
+import com.github.livingwithhippos.unchained.plugins.model.Plugin
+import com.github.livingwithhippos.unchained.repository.model.JsonPluginRepository
+import com.github.livingwithhippos.unchained.utilities.EitherResult
+import com.github.livingwithhippos.unchained.utilities.PLUGINS_REPOSITORY_LINK
 import com.github.livingwithhippos.unchained.utilities.extension.isWebUrl
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -15,7 +20,7 @@ import java.io.OutputStream
 import javax.inject.Inject
 
 class CustomDownloadRepository @Inject constructor(
-    private val protoStore: ProtoStore,
+    protoStore: ProtoStore,
     private val customDownloadHelper: CustomDownloadHelper
 ) :
     BaseRepository(protoStore) {
@@ -80,6 +85,21 @@ class CustomDownloadRepository @Inject constructor(
                 } else send(DownloadResult.Failure)
             } else send(DownloadResult.Failure)
         } else send(DownloadResult.WrongURL)
+    }
+
+    suspend fun downloadPluginRepository(link: String): EitherResult<UnchainedNetworkException, JsonPluginRepository> {
+
+        return eitherApiResult(
+            call = { customDownloadHelper.getPluginsRepository(link) },
+            errorMessage = "Error Fetching plugins repository"
+        )
+    }
+
+    suspend fun downloadPlugin(link: String): EitherResult<UnchainedNetworkException, Plugin> {
+        return eitherApiResult(
+            call = { customDownloadHelper.getPlugin(link) },
+            errorMessage = "Error fetching plugin"
+        )
     }
 }
 

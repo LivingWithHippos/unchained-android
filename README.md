@@ -69,7 +69,9 @@ MVVM architectural pattern, Dagger-Hilt for dependency injection, Data Binding f
 
 The app is available in English, Italian and French, you can contribute to those or add a new language [here](https://localization.professiona.li/engage/unchained-for-android/) (much appreciated!)
 
-There's a work in progress [wiki page](https://github.com/LivingWithHippos/unchained-android/wiki/Search-Engine) for creating search plugins.
+#### Plugins
+
+Check out `PLUGINS.md`. There's also a work in progress [wiki page](https://github.com/LivingWithHippos/unchained-android/wiki/Search-Engine) for creating search plugins.
 
 ### Donate :coffee:
 

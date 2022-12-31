@@ -1,6 +1,9 @@
 package com.github.livingwithhippos.unchained.data.remote
 
+import com.github.livingwithhippos.unchained.plugins.model.Plugin
+import com.github.livingwithhippos.unchained.repository.model.JsonPluginRepository
 import com.github.livingwithhippos.unchained.utilities.PLUGINS_PACK_LINK
+import com.github.livingwithhippos.unchained.utilities.PLUGINS_REPOSITORY_LINK
 import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.GET
@@ -20,4 +23,14 @@ interface CustomDownload {
     suspend fun getFile(
         @Url url: String
     ): Response<ResponseBody>
+
+    @GET
+    suspend fun getPluginsRepository(
+        @Url repositoryUrl: String = PLUGINS_REPOSITORY_LINK
+    ): Response<JsonPluginRepository>
+
+    @GET
+    suspend fun getPlugin(
+        @Url pluginUrl: String
+    ): Response<Plugin>
 }

@@ -21,6 +21,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.github.livingwithhippos.unchained.R
+import com.github.livingwithhippos.unchained.authentication.view.AuthenticationFragmentDirections
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.data.model.cache.InstantAvailability
 import com.github.livingwithhippos.unchained.data.repository.DownloadResult
@@ -42,6 +43,7 @@ import com.github.livingwithhippos.unchained.utilities.extension.getThemedDrawab
 import com.github.livingwithhippos.unchained.utilities.extension.hideKeyboard
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -64,64 +66,6 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
 
         setup(binding)
 
-        val menuHost: MenuHost = requireActivity()
-
-        menuHost.addMenuProvider(
-            object : MenuProvider {
-                override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                    menuInflater.inflate(R.menu.search_bar, menu)
-                }
-
-                override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                    return when (menuItem.itemId) {
-                        R.id.plugins_pack -> {
-                            context?.showToast(R.string.downloading)
-                            lifecycleScope.launch {
-                                val cacheDir = context?.cacheDir
-
-                                if (cacheDir != null) {
-                                    // clean up old files
-                                    // todo: also clear other files, at least ending with zip
-                                    File(cacheDir, PLUGINS_PACK_FOLDER).deleteRecursively()
-
-                                    activityViewModel.downloadFileToCache(
-                                        PLUGINS_PACK_LINK,
-                                        PLUGINS_PACK_NAME,
-                                        cacheDir,
-                                        ".zip"
-                                    ).observe(
-                                        viewLifecycleOwner
-                                    ) {
-                                        when (it) {
-                                            is DownloadResult.End -> {
-                                                activityViewModel.processPluginsPack(
-                                                    cacheDir,
-                                                    requireContext().filesDir,
-                                                    it.fileName
-                                                )
-                                            }
-                                            DownloadResult.Failure -> {
-                                                context?.showToast(R.string.error_loading_file)
-                                            }
-                                            is DownloadResult.Progress -> {
-                                                Timber.d("Plugins pack progress: ${it.percent}")
-                                            }
-                                            DownloadResult.WrongURL -> {
-                                                context?.showToast(R.string.error_loading_file)
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            true
-                        }
-                        else -> false
-                    }
-                }
-            },
-            viewLifecycleOwner, Lifecycle.State.RESUMED
-        )
-
         return binding.root
     }
 
@@ -131,6 +75,12 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
         val pluginAdapter =
             ArrayAdapter(requireContext(), R.layout.plugin_list_item, arrayListOf<String>())
         (binding.pluginPicker.editText as? AutoCompleteTextView)?.setAdapter(pluginAdapter)
+
+        binding.bManagePlugins.setOnClickListener {
+            val action =
+                SearchFragmentDirections.actionSearchDestToRepositoryFragment()
+            findNavController().navigate(action)
+        }
 
         viewModel.pluginLiveData.observe(viewLifecycleOwner) { parsedPlugins ->
 
@@ -184,9 +134,9 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
         // load the sorting preference if set
         val sortTag = viewModel.getListSortPreference()
         val sortDrawableID = getSortingDrawable(sortTag)
-        binding.sortingButton.background = requireContext().getThemedDrawable(sortDrawableID)
+        (binding.bSorting as MaterialButton).icon = requireContext().getThemedDrawable(sortDrawableID)
 
-        binding.sortingButton.setOnClickListener {
+        binding.bSorting.setOnClickListener {
             showSortingPopup(it, R.menu.sorting_popup, adapter, binding.rvSearchList)
         }
 
@@ -227,10 +177,9 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
         popup.menuInflater.inflate(menuRes, popup.menu)
 
         popup.setOnMenuItemClickListener { menuItem: MenuItem ->
-            if (v is FloatingActionButton) {
-                v.setImageDrawable(menuItem.icon)
-            } else {
-                v.background = menuItem.icon
+            if (v is MaterialButton) {
+                v.icon = menuItem.icon
+                v.text = menuItem.title
             }
             // save the new sorting preference
             when (menuItem.itemId) {
@@ -289,26 +238,25 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
                 }
                 is ParserResult.SearchStarted -> {
                     searchAdapter.submitList(emptyList())
-                    binding.sortingButton.visibility = View.INVISIBLE
-                    binding.loadingCircle.visibility = View.VISIBLE
+                    binding.loadingCircle.isIndeterminate = true
                 }
                 is ParserResult.SearchFinished -> {
                     activityViewModel.checkTorrentCache(searchAdapter.currentList)
-                    binding.loadingCircle.visibility = View.INVISIBLE
-                    binding.sortingButton.visibility = View.VISIBLE
+                    binding.loadingCircle.isIndeterminate = false
+                    binding.loadingCircle.progress = 100
                     // update the data with cached results
                 }
                 is ParserResult.EmptyInnerLinks -> {
                     context?.showToast(R.string.no_links)
                     searchAdapter.submitList(emptyList())
-                    binding.loadingCircle.visibility = View.INVISIBLE
-                    binding.sortingButton.visibility = View.VISIBLE
+                    binding.loadingCircle.isIndeterminate = false
+                    binding.loadingCircle.progress = 100
                 }
                 else -> {
                     Timber.d("Unexpected result: $result")
                     searchAdapter.submitList(emptyList())
-                    binding.loadingCircle.visibility = View.INVISIBLE
-                    binding.sortingButton.visibility = View.VISIBLE
+                    binding.loadingCircle.isIndeterminate = false
+                    binding.loadingCircle.progress = 100
                 }
             }
         }
@@ -411,12 +359,7 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
                 builder.apply {
                     setTitle(R.string.search_plugins)
                     setMessage(R.string.plugin_description_message)
-                    setPositiveButton(R.string.open_github) { _, _ ->
-                        viewModel.setPluginDialogNeeded(false)
-                        // User clicked OK button
-                        context.openExternalWebPage(PLUGINS_URL)
-                    }
-                    setNegativeButton(R.string.close) { _, _ ->
+                    setPositiveButton(R.string.close) { _, _ ->
                         viewModel.setPluginDialogNeeded(false)
                     }
                 }

@@ -3,6 +3,8 @@ package com.github.livingwithhippos.unchained.data.local
 import android.content.Context
 import com.github.livingwithhippos.unchained.utilities.extension.smartList
 import dagger.hilt.android.qualifiers.ApplicationContext
+import java.io.FileInputStream
+import java.io.InputStream
 import javax.inject.Inject
 
 class AssetsManager @Inject constructor(
@@ -52,5 +54,17 @@ class AssetsManager @Inject constructor(
         }
 
         return results
+    }
+
+    fun getAssetFileInputStream(fileName: String): InputStream {
+        return appContext.assets.open(fileName)
+    }
+
+    fun getFilesList(): Array<out String>? {
+        return appContext.fileList()
+    }
+
+    fun getFileInputStream(fileName: String): FileInputStream? {
+        return appContext.openFileInput(fileName)
     }
 }

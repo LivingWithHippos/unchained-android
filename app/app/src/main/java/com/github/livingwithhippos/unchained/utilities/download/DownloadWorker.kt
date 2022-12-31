@@ -1,9 +1,12 @@
 package com.github.livingwithhippos.unchained.utilities.download
 
+import android.Manifest
 import android.app.Notification
 import android.content.Context
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.webkit.MimeTypeMap
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.documentfile.provider.DocumentFile
@@ -26,7 +29,7 @@ import timber.log.Timber
 import java.net.URLConnection
 import java.util.UUID
 
-class DownloadWorker(appContext: Context, workerParams: WorkerParameters) :
+class DownloadWorker(private val appContext: Context, workerParams: WorkerParameters) :
     CoroutineWorker(appContext, workerParams) {
 
     private var job = Job()
@@ -34,6 +37,16 @@ class DownloadWorker(appContext: Context, workerParams: WorkerParameters) :
     var shutdown = false
 
     override suspend fun doWork(): Result {
+
+        if (ActivityCompat.checkSelfPermission(
+                appContext,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            appContext.showToast(R.string.notifications_permission_denied)
+            return Result.failure()
+        }
+
         val sourceUrl: String = inputData.getString(MainActivityViewModel.KEY_DOWNLOAD_SOURCE)
             ?: return Result.failure()
         val fileName: String =

@@ -157,10 +157,6 @@ class MainActivity : AppCompatActivity() {
                         -1
                     )
                 )
-                viewModel.checkPluginDownload(
-                    applicationContext,
-                    it.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
-                )
             }
         }
     }
@@ -340,7 +336,7 @@ class MainActivity : AppCompatActivity() {
             it?.getContentIfNotHandled()?.let { link ->
                 when {
                     link.endsWith(TYPE_UNCHAINED, ignoreCase = true) -> {
-                        downloadPlugin(link)
+                        viewModel.downloadPlugin(applicationContext, link, null)
                     }
                     else -> {
                         // check the authentication
@@ -624,32 +620,6 @@ class MainActivity : AppCompatActivity() {
         super.onPause()
         viewModel.removeConnectivityCheck(applicationContext)
     }
-
-    private fun downloadPlugin(link: String) {
-        val pluginName = link.replace("%2F", "/").split("/").last()
-        val manager =
-            applicationContext.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-        val queuedDownload = manager.downloadFileInStandardFolder(
-            source = Uri.parse(link),
-            title = getString(R.string.unchained_plugin_download),
-            description = getString(R.string.temporary_plugin_download),
-            fileName = pluginName
-        )
-        when (queuedDownload) {
-            is EitherResult.Failure -> {
-                applicationContext.showToast(
-                    getString(
-                        R.string.download_not_started_format,
-                        pluginName
-                    )
-                )
-            }
-            is EitherResult.Success -> {
-                viewModel.setPluginDownload(queuedDownload.success)
-            }
-        }
-    }
-
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp(appBarConfiguration)
     }
@@ -680,7 +650,7 @@ class MainActivity : AppCompatActivity() {
                                 data.path?.endsWith(
                                     TYPE_UNCHAINED,
                                     ignoreCase = true
-                                ) == true -> addSearchPlugin(data)
+                                ) == true -> viewModel.addPluginFromDisk(applicationContext, data)
                                 else -> {
                                     // it's a magnet/torrent, check auth state before loading it
                                     processExternalRequestOnAuthentication(data)
@@ -758,7 +728,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * simulate a double click on a bottom bar option which will bring us to the first destinatin of that tab.
+     * simulate a double click on a bottom bar option which will bring us to the first destination of that tab.
      *
      * @param destinationID the id of the bottom item to click
      */
@@ -776,10 +746,6 @@ class MainActivity : AppCompatActivity() {
     private fun openSettings() {
         val intent = Intent(this, SettingsActivity::class.java)
         startActivity(intent)
-    }
-
-    private fun addSearchPlugin(data: Uri) {
-        viewModel.addPlugin(applicationContext, data)
     }
 
     // the standard menu items to disable are those for the download/torrent lists and the new download one
