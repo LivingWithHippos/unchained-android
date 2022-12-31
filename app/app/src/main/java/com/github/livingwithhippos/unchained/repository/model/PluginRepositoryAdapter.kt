@@ -1,10 +1,13 @@
 package com.github.livingwithhippos.unchained.repository.model
 
+import android.os.Parcelable
 import androidx.recyclerview.widget.DiffUtil
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.utilities.DataBindingAdapter
+import kotlinx.parcelize.Parcelize
 
 sealed class RepositoryListItem {
+    @Parcelize
     data class Repository(
         // primary id
         val link: String,
@@ -12,7 +15,7 @@ sealed class RepositoryListItem {
         val version: Double,
         val description: String,
         val author: String
-    ) : RepositoryListItem()
+    ) : RepositoryListItem(), Parcelable
 
     data class Plugin(
         // repo link used as foreign key to differentiate plugins

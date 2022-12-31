@@ -31,10 +31,23 @@
                 android:textAlignment="center"
                 android:background="?attr/colorPrimary"
                 android:textColor="?attr/colorOnPrimary"
-                app:layout_constraintBottom_toTopOf="@id/tvAuthor"
+                app:layout_constraintBottom_toTopOf="@id/progressBar"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.progressindicator.LinearProgressIndicator
+                android:id="@+id/progressBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:indeterminate="false"
+                android:progress="0"
+                app:indicatorColor="?attr/colorPrimary"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvName"
+                app:layout_constraintBottom_toTopOf="@id/tvAuthor"
+                />
 
             <TextView
                 android:id="@+id/tvAuthor"
@@ -48,7 +61,7 @@
                 app:layout_constraintBottom_toTopOf="@id/tvDescription"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvName" />
+                app:layout_constraintTop_toBottomOf="@id/progressBar" />
 
             <TextView
                 android:id="@+id/tvDescription"
