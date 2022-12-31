@@ -75,7 +75,7 @@ class RepositoryViewModel @Inject constructor(
         viewModelScope.launch {
             val result = diskPluginsRepository.removePlugin(context, plugin.repository, plugin.name)
             pluginsRepositoryLiveData.postEvent(
-                PluginRepositoryEvent.Uninstalled(result)
+                PluginRepositoryEvent.Uninstalled(if (result) 1 else 0)
             )
         }
     }
@@ -182,7 +182,7 @@ sealed class PluginRepositoryEvent {
     data class Installation(val result: InstallResult): PluginRepositoryEvent()
 
     data class MultipleInstallation(val downloadErrors: Int, val installResults: List<InstallResult>): PluginRepositoryEvent()
-    data class Uninstalled(val result: Boolean): PluginRepositoryEvent()
+    data class Uninstalled(val quantity: Int): PluginRepositoryEvent()
     object Updated : PluginRepositoryEvent()
     data class FullData(
         val dbData: Map<RepositoryInfo, Map<RepositoryPlugin, List<PluginVersion>>>,

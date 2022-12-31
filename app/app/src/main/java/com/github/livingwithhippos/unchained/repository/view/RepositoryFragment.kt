@@ -76,8 +76,8 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
                         }
                     }
                     is PluginRepositoryEvent.Uninstalled -> {
-                        if (it.result) {
-                            context?.showToast(getString(R.string.plugin_removed, 1))
+                        if (it.quantity >= 0) {
+                            context?.showToast(getString(R.string.plugin_removed, it.quantity))
                             // todo: better way to update a single value? Or check against local only without downloading?
                             binding.progressBar.isIndeterminate = true
                             viewModel.checkCurrentRepositories()
