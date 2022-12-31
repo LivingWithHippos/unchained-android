@@ -53,7 +53,7 @@ class ManageRepositoryDialogFragment : DialogFragment() {
                 viewModel.uninstallAllRepositoryPlugins(activity, repository)
             }
             view.findViewById<Button>(R.id.bUninstallRepo).setOnClickListener {
-                //viewModel.uninstallRepository(repository)
+                viewModel.uninstallRepository(activity, repository)
             }
 
             builder.setView(view)

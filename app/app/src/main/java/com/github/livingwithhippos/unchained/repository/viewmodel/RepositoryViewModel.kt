@@ -184,6 +184,18 @@ class RepositoryViewModel @Inject constructor(
             )
         }
     }
+
+    fun uninstallRepository(context: Context, repository: RepositoryListItem.Repository) {
+        viewModelScope.launch {
+            val pluginResult: Int = diskPluginsRepository.removeRepositoryPlugins(context, repository.link)
+            databasePluginsRepository.removeRepository(repository.link)
+            // use another event?
+            pluginsRepositoryLiveData.postEvent(
+                PluginRepositoryEvent.Uninstalled(pluginResult)
+            )
+        }
+
+    }
 }
 
 sealed class PluginRepositoryEvent {
