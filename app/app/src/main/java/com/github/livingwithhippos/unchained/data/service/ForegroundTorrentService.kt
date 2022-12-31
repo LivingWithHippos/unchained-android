@@ -1,5 +1,6 @@
 package com.github.livingwithhippos.unchained.data.service
 
+import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.PendingIntent
 import android.content.Intent
@@ -29,6 +30,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
+@SuppressLint("MissingPermission")
 class ForegroundTorrentService : LifecycleService() {
 
     @Inject
