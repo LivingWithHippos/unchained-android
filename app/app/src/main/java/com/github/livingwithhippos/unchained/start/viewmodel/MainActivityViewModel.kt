@@ -38,6 +38,7 @@ import com.github.livingwithhippos.unchained.data.repository.*
 import com.github.livingwithhippos.unchained.data.repository.PluginRepository.Companion.TYPE_UNCHAINED
 import com.github.livingwithhippos.unchained.lists.view.ListState
 import com.github.livingwithhippos.unchained.plugins.model.ScrapedItem
+import com.github.livingwithhippos.unchained.repository.viewmodel.PluginRepositoryEvent
 import com.github.livingwithhippos.unchained.search.viewmodel.SearchViewModel
 import com.github.livingwithhippos.unchained.statemachine.authentication.CurrentFSMAuthentication
 import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationEvent
@@ -53,27 +54,20 @@ import com.github.livingwithhippos.unchained.utilities.PLUGINS_PACK_FOLDER
 import com.github.livingwithhippos.unchained.utilities.PRIVATE_TOKEN
 import com.github.livingwithhippos.unchained.utilities.PreferenceKeys
 import com.github.livingwithhippos.unchained.utilities.SIGNATURE
-import com.github.livingwithhippos.unchained.utilities.UnzipUtils
 import com.github.livingwithhippos.unchained.utilities.download.DownloadWorker
-import com.github.livingwithhippos.unchained.utilities.extension.getDownloadedFileUri
 import com.github.livingwithhippos.unchained.utilities.extension.isMagnet
 import com.github.livingwithhippos.unchained.utilities.extension.isTorrent
 import com.github.livingwithhippos.unchained.utilities.postEvent
 import com.tinder.StateMachine
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.io.File
-import java.io.FileNotFoundException
-import java.io.IOException
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 import javax.inject.Inject
@@ -481,7 +475,8 @@ class MainActivityViewModel @Inject constructor(
     fun checkCredentials() {
         viewModelScope.launch {
             // todo: how to do this
-            val credentials: Credentials.CurrentCredential? = protoStore.credentialsFlow.firstOrNull { it.accessToken.isNotBlank() }
+            val credentials: Credentials.CurrentCredential? =
+                protoStore.credentialsFlow.firstOrNull { it.accessToken.isNotBlank() }
             if (credentials == null) {
                 recheckAuthenticationStatus()
             } else {
@@ -1268,8 +1263,20 @@ class MainActivityViewModel @Inject constructor(
     private fun postPluginInstallResult(result: InstallResult) {
         when (result) {
             is InstallResult.Error -> messageLiveData.postValue(Event(MainActivityMessage.StringID(R.string.plugin_install_not_installed)))
-            InstallResult.Incompatible -> messageLiveData.postValue(Event(MainActivityMessage.StringID(R.string.plugin_install_incompatible)))
-            InstallResult.Installed -> messageLiveData.postValue(Event(MainActivityMessage.StringID(R.string.plugin_install_installed)))
+            InstallResult.Incompatible -> messageLiveData.postValue(
+                Event(
+                    MainActivityMessage.StringID(
+                        R.string.plugin_install_incompatible
+                    )
+                )
+            )
+            InstallResult.Installed -> messageLiveData.postValue(
+                Event(
+                    MainActivityMessage.StringID(
+                        R.string.plugin_install_installed
+                    )
+                )
+            )
         }
     }
 
