@@ -461,4 +461,5 @@
     <string name="uninstall_repo">Désinstaller le dépôt</string>
     <string name="plugins_installed_format">%1$d plugins installés</string>
     <string name="plugins_install_results_format">%1$d plugins installés, %2$d erreurs</string>
+    <string name="user_logged_out">L\'utilisateur est déconnecté, veuillez redémarrer l\'application</string>
 </resources>

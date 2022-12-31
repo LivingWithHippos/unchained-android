@@ -462,4 +462,5 @@
     <string name="uninstall_repo">Disinstalla repository</string>
     <string name="plugins_installed_format">Installati %1$d plugins</string>
     <string name="plugins_install_results_format">%1$d plugins installati, %2$d errori</string>
+    <string name="user_logged_out">Utente disconnesso, si prega di riavviare</string>
 </resources>
