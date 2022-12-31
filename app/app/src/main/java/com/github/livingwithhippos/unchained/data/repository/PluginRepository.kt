@@ -183,6 +183,27 @@ class PluginRepository @Inject constructor() {
         }
     }
 
+    fun removeRepositoryPlugins(context: Context, repositoryUrl: String): Int {
+        val repoName = getRepositoryString(repositoryUrl)
+        return try {
+            val pluginFolder = context.getDir("plugins", Context.MODE_PRIVATE)
+            val repoFolder = File(pluginFolder, repoName)
+            if (repoFolder.exists()) {
+                val pluginCounter = repoFolder.listFiles()?.size ?: 0
+                val deleted = repoFolder.deleteRecursively()
+                if (deleted)
+                    return pluginCounter
+                else
+                    return 0
+            } else
+                Timber.d("No plugin folder for repository $repositoryUrl found")
+            0
+        } catch (e: SecurityException) {
+            Timber.e("Security exception deleting plugins files: ${e.message}")
+            -1
+        }
+    }
+
     suspend fun addExternalPlugin(
         pluginsFolder: File,
         pluginFile: File

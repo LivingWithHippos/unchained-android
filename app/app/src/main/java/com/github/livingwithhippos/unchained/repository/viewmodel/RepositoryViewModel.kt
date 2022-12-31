@@ -175,6 +175,15 @@ class RepositoryViewModel @Inject constructor(
             }
         }
     }
+
+    fun uninstallAllRepositoryPlugins(context: Context, repository: RepositoryListItem.Repository) {
+        viewModelScope.launch {
+            val result = diskPluginsRepository.removeRepositoryPlugins(context, repository.link)
+            pluginsRepositoryLiveData.postEvent(
+                PluginRepositoryEvent.Uninstalled(result)
+            )
+        }
+    }
 }
 
 sealed class PluginRepositoryEvent {
