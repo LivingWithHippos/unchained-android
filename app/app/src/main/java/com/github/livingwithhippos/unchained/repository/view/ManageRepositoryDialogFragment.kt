@@ -76,10 +76,10 @@ class ManageRepositoryDialogFragment : DialogFragment() {
             when (it.peekContent()) {
                 is PluginRepositoryEvent.MultipleInstallation -> this.dismiss()
                 is PluginRepositoryEvent.Uninstalled -> this.dismiss()
-                // is PluginRepositoryEvent.Installation -> TODO()
-                // PluginRepositoryEvent.Updated -> TODO()
-                // is PluginRepositoryEvent.FullData -> TODO()
                 else -> {
+                    // is PluginRepositoryEvent.Installation -> TODO()
+                    // PluginRepositoryEvent.Updated -> TODO()
+                    // is PluginRepositoryEvent.FullData -> TODO()
                     // do nothing
                 }
             }
