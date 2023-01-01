@@ -10,10 +10,7 @@ import com.github.livingwithhippos.unchained.data.model.RepositoryPlugin
 import com.github.livingwithhippos.unchained.data.repository.*
 import com.github.livingwithhippos.unchained.plugins.model.Plugin
 import com.github.livingwithhippos.unchained.repository.model.RepositoryListItem
-import com.github.livingwithhippos.unchained.utilities.EitherResult
-import com.github.livingwithhippos.unchained.utilities.Event
-import com.github.livingwithhippos.unchained.utilities.getRepositoryString
-import com.github.livingwithhippos.unchained.utilities.postEvent
+import com.github.livingwithhippos.unchained.utilities.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -188,7 +185,9 @@ class RepositoryViewModel @Inject constructor(
     fun uninstallRepository(context: Context, repository: RepositoryListItem.Repository) {
         viewModelScope.launch {
             val pluginResult: Int = diskPluginsRepository.removeRepositoryPlugins(context, repository.link)
-            databasePluginsRepository.removeRepository(repository.link)
+            // avoid removing from the db the default repository
+            if (repository.link != PLUGINS_REPOSITORY_LINK)
+                databasePluginsRepository.removeRepository(repository.link)
             // use another event?
             pluginsRepositoryLiveData.postEvent(
                 PluginRepositoryEvent.Uninstalled(pluginResult)
