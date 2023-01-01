@@ -34,8 +34,17 @@ import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkExceptio
 import com.github.livingwithhippos.unchained.data.model.User
 import com.github.livingwithhippos.unchained.data.model.UserAction
 import com.github.livingwithhippos.unchained.data.model.cache.InstantAvailability
-import com.github.livingwithhippos.unchained.data.repository.*
+import com.github.livingwithhippos.unchained.data.repository.AuthenticationRepository
+import com.github.livingwithhippos.unchained.data.repository.CustomDownloadRepository
+import com.github.livingwithhippos.unchained.data.repository.HostsRepository
+import com.github.livingwithhippos.unchained.data.repository.InstallResult
+import com.github.livingwithhippos.unchained.data.repository.KodiDeviceRepository
+import com.github.livingwithhippos.unchained.data.repository.PluginRepository
 import com.github.livingwithhippos.unchained.data.repository.PluginRepository.Companion.TYPE_UNCHAINED
+import com.github.livingwithhippos.unchained.data.repository.TorrentsRepository
+import com.github.livingwithhippos.unchained.data.repository.UpdateRepository
+import com.github.livingwithhippos.unchained.data.repository.UserRepository
+import com.github.livingwithhippos.unchained.data.repository.VariousApiRepository
 import com.github.livingwithhippos.unchained.lists.view.ListState
 import com.github.livingwithhippos.unchained.plugins.model.ScrapedItem
 import com.github.livingwithhippos.unchained.search.viewmodel.SearchViewModel
@@ -56,6 +65,7 @@ import com.github.livingwithhippos.unchained.utilities.SIGNATURE
 import com.github.livingwithhippos.unchained.utilities.download.DownloadWorker
 import com.github.livingwithhippos.unchained.utilities.extension.isMagnet
 import com.github.livingwithhippos.unchained.utilities.extension.isTorrent
+import com.github.livingwithhippos.unchained.utilities.postEvent
 import com.tinder.StateMachine
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -821,6 +831,7 @@ class MainActivityViewModel @Inject constructor(
         }
     }
 
+    @Suppress("DEPRECATION")
     private fun checkConnectivity(context: Context) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
             val connectivityManager =

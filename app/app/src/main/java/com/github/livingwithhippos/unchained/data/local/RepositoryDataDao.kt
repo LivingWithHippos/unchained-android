@@ -1,7 +1,15 @@
 package com.github.livingwithhippos.unchained.data.local
 
-import androidx.room.*
-import com.github.livingwithhippos.unchained.data.model.*
+import androidx.room.ColumnInfo
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import com.github.livingwithhippos.unchained.data.model.PluginVersion
+import com.github.livingwithhippos.unchained.data.model.Repository
+import com.github.livingwithhippos.unchained.data.model.RepositoryInfo
+import com.github.livingwithhippos.unchained.data.model.RepositoryPlugin
 import com.github.livingwithhippos.unchained.utilities.PLUGINS_REPOSITORY_LINK
 
 @Dao

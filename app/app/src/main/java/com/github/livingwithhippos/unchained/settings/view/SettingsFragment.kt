@@ -123,7 +123,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         }
 
         viewModel.eventLiveData.observe(viewLifecycleOwner) {
-            when (val content = it.getContentIfNotHandled()) {
+            when (it.getContentIfNotHandled()) {
                 SettingEvent.Logout -> {
                     context?.showToast(R.string.user_logged_out)
                     activity?.finishAffinity()
