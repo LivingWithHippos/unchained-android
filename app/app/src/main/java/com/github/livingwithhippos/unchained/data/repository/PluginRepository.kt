@@ -25,7 +25,6 @@ class PluginRepository @Inject constructor() {
         .build()
         .adapter(Plugin::class.java)
 
-
     suspend fun getPlugins(context: Context): Pair<List<Plugin>, Int> =
         withContext(Dispatchers.IO) {
 
@@ -290,7 +289,6 @@ class PluginRepository @Inject constructor() {
             // this will overwrite the file, no deletion needed
             // utf 8 is enough?
             file.writeText(pluginAdapter.toJson(plugin))
-
         } catch (exception: IOException) {
             Timber.e("Error saving into memory the plugin $filename: ${exception.message}")
             return@withContext InstallResult.Error(exception)

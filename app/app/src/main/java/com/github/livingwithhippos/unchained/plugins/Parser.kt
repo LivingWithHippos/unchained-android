@@ -783,7 +783,6 @@ class Parser(
          * 2.3: added optional table index to table parsers (for tables with no specific class/id)
          */
         const val PLUGIN_ENGINE_VERSION: Float = 2.3f
-
     }
 }
 

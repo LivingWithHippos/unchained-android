@@ -6,7 +6,6 @@ import androidx.room.ForeignKey
 import androidx.room.ForeignKey.CASCADE
 import androidx.room.PrimaryKey
 
-
 @Entity(tableName = "repository")
 data class Repository(
     @PrimaryKey

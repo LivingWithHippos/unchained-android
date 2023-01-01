@@ -255,11 +255,11 @@ class NewDownloadFragment : UnchainedFragment() {
                          * DownloadManager does not support insecure (https) links anymore
                          * to add support for it, follow these instructions
                          * [https://stackoverflow.com/a/50834600]
-                        val secureLink = if (link.startsWith("http://")) link.replaceFirst(
-                        "http:",
-                        "https:"
-                        ) else link
-                        downloadTorrent(Uri.parse(secureLink))
+                         val secureLink = if (link.startsWith("http://")) link.replaceFirst(
+                         "http:",
+                         "https:"
+                         ) else link
+                         downloadTorrent(Uri.parse(secureLink))
                          */
                         // downloadTorrentToCache(binding, link)
                     }

@@ -109,5 +109,4 @@ class DatabasePluginRepository @Inject constructor(
         }
         return pluginsMap
     }
-
 }

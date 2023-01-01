@@ -24,7 +24,6 @@ class RepositoryViewModel @Inject constructor(
 ) : ViewModel() {
     val pluginsRepositoryLiveData = MutableLiveData<Event<PluginRepositoryEvent>>()
 
-
     fun checkCurrentRepositories() {
         viewModelScope.launch {
             val repositories = databasePluginsRepository.getRepositoriesLink()
@@ -121,7 +120,6 @@ class RepositoryViewModel @Inject constructor(
                 databasePluginsRepository.getLatestCompatibleRepositoryPlugins(repository.link)
             installMultiplePlugins(context, plugins)
         }
-
     }
 
     private suspend fun installMultiplePlugins(context: Context, plugins: List<PluginVersion>) {
@@ -199,7 +197,6 @@ class RepositoryViewModel @Inject constructor(
                 PluginRepositoryEvent.Uninstalled(pluginResult)
             )
         }
-
     }
 }
 

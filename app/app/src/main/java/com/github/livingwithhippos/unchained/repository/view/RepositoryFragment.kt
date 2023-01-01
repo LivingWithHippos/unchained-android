@@ -143,71 +143,24 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
             val hashedRepoName = getRepositoryString(repository.key.link)
             // no installed plugins from this repo
             if (installedData.pluginsData[hashedRepoName] == null) {
-                plugins.addAll(repository.value.map { plug ->
-                    val pickedVersion: PluginVersion?
-                    // check online plugin compatible versions
-                    val latestVersion: PluginVersion? = plug.value.maxByOrNull { it.version }
-                    if (latestVersion == null) {
-                        Timber.w("BAD PACKAGER! DO NOT RELEASE PLUGINS WITHOUT VERSIONS!  Info: ${plug.key}")
-                        pickedVersion = PluginVersion(
-                            repository = repository.key.link,
-                            plugin = plug.key.name,
-                            version = 0F,
-                            engine = 0.0,
-                            link = repository.key.link,
-                        )
-                    } else {
-                        val latestCompatibleVersion: PluginVersion? =
-                            plug.value.filter { isCompatible(it.engine) }.maxByOrNull { it.version }
-                        pickedVersion = latestCompatibleVersion ?: latestVersion
-                    }
-
-                    val pickedStatus = when {
-                        isCompatible(pickedVersion.engine) -> PluginStatus.isNew
-                        pickedVersion.engine == 0.0 -> PluginStatus.unknown
-                        else -> PluginStatus.incompatible
-                    }
-
-                    getPluginItemFromVersion(pickedVersion, pickedStatus)
-                })
-            } else {
-                // check against installed plugins from this repo
-                plugins.addAll(repository.value.map { onlinePlugin ->
-                    // latest available version
-                    val latestVersion: PluginVersion? =
-                        onlinePlugin.value.maxByOrNull { it.version }
-                    // latest available compatible version
-                    val latestCompatibleVersion: PluginVersion? =
-                        onlinePlugin.value.filter { isCompatible(it.engine) }
-                            .maxByOrNull { it.version }
-                    // installed version of the online plugin
-                    val installedPlugin: Plugin? =
-                        installedData.pluginsData[hashedRepoName]?.firstOrNull {
-                            it.name.equals(
-                                onlinePlugin.key.name,
-                                ignoreCase = true
-                            )
-                        }
-                    // check if this plugin has available versions (it should)
-                    if (latestVersion == null) {
-                        Timber.w("BAD PACKAGER! DO NOT RELEASE PLUGINS WITHOUT VERSIONS!  Info: ${onlinePlugin.key}")
-                        val pickedVersion: PluginVersion = if (installedPlugin == null) {
-                            PluginVersion(
+                plugins.addAll(
+                    repository.value.map { plug ->
+                        val pickedVersion: PluginVersion?
+                        // check online plugin compatible versions
+                        val latestVersion: PluginVersion? = plug.value.maxByOrNull { it.version }
+                        if (latestVersion == null) {
+                            Timber.w("BAD PACKAGER! DO NOT RELEASE PLUGINS WITHOUT VERSIONS!  Info: ${plug.key}")
+                            pickedVersion = PluginVersion(
                                 repository = repository.key.link,
-                                plugin = onlinePlugin.key.name,
+                                plugin = plug.key.name,
                                 version = 0F,
                                 engine = 0.0,
                                 link = repository.key.link,
                             )
                         } else {
-                            Timber.w("BAD PACKAGER! DO NOT REMOVE VERSIONS, CREATE A NEW VERSION INSTEAD!  Info: ${onlinePlugin.key}")
-                            PluginVersion(
-                                repository = repository.key.link,
-                                plugin = onlinePlugin.key.name,
-                                version = installedPlugin.version,
-                                engine = 0.0,
-                                link = repository.key.link,
-                            )
+                            val latestCompatibleVersion: PluginVersion? =
+                                plug.value.filter { isCompatible(it.engine) }.maxByOrNull { it.version }
+                            pickedVersion = latestCompatibleVersion ?: latestVersion
                         }
 
                         val pickedStatus = when {
@@ -215,46 +168,97 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
                             pickedVersion.engine == 0.0 -> PluginStatus.unknown
                             else -> PluginStatus.incompatible
                         }
-                        getPluginItemFromVersion(pickedVersion, pickedStatus)
-                    } else {
-                        // at least a version from the repo is available, check compatibility and install status
 
-                        // plugin not installed
-                        if (installedPlugin == null) {
-                            // no compatible versions
-                            if (latestCompatibleVersion == null) {
-                                getPluginItemFromVersion(latestVersion, PluginStatus.incompatible)
-                            } else {
-                                // latest compatible version
-                                getPluginItemFromVersion(
-                                    latestCompatibleVersion,
-                                    PluginStatus.isNew
+                        getPluginItemFromVersion(pickedVersion, pickedStatus)
+                    }
+                )
+            } else {
+                // check against installed plugins from this repo
+                plugins.addAll(
+                    repository.value.map { onlinePlugin ->
+                        // latest available version
+                        val latestVersion: PluginVersion? =
+                            onlinePlugin.value.maxByOrNull { it.version }
+                        // latest available compatible version
+                        val latestCompatibleVersion: PluginVersion? =
+                            onlinePlugin.value.filter { isCompatible(it.engine) }
+                                .maxByOrNull { it.version }
+                        // installed version of the online plugin
+                        val installedPlugin: Plugin? =
+                            installedData.pluginsData[hashedRepoName]?.firstOrNull {
+                                it.name.equals(
+                                    onlinePlugin.key.name,
+                                    ignoreCase = true
                                 )
                             }
-                        } else {
-                            // plugin installed
-                            if (latestCompatibleVersion == null) {
-                                Timber.w("BAD PACKAGER! DO NOT REMOVE VERSIONS, CREATE A NEW VERSION INSTEAD!  Info: ${onlinePlugin.key}, installed version is ${installedPlugin.version}")
-                                getPluginItemFromVersion(
-                                    latestVersion,
-                                    PluginStatus.hasIncompatibleUpdate
+                        // check if this plugin has available versions (it should)
+                        if (latestVersion == null) {
+                            Timber.w("BAD PACKAGER! DO NOT RELEASE PLUGINS WITHOUT VERSIONS!  Info: ${onlinePlugin.key}")
+                            val pickedVersion: PluginVersion = if (installedPlugin == null) {
+                                PluginVersion(
+                                    repository = repository.key.link,
+                                    plugin = onlinePlugin.key.name,
+                                    version = 0F,
+                                    engine = 0.0,
+                                    link = repository.key.link,
                                 )
                             } else {
-                                if (latestCompatibleVersion.version > installedPlugin.version) {
+                                Timber.w("BAD PACKAGER! DO NOT REMOVE VERSIONS, CREATE A NEW VERSION INSTEAD!  Info: ${onlinePlugin.key}")
+                                PluginVersion(
+                                    repository = repository.key.link,
+                                    plugin = onlinePlugin.key.name,
+                                    version = installedPlugin.version,
+                                    engine = 0.0,
+                                    link = repository.key.link,
+                                )
+                            }
+
+                            val pickedStatus = when {
+                                isCompatible(pickedVersion.engine) -> PluginStatus.isNew
+                                pickedVersion.engine == 0.0 -> PluginStatus.unknown
+                                else -> PluginStatus.incompatible
+                            }
+                            getPluginItemFromVersion(pickedVersion, pickedStatus)
+                        } else {
+                            // at least a version from the repo is available, check compatibility and install status
+
+                            // plugin not installed
+                            if (installedPlugin == null) {
+                                // no compatible versions
+                                if (latestCompatibleVersion == null) {
+                                    getPluginItemFromVersion(latestVersion, PluginStatus.incompatible)
+                                } else {
+                                    // latest compatible version
                                     getPluginItemFromVersion(
                                         latestCompatibleVersion,
-                                        PluginStatus.hasUpdate
+                                        PluginStatus.isNew
+                                    )
+                                }
+                            } else {
+                                // plugin installed
+                                if (latestCompatibleVersion == null) {
+                                    Timber.w("BAD PACKAGER! DO NOT REMOVE VERSIONS, CREATE A NEW VERSION INSTEAD!  Info: ${onlinePlugin.key}, installed version is ${installedPlugin.version}")
+                                    getPluginItemFromVersion(
+                                        latestVersion,
+                                        PluginStatus.hasIncompatibleUpdate
                                     )
                                 } else {
-                                    getPluginItemFromVersion(
-                                        latestCompatibleVersion,
-                                        PluginStatus.updated
-                                    )
+                                    if (latestCompatibleVersion.version > installedPlugin.version) {
+                                        getPluginItemFromVersion(
+                                            latestCompatibleVersion,
+                                            PluginStatus.hasUpdate
+                                        )
+                                    } else {
+                                        getPluginItemFromVersion(
+                                            latestCompatibleVersion,
+                                            PluginStatus.updated
+                                        )
+                                    }
                                 }
                             }
                         }
                     }
-                })
+                )
             }
 
             adapter.submitList(plugins)

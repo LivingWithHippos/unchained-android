@@ -17,7 +17,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import dagger.hilt.android.AndroidEntryPoint
 
-
 @AndroidEntryPoint
 class ManageRepositoryDialogFragment : DialogFragment() {
 
@@ -88,7 +87,6 @@ class ManageRepositoryDialogFragment : DialogFragment() {
 
         return super.onCreateView(inflater, container, savedInstanceState)
     }
-
 
     companion object {
         const val REPOSITORY_KEY = "key_repository"

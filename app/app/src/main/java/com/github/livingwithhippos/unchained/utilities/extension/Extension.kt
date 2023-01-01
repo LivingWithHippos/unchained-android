@@ -109,13 +109,13 @@ fun Fragment.getClipboardText(): String {
     if (
         clipboard.hasPrimaryClip() &&
         (
+            clipboard.primaryClipDescription?.hasMimeType(
+                MIMETYPE_TEXT_PLAIN
+            ) == true ||
                 clipboard.primaryClipDescription?.hasMimeType(
-                    MIMETYPE_TEXT_PLAIN
-                ) == true ||
-                        clipboard.primaryClipDescription?.hasMimeType(
-                            MIMETYPE_TEXT_HTML
-                        ) == true
-                )
+                MIMETYPE_TEXT_HTML
+            ) == true
+            )
     ) {
         val item = clipboard.primaryClip!!.getItemAt(0)
         text = item.text.toString()

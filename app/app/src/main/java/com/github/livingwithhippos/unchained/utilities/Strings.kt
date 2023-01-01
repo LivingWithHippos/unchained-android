@@ -2,7 +2,6 @@ package com.github.livingwithhippos.unchained.utilities
 
 import com.github.livingwithhippos.unchained.data.repository.PluginRepository
 
-
 fun getRepositoryString(repository: String): String {
     return repository.lowercase().hashCode().toString()
 }
