@@ -128,6 +128,8 @@ data class TableParser(
     val className: String?,
     @Json(name = "id")
     val idName: String?,
+    @Json(name = "index")
+    val index: Int?,
     @Json(name = "columns")
     val columns: Columns
 ) : Parcelable

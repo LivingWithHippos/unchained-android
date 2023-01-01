@@ -183,6 +183,16 @@ class Parser(
                 tableParser.idName != null -> doc.getElementById(tableParser.idName)
                 tableParser.className != null -> doc.getElementsByClass(tableParser.className)
                     .firstOrNull()
+                tableParser.index != null -> {
+                    // INDEXES STARTS FROM ZERO
+                    val tables = doc.getElementsByTag("table")
+                    if (tables.size - 1 >= tableParser.index)
+                        tables[tableParser.index]
+                    else {
+                        Timber.w("No table found for index ${tableParser.index}, found ${tables.size} tables")
+                        return emptyList()
+                    }
+                }
                 else -> doc.getElementsByTag("table").first()
             } ?: return emptyList()
 
@@ -370,6 +380,16 @@ class Parser(
                 tableLink.idName != null -> doc.getElementById(tableLink.idName)
                 tableLink.className != null -> doc.getElementsByClass(tableLink.className)
                     .firstOrNull()
+                tableLink.index != null -> {
+                    // INDEXES STARTS FROM ZERO
+                    val tables = doc.getElementsByTag("table")
+                    if (tables.size - 1 >= tableLink.index)
+                        tables[tableLink.index]
+                    else {
+                        Timber.w("No table found for index ${tableLink.index}, found ${tables.size} tables")
+                        return emptyList()
+                    }
+                }
                 else -> doc.getElementsByTag("table").first()
             } ?: return emptyList()
 
@@ -760,8 +780,9 @@ class Parser(
          * 2.0: use array for all regexps
          * 2.1: added direct parsing mode
          * 2.2: added entry class to direct parsing mode (required)
+         * 2.3: added optional table index to table parsers (for tables with no specific class/id)
          */
-        const val PLUGIN_ENGINE_VERSION: Float = 2.2f
+        const val PLUGIN_ENGINE_VERSION: Float = 2.3f
 
     }
 }
