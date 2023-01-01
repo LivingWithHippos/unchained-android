@@ -5,22 +5,22 @@ import com.github.livingwithhippos.unchained.data.model.PluginVersion
 import com.github.livingwithhippos.unchained.data.model.Repository
 import com.github.livingwithhippos.unchained.data.model.RepositoryInfo
 import com.github.livingwithhippos.unchained.data.model.RepositoryPlugin
-import com.github.livingwithhippos.unchained.plugins.Parser.Companion.PLUGIN_ENGINE_VERSION
 import com.github.livingwithhippos.unchained.plugins.model.isCompatible
 import com.github.livingwithhippos.unchained.repository.model.JsonPluginRepository
-import timber.log.Timber
 import javax.inject.Inject
 
 class DatabasePluginRepository @Inject constructor(
     private val repositoryDataDao: RepositoryDataDao
 ) {
     suspend fun getFullRepositoriesData(): Map<RepositoryInfo, Map<RepositoryPlugin, List<PluginVersion>>> {
-        val pluginsByRepo: Map<RepositoryInfo, List<RepositoryPlugin>> = repositoryDataDao.getPlugins()
-        val versionByPlugin: Map<RepositoryPlugin, List<PluginVersion>> = repositoryDataDao.getPluginsVersions()
-        val pluginsMap = mutableMapOf<RepositoryInfo, Map<RepositoryPlugin,List<PluginVersion>>>()
+        val pluginsByRepo: Map<RepositoryInfo, List<RepositoryPlugin>> =
+            repositoryDataDao.getPlugins()
+        val versionByPlugin: Map<RepositoryPlugin, List<PluginVersion>> =
+            repositoryDataDao.getPluginsVersions()
+        val pluginsMap = mutableMapOf<RepositoryInfo, Map<RepositoryPlugin, List<PluginVersion>>>()
         for (entry in pluginsByRepo) {
             // val repo = entry.key
-            val repoPlugins = mutableMapOf<RepositoryPlugin,List<PluginVersion>>()
+            val repoPlugins = mutableMapOf<RepositoryPlugin, List<PluginVersion>>()
             for (plugin in entry.value) {
                 val pluginVersions: List<PluginVersion>? = versionByPlugin[plugin]
                 if (pluginVersions != null)
@@ -92,12 +92,14 @@ class DatabasePluginRepository @Inject constructor(
     }
 
     suspend fun getFilteredRepositoriesData(query: String): Map<RepositoryInfo, Map<RepositoryPlugin, List<PluginVersion>>> {
-        val pluginsByRepo: Map<RepositoryInfo, List<RepositoryPlugin>> = repositoryDataDao.getPlugins("%$query%")
-        val versionByPlugin: Map<RepositoryPlugin, List<PluginVersion>> = repositoryDataDao.getPluginsVersions()
-        val pluginsMap = mutableMapOf<RepositoryInfo, Map<RepositoryPlugin,List<PluginVersion>>>()
+        val pluginsByRepo: Map<RepositoryInfo, List<RepositoryPlugin>> =
+            repositoryDataDao.getPlugins("%$query%")
+        val versionByPlugin: Map<RepositoryPlugin, List<PluginVersion>> =
+            repositoryDataDao.getPluginsVersions()
+        val pluginsMap = mutableMapOf<RepositoryInfo, Map<RepositoryPlugin, List<PluginVersion>>>()
         for (entry in pluginsByRepo) {
             // val repo = entry.key
-            val repoPlugins = mutableMapOf<RepositoryPlugin,List<PluginVersion>>()
+            val repoPlugins = mutableMapOf<RepositoryPlugin, List<PluginVersion>>()
             for (plugin in entry.value) {
                 val pluginVersions: List<PluginVersion>? = versionByPlugin[plugin]
                 if (pluginVersions != null)

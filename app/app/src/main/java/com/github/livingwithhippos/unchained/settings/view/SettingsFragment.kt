@@ -25,7 +25,6 @@ import com.github.livingwithhippos.unchained.utilities.PLUGINS_URL
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -51,7 +50,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 val contentResolver = requireContext().contentResolver
 
                 val takeFlags: Int = Intent.FLAG_GRANT_READ_URI_PERMISSION or
-                    Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                        Intent.FLAG_GRANT_WRITE_URI_PERMISSION
 
                 contentResolver.takePersistableUriPermission(it, takeFlags)
 
@@ -124,7 +123,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         }
 
         viewModel.eventLiveData.observe(viewLifecycleOwner) {
-            when(val content = it.getContentIfNotHandled()) {
+            when (val content = it.getContentIfNotHandled()) {
                 SettingEvent.Logout -> {
                     context?.showToast(R.string.user_logged_out)
                     activity?.finishAffinity();

@@ -3,8 +3,6 @@ package com.github.livingwithhippos.unchained.search.view
 import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
@@ -13,18 +11,13 @@ import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import androidx.annotation.MenuRes
 import androidx.appcompat.widget.PopupMenu
-import androidx.core.view.MenuHost
-import androidx.core.view.MenuProvider
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.github.livingwithhippos.unchained.R
-import com.github.livingwithhippos.unchained.authentication.view.AuthenticationFragmentDirections
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.data.model.cache.InstantAvailability
-import com.github.livingwithhippos.unchained.data.repository.DownloadResult
 import com.github.livingwithhippos.unchained.databinding.FragmentSearchBinding
 import com.github.livingwithhippos.unchained.folderlist.view.FolderListFragment
 import com.github.livingwithhippos.unchained.plugins.ParserResult
@@ -34,21 +27,14 @@ import com.github.livingwithhippos.unchained.search.model.SearchItemAdapter
 import com.github.livingwithhippos.unchained.search.model.SearchItemListener
 import com.github.livingwithhippos.unchained.search.viewmodel.SearchViewModel
 import com.github.livingwithhippos.unchained.utilities.MAGNET_PATTERN
-import com.github.livingwithhippos.unchained.utilities.PLUGINS_PACK_FOLDER
-import com.github.livingwithhippos.unchained.utilities.PLUGINS_PACK_LINK
-import com.github.livingwithhippos.unchained.utilities.PLUGINS_PACK_NAME
-import com.github.livingwithhippos.unchained.utilities.PLUGINS_URL
 import com.github.livingwithhippos.unchained.utilities.extension.delayedScrolling
 import com.github.livingwithhippos.unchained.utilities.extension.getThemedDrawable
 import com.github.livingwithhippos.unchained.utilities.extension.hideKeyboard
-import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.google.android.material.button.MaterialButton
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.io.File
 
 @AndroidEntryPoint
 class SearchFragment : UnchainedFragment(), SearchItemListener {
@@ -134,7 +120,8 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
         // load the sorting preference if set
         val sortTag = viewModel.getListSortPreference()
         val sortDrawableID = getSortingDrawable(sortTag)
-        (binding.bSorting as MaterialButton).icon = requireContext().getThemedDrawable(sortDrawableID)
+        (binding.bSorting as MaterialButton).icon =
+            requireContext().getThemedDrawable(sortDrawableID)
 
         binding.bSorting.setOnClickListener {
             showSortingPopup(it, R.menu.sorting_popup, adapter, binding.rvSearchList)

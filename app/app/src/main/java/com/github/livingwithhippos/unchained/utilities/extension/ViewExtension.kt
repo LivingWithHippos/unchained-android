@@ -331,7 +331,7 @@ fun ImageView.setDrawableByExtension(fileName: String) {
 @BindingAdapter("mapPluginStatusDrawable")
 fun ImageView.setDrawableByPluginStatus(status: String) {
 
-    return when(status) {
+    return when (status) {
         PluginStatus.updated -> this.setImageResource(R.drawable.icon_check)
         PluginStatus.hasUpdate -> this.setImageResource(R.drawable.icon_reload)
         PluginStatus.hasIncompatibleUpdate -> this.setImageResource(R.drawable.icon_close)

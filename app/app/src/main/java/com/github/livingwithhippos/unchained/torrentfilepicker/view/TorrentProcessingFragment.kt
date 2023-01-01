@@ -70,7 +70,11 @@ class TorrentProcessingFragment : UnchainedFragment() {
                     // todo: add a loop so this is repeated if it fails, instead of wasting the fragment
                 }
                 is TorrentEvent.TorrentInfo -> {
-                    if (content.item.files?.size == 1 && "waiting_files_selection".equals(content.item.status, ignoreCase = true)) {
+                    if (content.item.files?.size == 1 && "waiting_files_selection".equals(
+                            content.item.status,
+                            ignoreCase = true
+                        )
+                    ) {
                         context?.showToast(R.string.single_torrent_file_available)
                         viewModel.triggerTorrentEvent(TorrentEvent.DownloadAll)
                         viewModel.startSelectionLoop()
@@ -159,7 +163,8 @@ class TorrentProcessingFragment : UnchainedFragment() {
                     binding.loadedLayout.visibility = View.INVISIBLE
                 }
                 is TorrentEvent.DownloadSelection -> {
-                    binding.tvStatus.text = getString(R.string.selecting_picked_files, content.filesNumber)
+                    binding.tvStatus.text =
+                        getString(R.string.selecting_picked_files, content.filesNumber)
                     binding.tvLoadingTorrent.visibility = View.INVISIBLE
                     binding.loadingLayout.visibility = View.VISIBLE
                     binding.loadedLayout.visibility = View.INVISIBLE

@@ -50,7 +50,8 @@ class RepositoryViewModel @Inject constructor(
 
     fun retrieveDatabaseRepositories(context: Context) {
         viewModelScope.launch {
-            val repo: Map<RepositoryInfo, Map<RepositoryPlugin, List<PluginVersion>>> = databasePluginsRepository.getFullRepositoriesData()
+            val repo: Map<RepositoryInfo, Map<RepositoryPlugin, List<PluginVersion>>> =
+                databasePluginsRepository.getFullRepositoriesData()
             val localPlugins: LocalPlugins = fetchInstalledPlugins(context)
             pluginsRepositoryLiveData.postEvent(
                 PluginRepositoryEvent.FullData(repo, localPlugins)
@@ -109,13 +110,15 @@ class RepositoryViewModel @Inject constructor(
         }
     }
 
-    private suspend fun fetchInstalledPlugins(context: Context) = diskPluginsRepository.getPluginsWithFolders(context)
+    private suspend fun fetchInstalledPlugins(context: Context) =
+        diskPluginsRepository.getPluginsWithFolders(context)
 
     fun installAllRepositoryPlugins(context: Context, repository: RepositoryListItem.Repository) {
         viewModelScope.launch {
             // get plugins from db
             // filter by repo and compatibility
-            val plugins = databasePluginsRepository.getLatestCompatibleRepositoryPlugins(repository.link)
+            val plugins =
+                databasePluginsRepository.getLatestCompatibleRepositoryPlugins(repository.link)
             installMultiplePlugins(context, plugins)
         }
 
@@ -152,20 +155,22 @@ class RepositoryViewModel @Inject constructor(
     fun updateAllRepositoryPlugins(context: Context, repository: RepositoryListItem.Repository) {
         viewModelScope.launch {
             val repoName = getRepositoryString(repository.link)
-            val remotePlugins: List<PluginVersion> = databasePluginsRepository.getLatestCompatibleRepositoryPlugins(repository.link)
-            val installedPlugins: List<Plugin>? = fetchInstalledPlugins(context).pluginsData[repoName]
+            val remotePlugins: List<PluginVersion> =
+                databasePluginsRepository.getLatestCompatibleRepositoryPlugins(repository.link)
+            val installedPlugins: List<Plugin>? =
+                fetchInstalledPlugins(context).pluginsData[repoName]
             if (installedPlugins.isNullOrEmpty()) {
                 installMultiplePlugins(context, emptyList())
             } else {
-               val updatablePlugins = remotePlugins.filter { remotePlugin ->
-                   val installedVersion: Plugin? = installedPlugins.firstOrNull{
+                val updatablePlugins = remotePlugins.filter { remotePlugin ->
+                    val installedVersion: Plugin? = installedPlugins.firstOrNull {
                         it.name == remotePlugin.plugin
                     }
 
-                   if (installedVersion == null)
-                       false
-                   else
-                       installedVersion.version < remotePlugin.version
+                    if (installedVersion == null)
+                        false
+                    else
+                        installedVersion.version < remotePlugin.version
                 }
 
                 installMultiplePlugins(context, updatablePlugins)
@@ -184,7 +189,8 @@ class RepositoryViewModel @Inject constructor(
 
     fun uninstallRepository(context: Context, repository: RepositoryListItem.Repository) {
         viewModelScope.launch {
-            val pluginResult: Int = diskPluginsRepository.removeRepositoryPlugins(context, repository.link)
+            val pluginResult: Int =
+                diskPluginsRepository.removeRepositoryPlugins(context, repository.link)
             // avoid removing from the db the default repository
             if (repository.link != PLUGINS_REPOSITORY_LINK)
                 databasePluginsRepository.removeRepository(repository.link)
@@ -199,13 +205,17 @@ class RepositoryViewModel @Inject constructor(
 
 sealed class PluginRepositoryEvent {
 
-    data class Installation(val result: InstallResult): PluginRepositoryEvent()
+    data class Installation(val result: InstallResult) : PluginRepositoryEvent()
 
-    data class MultipleInstallation(val downloadErrors: Int, val installResults: List<InstallResult>): PluginRepositoryEvent()
-    data class Uninstalled(val quantity: Int): PluginRepositoryEvent()
+    data class MultipleInstallation(
+        val downloadErrors: Int,
+        val installResults: List<InstallResult>
+    ) : PluginRepositoryEvent()
+
+    data class Uninstalled(val quantity: Int) : PluginRepositoryEvent()
     object Updated : PluginRepositoryEvent()
     data class FullData(
         val dbData: Map<RepositoryInfo, Map<RepositoryPlugin, List<PluginVersion>>>,
         val installedData: LocalPlugins
-        ) : PluginRepositoryEvent()
+    ) : PluginRepositoryEvent()
 }

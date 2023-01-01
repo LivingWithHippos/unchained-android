@@ -1,7 +1,10 @@
 package com.github.livingwithhippos.unchained.data.model
 
-import androidx.room.*
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.ForeignKey.CASCADE
+import androidx.room.PrimaryKey
 
 
 @Entity(tableName = "repository")
@@ -17,7 +20,7 @@ data class Repository(
         ForeignKey(
             entity = Repository::class,
             parentColumns = ["link"],
-            childColumns  = ["link"],
+            childColumns = ["link"],
             onDelete = CASCADE
         )
     ],
@@ -42,7 +45,7 @@ data class RepositoryInfo(
         ForeignKey(
             entity = RepositoryInfo::class,
             parentColumns = ["link"],
-            childColumns  = ["repository"],
+            childColumns = ["repository"],
             onDelete = CASCADE
         )
     ],
@@ -61,7 +64,7 @@ data class RepositoryPlugin(
         ForeignKey(
             entity = RepositoryPlugin::class,
             parentColumns = ["repository", "plugin_name"],
-            childColumns  = ["plugin_repository", "plugin"],
+            childColumns = ["plugin_repository", "plugin"],
             onDelete = CASCADE
         )
     ],

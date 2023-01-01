@@ -29,6 +29,7 @@ class KodiDeviceBottomSheet() : DialogFragment() {
     constructor(device: KodiDevice) : this() {
         currentDevice = device
     }
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let {
             val builder = MaterialAlertDialogBuilder(it)

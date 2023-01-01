@@ -6,7 +6,6 @@ import com.github.livingwithhippos.unchained.data.remote.CustomDownloadHelper
 import com.github.livingwithhippos.unchained.plugins.model.Plugin
 import com.github.livingwithhippos.unchained.repository.model.JsonPluginRepository
 import com.github.livingwithhippos.unchained.utilities.EitherResult
-import com.github.livingwithhippos.unchained.utilities.PLUGINS_REPOSITORY_LINK
 import com.github.livingwithhippos.unchained.utilities.extension.isWebUrl
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow

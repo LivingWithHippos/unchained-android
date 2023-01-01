@@ -24,9 +24,10 @@ class ManageRepositoryDialogFragment : DialogFragment() {
     private val viewModel: RepositoryViewModel by activityViewModels()
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        return activity?.let {activity ->
+        return activity?.let { activity ->
 
-            val repository = arguments?.getParcelable<RepositoryListItem.Repository>(REPOSITORY_KEY) ?: throw IllegalArgumentException("Repository cannot be null")
+            val repository = arguments?.getParcelable<RepositoryListItem.Repository>(REPOSITORY_KEY)
+                ?: throw IllegalArgumentException("Repository cannot be null")
 
             // Use the Builder class for convenient dialog construction
             val builder = MaterialAlertDialogBuilder(activity)

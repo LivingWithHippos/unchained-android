@@ -10,7 +10,6 @@ import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.local.ProtoStore
 import com.github.livingwithhippos.unchained.data.local.RepositoryDataDao
 import com.github.livingwithhippos.unchained.data.model.Repository
-import com.github.livingwithhippos.unchained.data.model.RepositoryInfo
 import com.github.livingwithhippos.unchained.utilities.PLUGINS_REPOSITORY_LINK
 import com.github.livingwithhippos.unchained.utilities.TelemetryManager
 import dagger.hilt.android.HiltAndroidApp

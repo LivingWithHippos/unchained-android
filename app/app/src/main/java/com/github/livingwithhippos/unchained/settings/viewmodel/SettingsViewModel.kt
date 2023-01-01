@@ -64,5 +64,5 @@ class SettingsViewModel @Inject constructor(
 }
 
 sealed class SettingEvent {
-    object Logout: SettingEvent()
+    object Logout : SettingEvent()
 }

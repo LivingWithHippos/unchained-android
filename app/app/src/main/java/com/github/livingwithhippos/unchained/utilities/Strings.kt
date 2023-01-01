@@ -8,7 +8,7 @@ fun getRepositoryString(repository: String): String {
 }
 
 fun getPluginFilename(plugin: String): String {
-    return plugin.replace(Regex("\\s+"),"")  + PluginRepository.TYPE_UNCHAINED
+    return plugin.replace(Regex("\\s+"), "") + PluginRepository.TYPE_UNCHAINED
 }
 
 fun getPluginFilenameFromUrl(url: String): String {

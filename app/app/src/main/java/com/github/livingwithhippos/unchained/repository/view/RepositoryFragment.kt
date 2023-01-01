@@ -1,14 +1,10 @@
 package com.github.livingwithhippos.unchained.repository.view
 
-import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TextView
 import androidx.core.widget.addTextChangedListener
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
@@ -30,8 +26,6 @@ import com.github.livingwithhippos.unchained.repository.viewmodel.RepositoryView
 import com.github.livingwithhippos.unchained.utilities.EventObserver
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.github.livingwithhippos.unchained.utilities.getRepositoryString
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.progressindicator.LinearProgressIndicator
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -88,8 +82,10 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
                             context?.showToast(R.string.plugin_removal_failed)
                     }
                     is PluginRepositoryEvent.MultipleInstallation -> {
-                        val failures = it.downloadErrors + it.installResults.count { result -> (result is InstallResult.Installed).not() }
-                        val success = it.installResults.count { result -> result is InstallResult.Installed }
+                        val failures =
+                            it.downloadErrors + it.installResults.count { result -> (result is InstallResult.Installed).not() }
+                        val success =
+                            it.installResults.count { result -> result is InstallResult.Installed }
                         if (failures == 0) {
                             context?.showToast(
                                 getString(
@@ -147,7 +143,7 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
             val hashedRepoName = getRepositoryString(repository.key.link)
             // no installed plugins from this repo
             if (installedData.pluginsData[hashedRepoName] == null) {
-                plugins.addAll(repository.value.map {plug ->
+                plugins.addAll(repository.value.map { plug ->
                     val pickedVersion: PluginVersion?
                     // check online plugin compatible versions
                     val latestVersion: PluginVersion? = plug.value.maxByOrNull { it.version }
@@ -161,7 +157,8 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
                             link = repository.key.link,
                         )
                     } else {
-                        val latestCompatibleVersion: PluginVersion? = plug.value.filter{ isCompatible(it.engine) }.maxByOrNull { it.version }
+                        val latestCompatibleVersion: PluginVersion? =
+                            plug.value.filter { isCompatible(it.engine) }.maxByOrNull { it.version }
                         pickedVersion = latestCompatibleVersion ?: latestVersion
                     }
 
@@ -177,11 +174,20 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
                 // check against installed plugins from this repo
                 plugins.addAll(repository.value.map { onlinePlugin ->
                     // latest available version
-                    val latestVersion: PluginVersion? = onlinePlugin.value.maxByOrNull { it.version }
+                    val latestVersion: PluginVersion? =
+                        onlinePlugin.value.maxByOrNull { it.version }
                     // latest available compatible version
-                    val latestCompatibleVersion: PluginVersion? = onlinePlugin.value.filter{ isCompatible(it.engine) }.maxByOrNull { it.version }
+                    val latestCompatibleVersion: PluginVersion? =
+                        onlinePlugin.value.filter { isCompatible(it.engine) }
+                            .maxByOrNull { it.version }
                     // installed version of the online plugin
-                    val installedPlugin: Plugin? = installedData.pluginsData[hashedRepoName]?.firstOrNull { it.name.equals(onlinePlugin.key.name, ignoreCase = true) }
+                    val installedPlugin: Plugin? =
+                        installedData.pluginsData[hashedRepoName]?.firstOrNull {
+                            it.name.equals(
+                                onlinePlugin.key.name,
+                                ignoreCase = true
+                            )
+                        }
                     // check if this plugin has available versions (it should)
                     if (latestVersion == null) {
                         Timber.w("BAD PACKAGER! DO NOT RELEASE PLUGINS WITHOUT VERSIONS!  Info: ${onlinePlugin.key}")
@@ -220,18 +226,30 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
                                 getPluginItemFromVersion(latestVersion, PluginStatus.incompatible)
                             } else {
                                 // latest compatible version
-                                getPluginItemFromVersion(latestCompatibleVersion, PluginStatus.isNew)
+                                getPluginItemFromVersion(
+                                    latestCompatibleVersion,
+                                    PluginStatus.isNew
+                                )
                             }
                         } else {
                             // plugin installed
                             if (latestCompatibleVersion == null) {
                                 Timber.w("BAD PACKAGER! DO NOT REMOVE VERSIONS, CREATE A NEW VERSION INSTEAD!  Info: ${onlinePlugin.key}, installed version is ${installedPlugin.version}")
-                                getPluginItemFromVersion(latestVersion, PluginStatus.hasIncompatibleUpdate)
+                                getPluginItemFromVersion(
+                                    latestVersion,
+                                    PluginStatus.hasIncompatibleUpdate
+                                )
                             } else {
                                 if (latestCompatibleVersion.version > installedPlugin.version) {
-                                    getPluginItemFromVersion(latestCompatibleVersion, PluginStatus.hasUpdate)
+                                    getPluginItemFromVersion(
+                                        latestCompatibleVersion,
+                                        PluginStatus.hasUpdate
+                                    )
                                 } else {
-                                    getPluginItemFromVersion(latestCompatibleVersion, PluginStatus.updated)
+                                    getPluginItemFromVersion(
+                                        latestCompatibleVersion,
+                                        PluginStatus.updated
+                                    )
                                 }
                             }
                         }
@@ -244,7 +262,10 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
         }
     }
 
-    private fun getPluginItemFromVersion(pluginVersion: PluginVersion, pluginStatus: String): RepositoryListItem.Plugin {
+    private fun getPluginItemFromVersion(
+        pluginVersion: PluginVersion,
+        pluginStatus: String
+    ): RepositoryListItem.Plugin {
         return RepositoryListItem.Plugin(
             repository = pluginVersion.repository,
             name = pluginVersion.plugin,
