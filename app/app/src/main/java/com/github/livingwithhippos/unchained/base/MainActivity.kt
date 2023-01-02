@@ -228,15 +228,6 @@ class MainActivity : AppCompatActivity() {
                         openSettings()
                         true
                     }
-                    R.id.about -> {
-                        LibsBuilder()
-                            .withAboutAppName(getString(R.string.app_name))
-                            .withAboutIconShown(true)
-                            .withAboutVersionShown(true)
-                            .withActivityTitle(getString(R.string.about))
-                            .start(this@MainActivity)
-                        true
-                    }
                     else -> false
                 }
             }

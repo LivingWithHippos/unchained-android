@@ -24,6 +24,7 @@ import com.github.livingwithhippos.unchained.utilities.GPLV3_URL
 import com.github.livingwithhippos.unchained.utilities.PLUGINS_URL
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
+import com.mikepenz.aboutlibraries.LibsBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import javax.inject.Inject
@@ -91,6 +92,16 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         findPreference<EditTextPreference>("filter_size_mb")?.setOnBindEditTextListener {
             it.keyListener = DigitsKeyListener.getInstance("0123456789")
+        }
+
+        findPreference<Preference>("about")?.setOnPreferenceClickListener {
+            LibsBuilder()
+                .withAboutAppName(getString(R.string.app_name))
+                .withAboutIconShown(true)
+                .withAboutVersionShown(true)
+                .withActivityTitle(getString(R.string.about))
+                .start(requireContext())
+            true
         }
 
         setupKodi()
