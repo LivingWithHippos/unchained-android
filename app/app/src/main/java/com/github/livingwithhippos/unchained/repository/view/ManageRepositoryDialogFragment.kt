@@ -13,6 +13,8 @@ import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.repository.model.RepositoryListItem
 import com.github.livingwithhippos.unchained.repository.viewmodel.PluginRepositoryEvent
 import com.github.livingwithhippos.unchained.repository.viewmodel.RepositoryViewModel
+import com.github.livingwithhippos.unchained.utilities.MANUAL_PLUGINS_REPOSITORY_NAME
+import com.github.livingwithhippos.unchained.utilities.DEFAULT_PLUGINS_REPOSITORY_LINK
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import dagger.hilt.android.AndroidEntryPoint
@@ -41,19 +43,36 @@ class ManageRepositoryDialogFragment : DialogFragment() {
             view.findViewById<TextView>(R.id.tvAuthor).text = repository.author
             view.findViewById<TextView>(R.id.tvDescription).text = repository.description
 
-            view.findViewById<Button>(R.id.bInstallAll).setOnClickListener {
-                progressBar.isIndeterminate = true
-                viewModel.installAllRepositoryPlugins(activity, repository)
+            if (repository.link == MANUAL_PLUGINS_REPOSITORY_NAME) {
+                view.findViewById<Button>(R.id.bInstallAll).isEnabled = false
+                view.findViewById<Button>(R.id.bUpdateAll).isEnabled = false
+                view.findViewById<Button>(R.id.bUninstallRepo).isEnabled = false
+            } else if(repository.link == DEFAULT_PLUGINS_REPOSITORY_LINK) {
+                view.findViewById<Button>(R.id.bInstallAll).setOnClickListener {
+                    progressBar.isIndeterminate = true
+                    viewModel.installAllRepositoryPlugins(activity, repository)
+                }
+                view.findViewById<Button>(R.id.bUpdateAll).setOnClickListener {
+                    progressBar.isIndeterminate = true
+                    viewModel.updateAllRepositoryPlugins(activity, repository)
+                }
+                view.findViewById<Button>(R.id.bUninstallRepo).isEnabled = false
+            } else {
+                view.findViewById<Button>(R.id.bInstallAll).setOnClickListener {
+                    progressBar.isIndeterminate = true
+                    viewModel.installAllRepositoryPlugins(activity, repository)
+                }
+                view.findViewById<Button>(R.id.bUpdateAll).setOnClickListener {
+                    progressBar.isIndeterminate = true
+                    viewModel.updateAllRepositoryPlugins(activity, repository)
+                }
+                view.findViewById<Button>(R.id.bUninstallRepo).setOnClickListener {
+                    viewModel.uninstallRepository(activity, repository)
+                }
             }
-            view.findViewById<Button>(R.id.bUpdateAll).setOnClickListener {
-                progressBar.isIndeterminate = true
-                viewModel.updateAllRepositoryPlugins(activity, repository)
-            }
+
             view.findViewById<Button>(R.id.bUninstallAll).setOnClickListener {
                 viewModel.uninstallAllRepositoryPlugins(activity, repository)
-            }
-            view.findViewById<Button>(R.id.bUninstallRepo).setOnClickListener {
-                viewModel.uninstallRepository(activity, repository)
             }
 
             builder.setView(view)

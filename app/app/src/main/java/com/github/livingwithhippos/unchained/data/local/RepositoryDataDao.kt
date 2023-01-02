@@ -10,7 +10,7 @@ import com.github.livingwithhippos.unchained.data.model.PluginVersion
 import com.github.livingwithhippos.unchained.data.model.Repository
 import com.github.livingwithhippos.unchained.data.model.RepositoryInfo
 import com.github.livingwithhippos.unchained.data.model.RepositoryPlugin
-import com.github.livingwithhippos.unchained.utilities.PLUGINS_REPOSITORY_LINK
+import com.github.livingwithhippos.unchained.utilities.DEFAULT_PLUGINS_REPOSITORY_LINK
 
 @Dao
 interface RepositoryDataDao {
@@ -43,7 +43,7 @@ interface RepositoryDataDao {
     suspend fun getRepository(link: String): Repository?
 
     @Query("SELECT * from repository WHERE repository.link =:link")
-    suspend fun getDefaultRepository(link: String = PLUGINS_REPOSITORY_LINK): List<Repository>
+    suspend fun getDefaultRepository(link: String = DEFAULT_PLUGINS_REPOSITORY_LINK): List<Repository>
 
     @Query("DELETE FROM repository")
     suspend fun deleteAll()

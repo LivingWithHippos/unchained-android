@@ -1260,7 +1260,6 @@ class MainActivityViewModel @Inject constructor(
                     val installResult = pluginRepository.savePlugin(
                         context,
                         result.success,
-                        url,
                         repositoryURL
                     )
                     postPluginInstallResult(installResult)

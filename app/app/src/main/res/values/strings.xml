@@ -680,4 +680,7 @@
     <string name="plugins_installed_format">Installed %1$d plugins</string>
     <string name="plugins_install_results_format">%1$d plugins installed, %2$d errors</string>
     <string name="user_logged_out">User logged out, please restart the app</string>
+    <string name="manually_installed_plugins">Manually installed plugins</string>
+    <string name="manually_installed_plugins_description">Plugins installed by the user without using an online repository</string>
+    <string name="various">Various</string>
 </resources>

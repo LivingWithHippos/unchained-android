@@ -10,7 +10,7 @@ import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.local.ProtoStore
 import com.github.livingwithhippos.unchained.data.local.RepositoryDataDao
 import com.github.livingwithhippos.unchained.data.model.Repository
-import com.github.livingwithhippos.unchained.utilities.PLUGINS_REPOSITORY_LINK
+import com.github.livingwithhippos.unchained.utilities.DEFAULT_PLUGINS_REPOSITORY_LINK
 import com.github.livingwithhippos.unchained.utilities.TelemetryManager
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
@@ -51,7 +51,7 @@ class UnchainedApplication : Application() {
             if (pluginRepositoryDataDao.getDefaultRepository().isEmpty())
                 pluginRepositoryDataDao.insert(
                     Repository(
-                        PLUGINS_REPOSITORY_LINK
+                        DEFAULT_PLUGINS_REPOSITORY_LINK
                     )
                 )
         }

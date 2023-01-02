@@ -24,6 +24,7 @@ import com.github.livingwithhippos.unchained.repository.view.ManageRepositoryDia
 import com.github.livingwithhippos.unchained.repository.viewmodel.PluginRepositoryEvent
 import com.github.livingwithhippos.unchained.repository.viewmodel.RepositoryViewModel
 import com.github.livingwithhippos.unchained.utilities.EventObserver
+import com.github.livingwithhippos.unchained.utilities.MANUAL_PLUGINS_REPOSITORY_NAME
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.github.livingwithhippos.unchained.utilities.getRepositoryString
 import dagger.hilt.android.AndroidEntryPoint
@@ -169,7 +170,7 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
                             else -> PluginStatus.incompatible
                         }
 
-                        getPluginItemFromVersion(pickedVersion, pickedStatus)
+                        getPluginItemFromVersion(pickedVersion, pickedStatus, repository.key.author)
                     }
                 )
             } else {
@@ -218,7 +219,7 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
                                 pickedVersion.engine == 0.0 -> PluginStatus.unknown
                                 else -> PluginStatus.incompatible
                             }
-                            getPluginItemFromVersion(pickedVersion, pickedStatus)
+                            getPluginItemFromVersion(pickedVersion, pickedStatus, repository.key.author)
                         } else {
                             // at least a version from the repo is available, check compatibility and install status
 
@@ -226,12 +227,13 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
                             if (installedPlugin == null) {
                                 // no compatible versions
                                 if (latestCompatibleVersion == null) {
-                                    getPluginItemFromVersion(latestVersion, PluginStatus.incompatible)
+                                    getPluginItemFromVersion(latestVersion, PluginStatus.incompatible, null)
                                 } else {
                                     // latest compatible version
                                     getPluginItemFromVersion(
                                         latestCompatibleVersion,
-                                        PluginStatus.isNew
+                                        PluginStatus.isNew,
+                                        repository.key.author
                                     )
                                 }
                             } else {
@@ -240,23 +242,55 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
                                     Timber.w("BAD PACKAGER! DO NOT REMOVE VERSIONS, CREATE A NEW VERSION INSTEAD!  Info: ${onlinePlugin.key}, installed version is ${installedPlugin.version}")
                                     getPluginItemFromVersion(
                                         latestVersion,
-                                        PluginStatus.hasIncompatibleUpdate
+                                        PluginStatus.hasIncompatibleUpdate,
+                                        repository.key.author
                                     )
                                 } else {
                                     if (latestCompatibleVersion.version > installedPlugin.version) {
                                         getPluginItemFromVersion(
                                             latestCompatibleVersion,
-                                            PluginStatus.hasUpdate
+                                            PluginStatus.hasUpdate,
+                                            repository.key.author
                                         )
                                     } else {
                                         getPluginItemFromVersion(
                                             latestCompatibleVersion,
-                                            PluginStatus.updated
+                                            PluginStatus.updated,
+                                            repository.key.author
                                         )
                                     }
                                 }
                             }
                         }
+                    }
+                )
+            }
+            // add fake repo for plugins installed manually without going through a web repository
+            // otherwise users won't be able to uninstall them
+            if (installedData.pluginsData[MANUAL_PLUGINS_REPOSITORY_NAME].isNullOrEmpty().not()) {
+                plugins.add(
+                    RepositoryListItem.Repository(
+                        link = MANUAL_PLUGINS_REPOSITORY_NAME,
+                        name = getString(R.string.manually_installed_plugins),
+                        version = 1.0,
+                        description = getString(R.string.manually_installed_plugins_description),
+                        author = getString(R.string.various),
+                    )
+                )
+
+                plugins.addAll(
+                    installedData.pluginsData.getValue(MANUAL_PLUGINS_REPOSITORY_NAME).map {
+                        // all are installed, cannot check updates, check only compatibility
+                        val currentStatus = if (it.isCompatible()) PluginStatus.updated else PluginStatus.unknown
+                        RepositoryListItem.Plugin(
+                            repository = MANUAL_PLUGINS_REPOSITORY_NAME,
+                            name = it.name,
+                            version = it.version,
+                            link = MANUAL_PLUGINS_REPOSITORY_NAME,
+                            author = it.author,
+                            status = currentStatus,
+                            statusTranslation = getStatusTranslation(currentStatus)
+                        )
                     }
                 )
             }
@@ -268,13 +302,15 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
 
     private fun getPluginItemFromVersion(
         pluginVersion: PluginVersion,
-        pluginStatus: String
+        pluginStatus: String,
+        author: String?
     ): RepositoryListItem.Plugin {
         return RepositoryListItem.Plugin(
             repository = pluginVersion.repository,
             name = pluginVersion.plugin,
             version = pluginVersion.version,
             link = pluginVersion.link,
+            author = author,
             status = pluginStatus,
             statusTranslation = getStatusTranslation(pluginStatus)
         )

@@ -462,4 +462,7 @@
     <string name="plugins_installed_format">%1$d plugins instalados</string>
     <string name="plugins_install_results_format">%1$d plugins instalados, %2$d errores</string>
     <string name="user_logged_out">Usuario desconectado, reinicie la aplicación</string>
+    <string name="manually_installed_plugins">Plugins instalados manualmente</string>
+    <string name="manually_installed_plugins_description">Plugins instalados por el usuario sin utilizar un repositorio en línea</string>
+    <string name="various">Varios</string>
 </resources>

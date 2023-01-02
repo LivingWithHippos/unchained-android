@@ -263,7 +263,8 @@ class Parser(
             val parsedMagnets = parseList(
                 regex,
                 source.removeWebFormatting(),
-                baseUrl
+                baseUrl,
+                toLowerCase = true
             )
 
             magnets.addAll(parsedMagnets)
@@ -450,7 +451,8 @@ class Parser(
                                 regexes.magnetRegex,
                                 columns[tableLink.columns.magnetColumn].html()
                                     .removeWebFormatting(),
-                                baseUrl
+                                baseUrl,
+                                toLowerCase = true
                             )
                         )
                     if (tableLink.columns.torrentColumn != null)
@@ -611,7 +613,8 @@ class Parser(
     private fun parseList(
         customRegexes: List<CustomRegex>?,
         source: String,
-        url: String
+        url: String,
+        toLowerCase: Boolean = false
     ): List<String> {
         if (customRegexes.isNullOrEmpty())
             return emptyList()
@@ -643,13 +646,17 @@ class Parser(
             }
         }
 
+        if (toLowerCase)
+            return results.map { it.lowercase() }
+
         return results.toList()
     }
 
     private fun parseList(
         regexpsGroup: RegexpsGroup?,
         source: String,
-        url: String
+        url: String,
+        toLowerCase: Boolean = false
     ): List<String> {
         if (regexpsGroup == null || regexpsGroup.regexps.isEmpty())
             return emptyList()
@@ -688,16 +695,21 @@ class Parser(
             }
         }
 
+        if (toLowerCase) {
+            return results.map { it.lowercase() }
+        }
+
         return results.toList()
     }
 
     private fun parseList(
         customRegex: CustomRegex?,
         source: String,
-        url: String
+        url: String,
+        toLowerCase: Boolean = false
     ): List<String> {
         return if (customRegex != null)
-            parseList(listOf(customRegex), source, url)
+            parseList(listOf(customRegex), source, url, toLowerCase)
         else emptyList()
     }
 

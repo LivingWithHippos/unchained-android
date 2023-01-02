@@ -23,6 +23,7 @@ sealed class RepositoryListItem {
         val name: String,
         val version: Float,
         val link: String,
+        val author: String?,
         // see PluginStatus
         var status: String,
         var statusTranslation: String

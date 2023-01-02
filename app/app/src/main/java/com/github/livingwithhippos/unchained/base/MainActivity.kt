@@ -80,7 +80,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
 
-    // countly crash reporter set up. Debug mode only
+    // Countly crash reporter set up. Debug mode only
     override fun onStart() {
         super.onStart()
         TelemetryManager.onStart(this)

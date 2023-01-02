@@ -16,7 +16,7 @@ import com.github.livingwithhippos.unchained.plugins.model.Plugin
 import com.github.livingwithhippos.unchained.repository.model.RepositoryListItem
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.Event
-import com.github.livingwithhippos.unchained.utilities.PLUGINS_REPOSITORY_LINK
+import com.github.livingwithhippos.unchained.utilities.DEFAULT_PLUGINS_REPOSITORY_LINK
 import com.github.livingwithhippos.unchained.utilities.getRepositoryString
 import com.github.livingwithhippos.unchained.utilities.postEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -78,7 +78,7 @@ class RepositoryViewModel @Inject constructor(
 
     fun uninstallPlugin(context: Context, plugin: RepositoryListItem.Plugin) {
         viewModelScope.launch {
-            val result = diskPluginsRepository.removePlugin(context, plugin.repository, plugin.name)
+            val result = diskPluginsRepository.removePlugin(context, plugin)
             pluginsRepositoryLiveData.postEvent(
                 PluginRepositoryEvent.Uninstalled(if (result) 1 else 0)
             )
@@ -86,7 +86,7 @@ class RepositoryViewModel @Inject constructor(
     }
 
     /**
-     * Download a plugin, expects  link that can be read as text.
+     * Download a plugin, expects link that can be read as text.
      * Links are downloaded into the internal app memory. If a repository name is provided
      * they will be put under a directory related to that repo, otherwise they'll go into a
      * common custom_repo folder and the url will be used to get the file name, so that a download
@@ -106,7 +106,6 @@ class RepositoryViewModel @Inject constructor(
                     val install = diskPluginsRepository.savePlugin(
                         context,
                         result.success,
-                        link,
                         repositoryURL
                     )
                     pluginsRepositoryLiveData.postEvent(
@@ -144,7 +143,6 @@ class RepositoryViewModel @Inject constructor(
                     val install = diskPluginsRepository.savePlugin(
                         context,
                         result.success,
-                        plugin.link,
                         plugin.repository
                     )
                     installResults.add(install)
@@ -198,7 +196,7 @@ class RepositoryViewModel @Inject constructor(
             val pluginResult: Int =
                 diskPluginsRepository.removeRepositoryPlugins(context, repository.link)
             // avoid removing from the db the default repository
-            if (repository.link != PLUGINS_REPOSITORY_LINK)
+            if (repository.link != DEFAULT_PLUGINS_REPOSITORY_LINK)
                 databasePluginsRepository.removeRepository(repository.link)
             // use another event?
             pluginsRepositoryLiveData.postEvent(

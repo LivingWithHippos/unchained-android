@@ -3,9 +3,10 @@ package com.github.livingwithhippos.unchained.data.repository
 import android.content.Context
 import android.net.Uri
 import com.github.livingwithhippos.unchained.plugins.model.Plugin
-import com.github.livingwithhippos.unchained.utilities.PLUGINS_COMMON_REPOSITORY_NAME
+import com.github.livingwithhippos.unchained.repository.model.RepositoryListItem
+import com.github.livingwithhippos.unchained.utilities.MANUAL_PLUGINS_REPOSITORY_NAME
 import com.github.livingwithhippos.unchained.utilities.getPluginFilename
-import com.github.livingwithhippos.unchained.utilities.getPluginFilenameFromUrl
+import com.github.livingwithhippos.unchained.utilities.getManualPluginFilename
 import com.github.livingwithhippos.unchained.utilities.getRepositoryString
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
@@ -18,22 +19,31 @@ import javax.inject.Inject
 
 class PluginRepository @Inject constructor() {
 
-    // todo: remove all context and use new function assetsManager.getAssetFileInputStream(fileName)
-
     // todo: inject
     private val pluginAdapter: JsonAdapter<Plugin> = Moshi.Builder()
         .build()
         .adapter(Plugin::class.java)
 
-    suspend fun getPlugins(context: Context): Pair<List<Plugin>, Int> =
+    suspend fun getPlugins(context: Context, manuallyInstalledOnly: Boolean = false): Pair<List<Plugin>, Int> =
         withContext(Dispatchers.IO) {
 
             val pluginFiles = mutableListOf<File>()
             val pluginFolder = context.getDir("plugins", Context.MODE_PRIVATE)
             if (pluginFolder.exists()) {
-                pluginFolder.walk().forEach {
-                    if (it.isFile && it.name.endsWith(TYPE_UNCHAINED, ignoreCase = true)) {
-                        pluginFiles.add(it)
+                if(manuallyInstalledOnly) {
+                    val localPluginFolder = File(pluginFolder, MANUAL_PLUGINS_REPOSITORY_NAME)
+                    if (localPluginFolder.exists()) {
+                        pluginFolder.walk().forEach {
+                            if (it.isFile && it.name.endsWith(TYPE_UNCHAINED, ignoreCase = true)) {
+                                pluginFiles.add(it)
+                            }
+                        }
+                    }
+                } else {
+                    pluginFolder.walk().forEach {
+                        if (it.isFile && it.name.endsWith(TYPE_UNCHAINED, ignoreCase = true)) {
+                            pluginFiles.add(it)
+                        }
                     }
                 }
             }
@@ -64,26 +74,36 @@ class PluginRepository @Inject constructor() {
             /**
              * list of plugin files associated with the repository folder name
              */
+
+            // note: the actual folder name may be different from the one put here. For example it could get changed to "app_plugins"
+            // it is still deterministic
             val pluginFolder = context.getDir("plugins", Context.MODE_PRIVATE)
             val pluginRepoFileAssociation = mutableMapOf<String, List<File>>()
             if (pluginFolder.exists()) {
                 val files = mutableListOf<File>()
                 var repoFolder = ""
-                pluginFolder.walk().forEach {
-                    if (it.isDirectory) {
-                        if (repoFolder != "") {
-                            // finished scanning a directory and passing to a new one
-                            pluginRepoFileAssociation[repoFolder] = files
-                            // todo: check if this changes the saved one
-                            files.clear()
+                pluginFolder.walk().forEachIndexed { index, currentFile ->
+                    // skip the first folder, which is the "plugins" folder itself
+                    if (index > 0) {
+                        if (currentFile.isDirectory) {
+                            if (repoFolder != "") {
+                                // finished scanning a directory and passing to a new one
+                                pluginRepoFileAssociation[repoFolder] = files
+                                // todo: check if this changes the saved one
+                                files.clear()
+                            }
+                            repoFolder = currentFile.name
+                            Timber.d("Found folder $repoFolder")
+                        } else if (currentFile.isFile && currentFile.name.endsWith(
+                                TYPE_UNCHAINED,
+                                ignoreCase = true
+                            )
+                        ) {
+                            Timber.d("Found plugin ${currentFile.name}")
+                            files.add(currentFile)
+                        } else {
+                            Timber.w("Unknown file found: ${currentFile.name}")
                         }
-                        repoFolder = it.name
-                        Timber.d("Found folder $repoFolder")
-                    } else if (it.isFile && it.name.endsWith(TYPE_UNCHAINED, ignoreCase = true)) {
-                        Timber.d("Found plugin ${it.name}")
-                        files.add(it)
-                    } else {
-                        Timber.w("Unknown file found: ${it.name}")
                     }
                 }
                 // we don't pass through the last save in the forEach
@@ -122,11 +142,11 @@ class PluginRepository @Inject constructor() {
             LocalPlugins(pluginsData, errors)
         }
 
-    suspend fun removePlugin(context: Context, repository: String, plugin: String): Boolean =
+    suspend fun removePlugin(context: Context, repository: String, author: String?, name: String): Boolean =
         withContext(Dispatchers.IO) {
             val pluginFolder = context.getDir("plugins", Context.MODE_PRIVATE)
             val repoName = getRepositoryString(repository)
-            val filename = getPluginFilename(plugin)
+            val filename = if (repository == MANUAL_PLUGINS_REPOSITORY_NAME) getManualPluginFilename(author, name) else getPluginFilename(name)
 
             if (!pluginFolder.exists()) {
                 Timber.e("Plugin folder not found")
@@ -145,13 +165,18 @@ class PluginRepository @Inject constructor() {
                 return@withContext false
             }
             try {
-                file.delete()
-                return@withContext true
+                val deleted = file.delete()
+                Timber.d("Deleted ${file.name}: $deleted")
+                return@withContext deleted
             } catch (ex: IOException) {
                 Timber.e("Plugin file not deleted: $ex")
                 return@withContext false
             }
         }
+
+    suspend fun removePlugin(context: Context, repository: String, plugin: Plugin): Boolean = removePlugin(context, repository, plugin.author, plugin.name)
+
+    suspend fun removePlugin(context: Context, plugin: RepositoryListItem.Plugin): Boolean = removePlugin(context, plugin.repository, plugin.author, plugin.name)
 
     private fun getPluginFromJSON(json: String): Plugin? {
         return try {
@@ -261,19 +286,29 @@ class PluginRepository @Inject constructor() {
     suspend fun savePlugin(
         context: Context,
         plugin: Plugin,
-        url: String,
         repositoryURL: String?
     ): InstallResult = withContext(Dispatchers.IO) {
         // we use the repo link hash as folder name for all the plugins from that repo
         val repoName = if (repositoryURL != null)
             getRepositoryString(repositoryURL)
         else
-            PLUGINS_COMMON_REPOSITORY_NAME
+            MANUAL_PLUGINS_REPOSITORY_NAME
+
+        /*
+         issue: we have 3 possible installation modes:
+         1. local file shared to the app
+         2. file url shared to the app
+         3. download from a repository
+
+         while 3 is easy to manage, 1 and 2 means the file will go to a custom folder
+         how to manage deletion/update of these files?
+         In particular let's say we have 2 plugins with the same name, how to differentiate them?
+         */
 
         val filename = if (repositoryURL != null)
             getPluginFilename(plugin.name)
         else
-            getPluginFilenameFromUrl(url)
+            getManualPluginFilename(plugin.author, plugin.name)
 
         try {
             val pluginFolder = context.getDir("plugins", Context.MODE_PRIVATE)
@@ -308,7 +343,6 @@ class PluginRepository @Inject constructor() {
             val saved = savePlugin(
                 context,
                 plugin,
-                data.path.toString(),
                 null
             )
             return saved

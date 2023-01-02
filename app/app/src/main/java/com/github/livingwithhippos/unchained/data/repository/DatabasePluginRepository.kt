@@ -91,6 +91,13 @@ class DatabasePluginRepository @Inject constructor(
         return repositoryDataDao.getAllRepositories()
     }
 
+    /**
+     * Get all the plugins or repository filtered by the query. If a plugin is a match the repository
+     * will also be returned (useful for separating results from different repositories)
+     *
+     * @param query
+     * @return
+     */
     suspend fun getFilteredRepositoriesData(query: String): Map<RepositoryInfo, Map<RepositoryPlugin, List<PluginVersion>>> {
         val pluginsByRepo: Map<RepositoryInfo, List<RepositoryPlugin>> =
             repositoryDataDao.getPlugins("%$query%")
