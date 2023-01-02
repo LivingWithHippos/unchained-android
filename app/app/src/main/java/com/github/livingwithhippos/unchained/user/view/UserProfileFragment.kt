@@ -1,6 +1,7 @@
 package com.github.livingwithhippos.unchained.user.view
 
 import android.Manifest
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
@@ -15,6 +16,7 @@ import androidx.navigation.fragment.findNavController
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.databinding.FragmentUserProfileBinding
+import com.github.livingwithhippos.unchained.settings.view.SettingsActivity
 import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Companion.KEY_REFERRAL_ASKED
 import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Companion.KEY_REFERRAL_USE
 import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationState
@@ -125,8 +127,9 @@ class UserProfileFragment : UnchainedFragment() {
             }
         }
 
-        userBinding.bLogout.setOnClickListener {
-            activityViewModel.logout()
+        userBinding.bSettings.setOnClickListener {
+            val intent = Intent(requireContext(), SettingsActivity::class.java)
+            startActivity(intent)
         }
 
         if (

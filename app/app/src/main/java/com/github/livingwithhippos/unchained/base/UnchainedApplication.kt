@@ -8,6 +8,9 @@ import android.content.SharedPreferences
 import android.os.Build
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.local.ProtoStore
+import com.github.livingwithhippos.unchained.data.local.RepositoryDataDao
+import com.github.livingwithhippos.unchained.data.model.Repository
+import com.github.livingwithhippos.unchained.utilities.DEFAULT_PLUGINS_REPOSITORY_LINK
 import com.github.livingwithhippos.unchained.utilities.TelemetryManager
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
@@ -32,6 +35,9 @@ class UnchainedApplication : Application() {
     @Inject
     lateinit var protoStore: ProtoStore
 
+    @Inject
+    lateinit var pluginRepositoryDataDao: RepositoryDataDao
+
     private val job = Job()
     private val scope = CoroutineScope(Dispatchers.Default + job)
 
@@ -42,6 +48,12 @@ class UnchainedApplication : Application() {
 
         scope.launch {
             protoStore.deleteIncompleteCredentials()
+            if (pluginRepositoryDataDao.getDefaultRepository().isEmpty())
+                pluginRepositoryDataDao.insert(
+                    Repository(
+                        DEFAULT_PLUGINS_REPOSITORY_LINK
+                    )
+                )
         }
 
         createNotificationChannels()

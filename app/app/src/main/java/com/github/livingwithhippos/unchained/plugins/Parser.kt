@@ -39,10 +39,6 @@ class Parser(
             classicClient
     }
 
-    private fun isPluginSupported(plugin: Plugin): Boolean {
-        return plugin.engineVersion.toInt() == PLUGIN_ENGINE_VERSION.toInt() && PLUGIN_ENGINE_VERSION >= plugin.engineVersion
-    }
-
     fun completeSearch(plugin: Plugin, query: String, category: String? = null, page: Int = 1) =
         flow {
             if (query.isBlank())
@@ -51,7 +47,7 @@ class Parser(
                 // todo: format queries with other unsupported web characters
                 // todo: check if this works with other plugins, otherwise add it as a json parameter. Possible alternative: %20
                 val currentQuery = query.trim().replace("\\s+".toRegex(), "+")
-                if (!isPluginSupported(plugin)) {
+                if (!plugin.isCompatible()) {
                     emit(ParserResult.PluginVersionUnsupported)
                 } else {
                     val currentCategory =
@@ -187,6 +183,16 @@ class Parser(
                 tableParser.idName != null -> doc.getElementById(tableParser.idName)
                 tableParser.className != null -> doc.getElementsByClass(tableParser.className)
                     .firstOrNull()
+                tableParser.index != null -> {
+                    // INDEXES STARTS FROM ZERO
+                    val tables = doc.getElementsByTag("table")
+                    if (tables.size - 1 >= tableParser.index)
+                        tables[tableParser.index]
+                    else {
+                        Timber.w("No table found for index ${tableParser.index}, found ${tables.size} tables")
+                        return emptyList()
+                    }
+                }
                 else -> doc.getElementsByTag("table").first()
             } ?: return emptyList()
 
@@ -257,7 +263,8 @@ class Parser(
             val parsedMagnets = parseList(
                 regex,
                 source.removeWebFormatting(),
-                baseUrl
+                baseUrl,
+                toLowerCase = true
             )
 
             magnets.addAll(parsedMagnets)
@@ -374,6 +381,16 @@ class Parser(
                 tableLink.idName != null -> doc.getElementById(tableLink.idName)
                 tableLink.className != null -> doc.getElementsByClass(tableLink.className)
                     .firstOrNull()
+                tableLink.index != null -> {
+                    // INDEXES STARTS FROM ZERO
+                    val tables = doc.getElementsByTag("table")
+                    if (tables.size - 1 >= tableLink.index)
+                        tables[tableLink.index]
+                    else {
+                        Timber.w("No table found for index ${tableLink.index}, found ${tables.size} tables")
+                        return emptyList()
+                    }
+                }
                 else -> doc.getElementsByTag("table").first()
             } ?: return emptyList()
 
@@ -434,7 +451,8 @@ class Parser(
                                 regexes.magnetRegex,
                                 columns[tableLink.columns.magnetColumn].html()
                                     .removeWebFormatting(),
-                                baseUrl
+                                baseUrl,
+                                toLowerCase = true
                             )
                         )
                     if (tableLink.columns.torrentColumn != null)
@@ -595,7 +613,8 @@ class Parser(
     private fun parseList(
         customRegexes: List<CustomRegex>?,
         source: String,
-        url: String
+        url: String,
+        toLowerCase: Boolean = false
     ): List<String> {
         if (customRegexes.isNullOrEmpty())
             return emptyList()
@@ -627,13 +646,17 @@ class Parser(
             }
         }
 
+        if (toLowerCase)
+            return results.map { it.lowercase() }
+
         return results.toList()
     }
 
     private fun parseList(
         regexpsGroup: RegexpsGroup?,
         source: String,
-        url: String
+        url: String,
+        toLowerCase: Boolean = false
     ): List<String> {
         if (regexpsGroup == null || regexpsGroup.regexps.isEmpty())
             return emptyList()
@@ -672,16 +695,21 @@ class Parser(
             }
         }
 
+        if (toLowerCase) {
+            return results.map { it.lowercase() }
+        }
+
         return results.toList()
     }
 
     private fun parseList(
         customRegex: CustomRegex?,
         source: String,
-        url: String
+        url: String,
+        toLowerCase: Boolean = false
     ): List<String> {
         return if (customRegex != null)
-            parseList(listOf(customRegex), source, url)
+            parseList(listOf(customRegex), source, url, toLowerCase)
         else emptyList()
     }
 
@@ -764,8 +792,9 @@ class Parser(
          * 2.0: use array for all regexps
          * 2.1: added direct parsing mode
          * 2.2: added entry class to direct parsing mode (required)
+         * 2.3: added optional table index to table parsers (for tables with no specific class/id)
          */
-        const val PLUGIN_ENGINE_VERSION: Float = 2.2f
+        const val PLUGIN_ENGINE_VERSION: Float = 2.3f
     }
 }
 

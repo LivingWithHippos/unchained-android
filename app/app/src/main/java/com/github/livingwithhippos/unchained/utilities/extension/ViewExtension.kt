@@ -25,8 +25,8 @@ import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import androidx.viewpager2.widget.ViewPager2
 import com.github.livingwithhippos.unchained.R
+import com.github.livingwithhippos.unchained.repository.model.PluginStatus
 import com.github.livingwithhippos.unchained.utilities.extensionIconMap
 import com.google.android.material.progressindicator.BaseProgressIndicator
 import com.google.android.material.snackbar.Snackbar
@@ -318,13 +318,28 @@ fun SwipeRefreshLayout.setRefreshThemeColor(themed: Boolean) {
     }
 }
 
-@BindingAdapter("mapDrawable")
+@BindingAdapter("mapExtensionDrawable")
 fun ImageView.setDrawableByExtension(fileName: String) {
     val extension = fileName.substringAfterLast(".").lowercase()
+    // todo: use when like below instead of map
     if (extensionIconMap.containsKey(extension))
         this.setImageResource(extensionIconMap.getValue(extension))
     else
         this.setImageResource(extensionIconMap.getValue("default"))
+}
+
+@BindingAdapter("mapPluginStatusDrawable")
+fun ImageView.setDrawableByPluginStatus(status: String) {
+
+    return when (status) {
+        PluginStatus.updated -> this.setImageResource(R.drawable.icon_check)
+        PluginStatus.hasUpdate -> this.setImageResource(R.drawable.icon_reload)
+        PluginStatus.hasIncompatibleUpdate -> this.setImageResource(R.drawable.icon_close)
+        PluginStatus.isNew -> this.setImageResource(R.drawable.icon_new_releases)
+        PluginStatus.incompatible -> this.setImageResource(R.drawable.icon_close)
+        PluginStatus.unknown -> this.setImageResource(R.drawable.icon_question_mark)
+        else -> this.setImageResource(R.drawable.icon_question_mark)
+    }
 }
 
 /**

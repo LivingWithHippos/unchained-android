@@ -16,6 +16,12 @@ const val PLUGINS_PACK_LINK =
     "https://github.com/LivingWithHippos/unchained-android/raw/master/extra_assets/plugins/unchained_plugins_pack.zip"
 const val PLUGINS_PACK_NAME = "unchained_plugins_pack.zip"
 const val PLUGINS_PACK_FOLDER = "pack"
+const val DEFAULT_PLUGINS_REPOSITORY_LINK =
+    "https://gitlab.com/LivingWithHippos/unchained-plugins/-/raw/main/repository/repository.json"
+/**
+ * Folder name for the plugins installed manually, not from a web repository
+ */
+const val MANUAL_PLUGINS_REPOSITORY_NAME = "common_repository"
 
 // unofficial link to get streaming from a browser page
 const val RD_STREAMING_URL = "https://real-debrid.com/streaming-"

@@ -80,7 +80,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
 
-    // countly crash reporter set up. Debug mode only
+    // Countly crash reporter set up. Debug mode only
     override fun onStart() {
         super.onStart()
         TelemetryManager.onStart(this)
@@ -157,10 +157,6 @@ class MainActivity : AppCompatActivity() {
                         -1
                     )
                 )
-                viewModel.checkPluginDownload(
-                    applicationContext,
-                    it.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
-                )
             }
         }
     }
@@ -175,7 +171,6 @@ class MainActivity : AppCompatActivity() {
                 applicationContext.showToast(R.string.needs_download_permission)
             }
         }
-
 
     private val requestNotificationPermissionLauncher =
         registerForActivityResult(
@@ -199,7 +194,7 @@ class MainActivity : AppCompatActivity() {
                 val contentResolver = applicationContext.contentResolver
 
                 val takeFlags: Int = Intent.FLAG_GRANT_READ_URI_PERMISSION or
-                        Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                    Intent.FLAG_GRANT_WRITE_URI_PERMISSION
 
                 contentResolver.takePersistableUriPermission(it, takeFlags)
 
@@ -341,7 +336,7 @@ class MainActivity : AppCompatActivity() {
             it?.getContentIfNotHandled()?.let { link ->
                 when {
                     link.endsWith(TYPE_UNCHAINED, ignoreCase = true) -> {
-                        downloadPlugin(link)
+                        viewModel.downloadPlugin(applicationContext, link, null)
                     }
                     else -> {
                         // check the authentication
@@ -576,7 +571,6 @@ class MainActivity : AppCompatActivity() {
                                     )
                                 } else
                                     viewModel.requireDownloadFolder()
-
                             }
                             else -> {
                                 Timber.e("Unrecognized download manager requested: $dm")
@@ -627,31 +621,6 @@ class MainActivity : AppCompatActivity() {
         viewModel.removeConnectivityCheck(applicationContext)
     }
 
-    private fun downloadPlugin(link: String) {
-        val pluginName = link.replace("%2F", "/").split("/").last()
-        val manager =
-            applicationContext.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-        val queuedDownload = manager.downloadFileInStandardFolder(
-            source = Uri.parse(link),
-            title = getString(R.string.unchained_plugin_download),
-            description = getString(R.string.temporary_plugin_download),
-            fileName = pluginName
-        )
-        when (queuedDownload) {
-            is EitherResult.Failure -> {
-                applicationContext.showToast(
-                    getString(
-                        R.string.download_not_started_format,
-                        pluginName
-                    )
-                )
-            }
-            is EitherResult.Success -> {
-                viewModel.setPluginDownload(queuedDownload.success)
-            }
-        }
-    }
-
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp(appBarConfiguration)
     }
@@ -682,7 +651,7 @@ class MainActivity : AppCompatActivity() {
                                 data.path?.endsWith(
                                     TYPE_UNCHAINED,
                                     ignoreCase = true
-                                ) == true -> addSearchPlugin(data)
+                                ) == true -> viewModel.addPluginFromDisk(applicationContext, data)
                                 else -> {
                                     // it's a magnet/torrent, check auth state before loading it
                                     processExternalRequestOnAuthentication(data)
@@ -760,7 +729,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * simulate a double click on a bottom bar option which will bring us to the first destinatin of that tab.
+     * simulate a double click on a bottom bar option which will bring us to the first destination of that tab.
      *
      * @param destinationID the id of the bottom item to click
      */
@@ -778,10 +747,6 @@ class MainActivity : AppCompatActivity() {
     private fun openSettings() {
         val intent = Intent(this, SettingsActivity::class.java)
         startActivity(intent)
-    }
-
-    private fun addSearchPlugin(data: Uri) {
-        viewModel.addPlugin(applicationContext, data)
     }
 
     // the standard menu items to disable are those for the download/torrent lists and the new download one
@@ -806,10 +771,10 @@ class MainActivity : AppCompatActivity() {
     private fun setupBottomNavigationBar(binding: ActivityMainBinding) {
 
         navController = (
-                supportFragmentManager.findFragmentById(
-                    R.id.nav_host_fragment
-                ) as NavHostFragment
-                ).navController
+            supportFragmentManager.findFragmentById(
+                R.id.nav_host_fragment
+            ) as NavHostFragment
+            ).navController
         binding.bottomNavView.setupWithNavController(navController)
 
         // Setup the ActionBar with navController and 3 top level destinations

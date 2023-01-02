@@ -3573,7 +3573,7 @@ class TestTorrentFileParser {
 	"speed": 1141000,
 	"seeders": 4
 }
-    """.trimIndent()
+        """.trimIndent()
         val item: TorrentItem = jsonAdapter.fromJson(json)!!
 
         val torrentStructure: Node<TorrentFileItem> = getFilesNodes(item, false)
@@ -3583,7 +3583,7 @@ class TestTorrentFileParser {
     }
     @Test
     fun testSingleTorrentFile() {
-            val json = """
+        val json = """
         {"id": "C46XUVV45KHTA",
             "filename": "PlaneShift-v0.6.3-x64.exe",
             "original_filename": "PlaneShift-v0.6.3-x64.exe",
@@ -3616,7 +3616,6 @@ class TestTorrentFileParser {
         println(torrentStructure)
         assert(torrentStructure.children.isNotEmpty())
     }
-
 
     @Test
     fun torrentItemPropertyChange() {
@@ -7174,7 +7173,7 @@ class TestTorrentFileParser {
 	"speed": 1141000,
 	"seeders": 4
 }
-    """.trimIndent()
+        """.trimIndent()
         val item: TorrentItem = jsonAdapter.fromJson(json)!!
 
         val torrentStructure: Node<TorrentFileItem> = getFilesNodes(item, false)

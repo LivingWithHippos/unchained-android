@@ -40,7 +40,8 @@
             android:minWidth="150dp"
             android:text="@string/open"
             app:icon="@drawable/icon_open"
-            style="@style/Widget.MaterialComponents.Button.Icon" />
+            style="@style/Widget.MaterialComponents.Button.Icon"
+            />
 
         <Button
             android:id="@+id/bShare"

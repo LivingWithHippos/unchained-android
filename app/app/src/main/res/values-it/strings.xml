@@ -38,11 +38,13 @@
     <string name="file_size_format_kb">%1$.2f KB</string>
     <string name="file_size_format_mb">%1$.2f MB</string>
     <string name="file_size_format_gb">%1$.2f GB</string>
+    <string name="selected_file_size_format">%1$d MB / %2$d MB selezionati</string>
+    <string name="size_error">Errore nel recupero dimensione file</string>
+    <string name="torrent_status_format">Stato: %1$s</string>
     <string name="speed_format_b">%1$d b/s</string>
     <string name="speed_format_kb">%1$.1f KB/s</string>
     <string name="speed_format_mb">%1$.1f MB/s</string>
-    <string name="selected_file_size_format">%1$d MB / %2$d MB selezionati</string>
-    <string name="torrent_status_format">Stato: %1$s</string>
+    <string name="speed_error">Errore nel recuperare la velocità</string>
     <string name="load_streams">Carica media</string>
     <string name="quality">Qualità</string>
     <string name="links">Links</string>
@@ -76,9 +78,8 @@
     <string name="paste">Incolla</string>
     <string name="streamable">Streammabile</string>
     <string name="open_stream">Apri Stream</string>
-    <string name="speed_error">Errore nel recuperare la velocità</string>
-    <string name="size_error">Errore nel recupero dimensione file</string>
     <string name="upload_torrent_description">Carica un file .torrent dalla memoria del telefono</string>
+    <string name="upload_file_description">Carica un file .torrent o un contenitore RSDF, CCF, CCF3, DLC dal tuo telefono</string>
     <string name="details">Dettagli</string>
     <string name="file_id_format">ID: %1$s</string>
     <string name="file_type_format">Tipo: %1$s</string>
@@ -137,9 +138,7 @@
     <string name="terms_title">Termini di utilizzo</string>
     <string name="privacy_policy_title">Informativa sulla privacy</string>
     <string name="close">Chiudi</string>
-    <string name="credits_text">
-        <![CDATA[
-            <body>
+    <string name="credits_text"><![CDATA[            <body>
                 <p>
                     Vari progetti, risorse e persone hanno contribuito alla creazione di questo progetto. In particolare vorrei ringraziare:
                     <br>
@@ -150,8 +149,7 @@
                     </ul>
                 </p>
             </body>
-        ]]>
-    </string>
+        ]]></string>
     <string name="premium_needed">Account premium richiesto</string>
     <string name="downloading_torrent">Torrent in preparazione, attendere…</string>
     <string name="please_insert_url">Inserisci un magnet o un link</string>
@@ -172,6 +170,7 @@
     <string name="night_theme">Modalità notte</string>
     <string name="title_aspect">Aspetto</string>
     <string name="delete">Elimina</string>
+    <string name="delete_item_title_format">Elimina %s</string>
     <string name="torrent_removed">Torrent rimosso</string>
     <string name="open">Apri</string>
     <string name="content_description_delete_torrent_item">Rimuovi il torrent</string>
@@ -205,12 +204,13 @@
     <string name="network_error">Errore di rete</string>
     <string name="torrent_channel_description">Canale di notifiche per il download dei torrent</string>
     <string name="torrent_in_progress">Download torrent in corso</string>
-    <string name="torrent_in_progress_format">%1$d%% - %2$.2f MB/s</string>
     <plurals name="seeders_format">
         <item quantity="one">%d seeder</item>
         <item quantity="other">%d seeders</item>
     </plurals>
     <string name="seeders_string_format">seeder/s: %s</string>
+    <string name="torrent_in_progress_format">%1$d%% - %2$.2f MB/s</string>
+    <string name="download_in_progress_format">Downloading - %1$d%%</string>
     <string name="download_complete">Download completato</string>
     <string name="unknown_status">Stato sconosciuto</string>
     <string name="downloading_torrent_format">%1$d torrent in download</string>
@@ -237,8 +237,8 @@
     <string name="folder">Cartella</string>
     <string name="files_list">Lista files</string>
     <string name="error_loading_folder">Errore durante il caricamento dei files</string>
-    <string name="search_files">Cerca Files</string>
     <string name="plugin">Plugin</string>
+    <string name="search_files">Cerca Files</string>
     <string name="magnet">Magnet</string>
     <string name="error_loading_file">Errore caricamento file</string>
     <string name="category">Categoria</string>
@@ -251,10 +251,10 @@
     <string name="category_tv">Serie TV</string>
     <string name="category_books">Libri</string>
     <string name="open_github">Apri Github</string>
+    <string name="plugin_description_message">In questa schermata potrai cercare file torrent e magnet. Oltre ai plugin di base disponibili, potrai installarne altri dal menu di gestione.</string>
     <string name="search_plugins">Plugins di ricerca</string>
-    <string name="plugin_description_message">In questa schermata potrai cercare file torrent e magnet. A parte i plugin di base disponibili, potrai installarne altri dal menu di questa pagina.</string>
     <string name="get_search_plugins">Ottieni plugins di ricerca</string>
-    <string name="delete_plugins">Rimuovi plugins esterni</string>
+    <string name="delete_plugins">Rimuovi plugins</string>
     <string name="delete_plugins_summary">Rimuovi tutti i plugin installati dall\'utente</string>
     <string name="plugin_removed">%1$d plugin rimosso/i</string>
     <string name="plugin_install_error_newer">Il plugin ha già un versione più recente installata</string>
@@ -273,22 +273,25 @@
         <item quantity="one">1 link</item>
         <item quantity="other">%d links</item>
     </plurals>
-    <plurals name="plugins_version_old_format" >
+    <plurals name="plugins_version_old_format">
         <item quantity="one">1 plugin ha bisogno di un aggiornamento. Controlla se ha una nuova versione</item>
         <item quantity="other">%d plugin hanno bisogno di un aggiornamento. Controlla se hanno una nuova versione</item>
     </plurals>
+    <string name="n_plugins_installed">%d plugins installati. Riavvia l\'app per poterli utilizzare</string>
     <string name="size_format">dimensione: %s</string>
     <string name="leechers_string_format">leecher/s: %s</string>
     <string name="delete_all">Cancella tutto</string>
     <string name="delete_all_downloads_message">Sei sicuro di voler cancellare tutti i download? Questa azione non è annullabile.</string>
     <string name="delete_all_torrents_message">Sei sicuro di voler cancellare tutti i torrent? Questa azione non è annullabile.</string>
     <string name="torrents_removed">Torrent rimossi</string>
-    <string name="downloads_removed">Download rimossi</string>
     <string name="removing_torrents">Rimuovendo torrents…</string>
+    <string name="downloads_removed">Download rimossi</string>
     <string name="removing_downloads">Rimuovendo downloads…</string>
     <string name="version">Versione</string>
     <string name="download_started">Download iniziato, controlla la barra delle notifiche</string>
     <string name="download_not_started">Errore durante l\'inizializzazione del download</string>
+    <string name="download_not_started_format">Errore nell\'inizializzazione del download di %s</string>
+    <string name="multiple_downloads_enqueued_format">%1$d downloads su %2$d accodati correttamente</string>
     <string name="needs_download_permission">Unchained ha bisogno dei permessi di accesso alla memoria per scaricare direttamente i file</string>
     <string name="test_connection">Testa la connessione</string>
     <string name="kodi_credentials_incomplete">Almeno l\'IP e la porta sono richiesti per Kodi</string>
@@ -300,22 +303,20 @@
     <string name="kodi_connection_error">Errore di connessione a Kodi</string>
     <string name="port_range_error">La porta deve essere compresa tra 1 e 65535</string>
     <string name="kodi_configure_credentials">Configura Kodi nelle impostazioni dell\'app</string>
+    <string name="kodi_remote_control">Controllo remoto per Kodi</string>
     <string name="enable_kodi_control">Leggi qui le istruzioni su come impostare Kodi per il controllo remoto (di solito in system-&gt;services-&gt;control). Poi completa i campi richiesti qui sotto</string>
     <string name="only_if_auth">Richiesto solo se l\'autenticazione è abilitata in Kodi</string>
-    <string name="kodi_remote_control">Controllo remoto per Kodi</string>
     <string name="rd_status">Stato Real Debrid</string>
     <string name="show_kodi">Mostra pulsante Kodi</string>
-    <string name="filter_type">Solo media</string>
     <string name="only_big_files">Solo file grandi</string>
+    <string name="filter_type">Solo media</string>
     <string name="sort">Ordina</string>
     <string name="file_size_filter">Filtro per la dimensione dei file</string>
     <string name="file_size_filter_description">Dimensione minima in MB per l\'opzione \"Solo file grandi\" nella schermata cartella</string>
     <string name="container">Contenitore</string>
     <string name="error_parsing_container">Errore di analisi del contenitore</string>
-    <string name="upload_file_description">Carica un file .torrent o un contenitore RSDF, CCF, CCF3, DLC dal tuo telefono</string>
     <string name="loading_container_file">Caricamento del contenitore…</string>
     <string name="no_network_connection">Nessuna connessione a internet</string>
-    <string name="download_not_started_format">Errore nell\'inizializzazione del download di %s</string>
     <string name="download_all">Scarica Tutto</string>
     <string name="sending_crash_report">Unchained è appena andato in crash.
 \nInvio un rapporto…</string>
@@ -325,8 +326,8 @@
     <string name="retry_login">Riprova</string>
     <string name="generic_login_error">Si è verificato un errore durante il login. Puoi controllare la tua connessione, riprovare tra un po\' o fare il login da real-debrid.com per avere più informazioni.</string>
     <string name="retry_later">Riprova più tardi</string>
-    <string name="get_plugins">Ottieni più plugins</string>
     <string name="content_description_plugins_link">Collegamento alla pagina dei plugin</string>
+    <string name="get_plugins">Ottieni più plugins</string>
     <string name="reset_login">Reset Login</string>
     <string name="sort_by_default">Default</string>
     <string name="sort_by_az">Alfabetico</string>
@@ -337,12 +338,10 @@
     <string name="copy_all">Copia tutto</string>
     <string name="enable_doh">Abilita il DNS su HTTPS</string>
     <string name="uses_google_dns">Usa i DNS Google</string>
+    <string name="doh_description_message">DNS over HTTPS è un protocollo utilizzato per aumentare la privacy ed evitare l\'intercettazione delle richieste DNS. Se il sito web di un plugin è bloccato a livello di DNS, abilitare DoH può aiutare a bypassarlo. L\'unico provider DoH disponibile al momento è Google. Questa opzione è disabilitata di default e può essere cambiata in qualsiasi momento dal menu delle impostazioni. Questa funzione può causare dei crash.</string>
     <string name="disable">Disattiva</string>
     <string name="enable">Attiva</string>
-    <string name="doh_description_message">DNS over HTTPS è un protocollo utilizzato per aumentare la privacy ed evitare l\'intercettazione delle richieste DNS. Se il sito web di un plugin è bloccato a livello di DNS, abilitare DoH può aiutare a bypassarlo. L\'unico provider DoH disponibile al momento è Google. Questa opzione è disabilitata di default e può essere cambiata in qualsiasi momento dal menu delle impostazioni. Questa funzione può causare dei crash.</string>
-    <string name="delete_item_title_format">Elimina %s</string>
     <string name="download_selected">Scarica selezione</string>
-    <string name="download_selected_files">Scarica files selezionati</string>
     <string name="delete_selected">Cancella selezione</string>
     <string name="share_selected">Condividi selezione</string>
     <string name="show_folder_filters">Mostra filtri in cartelle</string>
@@ -374,7 +373,7 @@
     <string name="send_to_player">Invia a lettore</string>
     <string name="missing_default_player">Imposta il lettore di default nell impostazioni</string>
     <string name="ui_settings_summary">Scegli se e come sono mostrate le cose</string>
-    <string name="download_details_button_choice">Scegli quali bottoni mostrare nella scheramata di dettagli download</string>
+    <string name="download_details_button_choice">Scegli quali bottoni mostrare nella schermata di dettagli download</string>
     <string name="external_apps">Applicazioni esterne</string>
     <string name="show_share_button">Mostra bottone condividi</string>
     <string name="show_open_button">Mostra bottone apri</string>
@@ -382,18 +381,17 @@
     <string name="show_download_button">Mostra bottone download</string>
     <string name="show_load_stream_button">Mostra bottone carica stream</string>
     <string name="show_stream_browser_button">Mostra bottone stream nel browser</string>
-    <string name="install_plugins_pack">Installa pacchetto plugins</string>
-    <string name="n_plugins_installed">%d plugins installati. Riavvia l\'app per poterli utilizzare</string>
-    <string name="install_plugins_pack_summary">Usa il bottone nel menu della schermata di ricerca per installare il pacchetto completo dei plugins</string>
+    <string name="install_plugins">Installare plugins</string>
+    <string name="install_plugins_summary">Per installare i plugin, utilizzare il pulsante Gestisci repository nel menu della schermata di ricerca</string>
     <string name="custom_media_player">Lettore media personalizzato</string>
     <string name="custom_media_player_summary">Usa il package di un lettore media personalizzato come \"org.videolan.vlc\". Potrebbe supportare la condivisione diretta di media. Ricorda di impostare \"lettore media personalizzato\" come impostazione di lettore media predefinito</string>
     <string name="invalid_package">Package non valido</string>
     <string name="delete_all_downloads">Elimina tutti i download</string>
     <string name="delete_all_torrents">Elimina tutti i torrent</string>
-    <string name="playstore_update_description">Una versione più recente della app è stata trovata sul Play Store</string>
-    <string name="new_update">Aggiornamento disponibile</string>
-    <string name="github_update_description">Una versione più recente della app è stata trovata su Github</string>
     <string name="fdroid_update_description">Una versione più recente della app è stata trovata su F-Droid</string>
+    <string name="playstore_update_description">Una versione più recente della app è stata trovata sul Play Store</string>
+    <string name="github_update_description">Una versione più recente della app è stata trovata su Github</string>
+    <string name="new_update">Aggiornamento disponibile</string>
     <string name="cached">In cache</string>
     <string name="seeders">Seeders</string>
     <string name="no_supported_player_found">Nessuna app con supporto media trovata. Prova con il bottone condividi.</string>
@@ -401,23 +399,17 @@
     <string name="directory_picked">Cartella impostata. Riavvia il download.</string>
     <string name="download_permission_granted">Permessi accordati. Riavvia il download.</string>
     <string name="stop">Stop</string>
-    <string name="download_in_progress_format">Downloading - %1$d%%</string>
     <string name="stopped">Fermato</string>
     <string name="paused">In pausa</string>
     <string name="restart">Riavvia</string>
     <string name="download_channel_description">Canale notifiche per stato download</string>
     <string name="download_queued">Download in coda, controlla le notifiche</string>
     <string name="download_queued_error">Errore avvio download, controlla i permessi</string>
-    <string name="selecting_all_files">Selezionando tutti i files, attendi…</string>
-    <string name="selecting_picked_cache">Selezionando %1$d files dalla cache %2$d, attendi…</string>
-    <string name="selecting_picked_files">Selezionando %1$d files, attendere…</string>
-    <string name="download_manager_system">Gestore di download predefinito</string>
     <string name="pick_download_folder">Scegli la cartella di download</string>
     <string name="pick_download_folder_description">Scegli una cartella per i download. Non disponibile per il gestore di downlaod predefinito del sistema</string>
     <string name="download_manager">Gestore di download</string>
     <string name="download_manager_description">Scegli come scaricare i file</string>
     <string name="download_link_expired">Problemi di rete o link di download scaduto. Generane un altro</string>
-    <string name="multiple_downloads_enqueued_format">%1$d downloads su %2$d accodati correttamente</string>
     <string name="custom_downloader_options">Opzioni per gestore download</string>
     <string name="custom_downloader_options_description">Queste opzioni non sono disponibili per il gestore di download di default</string>
     <string name="unmetered_downloads">Download su connessioni non a consumo</string>
@@ -431,13 +423,16 @@
     <string name="checking_cache">Controllo disponibilità cache</string>
     <string name="ready">Pronto</string>
     <string name="cache">Cache</string>
+    <string name="download_selected_cache">Scarica cache selezionata</string>
     <string name="select_files">Seleziona files</string>
     <string name="cache_format">Cache #%1$d</string>
     <string name="total_files">Files totali</string>
     <string name="total_size">Dimensione totale</string>
     <string name="loading_torrent_info">Caricamento files torrent e cache. Usa scarica tutto sul bottone in basso se vuoi scaricare tutto il contenuto.</string>
     <string name="cache_missing">Cache non trovata</string>
-    <string name="download_selected_cache">Scarica cache selezionata</string>
+    <string name="selecting_all_files">Selezionando tutti i files, attendi…</string>
+    <string name="selecting_picked_cache">Selezionando %1$d files dalla cache %2$d, attendi…</string>
+    <string name="download_selected_files">Scarica files selezionati</string>
     <string name="pass_to_download">Passa ai download</string>
     <string name="notifications_permission_denied">Permesso negato. L\'app potrebbe avere dei problemi di notifiche.</string>
     <string name="notifications_permission_granted">Permessi per notifiche concessi</string>
@@ -445,4 +440,30 @@
     <string name="reselect_torrent_files">Riseleziona files</string>
     <string name="selected_files">Files selezionati</string>
     <string name="selected_size">Dimensione selezione</string>
+    <string name="selecting_picked_files">Selezionando %1$d files, attendere…</string>
+    <string name="download_manager_system">Download manager di default</string>
+    <string name="single_torrent_file_available">Unico file disponibile selezionato automaticamente</string>
+    <string name="update_plugins">Aggiorna i plugin</string>
+    <string name="reload">Ricarica</string>
+    <string name="update">Aggiornamento</string>
+    <string name="new_word">Nuovo</string>
+    <string name="not_compatible">Non compatibile</string>
+    <string name="checking_plugins">Controllo plugins...</string>
+    <string name="manage_plugins">Gestione plugin</string>
+    <string name="repository">Repository</string>
+    <string name="updated">Aggiornato</string>
+    <string name="incompatible">Incompatibile</string>
+    <string name="plugin_install_incompatible">Versione plugin non compatibile</string>
+    <string name="incompatible_update">Aggiornamento incompatibile disponibile</string>
+    <string name="plugin_removal_failed">Errore durante la rimozione</string>
+    <string name="install_all">Installa tutti</string>
+    <string name="uninstall_all">Disinstalla tutti</string>
+    <string name="update_all">Aggiorna tutti</string>
+    <string name="uninstall_repo">Disinstalla repository</string>
+    <string name="plugins_installed_format">Installati %1$d plugins</string>
+    <string name="plugins_install_results_format">%1$d plugins installati, %2$d errori</string>
+    <string name="user_logged_out">Utente disconnesso, si prega di riavviare</string>
+    <string name="manually_installed_plugins">Plugins installati manualmente</string>
+    <string name="manually_installed_plugins_description">Plugins installati dall\'utente senza utilizzare una repository</string>
+    <string name="various">Vari</string>
 </resources>

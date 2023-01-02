@@ -4,6 +4,12 @@
     package="com.github.livingwithhippos.unchained"
     android:installLocation="auto">
 
+    <uses-feature
+        android:name="android.hardware.touchscreen"
+        android:required="false" />
+    <uses-feature android:name="android.software.leanback"
+        android:required="false" />
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
@@ -16,6 +22,8 @@
     <application
         android:name=".base.UnchainedApplication"
         android:allowBackup="true"
+        android:banner="@mipmap/banner"
+        android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/unchained_backup"
         android:icon="@mipmap/icon_launcher"
         android:label="@string/app_name"
@@ -23,21 +31,20 @@
         android:roundIcon="@mipmap/icon_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Unchained"
-        tools:targetApi="n"
-        android:dataExtractionRules="@xml/data_extraction_rules">
+        tools:targetApi="n">
 
         <activity
             android:name=".settings.view.SettingsActivity"
             android:parentActivityName=".base.MainActivity" />
 
         <activity
-            android:exported="true"
             android:name=".base.MainActivity"
+            android:exported="true"
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
             </intent-filter>
             <!-- Search Plugins -->
             <intent-filter>
@@ -295,7 +302,7 @@
                 <data android:host="piecejointe.net" />
                 <data android:host="pjointe.com" />
                 <data android:host="protected.to" />
-                
+
                 <data android:host="rapidgator.net" />
 
                 <data android:host="safelinking.net" />

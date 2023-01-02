@@ -26,7 +26,6 @@
                 android:layout_width="230dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
-                android:focusable="true"
                 android:hint="@string/link_or_magnet"
                 android:importantForAutofill="no"
                 app:endIconMode="clear_text"
@@ -47,13 +46,13 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <ImageButton
+            <Button
                 android:id="@+id/bPasteLink"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:background="@drawable/icon_paste"
-                android:contentDescription="@string/paste"
+                android:text="@string/paste"
+                app:icon="@drawable/icon_paste"
                 app:layout_constraintBottom_toBottomOf="@id/tfLink"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -66,7 +65,6 @@
                 android:layout_width="230dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
-                android:focusable="true"
                 android:hint="@string/password_optional"
                 app:endIconMode="password_toggle"
                 app:layout_constraintBottom_toTopOf="@+id/switchRemote"
@@ -87,14 +85,13 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <ImageButton
+            <Button
                 android:id="@+id/bPastePassword"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:layout_marginBottom="5dp"
-                android:background="@drawable/icon_paste"
-                android:contentDescription="@string/paste"
+                android:text="@string/paste"
+                app:icon="@drawable/icon_paste"
                 app:layout_constraintBottom_toBottomOf="@id/tiPassword"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"

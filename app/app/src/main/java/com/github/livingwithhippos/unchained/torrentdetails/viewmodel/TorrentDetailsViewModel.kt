@@ -55,7 +55,7 @@ class TorrentDetailsViewModel @Inject constructor(
         val scope = CoroutineScope(job + Dispatchers.IO)
 
         scope.launch {
-            /// maybe job.isActive?
+            // / maybe job.isActive?
             while (isActive) {
                 val torrentData = torrentsRepository.getTorrentInfo(id)
                 if (torrentData != null)

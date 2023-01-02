@@ -232,11 +232,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
     }
 
     override fun onBrowserStreamsClick(id: String) {
-        try {
-            context?.openExternalWebPage(RD_STREAMING_URL + id)
-        } catch (e: ActivityNotFoundException) {
-            context?.showToast(R.string.browser_not_found)
-        }
+        context?.openExternalWebPage(RD_STREAMING_URL + id)
     }
 
     private val tempProgressListener = object : ProgressCallback {

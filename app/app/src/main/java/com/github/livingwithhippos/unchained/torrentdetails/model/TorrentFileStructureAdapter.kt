@@ -70,38 +70,28 @@ fun getFilesNodes(
                         )
                     )
                 } else {
-                    // this is a folder
-                    val node = currentNode.children.firstOrNull { it.value.name == value }
-                    if (node == null) {
-                        currentNode.children.add(
-                            Node(
-                                TorrentFileItem(
-                                    TYPE_FOLDER,
-                                    paths.subList(0, index + 1).joinToString("/"),
-                                    0,
-                                    selected = false,
-                                    value
+                    // this is a folder, if we are not in flattening mode we add it to the list
+                    if (flattenFolders.not()) {
+                        val node = currentNode.children.firstOrNull { it.value.name == value }
+                        if (node == null) {
+                            currentNode.children.add(
+                                Node(
+                                    TorrentFileItem(
+                                        TYPE_FOLDER,
+                                        paths.subList(0, index + 1).joinToString("/"),
+                                        0,
+                                        selected = false,
+                                        value
+                                    )
                                 )
                             )
-                        )
-                    }
+                        }
 
-                    currentNode = currentNode.children.first { it.value.name == value }
+                        currentNode = currentNode.children.first { it.value.name == value }
+                    }
                 }
             }
         }
-    }
-
-    if (flattenFolders) {
-        val newRootFolder = Node(
-            TorrentFileItem(
-                TYPE_FOLDER,
-                "",
-                0,
-                selected = false,
-                "/"
-            )
-        )
     }
 
     return rootFolder
@@ -121,8 +111,8 @@ class TorrentContentFilesAdapter :
             newItem: TorrentFileItem
         ): Boolean {
             return oldItem.absolutePath == newItem.absolutePath &&
-                    oldItem.name == newItem.name &&
-                    oldItem.id == newItem.id
+                oldItem.name == newItem.name &&
+                oldItem.id == newItem.id
         }
 
         override fun areContentsTheSame(
@@ -152,8 +142,8 @@ class TorrentContentFilesSelectionAdapter(listener: TorrentContentListener) :
             newItem: TorrentFileItem
         ): Boolean {
             return oldItem.id == newItem.id &&
-                    oldItem.name == newItem.name &&
-                    oldItem.absolutePath == newItem.absolutePath
+                oldItem.name == newItem.name &&
+                oldItem.absolutePath == newItem.absolutePath
         }
 
         override fun areContentsTheSame(

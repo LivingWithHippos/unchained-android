@@ -96,10 +96,13 @@
     // parse directly from an html table in the search page
     // usable when torrent/magnet links are directly on the table's rows
     "table_direct": {
-      // Used to recognize the table. Both are optional and exclusive.
-      // If both are missing the first table in the document will be parsed.
-      "class": "table-class",
+      // Used to recognize the table. All are optional but only one will be used.
+      // If all are missing the first table in the document will be parsed.
       "id": "table-id",
+      "class": "table-class",
+      // if we have multiple tables with no particular class or id we can use this to select a specific table.
+      // INDEX STARTS FROM ZERO NOT ONE
+      "index": 3,
       // these are the indexes of the columns with the data. Columns start at zero.
       // Name is the only one not optional, but at least one between torrent and magnet is needed.
       // all regexes are optional, if missing the whole text in the corresponding cell will be taken
@@ -119,10 +122,13 @@
     // on those pages to retrieve the links
     // usable when page links are in a table rows but torrent/magnet links aren't
     "table_indirect": {
-      // Used to recognize the table. Both are optional and exclusive.
-      // If both are missing the first table in the document will be parsed.
-      "class": "table-class",
+      // Used to recognize the table. All are optional but only one will be used.
+      // If all are missing the first table in the document will be parsed.
       "id": "table-id",
+      "class": "table-class",
+      // if we have multiple tables with no particular class or id we can use this to select a specific table.
+      // INDEX STARTS FROM ZERO NOT ONE
+      "index": 3,
       // these are the indexes of the columns with the data. Columns start at zero.
       // with table_indirect only details_column is used (and required)
       // all the regexes will be applied to the detail page retrieved with this

@@ -17,6 +17,7 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.ThemingCallback.Companion.DAY_ONLY_THEMES
+import com.github.livingwithhippos.unchained.settings.viewmodel.SettingEvent
 import com.github.livingwithhippos.unchained.settings.viewmodel.SettingsViewModel
 import com.github.livingwithhippos.unchained.utilities.FEEDBACK_URL
 import com.github.livingwithhippos.unchained.utilities.GPLV3_URL
@@ -49,7 +50,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 val contentResolver = requireContext().contentResolver
 
                 val takeFlags: Int = Intent.FLAG_GRANT_READ_URI_PERMISSION or
-                        Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                    Intent.FLAG_GRANT_WRITE_URI_PERMISSION
 
                 contentResolver.takePersistableUriPermission(it, takeFlags)
 
@@ -83,6 +84,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
             true
         }
 
+        findPreference<Preference>("user_logout")?.setOnPreferenceClickListener {
+            viewModel.userLogout()
+            true
+        }
+
         findPreference<EditTextPreference>("filter_size_mb")?.setOnBindEditTextListener {
             it.keyListener = DigitsKeyListener.getInstance("0123456789")
         }
@@ -112,6 +118,18 @@ class SettingsFragment : PreferenceFragmentCompat() {
                     context?.showToast(R.string.kodi_connection_error)
                 }
                 null -> {
+                }
+            }
+        }
+
+        viewModel.eventLiveData.observe(viewLifecycleOwner) {
+            when (it.getContentIfNotHandled()) {
+                SettingEvent.Logout -> {
+                    context?.showToast(R.string.user_logged_out)
+                    activity?.finishAffinity()
+                }
+                null -> {
+                    // do nothing
                 }
             }
         }
@@ -188,7 +206,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
             "open_github_plugins" -> context?.openExternalWebPage(PLUGINS_URL)
             "test_kodi" -> testKodiConnection()
             "delete_external_plugins" -> {
-                val removedPlugins = viewModel.removeExternalPlugins(requireContext())
+                val removedPlugins = viewModel.removeAllPlugins(requireContext())
                 if (removedPlugins >= 0)
                     context?.showToast(getString(R.string.plugin_removed, removedPlugins))
                 else

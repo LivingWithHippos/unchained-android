@@ -38,7 +38,8 @@ class TorrentCachePickerFragment : UnchainedFragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         val binding = FragmentTorrentCachePickerBinding.inflate(inflater, container, false)
@@ -86,7 +87,6 @@ class TorrentCachePickerFragment : UnchainedFragment() {
             }
     }
 }
-
 
 class CachePagerAdapter(fragment: Fragment, private val cache: CachedTorrent) :
     FragmentStateAdapter(fragment) {

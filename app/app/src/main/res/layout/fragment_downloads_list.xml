@@ -41,39 +41,42 @@
                 android:tooltipText="@string/select_deselect_all"
                 android:text="@{selectedDownloads.toString(), default=`2`}" />
 
-            <ImageButton
+            <Button
                 android:id="@+id/bDeleteSelected"
+                style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_marginStart="10dp"
-                android:backgroundTint="@android:color/transparent"
+                android:paddingStart="13dp"
                 android:contentDescription="@string/delete"
-                android:src="@drawable/icon_delete"
                 android:onClick="@{() -> listener.deleteSelectedItems()}"
-                android:tooltipText="@string/delete_selected" />
+                app:icon="@drawable/icon_delete"
+                android:tooltipText="@string/delete_selected"
+                />
 
-            <ImageButton
+            <Button
                 android:id="@+id/bDownloadSelected"
+                style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_marginStart="10dp"
-                android:backgroundTint="@android:color/transparent"
+                android:paddingStart="13dp"
                 android:contentDescription="@string/download"
-                android:src="@drawable/icon_download"
                 android:onClick="@{() -> listener.downloadSelectedItems()}"
-                android:tooltipText="@string/download_selected" />
+                app:icon="@drawable/icon_download"
+                android:tooltipText="@string/download_selected"
+                />
 
 
-            <ImageButton
+            <Button
                 android:id="@+id/bShareSelected"
+                style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_marginStart="10dp"
-                android:backgroundTint="@android:color/transparent"
+                android:paddingStart="13dp"
                 android:contentDescription="@string/share"
-                android:src="@drawable/icon_share"
                 android:onClick="@{() -> listener.shareSelectedItems()}"
-                android:tooltipText="@string/share_selected" />
+                app:icon="@drawable/icon_share"
+                android:tooltipText="@string/share_selected"
+                />
 
         </LinearLayout>
 

@@ -8,13 +8,13 @@ import androidx.fragment.app.Fragment
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.databinding.FragmentTorrentFilePickerBinding
-import com.github.livingwithhippos.unchained.torrentfilepicker.viewmodel.TorrentEvent
-import com.github.livingwithhippos.unchained.torrentfilepicker.viewmodel.TorrentProcessingViewModel
 import com.github.livingwithhippos.unchained.torrentdetails.model.TorrentContentFilesSelectionAdapter
 import com.github.livingwithhippos.unchained.torrentdetails.model.TorrentContentListener
 import com.github.livingwithhippos.unchained.torrentdetails.model.TorrentFileItem
 import com.github.livingwithhippos.unchained.torrentdetails.model.TorrentFileItem.Companion.TYPE_FOLDER
 import com.github.livingwithhippos.unchained.torrentdetails.model.getFilesNodes
+import com.github.livingwithhippos.unchained.torrentfilepicker.viewmodel.TorrentEvent
+import com.github.livingwithhippos.unchained.torrentfilepicker.viewmodel.TorrentProcessingViewModel
 import com.github.livingwithhippos.unchained.utilities.Node
 import timber.log.Timber
 
@@ -28,7 +28,8 @@ class TorrentFilePickerFragment : Fragment(), TorrentContentListener {
     private var currentStructure: Node<TorrentFileItem>? = null
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         val binding = FragmentTorrentFilePickerBinding.inflate(inflater, container, false)
@@ -108,11 +109,9 @@ class TorrentFilePickerFragment : Fragment(), TorrentContentListener {
                 val newSelected = !it.value.selected
                 it.value.selected = newSelected
                 Node.traverseDepthFirst(it) { item ->
-                    Timber.d("Set ${item.name} as $newSelected")
                     item.selected = newSelected
                 }
             }
-
         }
 
         viewModel.updateTorrentStructure(currentStructure)
