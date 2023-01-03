@@ -22,6 +22,7 @@ class KodiRepository @Inject constructor(
     @ClassicClient private val client: OkHttpClient
 ) : BaseRepository(protoStore) {
 
+    // todo: conflict with other Retrofit with qualifiers?
     private fun provideRetrofit(baseUrl: String): Retrofit {
         return Retrofit.Builder()
             .client(client)

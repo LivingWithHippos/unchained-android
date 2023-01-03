@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ProgressBar
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import com.github.livingwithhippos.unchained.R
@@ -24,6 +25,8 @@ class AddRepositoryDialogFragment : DialogFragment() {
 
     private val viewModel: RepositoryViewModel by activityViewModels()
 
+    private lateinit var progressBar: LinearProgressIndicator
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let { activity ->
 
@@ -35,7 +38,7 @@ class AddRepositoryDialogFragment : DialogFragment() {
 
             val view = inflater.inflate(R.layout.dialog_add_repository, null)
 
-            val progressBar = view.findViewById<LinearProgressIndicator>(R.id.progressBar)
+            progressBar = view.findViewById(R.id.progressBar)
 
             view.findViewById<Button>(R.id.bTestRepoLink).setOnClickListener {
                 progressBar.isIndeterminate = true
@@ -68,16 +71,15 @@ class AddRepositoryDialogFragment : DialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val progressBar = view?.findViewById<LinearProgressIndicator>(R.id.progressBar)
 
         viewModel.pluginsRepositoryLiveData.observe(this) {
             when (val result = it.peekContent()) {
                 is PluginRepositoryEvent.ValidRepositoryLink -> {
-                    progressBar?.isIndeterminate = false
+                    progressBar.isIndeterminate = false
                     context?.showToast(R.string.connection_successful)
                 }
                 is PluginRepositoryEvent.InvalidRepositoryLink -> {
-                    progressBar?.isIndeterminate = false
+                    progressBar.isIndeterminate = false
                     when(result.reason) {
                         InvalidLinkReason.ConnectionError -> context?.showToast(R.string.network_error)
                         InvalidLinkReason.NotAnUrl -> context?.showToast(R.string.invalid_url)

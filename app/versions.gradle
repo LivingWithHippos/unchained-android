@@ -217,6 +217,7 @@ retrofit.runtime = "com.squareup.retrofit2:retrofit:$versions.retrofit"
 retrofit.gson = "com.squareup.retrofit2:converter-gson:$versions.retrofit"
 retrofit.moshi = "com.squareup.retrofit2:converter-moshi:$versions.retrofit"
 retrofit.mock = "com.squareup.retrofit2:retrofit-mock:$versions.retrofit"
+retrofit.scalars = "com.squareup.retrofit2:converter-scalars:$versions.retrofit"
 deps.retrofit = retrofit
 
 def room = [:]

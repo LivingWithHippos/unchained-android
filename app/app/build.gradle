@@ -209,6 +209,7 @@ dependencies {
     // retrofit
     implementation deps.retrofit.runtime
     implementation deps.retrofit.moshi
+    implementation deps.retrofit.scalars
 
     //okhttp
     implementation deps.okhttp.runtime
