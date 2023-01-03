@@ -51,14 +51,15 @@ class AddRepositoryDialogFragment : DialogFragment() {
                     dialog.cancel()
                 }
                 .setPositiveButton(getString(R.string.save)) { dialog, _ ->
-                    val url = view.findViewById<TextInputEditText>(R.id.tiAdd).text.toString().trim()
+                    val url =
+                        view.findViewById<TextInputEditText>(R.id.tiAdd).text.toString().trim()
                     if (url.isWebUrl()) {
                         viewModel.addRepository(
                             view.findViewById<TextInputEditText>(R.id.tiAdd).text.toString()
                         )
-                        dialog.cancel()
                     } else
                         context?.showToast(R.string.invalid_url)
+                    dialog.cancel()
                 }
             // Create the AlertDialog object and return it
             builder.create()
@@ -79,7 +80,7 @@ class AddRepositoryDialogFragment : DialogFragment() {
                 }
                 is PluginRepositoryEvent.InvalidRepositoryLink -> {
                     progressBar.isIndeterminate = false
-                    when(result.reason) {
+                    when (result.reason) {
                         InvalidLinkReason.ConnectionError -> context?.showToast(R.string.network_error)
                         InvalidLinkReason.NotAnUrl -> context?.showToast(R.string.invalid_url)
                         InvalidLinkReason.ParsingError -> context?.showToast(R.string.parsing_error)
