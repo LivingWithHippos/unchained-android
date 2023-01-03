@@ -683,4 +683,5 @@
     <string name="manually_installed_plugins">Manually installed plugins</string>
     <string name="manually_installed_plugins_description">Plugins installed by the user without using an online repository</string>
     <string name="various">Various</string>
+    <string name="connection_successful">Connection successful</string>
 </resources>

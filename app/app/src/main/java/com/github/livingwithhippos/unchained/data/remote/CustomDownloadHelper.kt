@@ -20,4 +20,8 @@ interface CustomDownloadHelper {
     suspend fun getPlugin(
         pluginUrl: String
     ): Response<Plugin>
+
+    suspend fun getAsString(
+        url: String
+    ): Response<String>
 }

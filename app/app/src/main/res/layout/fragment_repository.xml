@@ -61,5 +61,17 @@
             app:layout_constraintTop_toBottomOf="@id/progressBar"
             />
 
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabAddRepository"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:contentDescription="@string/repository"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/icon_add" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

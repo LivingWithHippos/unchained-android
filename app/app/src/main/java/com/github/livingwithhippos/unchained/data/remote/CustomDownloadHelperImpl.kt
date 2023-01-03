@@ -18,4 +18,7 @@ class CustomDownloadHelperImpl @Inject constructor(private val customDownload: C
 
     override suspend fun getPlugin(pluginUrl: String): Response<Plugin> =
         customDownload.getPlugin(pluginUrl)
+
+    override suspend fun getAsString(url: String): Response<String> =
+        customDownload.getString(url)
 }

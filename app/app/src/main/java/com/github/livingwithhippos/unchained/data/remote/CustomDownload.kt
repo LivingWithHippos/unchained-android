@@ -33,4 +33,9 @@ interface CustomDownload {
     suspend fun getPlugin(
         @Url pluginUrl: String
     ): Response<Plugin>
+
+    @GET
+    suspend fun getString(
+        @Url url: String
+    ): Response<String>
 }

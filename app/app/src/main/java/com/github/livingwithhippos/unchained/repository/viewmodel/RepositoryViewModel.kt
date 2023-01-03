@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.livingwithhippos.unchained.data.model.APIError
 import com.github.livingwithhippos.unchained.data.model.PluginVersion
 import com.github.livingwithhippos.unchained.data.model.RepositoryInfo
 import com.github.livingwithhippos.unchained.data.model.RepositoryPlugin
@@ -13,14 +14,19 @@ import com.github.livingwithhippos.unchained.data.repository.InstallResult
 import com.github.livingwithhippos.unchained.data.repository.LocalPlugins
 import com.github.livingwithhippos.unchained.data.repository.PluginRepository
 import com.github.livingwithhippos.unchained.plugins.model.Plugin
+import com.github.livingwithhippos.unchained.repository.model.JsonPluginRepository
 import com.github.livingwithhippos.unchained.repository.model.RepositoryListItem
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.DEFAULT_PLUGINS_REPOSITORY_LINK
+import com.github.livingwithhippos.unchained.utilities.extension.isWebUrl
 import com.github.livingwithhippos.unchained.utilities.getRepositoryString
 import com.github.livingwithhippos.unchained.utilities.postEvent
+import com.squareup.moshi.JsonAdapter
+import com.squareup.moshi.Moshi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import org.json.JSONException
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -28,9 +34,14 @@ import javax.inject.Inject
 class RepositoryViewModel @Inject constructor(
     private val databasePluginsRepository: DatabasePluginRepository,
     private val diskPluginsRepository: PluginRepository,
-    private val downloadRepository: CustomDownloadRepository,
+    private val downloadRepository: CustomDownloadRepository
 ) : ViewModel() {
     val pluginsRepositoryLiveData = MutableLiveData<Event<PluginRepositoryEvent>>()
+
+    // todo: inject
+    private val jsonAdapter: JsonAdapter<JsonPluginRepository> = Moshi.Builder()
+        .build()
+        .adapter(JsonPluginRepository::class.java)
 
     fun checkCurrentRepositories() {
         viewModelScope.launch {
@@ -204,6 +215,44 @@ class RepositoryViewModel @Inject constructor(
             )
         }
     }
+
+    private suspend fun getRepositoryResult(url: String): PluginRepositoryEvent {
+        if (url.trim().isWebUrl().not()) {
+            return (PluginRepositoryEvent.InvalidRepositoryLink(InvalidLinkReason.NotAnUrl))
+        } else {
+            when (val result = downloadRepository.downloadAsString(url.trim())) {
+                is EitherResult.Failure -> {
+                    Timber.e("Error downloading repo at ${url}: ${result.failure}")
+                    return (PluginRepositoryEvent.InvalidRepositoryLink(InvalidLinkReason.ConnectionError))
+                }
+                is EitherResult.Success -> {
+                    return try {
+                        val repository = jsonAdapter.fromJson(result.success)
+                        if (repository != null)
+                            (PluginRepositoryEvent.ValidRepositoryLink(repository))
+                        else
+                            (PluginRepositoryEvent.InvalidRepositoryLink(InvalidLinkReason.ParsingError))
+                    } catch (ex: JSONException) {
+                        Timber.e("Error while parsing repo from $url:\n${ex.message}")
+                        (PluginRepositoryEvent.InvalidRepositoryLink(InvalidLinkReason.ParsingError))
+                    }
+                }
+            }
+        }
+    }
+
+    fun checkRepositoryLink(url: String) {
+        viewModelScope.launch {
+            val result = getRepositoryResult(url)
+            pluginsRepositoryLiveData.postEvent(result)
+        }
+    }
+
+    fun addRepository(url: String) {
+        viewModelScope.launch {
+            databasePluginsRepository.addRepositoryUrl(url)
+        }
+    }
 }
 
 sealed class PluginRepositoryEvent {
@@ -221,4 +270,13 @@ sealed class PluginRepositoryEvent {
         val dbData: Map<RepositoryInfo, Map<RepositoryPlugin, List<PluginVersion>>>,
         val installedData: LocalPlugins
     ) : PluginRepositoryEvent()
+
+    data class InvalidRepositoryLink(val reason: InvalidLinkReason) : PluginRepositoryEvent()
+    data class ValidRepositoryLink(val repository: JsonPluginRepository) : PluginRepositoryEvent()
+}
+
+sealed class InvalidLinkReason {
+    object NotAnUrl: InvalidLinkReason()
+    object ConnectionError: InvalidLinkReason()
+    object ParsingError: InvalidLinkReason()
 }

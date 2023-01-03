@@ -45,6 +45,11 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
         val adapter = PluginRepositoryAdapter(this)
         binding.rvPluginsList.adapter = adapter
 
+        binding.fabAddRepository.setOnClickListener {
+            val dialog = AddRepositoryDialogFragment()
+            dialog.show(parentFragmentManager, "addRepositoryDialogFragment")
+        }
+
         viewModel.pluginsRepositoryLiveData.observe(
             viewLifecycleOwner,
             EventObserver {
@@ -100,6 +105,9 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
                                 )
                             )
                         }
+                    }
+                    is PluginRepositoryEvent.InvalidRepositoryLink, is PluginRepositoryEvent.ValidRepositoryLink -> {
+                        // do nothing, these are for dialogs
                     }
                 }
             }

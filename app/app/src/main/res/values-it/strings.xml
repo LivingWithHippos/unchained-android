@@ -466,4 +466,5 @@
     <string name="manually_installed_plugins">Plugins installati manualmente</string>
     <string name="manually_installed_plugins_description">Plugins installati dall\'utente senza utilizzare una repository</string>
     <string name="various">Vari</string>
+    <string name="connection_successful">Connessione avvenuta con successo</string>
 </resources>
