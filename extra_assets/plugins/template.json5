@@ -11,7 +11,7 @@
    * Minor versions will be compatible (e.g 1.1, 1.2, 1.3),
    * Major versions will not be compatible (e.g. 2, 3)
   */
-  "engine_version": 2.0,
+  "engine_version": 2.4,
   // the current plugin version. Used to check for updates
   "version": 1.0,
   // basic url used to replace {url}, WITHOUT trailing /
@@ -24,16 +24,21 @@
   "author": "Author name",
   /**
   * basic categories system. Will be used to implement a generic
-  * categories search system.
+  * categories search system. Only the values are supposed to be changed, not the keys.
   * If the service does not support categories leave only the "all" value with whatever you want
   * and remove "category" under " search"
   */
   "supported_categories": {
     "all": "None",
+    "art": "Art",
     "anime": "Anime",
+    "doujinshi": "Doujinshi",
+    "manga": "Manga",
     "software": "Applications",
     "games": "Games",
     "movies": "Movies",
+    "pictures": "Pictures",
+    "videos": "Videos",
     "music": "Music",
     "tv": "TV",
     "books": "books"

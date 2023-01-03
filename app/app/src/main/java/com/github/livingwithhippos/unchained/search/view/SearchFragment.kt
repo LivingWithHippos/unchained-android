@@ -379,14 +379,24 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
     private fun setupCategory(autoCompleteView: AutoCompleteTextView?, plugin: Plugin) {
         val choices = mutableListOf<String>()
         choices.add(getString(R.string.category_all))
+        if (plugin.supportedCategories.art != null)
+            choices.add(getString(R.string.category_art))
         if (plugin.supportedCategories.anime != null)
             choices.add(getString(R.string.category_anime))
+        if (plugin.supportedCategories.doujinshi != null)
+            choices.add(getString(R.string.category_doujinshi))
+        if (plugin.supportedCategories.manga != null)
+            choices.add(getString(R.string.category_manga))
         if (plugin.supportedCategories.software != null)
             choices.add(getString(R.string.category_software))
         if (plugin.supportedCategories.games != null)
             choices.add(getString(R.string.category_games))
         if (plugin.supportedCategories.movies != null)
             choices.add(getString(R.string.category_movies))
+        if (plugin.supportedCategories.videos != null)
+            choices.add(getString(R.string.category_videos))
+        if (plugin.supportedCategories.pictures != null)
+            choices.add(getString(R.string.category_pictures))
         if (plugin.supportedCategories.music != null)
             choices.add(getString(R.string.category_music))
         if (plugin.supportedCategories.tv != null)
@@ -410,10 +420,15 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
                 // searches on "all" will just be redirected to the no_category search
                 null
             }
+            getString(R.string.category_art) -> "art"
             getString(R.string.category_anime) -> "anime"
+            getString(R.string.category_doujinshi) -> "doujinshi"
+            getString(R.string.category_manga) -> "manga"
             getString(R.string.category_software) -> "software"
             getString(R.string.category_games) -> "games"
             getString(R.string.category_movies) -> "movies"
+            getString(R.string.category_pictures) -> "pictures"
+            getString(R.string.category_videos) -> "videos"
             getString(R.string.category_music) -> "music"
             getString(R.string.category_tv) -> "tv"
             getString(R.string.category_tv) -> "books"

@@ -466,4 +466,9 @@
     <string name="manually_installed_plugins_description">Plugins installés par l\'utilisateur sans passer par un référentiel en ligne</string>
     <string name="various">Divers</string>
     <string name="connection_successful">Connexion réussie</string>
+    <string name="category_art">Art</string>
+    <string name="category_doujinshi">Doujinshi</string>
+    <string name="category_manga">Manga</string>
+    <string name="category_pictures">Images</string>
+    <string name="category_videos">Vidéos</string>
 </resources>
