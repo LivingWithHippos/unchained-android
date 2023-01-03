@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.ProgressBar
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import com.github.livingwithhippos.unchained.R
@@ -55,7 +54,7 @@ class AddRepositoryDialogFragment : DialogFragment() {
                     val url = view.findViewById<TextInputEditText>(R.id.tiAdd).text.toString().trim()
                     if (url.isWebUrl()) {
                         viewModel.addRepository(
-                            view.findViewById<TextInputEditText>(R.id.tiAdd).text.toString(),
+                            view.findViewById<TextInputEditText>(R.id.tiAdd).text.toString()
                         )
                         dialog.cancel()
                     } else

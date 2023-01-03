@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.livingwithhippos.unchained.data.model.APIError
 import com.github.livingwithhippos.unchained.data.model.PluginVersion
 import com.github.livingwithhippos.unchained.data.model.RepositoryInfo
 import com.github.livingwithhippos.unchained.data.model.RepositoryPlugin
@@ -25,6 +24,7 @@ import com.github.livingwithhippos.unchained.utilities.postEvent
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.json.JSONException
 import timber.log.Timber
@@ -34,7 +34,7 @@ import javax.inject.Inject
 class RepositoryViewModel @Inject constructor(
     private val databasePluginsRepository: DatabasePluginRepository,
     private val diskPluginsRepository: PluginRepository,
-    private val downloadRepository: CustomDownloadRepository
+    private val downloadRepository: CustomDownloadRepository,
 ) : ViewModel() {
     val pluginsRepositoryLiveData = MutableLiveData<Event<PluginRepositoryEvent>>()
 
@@ -251,6 +251,9 @@ class RepositoryViewModel @Inject constructor(
     fun addRepository(url: String) {
         viewModelScope.launch {
             databasePluginsRepository.addRepositoryUrl(url)
+            delay(100)
+            // used to update on the main screen the repo
+            checkCurrentRepositories()
         }
     }
 }
