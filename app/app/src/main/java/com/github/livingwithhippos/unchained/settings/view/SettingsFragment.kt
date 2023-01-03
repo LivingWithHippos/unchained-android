@@ -21,7 +21,6 @@ import com.github.livingwithhippos.unchained.settings.viewmodel.SettingEvent
 import com.github.livingwithhippos.unchained.settings.viewmodel.SettingsViewModel
 import com.github.livingwithhippos.unchained.utilities.FEEDBACK_URL
 import com.github.livingwithhippos.unchained.utilities.GPLV3_URL
-import com.github.livingwithhippos.unchained.utilities.PLUGINS_URL
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.mikepenz.aboutlibraries.LibsBuilder
@@ -214,7 +213,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 viewModel.updateRegexps()
                 context?.showToast(R.string.updating_link_matcher)
             }
-            "open_github_plugins" -> context?.openExternalWebPage(PLUGINS_URL)
             "test_kodi" -> testKodiConnection()
             "delete_external_plugins" -> {
                 val removedPlugins = viewModel.removeAllPlugins(requireContext())
