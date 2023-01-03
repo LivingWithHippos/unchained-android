@@ -50,6 +50,7 @@ import okhttp3.dnsoverhttps.DnsOverHttps
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.net.InetAddress
 import javax.inject.Singleton
 
@@ -177,6 +178,7 @@ object ApiFactory {
         return Retrofit.Builder()
             .client(okHttpClient)
             .baseUrl(BASE_URL)
+            .addConverterFactory(ScalarsConverterFactory.create())
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()
     }

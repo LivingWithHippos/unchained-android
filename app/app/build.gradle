@@ -43,8 +43,8 @@ android {
         applicationId "com.github.livingwithhippos.unchained"
         minSdk 22
         targetSdk 33
-        versionCode 34
-        versionName "4.53.2-beta"
+        versionCode 35
+        versionName "4.53.4-beta"
         // limit resources for a list of locales
         // resConfigs "en", "it"
 
@@ -209,6 +209,7 @@ dependencies {
     // retrofit
     implementation deps.retrofit.runtime
     implementation deps.retrofit.moshi
+    implementation deps.retrofit.scalars
 
     //okhttp
     implementation deps.okhttp.runtime

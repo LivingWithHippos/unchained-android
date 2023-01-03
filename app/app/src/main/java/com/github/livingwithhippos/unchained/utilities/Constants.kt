@@ -10,11 +10,7 @@ const val BASE_URL = "https://api.real-debrid.com/rest/1.0/"
 const val BASE_AUTH_URL = "https://api.real-debrid.com/oauth/v2/"
 const val INSTANT_AVAILABILITY_ENDPOINT = "torrents/instantAvailability"
 const val REFERRAL_LINK = "http://real-debrid.com/?id=78841"
-const val PREMIUM_LINK = "https://real-debrid.com/premium"
 const val ACCOUNT_LINK = "https://real-debrid.com/account"
-const val PLUGINS_PACK_LINK =
-    "https://github.com/LivingWithHippos/unchained-android/raw/master/extra_assets/plugins/unchained_plugins_pack.zip"
-const val PLUGINS_PACK_NAME = "unchained_plugins_pack.zip"
 const val PLUGINS_PACK_FOLDER = "pack"
 const val DEFAULT_PLUGINS_REPOSITORY_LINK =
     "https://gitlab.com/LivingWithHippos/unchained-plugins/-/raw/main/repository/repository.json"
@@ -25,8 +21,6 @@ const val MANUAL_PLUGINS_REPOSITORY_NAME = "common_repository"
 
 // unofficial link to get streaming from a browser page
 const val RD_STREAMING_URL = "https://real-debrid.com/streaming-"
-
-const val KEY_TOKEN: String = "TOKEN_KEY"
 
 const val PRIVATE_TOKEN: String = "private_token"
 
@@ -39,8 +33,6 @@ const val CONTAINER_PATTERN: String = "https?://[^\\s]{7,}\\.(rsdf|ccf3|ccf|dlc)
 const val CONTAINER_EXTENSION_PATTERN: String = "[^\\s]+\\.(rsdf|ccf3|ccf|dlc)$"
 
 const val FEEDBACK_URL = "https://github.com/LivingWithHippos/unchained-android"
-const val PLUGINS_URL =
-    "https://github.com/LivingWithHippos/unchained-android/tree/master/extra_assets/plugins"
 const val GPLV3_URL = "https://www.gnu.org/licenses/gpl-3.0.en.html"
 
 const val SCHEME_MAGNET = "magnet"

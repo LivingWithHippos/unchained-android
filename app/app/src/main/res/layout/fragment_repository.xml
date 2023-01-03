@@ -23,7 +23,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toTopOf="@id/rvPluginsList"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/fabAddRepository"
             >
 
             <com.google.android.material.textfield.TextInputEditText
@@ -35,10 +35,24 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabAddRepository"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:contentDescription="@string/repository"
+            app:srcCompat="@drawable/icon_add"
+            app:layout_constraintTop_toTopOf="@id/tfSearch"
+            app:layout_constraintBottom_toBottomOf="@id/progressBar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tfSearch"
+            />
+
         <com.google.android.material.progressindicator.LinearProgressIndicator
             android:id="@+id/progressBar"
             style="@style/Widget.MaterialComponents.LinearProgressIndicator"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="7dp"
             android:indeterminate="true"
             app:layout_constraintTop_toBottomOf="@id/tfSearch"

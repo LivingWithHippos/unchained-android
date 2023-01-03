@@ -100,6 +100,19 @@ class CustomDownloadRepository @Inject constructor(
             errorMessage = "Error fetching plugin"
         )
     }
+
+    /**
+     * Generic function to retrieve url bodies as strings
+     *
+     * @param url
+     * @return
+     */
+    suspend fun downloadAsString(url: String): EitherResult<UnchainedNetworkException, String> {
+        return eitherApiResult(
+            call = { customDownloadHelper.getAsString(url) },
+            errorMessage = "Error fetching url as a string"
+        )
+    }
 }
 
 sealed class DownloadResult {

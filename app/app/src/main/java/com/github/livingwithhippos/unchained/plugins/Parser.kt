@@ -763,10 +763,15 @@ class Parser(
     private fun getCategory(plugin: Plugin, category: String): String? {
         return when (category) {
             "all" -> plugin.supportedCategories.all
+            "art" -> plugin.supportedCategories.art
             "anime" -> plugin.supportedCategories.anime
+            "doujinshi" -> plugin.supportedCategories.doujinshi
+            "manga" -> plugin.supportedCategories.manga
             "software" -> plugin.supportedCategories.software
             "games" -> plugin.supportedCategories.games
             "movies" -> plugin.supportedCategories.movies
+            "pictures" -> plugin.supportedCategories.pictures
+            "videos" -> plugin.supportedCategories.videos
             "music" -> plugin.supportedCategories.music
             "tv" -> plugin.supportedCategories.tv
             "books" -> plugin.supportedCategories.books
@@ -793,8 +798,9 @@ class Parser(
          * 2.1: added direct parsing mode
          * 2.2: added entry class to direct parsing mode (required)
          * 2.3: added optional table index to table parsers (for tables with no specific class/id)
+         * 2.4: added more categories
          */
-        const val PLUGIN_ENGINE_VERSION: Float = 2.3f
+        const val PLUGIN_ENGINE_VERSION: Float = 2.4f
     }
 }
 

@@ -34,8 +34,6 @@ jobs:
         env:
             ENCODED_KEYSTORE: ${{ secrets.KEYSTORE }}
         run: echo "$ENCODED_KEYSTORE" | base64 --decode > /home/runner/work/unchained-android/unchained-android/app/release.pfk
-      - name: Copy plugins
-        run: cp /home/runner/work/unchained-android/unchained-android/extra_assets/plugins/*.unchained /home/runner/work/unchained-android/unchained-android/app/app/src/main/assets/search_plugins
       - name: Build the app
         env:
             KEYSTORE: /home/runner/work/unchained-android/unchained-android/app/release.pfk
@@ -57,8 +55,6 @@ jobs:
         env:
             ENCODED_KEYSTORE: ${{ secrets.KEYSTORE }}
         run: echo "$ENCODED_KEYSTORE" | base64 --decode > /home/runner/work/unchained-android/unchained-android/app/release.pfk
-      - name: Copy plugins
-        run: cp /home/runner/work/unchained-android/unchained-android/extra_assets/plugins/*.unchained /home/runner/work/unchained-android/unchained-android/app/app/src/main/assets/search_plugins
       - name: Build the app
         env:
             KEYSTORE: /home/runner/work/unchained-android/unchained-android/app/release.pfk

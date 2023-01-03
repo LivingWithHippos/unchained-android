@@ -91,6 +91,10 @@ class DatabasePluginRepository @Inject constructor(
         return repositoryDataDao.getAllRepositories()
     }
 
+    suspend fun addRepositoryUrl(url: String) {
+        repositoryDataDao.insert(Repository(url))
+    }
+
     /**
      * Get all the plugins or repository filtered by the query. If a plugin is a match the repository
      * will also be returned (useful for separating results from different repositories)

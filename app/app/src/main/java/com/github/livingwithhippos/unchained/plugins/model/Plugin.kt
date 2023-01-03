@@ -43,14 +43,24 @@ fun isCompatible(engineVersion: Double): Boolean {
 data class SupportedCategories(
     @Json(name = "all")
     val all: String,
+    @Json(name = "art")
+    val art: String?,
     @Json(name = "anime")
     val anime: String?,
+    @Json(name = "doujinshi")
+    val doujinshi: String?,
+    @Json(name = "manga")
+    val manga: String?,
     @Json(name = "software")
     val software: String?,
     @Json(name = "games")
     val games: String?,
     @Json(name = "movies")
     val movies: String?,
+    @Json(name = "pictures")
+    val pictures: String?,
+    @Json(name = "videos")
+    val videos: String?,
     @Json(name = "music")
     val music: String?,
     @Json(name = "tv")
