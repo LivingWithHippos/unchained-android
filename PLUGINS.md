@@ -48,6 +48,8 @@ The repository json structure is pretty simple:
 
 If you don't know where to publish your repository and plugins, just create a project on Github, Gitlab, Sourcehat, Codeberg or whatever and use that.
 
+**N.B. the link to the repository to be used/shared must directly open the text file, test it in your browser. On Github you can get it by pressing the "raw" button on the file page.**
+
 ## Create a new Plugin
 
 The structure of a plugin file is more complex to allow for the necessary flexibility for every website layout. Websites requiring login or protected by Cloudflare are not searchable yet.

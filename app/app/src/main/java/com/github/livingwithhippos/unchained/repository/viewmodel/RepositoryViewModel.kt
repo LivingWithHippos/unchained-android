@@ -22,6 +22,7 @@ import com.github.livingwithhippos.unchained.utilities.extension.isWebUrl
 import com.github.livingwithhippos.unchained.utilities.getRepositoryString
 import com.github.livingwithhippos.unchained.utilities.postEvent
 import com.squareup.moshi.JsonAdapter
+import com.squareup.moshi.JsonEncodingException
 import com.squareup.moshi.Moshi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -233,6 +234,9 @@ class RepositoryViewModel @Inject constructor(
                         else
                             (PluginRepositoryEvent.InvalidRepositoryLink(InvalidLinkReason.ParsingError))
                     } catch (ex: JSONException) {
+                        Timber.e("Error while parsing repo from $url:\n${ex.message}")
+                        (PluginRepositoryEvent.InvalidRepositoryLink(InvalidLinkReason.ParsingError))
+                    } catch (ex: JsonEncodingException) {
                         Timber.e("Error while parsing repo from $url:\n${ex.message}")
                         (PluginRepositoryEvent.InvalidRepositoryLink(InvalidLinkReason.ParsingError))
                     }
