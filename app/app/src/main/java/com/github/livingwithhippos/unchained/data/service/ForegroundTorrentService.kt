@@ -148,9 +148,13 @@ class ForegroundTorrentService : LifecycleService() {
 
     private fun startMonitoring() {
         lifecycleScope.launch {
-            // todo: use a variable
             while (true) {
-                torrentsLiveData.postValue(getTorrentList())
+                try {
+                    val token = torrentRepository.getToken()
+                    torrentsLiveData.postValue(getTorrentList())
+                } catch (ex: IllegalArgumentException) {
+                    // no valid token ready, retry later
+                }
                 // update notifications every 5 seconds
                 delay(updateTiming)
             }

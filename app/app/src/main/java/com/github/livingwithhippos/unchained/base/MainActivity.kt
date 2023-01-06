@@ -370,6 +370,9 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        /**
+         * Unique toast used to manage multiple notifications being shown at once
+         */
         @SuppressLint("ShowToast")
         val currentToast: Toast = Toast.makeText(this, "", Toast.LENGTH_SHORT)
 
@@ -575,6 +578,7 @@ class MainActivity : AppCompatActivity() {
 
         // start the notification system if enabled
         if (preferences.getBoolean(KEY_TORRENT_NOTIFICATIONS, false)) {
+            // fixme: the user can enable this service without being logged in, add a check when enabling it in the settings fragment
             val notificationIntent = Intent(this, ForegroundTorrentService::class.java)
             ContextCompat.startForegroundService(this, notificationIntent)
         }
