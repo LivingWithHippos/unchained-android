@@ -445,7 +445,7 @@
     <string name="single_torrent_file_available">Sólo se selecciona automáticamente el archivo disponible</string>
     <string name="update_plugins">Actualizar los plugins</string>
     <string name="reload">Recarga</string>
-    <string name="update">Actualización</string>
+    <string name="update">Actualizar</string>
     <string name="new_word">Nuevo</string>
     <string name="not_compatible">No es compatible</string>
     <string name="checking_plugins">Comprobando plugins...</string>
