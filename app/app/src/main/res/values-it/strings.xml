@@ -446,7 +446,7 @@
     <string name="single_torrent_file_available">Unico file disponibile selezionato automaticamente</string>
     <string name="update_plugins">Aggiorna i plugin</string>
     <string name="reload">Ricarica</string>
-    <string name="update">Aggiornamento</string>
+    <string name="update">Aggiorna</string>
     <string name="new_word">Nuovo</string>
     <string name="not_compatible">Non compatibile</string>
     <string name="checking_plugins">Controllo plugins...</string>
