@@ -160,26 +160,7 @@ android {
         jvmTarget = "1.8"
     }
 }
-/*
-tasks.register('copyPlugins', Copy) {
-    description("Copy search plugins into the assets folder. Avoid for Google Play releases.")
 
-    File rootProjectDir = file("$rootDir")
-    File pluginsFolder = file(new File(rootProjectDir.getParent(), "extra_assets/plugins"))
-    File assetsFolder = file("$rootDir/app/src/main/assets/search_plugins")
-
-    from pluginsFolder
-    include "*.unchained"
-    into assetsFolder
-}
-
-project.afterEvaluate {
-    preBuild.dependsOn copyPlugins
-}
-
-clean.dependsOn copyPlugins
-clean.mustRunAfter copyPlugins
-*/
 dependencies {
 
     implementation fileTree(dir: "libs", include: ["*.jar"])
@@ -196,9 +177,8 @@ dependencies {
     implementation deps.viewpager2
 
     // datastore
-    // implementation deps.datastore.preferences
     implementation deps.datastore.datastore
-    implementation  deps.protobuf.javalite
+    implementation deps.protobuf.javalite
 
     implementation deps.flexbox
 
