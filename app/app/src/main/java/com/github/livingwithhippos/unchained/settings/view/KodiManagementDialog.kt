@@ -30,7 +30,7 @@ class KodiManagementDialog : DialogFragment(), KodiDeviceListener {
             val view = inflater.inflate(R.layout.dialog_kodi_management, null)
 
             view.findViewById<Button>(R.id.bAddNew).setOnClickListener {
-                showNewDeviceBottomSheet()
+                showNewDeviceDialog()
             }
 
             val adapter = KodiDeviceAdapter(this)
@@ -52,13 +52,14 @@ class KodiManagementDialog : DialogFragment(), KodiDeviceListener {
         } else throw IllegalStateException("Activity cannot be null")
     }
 
-    private fun showNewDeviceBottomSheet() {
-        val sheet = KodiDeviceBottomSheet()
-        sheet.show(parentFragmentManager, KodiDeviceBottomSheet.TAG)
+    private fun showNewDeviceDialog() {
+        val sheet = KodiDeviceDialog()
+        sheet.show(parentFragmentManager, KodiDeviceDialog.TAG)
     }
 
     override fun onEditClick(item: KodiDevice) {
-        val sheet = KodiDeviceBottomSheet(item)
-        sheet.show(parentFragmentManager, KodiDeviceBottomSheet.TAG)
+        // todo: pass kodi data as bundle
+        val sheet = KodiDeviceDialog(item)
+        sheet.show(parentFragmentManager, KodiDeviceDialog.TAG)
     }
 }

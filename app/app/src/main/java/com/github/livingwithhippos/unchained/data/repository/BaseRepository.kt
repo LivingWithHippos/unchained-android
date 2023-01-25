@@ -119,6 +119,7 @@ open class BaseRepository(private val protoStore: ProtoStore) {
      * Get the access token saved in the db. Used by most calls to RD APIs
      * Throws an exception if token is missing or malformed
      * @return the token string
+     * @throws IllegalArgumentException if not valid token is found
      */
     suspend fun getToken(): String {
         val token = protoStore.getCredentials().accessToken
