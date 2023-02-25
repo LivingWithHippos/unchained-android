@@ -471,4 +471,5 @@
     <string name="category_manga">Manga</string>
     <string name="category_pictures">Imágenes</string>
     <string name="category_videos">Vídeos</string>
+    <string name="vibrate_on_download">Vibrar al finalizar la descarga</string>
 </resources>
