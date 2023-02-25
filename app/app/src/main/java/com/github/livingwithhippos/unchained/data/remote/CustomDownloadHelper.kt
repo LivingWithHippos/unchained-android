@@ -9,15 +9,9 @@ interface CustomDownloadHelper {
 
     suspend fun getFile(url: String): Response<ResponseBody>
 
-    suspend fun getPluginsRepository(
-        repositoryUrl: String
-    ): Response<JsonPluginRepository>
+    suspend fun getPluginsRepository(repositoryUrl: String): Response<JsonPluginRepository>
 
-    suspend fun getPlugin(
-        pluginUrl: String
-    ): Response<Plugin>
+    suspend fun getPlugin(pluginUrl: String): Response<Plugin>
 
-    suspend fun getAsString(
-        url: String
-    ): Response<String>
+    suspend fun getAsString(url: String): Response<String>
 }

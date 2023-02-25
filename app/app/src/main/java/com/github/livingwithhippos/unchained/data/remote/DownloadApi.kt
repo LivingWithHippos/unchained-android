@@ -11,8 +11,9 @@ import retrofit2.http.Query
 interface DownloadApi {
 
     /**
-     * Get user downloads list
-     * You can not use both offset and page at the same time, page is prioritized in case it happens.
+     * Get user downloads list You can not use both offset and page at the same time, page is
+     * prioritized in case it happens.
+     *
      * @param token the authorization token, formed as "Bearer api_token"
      * @param offset Starting offset (must be within 0 and X-Total-Count HTTP header)
      * @param page Page number
@@ -29,6 +30,7 @@ interface DownloadApi {
 
     /**
      * Delete a download.
+     *
      * @param token the authorization token, formed as "Bearer api_token"
      * @param id the download ID, returned by getDownloads
      */

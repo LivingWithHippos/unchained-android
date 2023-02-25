@@ -9,13 +9,7 @@ interface AuthApiHelper {
 
     suspend fun getAuthentication(): Response<Authentication>
 
-    suspend fun getSecrets(
-        deviceCode: String
-    ): Response<Secrets>
+    suspend fun getSecrets(deviceCode: String): Response<Secrets>
 
-    suspend fun getToken(
-        clientId: String,
-        clientSecret: String,
-        code: String
-    ): Response<Token>
+    suspend fun getToken(clientId: String, clientSecret: String, code: String): Response<Token>
 }

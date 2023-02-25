@@ -13,18 +13,17 @@ import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.postEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
-import timber.log.Timber
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 import javax.inject.Inject
+import kotlinx.coroutines.launch
+import timber.log.Timber
 
-/**
- * A [ViewModel] subclass.
- * It offers LiveData to be observed while creating new downloads
- */
+/** A [ViewModel] subclass. It offers LiveData to be observed while creating new downloads */
 @HiltViewModel
-class NewDownloadViewModel @Inject constructor(
+class NewDownloadViewModel
+@Inject
+constructor(
     private val unrestrictRepository: UnrestrictRepository,
     private val torrentsRepository: TorrentsRepository,
     private val hostsRepository: HostsRepository,
@@ -76,10 +75,8 @@ class NewDownloadViewModel @Inject constructor(
     fun unrestrictContainer(link: String) {
         viewModelScope.launch {
             val links = unrestrictRepository.getContainerLinks(link)
-            if (links != null)
-                linkLiveData.postEvent(Link.Container(links))
-            else
-                linkLiveData.postEvent(Link.RetrievalError)
+            if (links != null) linkLiveData.postEvent(Link.Container(links))
+            else linkLiveData.postEvent(Link.RetrievalError)
         }
     }
 
@@ -96,7 +93,9 @@ class NewDownloadViewModel @Inject constructor(
                         networkExceptionLiveData.postEvent(uploadedTorrent.failure)
                     }
                     is EitherResult.Success -> {
-                        // todo: add checks for already chosen torrent/magnet (if possible), otherwise we get multiple downloads
+                        // todo: add checks for already chosen torrent/magnet (if possible),
+                        // otherwise we get
+                        // multiple downloads
                         linkLiveData.postEvent(Link.Torrent(uploadedTorrent.success))
                     }
                 }
@@ -105,8 +104,9 @@ class NewDownloadViewModel @Inject constructor(
     }
 
     /**
-     * This function is used to manage multiple toast spawning from different parts of the logic
-     * to avoid the queue getting too long and a lot of messages being shown, see the collect on the fragment
+     * This function is used to manage multiple toast spawning from different parts of the logic to
+     * avoid the queue getting too long and a lot of messages being shown, see the collect on the
+     * fragment
      */
     fun postMessage(message: String) {
         toastLiveData.postEvent(message)

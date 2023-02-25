@@ -14,12 +14,10 @@ import com.github.livingwithhippos.unchained.settings.model.KodiDeviceListener
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 
-
 @AndroidEntryPoint
 class KodiServerPickerDialog : DialogFragment(), KodiDeviceListener {
 
     private val viewModel: DownloadDetailsViewModel by activityViewModels()
-
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let { activity ->
@@ -48,19 +46,20 @@ class KodiServerPickerDialog : DialogFragment(), KodiDeviceListener {
 
             viewModel.getKodiDevices()
 
-            builder.setView(view)
-                .setTitle(R.string.kodi)
-                .setNegativeButton(getString(R.string.close)) { dialog, _ ->
-                    dialog.cancel()
-                }
+            builder.setView(view).setTitle(R.string.kodi).setNegativeButton(
+                getString(R.string.close)
+            ) { dialog, _ ->
+                dialog.cancel()
+            }
             // Create the AlertDialog object and return it
             builder.create()
-
-        } ?: throw IllegalStateException("Activity cannot be null")
+        }
+            ?: throw IllegalStateException("Activity cannot be null")
     }
 
     override fun onEditClick(item: KodiDevice) {
-        val url: String = arguments?.getString("url") ?: throw IllegalArgumentException("Url cannot be null")
+        val url: String =
+            arguments?.getString("url") ?: throw IllegalArgumentException("Url cannot be null")
         viewModel.openUrlOnKodi(url, item)
         this.dismiss()
     }

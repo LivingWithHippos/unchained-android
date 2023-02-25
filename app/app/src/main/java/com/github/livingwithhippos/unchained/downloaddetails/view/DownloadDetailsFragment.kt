@@ -15,7 +15,6 @@ import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.setFragmentResultListener
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
@@ -40,8 +39,7 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 /**
- * A simple [UnchainedFragment] subclass.
- * It is capable of showing the details of a [DownloadItem]
+ * A simple [UnchainedFragment] subclass. It is capable of showing the details of a [DownloadItem]
  */
 @AndroidEntryPoint
 class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
@@ -81,7 +79,8 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                     }
                 }
             },
-            viewLifecycleOwner, Lifecycle.State.RESUMED
+            viewLifecycleOwner,
+            Lifecycle.State.RESUMED
         )
 
         detailsBinding.details = args.details
@@ -101,21 +100,19 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         detailsBinding.showDownload = viewModel.getButtonVisibilityPreference(SHOW_DOWNLOAD_BUTTON)
         detailsBinding.showKodi = viewModel.getButtonVisibilityPreference(SHOW_KODI_BUTTON)
         detailsBinding.showLocalPlay = viewModel.getButtonVisibilityPreference(SHOW_MEDIA_BUTTON)
-        detailsBinding.showLoadStream = viewModel.getButtonVisibilityPreference(
-            SHOW_LOAD_STREAM_BUTTON
-        )
-        detailsBinding.showStreamBrowser = viewModel.getButtonVisibilityPreference(
-            SHOW_STREAM_BROWSER_BUTTON
-        )
+        detailsBinding.showLoadStream =
+            viewModel.getButtonVisibilityPreference(SHOW_LOAD_STREAM_BUTTON)
+        detailsBinding.showStreamBrowser =
+            viewModel.getButtonVisibilityPreference(SHOW_STREAM_BROWSER_BUTTON)
 
-        viewModel.streamLiveData.observe(
-            viewLifecycleOwner
-        ) {
+        viewModel.streamLiveData.observe(viewLifecycleOwner) {
             if (it != null) {
                 detailsBinding.stream = it
 
                 val streams = mutableListOf<Alternative>()
-                // parameter mimetype gets shown as the name and "streaming" as title in the list, the other params don't matter
+                // parameter mimetype gets shown as the name and "streaming" as title in the list,
+                // the other
+                // params don't matter
                 streams.add(
                     Alternative(
                         "h264WebM",
@@ -173,8 +170,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
 
         setFragmentResultListener("deleteActionKey") { _, bundle ->
             // the delete operation is observed from the viewModel
-            if (bundle.getBoolean("deleteConfirmation"))
-                viewModel.deleteDownload(args.details.id)
+            if (bundle.getBoolean("deleteConfirmation")) viewModel.deleteDownload(args.details.id)
         }
 
         viewModel.messageLiveData.observe(viewLifecycleOwner) {
@@ -197,10 +193,8 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                     bundle.putString("url", content.url)
                     dialog.arguments = bundle
                     dialog.show(parentFragmentManager, "KodiServerPickerDialog")
-
                 }
-                null -> {
-                }
+                null -> {}
             }
         }
 
@@ -229,8 +223,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         lifecycleScope.launch {
             if (activityViewModel.isTokenPrivate()) {
                 viewModel.fetchStreamingInfo(id)
-            } else
-                context?.showToast(R.string.api_needs_private_token)
+            } else context?.showToast(R.string.api_needs_private_token)
         }
     }
 
@@ -238,11 +231,12 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         context?.openExternalWebPage(RD_STREAMING_URL + id)
     }
 
-    private val tempProgressListener = object : ProgressCallback {
-        override fun onProgress(progress: Double) {
-            Timber.d("Progress: $progress")
+    private val tempProgressListener =
+        object : ProgressCallback {
+            override fun onProgress(progress: Double) {
+                Timber.d("Progress: $progress")
+            }
         }
-    }
 
     override fun onDownloadClick(link: String, fileName: String) {
         activityViewModel.enqueueDownload(link, fileName)
@@ -274,8 +268,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         val intent = Intent(Intent.ACTION_VIEW)
         intent.setPackage(appPackage)
         intent.setDataAndTypeAndNormalize(uri, dataType)
-        if (component != null)
-            intent.component = component
+        if (component != null) intent.component = component
 
         return intent
     }
@@ -283,13 +276,15 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
     override fun onSendToPlayer(url: String) {
         when (viewModel.getDefaultPlayer()) {
             "vlc" -> {
-                val vlcIntent = createMediaIntent(
-                    "org.videolan.vlc", url,
-                    ComponentName(
+                val vlcIntent =
+                    createMediaIntent(
                         "org.videolan.vlc",
-                        "org.videolan.vlc.gui.video.VideoPlayerActivity"
+                        url,
+                        ComponentName(
+                            "org.videolan.vlc",
+                            "org.videolan.vlc.gui.video.VideoPlayerActivity"
+                        )
                     )
-                )
 
                 tryStartExternalApp(vlcIntent)
             }

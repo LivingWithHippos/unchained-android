@@ -43,6 +43,8 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import java.net.InetAddress
+import javax.inject.Singleton
 import okhttp3.ConnectionSpec
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.OkHttpClient
@@ -51,12 +53,8 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
-import java.net.InetAddress
-import javax.inject.Singleton
 
-/**
- * This object manages the Dagger-Hilt injection for the  OkHttp and Retrofit clients
- */
+/** This object manages the Dagger-Hilt injection for the OkHttp and Retrofit clients */
 @InstallIn(SingletonComponent::class)
 @Module
 object ApiFactory {
@@ -66,11 +64,11 @@ object ApiFactory {
     @ClassicClient
     fun provideOkHttpClient(): OkHttpClient {
         if (BuildConfig.DEBUG) {
-            val logInterceptor: HttpLoggingInterceptor = HttpLoggingInterceptor().apply {
-                level = HttpLoggingInterceptor.Level.BODY
-            }
+            val logInterceptor: HttpLoggingInterceptor =
+                HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY }
 
-            return OkHttpClient().newBuilder()
+            return OkHttpClient()
+                .newBuilder()
                 // should fix the javax.net.ssl.SSLHandshakeException: Failure in SSL library
                 .connectionSpecs(
                     listOf(
@@ -86,55 +84,8 @@ object ApiFactory {
                 // avoid issues with empty bodies on delete/put and 20x return codes
                 .addInterceptor(EmptyBodyInterceptor)
                 .build()
-        } else return OkHttpClient()
-            .newBuilder()
-            .connectionSpecs(
-                listOf(
-                    ConnectionSpec.CLEARTEXT,
-                    ConnectionSpec.Builder(ConnectionSpec.MODERN_TLS)
-                        .allEnabledTlsVersions()
-                        .allEnabledCipherSuites()
-                        .build()
-                )
-            )
-            // avoid issues with empty bodies on delete/put and 20x return codes
-            .addInterceptor(EmptyBodyInterceptor)
-            .build()
-    }
-
-    /**
-     * examples: [https://github.com/square/okhttp/blob/master/okhttp-dnsoverhttps/src/test/java/okhttp3/dnsoverhttps/DohProviders.java]
-     * list: [https://github.com/curl/curl/wiki/DNS-over-HTTPS]
-     * @return
-     */
-    @Provides
-    @Singleton
-    @DOHClient
-    fun provideDOHClient(): OkHttpClient {
-
-        val bootstrapClient: OkHttpClient = if (BuildConfig.DEBUG) {
-
-            val logInterceptor: HttpLoggingInterceptor = HttpLoggingInterceptor().apply {
-                level = HttpLoggingInterceptor.Level.BODY
-            }
-
-            OkHttpClient().newBuilder()
-                .connectionSpecs(
-                    listOf(
-                        ConnectionSpec.CLEARTEXT,
-                        ConnectionSpec.Builder(ConnectionSpec.MODERN_TLS)
-                            .allEnabledTlsVersions()
-                            .allEnabledCipherSuites()
-                            .build()
-                    )
-                )
-                // logs all the calls, removed in the release channel
-                .addInterceptor(logInterceptor)
-                // avoid issues with empty bodies on delete/put and 20x return codes
-                .addInterceptor(EmptyBodyInterceptor)
-                .build()
-        } else {
-            OkHttpClient()
+        } else
+            return OkHttpClient()
                 .newBuilder()
                 .connectionSpecs(
                     listOf(
@@ -145,14 +96,70 @@ object ApiFactory {
                             .build()
                     )
                 )
+                // avoid issues with empty bodies on delete/put and 20x return codes
                 .addInterceptor(EmptyBodyInterceptor)
                 .build()
-        }
+    }
 
-        val dns = DnsOverHttps.Builder().client(bootstrapClient)
-            .url("https://dns.google/dns-query".toHttpUrl())
-            .bootstrapDnsHosts(InetAddress.getByName("8.8.8.8"), InetAddress.getByName("8.8.4.4"))
-            .build()
+    /**
+     * examples:
+     * [https://github.com/square/okhttp/blob/master/okhttp-dnsoverhttps/src/test/java/okhttp3/dnsoverhttps/DohProviders.java]
+     * list: [https://github.com/curl/curl/wiki/DNS-over-HTTPS]
+     *
+     * @return
+     */
+    @Provides
+    @Singleton
+    @DOHClient
+    fun provideDOHClient(): OkHttpClient {
+
+        val bootstrapClient: OkHttpClient =
+            if (BuildConfig.DEBUG) {
+
+                val logInterceptor: HttpLoggingInterceptor =
+                    HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY }
+
+                OkHttpClient()
+                    .newBuilder()
+                    .connectionSpecs(
+                        listOf(
+                            ConnectionSpec.CLEARTEXT,
+                            ConnectionSpec.Builder(ConnectionSpec.MODERN_TLS)
+                                .allEnabledTlsVersions()
+                                .allEnabledCipherSuites()
+                                .build()
+                        )
+                    )
+                    // logs all the calls, removed in the release channel
+                    .addInterceptor(logInterceptor)
+                    // avoid issues with empty bodies on delete/put and 20x return codes
+                    .addInterceptor(EmptyBodyInterceptor)
+                    .build()
+            } else {
+                OkHttpClient()
+                    .newBuilder()
+                    .connectionSpecs(
+                        listOf(
+                            ConnectionSpec.CLEARTEXT,
+                            ConnectionSpec.Builder(ConnectionSpec.MODERN_TLS)
+                                .allEnabledTlsVersions()
+                                .allEnabledCipherSuites()
+                                .build()
+                        )
+                    )
+                    .addInterceptor(EmptyBodyInterceptor)
+                    .build()
+            }
+
+        val dns =
+            DnsOverHttps.Builder()
+                .client(bootstrapClient)
+                .url("https://dns.google/dns-query".toHttpUrl())
+                .bootstrapDnsHosts(
+                    InetAddress.getByName("8.8.8.8"),
+                    InetAddress.getByName("8.8.4.4")
+                )
+                .build()
 
         return bootstrapClient.newBuilder().dns(dns).build()
     }
@@ -160,20 +167,19 @@ object ApiFactory {
     @Provides
     @Singleton
     @AuthRetrofit
-    fun authRetrofit(@ClassicClient okHttpClient: OkHttpClient): Retrofit = Retrofit.Builder()
-        .client(okHttpClient)
-        .baseUrl(BASE_AUTH_URL)
-        .addConverterFactory(MoshiConverterFactory.create())
-        .build()
+    fun authRetrofit(@ClassicClient okHttpClient: OkHttpClient): Retrofit =
+        Retrofit.Builder()
+            .client(okHttpClient)
+            .baseUrl(BASE_AUTH_URL)
+            .addConverterFactory(MoshiConverterFactory.create())
+            .build()
 
     @Provides
     @Singleton
     @ApiRetrofit
     fun apiRetrofit(@ClassicClient okHttpClient: OkHttpClient): Retrofit {
-        val moshi = Moshi.Builder()
-            .add(CachedRequestAdapter())
-            .add(KotlinJsonAdapterFactory())
-            .build()
+        val moshi =
+            Moshi.Builder().add(CachedRequestAdapter()).add(KotlinJsonAdapterFactory()).build()
 
         return Retrofit.Builder()
             .client(okHttpClient)
@@ -226,8 +232,7 @@ object ApiFactory {
 
     @Provides
     @Singleton
-    fun provideStreamingApiHelper(apiHelper: StreamingApiHelperImpl): StreamingApiHelper =
-        apiHelper
+    fun provideStreamingApiHelper(apiHelper: StreamingApiHelperImpl): StreamingApiHelper = apiHelper
 
     // torrent api injection
     @Provides
@@ -238,8 +243,7 @@ object ApiFactory {
 
     @Provides
     @Singleton
-    fun provideTorrentsApiApiHelper(apiHelper: TorrentApiHelperImpl): TorrentApiHelper =
-        apiHelper
+    fun provideTorrentsApiApiHelper(apiHelper: TorrentApiHelperImpl): TorrentApiHelper = apiHelper
 
     // download api injection
     @Provides
@@ -250,8 +254,7 @@ object ApiFactory {
 
     @Provides
     @Singleton
-    fun provideDownloadApiHelper(apiHelper: DownloadApiHelperImpl): DownloadApiHelper =
-        apiHelper
+    fun provideDownloadApiHelper(apiHelper: DownloadApiHelperImpl): DownloadApiHelper = apiHelper
 
     // hosts api injection
     @Provides
@@ -262,8 +265,7 @@ object ApiFactory {
 
     @Provides
     @Singleton
-    fun provideHostsApiHelper(apiHelper: HostsApiHelperImpl): HostsApiHelper =
-        apiHelper
+    fun provideHostsApiHelper(apiHelper: HostsApiHelperImpl): HostsApiHelper = apiHelper
 
     // various api injection
     @Provides
@@ -274,8 +276,7 @@ object ApiFactory {
 
     @Provides
     @Singleton
-    fun provideVariousApiHelper(apiHelper: VariousApiHelperImpl): VariousApiHelper =
-        apiHelper
+    fun provideVariousApiHelper(apiHelper: VariousApiHelperImpl): VariousApiHelper = apiHelper
 
     // update api injection
     @Provides
@@ -286,8 +287,7 @@ object ApiFactory {
 
     @Provides
     @Singleton
-    fun provideUpdateApiHelper(apiHelper: UpdateApiHelperImpl): UpdateApiHelper =
-        apiHelper
+    fun provideUpdateApiHelper(apiHelper: UpdateApiHelperImpl): UpdateApiHelper = apiHelper
 
     // custom download injection
     @Provides
@@ -301,10 +301,7 @@ object ApiFactory {
     fun provideCustomDownloadHelper(customHelper: CustomDownloadHelperImpl): CustomDownloadHelper =
         customHelper
 
-    /**
-     * Search Plugins stuff
-     */
-
+    /** Search Plugins stuff */
     @Provides
     @Singleton
     fun provideParser(

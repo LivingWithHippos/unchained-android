@@ -12,16 +12,15 @@ import java.util.Date
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
-/**
- * check if a String is an url
- */
-fun String.isWebUrl(): Boolean =
-    Patterns.WEB_URL.matcher(this).lookingAt()
-val urlPattern = "https?://(-\\.)?([\\w]+\\.)+([\\w]{2,})+(#([\\w\\-]+))?(/[\\w\\-\\.,?^=%&:/~+#]*)?"
+/** check if a String is an url */
+fun String.isWebUrl(): Boolean = Patterns.WEB_URL.matcher(this).lookingAt()
+
+val urlPattern =
+    "https?://(-\\.)?([\\w]+\\.)+([\\w]{2,})+(#([\\w\\-]+))?(/[\\w\\-\\.,?^=%&:/~+#]*)?"
 
 val simpleWebRegex = Regex(urlPattern)
-fun String.isSimpleWebUrl(): Boolean =
-    simpleWebRegex.containsMatchIn(this)
+
+fun String.isSimpleWebUrl(): Boolean = simpleWebRegex.containsMatchIn(this)
 
 fun String.removeWebFormatting(): String {
     return this.replace("%3A", ":")
@@ -34,38 +33,30 @@ fun String.removeWebFormatting(): String {
         .replace("%25", "%")
 }
 
-/**
- * check if a String is a magnet link
- */
+/** check if a String is a magnet link */
 fun String?.isMagnet(): Boolean {
-    if (this == null)
-        return false
+    if (this == null) return false
     val m: Matcher = Pattern.compile(MAGNET_PATTERN).matcher(this)
     return m.lookingAt()
 }
 
-/**
- * check if a String is a torrent link
- */
+/** check if a String is a torrent link */
 fun String?.isTorrent(): Boolean {
-    if (this == null)
-        return false
+    if (this == null) return false
     val m: Matcher = Pattern.compile(TORRENT_PATTERN).matcher(this)
     return m.matches()
 }
 
-/**
- * check if a String is a container link
- */
+/** check if a String is a container link */
 fun String?.isContainerWebLink(): Boolean {
-    if (this == null)
-        return false
+    if (this == null) return false
     val m: Matcher = Pattern.compile(CONTAINER_PATTERN).matcher(this)
     return m.lookingAt()
 }
 
 /**
  * parse a string from a custom date pattern to the current Locale pattern
+ *
  * @return the parsed String
  */
 @SuppressLint("SimpleDateFormat")

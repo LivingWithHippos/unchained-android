@@ -24,15 +24,16 @@ import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.postEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlinx.coroutines.launch
 
 /**
- * A [ViewModel] subclass.
- * It offers LiveData to be observed to populate lists with paging support
+ * A [ViewModel] subclass. It offers LiveData to be observed to populate lists with paging support
  */
 @HiltViewModel
-class ListTabsViewModel @Inject constructor(
+class ListTabsViewModel
+@Inject
+constructor(
     private val savedStateHandle: SavedStateHandle,
     private val downloadRepository: DownloadRepository,
     private val torrentsRepository: TorrentsRepository,
@@ -46,15 +47,19 @@ class ListTabsViewModel @Inject constructor(
     val downloadsLiveData: LiveData<PagingData<DownloadItem>> =
         Transformations.switchMap(queryLiveData) { query: String ->
             Pager(PagingConfig(pageSize = 50, initialLoadSize = 100)) {
-                DownloadPagingSource(downloadRepository, query)
-            }.liveData.cachedIn(viewModelScope)
+                    DownloadPagingSource(downloadRepository, query)
+                }
+                .liveData
+                .cachedIn(viewModelScope)
         }
 
     val torrentsLiveData: LiveData<PagingData<TorrentItem>> =
         Transformations.switchMap(queryLiveData) { query: String ->
             Pager(PagingConfig(pageSize = 50, initialLoadSize = 100)) {
-                TorrentPagingSource(torrentsRepository, query)
-            }.liveData.cachedIn(viewModelScope)
+                    TorrentPagingSource(torrentsRepository, query)
+                }
+                .liveData
+                .cachedIn(viewModelScope)
         }
 
     val errorsLiveData = MutableLiveData<Event<List<UnchainedNetworkException>>>()
@@ -77,12 +82,12 @@ class ListTabsViewModel @Inject constructor(
             val values =
                 items.filterIsInstance<EitherResult.Success<DownloadItem>>().map { it.success }
             val errors =
-                items.filterIsInstance<EitherResult.Failure<UnchainedNetworkException>>()
-                    .map { it.failure }
+                items.filterIsInstance<EitherResult.Failure<UnchainedNetworkException>>().map {
+                    it.failure
+                }
 
             downloadItemLiveData.postEvent(values)
-            if (errors.isNotEmpty())
-                errorsLiveData.postEvent(errors)
+            if (errors.isNotEmpty()) errorsLiveData.postEvent(errors)
         }
     }
 
@@ -92,12 +97,12 @@ class ListTabsViewModel @Inject constructor(
             val values =
                 items.filterIsInstance<EitherResult.Success<DownloadItem>>().map { it.success }
             val errors =
-                items.filterIsInstance<EitherResult.Failure<UnchainedNetworkException>>()
-                    .map { it.failure }
+                items.filterIsInstance<EitherResult.Failure<UnchainedNetworkException>>().map {
+                    it.failure
+                }
 
             downloadItemLiveData.postEvent(values)
-            if (errors.isNotEmpty())
-                errorsLiveData.postEvent(errors)
+            if (errors.isNotEmpty()) errorsLiveData.postEvent(errors)
         }
     }
 
@@ -119,10 +124,8 @@ class ListTabsViewModel @Inject constructor(
     fun deleteDownload(id: String) {
         viewModelScope.launch {
             val deleted = downloadRepository.deleteDownload(id)
-            if (deleted == null)
-                deletedDownloadLiveData.postEvent(DOWNLOAD_NOT_DELETED)
-            else
-                deletedDownloadLiveData.postEvent(DOWNLOAD_DELETED)
+            if (deleted == null) deletedDownloadLiveData.postEvent(DOWNLOAD_NOT_DELETED)
+            else deletedDownloadLiveData.postEvent(DOWNLOAD_DELETED)
         }
     }
 
@@ -135,14 +138,13 @@ class ListTabsViewModel @Inject constructor(
     }
 
     fun setListFilter(query: String?) {
-        // Avoid updating the lists if the query hasn't changed. We don't check for cases but we could
-        if (queryLiveData.value != query)
-            queryLiveData.postValue(query?.trim() ?: "")
+        // Avoid updating the lists if the query hasn't changed. We don't check for cases but we
+        // could
+        if (queryLiveData.value != query) queryLiveData.postValue(query?.trim() ?: "")
     }
 
     fun deleteAllDownloads() {
         viewModelScope.launch {
-
             deletedDownloadLiveData.postEvent(0)
             var page = 1
             val completeDownloadList = mutableListOf<DownloadItem>()
@@ -169,9 +171,7 @@ class ListTabsViewModel @Inject constructor(
         viewModelScope.launch {
             do {
                 val torrents = torrentsRepository.getTorrentsList(0, 1, 50)
-                torrents.forEach {
-                    torrentsRepository.deleteTorrent(it.id)
-                }
+                torrents.forEach { torrentsRepository.deleteTorrent(it.id) }
             } while (torrents.size >= 50)
 
             deletedTorrentLiveData.postEvent(TORRENTS_DELETED_ALL)
@@ -180,32 +180,21 @@ class ListTabsViewModel @Inject constructor(
 
     fun deleteTorrents(torrents: List<TorrentItem>) {
         viewModelScope.launch {
-            torrents.forEach {
-                torrentsRepository.deleteTorrent(it.id)
-            }
-            if (torrents.size > 1)
-                deletedTorrentLiveData.postEvent(TORRENTS_DELETED)
-            else
-                deletedTorrentLiveData.postEvent(TORRENT_DELETED)
+            torrents.forEach { torrentsRepository.deleteTorrent(it.id) }
+            if (torrents.size > 1) deletedTorrentLiveData.postEvent(TORRENTS_DELETED)
+            else deletedTorrentLiveData.postEvent(TORRENT_DELETED)
         }
     }
 
     fun downloadItems(torrents: List<TorrentItem>) {
-        torrents.filter { it.status == "downloaded" }
-            .forEach {
-                unrestrictTorrent(it)
-            }
+        torrents.filter { it.status == "downloaded" }.forEach { unrestrictTorrent(it) }
     }
 
     fun deleteDownloads(downloads: List<DownloadItem>) {
         viewModelScope.launch {
-            downloads.forEach {
-                downloadRepository.deleteDownload(it.id)
-            }
-            if (downloads.size > 1)
-                deletedDownloadLiveData.postEvent(DOWNLOADS_DELETED)
-            else
-                deletedDownloadLiveData.postEvent(DOWNLOAD_DELETED)
+            downloads.forEach { downloadRepository.deleteDownload(it.id) }
+            if (downloads.size > 1) deletedDownloadLiveData.postEvent(DOWNLOADS_DELETED)
+            else deletedDownloadLiveData.postEvent(DOWNLOAD_DELETED)
         }
     }
 

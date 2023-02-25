@@ -9,10 +9,7 @@ import com.squareup.moshi.ToJson
 import kotlinx.parcelize.Parcelize
 import timber.log.Timber
 
-@Parcelize
-data class InstantAvailability(
-    val cachedTorrents: List<CachedTorrent>
-) : Parcelable
+@Parcelize data class InstantAvailability(val cachedTorrents: List<CachedTorrent>) : Parcelable
 
 @Parcelize
 data class CachedTorrent(
@@ -21,17 +18,10 @@ data class CachedTorrent(
     val cachedAlternatives: List<CachedAlternative>
 ) : Parcelable
 
-@Parcelize
-data class CachedAlternative(
-    val cachedFiles: List<CachedFile>
-) : Parcelable
+@Parcelize data class CachedAlternative(val cachedFiles: List<CachedFile>) : Parcelable
 
 @Parcelize
-data class CachedFile(
-    val id: Long,
-    val fileName: String,
-    val fileSize: Long
-) : Parcelable
+data class CachedFile(val id: Long, val fileName: String, val fileSize: Long) : Parcelable
 
 class CachedRequestAdapter : JsonAdapter<InstantAvailability>() {
 
@@ -78,9 +68,7 @@ class CachedRequestAdapter : JsonAdapter<InstantAvailability>() {
                                 cachedFiles.add(CachedFile(currId, fileName, fileSize))
                             }
                             reader.endObject()
-                            cachedAlternatives.add(
-                                CachedAlternative(cachedFiles)
-                            )
+                            cachedAlternatives.add(CachedAlternative(cachedFiles))
                         }
                         // finished list of CachedAlternatives
                         reader.endArray()
@@ -94,7 +82,8 @@ class CachedRequestAdapter : JsonAdapter<InstantAvailability>() {
                 }
                 JsonReader.Token.BEGIN_ARRAY -> {
                     // cache-less content
-                    // evaluate if torrent without cache could be added to the output with an empty map
+                    // evaluate if torrent without cache could be added to the output with an empty
+                    // map
                     Timber.d("Skipping empty torrent: $key")
                     reader.skipValue()
                 }

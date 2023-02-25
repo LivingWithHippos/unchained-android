@@ -9,10 +9,11 @@ import com.github.livingwithhippos.unchained.plugins.model.isCompatible
 import com.github.livingwithhippos.unchained.repository.model.JsonPluginRepository
 import javax.inject.Inject
 
-class DatabasePluginRepository @Inject constructor(
-    private val repositoryDataDao: RepositoryDataDao
-) {
-    suspend fun getFullRepositoriesData(): Map<RepositoryInfo, Map<RepositoryPlugin, List<PluginVersion>>> {
+class DatabasePluginRepository
+@Inject
+constructor(private val repositoryDataDao: RepositoryDataDao) {
+    suspend fun getFullRepositoriesData():
+        Map<RepositoryInfo, Map<RepositoryPlugin, List<PluginVersion>>> {
         val pluginsByRepo: Map<RepositoryInfo, List<RepositoryPlugin>> =
             repositoryDataDao.getPlugins()
         val versionByPlugin: Map<RepositoryPlugin, List<PluginVersion>> =
@@ -23,8 +24,7 @@ class DatabasePluginRepository @Inject constructor(
             val repoPlugins = mutableMapOf<RepositoryPlugin, List<PluginVersion>>()
             for (plugin in entry.value) {
                 val pluginVersions: List<PluginVersion>? = versionByPlugin[plugin]
-                if (pluginVersions != null)
-                    repoPlugins[plugin] = pluginVersions
+                if (pluginVersions != null) repoPlugins[plugin] = pluginVersions
             }
             pluginsMap[entry.key] = repoPlugins
         }
@@ -36,14 +36,15 @@ class DatabasePluginRepository @Inject constructor(
         if (repository == null) {
             return emptyList()
         } else {
-            val latestVersions: List<PluginVersion> = repositoryDataDao
-                .getRepositoryPluginsVersions(repository.link)
-                .filter { isCompatible(it.engine) }
-                .groupBy { it.plugin }
-                .mapNotNull { entry ->
-                    val maxVersion = entry.value.maxOfOrNull { it.version }
-                    entry.value.firstOrNull { it.version == maxVersion }
-                }
+            val latestVersions: List<PluginVersion> =
+                repositoryDataDao
+                    .getRepositoryPluginsVersions(repository.link)
+                    .filter { isCompatible(it.engine) }
+                    .groupBy { it.plugin }
+                    .mapNotNull { entry ->
+                        val maxVersion = entry.value.maxOfOrNull { it.version }
+                        entry.value.firstOrNull { it.version == maxVersion }
+                    }
             return latestVersions
         }
     }
@@ -59,12 +60,7 @@ class DatabasePluginRepository @Inject constructor(
             )
         )
         for (plugin in jsonRepository.plugins) {
-            repositoryDataDao.insert(
-                RepositoryPlugin(
-                    repository = link,
-                    name = plugin.id
-                )
-            )
+            repositoryDataDao.insert(RepositoryPlugin(repository = link, name = plugin.id))
             repositoryDataDao.insert(
                 plugin.versions.map {
                     PluginVersion(
@@ -96,13 +92,15 @@ class DatabasePluginRepository @Inject constructor(
     }
 
     /**
-     * Get all the plugins or repository filtered by the query. If a plugin is a match the repository
-     * will also be returned (useful for separating results from different repositories)
+     * Get all the plugins or repository filtered by the query. If a plugin is a match the
+     * repository will also be returned (useful for separating results from different repositories)
      *
      * @param query
      * @return
      */
-    suspend fun getFilteredRepositoriesData(query: String): Map<RepositoryInfo, Map<RepositoryPlugin, List<PluginVersion>>> {
+    suspend fun getFilteredRepositoriesData(
+        query: String
+    ): Map<RepositoryInfo, Map<RepositoryPlugin, List<PluginVersion>>> {
         val pluginsByRepo: Map<RepositoryInfo, List<RepositoryPlugin>> =
             repositoryDataDao.getPlugins("%$query%")
         val versionByPlugin: Map<RepositoryPlugin, List<PluginVersion>> =
@@ -113,8 +111,7 @@ class DatabasePluginRepository @Inject constructor(
             val repoPlugins = mutableMapOf<RepositoryPlugin, List<PluginVersion>>()
             for (plugin in entry.value) {
                 val pluginVersions: List<PluginVersion>? = versionByPlugin[plugin]
-                if (pluginVersions != null)
-                    repoPlugins[plugin] = pluginVersions
+                if (pluginVersions != null) repoPlugins[plugin] = pluginVersions
             }
             pluginsMap[entry.key] = repoPlugins
         }

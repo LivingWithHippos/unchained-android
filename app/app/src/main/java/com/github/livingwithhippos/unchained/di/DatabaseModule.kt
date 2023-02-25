@@ -16,9 +16,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
-/**
- * Provides the database injected with Dagger Hilt
- */
+/** Provides the database injected with Dagger Hilt */
 @InstallIn(SingletonComponent::class)
 @Module
 object DatabaseModule {
@@ -26,11 +24,7 @@ object DatabaseModule {
     @Provides
     @Singleton
     fun provideDatabase(@ApplicationContext appContext: Context): UnchaineDB {
-        return Room.databaseBuilder(
-            appContext,
-            UnchaineDB::class.java,
-            "unchained_db"
-        )
+        return Room.databaseBuilder(appContext, UnchaineDB::class.java, "unchained_db")
             .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
             .build()
     }
@@ -50,23 +44,28 @@ object DatabaseModule {
         return database.pluginRepositoryDao()
     }
 
-    private val MIGRATION_1_2 = object : Migration(1, 2) {
-        override fun migrate(database: SupportSQLiteDatabase) {
-            database.execSQL(
-                "CREATE TABLE `host_regex` (`regex` TEXT NOT NULL, " + "PRIMARY KEY(`regex`))"
-            )
+    private val MIGRATION_1_2 =
+        object : Migration(1, 2) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL(
+                    "CREATE TABLE `host_regex` (`regex` TEXT NOT NULL, " + "PRIMARY KEY(`regex`))"
+                )
+            }
         }
-    }
 
-    private val MIGRATION_2_3 = object : Migration(2, 3) {
-        override fun migrate(database: SupportSQLiteDatabase) {
-            database.execSQL("ALTER TABLE host_regex ADD COLUMN type INTEGER NOT NULL DEFAULT $REGEX_TYPE_HOST")
+    private val MIGRATION_2_3 =
+        object : Migration(2, 3) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL(
+                    "ALTER TABLE host_regex ADD COLUMN type INTEGER NOT NULL DEFAULT $REGEX_TYPE_HOST"
+                )
+            }
         }
-    }
 
-    private val MIGRATION_3_4 = object : Migration(3, 4) {
-        override fun migrate(database: SupportSQLiteDatabase) {
-            database.execSQL("DROP TABLE credentials")
+    private val MIGRATION_3_4 =
+        object : Migration(3, 4) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("DROP TABLE credentials")
+            }
         }
-    }
 }

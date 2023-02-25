@@ -12,17 +12,19 @@ import com.github.livingwithhippos.unchained.data.repository.AuthenticationRepos
 import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.postEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 /**
- * A [ViewModel] subclass.
- * It offers LiveData to be observed during the authentication process and uses the [AuthenticationRepository] to manage its process.
+ * A [ViewModel] subclass. It offers LiveData to be observed during the authentication process and
+ * uses the [AuthenticationRepository] to manage its process.
  */
 @HiltViewModel
-class AuthenticationViewModel @Inject constructor(
+class AuthenticationViewModel
+@Inject
+constructor(
     private val savedStateHandle: SavedStateHandle,
     private val authRepository: AuthenticationRepository,
     private val protoStore: ProtoStore,
@@ -49,12 +51,9 @@ class AuthenticationViewModel @Inject constructor(
             secretLiveData.postEvent(SecretResult.Expired)
         } else {
             viewModelScope.launch {
-                val credentials = credentialsFlow.first {
-                    it.deviceCode.isNotBlank()
-                }
+                val credentials = credentialsFlow.first { it.deviceCode.isNotBlank() }
                 val secretData = authRepository.getSecrets(credentials.deviceCode)
-                if (secretData != null)
-                    secretLiveData.postEvent(SecretResult.Retrieved(secretData))
+                if (secretData != null) secretLiveData.postEvent(SecretResult.Retrieved(secretData))
                 else {
                     delay(SECRET_CALLS_DELAY)
                     secretLiveData.postEvent(SecretResult.Empty)
@@ -66,24 +65,25 @@ class AuthenticationViewModel @Inject constructor(
     fun fetchToken() {
         viewModelScope.launch {
             // todo: find a better way to get a single value and avoid empty ones
-            val credentials = protoStore.credentialsFlow.first {
-                it.clientSecret.isNotBlank()
-            }
-            val tokenData = authRepository.getToken(
-                credentials.clientId,
-                credentials.clientSecret,
-                credentials.deviceCode
-            )
+            val credentials = protoStore.credentialsFlow.first { it.clientSecret.isNotBlank() }
+            val tokenData =
+                authRepository.getToken(
+                    credentials.clientId,
+                    credentials.clientSecret,
+                    credentials.deviceCode
+                )
             tokenLiveData.postEvent(tokenData)
         }
     }
 
     /**
-     *
-     * @param expiresIn: the time in seconds before the deviceCode is not valid anymore for the secrets endpoint
+     * @param expiresIn: the time in seconds before the deviceCode is not valid anymore for the
+     *   secrets endpoint
      */
     fun setupSecretLoop(expiresIn: Int) {
-        // this is just an estimate, keeping track of time would be more precise. As of now this value should be 120
+        // this is just an estimate, keeping track of time would be more precise. As of now this
+        // value
+        // should be 120
         var calls = (expiresIn * 1000 / SECRET_CALLS_DELAY).toInt() - 10
         // remove 10% of the calls to account for the api calls
         calls -= calls / 10

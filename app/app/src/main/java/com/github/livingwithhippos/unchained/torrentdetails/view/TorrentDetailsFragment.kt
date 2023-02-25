@@ -37,8 +37,8 @@ import com.github.livingwithhippos.unchained.utilities.loadingStatusList
 import dagger.hilt.android.AndroidEntryPoint
 
 /**
- * A simple [Fragment] subclass.
- * It is capable of showing the details of a [TorrentItem] and updating it.
+ * A simple [Fragment] subclass. It is capable of showing the details of a [TorrentItem] and
+ * updating it.
  */
 @AndroidEntryPoint
 class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
@@ -73,9 +73,10 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
                         R.id.reselect -> {
                             val link = "magnet:?xt=urn:btih:${args.item.hash}"
                             val action =
-                                TorrentDetailsFragmentDirections.actionTorrentDetailsDestToTorrentProcessingFragment(
-                                    link = link
-                                )
+                                TorrentDetailsFragmentDirections
+                                    .actionTorrentDetailsDestToTorrentProcessingFragment(
+                                        link = link
+                                    )
                             findNavController().navigate(action)
                             true
                         }
@@ -83,22 +84,24 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
                     }
                 }
             },
-            viewLifecycleOwner, Lifecycle.State.RESUMED
+            viewLifecycleOwner,
+            Lifecycle.State.RESUMED
         )
 
-        val statusTranslation = mapOf(
-            "magnet_error" to getString(R.string.magnet_error),
-            "magnet_conversion" to getString(R.string.magnet_conversion),
-            "waiting_files_selection" to getString(R.string.waiting_files_selection),
-            "queued" to getString(R.string.queued),
-            "downloading" to getString(R.string.downloading),
-            "downloaded" to getString(R.string.downloaded),
-            "error" to getString(R.string.error),
-            "virus" to getString(R.string.virus),
-            "compressing" to getString(R.string.compressing),
-            "uploading" to getString(R.string.uploading),
-            "dead" to getString(R.string.dead)
-        )
+        val statusTranslation =
+            mapOf(
+                "magnet_error" to getString(R.string.magnet_error),
+                "magnet_conversion" to getString(R.string.magnet_conversion),
+                "waiting_files_selection" to getString(R.string.waiting_files_selection),
+                "queued" to getString(R.string.queued),
+                "downloading" to getString(R.string.downloading),
+                "downloaded" to getString(R.string.downloaded),
+                "error" to getString(R.string.error),
+                "virus" to getString(R.string.virus),
+                "compressing" to getString(R.string.compressing),
+                "uploading" to getString(R.string.uploading),
+                "dead" to getString(R.string.dead)
+            )
 
         torrentBinding.loadingStatusList = loadingStatusList
         torrentBinding.statusTranslation = statusTranslation
@@ -127,10 +130,7 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
                             var skippedFirst = false
                             Node.traverseDepthFirst(torrentStructure) { item ->
                                 // avoid root item "/"
-                                if (!skippedFirst)
-                                    skippedFirst = true
-                                else
-                                    filesList.add(item)
+                                if (!skippedFirst) skippedFirst = true else filesList.add(item)
                             }
                             adapter.submitList(filesList)
                             torrentBinding.cvSelectedTorrentFiles.visibility = View.VISIBLE
@@ -152,8 +152,7 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
         )
 
         setFragmentResultListener("deleteActionKey") { _, bundle ->
-            if (bundle.getBoolean("deleteConfirmation"))
-                viewModel.deleteTorrent(args.item.id)
+            if (bundle.getBoolean("deleteConfirmation")) viewModel.deleteTorrent(args.item.id)
         }
 
         viewModel.downloadLiveData.observe(
@@ -175,12 +174,9 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
                 for (error in it) {
                     when (error) {
                         is APIError -> {
-                            context?.let { c ->
-                                c.showToast(c.getApiErrorMessage(error.errorCode))
-                            }
+                            context?.let { c -> c.showToast(c.getApiErrorMessage(error.errorCode)) }
                         }
-                        is EmptyBodyError -> {
-                        }
+                        is EmptyBodyError -> {}
                         is NetworkError -> {
                             context?.showToast(R.string.network_error)
                         }
@@ -195,8 +191,7 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
         torrentBinding.torrent = args.item
 
         // maybe load and save the latest retrieved one in the view-model?
-        if (loadingStatusList.contains(args.item.status))
-            viewModel.pollTorrentStatus(args.item.id)
+        if (loadingStatusList.contains(args.item.status)) viewModel.pollTorrentStatus(args.item.id)
         else {
             viewModel.getFullTorrentInfo(args.item.id)
         }
@@ -206,11 +201,12 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
 
     override fun onDownloadClick(item: TorrentItem) {
         if (item.links.size > 1) {
-            val action = TorrentDetailsFragmentDirections.actionTorrentDetailsToTorrentFolder(
-                folder = null,
-                torrent = item,
-                linkList = null
-            )
+            val action =
+                TorrentDetailsFragmentDirections.actionTorrentDetailsToTorrentFolder(
+                    folder = null,
+                    torrent = item,
+                    linkList = null
+                )
             findNavController().navigate(action)
         } else {
             viewModel.downloadTorrent(item)

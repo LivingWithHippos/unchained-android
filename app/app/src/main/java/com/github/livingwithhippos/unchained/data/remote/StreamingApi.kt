@@ -7,8 +7,9 @@ import retrofit2.http.Header
 import retrofit2.http.Path
 
 /**
- * This interface is used by Retrofit to manage all the REST calls to the endpoints needed to retrieve streaming links from a download
- * The APIs in this interface will not work with an open source token.
+ * This interface is used by Retrofit to manage all the REST calls to the endpoints needed to
+ * retrieve streaming links from a download The APIs in this interface will not work with an open
+ * source token.
  */
 interface StreamingApi {
 

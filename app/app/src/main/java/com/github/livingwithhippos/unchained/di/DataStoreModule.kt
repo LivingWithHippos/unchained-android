@@ -10,9 +10,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
-/**
- * Provides the datastore injected with Dagger Hilt
- */
+/** Provides the datastore injected with Dagger Hilt */
 @InstallIn(SingletonComponent::class)
 @Module
 object DataStoreModule {

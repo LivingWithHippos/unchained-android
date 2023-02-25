@@ -8,9 +8,7 @@ import com.github.livingwithhippos.unchained.lists.view.DownloadListListener
 import com.github.livingwithhippos.unchained.utilities.DataBindingTrackedAdapter
 
 class FolderItemAdapter(listener: DownloadListListener) :
-    DataBindingTrackedAdapter<DownloadItem, DownloadListListener>(
-        DiffCallback(), listener
-    ) {
+    DataBindingTrackedAdapter<DownloadItem, DownloadListListener>(DiffCallback(), listener) {
     class DiffCallback : DiffUtil.ItemCallback<DownloadItem>() {
         override fun areItemsTheSame(oldItem: DownloadItem, newItem: DownloadItem): Boolean =
             oldItem.id == newItem.id

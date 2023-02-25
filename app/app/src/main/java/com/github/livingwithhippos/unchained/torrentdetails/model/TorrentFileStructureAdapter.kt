@@ -17,9 +17,10 @@ data class TorrentFileItem(
 ) {
     override fun equals(other: Any?): Boolean {
         return if (other is TorrentFileItem)
-            this.id == other.id && this.absolutePath == other.absolutePath && this.name == other.name
-        else
-            super.equals(other)
+            this.id == other.id &&
+                this.absolutePath == other.absolutePath &&
+                this.name == other.name
+        else super.equals(other)
     }
 
     override fun hashCode(): Int {
@@ -39,15 +40,7 @@ fun getFilesNodes(
     selectedOnly: Boolean = false,
     flattenFolders: Boolean = false
 ): Node<TorrentFileItem> {
-    val rootFolder = Node(
-        TorrentFileItem(
-            TYPE_FOLDER,
-            "",
-            0,
-            selected = false,
-            "/"
-        )
-    )
+    val rootFolder = Node(TorrentFileItem(TYPE_FOLDER, "", 0, selected = false, "/"))
 
     if (item.files != null && item.files.isNotEmpty()) {
         val files = if (selectedOnly) item.files.filter { it.selected == 1 } else item.files
@@ -102,14 +95,10 @@ interface TorrentContentListener {
     fun onSelectedFolder(item: TorrentFileItem)
 }
 
-class TorrentContentFilesAdapter :
-    DataBindingStaticAdapter<TorrentFileItem>(DiffCallback()) {
+class TorrentContentFilesAdapter : DataBindingStaticAdapter<TorrentFileItem>(DiffCallback()) {
 
     class DiffCallback : DiffUtil.ItemCallback<TorrentFileItem>() {
-        override fun areItemsTheSame(
-            oldItem: TorrentFileItem,
-            newItem: TorrentFileItem
-        ): Boolean {
+        override fun areItemsTheSame(oldItem: TorrentFileItem, newItem: TorrentFileItem): Boolean {
             return oldItem.absolutePath == newItem.absolutePath &&
                 oldItem.name == newItem.name &&
                 oldItem.id == newItem.id
@@ -126,10 +115,8 @@ class TorrentContentFilesAdapter :
 
     override fun getItemViewType(position: Int): Int {
         val item: TorrentFileItem = this.getItem(position)
-        return if (item.id == TYPE_FOLDER)
-            R.layout.item_list_torrent_directory
-        else
-            R.layout.item_list_torrent_file
+        return if (item.id == TYPE_FOLDER) R.layout.item_list_torrent_directory
+        else R.layout.item_list_torrent_file
     }
 }
 
@@ -137,10 +124,7 @@ class TorrentContentFilesSelectionAdapter(listener: TorrentContentListener) :
     DataBindingAdapter<TorrentFileItem, TorrentContentListener>(DiffCallback(), listener) {
 
     class DiffCallback : DiffUtil.ItemCallback<TorrentFileItem>() {
-        override fun areItemsTheSame(
-            oldItem: TorrentFileItem,
-            newItem: TorrentFileItem
-        ): Boolean {
+        override fun areItemsTheSame(oldItem: TorrentFileItem, newItem: TorrentFileItem): Boolean {
             return oldItem.id == newItem.id &&
                 oldItem.name == newItem.name &&
                 oldItem.absolutePath == newItem.absolutePath
@@ -156,9 +140,7 @@ class TorrentContentFilesSelectionAdapter(listener: TorrentContentListener) :
 
     override fun getItemViewType(position: Int): Int {
         val item: TorrentFileItem = this.getItem(position)
-        return if (item.id == TYPE_FOLDER)
-            R.layout.item_list_torrent_selection_directory
-        else
-            R.layout.item_list_torrent_selection_file
+        return if (item.id == TYPE_FOLDER) R.layout.item_list_torrent_selection_directory
+        else R.layout.item_list_torrent_selection_file
     }
 }

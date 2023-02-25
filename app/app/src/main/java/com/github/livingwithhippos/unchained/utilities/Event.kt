@@ -20,17 +20,13 @@ package com.github.livingwithhippos.unchained.utilities
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 
-/**
- * Used as a wrapper for data that is exposed via a LiveData that represents an event.
- */
+/** Used as a wrapper for data that is exposed via a LiveData that represents an event. */
 open class Event<out T>(private val content: T) {
 
     var hasBeenHandled = false
         private set // Allow external read but not write
 
-    /**
-     * Returns the content and prevents its use again.
-     */
+    /** Returns the content and prevents its use again. */
     fun getContentIfNotHandled(): T? {
         return if (hasBeenHandled) {
             null
@@ -40,9 +36,7 @@ open class Event<out T>(private val content: T) {
         }
     }
 
-    /**
-     * Returns the content, even if it's already been handled.
-     */
+    /** Returns the content, even if it's already been handled. */
     fun peekContent(): T = content
 }
 
@@ -54,15 +48,11 @@ open class Event<out T>(private val content: T) {
  */
 class EventObserver<T>(private val onEventUnhandledContent: (T) -> Unit) : Observer<Event<T>?> {
     override fun onChanged(event: Event<T>?) {
-        event?.getContentIfNotHandled()?.let {
-            onEventUnhandledContent(it)
-        }
+        event?.getContentIfNotHandled()?.let { onEventUnhandledContent(it) }
     }
 }
 
-/**
- * This function posts value in [MutableLiveData] as Event(value)
- */
+/** This function posts value in [MutableLiveData] as Event(value) */
 fun <T> MutableLiveData<Event<T>>.postEvent(value: T) {
     postValue(Event(value))
 }

@@ -8,10 +8,7 @@ import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import org.junit.Test
 
-/**
- * This file is used to avoid errors with `gradlew lint test`
- *
- */
+/** This file is used to avoid errors with `gradlew lint test` */
 class TestTorrentFileParser {
 
     private val moshi: Moshi = Moshi.Builder().build()
@@ -19,7 +16,8 @@ class TestTorrentFileParser {
 
     @Test
     fun torrentItemNodes() {
-        val json = """
+        val json =
+            """
     {
 	"id": "XGYA5QSAA7JI4",
 	"filename": "uc-berkeley-cs61c-great-ideas-in-computer-architecture",
@@ -3573,7 +3571,8 @@ class TestTorrentFileParser {
 	"speed": 1141000,
 	"seeders": 4
 }
-        """.trimIndent()
+        """
+                .trimIndent()
         val item: TorrentItem = jsonAdapter.fromJson(json)!!
 
         val torrentStructure: Node<TorrentFileItem> = getFilesNodes(item, false)
@@ -3583,7 +3582,8 @@ class TestTorrentFileParser {
     }
     @Test
     fun testSingleTorrentFile() {
-        val json = """
+        val json =
+            """
         {"id": "C46XUVV45KHTA",
             "filename": "PlaneShift-v0.6.3-x64.exe",
             "original_filename": "PlaneShift-v0.6.3-x64.exe",
@@ -3608,7 +3608,8 @@ class TestTorrentFileParser {
             ],
             "ended": "2022-10-31T10:43:07.000Z"
         }
-        """.trimIndent()
+        """
+                .trimIndent()
         val item: TorrentItem = jsonAdapter.fromJson(json)!!
 
         val torrentStructure: Node<TorrentFileItem> = getFilesNodes(item, false)
@@ -3619,7 +3620,8 @@ class TestTorrentFileParser {
 
     @Test
     fun torrentItemPropertyChange() {
-        val json = """
+        val json =
+            """
     {
 	"id": "XGYA5QSAA7JI4",
 	"filename": "uc-berkeley-cs61c-great-ideas-in-computer-architecture",
@@ -7173,7 +7175,8 @@ class TestTorrentFileParser {
 	"speed": 1141000,
 	"seeders": 4
 }
-        """.trimIndent()
+        """
+                .trimIndent()
         val item: TorrentItem = jsonAdapter.fromJson(json)!!
 
         val torrentStructure: Node<TorrentFileItem> = getFilesNodes(item, false)

@@ -6,10 +6,7 @@ import retrofit2.http.GET
 import retrofit2.http.Url
 
 interface UpdateApi {
-    @GET
-    suspend fun getUpdates(
-        @Url url: String
-    ): Response<Updates>
+    @GET suspend fun getUpdates(@Url url: String): Response<Updates>
 }
 
 interface UpdateApiHelper {

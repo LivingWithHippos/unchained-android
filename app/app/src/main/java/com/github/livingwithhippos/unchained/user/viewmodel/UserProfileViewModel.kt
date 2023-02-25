@@ -7,14 +7,14 @@ import com.github.livingwithhippos.unchained.data.local.ProtoStore
 import com.github.livingwithhippos.unchained.data.model.User
 import com.github.livingwithhippos.unchained.data.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlinx.coroutines.launch
 
 @HiltViewModel
-class UserProfileViewModel @Inject constructor(
-    private val userRepository: UserRepository,
-    private val protoStore: ProtoStore
-) : ViewModel() {
+class UserProfileViewModel
+@Inject
+constructor(private val userRepository: UserRepository, private val protoStore: ProtoStore) :
+    ViewModel() {
 
     val userLiveData = MutableLiveData<User?>()
 

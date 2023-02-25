@@ -13,7 +13,8 @@ import retrofit2.http.POST
 import retrofit2.http.Query
 
 /**
- * This interface is used by Retrofit to manage all the REST calls to the endpoints needed to authenticate the user
+ * This interface is used by Retrofit to manage all the REST calls to the endpoints needed to
+ * authenticate the user
  */
 interface AuthenticationApi {
 
@@ -29,9 +30,7 @@ interface AuthenticationApi {
         @Query("code") deviceCode: String
     ): Response<Secrets>
 
-    /**
-     * This is also used to refresh the token.
-     */
+    /** This is also used to refresh the token. */
     @FormUrlEncoded
     @POST("token")
     suspend fun getToken(

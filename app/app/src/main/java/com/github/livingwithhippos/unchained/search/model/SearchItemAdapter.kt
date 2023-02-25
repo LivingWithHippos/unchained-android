@@ -6,15 +6,15 @@ import com.github.livingwithhippos.unchained.plugins.model.ScrapedItem
 import com.github.livingwithhippos.unchained.utilities.DataBindingAdapter
 
 class SearchItemAdapter(listener: SearchItemListener) :
-    DataBindingAdapter<ScrapedItem, SearchItemListener>(
-        DiffCallback(), listener
-    ) {
+    DataBindingAdapter<ScrapedItem, SearchItemListener>(DiffCallback(), listener) {
     class DiffCallback : DiffUtil.ItemCallback<ScrapedItem>() {
         override fun areItemsTheSame(oldItem: ScrapedItem, newItem: ScrapedItem): Boolean =
             oldItem.link == newItem.link
 
         override fun areContentsTheSame(oldItem: ScrapedItem, newItem: ScrapedItem): Boolean {
-            return oldItem.magnets.size == newItem.magnets.size && oldItem.torrents.size == newItem.torrents.size && oldItem.isCached == newItem.isCached
+            return oldItem.magnets.size == newItem.magnets.size &&
+                oldItem.torrents.size == newItem.torrents.size &&
+                oldItem.isCached == newItem.isCached
         }
     }
 

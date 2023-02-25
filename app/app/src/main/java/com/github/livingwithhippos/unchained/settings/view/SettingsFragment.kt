@@ -25,32 +25,29 @@ import com.github.livingwithhippos.unchained.utilities.extension.openExternalWeb
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.mikepenz.aboutlibraries.LibsBuilder
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 import javax.inject.Inject
+import timber.log.Timber
 
 /**
- * A simple [PreferenceFragmentCompat] subclass.
- * Manages the interactions with the items in the preferences menu
+ * A simple [PreferenceFragmentCompat] subclass. Manages the interactions with the items in the
+ * preferences menu
  */
 @AndroidEntryPoint
 class SettingsFragment : PreferenceFragmentCompat() {
-    @Inject
-    lateinit var preferences: SharedPreferences
+    @Inject lateinit var preferences: SharedPreferences
 
     private val viewModel: SettingsViewModel by viewModels()
 
     private val pickDirectoryLauncher =
-        registerForActivityResult(
-            ActivityResultContracts.OpenDocumentTree()
-        ) {
+        registerForActivityResult(ActivityResultContracts.OpenDocumentTree()) {
             if (it != null) {
                 Timber.d("User has picked a folder $it")
 
                 // permanent permissions
                 val contentResolver = requireContext().contentResolver
 
-                val takeFlags: Int = Intent.FLAG_GRANT_READ_URI_PERMISSION or
-                    Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                val takeFlags: Int =
+                    Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
 
                 contentResolver.takePersistableUriPermission(it, takeFlags)
 
@@ -70,14 +67,14 @@ class SettingsFragment : PreferenceFragmentCompat() {
             if (newValue != THEME_DAY && DAY_ONLY_THEMES.contains(themePreference?.value)) {
                 context?.showToast(R.string.theme_day_support)
                 false
-            } else
-                true
+            } else true
         }
 
         themePreference?.setOnPreferenceChangeListener { _, newValue ->
             if (DAY_ONLY_THEMES.contains(newValue) && dayNightPreference?.entry != THEME_DAY) {
                 setNightMode(THEME_DAY)
-                // todo: this produces a flicker. If possible find another way to update only the dayNightPreference summary, or restart the app to apply it.
+                // todo: this produces a flicker. If possible find another way to update only the
+                // dayNightPreference summary, or restart the app to apply it.
                 // update the  dayNightPreference summary
                 setPreferencesFromResource(R.xml.settings, rootKey)
             }
@@ -127,8 +124,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 false -> {
                     context?.showToast(R.string.kodi_connection_error)
                 }
-                null -> {
-                }
+                null -> {}
             }
         }
 
@@ -182,14 +178,17 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     @Suppress("DEPRECATION")
     private fun setupVersion() {
-        val pi = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            context?.packageManager?.getPackageInfo(
-                requireContext().packageName,
-                PackageManager.PackageInfoFlags.of(0)
-            )
-        } else {
-            context?.packageManager?.getPackageInfo(requireContext().packageName, 0)
-        }
+        val pi =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                context
+                    ?.packageManager
+                    ?.getPackageInfo(
+                        requireContext().packageName,
+                        PackageManager.PackageInfoFlags.of(0)
+                    )
+            } else {
+                context?.packageManager?.getPackageInfo(requireContext().packageName, 0)
+            }
         val version = pi?.versionName
         val versionPreference = findPreference<Preference>("app_version")
         versionPreference?.summary = version
@@ -218,8 +217,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 val removedPlugins = viewModel.removeAllPlugins(requireContext())
                 if (removedPlugins >= 0)
                     context?.showToast(getString(R.string.plugin_removed, removedPlugins))
-                else
-                    context?.showToast(getString(R.string.error))
+                else context?.showToast(getString(R.string.error))
             }
             else -> return super.onPreferenceTreeClick(preference)
         }
@@ -245,9 +243,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         }
     }
 
-    /**
-     * This function opens a dialog to manage the kodi list
-     */
+    /** This function opens a dialog to manage the kodi list */
     private fun openKodiManagementDialog() {
         val dialog = KodiManagementDialog()
         dialog.show(parentFragmentManager, "KodiManagementDialogFragment")

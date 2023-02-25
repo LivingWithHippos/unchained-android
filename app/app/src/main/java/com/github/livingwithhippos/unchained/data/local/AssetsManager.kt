@@ -7,9 +7,7 @@ import java.io.FileInputStream
 import java.io.InputStream
 import javax.inject.Inject
 
-class AssetsManager @Inject constructor(
-    @ApplicationContext private val appContext: Context
-) {
+class AssetsManager @Inject constructor(@ApplicationContext private val appContext: Context) {
 
     private val SYSTEM_ASSETS_FOLDER = listOf("images", "webkit")
 
@@ -41,15 +39,13 @@ class AssetsManager @Inject constructor(
 
         for (path in pathList) {
             // skip if system folder
-            if (skipSystemFolders && SYSTEM_ASSETS_FOLDER.contains(path))
-                continue
+            if (skipSystemFolders && SYSTEM_ASSETS_FOLDER.contains(path)) continue
 
             val newPath = if (folder == "") path else folder.plus("/").plus(path)
             // the path is a file
             if (isFile(newPath)) {
                 // if the name is correct we add it to the list
-                if (newPath.endsWith(fileType, ignoreCase = true))
-                    results.add(newPath)
+                if (newPath.endsWith(fileType, ignoreCase = true)) results.add(newPath)
             }
         }
 

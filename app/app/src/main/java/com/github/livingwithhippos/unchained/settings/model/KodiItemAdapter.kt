@@ -6,9 +6,7 @@ import com.github.livingwithhippos.unchained.data.model.KodiDevice
 import com.github.livingwithhippos.unchained.utilities.DataBindingAdapter
 
 class KodiDeviceAdapter(listener: KodiDeviceListener) :
-    DataBindingAdapter<KodiDevice, KodiDeviceListener>(
-        DiffCallback(), listener
-    ) {
+    DataBindingAdapter<KodiDevice, KodiDeviceListener>(DiffCallback(), listener) {
     class DiffCallback : DiffUtil.ItemCallback<KodiDevice>() {
         override fun areItemsTheSame(oldItem: KodiDevice, newItem: KodiDevice): Boolean =
             oldItem.name == newItem.name

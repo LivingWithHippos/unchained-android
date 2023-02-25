@@ -5,9 +5,7 @@ import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.utilities.DataBindingAdapter
 
 class LinkItemAdapter(listener: LinkItemListener) :
-    DataBindingAdapter<LinkItem, LinkItemListener>(
-        DiffCallback(), listener
-    ) {
+    DataBindingAdapter<LinkItem, LinkItemListener>(DiffCallback(), listener) {
     class DiffCallback : DiffUtil.ItemCallback<LinkItem>() {
         override fun areItemsTheSame(oldItem: LinkItem, newItem: LinkItem): Boolean =
             oldItem.link == newItem.link

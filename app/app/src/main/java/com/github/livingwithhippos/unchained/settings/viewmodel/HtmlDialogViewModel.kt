@@ -6,20 +6,15 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class HtmlDialogViewModel @Inject constructor(
-    private val savedStateHandle: SavedStateHandle
-) : ViewModel() {
+class HtmlDialogViewModel @Inject constructor(private val savedStateHandle: SavedStateHandle) :
+    ViewModel() {
 
     fun setTitleResource(titleRes: Int?) {
-        titleRes?.let {
-            savedStateHandle.set(KEY_TITLE, it)
-        }
+        titleRes?.let { savedStateHandle.set(KEY_TITLE, it) }
     }
 
     fun setMessageResource(messageRes: Int?) {
-        messageRes?.let {
-            savedStateHandle.set(KEY_MESSAGE, it)
-        }
+        messageRes?.let { savedStateHandle.set(KEY_MESSAGE, it) }
     }
 
     fun getTitleResource(): Int {

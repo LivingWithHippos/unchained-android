@@ -7,28 +7,29 @@ import com.github.livingwithhippos.unchained.data.remote.UserApiHelper
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import javax.inject.Inject
 
-class UserRepository @Inject constructor(
-    private val protoStore: ProtoStore,
-    private val userApiHelper: UserApiHelper
-) :
+class UserRepository
+@Inject
+constructor(private val protoStore: ProtoStore, private val userApiHelper: UserApiHelper) :
     BaseRepository(protoStore) {
 
     suspend fun getUserInfo(token: String): User? {
 
-        val userResponse = safeApiCall(
-            call = { userApiHelper.getUser("Bearer $token") },
-            errorMessage = "Error Fetching User Info"
-        )
+        val userResponse =
+            safeApiCall(
+                call = { userApiHelper.getUser("Bearer $token") },
+                errorMessage = "Error Fetching User Info"
+            )
 
         return userResponse
     }
 
     suspend fun getUserOrError(token: String): EitherResult<UnchainedNetworkException, User> {
 
-        val userResponse = eitherApiResult(
-            call = { userApiHelper.getUser("Bearer $token") },
-            errorMessage = "Error Fetching User Info"
-        )
+        val userResponse =
+            eitherApiResult(
+                call = { userApiHelper.getUser("Bearer $token") },
+                errorMessage = "Error Fetching User Info"
+            )
 
         return userResponse
     }

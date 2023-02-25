@@ -21,6 +21,8 @@ import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewMod
 import com.github.livingwithhippos.unchained.utilities.PreferenceKeys
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.github.livingwithhippos.unchained.utilities.extension.vibrate
+import java.net.URLConnection
+import java.util.UUID
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -28,8 +30,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import timber.log.Timber
-import java.net.URLConnection
-import java.util.UUID
 
 class DownloadWorker(private val appContext: Context, workerParams: WorkerParameters) :
     CoroutineWorker(appContext, workerParams) {
@@ -41,7 +41,8 @@ class DownloadWorker(private val appContext: Context, workerParams: WorkerParame
 
     override suspend fun doWork(): Result {
 
-        if (ActivityCompat.checkSelfPermission(
+        if (
+            ActivityCompat.checkSelfPermission(
                 appContext,
                 Manifest.permission.POST_NOTIFICATIONS
             ) != PackageManager.PERMISSION_GRANTED
@@ -50,20 +51,21 @@ class DownloadWorker(private val appContext: Context, workerParams: WorkerParame
             return Result.failure()
         }
 
-        val sourceUrl: String = inputData.getString(MainActivityViewModel.KEY_DOWNLOAD_SOURCE)
-            ?: return Result.failure()
+        val sourceUrl: String =
+            inputData.getString(MainActivityViewModel.KEY_DOWNLOAD_SOURCE)
+                ?: return Result.failure()
         val fileName: String =
             inputData.getString(MainActivityViewModel.KEY_DOWNLOAD_NAME) ?: return Result.failure()
 
-        val folderUri: Uri =
-            Uri.parse(inputData.getString(MainActivityViewModel.KEY_FOLDER_URI)!!)
+        val folderUri: Uri = Uri.parse(inputData.getString(MainActivityViewModel.KEY_FOLDER_URI)!!)
 
-        val newFile: DocumentFile? = try {
-            getFileDocument(sourceUrl, folderUri, fileName)
-        } catch (ex: SecurityException) {
-            Timber.e("User has removed folder permissions")
-            null
-        }
+        val newFile: DocumentFile? =
+            try {
+                getFileDocument(sourceUrl, folderUri, fileName)
+            } catch (ex: SecurityException) {
+                Timber.e("User has removed folder permissions")
+                null
+            }
 
         if (newFile == null) {
             Timber.e("Error getting download location file")
@@ -71,9 +73,12 @@ class DownloadWorker(private val appContext: Context, workerParams: WorkerParame
             return Result.failure()
         }
 
-        // this id is used with setForeground, any notification with this id will be removed when the worker ends
+        // this id is used with setForeground, any notification with this id will be removed when
+        // the
+        // worker ends
         val notificationID = newFile.hashCode()
-        // this id is used for notifications that shouldn't be removed when the worker stops (e.g. download stopped/crashed/completed)
+        // this id is used for notifications that shouldn't be removed when the worker stops (e.g.
+        // download stopped/crashed/completed)
         val externalNotificationID = sourceUrl.hashCode()
 
         try {
@@ -86,18 +91,14 @@ class DownloadWorker(private val appContext: Context, workerParams: WorkerParame
 
             // todo: use a single customized instance of this
             val client = OkHttpClient()
-            val writer = FileWriter(
-                outputStream
-            )
-            val downloader = Downloader(
-                client,
-                writer
-            )
+            val writer = FileWriter(outputStream)
+            val downloader = Downloader(client, writer)
 
             var progressCounter = -1
             var lastNotificationTime = 0L
 
-            val shouldVibrate = preferences.getBoolean(PreferenceKeys.DownloadManager.VIBRATE_ON_FINISH, false)
+            val shouldVibrate =
+                preferences.getBoolean(PreferenceKeys.DownloadManager.VIBRATE_ON_FINISH, false)
 
             scope.launch {
                 writer.state.collect {
@@ -107,14 +108,15 @@ class DownloadWorker(private val appContext: Context, workerParams: WorkerParame
                                 // this is managed below
                             }
                             is DownloadStatus.Error -> {
-                                val notification = makeStatusNotification(
-                                    id,
-                                    fileName,
-                                    applicationContext.getString(R.string.error),
-                                    applicationContext,
-                                    onGoing = false,
-                                    stopAction = false
-                                )
+                                val notification =
+                                    makeStatusNotification(
+                                        id,
+                                        fileName,
+                                        applicationContext.getString(R.string.error),
+                                        applicationContext,
+                                        onGoing = false,
+                                        stopAction = false
+                                    )
                                 NotificationManagerCompat.from(applicationContext)
                                     .notify(externalNotificationID, notification)
                             }
@@ -141,19 +143,25 @@ class DownloadWorker(private val appContext: Context, workerParams: WorkerParame
                                 )
                             }
                             DownloadStatus.Stopped -> {
-                                val notification = makeStatusNotification(
-                                    id,
-                                    fileName,
-                                    applicationContext.getString(R.string.stopped),
-                                    applicationContext,
-                                    onGoing = false,
-                                    stopAction = false
-                                )
+                                val notification =
+                                    makeStatusNotification(
+                                        id,
+                                        fileName,
+                                        applicationContext.getString(R.string.stopped),
+                                        applicationContext,
+                                        onGoing = false,
+                                        stopAction = false
+                                    )
                                 NotificationManagerCompat.from(applicationContext)
                                     .notify(externalNotificationID, notification)
                             }
                             is DownloadStatus.Running -> {
-                                if (it.percent < 100 && it.percent != progressCounter && System.currentTimeMillis() - lastNotificationTime > 500 && !isStopped) {
+                                if (
+                                    it.percent < 100 &&
+                                        it.percent != progressCounter &&
+                                        System.currentTimeMillis() - lastNotificationTime > 500 &&
+                                        !isStopped
+                                ) {
                                     lastNotificationTime = System.currentTimeMillis()
                                     progressCounter = it.percent
 
@@ -180,29 +188,31 @@ class DownloadWorker(private val appContext: Context, workerParams: WorkerParame
             }
 
             showToast(R.string.download_queued)
-            // this needs to be blocking, see https://developer.android.com/topic/libraries/architecture/workmanager/advanced/coroutineworker
+            // this needs to be blocking, see
+            // https://developer.android.com/topic/libraries/architecture/workmanager/advanced/coroutineworker
             val downloadedSize: Long = downloader.download(sourceUrl)
 
             // todo: get whole size and check if it correspond
             return if (downloadedSize > 0) {
-                // returning a result will terminate the worker and any notification created with setForeground will disappear,
-                // so we use the system notification manager to notify of completed/stopped/error downloads
+                // returning a result will terminate the worker and any notification created with
+                // setForeground will disappear,
+                // so we use the system notification manager to notify of completed/stopped/error
+                // downloads
 
-                val notification = makeStatusNotification(
-                    id,
-                    fileName,
-                    applicationContext.getString(R.string.download_complete),
-                    applicationContext,
-                    onGoing = false,
-                    stopAction = false
-                )
+                val notification =
+                    makeStatusNotification(
+                        id,
+                        fileName,
+                        applicationContext.getString(R.string.download_complete),
+                        applicationContext,
+                        onGoing = false,
+                        stopAction = false
+                    )
                 NotificationManagerCompat.from(applicationContext)
                     .notify(externalNotificationID, notification)
-                if (shouldVibrate)
-                    applicationContext.vibrate()
+                if (shouldVibrate) applicationContext.vibrate()
                 Result.success()
-            } else
-                Result.failure()
+            } else Result.failure()
         } catch (e: android.accounts.NetworkErrorException) {
             e.printStackTrace()
 
@@ -212,24 +222,17 @@ class DownloadWorker(private val appContext: Context, workerParams: WorkerParame
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
 
-            showToast(
-                applicationContext.getString(
-                    R.string.download_not_started_format,
-                    fileName
-                )
-            )
+            showToast(applicationContext.getString(R.string.download_not_started_format, fileName))
             Timber.e("Exception occurred while downloading, ${e.message}")
             return Result.failure()
         }
     }
 
-    private suspend fun showToast(stringId: Int) = withContext(Dispatchers.Main) {
-        applicationContext.showToast(stringId)
-    }
+    private suspend fun showToast(stringId: Int) =
+        withContext(Dispatchers.Main) { applicationContext.showToast(stringId) }
 
-    private suspend fun showToast(message: String) = withContext(Dispatchers.Main) {
-        applicationContext.showToast(message)
-    }
+    private suspend fun showToast(message: String) =
+        withContext(Dispatchers.Main) { applicationContext.showToast(message) }
 
     private fun getFileDocument(
         sourceUrl: String,
@@ -255,7 +258,8 @@ class DownloadWorker(private val appContext: Context, workerParams: WorkerParame
                     mime = "*/*"
                 }
             }
-            // todo: check if the extension needs to be removed as the docs say (it does not seem to)
+            // todo: check if the extension needs to be removed as the docs say (it does not seem
+            // to)
             return folderUri.createFile(mime, fileName)
         } else {
             Timber.e("folderUri was null")
@@ -282,17 +286,19 @@ fun makeStatusNotification(
         .setCategory(NotificationCompat.CATEGORY_PROGRESS)
         .setPriority(NotificationCompat.PRIORITY_DEFAULT)
         .setGroup(GROUP_KEY_DOWNLOADS)
-        // setting setGroupSummary(false) will prevent this from showing up after the makeProgressStatusNotification one
+        // setting setGroupSummary(false) will prevent this from showing up after the
+        // makeProgressStatusNotification one
         .setGroupSummary(true)
         .setProgress(0, 0, false)
         .setOngoing(onGoing)
         .setContentTitle(title)
         // todo:check if .setContentText(progress) is the same
-        .setStyle(NotificationCompat.BigTextStyle().bigText(filename)).apply {
+        .setStyle(NotificationCompat.BigTextStyle().bigText(filename))
+        .apply {
             if (stopAction) {
                 // This PendingIntent can be used to cancel the worker
-                val stopIntent = WorkManager.getInstance(context)
-                    .createCancelPendingIntent(workerId)
+                val stopIntent =
+                    WorkManager.getInstance(context).createCancelPendingIntent(workerId)
 
                 addAction(R.drawable.icon_stop, context.getString(R.string.stop), stopIntent)
             }
@@ -319,10 +325,7 @@ fun makeProgressStatusNotification(
     context: Context,
     stopAction: Boolean = true
 ): Notification {
-    val title = context.getString(
-        R.string.download_in_progress_format,
-        progress
-    )
+    val title = context.getString(R.string.download_in_progress_format, progress)
     // Create the notification
     return NotificationCompat.Builder(context, UnchainedApplication.DOWNLOAD_CHANNEL_ID)
         .setSmallIcon(R.drawable.logo_no_background)
@@ -338,8 +341,8 @@ fun makeProgressStatusNotification(
         .apply {
             if (stopAction) {
                 // This PendingIntent can be used to cancel the worker
-                val stopIntent = WorkManager.getInstance(context)
-                    .createCancelPendingIntent(workerId)
+                val stopIntent =
+                    WorkManager.getInstance(context).createCancelPendingIntent(workerId)
 
                 addAction(R.drawable.icon_stop, context.getString(R.string.stop), stopIntent)
             }

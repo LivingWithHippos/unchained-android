@@ -24,7 +24,5 @@ object CredentialsSerializer : Serializer<CurrentCredential> {
     override suspend fun writeTo(t: CurrentCredential, output: OutputStream) = t.writeTo(output)
 }
 
-val Context.credentialsDataStore: DataStore<CurrentCredential> by dataStore(
-    fileName = "credentials.pb",
-    serializer = CredentialsSerializer
-)
+val Context.credentialsDataStore: DataStore<CurrentCredential> by
+    dataStore(fileName = "credentials.pb", serializer = CredentialsSerializer)

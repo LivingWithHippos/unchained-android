@@ -13,12 +13,14 @@ import com.github.livingwithhippos.unchained.data.repository.KodiRepository
 import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.postEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
-import javax.inject.Inject
 
 @HiltViewModel
-class KodiManagementViewModel @Inject constructor(
+class KodiManagementViewModel
+@Inject
+constructor(
     private val savedStateHandle: SavedStateHandle,
     private val deviceRepository: KodiDeviceRepository,
     private val kodiNetworkRepository: KodiRepository
@@ -29,9 +31,7 @@ class KodiManagementViewModel @Inject constructor(
     val devices: LiveData<List<KodiDevice>> = deviceRepository.devicesFlow.asLiveData()
 
     fun removeDevice(device: KodiDevice) {
-        viewModelScope.launch {
-            deviceRepository.remove(device)
-        }
+        viewModelScope.launch { deviceRepository.remove(device) }
     }
 
     fun updateDevice(device: KodiDevice, oldDeviceName: String) {
@@ -54,9 +54,7 @@ class KodiManagementViewModel @Inject constructor(
     }
 
     fun setDefaultDevice(device: KodiDevice) {
-        viewModelScope.launch {
-            deviceRepository.setDefault(device)
-        }
+        viewModelScope.launch { deviceRepository.setDefault(device) }
     }
 
     fun testKodi(address: String, port: Int, username: String?, password: String?) {

@@ -8,9 +8,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
-/**
- * Provides the activity lifecycle callback to be injected with Dagger Hilt
- */
+/** Provides the activity lifecycle callback to be injected with Dagger Hilt */
 @InstallIn(SingletonComponent::class)
 @Module
 object ThemingModule {

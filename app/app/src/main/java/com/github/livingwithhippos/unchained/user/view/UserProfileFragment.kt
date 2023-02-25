@@ -26,20 +26,16 @@ import com.github.livingwithhippos.unchained.utilities.REFERRAL_LINK
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlinx.coroutines.launch
 
-/**
- * A simple [UnchainedFragment] subclass.
- * Shows a user profile details.
- */
+/** A simple [UnchainedFragment] subclass. Shows a user profile details. */
 @AndroidEntryPoint
 class UserProfileFragment : UnchainedFragment() {
 
     private val viewModel: UserProfileViewModel by viewModels()
 
-    @Inject
-    lateinit var preferences: SharedPreferences
+    @Inject lateinit var preferences: SharedPreferences
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -51,9 +47,7 @@ class UserProfileFragment : UnchainedFragment() {
 
         viewModel.fetchUserInfo()
 
-        viewModel.userLiveData.observe(
-            viewLifecycleOwner
-        ) {
+        viewModel.userLiveData.observe(viewLifecycleOwner) {
             if (it != null) {
                 userBinding.user = it
                 lifecycleScope.launch {
@@ -92,15 +86,11 @@ class UserProfileFragment : UnchainedFragment() {
             } else {
                 if (preferences.getBoolean(KEY_REFERRAL_USE, false))
                     context?.openExternalWebPage(REFERRAL_LINK)
-                else
-                    context?.openExternalWebPage(ACCOUNT_LINK)
+                else context?.openExternalWebPage(ACCOUNT_LINK)
             }
         }
 
-        activityViewModel.fsmAuthenticationState.observe(
-            viewLifecycleOwner
-        ) {
-
+        activityViewModel.fsmAuthenticationState.observe(viewLifecycleOwner) {
             if (it != null) {
                 when (it.peekContent()) {
                     is FSMAuthenticationState.WaitingUserAction -> {
@@ -114,13 +104,17 @@ class UserProfileFragment : UnchainedFragment() {
                             UserProfileFragmentDirections.actionUserToAuthenticationFragment()
                         findNavController().navigate(action)
                     }
-                    FSMAuthenticationState.AuthenticatedOpenToken, FSMAuthenticationState.AuthenticatedPrivateToken, FSMAuthenticationState.RefreshingOpenToken -> {
+                    FSMAuthenticationState.AuthenticatedOpenToken,
+                    FSMAuthenticationState.AuthenticatedPrivateToken,
+                    FSMAuthenticationState.RefreshingOpenToken -> {
                         // managed by activity
                     }
                     FSMAuthenticationState.CheckCredentials -> {
                         // shouldn't matter
                     }
-                    FSMAuthenticationState.Start, FSMAuthenticationState.WaitingToken, FSMAuthenticationState.WaitingUserConfirmation -> {
+                    FSMAuthenticationState.Start,
+                    FSMAuthenticationState.WaitingToken,
+                    FSMAuthenticationState.WaitingUserConfirmation -> {
                         // shouldn't happen
                     }
                 }
@@ -134,10 +128,10 @@ class UserProfileFragment : UnchainedFragment() {
 
         if (
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
-            ContextCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.POST_NOTIFICATIONS
-            ) != PermissionChecker.PERMISSION_GRANTED
+                ContextCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) != PermissionChecker.PERMISSION_GRANTED
         ) {
             activityViewModel.requireNotificationPermissions()
         }

@@ -14,15 +14,14 @@ import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.PreferenceKeys
 import com.github.livingwithhippos.unchained.utilities.postEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlinx.coroutines.launch
 
-/**
- * A [ViewModel] subclass.
- * It offers LiveData to observe the calls to the streaming endpoint
- */
+/** A [ViewModel] subclass. It offers LiveData to observe the calls to the streaming endpoint */
 @HiltViewModel
-class DownloadDetailsViewModel @Inject constructor(
+class DownloadDetailsViewModel
+@Inject
+constructor(
     private val preferences: SharedPreferences,
     private val streamingRepository: StreamingRepository,
     private val downloadRepository: DownloadRepository,
@@ -45,10 +44,8 @@ class DownloadDetailsViewModel @Inject constructor(
     fun deleteDownload(id: String) {
         viewModelScope.launch {
             val deleted = downloadRepository.deleteDownload(id)
-            if (deleted == null)
-                deletedDownloadLiveData.postEvent(-1)
-            else
-                deletedDownloadLiveData.postEvent(1)
+            if (deleted == null) deletedDownloadLiveData.postEvent(-1)
+            else deletedDownloadLiveData.postEvent(1)
         }
     }
 
@@ -56,23 +53,21 @@ class DownloadDetailsViewModel @Inject constructor(
         viewModelScope.launch {
             val device = customDevice ?: kodiDeviceRepository.getDefault()
             if (device != null) {
-                val response = kodiRepository.openUrl(
-                    device.address,
-                    device.port,
-                    url,
-                    device.username,
-                    device.password
-                )
-                if (response != null)
-                    messageLiveData.postEvent(DownloadDetailsMessage.KodiSuccess)
-                else
-                    messageLiveData.postEvent(DownloadDetailsMessage.KodiError)
+                val response =
+                    kodiRepository.openUrl(
+                        device.address,
+                        device.port,
+                        url,
+                        device.username,
+                        device.password
+                    )
+                if (response != null) messageLiveData.postEvent(DownloadDetailsMessage.KodiSuccess)
+                else messageLiveData.postEvent(DownloadDetailsMessage.KodiError)
             } else {
                 val allDevices = kodiDeviceRepository.getDevices()
                 if (allDevices.isNotEmpty())
                     messageLiveData.postEvent(DownloadDetailsMessage.KodiMissingDefault)
-                else
-                    messageLiveData.postEvent(DownloadDetailsMessage.KodiMissingCredentials)
+                else messageLiveData.postEvent(DownloadDetailsMessage.KodiMissingCredentials)
             }
         }
     }
@@ -82,17 +77,13 @@ class DownloadDetailsViewModel @Inject constructor(
             if (preferences.getBoolean(PreferenceKeys.Kodi.SERVER_PICKER, false)) {
                 val devices = kodiDeviceRepository.getDevices()
                 // if there is only one device do not show the picker
-                if (devices.size == 1)
-                    openUrlOnKodi(url)
+                if (devices.size == 1) openUrlOnKodi(url)
                 else if (devices.isEmpty())
                     messageLiveData.postEvent(DownloadDetailsMessage.KodiMissingDefault)
-                else
-                    messageLiveData.postEvent(DownloadDetailsMessage.KodiShowPicker(url))
-            } else
-                openUrlOnKodi(url)
+                else messageLiveData.postEvent(DownloadDetailsMessage.KodiShowPicker(url))
+            } else openUrlOnKodi(url)
         }
     }
-
 
     fun getKodiDevices() {
 

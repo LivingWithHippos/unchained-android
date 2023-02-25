@@ -63,31 +63,28 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
         (binding.pluginPicker.editText as? AutoCompleteTextView)?.setAdapter(pluginAdapter)
 
         binding.bManagePlugins.setOnClickListener {
-            val action =
-                SearchFragmentDirections.actionSearchDestToRepositoryFragment()
+            val action = SearchFragmentDirections.actionSearchDestToRepositoryFragment()
             findNavController().navigate(action)
         }
 
         viewModel.pluginLiveData.observe(viewLifecycleOwner) { parsedPlugins ->
-
             val plugins = parsedPlugins.first
             if (parsedPlugins.second > 0)
-                requireContext().showToast(
-                    resources.getQuantityString(
-                        R.plurals.plugins_version_old_format,
-                        parsedPlugins.second,
-                        parsedPlugins.second
+                requireContext()
+                    .showToast(
+                        resources.getQuantityString(
+                            R.plurals.plugins_version_old_format,
+                            parsedPlugins.second,
+                            parsedPlugins.second
+                        )
                     )
-                )
 
             pluginAdapter.clear()
             pluginAdapter.addAll(plugins.map { it.name })
 
             val pluginPickerView = binding.pluginPicker.editText as? AutoCompleteTextView
             val categoryPickerView = binding.categoryPicker.editText as? AutoCompleteTextView
-            if (pluginPickerView?.text.toString().isBlank() &&
-                plugins.isNotEmpty()
-            ) {
+            if (pluginPickerView?.text.toString().isBlank() && plugins.isNotEmpty()) {
                 // load the latest selected plugin or the first one available
                 val lastPlugin: String = viewModel.getLastSelectedPlugin()
                 val selectedPlugin: Plugin =
@@ -129,8 +126,7 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
 
         // load the latest results if coming back from another fragment
         val lastResults = viewModel.getSearchResults()
-        if (lastResults.isNotEmpty())
-            submitSortedList(adapter, lastResults)
+        if (lastResults.isNotEmpty()) submitSortedList(adapter, lastResults)
 
         // search option
         binding.tiSearch.setOnEditorActionListener { _, actionId, _ ->
@@ -144,9 +140,7 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
         }
 
         // search button listener
-        binding.tfSearch.setEndIconOnClickListener {
-            performSearch(binding, adapter)
-        }
+        binding.tfSearch.setEndIconOnClickListener { performSearch(binding, adapter) }
 
         activityViewModel.cacheLiveData.observe(viewLifecycleOwner) {
             submitCachedList(it, adapter)
@@ -191,9 +185,7 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
             }
             // update the list and scroll it to the top
             submitSortedList(searchAdapter, viewModel.getSearchResults())
-            lifecycleScope.launch {
-                searchList.delayedScrolling(requireContext())
-            }
+            lifecycleScope.launch { searchList.delayedScrolling(requireContext()) }
             true
         }
         popup.setOnDismissListener {
@@ -205,48 +197,47 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
 
     private fun performSearch(binding: FragmentSearchBinding, searchAdapter: SearchItemAdapter) {
         binding.tfSearch.hideKeyboard()
-        viewModel.completeSearch(
-            query = binding.tiSearch.text.toString(),
-            pluginName = binding.pluginPicker.editText?.text.toString(),
-            category = getSelectedCategory(binding.categoryPicker.editText?.text.toString())
-        ).observe(viewLifecycleOwner) { result ->
-            when (result) {
-                is ParserResult.SingleResult -> {
-                    // does this work without an append?
-                    submitSortedList(
-                        searchAdapter,
-                        listOf(result.value)
-                    )
-                    searchAdapter.notifyDataSetChanged()
-                }
-                is ParserResult.Results -> {
-                    submitSortedList(searchAdapter, result.values)
-                    searchAdapter.notifyDataSetChanged()
-                }
-                is ParserResult.SearchStarted -> {
-                    searchAdapter.submitList(emptyList())
-                    binding.loadingCircle.isIndeterminate = true
-                }
-                is ParserResult.SearchFinished -> {
-                    activityViewModel.checkTorrentCache(searchAdapter.currentList)
-                    binding.loadingCircle.isIndeterminate = false
-                    binding.loadingCircle.progress = 100
-                    // update the data with cached results
-                }
-                is ParserResult.EmptyInnerLinks -> {
-                    context?.showToast(R.string.no_links)
-                    searchAdapter.submitList(emptyList())
-                    binding.loadingCircle.isIndeterminate = false
-                    binding.loadingCircle.progress = 100
-                }
-                else -> {
-                    Timber.d("Unexpected result: $result")
-                    searchAdapter.submitList(emptyList())
-                    binding.loadingCircle.isIndeterminate = false
-                    binding.loadingCircle.progress = 100
+        viewModel
+            .completeSearch(
+                query = binding.tiSearch.text.toString(),
+                pluginName = binding.pluginPicker.editText?.text.toString(),
+                category = getSelectedCategory(binding.categoryPicker.editText?.text.toString())
+            )
+            .observe(viewLifecycleOwner) { result ->
+                when (result) {
+                    is ParserResult.SingleResult -> {
+                        // does this work without an append?
+                        submitSortedList(searchAdapter, listOf(result.value))
+                        searchAdapter.notifyDataSetChanged()
+                    }
+                    is ParserResult.Results -> {
+                        submitSortedList(searchAdapter, result.values)
+                        searchAdapter.notifyDataSetChanged()
+                    }
+                    is ParserResult.SearchStarted -> {
+                        searchAdapter.submitList(emptyList())
+                        binding.loadingCircle.isIndeterminate = true
+                    }
+                    is ParserResult.SearchFinished -> {
+                        activityViewModel.checkTorrentCache(searchAdapter.currentList)
+                        binding.loadingCircle.isIndeterminate = false
+                        binding.loadingCircle.progress = 100
+                        // update the data with cached results
+                    }
+                    is ParserResult.EmptyInnerLinks -> {
+                        context?.showToast(R.string.no_links)
+                        searchAdapter.submitList(emptyList())
+                        binding.loadingCircle.isIndeterminate = false
+                        binding.loadingCircle.progress = 100
+                    }
+                    else -> {
+                        Timber.d("Unexpected result: $result")
+                        searchAdapter.submitList(emptyList())
+                        binding.loadingCircle.isIndeterminate = false
+                        binding.loadingCircle.progress = 100
+                    }
                 }
             }
-        }
     }
 
     private fun getSortingDrawable(tag: String): Int {
@@ -263,73 +254,54 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
 
     private fun submitCachedList(cache: InstantAvailability, adapter: SearchItemAdapter) {
         // alternatively get results from the viewModel
-        val items: List<ScrapedItem> = adapter.currentList.map {
-            it.apply {
-                if (it.magnets.isNotEmpty()) {
-                    // parse all the magnets found
-                    for (magnet in it.magnets) {
-                        val btih = magnetPattern.find(magnet)?.groupValues?.getOrNull(1)
-                        for (torrent in cache.cachedTorrents) {
-                            if (torrent.btih.equals(btih, ignoreCase = true)) {
-                                isCached = true
+        val items: List<ScrapedItem> =
+            adapter.currentList.map {
+                it.apply {
+                    if (it.magnets.isNotEmpty()) {
+                        // parse all the magnets found
+                        for (magnet in it.magnets) {
+                            val btih = magnetPattern.find(magnet)?.groupValues?.getOrNull(1)
+                            for (torrent in cache.cachedTorrents) {
+                                if (torrent.btih.equals(btih, ignoreCase = true)) {
+                                    isCached = true
+                                    break
+                                }
+                            }
+                            // stopping at first cache hit
+                            if (isCached) {
                                 break
                             }
-                        }
-                        // stopping at first cache hit
-                        if (isCached) {
-                            break
                         }
                     }
                 }
             }
-        }
         submitSortedList(adapter, items)
         adapter.notifyDataSetChanged()
     }
 
-    private fun submitSortedList(
-        adapter: SearchItemAdapter,
-        items: List<ScrapedItem>
-    ) {
+    private fun submitSortedList(adapter: SearchItemAdapter, items: List<ScrapedItem>) {
         when (viewModel.getListSortPreference()) {
             FolderListFragment.TAG_DEFAULT_SORT -> {
                 adapter.submitList(items)
             }
             FolderListFragment.TAG_SORT_AZ -> {
-                adapter.submitList(
-                    items.sortedBy { item ->
-                        item.name
-                    }
-                )
+                adapter.submitList(items.sortedBy { item -> item.name })
             }
             FolderListFragment.TAG_SORT_ZA -> {
-                adapter.submitList(
-                    items.sortedByDescending { item ->
-                        item.name
-                    }
-                )
+                adapter.submitList(items.sortedByDescending { item -> item.name })
             }
             FolderListFragment.TAG_SORT_SIZE_DESC -> {
-                adapter.submitList(
-                    items.sortedByDescending { item ->
-                        item.parsedSize
-                    }
-                )
+                adapter.submitList(items.sortedByDescending { item -> item.parsedSize })
             }
             FolderListFragment.TAG_SORT_SIZE_ASC -> {
-                adapter.submitList(
-                    items.sortedBy { item ->
-                        item.parsedSize
-                    }
-                )
+                adapter.submitList(items.sortedBy { item -> item.parsedSize })
             }
             FolderListFragment.TAG_SORT_SEEDERS -> {
                 adapter.submitList(
                     items.sortedByDescending { item ->
                         if (item.seeders != null) {
                             digitRegex.find(item.seeders)?.value?.toInt()
-                        } else
-                            null
+                        } else null
                     }
                 )
             }
@@ -341,37 +313,39 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
 
     private fun showDialogsIfNeeded() {
         if (viewModel.isPluginDialogNeeded()) {
-            val alertDialog: AlertDialog? = activity?.let {
-                val builder = AlertDialog.Builder(it)
-                builder.apply {
-                    setTitle(R.string.search_plugins)
-                    setMessage(R.string.plugin_description_message)
-                    setPositiveButton(R.string.close) { _, _ ->
-                        viewModel.setPluginDialogNeeded(false)
+            val alertDialog: AlertDialog? =
+                activity?.let {
+                    val builder = AlertDialog.Builder(it)
+                    builder.apply {
+                        setTitle(R.string.search_plugins)
+                        setMessage(R.string.plugin_description_message)
+                        setPositiveButton(R.string.close) { _, _ ->
+                            viewModel.setPluginDialogNeeded(false)
+                        }
                     }
+                    builder.create()
                 }
-                builder.create()
-            }
             alertDialog?.show()
         }
 
         if (viewModel.isDOHDialogNeeded()) {
-            val alertDialog: AlertDialog? = activity?.let {
-                val builder = AlertDialog.Builder(it)
-                builder.apply {
-                    setTitle(R.string.doh)
-                    setMessage(R.string.doh_description_message)
-                    setPositiveButton(R.string.enable) { _, _ ->
-                        viewModel.enableDOH(true)
-                        viewModel.setDOHDialogNeeded(false)
+            val alertDialog: AlertDialog? =
+                activity?.let {
+                    val builder = AlertDialog.Builder(it)
+                    builder.apply {
+                        setTitle(R.string.doh)
+                        setMessage(R.string.doh_description_message)
+                        setPositiveButton(R.string.enable) { _, _ ->
+                            viewModel.enableDOH(true)
+                            viewModel.setDOHDialogNeeded(false)
+                        }
+                        setNegativeButton(R.string.disable) { _, _ ->
+                            viewModel.enableDOH(false)
+                            viewModel.setDOHDialogNeeded(false)
+                        }
                     }
-                    setNegativeButton(R.string.disable) { _, _ ->
-                        viewModel.enableDOH(false)
-                        viewModel.setDOHDialogNeeded(false)
-                    }
+                    builder.create()
                 }
-                builder.create()
-            }
             alertDialog?.show()
         }
     }
@@ -379,8 +353,7 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
     private fun setupCategory(autoCompleteView: AutoCompleteTextView?, plugin: Plugin) {
         val choices = mutableListOf<String>()
         choices.add(getString(R.string.category_all))
-        if (plugin.supportedCategories.art != null)
-            choices.add(getString(R.string.category_art))
+        if (plugin.supportedCategories.art != null) choices.add(getString(R.string.category_art))
         if (plugin.supportedCategories.anime != null)
             choices.add(getString(R.string.category_anime))
         if (plugin.supportedCategories.doujinshi != null)
@@ -399,18 +372,14 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
             choices.add(getString(R.string.category_pictures))
         if (plugin.supportedCategories.music != null)
             choices.add(getString(R.string.category_music))
-        if (plugin.supportedCategories.tv != null)
-            choices.add(getString(R.string.category_tv))
+        if (plugin.supportedCategories.tv != null) choices.add(getString(R.string.category_tv))
         if (plugin.supportedCategories.books != null)
             choices.add(getString(R.string.category_books))
 
         val adapter = ArrayAdapter(requireContext(), R.layout.plugin_list_item, choices)
         autoCompleteView?.setAdapter(adapter)
 
-        autoCompleteView?.setText(
-            choices.first(),
-            false
-        )
+        autoCompleteView?.setText(choices.first(), false)
     }
 
     private fun getSelectedCategory(pickerText: String): String? {

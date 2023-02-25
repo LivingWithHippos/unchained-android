@@ -33,22 +33,21 @@ import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 import java.io.File
 import java.io.IOException
 import java.util.regex.Matcher
 import java.util.regex.Pattern
+import timber.log.Timber
 
-/**
- * This fragments is shown after a user uploads a torrent or a magnet.
- */
+/** This fragments is shown after a user uploads a torrent or a magnet. */
 @AndroidEntryPoint
 class TorrentProcessingFragment : UnchainedFragment() {
 
     private val args: TorrentProcessingFragmentArgs by navArgs()
 
     // https://developer.android.com/training/dependency-injection/hilt-jetpack#viewmodel-navigation
-    private val viewModel: TorrentProcessingViewModel by hiltNavGraphViewModels(R.id.navigation_lists)
+    private val viewModel: TorrentProcessingViewModel by
+        hiltNavGraphViewModels(R.id.navigation_lists)
 
     private var cachedTorrent: CachedTorrent? = null
 
@@ -67,44 +66,45 @@ class TorrentProcessingFragment : UnchainedFragment() {
                     binding.tvStatus.text = getString(R.string.loading_torrent)
                     // get torrent info
                     viewModel.fetchTorrentDetails(content.torrent.id)
-                    // todo: add a loop so this is repeated if it fails, instead of wasting the fragment
+                    // todo: add a loop so this is repeated if it fails, instead of wasting the
+                    // fragment
                 }
                 is TorrentEvent.TorrentInfo -> {
-                    if (content.item.files?.size == 1 && "waiting_files_selection".equals(
-                            content.item.status,
-                            ignoreCase = true
-                        )
+                    if (
+                        content.item.files?.size == 1 &&
+                            "waiting_files_selection".equals(content.item.status, ignoreCase = true)
                     ) {
                         context?.showToast(R.string.single_torrent_file_available)
                         viewModel.triggerTorrentEvent(TorrentEvent.DownloadAll)
                         viewModel.startSelectionLoop()
                     } else {
                         // torrent loaded
-                        if (activityViewModel.getCurrentTorrentCachePick()?.first != content.item.id) {
+                        if (
+                            activityViewModel.getCurrentTorrentCachePick()?.first != content.item.id
+                        ) {
                             // clear up old cache
                             activityViewModel.clearCurrentTorrentCachePick()
                         }
                         // check if we are already beyond file selection
                         if (!beforeSelectionStatusList.contains(content.item.status)) {
                             val action =
-                                TorrentProcessingFragmentDirections.actionTorrentProcessingFragmentToTorrentDetailsDest(
-                                    item = content.item
-                                )
+                                TorrentProcessingFragmentDirections
+                                    .actionTorrentProcessingFragmentToTorrentDetailsDest(
+                                        item = content.item
+                                    )
                             findNavController().navigate(action)
                         } else {
                             binding.tvStatus.text = getString(R.string.checking_cache)
                             val hash = content.item.hash.lowercase()
-                            //  Check if the activity already has the torrent cache, otherwise check it again
+                            //  Check if the activity already has the torrent cache, otherwise check
+                            // it again
                             val currentCache: CachedTorrent? =
-                                activityViewModel.cacheLiveData.value?.cachedTorrents?.firstOrNull { tor ->
-                                    tor.btih.equals(
-                                        hash,
-                                        ignoreCase = true
-                                    )
-                                }
-                            if (
-                                currentCache != null
-                            ) {
+                                activityViewModel.cacheLiveData.value
+                                    ?.cachedTorrents
+                                    ?.firstOrNull { tor ->
+                                        tor.btih.equals(hash, ignoreCase = true)
+                                    }
+                            if (currentCache != null) {
                                 // trigger cache hit without checking it
                                 viewModel.triggerCacheResult(currentCache)
                             } else {
@@ -144,9 +144,10 @@ class TorrentProcessingFragment : UnchainedFragment() {
                 is TorrentEvent.FilesSelected -> {
                     activityViewModel.setListState(ListState.UpdateTorrent)
                     val action =
-                        TorrentProcessingFragmentDirections.actionTorrentProcessingFragmentToTorrentDetailsDest(
-                            item = content.torrent
-                        )
+                        TorrentProcessingFragmentDirections
+                            .actionTorrentProcessingFragmentToTorrentDetailsDest(
+                                item = content.torrent
+                            )
                     findNavController().navigate(action)
                 }
                 TorrentEvent.DownloadAll -> {
@@ -204,20 +205,19 @@ class TorrentProcessingFragment : UnchainedFragment() {
         val tabLayout: TabLayout = view.findViewById(R.id.pickerTabs)
         val viewPager: ViewPager2 = view.findViewById(R.id.pickerPager)
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
-            /**
-             * disable clicking until the data and cache are loaded
-             */
-            tab.view.isClickable = false
+                /** disable clicking until the data and cache are loaded */
+                tab.view.isClickable = false
 
-            when (position) {
-                POSITION_FILE_PICKER -> {
-                    tab.text = getString(R.string.select_files)
-                }
-                POSITION_CACHE_PICKER -> {
-                    tab.text = getString(R.string.pick_cache)
+                when (position) {
+                    POSITION_FILE_PICKER -> {
+                        tab.text = getString(R.string.select_files)
+                    }
+                    POSITION_CACHE_PICKER -> {
+                        tab.text = getString(R.string.pick_cache)
+                    }
                 }
             }
-        }.attach()
+            .attach()
 
         super.onViewCreated(view, savedInstanceState)
     }
@@ -227,15 +227,11 @@ class TorrentProcessingFragment : UnchainedFragment() {
         // disable swiping until the data and cache are loaded
         binding.pickerPager.isUserInputEnabled = false
 
-        binding.fabDownload.setOnClickListener {
-            showMenu(it, R.menu.download_mode_picker)
-        }
+        binding.fabDownload.setOnClickListener { showMenu(it, R.menu.download_mode_picker) }
 
         if (args.torrentID != null) {
             // we are loading an already available torrent
-            args.torrentID?.let {
-                viewModel.fetchTorrentDetails(it)
-            }
+            args.torrentID?.let { viewModel.fetchTorrentDetails(it) }
         } else if (args.link != null) {
             // we are loading a new torrent
             args.link?.let {
@@ -254,7 +250,9 @@ class TorrentProcessingFragment : UnchainedFragment() {
                 }
             }
         } else {
-            throw IllegalArgumentException("No torrent link or torrent id was passed to TorrentProcessingFragment")
+            throw IllegalArgumentException(
+                "No torrent link or torrent id was passed to TorrentProcessingFragment"
+            )
         }
 
         val adapter = TorrentFilePagerAdapter(this, viewModel)
@@ -266,12 +264,10 @@ class TorrentProcessingFragment : UnchainedFragment() {
         popup.menuInflater.inflate(menuRes, popup.menu)
 
         val pick = activityViewModel.getCurrentTorrentCachePick()
-        if (pick == null)
-            popup.menu.findItem(R.id.download_cache).isEnabled = false
+        if (pick == null) popup.menu.findItem(R.id.download_cache).isEnabled = false
 
         val lastSelection: Node<TorrentFileItem>? = viewModel.structureLiveData.value?.peekContent()
-        if (lastSelection == null)
-            popup.menu.findItem(R.id.manual_pick).isEnabled = false
+        if (lastSelection == null) popup.menu.findItem(R.id.manual_pick).isEnabled = false
 
         popup.setOnMenuItemClickListener { menuItem: MenuItem ->
             // Respond to menu item click.
@@ -362,7 +358,9 @@ class TorrentProcessingFragment : UnchainedFragment() {
                         viewModel.triggerTorrentEvent(TorrentEvent.DownloadedFileFailure)
                     }
                     is DownloadResult.Progress -> {
-                        viewModel.triggerTorrentEvent(TorrentEvent.DownloadedFileProgress(it.percent))
+                        viewModel.triggerTorrentEvent(
+                            TorrentEvent.DownloadedFileProgress(it.percent)
+                        )
                     }
                     DownloadResult.WrongURL -> {
                         viewModel.triggerTorrentEvent(TorrentEvent.DownloadedFileFailure)
@@ -372,10 +370,7 @@ class TorrentProcessingFragment : UnchainedFragment() {
         }
     }
 
-    private fun loadCachedTorrent(
-        cacheDir: File,
-        fileName: String
-    ) {
+    private fun loadCachedTorrent(cacheDir: File, fileName: String) {
         try {
             val cacheFile = File(cacheDir, fileName)
             cacheFile.inputStream().use { inputStream ->
@@ -389,10 +384,14 @@ class TorrentProcessingFragment : UnchainedFragment() {
                     Timber.e("Torrent conversion: file not found: ${exception.message}")
                 }
                 is IOException -> {
-                    Timber.e("Torrent conversion: IOException error getting the file: ${exception.message}")
+                    Timber.e(
+                        "Torrent conversion: IOException error getting the file: ${exception.message}"
+                    )
                 }
                 else -> {
-                    Timber.e("Torrent conversion: Other error getting the file: ${exception.message}")
+                    Timber.e(
+                        "Torrent conversion: Other error getting the file: ${exception.message}"
+                    )
                 }
             }
         }
@@ -407,8 +406,7 @@ class TorrentProcessingFragment : UnchainedFragment() {
 class TorrentFilePagerAdapter(
     fragment: Fragment,
     private val viewModel: TorrentProcessingViewModel
-) :
-    FragmentStateAdapter(fragment) {
+) : FragmentStateAdapter(fragment) {
     override fun getItemCount(): Int = 2
 
     override fun createFragment(position: Int): Fragment {

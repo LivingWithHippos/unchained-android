@@ -7,17 +7,13 @@ val genericPatter = "\\d\\d*\\.?\\d*".toRegex()
 
 fun parseCommonSize(rawSize: String?): Double? {
     try {
-        if (rawSize.isNullOrBlank())
-            return null
+        if (rawSize.isNullOrBlank()) return null
         var match = kbPattern.find(rawSize)?.groupValues?.get(1)
-        if (match != null)
-            return match.toDouble() / 1024
+        if (match != null) return match.toDouble() / 1024
         match = mbPattern.find(rawSize)?.groupValues?.get(1)
-        if (match != null)
-            return match.toDouble()
+        if (match != null) return match.toDouble()
         match = gbPattern.find(rawSize)?.groupValues?.get(1)
-        if (match != null)
-            return match.toDouble() * 1024
+        if (match != null) return match.toDouble() * 1024
 
         match = genericPatter.find(rawSize)?.value
         return match?.toDouble()

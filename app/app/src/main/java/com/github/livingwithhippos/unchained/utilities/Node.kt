@@ -1,24 +1,19 @@
 package com.github.livingwithhippos.unchained.utilities
 
 /**
- * Credits to [sources](https://github.com/montwell/KotlinTreeTraversals) and [article](https://medium.com/swlh/tree-traversals-in-kotlin-7ff1940af7fa)
+ * Credits to [sources](https://github.com/montwell/KotlinTreeTraversals) and
+ * [article](https://medium.com/swlh/tree-traversals-in-kotlin-7ff1940af7fa)
  *
  * @param T
+ * @constructor Create empty Node
  * @property value
  * @property children
- * @constructor Create empty Node
  */
-class Node<T>(
-    var value: T,
-    var children: MutableList<Node<T>> = mutableListOf()
-) {
+class Node<T>(var value: T, var children: MutableList<Node<T>> = mutableListOf()) {
 
     companion object {
 
-        fun <T> traverseDepthFirst(
-            rootNode: Node<T>,
-            action: (value: T) -> Unit
-        ) {
+        fun <T> traverseDepthFirst(rootNode: Node<T>, action: (value: T) -> Unit) {
             val stack = ArrayDeque<Node<T>>()
             stack.addFirst(rootNode)
 
@@ -33,10 +28,7 @@ class Node<T>(
             }
         }
 
-        fun <T> traverseNodeDepthFirst(
-            rootNode: Node<T>,
-            action: (value: Node<T>) -> Unit
-        ) {
+        fun <T> traverseNodeDepthFirst(rootNode: Node<T>, action: (value: Node<T>) -> Unit) {
             val stack = ArrayDeque<Node<T>>()
             stack.addFirst(rootNode)
 
@@ -51,10 +43,7 @@ class Node<T>(
             }
         }
 
-        fun <T> traverseBreadthFirst(
-            rootNode: Node<T>,
-            action: (value: T) -> Unit
-        ) {
+        fun <T> traverseBreadthFirst(rootNode: Node<T>, action: (value: T) -> Unit) {
             val queue = ArrayDeque<Node<T>>()
             queue.addFirst(rootNode)
 
@@ -69,10 +58,7 @@ class Node<T>(
             }
         }
 
-        fun <T> traverseNodeBreadthFirst(
-            rootNode: Node<T>,
-            action: (value: Node<T>) -> Unit
-        ) {
+        fun <T> traverseNodeBreadthFirst(rootNode: Node<T>, action: (value: Node<T>) -> Unit) {
             val queue = ArrayDeque<Node<T>>()
             queue.addFirst(rootNode)
 

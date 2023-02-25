@@ -13,8 +13,8 @@ import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.repository.model.RepositoryListItem
 import com.github.livingwithhippos.unchained.repository.viewmodel.PluginRepositoryEvent
 import com.github.livingwithhippos.unchained.repository.viewmodel.RepositoryViewModel
-import com.github.livingwithhippos.unchained.utilities.MANUAL_PLUGINS_REPOSITORY_NAME
 import com.github.livingwithhippos.unchained.utilities.DEFAULT_PLUGINS_REPOSITORY_LINK
+import com.github.livingwithhippos.unchained.utilities.MANUAL_PLUGINS_REPOSITORY_NAME
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import dagger.hilt.android.AndroidEntryPoint
@@ -26,9 +26,9 @@ class ManageRepositoryDialogFragment : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let { activity ->
-
-            val repository = arguments?.getParcelable<RepositoryListItem.Repository>(REPOSITORY_KEY)
-                ?: throw IllegalArgumentException("Repository cannot be null")
+            val repository =
+                arguments?.getParcelable<RepositoryListItem.Repository>(REPOSITORY_KEY)
+                    ?: throw IllegalArgumentException("Repository cannot be null")
 
             // Use the Builder class for convenient dialog construction
             val builder = MaterialAlertDialogBuilder(activity)
@@ -47,7 +47,7 @@ class ManageRepositoryDialogFragment : DialogFragment() {
                 view.findViewById<Button>(R.id.bInstallAll).isEnabled = false
                 view.findViewById<Button>(R.id.bUpdateAll).isEnabled = false
                 view.findViewById<Button>(R.id.bUninstallRepo).isEnabled = false
-            } else if(repository.link == DEFAULT_PLUGINS_REPOSITORY_LINK) {
+            } else if (repository.link == DEFAULT_PLUGINS_REPOSITORY_LINK) {
                 view.findViewById<Button>(R.id.bInstallAll).setOnClickListener {
                     progressBar.isIndeterminate = true
                     viewModel.installAllRepositoryPlugins(activity, repository)
@@ -75,13 +75,13 @@ class ManageRepositoryDialogFragment : DialogFragment() {
                 viewModel.uninstallAllRepositoryPlugins(activity, repository)
             }
 
-            builder.setView(view)
-                .setNeutralButton(getString(R.string.close)) { dialog, _ ->
-                    dialog.cancel()
-                }
+            builder.setView(view).setNeutralButton(getString(R.string.close)) { dialog, _ ->
+                dialog.cancel()
+            }
             // Create the AlertDialog object and return it
             builder.create()
-        } ?: throw IllegalStateException("Activity cannot be null")
+        }
+            ?: throw IllegalStateException("Activity cannot be null")
     }
 
     override fun onCreateView(

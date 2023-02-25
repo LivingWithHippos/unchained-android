@@ -28,11 +28,12 @@ class TorrentCachePickerFragment : UnchainedFragment() {
 
         arguments?.let {
             // it.classLoader = ?
-            cache = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                it.getParcelable(CACHE_LIST_KEY, CachedTorrent::class.java)!!
-            } else {
-                it.getParcelable(CACHE_LIST_KEY)!!
-            }
+            cache =
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    it.getParcelable(CACHE_LIST_KEY, CachedTorrent::class.java)!!
+                } else {
+                    it.getParcelable(CACHE_LIST_KEY)!!
+                }
             torrentID = it.getString(KEY_TORRENT_ID) ?: ""
         }
     }
@@ -44,20 +45,19 @@ class TorrentCachePickerFragment : UnchainedFragment() {
     ): View {
         val binding = FragmentTorrentCachePickerBinding.inflate(inflater, container, false)
 
-        val cacheAdapter =
-            CachePagerAdapter(this, cache)
+        val cacheAdapter = CachePagerAdapter(this, cache)
         binding.cachePager.adapter = cacheAdapter
-        binding.cacheTabs.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab?) {
-                activityViewModel.setCurrentTorrentCachePick(torrentID, tab?.position ?: 0)
-            }
+        binding.cacheTabs.addOnTabSelectedListener(
+            object : TabLayout.OnTabSelectedListener {
+                override fun onTabSelected(tab: TabLayout.Tab?) {
+                    activityViewModel.setCurrentTorrentCachePick(torrentID, tab?.position ?: 0)
+                }
 
-            override fun onTabUnselected(tab: TabLayout.Tab?) {
-            }
+                override fun onTabUnselected(tab: TabLayout.Tab?) {}
 
-            override fun onTabReselected(tab: TabLayout.Tab?) {
+                override fun onTabReselected(tab: TabLayout.Tab?) {}
             }
-        })
+        )
 
         return binding.root
     }
@@ -66,8 +66,9 @@ class TorrentCachePickerFragment : UnchainedFragment() {
         val tabLayout: TabLayout = view.findViewById(R.id.cacheTabs)
         val viewPager: ViewPager2 = view.findViewById(R.id.cachePager)
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
-            tab.text = getString(R.string.cache_format, position + 1)
-        }.attach()
+                tab.text = getString(R.string.cache_format, position + 1)
+            }
+            .attach()
 
         super.onViewCreated(view, savedInstanceState)
     }
@@ -80,10 +81,11 @@ class TorrentCachePickerFragment : UnchainedFragment() {
         fun newInstance(cache: CachedTorrent?, torrentID: String) =
             TorrentCachePickerFragment().apply {
                 if (cache != null)
-                    arguments = Bundle().apply {
-                        putParcelable(CACHE_LIST_KEY, cache)
-                        putString(KEY_TORRENT_ID, torrentID)
-                    }
+                    arguments =
+                        Bundle().apply {
+                            putParcelable(CACHE_LIST_KEY, cache)
+                            putString(KEY_TORRENT_ID, torrentID)
+                        }
             }
     }
 }

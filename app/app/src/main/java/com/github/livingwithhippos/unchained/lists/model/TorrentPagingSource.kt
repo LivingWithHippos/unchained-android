@@ -2,13 +2,15 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.data.repository.TorrentsRepository
-import retrofit2.HttpException
 import java.io.IOException
+import retrofit2.HttpException
 
 private const val TORRENT_STARTING_PAGE_INDEX = 1
 
 /**
- * Paging Source Using Paging V3. See https://github.com/android/architecture-components-samples/tree/main/PagingWithNetworkSample for a sample
+ * Paging Source Using Paging V3. See
+ * https://github.com/android/architecture-components-samples/tree/main/PagingWithNetworkSample for
+ * a sample
  */
 class TorrentPagingSource(
     private val torrentsRepository: TorrentsRepository,
@@ -20,11 +22,11 @@ class TorrentPagingSource(
 
         return try {
             val response =
-                if (query.isBlank())
-                    torrentsRepository.getTorrentsList(null, page, params.loadSize)
+                if (query.isBlank()) torrentsRepository.getTorrentsList(null, page, params.loadSize)
                 else
-                    torrentsRepository.getTorrentsList(null, page, params.loadSize)
-                        .filter { it.filename.contains(query, ignoreCase = true) }
+                    torrentsRepository.getTorrentsList(null, page, params.loadSize).filter {
+                        it.filename.contains(query, ignoreCase = true)
+                    }
 
             LoadResult.Page(
                 data = response,

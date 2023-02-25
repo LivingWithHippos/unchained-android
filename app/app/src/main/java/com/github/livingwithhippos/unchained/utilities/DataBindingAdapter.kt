@@ -16,13 +16,10 @@ import com.github.livingwithhippos.unchained.BR
 
 // todo: test implementing class with Nothing as generic value to avoid passing listeners
 /**
- * A [ListAdapter] subclass.
- * Allows for a generic list of items with data binding and an optional listener.
+ * A [ListAdapter] subclass. Allows for a generic list of items with data binding and an optional
+ * listener.
  */
-abstract class DataBindingAdapter<T, U>(
-    diffCallback: DiffUtil.ItemCallback<T>,
-    val listener: U
-) :
+abstract class DataBindingAdapter<T, U>(diffCallback: DiffUtil.ItemCallback<T>, val listener: U) :
     ListAdapter<T, DataBindingViewHolder<T, U>>(diffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DataBindingViewHolder<T, U> {
@@ -38,15 +35,14 @@ abstract class DataBindingAdapter<T, U>(
 }
 
 /**
- * A [ListAdapter] subclass.
- * Allows for a generic list of items with data binding, an optional listener and a tracker for selected items.
- * After having created the adapter set the tracker with myAdapter.tracker = mySelectionTracker
+ * A [ListAdapter] subclass. Allows for a generic list of items with data binding, an optional
+ * listener and a tracker for selected items. After having created the adapter set the tracker with
+ * myAdapter.tracker = mySelectionTracker
  */
 abstract class DataBindingTrackedAdapter<T : Any, U>(
     diffCallback: DiffUtil.ItemCallback<T>,
     val listener: U? = null
-) :
-    ListAdapter<T, DataBindingTrackedViewHolder<T, U>>(diffCallback) {
+) : ListAdapter<T, DataBindingTrackedViewHolder<T, U>>(diffCallback) {
 
     var tracker: SelectionTracker<T>? = null
 
@@ -68,24 +64,20 @@ abstract class DataBindingTrackedAdapter<T : Any, U>(
     }
 }
 
-class DataBindingViewHolder<T, U>(private val binding: ViewDataBinding) :
-    ViewHolder(binding.root) {
+class DataBindingViewHolder<T, U>(private val binding: ViewDataBinding) : ViewHolder(binding.root) {
 
     fun bind(item: T, listener: U?) {
         binding.setVariable(BR.item, item)
-        if (listener != null)
-            binding.setVariable(BR.listener, listener)
+        if (listener != null) binding.setVariable(BR.listener, listener)
         binding.executePendingBindings()
     }
 }
 
 /**
- * A [DataBindingViewHolder] subclass.
- * Allows for a generic list of items with data binding without listeners
+ * A [DataBindingViewHolder] subclass. Allows for a generic list of items with data binding without
+ * listeners
  */
-abstract class DataBindingStaticAdapter<T>(
-    diffCallback: DiffUtil.ItemCallback<T>
-) :
+abstract class DataBindingStaticAdapter<T>(diffCallback: DiffUtil.ItemCallback<T>) :
     ListAdapter<T, DataBindingStaticViewHolder<T>>(diffCallback) {
 
     override fun onCreateViewHolder(
@@ -113,14 +105,13 @@ class DataBindingStaticViewHolder<T>(private val binding: ViewDataBinding) :
 }
 
 /**
- * A [PagingDataAdapter] subclass.
- * Allows for a generic list of items with data binding and Paging support and an optional listener.
+ * A [PagingDataAdapter] subclass. Allows for a generic list of items with data binding and Paging
+ * support and an optional listener.
  */
 abstract class DataBindingPagingAdapter<T : Any, U>(
     diffCallback: DiffUtil.ItemCallback<T>,
     val listener: U? = null
-) :
-    PagingDataAdapter<T, DataBindingViewHolder<T, U>>(diffCallback) {
+) : PagingDataAdapter<T, DataBindingViewHolder<T, U>>(diffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DataBindingViewHolder<T, U> {
         val layoutInflater = LayoutInflater.from(parent.context)
@@ -138,14 +129,13 @@ abstract class DataBindingPagingAdapter<T : Any, U>(
 }
 
 /**
- * A [PagingDataAdapter] subclass.
- * Allows for a generic list of items with data binding and Paging support and an optional listener.
+ * A [PagingDataAdapter] subclass. Allows for a generic list of items with data binding and Paging
+ * support and an optional listener.
  */
 abstract class DataBindingPagingTrackedAdapter<T : Any, U>(
     diffCallback: DiffUtil.ItemCallback<T>,
     val listener: U? = null
-) :
-    PagingDataAdapter<T, DataBindingTrackedViewHolder<T, U>>(diffCallback) {
+) : PagingDataAdapter<T, DataBindingTrackedViewHolder<T, U>>(diffCallback) {
 
     var tracker: SelectionTracker<T>? = null
 
@@ -176,8 +166,7 @@ class DataBindingTrackedViewHolder<T, U>(private val binding: ViewDataBinding) :
         binding.setVariable(BR.item, item)
         binding.setVariable(BR.isSelected, isSelected)
         mItem = item
-        if (listener != null)
-            binding.setVariable(BR.listener, listener)
+        if (listener != null) binding.setVariable(BR.listener, listener)
         binding.executePendingBindings()
     }
 
@@ -188,8 +177,7 @@ class DataBindingTrackedViewHolder<T, U>(private val binding: ViewDataBinding) :
         }
 }
 
-class DataBindingDetailsLookup<T>(private val recyclerView: RecyclerView) :
-    ItemDetailsLookup<T>() {
+class DataBindingDetailsLookup<T>(private val recyclerView: RecyclerView) : ItemDetailsLookup<T>() {
     override fun getItemDetails(event: MotionEvent): ItemDetails<T>? {
         val view = recyclerView.findChildViewUnder(event.x, event.y)
         if (view != null) {
