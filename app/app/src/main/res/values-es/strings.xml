@@ -472,4 +472,6 @@
     <string name="category_pictures">Imágenes</string>
     <string name="category_videos">Vídeos</string>
     <string name="vibrate_on_download">Vibrar al finalizar la descarga</string>
+    <string name="kodi_picker">Seleccione el servidor de destino</string>
+    <string name="kodi_picker_description">Mostrar un menú de selección al enviar enlaces a Kodi</string>
 </resources>
