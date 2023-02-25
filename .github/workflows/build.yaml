@@ -18,7 +18,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Run tests
-        run: ./gradlew lintRelease
+        run: ./gradlew ktfmtCheck
       - name: Save lint reports
         uses: actions/upload-artifact@v3
         # artifacts are zipped together in the end
