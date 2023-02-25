@@ -21,6 +21,7 @@ import com.github.livingwithhippos.unchained.data.repository.TorrentsRepository
 import com.github.livingwithhippos.unchained.di.TorrentNotification
 import com.github.livingwithhippos.unchained.di.TorrentSummaryNotification
 import com.github.livingwithhippos.unchained.settings.view.SettingsFragment
+import com.github.livingwithhippos.unchained.utilities.PreferenceKeys
 import com.github.livingwithhippos.unchained.utilities.extension.getStatusTranslation
 import com.github.livingwithhippos.unchained.utilities.extension.vibrate
 import com.github.livingwithhippos.unchained.utilities.loadingStatusList
@@ -108,6 +109,8 @@ class ForegroundTorrentService : LifecycleService() {
             }
              */
 
+            val shouldVibrate = preferences.getBoolean(PreferenceKeys.DownloadManager.VIBRATE_ON_FINISH, false)
+
             // update the torrents id to observe
             val newIDs = mutableSetOf<String>()
             newIDs.addAll(newLoadingTorrents.map { it.id })
@@ -128,7 +131,7 @@ class ForegroundTorrentService : LifecycleService() {
             finishedTorrents.forEach { torrent ->
                 completeNotification(torrent)
             }
-            if (finishedTorrents.isNotEmpty())
+            if (shouldVibrate && finishedTorrents.isNotEmpty())
                 applicationContext.vibrate()
         }
 

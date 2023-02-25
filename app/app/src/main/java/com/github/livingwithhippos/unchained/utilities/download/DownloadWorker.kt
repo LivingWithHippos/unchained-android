@@ -10,6 +10,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.documentfile.provider.DocumentFile
+import androidx.preference.PreferenceManager
 import androidx.work.CoroutineWorker
 import androidx.work.ForegroundInfo
 import androidx.work.WorkManager
@@ -17,6 +18,7 @@ import androidx.work.WorkerParameters
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedApplication
 import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewModel
+import com.github.livingwithhippos.unchained.utilities.PreferenceKeys
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.github.livingwithhippos.unchained.utilities.extension.vibrate
 import kotlinx.coroutines.CoroutineScope
@@ -35,6 +37,7 @@ class DownloadWorker(private val appContext: Context, workerParams: WorkerParame
     private var job = Job()
     private val scope = CoroutineScope(Dispatchers.IO + job)
     var shutdown = false
+    private val preferences = PreferenceManager.getDefaultSharedPreferences(appContext)
 
     override suspend fun doWork(): Result {
 
@@ -93,6 +96,8 @@ class DownloadWorker(private val appContext: Context, workerParams: WorkerParame
 
             var progressCounter = -1
             var lastNotificationTime = 0L
+
+            val shouldVibrate = preferences.getBoolean(PreferenceKeys.DownloadManager.VIBRATE_ON_FINISH, false)
 
             scope.launch {
                 writer.state.collect {
@@ -193,7 +198,8 @@ class DownloadWorker(private val appContext: Context, workerParams: WorkerParame
                 )
                 NotificationManagerCompat.from(applicationContext)
                     .notify(externalNotificationID, notification)
-                applicationContext.vibrate()
+                if (shouldVibrate)
+                    applicationContext.vibrate()
                 Result.success()
             } else
                 Result.failure()

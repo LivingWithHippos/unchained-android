@@ -130,6 +130,7 @@ object PreferenceKeys {
         const val SYSTEM = "download_manager_system"
         const val OKHTTP = "download_manager_okhttp"
         const val UNMETERED_ONLY_KEY = "download_only_on_unmetered"
+        const val VIBRATE_ON_FINISH = "vibrate_on_download"
     }
 }
 

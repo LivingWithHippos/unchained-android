@@ -52,6 +52,11 @@
 
         <SwitchPreference
             android:defaultValue="false"
+            app:key="vibrate_on_download"
+            app:title="@string/vibrate_on_download" />
+
+        <SwitchPreference
+            android:defaultValue="false"
             app:key="download_only_on_unmetered"
             app:summary="@string/unmetered_downloads_description"
             app:title="@string/unmetered_downloads" />
