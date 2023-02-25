@@ -29,22 +29,17 @@ class KodiManagementDialog : DialogFragment(), KodiDeviceListener {
 
             val view = inflater.inflate(R.layout.dialog_kodi_management, null)
 
-            view.findViewById<Button>(R.id.bAddNew).setOnClickListener {
-                showNewDeviceDialog()
-            }
+            view.findViewById<Button>(R.id.bAddNew).setOnClickListener { showNewDeviceDialog() }
 
             val adapter = KodiDeviceAdapter(this)
             val list = view.findViewById<RecyclerView>(R.id.rvKodiDeviceList)
             list.adapter = adapter
 
-            viewModel.devices.observe(this) { devices ->
-                adapter.submitList(devices)
-            }
+            viewModel.devices.observe(this) { devices -> adapter.submitList(devices) }
 
-            builder.setView(view)
-                .setNeutralButton(getString(R.string.close)) { dialog, _ ->
-                    dialog.cancel()
-                }
+            builder
+                .setView(view)
+                .setNeutralButton(getString(R.string.close)) { dialog, _ -> dialog.cancel() }
                 .setTitle(getString(R.string.kodi))
 
             // Create the AlertDialog object and return it

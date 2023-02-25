@@ -33,7 +33,8 @@ interface UnrestrictApi {
      * @param token the authentication token
      * @param link the original hoster link
      * @param password password to unlock the file access hoster side
-     * @param remote 0 or 1, use Remote traffic, dedicated servers and account sharing protections lifted
+     * @param remote 0 or 1, use Remote traffic, dedicated servers and account sharing protections
+     *   lifted
      * @return a [DownloadItem] representing the download
      */
     @FormUrlEncoded

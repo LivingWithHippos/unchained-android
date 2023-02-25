@@ -46,10 +46,9 @@ class AddRepositoryDialogFragment : DialogFragment() {
                 )
             }
 
-            builder.setView(view)
-                .setNegativeButton(getString(R.string.close)) { dialog, _ ->
-                    dialog.cancel()
-                }
+            builder
+                .setView(view)
+                .setNegativeButton(getString(R.string.close)) { dialog, _ -> dialog.cancel() }
                 .setPositiveButton(getString(R.string.save)) { dialog, _ ->
                     val url =
                         view.findViewById<TextInputEditText>(R.id.tiAdd).text.toString().trim()
@@ -57,13 +56,13 @@ class AddRepositoryDialogFragment : DialogFragment() {
                         viewModel.addRepository(
                             view.findViewById<TextInputEditText>(R.id.tiAdd).text.toString()
                         )
-                    } else
-                        context?.showToast(R.string.invalid_url)
+                    } else context?.showToast(R.string.invalid_url)
                     dialog.cancel()
                 }
             // Create the AlertDialog object and return it
             builder.create()
-        } ?: throw IllegalStateException("Activity cannot be null")
+        }
+            ?: throw IllegalStateException("Activity cannot be null")
     }
 
     override fun onCreateView(
@@ -81,7 +80,8 @@ class AddRepositoryDialogFragment : DialogFragment() {
                 is PluginRepositoryEvent.InvalidRepositoryLink -> {
                     progressBar.isIndeterminate = false
                     when (result.reason) {
-                        InvalidLinkReason.ConnectionError -> context?.showToast(R.string.network_error)
+                        InvalidLinkReason.ConnectionError ->
+                            context?.showToast(R.string.network_error)
                         InvalidLinkReason.NotAnUrl -> context?.showToast(R.string.invalid_url)
                         InvalidLinkReason.ParsingError -> context?.showToast(R.string.parsing_error)
                     }

@@ -4,9 +4,9 @@ import com.github.livingwithhippos.unchained.data.model.AvailableHost
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.data.model.UploadedTorrent
 import com.github.livingwithhippos.unchained.data.model.cache.InstantAvailability
+import javax.inject.Inject
 import okhttp3.RequestBody
 import retrofit2.Response
-import javax.inject.Inject
 
 class TorrentApiHelperImpl @Inject constructor(private val torrentsApi: TorrentsApi) :
     TorrentApiHelper {

@@ -23,7 +23,8 @@ private const val ARG_TORRENT = "torrent_arg"
 class TorrentFilePickerFragment : Fragment(), TorrentContentListener {
 
     // https://developer.android.com/training/dependency-injection/hilt-jetpack#viewmodel-navigation
-    private val viewModel: TorrentProcessingViewModel by hiltNavGraphViewModels(R.id.navigation_lists)
+    private val viewModel: TorrentProcessingViewModel by
+        hiltNavGraphViewModels(R.id.navigation_lists)
 
     private var currentStructure: Node<TorrentFileItem>? = null
 
@@ -60,9 +61,7 @@ class TorrentFilePickerFragment : Fragment(), TorrentContentListener {
             val content = it.getContentIfNotHandled()
             if (content != null) {
                 val filesList = mutableListOf<TorrentFileItem>()
-                Node.traverseDepthFirst(content) { item ->
-                    filesList.add(item)
-                }
+                Node.traverseDepthFirst(content) { item -> filesList.add(item) }
                 adapter.submitList(filesList)
                 adapter.notifyDataSetChanged()
             }
@@ -72,8 +71,7 @@ class TorrentFilePickerFragment : Fragment(), TorrentContentListener {
     }
 
     companion object {
-        @JvmStatic
-        fun newInstance() = TorrentFilePickerFragment()
+        @JvmStatic fun newInstance() = TorrentFilePickerFragment()
     }
 
     override fun onSelectedFile(item: TorrentFileItem) {
@@ -91,14 +89,13 @@ class TorrentFilePickerFragment : Fragment(), TorrentContentListener {
     override fun onSelectedFolder(item: TorrentFileItem) {
         Timber.d("selected folder $item")
         currentStructure?.let { structure ->
-
             var folderNode: Node<TorrentFileItem>? = null
             Node.traverseNodeDepthFirst(structure) {
                 if (
                     it.value.absolutePath == item.absolutePath &&
-                    it.value.name == item.name &&
-                    it.value.id == TYPE_FOLDER &&
-                    item.id == TYPE_FOLDER
+                        it.value.name == item.name &&
+                        it.value.id == TYPE_FOLDER &&
+                        item.id == TYPE_FOLDER
                 ) {
                     folderNode = it
                     return@traverseNodeDepthFirst
@@ -108,9 +105,7 @@ class TorrentFilePickerFragment : Fragment(), TorrentContentListener {
             folderNode?.let {
                 val newSelected = !it.value.selected
                 it.value.selected = newSelected
-                Node.traverseDepthFirst(it) { item ->
-                    item.selected = newSelected
-                }
+                Node.traverseDepthFirst(it) { item -> item.selected = newSelected }
             }
         }
 

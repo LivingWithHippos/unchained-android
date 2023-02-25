@@ -12,10 +12,7 @@ import com.github.livingwithhippos.unchained.settings.viewmodel.HtmlDialogViewMo
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 
-/**
- * A [DialogFragment] subclass.
- * Parse the given text from html and displays it accordingly.
- */
+/** A [DialogFragment] subclass. Parse the given text from html and displays it accordingly. */
 @AndroidEntryPoint
 class HtmlDialogFragment : DialogFragment {
 
@@ -33,16 +30,11 @@ class HtmlDialogFragment : DialogFragment {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let {
+            if (title == null) title = viewModel.getTitleResource()
+            else viewModel.setTitleResource(title)
 
-            if (title == null)
-                title = viewModel.getTitleResource()
-            else
-                viewModel.setTitleResource(title)
-
-            if (message == null)
-                message = viewModel.getMessageResource()
-            else
-                viewModel.setMessageResource(message)
+            if (message == null) message = viewModel.getMessageResource()
+            else viewModel.setMessageResource(message)
 
             // Use the Builder class for convenient dialog construction
             val builder = MaterialAlertDialogBuilder(it)
@@ -58,12 +50,12 @@ class HtmlDialogFragment : DialogFragment {
                     FROM_HTML_MODE_COMPACT
                 )
 
-            builder.setView(view)
-                .setNeutralButton(getString(R.string.close)) { dialog, _ ->
-                    dialog.cancel()
-                }
+            builder.setView(view).setNeutralButton(getString(R.string.close)) { dialog, _ ->
+                dialog.cancel()
+            }
             // Create the AlertDialog object and return it
             builder.create()
-        } ?: throw IllegalStateException("Activity cannot be null")
+        }
+            ?: throw IllegalStateException("Activity cannot be null")
     }
 }

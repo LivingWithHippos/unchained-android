@@ -52,6 +52,11 @@
 
         <SwitchPreference
             android:defaultValue="false"
+            app:key="vibrate_on_download"
+            app:title="@string/vibrate_on_download" />
+
+        <SwitchPreference
+            android:defaultValue="false"
             app:key="download_only_on_unmetered"
             app:summary="@string/unmetered_downloads_description"
             app:title="@string/unmetered_downloads" />
@@ -105,6 +110,12 @@
                 app:key="kodi_list_editor"
                 app:summary="@string/kodi_manage_list_summary"
                 app:title="@string/kodi_manage_list" />
+
+            <SwitchPreference
+                android:defaultValue="false"
+                app:key="select_kodi_on_play"
+                app:summary="@string/kodi_picker_description"
+                app:title="@string/kodi_picker" />
 
         </PreferenceCategory>
         <PreferenceCategory

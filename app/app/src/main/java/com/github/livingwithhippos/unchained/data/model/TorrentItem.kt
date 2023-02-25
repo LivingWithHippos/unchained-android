@@ -44,11 +44,12 @@ import kotlinx.parcelize.Parcelize
 */
 
 /**
- * Torrent item: this class is used for both the /torrents and /torrents/info/{id} endpoint
- * even if the returned item are different. For example the info version returns the original file size
- * and the selected files one, while the /torrents one returns only the original file size
- * (even if the docs say otherwise)
+ * Torrent item: this class is used for both the /torrents and /torrents/info/{id} endpoint even if
+ * the returned item are different. For example the info version returns the original file size and
+ * the selected files one, while the /torrents one returns only the original file size (even if the
+ * docs say otherwise)
  *
+ * @constructor Create empty Torrent item
  * @property id
  * @property filename
  * @property originalFilename
@@ -65,72 +66,45 @@ import kotlinx.parcelize.Parcelize
  * @property ended
  * @property speed
  * @property seeders
- * @constructor Create empty Torrent item
  */
 @JsonClass(generateAdapter = true)
 @Parcelize
 data class TorrentItem(
-    @Json(name = "id")
-    val id: String,
-    @Json(name = "filename")
-    val filename: String,
-    @Json(name = "original_filename")
-    val originalFilename: String?,
-    @Json(name = "hash")
-    val hash: String,
-    @Json(name = "bytes")
-    val bytes: Long,
-    @Json(name = "original_bytes")
-    val originalBytes: Long?,
-    @Json(name = "host")
-    val host: String,
-    @Json(name = "split")
-    val split: Int,
-    @Json(name = "progress")
-    val progress: Int,
-    @Json(name = "status")
-    val status: String,
-    @Json(name = "added")
-    val added: String,
-    @Json(name = "files")
-    val files: List<InnerTorrentFile>?,
-    @Json(name = "links")
-    val links: List<String>,
-    @Json(name = "ended")
-    val ended: String?,
-    @Json(name = "speed")
-    val speed: Int?,
-    @Json(name = "seeders")
-    val seeders: Int?
+    @Json(name = "id") val id: String,
+    @Json(name = "filename") val filename: String,
+    @Json(name = "original_filename") val originalFilename: String?,
+    @Json(name = "hash") val hash: String,
+    @Json(name = "bytes") val bytes: Long,
+    @Json(name = "original_bytes") val originalBytes: Long?,
+    @Json(name = "host") val host: String,
+    @Json(name = "split") val split: Int,
+    @Json(name = "progress") val progress: Int,
+    @Json(name = "status") val status: String,
+    @Json(name = "added") val added: String,
+    @Json(name = "files") val files: List<InnerTorrentFile>?,
+    @Json(name = "links") val links: List<String>,
+    @Json(name = "ended") val ended: String?,
+    @Json(name = "speed") val speed: Int?,
+    @Json(name = "seeders") val seeders: Int?
 ) : Parcelable
 
 @JsonClass(generateAdapter = true)
 @Parcelize
 data class InnerTorrentFile(
-    @Json(name = "id")
-    val id: Int,
-    @Json(name = "path")
-    val path: String,
-    @Json(name = "bytes")
-    val bytes: Long,
-    @Json(name = "selected")
-    val selected: Int
+    @Json(name = "id") val id: Int,
+    @Json(name = "path") val path: String,
+    @Json(name = "bytes") val bytes: Long,
+    @Json(name = "selected") val selected: Int
 ) : Parcelable
 
 @JsonClass(generateAdapter = true)
 @Parcelize
-data class UploadedTorrent(
-    @Json(name = "id")
-    val id: String,
-    @Json(name = "uri")
-    val uri: String
-) : Parcelable
+data class UploadedTorrent(@Json(name = "id") val id: String, @Json(name = "uri") val uri: String) :
+    Parcelable
 
 @JsonClass(generateAdapter = true)
 @Parcelize
 data class AvailableHost(
-    @Json(name = "host")
-    val host: String,
-    @Json(name = "max_file_size")
-    val maxFileSize: Int
+    @Json(name = "host") val host: String,
+    @Json(name = "max_file_size") val maxFileSize: Int
 ) : Parcelable

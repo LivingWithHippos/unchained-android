@@ -18,13 +18,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Run tests
-        run: ./gradlew lintRelease
-      - name: Save lint reports
-        uses: actions/upload-artifact@v3
-        # artifacts are zipped together in the end
-        with:
-            name: lint-release-report
-            path: /home/runner/work/unchained-android/unchained-android/app/app/build/reports/
+        run: ./gradlew ktfmtCheck
   build:
     runs-on: ubuntu-latest
     steps:

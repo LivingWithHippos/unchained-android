@@ -6,8 +6,8 @@ import com.github.livingwithhippos.unchained.R
 import dagger.hilt.android.AndroidEntryPoint
 
 /**
- * A simple [AppCompatActivity] subclass.
- * Used to navigate from any fragment to the settings screen since the multiple backstack navigation makes it kind of complicated.
+ * A simple [AppCompatActivity] subclass. Used to navigate from any fragment to the settings screen
+ * since the multiple backstack navigation makes it kind of complicated.
  */
 @AndroidEntryPoint
 class SettingsActivity : AppCompatActivity() {
@@ -22,7 +22,8 @@ class SettingsActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         val settingsFragment = SettingsFragment()
-        supportFragmentManager.beginTransaction()
+        supportFragmentManager
+            .beginTransaction()
             .replace(R.id.fragment_container, settingsFragment)
             .commit()
     }

@@ -11,24 +11,14 @@ import retrofit2.http.Url
 
 interface CustomDownload {
 
-    @Streaming
-    @GET
-    suspend fun getFile(
-        @Url url: String
-    ): Response<ResponseBody>
+    @Streaming @GET suspend fun getFile(@Url url: String): Response<ResponseBody>
 
     @GET
     suspend fun getPluginsRepository(
         @Url repositoryUrl: String = DEFAULT_PLUGINS_REPOSITORY_LINK
     ): Response<JsonPluginRepository>
 
-    @GET
-    suspend fun getPlugin(
-        @Url pluginUrl: String
-    ): Response<Plugin>
+    @GET suspend fun getPlugin(@Url pluginUrl: String): Response<Plugin>
 
-    @GET
-    suspend fun getString(
-        @Url url: String
-    ): Response<String>
+    @GET suspend fun getString(@Url url: String): Response<String>
 }

@@ -20,14 +20,16 @@ import com.github.livingwithhippos.unchained.plugins.model.ScrapedItem
 import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Companion.KEY_USE_DOH
 import com.github.livingwithhippos.unchained.utilities.extension.cancelIfActive
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel
-class SearchViewModel @Inject constructor(
+class SearchViewModel
+@Inject
+constructor(
     private val savedStateHandle: SavedStateHandle,
     private val preferences: SharedPreferences,
     private val pluginRepository: PluginRepository,
@@ -54,33 +56,35 @@ class SearchViewModel @Inject constructor(
             val results = mutableListOf<ScrapedItem>()
             // empty saved results on new searches
             job?.cancelIfActive()
-            job = parser.completeSearch(plugin, query, category, page)
-                .onEach {
-                    when (it) {
-                        is ParserResult.SingleResult -> {
-                            results.add(it.value)
-                            parsingLiveData.value = ParserResult.Results(results)
-                            setSearchResults(results)
+            job =
+                parser
+                    .completeSearch(plugin, query, category, page)
+                    .onEach {
+                        when (it) {
+                            is ParserResult.SingleResult -> {
+                                results.add(it.value)
+                                parsingLiveData.value = ParserResult.Results(results)
+                                setSearchResults(results)
+                            }
+                            is ParserResult.Results -> {
+                                // here I have all the results at once
+                                parsingLiveData.value = it
+                                results.addAll(it.values)
+                                setSearchResults(results)
+                            }
+                            is ParserResult.SearchStarted -> {
+                                setCacheResults(null)
+                                clearSearchResults()
+                                results.clear()
+                                parsingLiveData.value = it
+                            }
+                            is ParserResult.SearchFinished -> {
+                                parsingLiveData.value = it
+                            }
+                            else -> parsingLiveData.value = it
                         }
-                        is ParserResult.Results -> {
-                            // here I have all the results at once
-                            parsingLiveData.value = it
-                            results.addAll(it.values)
-                            setSearchResults(results)
-                        }
-                        is ParserResult.SearchStarted -> {
-                            setCacheResults(null)
-                            clearSearchResults()
-                            results.clear()
-                            parsingLiveData.value = it
-                        }
-                        is ParserResult.SearchFinished -> {
-                            parsingLiveData.value = it
-                        }
-                        else -> parsingLiveData.value = it
                     }
-                }
-                .launchIn(viewModelScope)
+                    .launchIn(viewModelScope)
             return parsingLiveData
         } else {
             parsingLiveData.value = ParserResult.MissingPlugin
@@ -183,11 +187,13 @@ class SearchViewModel @Inject constructor(
         return preferences.getString(
             FolderListViewModel.KEY_LIST_SORTING,
             FolderListFragment.TAG_DEFAULT_SORT
-        ) ?: FolderListFragment.TAG_DEFAULT_SORT
+        )
+            ?: FolderListFragment.TAG_DEFAULT_SORT
     }
 
     companion object {
-        // todo: these needs to be moved to a single object because if I reuse the same keys for two objects I'll get the wrong result
+        // todo: these needs to be moved to a single object because if I reuse the same keys for two
+        // objects I'll get the wrong result
         const val KEY_RESULTS = "search_results_key"
         const val KEY_CACHE = "search_cache_key"
         const val KEY_PLUGINS = "plugins_key"

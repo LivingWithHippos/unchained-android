@@ -18,9 +18,7 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 import retrofit2.http.Url
 
-/**
- * This interface is used by Retrofit to manage all the REST calls to the torrents endpoints
- */
+/** This interface is used by Retrofit to manage all the REST calls to the torrents endpoints */
 interface TorrentsApi {
 
     @GET("torrents/availableHosts")
@@ -51,6 +49,7 @@ interface TorrentsApi {
 
     /**
      * Get a list of the user's torrents.
+     *
      * @param token the authorization token, formed as "Bearer api_token"
      * @param offset Starting offset (must be within 0 and X-Total-Count HTTP header)
      * @param page Page number
@@ -69,6 +68,7 @@ interface TorrentsApi {
 
     /**
      * Select files of a torrent. Required to start a torrent.
+     *
      * @param token the authorization token, formed as "Bearer api_token"
      * @param id the torrent ID, returned by addTorrent or getTorrentsList
      * @param files Selected files IDs (comma separated) or "all"
@@ -83,6 +83,7 @@ interface TorrentsApi {
 
     /**
      * Delete a torrent.
+     *
      * @param token the authorization token, formed as "Bearer api_token"
      * @param id the torrent ID, returned by addTorrent or getTorrentsList
      */
@@ -93,10 +94,10 @@ interface TorrentsApi {
     ): Response<Unit>
 
     /**
-     * Check if any file of a torrent/magnet is already cached using their hashes
-     * Hashes must be passed like this:
-     *  https://api.real-debrid.com/rest/1.0/torrents/instantAvailability/HASH_1/HASH_2/HASH_3
-     *  etc. for any
+     * Check if any file of a torrent/magnet is already cached using their hashes Hashes must be
+     * passed like this:
+     * https://api.real-debrid.com/rest/1.0/torrents/instantAvailability/HASH_1/HASH_2/HASH_3 etc.
+     * for any
      */
     @GET
     suspend fun getInstantAvailability(

@@ -4,8 +4,8 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.data.repository.DownloadRepository
-import retrofit2.HttpException
 import java.io.IOException
+import retrofit2.HttpException
 
 private const val DOWNLOAD_STARTING_PAGE_INDEX = 1
 
@@ -19,11 +19,11 @@ class DownloadPagingSource(
 
         return try {
             val response =
-                if (query.isBlank())
-                    downloadRepository.getDownloads(null, page, params.loadSize)
+                if (query.isBlank()) downloadRepository.getDownloads(null, page, params.loadSize)
                 else
-                    downloadRepository.getDownloads(null, page, params.loadSize)
-                        .filter { it.filename.contains(query, ignoreCase = true) }
+                    downloadRepository.getDownloads(null, page, params.loadSize).filter {
+                        it.filename.contains(query, ignoreCase = true)
+                    }
 
             LoadResult.Page(
                 data = response,

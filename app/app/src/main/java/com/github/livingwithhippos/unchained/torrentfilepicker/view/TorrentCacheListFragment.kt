@@ -21,10 +21,10 @@ class TorrentCacheListFragment() : Fragment() {
 
         arguments?.let {
             // it.classLoader = ?
-            cache = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
-                it.getParcelable(CACHE_KEY, CachedAlternative::class.java)
-            else
-                it.getParcelable(CACHE_KEY)
+            cache =
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+                    it.getParcelable(CACHE_KEY, CachedAlternative::class.java)
+                else it.getParcelable(CACHE_KEY)
         }
     }
 
@@ -58,9 +58,7 @@ class TorrentCacheListFragment() : Fragment() {
         @JvmStatic
         fun newInstance(cache: CachedAlternative) =
             TorrentCacheListFragment().apply {
-                arguments = Bundle().apply {
-                    putParcelable(CACHE_KEY, cache)
-                }
+                arguments = Bundle().apply { putParcelable(CACHE_KEY, cache) }
             }
     }
 }

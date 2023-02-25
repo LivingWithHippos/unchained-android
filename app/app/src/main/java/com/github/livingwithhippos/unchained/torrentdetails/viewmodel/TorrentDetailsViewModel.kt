@@ -14,20 +14,19 @@ import com.github.livingwithhippos.unchained.utilities.endedStatusList
 import com.github.livingwithhippos.unchained.utilities.extension.cancelIfActive
 import com.github.livingwithhippos.unchained.utilities.postEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-/**
- * a [ViewModel] subclass.
- * Retrieves a torrent's details
- */
+/** a [ViewModel] subclass. Retrieves a torrent's details */
 @HiltViewModel
-class TorrentDetailsViewModel @Inject constructor(
+class TorrentDetailsViewModel
+@Inject
+constructor(
     private val torrentsRepository: TorrentsRepository,
     private val unrestrictRepository: UnrestrictRepository
 ) : ViewModel() {
@@ -42,8 +41,7 @@ class TorrentDetailsViewModel @Inject constructor(
     fun getFullTorrentInfo(id: String) {
         viewModelScope.launch {
             val torrentData = torrentsRepository.getTorrentInfo(id)
-            if (torrentData != null)
-                torrentLiveData.postEvent(torrentData)
+            if (torrentData != null) torrentLiveData.postEvent(torrentData)
         }
     }
 
@@ -58,10 +56,8 @@ class TorrentDetailsViewModel @Inject constructor(
             // / maybe job.isActive?
             while (isActive) {
                 val torrentData = torrentsRepository.getTorrentInfo(id)
-                if (torrentData != null)
-                    torrentLiveData.postEvent(torrentData)
-                if (endedStatusList.contains(torrentData?.status))
-                    job.cancelIfActive()
+                if (torrentData != null) torrentLiveData.postEvent(torrentData)
+                if (endedStatusList.contains(torrentData?.status)) job.cancelIfActive()
 
                 delay(2000)
             }
@@ -92,16 +88,15 @@ class TorrentDetailsViewModel @Inject constructor(
                 val items = unrestrictRepository.getUnrestrictedLinkList(links)
 
                 val values =
-                    items.filterIsInstance<EitherResult.Success<DownloadItem>>()
-                        .map { it.success }
+                    items.filterIsInstance<EitherResult.Success<DownloadItem>>().map { it.success }
                 val errors =
-                    items.filterIsInstance<EitherResult.Failure<UnchainedNetworkException>>()
-                        .map { it.failure }
+                    items.filterIsInstance<EitherResult.Failure<UnchainedNetworkException>>().map {
+                        it.failure
+                    }
 
                 // since the torrent want to open a download details page we oen only the first link
                 downloadLiveData.postEvent(values.firstOrNull())
-                if (errors.isNotEmpty())
-                    errorsLiveData.postEvent(errors)
+                if (errors.isNotEmpty()) errorsLiveData.postEvent(errors)
             }
         }
     }

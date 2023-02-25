@@ -1,17 +1,15 @@
 package com.github.livingwithhippos.unchained.utilities.download
 
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.withContext
 import java.io.BufferedInputStream
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.withContext
 
-/**
- * Taken from https://www.baeldung.com/java-okhttp-download-binary-file
- */
+/** Taken from https://www.baeldung.com/java-okhttp-download-binary-file */
 class FileWriter(private val outputStream: OutputStream) : AutoCloseable {
 
     private val _state: MutableStateFlow<DownloadStatus> = MutableStateFlow(DownloadStatus.Queued)
@@ -23,8 +21,7 @@ class FileWriter(private val outputStream: OutputStream) : AutoCloseable {
     suspend fun write(inputStream: InputStream, length: Double): Long =
         withContext(Dispatchers.IO) {
             BufferedInputStream(inputStream).use { input ->
-                val dataBuffer =
-                    ByteArray(CHUNK_SIZE)
+                val dataBuffer = ByteArray(CHUNK_SIZE)
                 var readBytes: Int
                 var totalBytes: Long = 0
                 while (input.read(dataBuffer).also { readBytes = it } != -1 && !stopDownload) {
@@ -38,10 +35,8 @@ class FileWriter(private val outputStream: OutputStream) : AutoCloseable {
                         )
                     )
                 }
-                if (!stopDownload)
-                    _state.emit(DownloadStatus.Completed)
-                else
-                    _state.emit(DownloadStatus.Stopped)
+                if (!stopDownload) _state.emit(DownloadStatus.Completed)
+                else _state.emit(DownloadStatus.Stopped)
                 return@withContext totalBytes
             }
         }

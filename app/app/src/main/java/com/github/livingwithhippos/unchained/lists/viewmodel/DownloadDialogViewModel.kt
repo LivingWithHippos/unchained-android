@@ -7,14 +7,11 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class DownloadDialogViewModel @Inject constructor(
-    private val savedStateHandle: SavedStateHandle
-) : ViewModel() {
+class DownloadDialogViewModel @Inject constructor(private val savedStateHandle: SavedStateHandle) :
+    ViewModel() {
 
     fun setItem(item: DownloadItem?) {
-        item.let {
-            savedStateHandle.set(KEY_ITEM, it)
-        }
+        item.let { savedStateHandle.set(KEY_ITEM, it) }
     }
 
     fun getItem(): DownloadItem? {

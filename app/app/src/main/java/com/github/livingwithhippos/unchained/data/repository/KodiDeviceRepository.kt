@@ -2,12 +2,10 @@ package com.github.livingwithhippos.unchained.data.repository
 
 import com.github.livingwithhippos.unchained.data.local.KodiDeviceDao
 import com.github.livingwithhippos.unchained.data.model.KodiDevice
-import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
 
-class KodiDeviceRepository @Inject constructor(
-    private val kodiDeviceDao: KodiDeviceDao
-) {
+class KodiDeviceRepository @Inject constructor(private val kodiDeviceDao: KodiDeviceDao) {
 
     val devicesFlow: Flow<List<KodiDevice>>
         get() = kodiDeviceDao.getAllDevicesFlow()
@@ -17,8 +15,7 @@ class KodiDeviceRepository @Inject constructor(
     }
 
     suspend fun add(device: KodiDevice): Long {
-        if (device.isDefault)
-            kodiDeviceDao.resetDefaults()
+        if (device.isDefault) kodiDeviceDao.resetDefaults()
         return kodiDeviceDao.insert(device)
     }
 

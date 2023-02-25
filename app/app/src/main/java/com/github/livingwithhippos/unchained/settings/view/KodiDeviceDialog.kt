@@ -37,9 +37,7 @@ class KodiDeviceDialog() : DialogFragment() {
             val inflater = requireActivity().layoutInflater
             val view: View = inflater.inflate(R.layout.modal_kodi_device, null, false)
 
-            currentDevice?.let {
-                viewModel.setCurrentDevice(it)
-            }
+            currentDevice?.let { viewModel.setCurrentDevice(it) }
 
             val device = viewModel.getCurrentDevice()
             if (device != null) {
@@ -49,8 +47,13 @@ class KodiDeviceDialog() : DialogFragment() {
             view.findViewById<Button>(R.id.bTest).setOnClickListener {
                 val address =
                     view.findViewById<TextInputEditText>(R.id.tiAddress).text.toString().trim()
-                val port = view.findViewById<TextInputEditText>(R.id.tiPort).text.toString().trim()
-                    .toIntOrNull()
+                val port =
+                    view
+                        .findViewById<TextInputEditText>(R.id.tiPort)
+                        .text
+                        .toString()
+                        .trim()
+                        .toIntOrNull()
                 if (address.isEmpty() || port == null) {
                     context?.showToast(R.string.kodi_credentials_incomplete)
                     return@setOnClickListener
@@ -66,7 +69,8 @@ class KodiDeviceDialog() : DialogFragment() {
             val saveStringID = if (device == null) R.string.save else R.string.update
             val titleStringID = if (device == null) R.string.new_device else R.string.update_device
 
-            builder.setView(view)
+            builder
+                .setView(view)
                 .setTitle(titleStringID)
                 .setPositiveButton(saveStringID) { dialog, _ ->
                     val name =
@@ -74,7 +78,11 @@ class KodiDeviceDialog() : DialogFragment() {
                     val address =
                         view.findViewById<TextInputEditText>(R.id.tiAddress).text.toString().trim()
                     val port =
-                        view.findViewById<TextInputEditText>(R.id.tiPort).text.toString().trim()
+                        view
+                            .findViewById<TextInputEditText>(R.id.tiPort)
+                            .text
+                            .toString()
+                            .trim()
                             .toIntOrNull()
 
                     if (name.isEmpty() || address.isEmpty() || port == null) {
@@ -82,33 +90,34 @@ class KodiDeviceDialog() : DialogFragment() {
                         return@setPositiveButton
                     } else {
                         val password =
-                            view.findViewById<TextInputEditText>(R.id.tiPassword).text.toString()
+                            view
+                                .findViewById<TextInputEditText>(R.id.tiPassword)
+                                .text
+                                .toString()
                                 .trim()
                         val username =
-                            view.findViewById<TextInputEditText>(R.id.tiUsername).text.toString()
+                            view
+                                .findViewById<TextInputEditText>(R.id.tiUsername)
+                                .text
+                                .toString()
                                 .trim()
                         val isDefault = view.findViewById<CheckBox>(R.id.cbDefault).isChecked
                         // todo: manage same device name being overwritten
                         if (device != null) {
                             viewModel.updateDevice(
-                                KodiDevice(
-                                    name, address, port, username, password, isDefault
-                                ),
+                                KodiDevice(name, address, port, username, password, isDefault),
                                 device.name
                             )
                         } else {
                             viewModel.insertDevice(
-                                KodiDevice(
-                                    name, address, port, username, password, isDefault
-                                )
+                                KodiDevice(name, address, port, username, password, isDefault)
                             )
                         }
                         context?.showToast(R.string.device_added)
                         dialog.cancel()
                     }
-                }.setNeutralButton(R.string.close) { _, _ ->
-                    dismiss()
                 }
+                .setNeutralButton(R.string.close) { _, _ -> dismiss() }
 
             if (device != null) {
                 builder.setNegativeButton(R.string.delete) { _, _ ->
@@ -120,7 +129,8 @@ class KodiDeviceDialog() : DialogFragment() {
                 }
             }
             builder.create()
-        } ?: throw IllegalStateException("Activity cannot be null")
+        }
+            ?: throw IllegalStateException("Activity cannot be null")
     }
 
     private fun loadDeviceInfo(view: View, device: KodiDevice) {
@@ -146,8 +156,7 @@ class KodiDeviceDialog() : DialogFragment() {
                 false -> {
                     context?.showToast(R.string.kodi_connection_error)
                 }
-                null -> {
-                }
+                null -> {}
             }
         }
 

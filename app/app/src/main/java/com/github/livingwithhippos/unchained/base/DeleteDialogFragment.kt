@@ -15,15 +15,15 @@ class DeleteDialogFragment : DialogFragment() {
             val builder = MaterialAlertDialogBuilder(it)
 
             val title = arguments?.getString("title") ?: getString(R.string.delete)
-            builder.setMessage(R.string.confirm_item_removal_description)
+            builder
+                .setMessage(R.string.confirm_item_removal_description)
                 .setTitle(title)
                 .setPositiveButton(R.string.delete) { _, _ ->
                     setFragmentResult("deleteActionKey", bundleOf("deleteConfirmation" to true))
                 }
-                .setNegativeButton(R.string.close) { dialog, _ ->
-                    dialog.cancel()
-                }
+                .setNegativeButton(R.string.close) { dialog, _ -> dialog.cancel() }
             builder.create()
-        } ?: throw IllegalStateException("Activity cannot be null")
+        }
+            ?: throw IllegalStateException("Activity cannot be null")
     }
 }

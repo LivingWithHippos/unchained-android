@@ -65,15 +65,16 @@ class PluginRepositoryAdapter(listener: PluginListener) :
             newItem: RepositoryListItem
         ): Boolean {
             // trick for smart casting
-            if (oldItem is RepositoryListItem.Repository && newItem is RepositoryListItem.Repository) {
+            if (
+                oldItem is RepositoryListItem.Repository && newItem is RepositoryListItem.Repository
+            ) {
                 return oldItem.link.equals(newItem.link, ignoreCase = true)
-            } else if (oldItem is RepositoryListItem.Plugin && newItem is RepositoryListItem.Plugin) {
-                return oldItem.repository.equals(
-                    newItem.repository,
-                    ignoreCase = true
-                ) && oldItem.link.equals(newItem.link, ignoreCase = true)
-            } else
-                return false
+            } else if (
+                oldItem is RepositoryListItem.Plugin && newItem is RepositoryListItem.Plugin
+            ) {
+                return oldItem.repository.equals(newItem.repository, ignoreCase = true) &&
+                    oldItem.link.equals(newItem.link, ignoreCase = true)
+            } else return false
         }
 
         override fun areContentsTheSame(
@@ -81,10 +82,18 @@ class PluginRepositoryAdapter(listener: PluginListener) :
             newItem: RepositoryListItem
         ): Boolean {
             // trick for smart casting
-            if (oldItem is RepositoryListItem.Repository && newItem is RepositoryListItem.Repository) {
-                return oldItem.version == newItem.version && oldItem.name == newItem.name && oldItem.description == newItem.description
-            } else if (oldItem is RepositoryListItem.Plugin && newItem is RepositoryListItem.Plugin) {
-                return oldItem.name == newItem.name && oldItem.version == newItem.version && oldItem.status == newItem.status
+            if (
+                oldItem is RepositoryListItem.Repository && newItem is RepositoryListItem.Repository
+            ) {
+                return oldItem.version == newItem.version &&
+                    oldItem.name == newItem.name &&
+                    oldItem.description == newItem.description
+            } else if (
+                oldItem is RepositoryListItem.Plugin && newItem is RepositoryListItem.Plugin
+            ) {
+                return oldItem.name == newItem.name &&
+                    oldItem.version == newItem.version &&
+                    oldItem.status == newItem.status
             }
             return false
         }

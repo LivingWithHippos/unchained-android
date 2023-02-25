@@ -7,10 +7,7 @@ import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.utilities.DataBindingPagingAdapter
 import com.github.livingwithhippos.unchained.utilities.DataBindingPagingTrackedAdapter
 
-/**
- * A [DataBindingPagingAdapter] subclass.
- * Displays a list of [DownloadItem].
- */
+/** A [DataBindingPagingAdapter] subclass. Displays a list of [DownloadItem]. */
 class DownloadListPagingAdapter(listener: DownloadListListener) :
     DataBindingPagingTrackedAdapter<DownloadItem, DownloadListListener>(DiffCallback(), listener) {
 
@@ -39,7 +36,7 @@ interface DownloadListListener {
 }
 
 class DownloadKeyProvider(private val adapter: DownloadListPagingAdapter) :
-    ItemKeyProvider<DownloadItem>(SCOPE_CACHED) {
+    ItemKeyProvider<DownloadItem>(SCOPE_MAPPED) {
     override fun getKey(position: Int): DownloadItem? {
         return adapter.getDownloadItem(position)
     }

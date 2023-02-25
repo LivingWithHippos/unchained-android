@@ -31,8 +31,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 /**
- * A simple [UnchainedFragment] subclass.
- * It is capable of authenticating a user via either the private API key or the OAUTH system
+ * A simple [UnchainedFragment] subclass. It is capable of authenticating a user via either the
+ * private API key or the OAUTH system
  */
 @AndroidEntryPoint
 class AuthenticationFragment : UnchainedFragment(), ButtonListener {
@@ -53,17 +53,14 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
         authBinding.loginMessageIndirect = getLoginMessage(LOGIN_TYPE_INDIRECT)
 
         activityViewModel.fsmAuthenticationState.observe(viewLifecycleOwner) {
-
             if (it != null) {
                 when (it.peekContent()) {
                     FSMAuthenticationState.AuthenticatedOpenToken -> {
-                        val action =
-                            AuthenticationFragmentDirections.actionAuthenticationToUser()
+                        val action = AuthenticationFragmentDirections.actionAuthenticationToUser()
                         findNavController().navigate(action)
                     }
                     FSMAuthenticationState.AuthenticatedPrivateToken -> {
-                        val action =
-                            AuthenticationFragmentDirections.actionAuthenticationToUser()
+                        val action = AuthenticationFragmentDirections.actionAuthenticationToUser()
                         findNavController().navigate(action)
                     }
                     FSMAuthenticationState.StartNewLogin -> {
@@ -81,11 +78,13 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
                     FSMAuthenticationState.WaitingToken -> {
                         viewModel.fetchToken()
                     }
-                    FSMAuthenticationState.CheckCredentials, FSMAuthenticationState.RefreshingOpenToken -> {
+                    FSMAuthenticationState.CheckCredentials,
+                    FSMAuthenticationState.RefreshingOpenToken -> {
                         // managed by activity
                     }
                     is FSMAuthenticationState.WaitingUserAction -> {
-                        // todo: depending on the action required show an error or restart the process
+                        // todo: depending on the action required show an error or restart the
+                        // process
                     }
                     FSMAuthenticationState.Start -> {
                         // this shouldn't happen
@@ -103,7 +102,9 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
                     // update the currently saved credentials
                     activityViewModel.updateCredentialsDeviceCode(auth.deviceCode)
                     // transition state machine
-                    activityViewModel.transitionAuthenticationMachine(FSMAuthenticationEvent.OnAuthLoaded)
+                    activityViewModel.transitionAuthenticationMachine(
+                        FSMAuthenticationEvent.OnAuthLoaded
+                    )
                     // set up values for calling the secrets endpoint
                     viewModel.setupSecretLoop(auth.expiresIn)
                 }
@@ -117,15 +118,25 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
                 when (secrets) {
                     SecretResult.Empty -> {
                         // will launch another call, re-entering WaitingUserConfirmation
-                        if (activityViewModel.getAuthenticationMachineState() is FSMAuthenticationState.WaitingUserConfirmation)
-                            activityViewModel.transitionAuthenticationMachine(FSMAuthenticationEvent.OnUserConfirmationMissing)
+                        if (
+                            activityViewModel.getAuthenticationMachineState()
+                                is FSMAuthenticationState.WaitingUserConfirmation
+                        )
+                            activityViewModel.transitionAuthenticationMachine(
+                                FSMAuthenticationEvent.OnUserConfirmationMissing
+                            )
                     }
                     SecretResult.Expired -> {
                         // will restart the authentication process
-                        activityViewModel.transitionAuthenticationMachine(FSMAuthenticationEvent.OnUserConfirmationExpired)
+                        activityViewModel.transitionAuthenticationMachine(
+                            FSMAuthenticationEvent.OnUserConfirmationExpired
+                        )
                     }
                     is SecretResult.Retrieved -> {
-                        if (activityViewModel.getAuthenticationMachineState() is FSMAuthenticationState.WaitingUserConfirmation) {
+                        if (
+                            activityViewModel.getAuthenticationMachineState()
+                                is FSMAuthenticationState.WaitingUserConfirmation
+                        ) {
 
                             authBinding.secrets = secrets.value
 
@@ -156,7 +167,9 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
                     // update the current credentials
                     activityViewModel.updateCredentialsAccessToken(token.accessToken)
                     activityViewModel.updateCredentialsRefreshToken(token.refreshToken)
-                    activityViewModel.transitionAuthenticationMachine(FSMAuthenticationEvent.OnOpenTokenLoaded)
+                    activityViewModel.transitionAuthenticationMachine(
+                        FSMAuthenticationEvent.OnOpenTokenLoaded
+                    )
                 }
             }
         )
@@ -182,8 +195,7 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
 
         sb.append(getString(R.string.to_authenticate))
 
-        if (type == LOGIN_TYPE_INDIRECT)
-            sb.append(getString(R.string.using_code))
+        if (type == LOGIN_TYPE_INDIRECT) sb.append(getString(R.string.using_code))
 
         return sb
     }
@@ -191,8 +203,7 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
     override fun onSaveCodeClick(codeInputField: TextInputEditText) {
         val token: String = codeInputField.text.toString().trim()
         // mine is 52 characters
-        if (token.length < 40)
-            context?.showToast(R.string.invalid_token)
+        if (token.length < 40) context?.showToast(R.string.invalid_token)
         else {
             // pass the value to be checked and eventually saved
             activityViewModel.updateCredentials(

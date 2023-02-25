@@ -18,13 +18,10 @@ object EmptyBodyInterceptor : Interceptor {
         }
 
         // optionally we could return a new JSON item with the original code in it
-        // val emptyBody = "{original_code: ${response.code} }".toResponseBody("application/json".toMediaType())
+        // val emptyBody = "{original_code: ${response.code}
+        // }".toResponseBody("application/json".toMediaType())
         val emptyBody = "".toResponseBody("text/plain".toMediaType())
 
-        return response
-            .newBuilder()
-            .code(200)
-            .body(emptyBody)
-            .build()
+        return response.newBuilder().code(200).body(emptyBody).build()
     }
 }

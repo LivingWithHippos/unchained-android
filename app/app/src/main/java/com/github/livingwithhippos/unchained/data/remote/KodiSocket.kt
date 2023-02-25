@@ -1,5 +1,6 @@
 package com.github.livingwithhippos.unchained.data.remote
 
+import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -9,15 +10,12 @@ import okhttp3.Response
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
 import okio.ByteString
-import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
 class KodiSocket @Inject constructor(private val client: OkHttpClient) {
 
     fun openWebSocket(url: String): Flow<WebSocketEvents> = callbackFlow {
-        val request = Request.Builder()
-            .url(url)
-            .build()
+        val request = Request.Builder().url(url).build()
 
         client.newWebSocket(
             request,
@@ -42,8 +40,8 @@ class KodiSocket @Inject constructor(private val client: OkHttpClient) {
                     super.onFailure(webSocket, t, response)
                     trySend(
                         WebSocketEvents.ConnectionError(
-                            t.message ?: response?.message
-                                ?: "Failure using the websocket for url $url"
+                            t.message
+                                ?: response?.message ?: "Failure using the websocket for url $url"
                         )
                     )
                 }

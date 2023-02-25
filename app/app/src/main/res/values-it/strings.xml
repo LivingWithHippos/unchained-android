@@ -472,4 +472,7 @@
     <string name="manually_installed_plugins_description">Plugins installati dall\'utente senza utilizzare una repository</string>
     <string name="various">Vari</string>
     <string name="connection_successful">Connessione avvenuta con successo</string>
+    <string name="vibrate_on_download">Vibrazione al completamento dei download</string>
+    <string name="kodi_picker_description">Mostra un menu di selezione quando si inviano link a Kodi</string>
+    <string name="kodi_picker">Selezionare il server di destinazione</string>
 </resources>

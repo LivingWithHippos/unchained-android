@@ -4,23 +4,24 @@ import android.content.SharedPreferences
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.livingwithhippos.unchained.data.model.KodiDevice
 import com.github.livingwithhippos.unchained.data.model.Stream
 import com.github.livingwithhippos.unchained.data.repository.DownloadRepository
 import com.github.livingwithhippos.unchained.data.repository.KodiDeviceRepository
 import com.github.livingwithhippos.unchained.data.repository.KodiRepository
 import com.github.livingwithhippos.unchained.data.repository.StreamingRepository
 import com.github.livingwithhippos.unchained.utilities.Event
+import com.github.livingwithhippos.unchained.utilities.PreferenceKeys
 import com.github.livingwithhippos.unchained.utilities.postEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlinx.coroutines.launch
 
-/**
- * A [ViewModel] subclass.
- * It offers LiveData to observe the calls to the streaming endpoint
- */
+/** A [ViewModel] subclass. It offers LiveData to observe the calls to the streaming endpoint */
 @HiltViewModel
-class DownloadDetailsViewModel @Inject constructor(
+class DownloadDetailsViewModel
+@Inject
+constructor(
     private val preferences: SharedPreferences,
     private val streamingRepository: StreamingRepository,
     private val downloadRepository: DownloadRepository,
@@ -31,6 +32,7 @@ class DownloadDetailsViewModel @Inject constructor(
     val streamLiveData = MutableLiveData<Stream?>()
     val deletedDownloadLiveData = MutableLiveData<Event<Int>>()
     val messageLiveData = MutableLiveData<Event<DownloadDetailsMessage>>()
+    val eventLiveData = MutableLiveData<Event<DownloadEvent>>()
 
     fun fetchStreamingInfo(id: String) {
         viewModelScope.launch {
@@ -42,35 +44,52 @@ class DownloadDetailsViewModel @Inject constructor(
     fun deleteDownload(id: String) {
         viewModelScope.launch {
             val deleted = downloadRepository.deleteDownload(id)
-            if (deleted == null)
-                deletedDownloadLiveData.postEvent(-1)
-            else
-                deletedDownloadLiveData.postEvent(1)
+            if (deleted == null) deletedDownloadLiveData.postEvent(-1)
+            else deletedDownloadLiveData.postEvent(1)
         }
     }
 
-    fun openUrlOnKodi(url: String) {
+    fun openUrlOnKodi(url: String, customDevice: KodiDevice? = null) {
         viewModelScope.launch {
-            val device = kodiDeviceRepository.getDefault()
+            val device = customDevice ?: kodiDeviceRepository.getDefault()
             if (device != null) {
-                val response = kodiRepository.openUrl(
-                    device.address,
-                    device.port,
-                    url,
-                    device.username,
-                    device.password
-                )
-                if (response != null)
-                    messageLiveData.postEvent(DownloadDetailsMessage.KodiSuccess)
-                else
-                    messageLiveData.postEvent(DownloadDetailsMessage.KodiError)
+                val response =
+                    kodiRepository.openUrl(
+                        device.address,
+                        device.port,
+                        url,
+                        device.username,
+                        device.password
+                    )
+                if (response != null) messageLiveData.postEvent(DownloadDetailsMessage.KodiSuccess)
+                else messageLiveData.postEvent(DownloadDetailsMessage.KodiError)
             } else {
                 val allDevices = kodiDeviceRepository.getDevices()
                 if (allDevices.isNotEmpty())
                     messageLiveData.postEvent(DownloadDetailsMessage.KodiMissingDefault)
-                else
-                    messageLiveData.postEvent(DownloadDetailsMessage.KodiMissingCredentials)
+                else messageLiveData.postEvent(DownloadDetailsMessage.KodiMissingCredentials)
             }
+        }
+    }
+
+    fun openKodiPickerIfNeeded(url: String) {
+        viewModelScope.launch {
+            if (preferences.getBoolean(PreferenceKeys.Kodi.SERVER_PICKER, false)) {
+                val devices = kodiDeviceRepository.getDevices()
+                // if there is only one device do not show the picker
+                if (devices.size == 1) openUrlOnKodi(url)
+                else if (devices.isEmpty())
+                    messageLiveData.postEvent(DownloadDetailsMessage.KodiMissingDefault)
+                else messageLiveData.postEvent(DownloadDetailsMessage.KodiShowPicker(url))
+            } else openUrlOnKodi(url)
+        }
+    }
+
+    fun getKodiDevices() {
+
+        viewModelScope.launch {
+            val devices = kodiDeviceRepository.getDevices()
+            eventLiveData.postEvent(DownloadEvent.KodiDevices(devices))
         }
     }
 
@@ -100,4 +119,9 @@ sealed class DownloadDetailsMessage {
     object KodiSuccess : DownloadDetailsMessage()
     object KodiMissingCredentials : DownloadDetailsMessage()
     object KodiMissingDefault : DownloadDetailsMessage()
+    data class KodiShowPicker(val url: String) : DownloadDetailsMessage()
+}
+
+sealed class DownloadEvent {
+    data class KodiDevices(val devices: List<KodiDevice>) : DownloadEvent()
 }

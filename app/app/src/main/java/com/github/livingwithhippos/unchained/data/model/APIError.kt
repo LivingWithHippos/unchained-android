@@ -7,33 +7,21 @@ import timber.log.Timber
 
 @JsonClass(generateAdapter = true)
 data class APIError(
-    @Json(name = "error")
-    val error: String,
-    @Json(name = "error_details")
-    val errorDetails: String?,
-    @Json(name = "error_code")
-    val errorCode: Int?
+    @Json(name = "error") val error: String,
+    @Json(name = "error_details") val errorDetails: String?,
+    @Json(name = "error_code") val errorCode: Int?
 ) : UnchainedNetworkException
 
 // todo: this has been resolved by adding an interceptor, change class name at least
-data class EmptyBodyError(
-    val returnCode: Int
-) : UnchainedNetworkException
+data class EmptyBodyError(val returnCode: Int) : UnchainedNetworkException
 
-data class NetworkError(
-    val error: Int,
-    val message: String
-) : UnchainedNetworkException
+data class NetworkError(val error: Int, val message: String) : UnchainedNetworkException
 
-data class ApiConversionError(
-    val error: Int
-) : UnchainedNetworkException
+data class ApiConversionError(val error: Int) : UnchainedNetworkException
 
 interface UnchainedNetworkException
 
-/**
- * Helper function to quickly debug network errors. Will output them using Timber.
- */
+/** Helper function to quickly debug network errors. Will output them using Timber. */
 fun UnchainedNetworkException.printError() {
     when (this) {
         is APIError -> Timber.d(errorMap[this.errorCode ?: -1])

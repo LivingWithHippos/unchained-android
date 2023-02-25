@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Lint checking" type="GradleRunConfiguration" factoryName="Gradle">
+  <configuration default="false" name="dependency updates" type="GradleRunConfiguration" factoryName="Gradle">
     <ExternalSystemSettings>
       <option name="executionName" />
       <option name="externalProjectPath" value="$PROJECT_DIR$" />
@@ -10,7 +10,7 @@
       </option>
       <option name="taskNames">
         <list>
-          <option value="ktfmtCheck" />
+          <option value="dependencyUpdates" />
         </list>
       </option>
       <option name="vmOptions" />

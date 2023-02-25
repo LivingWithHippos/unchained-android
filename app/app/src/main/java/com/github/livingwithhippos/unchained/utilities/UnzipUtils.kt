@@ -6,9 +6,8 @@ import java.io.InputStream
 import java.util.zip.ZipFile
 
 /**
- * UnzipUtils class extracts files and sub-directories of a standard zip file to
- * a destination directory.
- * credits to https://gist.github.com/NitinPraksash9911/dea21ec4b8ae7df068f8f891187b6d1e
+ * UnzipUtils class extracts files and sub-directories of a standard zip file to a destination
+ * directory. credits to https://gist.github.com/NitinPraksash9911/dea21ec4b8ae7df068f8f891187b6d1e
  * this file has been modified
  */
 object UnzipUtils {
@@ -45,14 +44,13 @@ object UnzipUtils {
 
     /**
      * Extracts a zip entry (file entry)
+     *
      * @param inputStream
      * @param destFilePath
      * @throws IOException
      */
     @Throws(IOException::class)
     private fun extractFile(inputStream: InputStream, destFilePath: File) {
-        destFilePath.outputStream().use {
-            inputStream.copyTo(it)
-        }
+        destFilePath.outputStream().use { inputStream.copyTo(it) }
     }
 }

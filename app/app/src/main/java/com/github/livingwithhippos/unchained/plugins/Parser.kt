@@ -33,19 +33,17 @@ class Parser(
 
     private fun getClient(): OkHttpClient {
 
-        return if (preferences.getBoolean(KEY_USE_DOH, false))
-            dohClient
-        else
-            classicClient
+        return if (preferences.getBoolean(KEY_USE_DOH, false)) dohClient else classicClient
     }
 
     fun completeSearch(plugin: Plugin, query: String, category: String? = null, page: Int = 1) =
         flow {
-            if (query.isBlank())
-                emit(ParserResult.MissingQuery)
+            if (query.isBlank()) emit(ParserResult.MissingQuery)
             else {
                 // todo: format queries with other unsupported web characters
-                // todo: check if this works with other plugins, otherwise add it as a json parameter. Possible alternative: %20
+                // todo: check if this works with other plugins, otherwise add it as a json
+                // parameter.
+                // Possible alternative: %20
                 val currentQuery = query.trim().replace("\\s+".toRegex(), "+")
                 if (!plugin.isCompatible()) {
                     emit(ParserResult.PluginVersionUnsupported)
@@ -53,38 +51,35 @@ class Parser(
                     val currentCategory =
                         if (category.isNullOrBlank()) null else getCategory(plugin, category)
 
-                    val queryUrl = replaceData(
-                        oldUrl = if (currentCategory == null) plugin.search.urlNoCategory else plugin.search.urlCategory!!,
-                        url = plugin.url,
-                        query = currentQuery,
-                        category = currentCategory,
-                        page = page
-                    )
+                    val queryUrl =
+                        replaceData(
+                            oldUrl =
+                                if (currentCategory == null) plugin.search.urlNoCategory
+                                else plugin.search.urlCategory!!,
+                            url = plugin.url,
+                            query = currentQuery,
+                            category = currentCategory,
+                            page = page
+                        )
 
                     emit(ParserResult.SearchStarted(-1))
                     val source = getSource(queryUrl)
-                    if (source.length < 10)
-                        emit(ParserResult.NetworkBodyError)
+                    if (source.length < 10) emit(ParserResult.NetworkBodyError)
                     else {
-                        /**
-                         * Parsing data with the internal link mechanism
-                         */
+                        /** Parsing data with the internal link mechanism */
                         when {
                             plugin.download.internalParser != null -> {
                                 emit(ParserResult.SearchStarted(-1))
                                 val innerSource = mutableListOf<String>()
 
                                 plugin.download.internalParser.link.regexps.forEach {
-                                    val linksFound = parseList(
-                                        it,
-                                        source,
-                                        plugin.url
-                                    )
+                                    val linksFound = parseList(it, source, plugin.url)
                                     innerSource.addAll(linksFound)
                                     if (plugin.download.internalParser.link.regexUse == "first") {
-                                        // if I wanted to get only the first matches I can exit the loop if I have results
-                                        if (linksFound.isNotEmpty())
-                                            return@forEach
+                                        // if I wanted to get only the first matches I can exit the
+                                        // loop if I have
+                                        // results
+                                        if (linksFound.isNotEmpty()) return@forEach
                                     }
                                 }
 
@@ -94,12 +89,13 @@ class Parser(
                                         // parse every page linked to the results
                                         val s = getSource(link)
                                         if (s.isNotBlank()) {
-                                            val scrapedItem = parseInnerLink(
-                                                plugin.download.regexes,
-                                                s,
-                                                link,
-                                                plugin.url
-                                            )
+                                            val scrapedItem =
+                                                parseInnerLink(
+                                                    plugin.download.regexes,
+                                                    s,
+                                                    link,
+                                                    plugin.url
+                                                )
                                             emit(ParserResult.SingleResult(scrapedItem))
                                         } else {
                                             emit(ParserResult.SourceError)
@@ -138,23 +134,24 @@ class Parser(
                             }
                             plugin.download.indirectTableLink != null -> {
                                 emit(ParserResult.SearchStarted(-1))
-                                val links = parseIndirectTable(
-                                    plugin.download.indirectTableLink,
-                                    plugin.download.regexes,
-                                    source,
-                                    plugin.url
-                                )
+                                val links =
+                                    parseIndirectTable(
+                                        plugin.download.indirectTableLink,
+                                        plugin.download.regexes,
+                                        source,
+                                        plugin.url
+                                    )
                                 emit(ParserResult.SearchStarted(links.size))
                                 links.forEach {
-
                                     val itemSource = getSource(it)
                                     if (itemSource.isNotBlank()) {
-                                        val scrapedItem = parseInnerLink(
-                                            plugin.download.regexes,
-                                            itemSource,
-                                            it,
-                                            plugin.url
-                                        )
+                                        val scrapedItem =
+                                            parseInnerLink(
+                                                plugin.download.regexes,
+                                                itemSource,
+                                                it,
+                                                plugin.url
+                                            )
                                         emit(ParserResult.SingleResult(scrapedItem))
                                     } else {
                                         emit(ParserResult.SourceError)
@@ -179,22 +176,25 @@ class Parser(
         val doc: Document = Jsoup.parse(source)
         try {
             // restrict the document to a certain table
-            val table: Element = when {
-                tableParser.idName != null -> doc.getElementById(tableParser.idName)
-                tableParser.className != null -> doc.getElementsByClass(tableParser.className)
-                    .firstOrNull()
-                tableParser.index != null -> {
-                    // INDEXES STARTS FROM ZERO
-                    val tables = doc.getElementsByTag("table")
-                    if (tables.size - 1 >= tableParser.index)
-                        tables[tableParser.index]
-                    else {
-                        Timber.w("No table found for index ${tableParser.index}, found ${tables.size} tables")
-                        return emptyList()
+            val table: Element =
+                when {
+                    tableParser.idName != null -> doc.getElementById(tableParser.idName)
+                    tableParser.className != null ->
+                        doc.getElementsByClass(tableParser.className).firstOrNull()
+                    tableParser.index != null -> {
+                        // INDEXES STARTS FROM ZERO
+                        val tables = doc.getElementsByTag("table")
+                        if (tables.size - 1 >= tableParser.index) tables[tableParser.index]
+                        else {
+                            Timber.w(
+                                "No table found for index ${tableParser.index}, found ${tables.size} tables"
+                            )
+                            return emptyList()
+                        }
                     }
+                    else -> doc.getElementsByTag("table").first()
                 }
-                else -> doc.getElementsByTag("table").first()
-            } ?: return emptyList()
+                    ?: return emptyList()
 
             // parse all the rows
             val rows = table.select("tr")
@@ -207,17 +207,16 @@ class Parser(
                     val columns = rows[index].select("td")
                     regexes.detailsRegex?.regexps?.forEach {
                         try {
-                            val details = parseSingle(
-                                it,
-                                columns[tableParser.columns.detailsColumn].html(),
-                                baseUrl
-                            )
-                            if (details != null)
-                                tableLinks.add(details)
+                            val details =
+                                parseSingle(
+                                    it,
+                                    columns[tableParser.columns.detailsColumn].html(),
+                                    baseUrl
+                                )
+                            if (details != null) tableLinks.add(details)
 
                             if (regexes.detailsRegex.regexUse == "first") {
-                                if (!details.isNullOrEmpty())
-                                    return@forEach
+                                if (!details.isNullOrEmpty()) return@forEach
                             }
                         } catch (e: IndexOutOfBoundsException) {
                             Timber.d("skipping row")
@@ -241,14 +240,7 @@ class Parser(
 
         var name = ""
         regexes.nameRegex.regexps.forEach {
-
-            val parsedName = cleanName(
-                parseSingle(
-                    it,
-                    source,
-                    baseUrl
-                ) ?: ""
-            )
+            val parsedName = cleanName(parseSingle(it, source, baseUrl) ?: "")
             // this is a single string, no need to check for regexUse
             if (!parsedName.isNullOrBlank()) {
                 name = parsedName
@@ -259,63 +251,39 @@ class Parser(
         // parse magnets
         val magnets = mutableSetOf<String>()
         regexes.magnetRegex?.regexps?.forEach { regex ->
-
-            val parsedMagnets = parseList(
-                regex,
-                source.removeWebFormatting(),
-                baseUrl,
-                toLowerCase = true
-            )
+            val parsedMagnets =
+                parseList(regex, source.removeWebFormatting(), baseUrl, toLowerCase = true)
 
             magnets.addAll(parsedMagnets)
 
             if (regexes.magnetRegex.regexUse == "first") {
-                if (magnets.isNotEmpty())
-                    return@forEach
+                if (magnets.isNotEmpty()) return@forEach
             }
         }
         // parse torrents
         val torrents = mutableSetOf<String>()
         regexes.torrentRegexes?.regexps?.forEach { regex ->
-            torrents.addAll(
-                parseList(
-                    regex,
-                    source,
-                    baseUrl
-                )
-            )
+            torrents.addAll(parseList(regex, source, baseUrl))
 
             if (regexes.torrentRegexes.regexUse == "first") {
-                if (torrents.isNotEmpty())
-                    return@forEach
+                if (torrents.isNotEmpty()) return@forEach
             }
         }
 
         // parse hosting websites links
         val hosting = mutableSetOf<String>()
         regexes.hostingRegexes?.regexps?.forEach { regex ->
-            hosting.addAll(
-                parseList(
-                    regex,
-                    source,
-                    baseUrl
-                )
-            )
+            hosting.addAll(parseList(regex, source, baseUrl))
 
             if (regexes.hostingRegexes.regexUse == "first") {
-                if (torrents.isNotEmpty())
-                    return@forEach
+                if (torrents.isNotEmpty()) return@forEach
             }
         }
 
         var seeders: String? = null
         // todo: move to function
         regexes.seedersRegex?.regexps?.forEach { regex ->
-            val parsedSeeders = parseSingle(
-                regex,
-                source,
-                baseUrl
-            )
+            val parsedSeeders = parseSingle(regex, source, baseUrl)
 
             if (!parsedSeeders.isNullOrBlank()) {
                 seeders = parsedSeeders
@@ -325,11 +293,7 @@ class Parser(
 
         var leechers: String? = null
         regexes.leechersRegex?.regexps?.forEach { regex ->
-            val leechersSeeders = parseSingle(
-                regex,
-                source,
-                baseUrl
-            )
+            val leechersSeeders = parseSingle(regex, source, baseUrl)
 
             if (!leechersSeeders.isNullOrBlank()) {
                 leechers = leechersSeeders
@@ -339,11 +303,7 @@ class Parser(
 
         var size: String? = null
         regexes.sizeRegex?.regexps?.forEach { regex ->
-            val currSize = parseSingle(
-                regex,
-                source,
-                baseUrl
-            )
+            val currSize = parseSingle(regex, source, baseUrl)
 
             if (!currSize.isNullOrBlank()) {
                 size = currSize
@@ -377,22 +337,25 @@ class Parser(
         val doc: Document = Jsoup.parse(source)
         try {
             // restrict the document to a certain table
-            val table: Element = when {
-                tableLink.idName != null -> doc.getElementById(tableLink.idName)
-                tableLink.className != null -> doc.getElementsByClass(tableLink.className)
-                    .firstOrNull()
-                tableLink.index != null -> {
-                    // INDEXES STARTS FROM ZERO
-                    val tables = doc.getElementsByTag("table")
-                    if (tables.size - 1 >= tableLink.index)
-                        tables[tableLink.index]
-                    else {
-                        Timber.w("No table found for index ${tableLink.index}, found ${tables.size} tables")
-                        return emptyList()
+            val table: Element =
+                when {
+                    tableLink.idName != null -> doc.getElementById(tableLink.idName)
+                    tableLink.className != null ->
+                        doc.getElementsByClass(tableLink.className).firstOrNull()
+                    tableLink.index != null -> {
+                        // INDEXES STARTS FROM ZERO
+                        val tables = doc.getElementsByTag("table")
+                        if (tables.size - 1 >= tableLink.index) tables[tableLink.index]
+                        else {
+                            Timber.w(
+                                "No table found for index ${tableLink.index}, found ${tables.size} tables"
+                            )
+                            return emptyList()
+                        }
                     }
+                    else -> doc.getElementsByTag("table").first()
                 }
-                else -> doc.getElementsByTag("table").first()
-            } ?: return emptyList()
+                    ?: return emptyList()
 
             // parse all the rows
             val rows = table.select("tr")
@@ -418,38 +381,44 @@ class Parser(
                                     regexes.nameRegex,
                                     columns[tableLink.columns.nameColumn].html(),
                                     baseUrl
-                                ) ?: ""
+                                )
+                                    ?: ""
                             )
 
                     if (tableLink.columns.detailsColumn != null)
-                        details = parseSingle(
-                            regexes.detailsRegex,
-                            columns[tableLink.columns.detailsColumn].html(),
-                            baseUrl
-                        )
+                        details =
+                            parseSingle(
+                                regexes.detailsRegex,
+                                columns[tableLink.columns.detailsColumn].html(),
+                                baseUrl
+                            )
                     if (tableLink.columns.seedersColumn != null)
-                        seeders = parseSingle(
-                            regexes.seedersRegex,
-                            columns[tableLink.columns.seedersColumn].html(),
-                            baseUrl
-                        )
+                        seeders =
+                            parseSingle(
+                                regexes.seedersRegex,
+                                columns[tableLink.columns.seedersColumn].html(),
+                                baseUrl
+                            )
                     if (tableLink.columns.leechersColumn != null)
-                        leechers = parseSingle(
-                            regexes.leechersRegex,
-                            columns[tableLink.columns.leechersColumn].html(),
-                            baseUrl
-                        )
+                        leechers =
+                            parseSingle(
+                                regexes.leechersRegex,
+                                columns[tableLink.columns.leechersColumn].html(),
+                                baseUrl
+                            )
                     if (tableLink.columns.sizeColumn != null)
-                        size = parseSingle(
-                            regexes.sizeRegex,
-                            columns[tableLink.columns.sizeColumn].html(),
-                            baseUrl
-                        )
+                        size =
+                            parseSingle(
+                                regexes.sizeRegex,
+                                columns[tableLink.columns.sizeColumn].html(),
+                                baseUrl
+                            )
                     if (tableLink.columns.magnetColumn != null)
                         magnets.addAll(
                             parseList(
                                 regexes.magnetRegex,
-                                columns[tableLink.columns.magnetColumn].html()
+                                columns[tableLink.columns.magnetColumn]
+                                    .html()
                                     .removeWebFormatting(),
                                 baseUrl,
                                 toLowerCase = true
@@ -499,27 +468,29 @@ class Parser(
         return tableItems
     }
 
-    private suspend fun getSource(url: String): String = withContext(Dispatchers.IO) {
-        val request: Request = Request.Builder()
-            .url(url)
-            .header(
-                "User-Agent",
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36"
-            )
-            .build()
+    private suspend fun getSource(url: String): String =
+        withContext(Dispatchers.IO) {
+            val request: Request =
+                Request.Builder()
+                    .url(url)
+                    .header(
+                        "User-Agent",
+                        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36"
+                    )
+                    .build()
 
-        // todo: check if this works
-        // todo: return the complete Response to let the caller check the return code
-        try {
-            getClient().newCall(request).execute().use { response: Response ->
-                response.body?.string() ?: ""
+            // todo: check if this works
+            // todo: return the complete Response to let the caller check the return code
+            try {
+                getClient().newCall(request).execute().use { response: Response ->
+                    response.body?.string() ?: ""
+                }
+            } catch (e: Exception) {
+                // todo: checking different exceptions can help debugging the issue
+                Timber.e("Error getting source while parsing link: ${e.message} ")
+                ""
             }
-        } catch (e: Exception) {
-            // todo: checking different exceptions can help debugging the issue
-            Timber.e("Error getting source while parsing link: ${e.message} ")
-            ""
         }
-    }
 
     private fun replaceData(
         oldUrl: String,
@@ -528,12 +499,9 @@ class Parser(
         category: String?,
         page: Int?,
     ): String {
-        var newUrl = oldUrl.replace("\${url}", url)
-            .replace("\${query}", query)
-        if (category != null)
-            newUrl = newUrl.replace("\${category}", category)
-        if (page != null)
-            newUrl = newUrl.replace("\${page}", page.toString())
+        var newUrl = oldUrl.replace("\${url}", url).replace("\${query}", query)
+        if (category != null) newUrl = newUrl.replace("\${category}", category)
+        if (page != null) newUrl = newUrl.replace("\${page}", page.toString())
 
         return newUrl
     }
@@ -547,22 +515,18 @@ class Parser(
      * @return
      */
     private fun parseSingle(customRegex: CustomRegex?, source: String, url: String): String? {
-        if (customRegex == null)
-            return null
+        if (customRegex == null) return null
         val regex = Regex(customRegex.regex, RegexOption.DOT_MATCHES_ALL)
         val match = regex.find(source)?.groupValues?.get(customRegex.group) ?: return null
         return when (customRegex.slugType) {
             "append_url" -> {
-                if (url.endsWith("/") && match.startsWith("/"))
-                    url.removeSuffix("/") + match
-                else
-                    url + match
+                if (url.endsWith("/") && match.startsWith("/")) url.removeSuffix("/") + match
+                else url + match
             }
             "append_other" -> {
                 if (customRegex.other!!.endsWith("/") && match.startsWith("/"))
                     customRegex.other.removeSuffix("/") + match
-                else
-                    customRegex.other + match
+                else customRegex.other + match
             }
             "complete" -> match
             else -> match
@@ -570,32 +534,29 @@ class Parser(
     }
 
     private fun parseSingle(regexpsGroup: RegexpsGroup?, source: String, url: String): String? {
-        if (regexpsGroup == null)
-            return null
+        if (regexpsGroup == null) return null
         var parsedResult: String? = null
         regexpsGroup.regexps.forEach { regex ->
             val currentRegex = Regex(regex.regex, RegexOption.DOT_MATCHES_ALL)
 
             val match = currentRegex.find(source)?.groupValues?.get(regex.group)
             if (match != null) {
-                parsedResult = when (regex.slugType) {
-                    "append_url" -> {
-                        if (url.endsWith("/") && match.startsWith("/"))
-                            url.removeSuffix("/") + match
-                        else
-                            url + match
+                parsedResult =
+                    when (regex.slugType) {
+                        "append_url" -> {
+                            if (url.endsWith("/") && match.startsWith("/"))
+                                url.removeSuffix("/") + match
+                            else url + match
+                        }
+                        "append_other" -> {
+                            if (regex.other!!.endsWith("/") && match.startsWith("/"))
+                                regex.other.removeSuffix("/") + match
+                            else regex.other + match
+                        }
+                        "complete" -> match
+                        else -> match
                     }
-                    "append_other" -> {
-                        if (regex.other!!.endsWith("/") && match.startsWith("/"))
-                            regex.other.removeSuffix("/") + match
-                        else
-                            regex.other + match
-                    }
-                    "complete" -> match
-                    else -> match
-                }
-                if (!parsedResult.isNullOrBlank())
-                    return parsedResult
+                if (!parsedResult.isNullOrBlank()) return parsedResult
             }
         }
 
@@ -616,8 +577,7 @@ class Parser(
         url: String,
         toLowerCase: Boolean = false
     ): List<String> {
-        if (customRegexes.isNullOrEmpty())
-            return emptyList()
+        if (customRegexes.isNullOrEmpty()) return emptyList()
         val results = mutableSetOf<String>()
         for (customRegex in customRegexes) {
             val regex: Regex = customRegex.regex.toRegex()
@@ -630,14 +590,12 @@ class Parser(
                             "append_url" -> {
                                 if (url.endsWith("/") && result.startsWith("/"))
                                     url.removeSuffix("/") + result
-                                else
-                                    url + result
+                                else url + result
                             }
                             "append_other" -> {
                                 if (customRegex.other!!.endsWith("/") && result.startsWith("/"))
                                     customRegex.other.removeSuffix("/") + result
-                                else
-                                    customRegex.other + result
+                                else customRegex.other + result
                             }
                             "complete" -> result
                             else -> result
@@ -646,8 +604,7 @@ class Parser(
             }
         }
 
-        if (toLowerCase)
-            return results.map { it.lowercase() }
+        if (toLowerCase) return results.map { it.lowercase() }
 
         return results.toList()
     }
@@ -658,8 +615,7 @@ class Parser(
         url: String,
         toLowerCase: Boolean = false
     ): List<String> {
-        if (regexpsGroup == null || regexpsGroup.regexps.isEmpty())
-            return emptyList()
+        if (regexpsGroup == null || regexpsGroup.regexps.isEmpty()) return emptyList()
 
         val results = mutableSetOf<String>()
         regexLoop@ for (customRegex in regexpsGroup.regexps) {
@@ -673,14 +629,12 @@ class Parser(
                             "append_url" -> {
                                 if (url.endsWith("/") && result.startsWith("/"))
                                     url.removeSuffix("/") + result
-                                else
-                                    url + result
+                                else url + result
                             }
                             "append_other" -> {
                                 if (customRegex.other!!.endsWith("/") && result.startsWith("/"))
                                     customRegex.other.removeSuffix("/") + result
-                                else
-                                    customRegex.other + result
+                                else customRegex.other + result
                             }
                             "complete" -> result
                             else -> result
@@ -708,8 +662,7 @@ class Parser(
         url: String,
         toLowerCase: Boolean = false
     ): List<String> {
-        return if (customRegex != null)
-            parseList(listOf(customRegex), source, url, toLowerCase)
+        return if (customRegex != null) parseList(listOf(customRegex), source, url, toLowerCase)
         else emptyList()
     }
 
@@ -733,7 +686,10 @@ class Parser(
             val torrents: List<String> = parseList(regexes.torrentRegexes, html, url)
             val hosting: List<String> = parseList(regexes.hostingRegexes, html, url)
 
-            if (!name.isNullOrBlank() && (magnets.isNotEmpty() || torrents.isNotEmpty() || hosting.isNotEmpty())) {
+            if (
+                !name.isNullOrBlank() &&
+                    (magnets.isNotEmpty() || torrents.isNotEmpty() || hosting.isNotEmpty())
+            ) {
 
                 val seeders = parseSingle(regexes.seedersRegex, html, url)
                 val leechers = parseSingle(regexes.leechersRegex, html, url)
@@ -781,24 +737,21 @@ class Parser(
 
     private fun cleanName(name: String): String {
         val textFromHtml: Spanned = HtmlCompat.fromHtml(name, HtmlCompat.FROM_HTML_MODE_COMPACT)
-        return textFromHtml.trim()
+        return textFromHtml
+            .trim()
             // replace newlines anf multiple spaces with single space
             .replace("[\\t\\n\\r\\s]+".toRegex(), " ")
-            // remove all html tags from the name. Will replace anything like <*> if it's in the name
+            // remove all html tags from the name. Will replace anything like <*> if it's in the
+            // name
             .replace("<[^>]+>".toRegex(), "")
     }
 
     companion object {
         /**
-         * CHANGELOG:
-         * 1.0: first version
-         * 1.1: added skipping of empty rows in tables
-         * 1.2: added table_indirect
-         * 2.0: use array for all regexps
-         * 2.1: added direct parsing mode
-         * 2.2: added entry class to direct parsing mode (required)
-         * 2.3: added optional table index to table parsers (for tables with no specific class/id)
-         * 2.4: added more categories
+         * CHANGELOG: 1.0: first version 1.1: added skipping of empty rows in tables 1.2: added
+         * table_indirect 2.0: use array for all regexps 2.1: added direct parsing mode 2.2: added
+         * entry class to direct parsing mode (required) 2.3: added optional table index to table
+         * parsers (for tables with no specific class/id) 2.4: added more categories
          */
         const val PLUGIN_ENGINE_VERSION: Float = 2.4f
     }

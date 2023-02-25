@@ -7,9 +7,7 @@ import com.github.livingwithhippos.unchained.downloaddetails.view.DownloadDetail
 import com.github.livingwithhippos.unchained.utilities.DataBindingAdapter
 
 class AlternativeDownloadAdapter(listener: DownloadDetailsListener) :
-    DataBindingAdapter<Alternative, DownloadDetailsListener>(
-        DiffCallback(), listener
-    ) {
+    DataBindingAdapter<Alternative, DownloadDetailsListener>(DiffCallback(), listener) {
 
     class DiffCallback : DiffUtil.ItemCallback<Alternative>() {
         override fun areItemsTheSame(oldItem: Alternative, newItem: Alternative): Boolean =

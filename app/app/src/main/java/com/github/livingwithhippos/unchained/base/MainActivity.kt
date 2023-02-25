@@ -62,18 +62,14 @@ import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.github.livingwithhippos.unchained.utilities.extension.toHex
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.mikepenz.aboutlibraries.LibsBuilder
 import dagger.hilt.android.AndroidEntryPoint
+import java.security.MessageDigest
+import javax.inject.Inject
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.security.MessageDigest
-import javax.inject.Inject
 
-/**
- * A [AppCompatActivity] subclass.
- * Shared between all the fragments except for the preferences.
- */
+/** A [AppCompatActivity] subclass. Shared between all the fragments except for the preferences. */
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
@@ -101,32 +97,34 @@ class MainActivity : AppCompatActivity() {
             val digest = MessageDigest.getInstance("SHA")
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                 // New signature
-                val sig = packageManager.getPackageInfo(
-                    packageName,
-                    PackageManager.GET_SIGNING_CERTIFICATES
-                ).signingInfo
-                signatureList = if (sig.hasMultipleSigners()) {
-                    // Send all with apkContentsSigners
-                    sig.apkContentsSigners.map {
-                        digest.update(it.toByteArray())
-                        digest.digest().toHex()
+                val sig =
+                    packageManager
+                        .getPackageInfo(packageName, PackageManager.GET_SIGNING_CERTIFICATES)
+                        .signingInfo
+                signatureList =
+                    if (sig.hasMultipleSigners()) {
+                        // Send all with apkContentsSigners
+                        sig.apkContentsSigners.map {
+                            digest.update(it.toByteArray())
+                            digest.digest().toHex()
+                        }
+                    } else {
+                        // Send one with signingCertificateHistory
+                        sig.signingCertificateHistory.map {
+                            digest.update(it.toByteArray())
+                            digest.digest().toHex()
+                        }
                     }
-                } else {
-                    // Send one with signingCertificateHistory
-                    sig.signingCertificateHistory.map {
-                        digest.update(it.toByteArray())
-                        digest.digest().toHex()
-                    }
-                }
             } else {
-                val sig = packageManager.getPackageInfo(
-                    packageName,
-                    PackageManager.GET_SIGNATURES
-                ).signatures
-                signatureList = sig.map {
-                    digest.update(it.toByteArray())
-                    digest.digest().toHex()
-                }
+                val sig =
+                    packageManager
+                        .getPackageInfo(packageName, PackageManager.GET_SIGNATURES)
+                        .signatures
+                signatureList =
+                    sig.map {
+                        digest.update(it.toByteArray())
+                        digest.digest().toHex()
+                    }
             }
 
             return signatureList
@@ -145,26 +143,22 @@ class MainActivity : AppCompatActivity() {
 
     val viewModel: MainActivityViewModel by viewModels()
 
-    @Inject
-    lateinit var preferences: SharedPreferences
+    @Inject lateinit var preferences: SharedPreferences
 
-    private val downloadReceiver: BroadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            intent?.let {
-                viewModel.checkTorrentDownload(
-                    it.getLongExtra(
-                        DownloadManager.EXTRA_DOWNLOAD_ID,
-                        -1
+    private val downloadReceiver: BroadcastReceiver =
+        object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                intent?.let {
+                    viewModel.checkTorrentDownload(
+                        it.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
                     )
-                )
+                }
             }
         }
-    }
 
     private val requestDownloadPermissionLauncher =
-        registerForActivityResult(
-            ActivityResultContracts.RequestPermission()
-        ) { isGranted: Boolean ->
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean
+            ->
             if (isGranted) {
                 applicationContext.showToast(R.string.download_permission_granted)
             } else {
@@ -173,9 +167,8 @@ class MainActivity : AppCompatActivity() {
         }
 
     private val requestNotificationPermissionLauncher =
-        registerForActivityResult(
-            ActivityResultContracts.RequestPermission()
-        ) { isGranted: Boolean ->
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean
+            ->
             if (isGranted) {
                 applicationContext.showToast(R.string.notifications_permission_granted)
             } else {
@@ -184,17 +177,15 @@ class MainActivity : AppCompatActivity() {
         }
 
     private val pickDirectoryLauncher =
-        registerForActivityResult(
-            ActivityResultContracts.OpenDocumentTree()
-        ) {
+        registerForActivityResult(ActivityResultContracts.OpenDocumentTree()) {
             if (it != null) {
                 Timber.d("User has picked a folder $it")
 
                 // permanent permissions
                 val contentResolver = applicationContext.contentResolver
 
-                val takeFlags: Int = Intent.FLAG_GRANT_READ_URI_PERMISSION or
-                    Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                val takeFlags: Int =
+                    Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
 
                 contentResolver.takePersistableUriPermission(it, takeFlags)
 
@@ -216,27 +207,29 @@ class MainActivity : AppCompatActivity() {
 
         setupBottomNavigationBar(binding)
 
-        addMenuProvider(object : MenuProvider {
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                // Add menu items here
-                menuInflater.inflate(R.menu.top_app_bar, menu)
-            }
+        addMenuProvider(
+            object : MenuProvider {
+                override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                    // Add menu items here
+                    menuInflater.inflate(R.menu.top_app_bar, menu)
+                }
 
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                return when (menuItem.itemId) {
-                    R.id.settings -> {
-                        openSettings()
-                        true
+                override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                    return when (menuItem.itemId) {
+                        R.id.settings -> {
+                            openSettings()
+                            true
+                        }
+                        else -> false
                     }
-                    else -> false
                 }
             }
-        })
+        )
 
-        viewModel.fsmAuthenticationState.observe(
-            this
-        ) {
-            // do not inline this variable in the when, because getContentIfNotHandled() will change its value to null if checked again in WaitingUserAction
+        viewModel.fsmAuthenticationState.observe(this) {
+            // do not inline this variable in the when, because getContentIfNotHandled() will change
+            // its
+            // value to null if checked again in WaitingUserAction
             val authState: FSMAuthenticationState? = it?.getContentIfNotHandled()
             when (authState) {
                 null -> {
@@ -282,10 +275,7 @@ class MainActivity : AppCompatActivity() {
                     }
                     // this state should be managed by the fragments directly
                     lifecycleScope.launch {
-                        disableBottomNavItems(
-                            R.id.navigation_lists,
-                            R.id.navigation_search
-                        )
+                        disableBottomNavItems(R.id.navigation_lists, R.id.navigation_search)
                         doubleClickBottomItem(R.id.navigation_home)
                     }
                 }
@@ -293,14 +283,13 @@ class MainActivity : AppCompatActivity() {
         }
 
         // disable the bottom menu items before loading the credentials
-        disableBottomNavItems(
-            R.id.navigation_lists,
-            R.id.navigation_search
-        )
+        disableBottomNavItems(R.id.navigation_lists, R.id.navigation_search)
 
-        // to avoid issues with restoring the app state we check the current state before calling this
+        // to avoid issues with restoring the app state we check the current state before calling
+        // this
         when (viewModel.fsmAuthenticationState.value?.peekContent()) {
-            is FSMAuthenticationState.AuthenticatedPrivateToken, FSMAuthenticationState.AuthenticatedOpenToken -> {
+            is FSMAuthenticationState.AuthenticatedPrivateToken,
+            FSMAuthenticationState.AuthenticatedOpenToken -> {
                 // we probably stopped and restored the app, do the same actions
                 // in the viewModel.fsmAuthenticationState.observe for these states
 
@@ -308,7 +297,8 @@ class MainActivity : AppCompatActivity() {
                 enableAllBottomNavItems()
             }
             else -> {
-                // todo: decide if we need to check other possible values or reset the fsm to checkCredentials in these states and call startAuthenticationMachine
+                // todo: decide if we need to check other possible values or reset the fsm to
+                // checkCredentials in these states and call startAuthenticationMachine
                 // start the authentication state machine, the first time it's going to be null
                 viewModel.startAuthenticationMachine()
             }
@@ -318,10 +308,7 @@ class MainActivity : AppCompatActivity() {
         getIntentData()
 
         // observe for torrents downloaded
-        registerReceiver(
-            downloadReceiver,
-            IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
-        )
+        registerReceiver(downloadReceiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
 
         viewModel.linkLiveData.observe(this) {
             it?.getContentIfNotHandled()?.let { link ->
@@ -345,20 +332,18 @@ class MainActivity : AppCompatActivity() {
                         // do nothing
                     }
                     "downloads" -> {
-                        lifecycleScope.launch {
-                            doubleClickBottomItem(R.id.navigation_lists)
-                        }
+                        lifecycleScope.launch { doubleClickBottomItem(R.id.navigation_lists) }
                     }
                     "search" -> {
-                        lifecycleScope.launch {
-                            doubleClickBottomItem(R.id.navigation_search)
-                        }
+                        lifecycleScope.launch { doubleClickBottomItem(R.id.navigation_search) }
                     }
                 }
             }
         )
 
-        // monitor if the torrent notification service needs to be started. It monitor the preference change itself
+        // monitor if the torrent notification service needs to be started. It monitor the
+        // preference
+        // change itself
         // for the shutting down part
         preferences.registerOnSharedPreferenceChangeListener { sharedPreferences, key ->
             if (key == KEY_TORRENT_NOTIFICATIONS) {
@@ -370,15 +355,11 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        /**
-         * Unique toast used to manage multiple notifications being shown at once
-         */
+        /** Unique toast used to manage multiple notifications being shown at once */
         @SuppressLint("ShowToast")
         val currentToast: Toast = Toast.makeText(this, "", Toast.LENGTH_SHORT)
 
-        viewModel.messageLiveData.observe(
-            this
-        ) {
+        viewModel.messageLiveData.observe(this) {
             when (val content = it?.getContentIfNotHandled()) {
                 is MainActivityMessage.InstalledPlugins -> {
                     lifecycleScope.launch {
@@ -388,10 +369,7 @@ class MainActivity : AppCompatActivity() {
                             delay(200)
                         }
                         currentToast.setText(
-                            getString(
-                                R.string.n_plugins_installed,
-                                content.number
-                            )
+                            getString(R.string.n_plugins_installed, content.number)
                         )
                         currentToast.show()
                     }
@@ -449,10 +427,10 @@ class MainActivity : AppCompatActivity() {
 
                     if (
                         Build.VERSION.SDK_INT in 23..28 &&
-                        ContextCompat.checkSelfPermission(
-                            applicationContext,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE
-                        ) != PERMISSION_GRANTED
+                            ContextCompat.checkSelfPermission(
+                                applicationContext,
+                                Manifest.permission.WRITE_EXTERNAL_STORAGE
+                            ) != PERMISSION_GRANTED
                     ) {
                         viewModel.requireDownloadPermissions()
                     } else {
@@ -460,19 +438,22 @@ class MainActivity : AppCompatActivity() {
                         when (viewModel.getDownloadManagerPreference()) {
                             PreferenceKeys.DownloadManager.SYSTEM -> {
                                 val manager =
-                                    applicationContext.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+                                    applicationContext.getSystemService(Context.DOWNLOAD_SERVICE)
+                                        as DownloadManager
                                 var downloadsStarted = 0
                                 content.downloads.forEach { download ->
-
-                                    val queuedDownload = manager.downloadFileInStandardFolder(
-                                        source = Uri.parse(download.download),
-                                        title = download.filename,
-                                        description = getString(R.string.app_name),
-                                        fileName = download.filename
-                                    )
+                                    val queuedDownload =
+                                        manager.downloadFileInStandardFolder(
+                                            source = Uri.parse(download.download),
+                                            title = download.filename,
+                                            description = getString(R.string.app_name),
+                                            fileName = download.filename
+                                        )
                                     when (queuedDownload) {
                                         is EitherResult.Failure -> {
-                                            Timber.e("Error queuing ${download.link}: ${queuedDownload.failure.message}")
+                                            Timber.e(
+                                                "Error queuing ${download.link}: ${queuedDownload.failure.message}"
+                                            )
                                         }
                                         is EitherResult.Success -> {
                                             downloadsStarted++
@@ -494,17 +475,20 @@ class MainActivity : AppCompatActivity() {
                                 if (folder != null) {
                                     if (viewModel.getDownloadOnUnmeteredOnlyPreference()) {
                                         val connectivityManager =
-                                            applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+                                            applicationContext.getSystemService(
+                                                Context.CONNECTIVITY_SERVICE
+                                            ) as ConnectivityManager
                                         if (connectivityManager.isActiveNetworkMetered) {
-                                            applicationContext.showToast(R.string.download_on_metered_connection)
+                                            applicationContext.showToast(
+                                                R.string.download_on_metered_connection
+                                            )
                                         }
                                     }
                                     viewModel.startMultipleDownloadWorkers(
                                         folder,
                                         content.downloads
                                     )
-                                } else
-                                    viewModel.requireDownloadFolder()
+                                } else viewModel.requireDownloadFolder()
                             }
                         }
                     }
@@ -513,10 +497,10 @@ class MainActivity : AppCompatActivity() {
 
                     if (
                         Build.VERSION.SDK_INT in 23..28 &&
-                        ContextCompat.checkSelfPermission(
-                            applicationContext,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE
-                        ) != PERMISSION_GRANTED
+                            ContextCompat.checkSelfPermission(
+                                applicationContext,
+                                Manifest.permission.WRITE_EXTERNAL_STORAGE
+                            ) != PERMISSION_GRANTED
                     ) {
                         viewModel.requireDownloadPermissions()
                     } else {
@@ -524,14 +508,16 @@ class MainActivity : AppCompatActivity() {
                             PreferenceKeys.DownloadManager.SYSTEM -> {
 
                                 val manager =
-                                    applicationContext.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+                                    applicationContext.getSystemService(Context.DOWNLOAD_SERVICE)
+                                        as DownloadManager
 
-                                val queuedDownload = manager.downloadFileInStandardFolder(
-                                    source = Uri.parse(content.source),
-                                    title = content.fileName,
-                                    description = getString(R.string.app_name),
-                                    fileName = content.fileName
-                                )
+                                val queuedDownload =
+                                    manager.downloadFileInStandardFolder(
+                                        source = Uri.parse(content.source),
+                                        title = content.fileName,
+                                        description = getString(R.string.app_name),
+                                        fileName = content.fileName
+                                    )
                                 when (queuedDownload) {
                                     is EitherResult.Failure -> {
                                         applicationContext.showToast(
@@ -553,18 +539,18 @@ class MainActivity : AppCompatActivity() {
 
                                     if (viewModel.getDownloadOnUnmeteredOnlyPreference()) {
                                         val connectivityManager =
-                                            applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+                                            applicationContext.getSystemService(
+                                                Context.CONNECTIVITY_SERVICE
+                                            ) as ConnectivityManager
                                         if (connectivityManager.isActiveNetworkMetered) {
-                                            applicationContext.showToast(R.string.download_on_metered_connection)
+                                            applicationContext.showToast(
+                                                R.string.download_on_metered_connection
+                                            )
                                         }
                                     }
 
-                                    viewModel.startDownloadWorker(
-                                        content,
-                                        folder
-                                    )
-                                } else
-                                    viewModel.requireDownloadFolder()
+                                    viewModel.startDownloadWorker(content, folder)
+                                } else viewModel.requireDownloadFolder()
                             }
                             else -> {
                                 Timber.e("Unrecognized download manager requested: $dm")
@@ -578,7 +564,9 @@ class MainActivity : AppCompatActivity() {
 
         // start the notification system if enabled
         if (preferences.getBoolean(KEY_TORRENT_NOTIFICATIONS, false)) {
-            // fixme: the user can enable this service without being logged in, add a check when enabling it in the settings fragment
+            // fixme: the user can enable this service without being logged in, add a check when
+            // enabling
+            // it in the settings fragment
             val notificationIntent = Intent(this, ForegroundTorrentService::class.java)
             ContextCompat.startForegroundService(this, notificationIntent)
         }
@@ -586,9 +574,7 @@ class MainActivity : AppCompatActivity() {
         // load the old share preferences of kodi devices into the db and then delete them
         viewModel.updateOldKodiPreferences()
 
-        viewModel.connectivityLiveData.observe(
-            this
-        ) {
+        viewModel.connectivityLiveData.observe(this) {
             when (it) {
                 true -> Timber.d("connection enabled")
                 false -> {
@@ -640,20 +626,21 @@ class MainActivity : AppCompatActivity() {
 
                     when (data.scheme) {
                         // clicked on a torrent file or a magnet link or .unchained file
-                        SCHEME_MAGNET, SCHEME_CONTENT, SCHEME_FILE -> {
+                        SCHEME_MAGNET,
+                        SCHEME_CONTENT,
+                        SCHEME_FILE -> {
                             when {
                                 // check if it's a search plugin
-                                data.path?.endsWith(
-                                    TYPE_UNCHAINED,
-                                    ignoreCase = true
-                                ) == true -> viewModel.addPluginFromDisk(applicationContext, data)
+                                data.path?.endsWith(TYPE_UNCHAINED, ignoreCase = true) == true ->
+                                    viewModel.addPluginFromDisk(applicationContext, data)
                                 else -> {
                                     // it's a magnet/torrent, check auth state before loading it
                                     processExternalRequestOnAuthentication(data)
                                 }
                             }
                         }
-                        SCHEME_HTTP, SCHEME_HTTPS -> {
+                        SCHEME_HTTP,
+                        SCHEME_HTTPS -> {
                             processExternalRequestOnAuthentication(data)
                         }
                     }
@@ -662,9 +649,9 @@ class MainActivity : AppCompatActivity() {
             null -> {
                 // could be because of the tap on a notification
                 intent.getStringExtra(KEY_TORRENT_ID)?.let { id ->
-
                     when (viewModel.getAuthenticationMachineState()) {
-                        FSMAuthenticationState.AuthenticatedOpenToken, FSMAuthenticationState.AuthenticatedPrivateToken -> {
+                        FSMAuthenticationState.AuthenticatedOpenToken,
+                        FSMAuthenticationState.AuthenticatedPrivateToken -> {
                             processTorrentNotificationIntent(id)
                         }
                         FSMAuthenticationState.RefreshingOpenToken -> {
@@ -676,8 +663,7 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             }
-            else -> {
-            }
+            else -> {}
         }
     }
 
@@ -724,14 +710,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * simulate a double click on a bottom bar option which will bring us to the first destination of that tab.
+     * simulate a double click on a bottom bar option which will bring us to the first destination
+     * of that tab.
      *
      * @param destinationID the id of the bottom item to click
      */
     private suspend fun doubleClickBottomItem(destinationID: Int) {
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_nav_view)
 
-        // if the tab was already selected, a single tap will bring us back to the first fragment of its navigation xml. Otherwise, simulate another click after a delay
+        // if the tab was already selected, a single tap will bring us back to the first fragment of
+        // its
+        // navigation xml. Otherwise, simulate another click after a delay
         if (bottomNav.selectedItemId != destinationID) {
             bottomNav.selectedItemId = destinationID
         }
@@ -744,45 +733,38 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    // the standard menu items to disable are those for the download/torrent lists and the new download one
+    // the standard menu items to disable are those for the download/torrent lists and the new
+    // download one
     private fun disableBottomNavItems(vararg itemsIDs: Int) {
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_nav_view)
-        bottomNav.menu.forEach {
-            if (itemsIDs.contains(it.itemId))
-                it.isEnabled = false
-        }
+        bottomNav.menu.forEach { if (itemsIDs.contains(it.itemId)) it.isEnabled = false }
     }
 
     private fun enableAllBottomNavItems() {
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_nav_view)
-        bottomNav.menu.forEach {
-            it.isEnabled = true
-        }
+        bottomNav.menu.forEach { it.isEnabled = true }
     }
 
-    /**
-     * Called on first creation and when restoring state.
-     */
+    /** Called on first creation and when restoring state. */
     private fun setupBottomNavigationBar(binding: ActivityMainBinding) {
 
-        navController = (
-            supportFragmentManager.findFragmentById(
-                R.id.nav_host_fragment
-            ) as NavHostFragment
-            ).navController
+        navController =
+            (supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment)
+                .navController
         binding.bottomNavView.setupWithNavController(navController)
 
         // Setup the ActionBar with navController and 3 top level destinations
         // these won't show a back/up arrow
-        appBarConfiguration = AppBarConfiguration(
-            setOf(
-                R.id.authentication_dest,
-                R.id.start_dest,
-                R.id.user_dest,
-                R.id.list_tabs_dest,
-                R.id.search_dest
+        appBarConfiguration =
+            AppBarConfiguration(
+                setOf(
+                    R.id.authentication_dest,
+                    R.id.start_dest,
+                    R.id.user_dest,
+                    R.id.list_tabs_dest,
+                    R.id.search_dest
+                )
             )
-        )
         setupActionBarWithNavController(navController, appBarConfiguration)
 
         binding.bottomNavView.setOnItemReselectedListener {
@@ -810,27 +792,30 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        // if the user is pressing back on an "exiting"fragment, show a toast alerting him and wait for him to press back again for confirmation
+        // if the user is pressing back on an "exiting"fragment, show a toast alerting him and wait
+        // for
+        // him to press back again for confirmation
 
         val currentDestination = navController.currentDestination
         val previousDestination = navController.previousBackStackEntry
 
         when (currentDestination?.id) {
             // check if we're pressing back from the user or authentication fragment
-            R.id.user_dest, R.id.authentication_dest -> {
+            R.id.user_dest,
+            R.id.authentication_dest -> {
                 // check the destination for the back action
-                if (previousDestination == null ||
-                    previousDestination.destination.id == R.id.authentication_dest ||
-                    previousDestination.destination.id == R.id.start_dest ||
-                    previousDestination.destination.id == R.id.user_dest ||
-                    previousDestination.destination.id == R.id.search_dest
+                if (
+                    previousDestination == null ||
+                        previousDestination.destination.id == R.id.authentication_dest ||
+                        previousDestination.destination.id == R.id.start_dest ||
+                        previousDestination.destination.id == R.id.user_dest ||
+                        previousDestination.destination.id == R.id.search_dest
                 ) {
                     // check if it has been 2 seconds since the last time we pressed back
                     val pressedTime = System.currentTimeMillis()
                     val lastPressedTime = viewModel.getLastBackPress()
                     // exit if pressed back twice in EXIT_WAIT_TIME
-                    if (pressedTime - lastPressedTime <= EXIT_WAIT_TIME)
-                        finish()
+                    if (pressedTime - lastPressedTime <= EXIT_WAIT_TIME) finish()
                     // else update the last time the user pressed back
                     else {
                         viewModel.setLastBackPress(pressedTime)
@@ -850,15 +835,13 @@ class MainActivity : AppCompatActivity() {
 
         // passing the baseContext or applicationContext cause a crash in the release version build
         // java.lang.IllegalArgumentException:
-        // The style on this component requires your app theme to be Theme.AppCompat (or a descendant).
+        // The style on this component requires your app theme to be Theme.AppCompat (or a
+        // descendant).
         MaterialAlertDialogBuilder(this)
             .setTitle(getString(R.string.new_update))
             .setMessage(description)
-            .setNegativeButton(getString(R.string.close)) { _, _ ->
-            }
-            .setPositiveButton(getString(R.string.open)) { _, _ ->
-                this.openExternalWebPage(link)
-            }
+            .setNegativeButton(getString(R.string.close)) { _, _ -> }
+            .setPositiveButton(getString(R.string.open)) { _, _ -> this.openExternalWebPage(link) }
             .show()
     }
 

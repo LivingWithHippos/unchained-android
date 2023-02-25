@@ -69,23 +69,25 @@ import com.github.livingwithhippos.unchained.utilities.postEvent
 import com.tinder.StateMachine
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import java.io.File
+import java.util.regex.Matcher
+import java.util.regex.Pattern
+import javax.inject.Inject
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.io.File
-import java.util.regex.Matcher
-import java.util.regex.Pattern
-import javax.inject.Inject
 
 /**
- * a [ViewModel] subclass.
- * Shared between the fragments to observe the authentication status and update it.
+ * a [ViewModel] subclass. Shared between the fragments to observe the authentication status and
+ * update it.
  */
 @HiltViewModel
-class MainActivityViewModel @Inject constructor(
+class MainActivityViewModel
+@Inject
+constructor(
     private val savedStateHandle: SavedStateHandle,
     private val preferences: SharedPreferences,
     private val protoStore: ProtoStore,
@@ -132,9 +134,9 @@ class MainActivityViewModel @Inject constructor(
 
     private var refreshJob: Job? = null
 
-    private val authStateMachine: StateMachine<FSMAuthenticationState, FSMAuthenticationEvent, FSMAuthenticationSideEffect> =
+    private val authStateMachine:
+        StateMachine<FSMAuthenticationState, FSMAuthenticationEvent, FSMAuthenticationSideEffect> =
         StateMachine.create {
-
             initialState(FSMAuthenticationState.Start)
 
             state<FSMAuthenticationState.Start> {
@@ -334,51 +336,35 @@ class MainActivityViewModel @Inject constructor(
                     }
                     is FSMAuthenticationSideEffect.CheckingCredentials -> {
                         fsmAuthenticationState.postValue(
-                            Event(
-                                FSMAuthenticationState.CheckCredentials
-                            )
+                            Event(FSMAuthenticationState.CheckCredentials)
                         )
                     }
                     FSMAuthenticationSideEffect.PostNewLogin -> {
                         fsmAuthenticationState.postValue(
-                            Event(
-                                FSMAuthenticationState.StartNewLogin
-                            )
+                            Event(FSMAuthenticationState.StartNewLogin)
                         )
                     }
                     FSMAuthenticationSideEffect.PostAuthenticatedOpen -> {
                         fsmAuthenticationState.postValue(
-                            Event(
-                                FSMAuthenticationState.AuthenticatedOpenToken
-                            )
+                            Event(FSMAuthenticationState.AuthenticatedOpenToken)
                         )
                     }
                     FSMAuthenticationSideEffect.PostRefreshingToken -> {
                         fsmAuthenticationState.postValue(
-                            Event(
-                                FSMAuthenticationState.RefreshingOpenToken
-                            )
+                            Event(FSMAuthenticationState.RefreshingOpenToken)
                         )
                     }
                     FSMAuthenticationSideEffect.PostAuthenticatedPrivate -> {
                         fsmAuthenticationState.postValue(
-                            Event(
-                                FSMAuthenticationState.AuthenticatedPrivateToken
-                            )
+                            Event(FSMAuthenticationState.AuthenticatedPrivateToken)
                         )
                     }
                     FSMAuthenticationSideEffect.PostWaitToken -> {
-                        fsmAuthenticationState.postValue(
-                            Event(
-                                FSMAuthenticationState.WaitingToken
-                            )
-                        )
+                        fsmAuthenticationState.postValue(Event(FSMAuthenticationState.WaitingToken))
                     }
                     FSMAuthenticationSideEffect.PostWaitUserConfirmation -> {
                         fsmAuthenticationState.postValue(
-                            Event(
-                                FSMAuthenticationState.WaitingUserConfirmation
-                            )
+                            Event(FSMAuthenticationState.WaitingUserConfirmation)
                         )
                     }
                     FSMAuthenticationSideEffect.PostActionNeeded -> {
@@ -388,18 +374,12 @@ class MainActivityViewModel @Inject constructor(
                                     (it.event as FSMAuthenticationEvent.OnUserActionNeeded).action
 
                                 fsmAuthenticationState.postValue(
-                                    Event(
-                                        FSMAuthenticationState.WaitingUserAction(
-                                            action
-                                        )
-                                    )
+                                    Event(FSMAuthenticationState.WaitingUserAction(action))
                                 )
                             }
                             is FSMAuthenticationEvent.OnAuthenticationError -> {
                                 fsmAuthenticationState.postValue(
-                                    Event(
-                                        FSMAuthenticationState.WaitingUserAction(null)
-                                    )
+                                    Event(FSMAuthenticationState.WaitingUserAction(null))
                                 )
                             }
                             else -> {
@@ -412,9 +392,7 @@ class MainActivityViewModel @Inject constructor(
                         viewModelScope.launch {
                             protoStore.deleteCredentials()
                             fsmAuthenticationState.postValue(
-                                Event(
-                                    FSMAuthenticationState.StartNewLogin
-                                )
+                                Event(FSMAuthenticationState.StartNewLogin)
                             )
                         }
                     }
@@ -503,7 +481,9 @@ class MainActivityViewModel @Inject constructor(
                 if (isPrivateToken) {
                     transitionAuthenticationMachine(FSMAuthenticationEvent.OnWorkingPrivateToken)
                 } else {
-                    // todo: check if always posting Expired token makes sense. The idea is that this way I can manage the expiration time better
+                    // todo: check if always posting Expired token makes sense. The idea is that
+                    // this way I
+                    // can manage the expiration time better
                     // transitionAuthenticationMachine(FSMAuthenticationEvent.OnWorkingOpenToken)
                     transitionAuthenticationMachine(FSMAuthenticationEvent.OnExpiredOpenToken)
                 }
@@ -524,19 +504,20 @@ class MainActivityViewModel @Inject constructor(
 
     private fun recheckAuthenticationStatus() {
         when (getAuthenticationMachineState()) {
-            FSMAuthenticationState.AuthenticatedOpenToken, FSMAuthenticationState.AuthenticatedPrivateToken, FSMAuthenticationState.RefreshingOpenToken -> {
+            FSMAuthenticationState.AuthenticatedOpenToken,
+            FSMAuthenticationState.AuthenticatedPrivateToken,
+            FSMAuthenticationState.RefreshingOpenToken -> {
                 transitionAuthenticationMachine(FSMAuthenticationEvent.OnLogout)
             }
             else -> {
-                Timber.e("Asked for logout while in a wrong state: ${getAuthenticationMachineState()}")
+                Timber.e(
+                    "Asked for logout while in a wrong state: ${getAuthenticationMachineState()}"
+                )
             }
         }
     }
 
-    /**
-     * Used for testing and debugging if the token refresh works. Disables the current token.
-     *
-     */
+    /** Used for testing and debugging if the token refresh works. Disables the current token. */
     fun invalidateOpenSourceToken() {
         viewModelScope.launch {
             val c = protoStore.getCredentials()
@@ -556,7 +537,10 @@ class MainActivityViewModel @Inject constructor(
 
         viewModelScope.launch {
             val credentials = protoStore.getCredentials()
-            if (!credentials.refreshToken.isNullOrBlank() && credentials.refreshToken != PRIVATE_TOKEN) {
+            if (
+                !credentials.refreshToken.isNullOrBlank() &&
+                    credentials.refreshToken != PRIVATE_TOKEN
+            ) {
                 // todo: add EitherResult to check for errors and retry eventually
                 when (val newToken = authRepository.refreshTokenWithError(credentials)) {
                     is EitherResult.Success -> {
@@ -571,7 +555,10 @@ class MainActivityViewModel @Inject constructor(
                         // program the refresh of the token
                         programTokenRefresh(newToken.success.expiresIn)
 
-                        if (getAuthenticationMachineState() is FSMAuthenticationState.RefreshingOpenToken)
+                        if (
+                            getAuthenticationMachineState()
+                                is FSMAuthenticationState.RefreshingOpenToken
+                        )
                             transitionAuthenticationMachine(FSMAuthenticationEvent.OnRefreshed)
                         // else I'm just refreshing before it expires
                         // todo: just set it to refreshing at the start of this function
@@ -595,13 +582,19 @@ class MainActivityViewModel @Inject constructor(
                         when (getAuthenticationMachineState()) {
                             FSMAuthenticationState.AuthenticatedOpenToken -> {
                                 // refresh token
-                                transitionAuthenticationMachine(FSMAuthenticationEvent.OnExpiredOpenToken)
+                                transitionAuthenticationMachine(
+                                    FSMAuthenticationEvent.OnExpiredOpenToken
+                                )
                             }
                             FSMAuthenticationState.CheckCredentials -> {
                                 if (isPrivateToken)
-                                    transitionAuthenticationMachine(FSMAuthenticationEvent.OnNotWorking)
+                                    transitionAuthenticationMachine(
+                                        FSMAuthenticationEvent.OnNotWorking
+                                    )
                                 else
-                                    transitionAuthenticationMachine(FSMAuthenticationEvent.OnExpiredOpenToken)
+                                    transitionAuthenticationMachine(
+                                        FSMAuthenticationEvent.OnExpiredOpenToken
+                                    )
                             }
                             FSMAuthenticationState.AuthenticatedPrivateToken -> {
                                 // a private token was incorrect
@@ -615,21 +608,19 @@ class MainActivityViewModel @Inject constructor(
                     }
                     9 -> {
                         Timber.e("onParseCallFailure " + 9)
-                        // 9 is permission denied which should mean the token is not valid at all and should be discarded
+                        // 9 is permission denied which should mean the token is not valid at all
+                        // and should be
+                        // discarded
                         transitionAuthenticationMachine(FSMAuthenticationEvent.OnNotWorking)
                     }
                     10 -> {
                         transitionAuthenticationMachine(
-                            FSMAuthenticationEvent.OnUserActionNeeded(
-                                UserAction.TFA_NEEDED
-                            )
+                            FSMAuthenticationEvent.OnUserActionNeeded(UserAction.TFA_NEEDED)
                         )
                     }
                     11 -> {
                         transitionAuthenticationMachine(
-                            FSMAuthenticationEvent.OnUserActionNeeded(
-                                UserAction.TFA_PENDING
-                            )
+                            FSMAuthenticationEvent.OnUserActionNeeded(UserAction.TFA_PENDING)
                         )
                     }
                     12 -> {
@@ -646,16 +637,12 @@ class MainActivityViewModel @Inject constructor(
                     }
                     22 -> {
                         transitionAuthenticationMachine(
-                            FSMAuthenticationEvent.OnUserActionNeeded(
-                                UserAction.IP_NOT_ALLOWED
-                            )
+                            FSMAuthenticationEvent.OnUserActionNeeded(UserAction.IP_NOT_ALLOWED)
                         )
                     }
                     else -> {
                         transitionAuthenticationMachine(
-                            FSMAuthenticationEvent.OnUserActionNeeded(
-                                UserAction.UNKNOWN
-                            )
+                            FSMAuthenticationEvent.OnUserActionNeeded(UserAction.UNKNOWN)
                         )
                     }
                 }
@@ -663,23 +650,17 @@ class MainActivityViewModel @Inject constructor(
             is EmptyBodyError -> {
                 // should not happen
                 transitionAuthenticationMachine(
-                    FSMAuthenticationEvent.OnUserActionNeeded(
-                        UserAction.UNKNOWN
-                    )
+                    FSMAuthenticationEvent.OnUserActionNeeded(UserAction.UNKNOWN)
                 )
             }
             is NetworkError -> {
                 transitionAuthenticationMachine(
-                    FSMAuthenticationEvent.OnUserActionNeeded(
-                        UserAction.NETWORK_ERROR
-                    )
+                    FSMAuthenticationEvent.OnUserActionNeeded(UserAction.NETWORK_ERROR)
                 )
             }
             is ApiConversionError -> {
                 transitionAuthenticationMachine(
-                    FSMAuthenticationEvent.OnUserActionNeeded(
-                        UserAction.RETRY_LATER
-                    )
+                    FSMAuthenticationEvent.OnUserActionNeeded(UserAction.RETRY_LATER)
                 )
             }
         }
@@ -691,8 +672,7 @@ class MainActivityViewModel @Inject constructor(
 
     fun checkTorrentDownload(downloadID: Long) {
         val torrentID = savedStateHandle.get<Long>(KEY_TORRENT_DOWNLOAD_ID)
-        if (torrentID == downloadID)
-            downloadedFileLiveData.postEvent(torrentID)
+        if (torrentID == downloadID) downloadedFileLiveData.postEvent(torrentID)
     }
 
     // todo: move this stuff to a shared navigationViewModel
@@ -710,12 +690,12 @@ class MainActivityViewModel @Inject constructor(
 
     private fun programTokenRefresh(secondsDelay: Int) {
         refreshJob?.cancel()
-        refreshJob = viewModelScope.launch {
-            // secondsDelay*950L -> expiration time - 5%
-            delay(secondsDelay * 950L)
-            if (isActive)
-                refreshToken()
-        }
+        refreshJob =
+            viewModelScope.launch {
+                // secondsDelay*950L -> expiration time - 5%
+                delay(secondsDelay * 950L)
+                if (isActive) refreshToken()
+            }
     }
 
     fun downloadSupportedLink(link: String) {
@@ -726,10 +706,11 @@ class MainActivityViewModel @Inject constructor(
                 link.endsWith(TYPE_UNCHAINED, ignoreCase = true) -> {
                     // only accept github links for now
                     val newLink = convertGithubToRaw(link)
-                    if (newLink != null)
-                        linkLiveData.postValue(Event(newLink))
+                    if (newLink != null) linkLiveData.postValue(Event(newLink))
                     else
-                        messageLiveData.postValue(Event(MainActivityMessage.StringID(R.string.invalid_url)))
+                        messageLiveData.postValue(
+                            Event(MainActivityMessage.StringID(R.string.invalid_url))
+                        )
                 }
                 else -> {
                     var matchFound = false
@@ -754,7 +735,9 @@ class MainActivityViewModel @Inject constructor(
                         }
                     }
                     if (!matchFound)
-                        messageLiveData.postValue(Event(MainActivityMessage.StringID(R.string.host_match_not_found)))
+                        messageLiveData.postValue(
+                            Event(MainActivityMessage.StringID(R.string.host_match_not_found))
+                        )
                 }
             }
         }
@@ -767,11 +750,19 @@ class MainActivityViewModel @Inject constructor(
         val branch = "([^/]+)"
         val path = "(.+)"
         when {
-            github.startsWith("https://www.github.com") || github.startsWith("https://github.com") -> {
+            github.startsWith("https://www.github.com") ||
+                github.startsWith("https://github.com") -> {
                 val regex =
                     "https?://(www.)?github.com/$username/$repo/$type/$branch/$path".toRegex()
                 val match: MatchResult = regex.find(github) ?: return null
-                return "https://raw.githubusercontent.com/" + match.groupValues[2] + "/" + match.groupValues[3] + "/" + match.groupValues[5] + "/" + match.groupValues[6]
+                return "https://raw.githubusercontent.com/" +
+                    match.groupValues[2] +
+                    "/" +
+                    match.groupValues[3] +
+                    "/" +
+                    match.groupValues[5] +
+                    "/" +
+                    match.groupValues[6]
             }
             github.startsWith("https://raw.githubusercontent.com") -> {
                 return github
@@ -783,10 +774,11 @@ class MainActivityViewModel @Inject constructor(
     fun addTorrentId(torrentID: String) {
         viewModelScope.launch {
             val torrent: TorrentItem? = torrentsRepository.getTorrentInfo(torrentID)
-            if (torrent != null)
-                notificationTorrentLiveData.postEvent(torrent)
+            if (torrent != null) notificationTorrentLiveData.postEvent(torrent)
             else
-                Timber.e("Could not retrieve torrent data from click on notification, id $torrentID")
+                Timber.e(
+                    "Could not retrieve torrent data from click on notification, id $torrentID"
+                )
         }
     }
 
@@ -840,7 +832,10 @@ class MainActivityViewModel @Inject constructor(
             val networks = connectivityManager.allNetworks
             for (net in networks) {
                 val netInfo = connectivityManager.getNetworkCapabilities(net)
-                if (netInfo != null && netInfo.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)) {
+                if (
+                    netInfo != null &&
+                        netInfo.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+                ) {
                     isConnected = true
                     break
                 }
@@ -868,53 +863,44 @@ class MainActivityViewModel @Inject constructor(
     }
 
     fun updateCredentialsDeviceCode(deviceCode: String) {
-        viewModelScope.launch {
-            protoStore.updateDeviceCode(deviceCode)
-        }
+        viewModelScope.launch { protoStore.updateDeviceCode(deviceCode) }
     }
 
     fun updateCredentialsClientId(clientId: String) {
-        viewModelScope.launch {
-            protoStore.updateClientId(clientId)
-        }
+        viewModelScope.launch { protoStore.updateClientId(clientId) }
     }
 
     fun updateCredentialsClientSecret(clientSecret: String) {
-        viewModelScope.launch {
-            protoStore.updateClientSecret(clientSecret)
-        }
+        viewModelScope.launch { protoStore.updateClientSecret(clientSecret) }
     }
 
     fun updateCredentialsAccessToken(accessToken: String) {
-        viewModelScope.launch {
-            protoStore.updateAccessToken(accessToken)
-        }
+        viewModelScope.launch { protoStore.updateAccessToken(accessToken) }
     }
 
     fun updateCredentialsRefreshToken(refreshToken: String) {
-        viewModelScope.launch {
-            protoStore.updateRefreshToken(refreshToken)
-        }
+        viewModelScope.launch { protoStore.updateRefreshToken(refreshToken) }
     }
 
     suspend fun getCredentials(): Credentials.CurrentCredential {
         // todo: find a better way to get the first valid value
-        val credentials = credentialsFlow.firstOrNull {
-            it.clientId.isNotBlank() || it.refreshToken.isNotBlank() || it.deviceCode.isNotBlank() || it.accessToken.isNotBlank() || it.clientSecret.isNotBlank()
-        }
-        if (credentials == null)
-            return protoStore.getCredentials()
-        else
-            return credentials
+        val credentials =
+            credentialsFlow.firstOrNull {
+                it.clientId.isNotBlank() ||
+                    it.refreshToken.isNotBlank() ||
+                    it.deviceCode.isNotBlank() ||
+                    it.accessToken.isNotBlank() ||
+                    it.clientSecret.isNotBlank()
+            }
+        if (credentials == null) return protoStore.getCredentials() else return credentials
     }
-    /**************************
-     * AUTH MACHINE FUNCTIONS *
-     **************************/
-
     /**
-     * Start the authentication machine flow
-     *
+     * ***********************
+     * AUTH MACHINE FUNCTIONS *
+     * ************************
      */
+
+    /** Start the authentication machine flow */
     fun startAuthenticationMachine() {
         viewModelScope.launch {
             // retrieve the datastore credentials (will return en empty instance if none)
@@ -943,8 +929,10 @@ class MainActivityViewModel @Inject constructor(
      */
     fun getCurrentAuthenticationStatus(): CurrentFSMAuthentication =
         when (getAuthenticationMachineState()) {
-            FSMAuthenticationState.AuthenticatedPrivateToken, FSMAuthenticationState.AuthenticatedOpenToken -> CurrentFSMAuthentication.Authenticated
-            FSMAuthenticationState.CheckCredentials, FSMAuthenticationState.RefreshingOpenToken -> CurrentFSMAuthentication.Waiting
+            FSMAuthenticationState.AuthenticatedPrivateToken,
+            FSMAuthenticationState.AuthenticatedOpenToken -> CurrentFSMAuthentication.Authenticated
+            FSMAuthenticationState.CheckCredentials,
+            FSMAuthenticationState.RefreshingOpenToken -> CurrentFSMAuthentication.Waiting
             else -> CurrentFSMAuthentication.Unauthenticated
         }
 
@@ -952,16 +940,12 @@ class MainActivityViewModel @Inject constructor(
         authStateMachine.transition(event)
     }
 
-    /**
-     * Jump to the main screen set in the settings
-     */
+    /** Jump to the main screen set in the settings */
     fun goToStartUpScreen() {
         jumpTabLiveData.postEvent(preferences.getString("main_screen", "user") ?: "user")
     }
 
-    /**
-     * Loads the old saved kodi preference into the new db one and then deletes it
-     */
+    /** Loads the old saved kodi preference into the new db one and then deletes it */
     fun updateOldKodiPreferences() {
 
         val address: String? = preferences.getString("kodi_ip_address", null)
@@ -973,14 +957,7 @@ class MainActivityViewModel @Inject constructor(
 
             viewModelScope.launch {
                 kodiDeviceRepository.add(
-                    KodiDevice(
-                        "Imported Kodi Device",
-                        address,
-                        port,
-                        user,
-                        password,
-                        true
-                    )
+                    KodiDevice("Imported Kodi Device", address, port, user, password, true)
                 )
 
                 with(preferences.edit()) {
@@ -1013,14 +990,15 @@ class MainActivityViewModel @Inject constructor(
                         if (installed) {
                             Timber.d("Installed plugin ${pluginFile.name}")
                             installedPlugins++
-                        } else
-                            Timber.d("Error installing plugin ${pluginFile.name}")
+                        } else Timber.d("Error installing plugin ${pluginFile.name}")
                     } else {
                         Timber.d("Error parsing plugin ${pluginFile.name}")
                     }
                 } else {
                     // this also gets triggered by the plugins own folder which is traversed by walk
-                    Timber.d("Skipping unrecognized file into the plugin folder: ${pluginFile.name}")
+                    Timber.d(
+                        "Skipping unrecognized file into the plugin folder: ${pluginFile.name}"
+                    )
                 }
             }
         }
@@ -1028,10 +1006,7 @@ class MainActivityViewModel @Inject constructor(
     }
 
     fun clearCache(cacheDir: File) {
-        cacheDir.listFiles()?.forEach {
-            if (it.name != "image_cache")
-                it.deleteRecursively()
-        }
+        cacheDir.listFiles()?.forEach { if (it.name != "image_cache") it.deleteRecursively() }
     }
 
     private fun checkUpdateVersion(
@@ -1138,7 +1113,8 @@ class MainActivityViewModel @Inject constructor(
         return preferences.getString(
             PreferenceKeys.DownloadManager.KEY,
             PreferenceKeys.DownloadManager.SYSTEM
-        ) ?: PreferenceKeys.DownloadManager.SYSTEM
+        )
+            ?: PreferenceKeys.DownloadManager.SYSTEM
     }
 
     fun startDownloadWorker(content: MainActivityMessage.DownloadEnqueued, folder: Uri) {
@@ -1146,36 +1122,30 @@ class MainActivityViewModel @Inject constructor(
         val unmeteredConnectionOnly =
             preferences.getBoolean(PreferenceKeys.DownloadManager.UNMETERED_ONLY_KEY, false)
 
-        val constraints = Constraints.Builder()
-            .apply {
-                if (unmeteredConnectionOnly)
-                    setRequiredNetworkType(NetworkType.UNMETERED)
-                else
-                    setRequiredNetworkType(NetworkType.CONNECTED)
-            }
-            .setRequiresStorageNotLow(true)
-            .build()
+        val constraints =
+            Constraints.Builder()
+                .apply {
+                    if (unmeteredConnectionOnly) setRequiredNetworkType(NetworkType.UNMETERED)
+                    else setRequiredNetworkType(NetworkType.CONNECTED)
+                }
+                .setRequiresStorageNotLow(true)
+                .build()
 
-        val data: Data = Data.Builder().apply {
-            putString(
-                KEY_FOLDER_URI,
-                folder.toString()
-            )
-            putString(
-                KEY_DOWNLOAD_SOURCE,
-                content.source
-            )
-            putString(
-                KEY_DOWNLOAD_NAME,
-                content.fileName
-            )
-        }.build()
+        val data: Data =
+            Data.Builder()
+                .apply {
+                    putString(KEY_FOLDER_URI, folder.toString())
+                    putString(KEY_DOWNLOAD_SOURCE, content.source)
+                    putString(KEY_DOWNLOAD_NAME, content.fileName)
+                }
+                .build()
 
-        val downloadFileRequest = OneTimeWorkRequestBuilder<DownloadWorker>()
-            .addTag(content.source)
-            .setInputData(data)
-            .setConstraints(constraints)
-            .build()
+        val downloadFileRequest =
+            OneTimeWorkRequestBuilder<DownloadWorker>()
+                .addTag(content.source)
+                .setInputData(data)
+                .setConstraints(constraints)
+                .build()
 
         // use KEEP or REPLACE
         workManager.enqueueUniqueWork(content.source, ExistingWorkPolicy.KEEP, downloadFileRequest)
@@ -1186,64 +1156,45 @@ class MainActivityViewModel @Inject constructor(
         val unmeteredConnectionOnly =
             preferences.getBoolean(PreferenceKeys.DownloadManager.UNMETERED_ONLY_KEY, false)
 
-        val constraints = Constraints.Builder()
-            .apply {
-                if (unmeteredConnectionOnly)
-                    setRequiredNetworkType(NetworkType.UNMETERED)
-                else
-                    setRequiredNetworkType(NetworkType.CONNECTED)
-            }
-            .setRequiresStorageNotLow(true)
-            .build()
-
-        val work: List<OneTimeWorkRequest> = downloads.map {
-
-            val data = Data.Builder().apply {
-                putString(
-                    KEY_FOLDER_URI,
-                    folder.toString()
-                )
-                putString(KEY_DOWNLOAD_SOURCE, it.download)
-                putString(KEY_DOWNLOAD_NAME, it.filename)
-            }.build()
-
-            OneTimeWorkRequestBuilder<DownloadWorker>()
-                .setInputData(data)
-                .setConstraints(constraints)
-                .addTag(it.download)
+        val constraints =
+            Constraints.Builder()
+                .apply {
+                    if (unmeteredConnectionOnly) setRequiredNetworkType(NetworkType.UNMETERED)
+                    else setRequiredNetworkType(NetworkType.CONNECTED)
+                }
+                .setRequiresStorageNotLow(true)
                 .build()
-        }
+
+        val work: List<OneTimeWorkRequest> =
+            downloads.map {
+                val data =
+                    Data.Builder()
+                        .apply {
+                            putString(KEY_FOLDER_URI, folder.toString())
+                            putString(KEY_DOWNLOAD_SOURCE, it.download)
+                            putString(KEY_DOWNLOAD_NAME, it.filename)
+                        }
+                        .build()
+
+                OneTimeWorkRequestBuilder<DownloadWorker>()
+                    .setInputData(data)
+                    .setConstraints(constraints)
+                    .addTag(it.download)
+                    .build()
+            }
 
         // use KEEP or REPLACE
         workManager.enqueue(work)
     }
 
-    fun enqueueDownload(
-        sourceUrl: String,
-        fileName: String
-    ) {
+    fun enqueueDownload(sourceUrl: String, fileName: String) {
         // todo: folder should be nullable for the system download manager
-        messageLiveData.postValue(
-            Event(
-                MainActivityMessage.DownloadEnqueued(
-                    sourceUrl,
-                    fileName
-                )
-            )
-        )
+        messageLiveData.postValue(Event(MainActivityMessage.DownloadEnqueued(sourceUrl, fileName)))
     }
 
-    fun enqueueDownloads(
-        downloads: List<DownloadItem>
-    ) {
+    fun enqueueDownloads(downloads: List<DownloadItem>) {
         // todo: folder should be nullable for the system download manager
-        messageLiveData.postValue(
-            Event(
-                MainActivityMessage.MultipleDownloadsEnqueued(
-                    downloads
-                )
-            )
-        )
+        messageLiveData.postValue(Event(MainActivityMessage.MultipleDownloadsEnqueued(downloads)))
     }
 
     fun getDownloadOnUnmeteredOnlyPreference(): Boolean {
@@ -1257,11 +1208,8 @@ class MainActivityViewModel @Inject constructor(
                     Timber.e("Error downloading plugin at $url:\n${result.failure}")
                 }
                 is EitherResult.Success -> {
-                    val installResult = pluginRepository.savePlugin(
-                        context,
-                        result.success,
-                        repositoryURL
-                    )
+                    val installResult =
+                        pluginRepository.savePlugin(context, result.success, repositoryURL)
                     postPluginInstallResult(installResult)
                 }
             }
@@ -1270,21 +1218,18 @@ class MainActivityViewModel @Inject constructor(
 
     private fun postPluginInstallResult(result: InstallResult) {
         when (result) {
-            is InstallResult.Error -> messageLiveData.postValue(Event(MainActivityMessage.StringID(R.string.plugin_install_not_installed)))
-            InstallResult.Incompatible -> messageLiveData.postValue(
-                Event(
-                    MainActivityMessage.StringID(
-                        R.string.plugin_install_incompatible
-                    )
+            is InstallResult.Error ->
+                messageLiveData.postValue(
+                    Event(MainActivityMessage.StringID(R.string.plugin_install_not_installed))
                 )
-            )
-            InstallResult.Installed -> messageLiveData.postValue(
-                Event(
-                    MainActivityMessage.StringID(
-                        R.string.plugin_install_installed
-                    )
+            InstallResult.Incompatible ->
+                messageLiveData.postValue(
+                    Event(MainActivityMessage.StringID(R.string.plugin_install_incompatible))
                 )
-            )
+            InstallResult.Installed ->
+                messageLiveData.postValue(
+                    Event(MainActivityMessage.StringID(R.string.plugin_install_installed))
+                )
         }
     }
 
@@ -1308,9 +1253,7 @@ sealed class MainActivityMessage {
     object RequireDownloadFolder : MainActivityMessage()
     object RequireDownloadPermissions : MainActivityMessage()
     object RequireNotificationPermissions : MainActivityMessage()
-    data class DownloadEnqueued(val source: String, val fileName: String) :
-        MainActivityMessage()
+    data class DownloadEnqueued(val source: String, val fileName: String) : MainActivityMessage()
 
-    data class MultipleDownloadsEnqueued(val downloads: List<DownloadItem>) :
-        MainActivityMessage()
+    data class MultipleDownloadsEnqueued(val downloads: List<DownloadItem>) : MainActivityMessage()
 }

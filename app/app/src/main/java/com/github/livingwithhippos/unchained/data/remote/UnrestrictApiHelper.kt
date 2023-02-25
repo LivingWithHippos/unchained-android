@@ -13,18 +13,9 @@ interface UnrestrictApiHelper {
         remote: Int? = null
     ): Response<DownloadItem>
 
-    suspend fun getUnrestrictedFolder(
-        token: String,
-        link: String
-    ): Response<List<String>>
+    suspend fun getUnrestrictedFolder(token: String, link: String): Response<List<String>>
 
-    suspend fun uploadContainer(
-        token: String,
-        container: RequestBody
-    ): Response<List<String>>
+    suspend fun uploadContainer(token: String, container: RequestBody): Response<List<String>>
 
-    suspend fun getContainerLinks(
-        token: String,
-        link: String
-    ): Response<List<String>>
+    suspend fun getContainerLinks(token: String, link: String): Response<List<String>>
 }

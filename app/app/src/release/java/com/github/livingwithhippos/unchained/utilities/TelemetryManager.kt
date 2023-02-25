@@ -5,18 +5,15 @@ import android.app.Application
 import android.content.res.Configuration
 
 /**
-Empty object to avoid telemetry in the release version of the app, see the same file under debug for actual code
+ * Empty object to avoid telemetry in the release version of the app, see the same file under debug
+ * for actual code
  */
 object TelemetryManager {
-    fun onStart(activity: Activity) {
-    }
+    fun onStart(activity: Activity) {}
 
-    fun onStop() {
-    }
+    fun onStop() {}
 
-    fun onConfigurationChanged(newConfig: Configuration) {
-    }
+    fun onConfigurationChanged(newConfig: Configuration) {}
 
-    fun onCreate(application: Application) {
-    }
+    fun onCreate(application: Application) {}
 }

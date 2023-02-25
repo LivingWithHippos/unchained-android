@@ -11,16 +11,16 @@ import com.github.livingwithhippos.unchained.data.remote.KodiApi
 import com.github.livingwithhippos.unchained.data.remote.KodiApiHelper
 import com.github.livingwithhippos.unchained.data.remote.KodiApiHelperImpl
 import com.github.livingwithhippos.unchained.di.ClassicClient
+import javax.inject.Inject
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import timber.log.Timber
-import javax.inject.Inject
 
-class KodiRepository @Inject constructor(
-    private val protoStore: ProtoStore,
-    @ClassicClient private val client: OkHttpClient
-) : BaseRepository(protoStore) {
+class KodiRepository
+@Inject
+constructor(private val protoStore: ProtoStore, @ClassicClient private val client: OkHttpClient) :
+    BaseRepository(protoStore) {
 
     // todo: conflict with other Retrofit with qualifiers?
     private fun provideRetrofit(baseUrl: String): Retrofit {
@@ -48,20 +48,20 @@ class KodiRepository @Inject constructor(
     ): KodiGenericResponse? {
         try {
             val kodiApiHelper: KodiApiHelper = provideApiHelper("http://$baseUrl:$port/")
-            val kodiResponse = safeApiCall(
-                call = {
-                    kodiApiHelper.getVolume(
-                        request = KodiRequest(
-                            method = "Application.GetProperties",
-                            params = KodiParams(
-                                properties = listOf("volume")
-                            )
-                        ),
-                        auth = encodeAuthentication(username, password)
-                    )
-                },
-                errorMessage = "Error getting Kodi volume"
-            )
+            val kodiResponse =
+                safeApiCall(
+                    call = {
+                        kodiApiHelper.getVolume(
+                            request =
+                                KodiRequest(
+                                    method = "Application.GetProperties",
+                                    params = KodiParams(properties = listOf("volume"))
+                                ),
+                            auth = encodeAuthentication(username, password)
+                        )
+                    },
+                    errorMessage = "Error getting Kodi volume"
+                )
 
             return kodiResponse
         } catch (e: Exception) {
@@ -81,22 +81,20 @@ class KodiRepository @Inject constructor(
         try {
             val kodiApiHelper: KodiApiHelper = provideApiHelper("http://$baseUrl:$port/")
 
-            val kodiResponse = safeApiCall(
-                call = {
-                    kodiApiHelper.openUrl(
-                        request = KodiRequest(
-                            method = "Player.Open",
-                            params = KodiParams(
-                                item = KodiItem(
-                                    fileUrl = url
-                                )
-                            )
-                        ),
-                        auth = encodeAuthentication(username, password)
-                    )
-                },
-                errorMessage = "Error Sending url to Kodi"
-            )
+            val kodiResponse =
+                safeApiCall(
+                    call = {
+                        kodiApiHelper.openUrl(
+                            request =
+                                KodiRequest(
+                                    method = "Player.Open",
+                                    params = KodiParams(item = KodiItem(fileUrl = url))
+                                ),
+                            auth = encodeAuthentication(username, password)
+                        )
+                    },
+                    errorMessage = "Error Sending url to Kodi"
+                )
 
             return kodiResponse
         } catch (e: Exception) {
@@ -107,8 +105,8 @@ class KodiRepository @Inject constructor(
 
     private fun encodeAuthentication(username: String?, password: String?): String? {
         return if (!username.isNullOrBlank() && !password.isNullOrBlank()) {
-            "Basic " + Base64.encodeToString("$username:$password".toByteArray(), Base64.DEFAULT)
-                .trim()
+            "Basic " +
+                Base64.encodeToString("$username:$password".toByteArray(), Base64.DEFAULT).trim()
         } else null
     }
 }

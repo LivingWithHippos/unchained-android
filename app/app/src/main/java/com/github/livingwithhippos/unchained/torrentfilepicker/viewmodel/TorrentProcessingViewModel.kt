@@ -20,6 +20,9 @@ import com.github.livingwithhippos.unchained.utilities.beforeSelectionStatusList
 import com.github.livingwithhippos.unchained.utilities.extension.cancelIfActive
 import com.github.livingwithhippos.unchained.utilities.postEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.util.Timer
+import java.util.TimerTask
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -27,12 +30,11 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.Timer
-import java.util.TimerTask
-import javax.inject.Inject
 
 @HiltViewModel
-class TorrentProcessingViewModel @Inject constructor(
+class TorrentProcessingViewModel
+@Inject
+constructor(
     private val savedStateHandle: SavedStateHandle,
     private val torrentsRepository: TorrentsRepository
 ) : ViewModel() {
@@ -49,8 +51,7 @@ class TorrentProcessingViewModel @Inject constructor(
             if (availableHosts.isNullOrEmpty()) {
                 Timber.e("Error fetching available hosts")
             } else {
-                val addedMagnet =
-                    torrentsRepository.addMagnet(magnet, availableHosts.first().host)
+                val addedMagnet = torrentsRepository.addMagnet(magnet, availableHosts.first().host)
                 when (addedMagnet) {
                     is EitherResult.Failure -> {
                         networkExceptionLiveData.postEvent(addedMagnet.failure)
@@ -86,10 +87,7 @@ class TorrentProcessingViewModel @Inject constructor(
             builder.append(INSTANT_AVAILABILITY_ENDPOINT)
             builder.append("/")
             builder.append(hash)
-            when (
-                val cache =
-                    torrentsRepository.getInstantAvailability(builder.toString())
-            ) {
+            when (val cache = torrentsRepository.getInstantAvailability(builder.toString())) {
                 is EitherResult.Failure -> {
                     Timber.e("Failed getting cache for hash $hash ${cache.failure}")
                 }
@@ -134,8 +132,7 @@ class TorrentProcessingViewModel @Inject constructor(
     }
 
     fun updateTorrentStructure(structure: Node<TorrentFileItem>?) {
-        if (structure != null)
-            structureLiveData.postEvent(structure)
+        if (structure != null) structureLiveData.postEvent(structure)
     }
 
     fun startSelectionLoop(files: String = "all") {
@@ -153,7 +150,6 @@ class TorrentProcessingViewModel @Inject constructor(
         val scope = CoroutineScope(job + Dispatchers.IO)
 
         scope.launch {
-
             var selected = false
             // / maybe job.isActive?
             while (isActive) {
@@ -161,10 +157,14 @@ class TorrentProcessingViewModel @Inject constructor(
                     when (val selectResponse = torrentsRepository.selectFiles(id, files)) {
                         is EitherResult.Failure -> {
                             if (selectResponse.failure is EmptyBodyError) {
-                                Timber.d("Select torrent files success returned ${selectResponse.failure.returnCode}")
+                                Timber.d(
+                                    "Select torrent files success returned ${selectResponse.failure.returnCode}"
+                                )
                                 selected = true
                             } else {
-                                Timber.e("Exception during torrent files selection call: ${selectResponse.failure}")
+                                Timber.e(
+                                    "Exception during torrent files selection call: ${selectResponse.failure}"
+                                )
                             }
                         }
                         is EitherResult.Success -> {
@@ -189,15 +189,17 @@ class TorrentProcessingViewModel @Inject constructor(
     }
 
     fun pollTorrentStatus() {
-        Timer().scheduleAtFixedRate(
-            object : TimerTask() {
-                override fun run() {
-                    // check if it goes into select files
-                    // todo: create a service to do this, check the download one
-                }
-            },
-            0, 1000
-        )
+        Timer()
+            .scheduleAtFixedRate(
+                object : TimerTask() {
+                    override fun run() {
+                        // check if it goes into select files
+                        // todo: create a service to do this, check the download one
+                    }
+                },
+                0,
+                1000
+            )
     }
 
     fun triggerTorrentEvent(event: TorrentEvent) {

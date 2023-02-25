@@ -14,14 +14,16 @@ import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.postEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel
-class FolderListViewModel @Inject constructor(
+class FolderListViewModel
+@Inject
+constructor(
     private val savedStateHandle: SavedStateHandle,
     private val preferences: SharedPreferences,
     private val unrestrictRepository: UnrestrictRepository,
@@ -45,7 +47,6 @@ class FolderListViewModel @Inject constructor(
 
     fun retrieveFolderFileList(folderLink: String) {
         viewModelScope.launch {
-
             val filesList: EitherResult<UnchainedNetworkException, List<String>> =
                 unrestrictRepository.getEitherFolderLinks(folderLink)
 
@@ -65,10 +66,7 @@ class FolderListViewModel @Inject constructor(
                 val hitList = mutableListOf<DownloadItem>()
 
                 links.forEachIndexed { index, link ->
-                    when (
-                        val file =
-                            unrestrictRepository.getEitherUnrestrictedLink(link)
-                    ) {
+                    when (val file = unrestrictRepository.getEitherUnrestrictedLink(link)) {
                         is EitherResult.Failure -> {
                             errorsLiveData.postEvent(file.failure)
                             progressLiveData.postValue((index + 1) * 100 / links.size)
@@ -83,9 +81,7 @@ class FolderListViewModel @Inject constructor(
                 }
             } else {
                 // I already downloaded all the files, repost the last value
-                folderLiveData.value?.let {
-                    folderLiveData.postEvent(it.peekContent())
-                }
+                folderLiveData.value?.let { folderLiveData.postEvent(it.peekContent()) }
             }
         }
     }
@@ -102,8 +98,7 @@ class FolderListViewModel @Inject constructor(
         viewModelScope.launch {
             downloads.forEach {
                 val deleted = downloadRepository.deleteDownload(it.id)
-                if (deleted != null)
-                    deletedDownloadLiveData.postEvent(it)
+                if (deleted != null) deletedDownloadLiveData.postEvent(it)
             }
         }
     }
@@ -112,11 +107,11 @@ class FolderListViewModel @Inject constructor(
         // simulate debounce
         queryJob?.cancel()
 
-        queryJob = viewModelScope.launch {
-            delay(500)
-            if (isActive)
-                queryLiveData.postValue(query?.trim() ?: "")
-        }
+        queryJob =
+            viewModelScope.launch {
+                delay(500)
+                if (isActive) queryLiveData.postValue(query?.trim() ?: "")
+            }
     }
 
     fun getMinFileSize(): Long {
