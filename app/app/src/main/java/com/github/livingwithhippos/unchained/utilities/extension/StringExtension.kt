@@ -16,7 +16,12 @@ import java.util.regex.Pattern
  * check if a String is an url
  */
 fun String.isWebUrl(): Boolean =
-    Patterns.WEB_URL.matcher(this).matches()
+    Patterns.WEB_URL.matcher(this).lookingAt()
+val urlPattern = "https?://(-\\.)?([\\w]+\\.)+([\\w]{2,})+(#([\\w\\-]+))?(/[\\w\\-\\.,?^=%&:/~+#]*)?"
+
+val simpleWebRegex = Regex(urlPattern)
+fun String.isSimpleWebUrl(): Boolean =
+    simpleWebRegex.containsMatchIn(this)
 
 fun String.removeWebFormatting(): String {
     return this.replace("%3A", ":")

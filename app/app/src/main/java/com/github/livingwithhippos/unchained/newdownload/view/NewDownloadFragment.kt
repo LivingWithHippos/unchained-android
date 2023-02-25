@@ -41,6 +41,7 @@ import com.github.livingwithhippos.unchained.utilities.extension.getDownloadedFi
 import com.github.livingwithhippos.unchained.utilities.extension.getFileName
 import com.github.livingwithhippos.unchained.utilities.extension.isContainerWebLink
 import com.github.livingwithhippos.unchained.utilities.extension.isMagnet
+import com.github.livingwithhippos.unchained.utilities.extension.isSimpleWebUrl
 import com.github.livingwithhippos.unchained.utilities.extension.isTorrent
 import com.github.livingwithhippos.unchained.utilities.extension.isWebUrl
 import dagger.hilt.android.AndroidEntryPoint
@@ -263,7 +264,7 @@ class NewDownloadFragment : UnchainedFragment() {
                          */
                         // downloadTorrentToCache(binding, link)
                     }
-                    link.isWebUrl() -> {
+                    link.isWebUrl() || link.isSimpleWebUrl() -> {
                         viewModel.postMessage(getString(R.string.loading_host_link))
                         enableButtons(binding, false)
 
@@ -315,6 +316,7 @@ class NewDownloadFragment : UnchainedFragment() {
                         findNavController().navigate(action)
                     }
                     else -> {
+                        Timber.w("Invalid link: $link")
                         viewModel.postMessage(getString(R.string.invalid_url))
                     }
                 }
@@ -323,17 +325,20 @@ class NewDownloadFragment : UnchainedFragment() {
         }
 
         binding.bPasteLink.setOnClickListener {
-            val pasteText = getClipboardText()
+            val pasteText = getClipboardText().trim()
 
             if (
                 pasteText.isWebUrl() ||
+                pasteText.isSimpleWebUrl() ||
                 pasteText.isMagnet() ||
                 pasteText.isTorrent() ||
                 pasteText.split("\n").firstOrNull()?.trim()?.isWebUrl() == true
             )
                 binding.tiLink.setText(pasteText, TextView.BufferType.EDITABLE)
-            else
+            else {
+                Timber.w("Invalid pasted link: $pasteText")
                 viewModel.postMessage(getString(R.string.invalid_url))
+            }
         }
 
         binding.bPastePassword.setOnClickListener {
