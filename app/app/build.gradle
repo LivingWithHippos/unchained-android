@@ -1,3 +1,7 @@
+plugins {
+    id 'com.ncorti.ktfmt.gradle' version '0.12.0'
+}
+
 apply plugin: 'com.android.application'
 apply plugin: 'dagger.hilt.android.plugin'
 apply plugin: 'kotlin-android'
@@ -33,6 +37,11 @@ def apiPropertiesFile = rootProject.file("apikey.properties")
 def apiProperties = new Properties()
 if (apiPropertiesFile.exists()) {
     apiProperties.load(new FileInputStream(apiPropertiesFile))
+}
+
+ktfmt {
+    // KotlinLang style - 4 space indentation - From kotlinlang.org/docs/coding-conventions.html
+    kotlinLangStyle()
 }
 
 android {
