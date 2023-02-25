@@ -39,7 +39,7 @@ interface DownloadListListener {
 }
 
 class DownloadKeyProvider(private val adapter: DownloadListPagingAdapter) :
-    ItemKeyProvider<DownloadItem>(SCOPE_CACHED) {
+    ItemKeyProvider<DownloadItem>(SCOPE_MAPPED) {
     override fun getKey(position: Int): DownloadItem? {
         return adapter.getDownloadItem(position)
     }

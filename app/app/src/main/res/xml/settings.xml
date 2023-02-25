@@ -111,6 +111,12 @@
                 app:summary="@string/kodi_manage_list_summary"
                 app:title="@string/kodi_manage_list" />
 
+            <SwitchPreference
+                android:defaultValue="false"
+                app:key="select_kodi_on_play"
+                app:summary="@string/kodi_picker_description"
+                app:title="@string/kodi_picker" />
+
         </PreferenceCategory>
         <PreferenceCategory
             android:title="@string/default_media_player"

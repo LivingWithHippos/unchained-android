@@ -30,7 +30,7 @@ class FolderItemAdapter(listener: DownloadListListener) :
 }
 
 class FolderKeyProvider(private val adapter: FolderItemAdapter) :
-    ItemKeyProvider<DownloadItem>(SCOPE_CACHED) {
+    ItemKeyProvider<DownloadItem>(SCOPE_MAPPED) {
     override fun getKey(position: Int): DownloadItem? {
         return adapter.getFolderItem(position)
     }

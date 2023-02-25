@@ -132,6 +132,9 @@ object PreferenceKeys {
         const val UNMETERED_ONLY_KEY = "download_only_on_unmetered"
         const val VIBRATE_ON_FINISH = "vibrate_on_download"
     }
+    object Kodi {
+        const val SERVER_PICKER = "select_kodi_on_play"
+    }
 }
 
 /**

@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -35,9 +36,6 @@ import com.github.livingwithhippos.unchained.utilities.extension.copyToClipboard
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -48,12 +46,9 @@ import timber.log.Timber
 @AndroidEntryPoint
 class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
 
-    private val viewModel: DownloadDetailsViewModel by viewModels()
+    private val viewModel: DownloadDetailsViewModel by activityViewModels()
 
     private val args: DownloadDetailsFragmentArgs by navArgs()
-
-    private val job = Job()
-    private val ioScope = CoroutineScope(Dispatchers.IO + job)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -183,7 +178,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         }
 
         viewModel.messageLiveData.observe(viewLifecycleOwner) {
-            when (it.getContentIfNotHandled()) {
+            when (val content = it.getContentIfNotHandled()) {
                 is DownloadDetailsMessage.KodiError -> {
                     context?.showToast(R.string.kodi_connection_error)
                 }
@@ -195,6 +190,14 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                 }
                 DownloadDetailsMessage.KodiMissingDefault -> {
                     context?.showToast(R.string.kodi_missing_default)
+                }
+                is DownloadDetailsMessage.KodiShowPicker -> {
+                    val dialog = KodiServerPickerDialog()
+                    val bundle = Bundle()
+                    bundle.putString("url", content.url)
+                    dialog.arguments = bundle
+                    dialog.show(parentFragmentManager, "KodiServerPickerDialog")
+
                 }
                 null -> {
                 }
@@ -219,7 +222,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
     }
 
     override fun onOpenWithKodi(url: String) {
-        viewModel.openUrlOnKodi(url)
+        viewModel.openKodiPickerIfNeeded(url)
     }
 
     override fun onLoadStreamsClick(id: String) {

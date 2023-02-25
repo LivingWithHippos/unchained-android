@@ -38,7 +38,7 @@ interface TorrentListListener {
 }
 
 class TorrentKeyProvider(private val adapter: TorrentListPagingAdapter) :
-    ItemKeyProvider<TorrentItem>(SCOPE_CACHED) {
+    ItemKeyProvider<TorrentItem>(SCOPE_MAPPED) {
     override fun getKey(position: Int): TorrentItem? {
         return adapter.getTorrentItem(position)
     }
