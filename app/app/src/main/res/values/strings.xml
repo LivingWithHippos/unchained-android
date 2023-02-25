@@ -690,4 +690,6 @@
     <string name="category_pictures">Pictures</string>
     <string name="category_videos">Videos</string>
     <string name="vibrate_on_download">Vibrate on downloads completion</string>
+    <string name="kodi_picker">Select destination server</string>
+    <string name="kodi_picker_description">Show a selection menu when sending links to Kodi</string>
 </resources>
