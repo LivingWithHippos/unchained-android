@@ -21,18 +21,6 @@ class ThemingCallback(val preferences: SharedPreferences) : Application.Activity
     }
 
     private fun setCustomTheme(activity: Activity, theme: String) {
-        val themeID =
-            when (theme) {
-                "original" -> R.style.Theme_Unchained
-                "tropical_sunset" -> R.style.Theme_TropicalSunset
-                "black_n_white" -> R.style.Theme_BlackAndWhite
-                "waves_01" -> R.style.Theme_Wave01
-                else -> R.style.Theme_Wave01
-            }
-        activity.setTheme(themeID)
-        // todo: check if this can be avoided, android:navigationBarColor in xml is not working
-        activity.window.statusBarColor = activity.getThemeColor(R.attr.customStatusBarColor)
-        activity.window.navigationBarColor = activity.getThemeColor(R.attr.customNavigationBarColor)
     }
 
     override fun onActivityStarted(activity: Activity) {}

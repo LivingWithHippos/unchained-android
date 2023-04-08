@@ -1,182 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-~ Copyright (C) 2019 The Android Open Source Project
-~
-~ Licensed under the Apache License, Version 2.0 (the "License");
-~ you may not use this file except in compliance with the License.
-~ You may obtain a copy of the License at
-~
-~      http://www.apache.org/licenses/LICENSE-2.0
-~
-~ Unless required by applicable law or agreed to in writing, software
-~ distributed under the License is distributed on an "AS IS" BASIS,
-~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-~ See the License for the specific language governing permissions and
-~ limitations under the License.
--->
-
-<!-- This file has been modified -->
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!--Top level DayNight theme to be used in AndroidManifest.xml-->
-    <style name="Theme.Unchained" parent="Base.Theme.Unchained">
-
-        <item name="colorPrimary">@color/purple_A700</item>
-        <item name="colorPrimaryVariant">@color/purple_100</item>
-        <item name="colorSecondary">@color/green_200</item>
-        <item name="colorSecondaryVariant">@color/green_500</item>
-
-        <item name="android:colorBackground">@color/white</item>
-        <item name="colorSurface">@color/white</item>
-        <item name="colorError">@color/red_600</item>
-
-        <item name="colorOnPrimary">@color/white</item>
-        <item name="colorOnSecondary">@color/black</item>
-        <item name="colorOnBackground">@color/grey_03</item>
-        <item name="colorOnSurface">@color/black</item>
-        <item name="colorOnError">@color/white</item>
+<resources>
+    <style name="Theme.Unchained.Material3" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="colorPrimary">@color/md_theme_light_primary</item>
+        <item name="colorOnPrimary">@color/md_theme_light_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/md_theme_light_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/md_theme_light_onPrimaryContainer</item>
+        <item name="colorSecondary">@color/md_theme_light_secondary</item>
+        <item name="colorOnSecondary">@color/md_theme_light_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/md_theme_light_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/md_theme_light_onSecondaryContainer</item>
+        <item name="colorTertiary">@color/md_theme_light_tertiary</item>
+        <item name="colorOnTertiary">@color/md_theme_light_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/md_theme_light_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/md_theme_light_onTertiaryContainer</item>
+        <item name="colorError">@color/md_theme_light_error</item>
+        <item name="colorOnError">@color/md_theme_light_onError</item>
+        <item name="colorErrorContainer">@color/md_theme_light_errorContainer</item>
+        <item name="colorOnErrorContainer">@color/md_theme_light_onErrorContainer</item>
+        <item name="colorOutline">@color/md_theme_light_outline</item>
+        <item name="android:colorBackground">@color/md_theme_light_background</item>
+        <item name="colorOnBackground">@color/md_theme_light_onBackground</item>
+        <item name="colorSurface">@color/md_theme_light_surface</item>
+        <item name="colorOnSurface">@color/md_theme_light_onSurface</item>
+        <item name="colorSurfaceVariant">@color/md_theme_light_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/md_theme_light_onSurfaceVariant</item>
+        <item name="colorSurfaceInverse">@color/md_theme_light_inverseSurface</item>
+        <item name="colorOnSurfaceInverse">@color/md_theme_light_inverseOnSurface</item>
+        <item name="colorPrimaryInverse">@color/md_theme_light_inversePrimary</item>
     </style>
-
-    <!-- Tropical Sunset Theme -->
-    <style name="Theme.TropicalSunset" parent="Base.Theme.Unchained">
-
-        <item name="colorPrimary">@color/peach_tropico</item>
-        <item name="colorOnPrimary">@color/grey_1000</item>
-
-        <item name="colorSurface">@color/plum_tropico</item>
-        <item name="colorOnSurface">@color/grey_1000</item>
-
-        <item name="colorSecondary">@color/plum_tropico_lighter</item>
-        <item name="colorOnSecondary">@color/grey_1000</item>
-
-        <item name="android:colorBackground">@color/yellow_tropico</item>
-        <item name="colorOnBackground">@color/grey_1000</item>
-
-        <item name="colorError">@color/red_600</item>
-        <item name="colorOnError">@color/white</item>
-
-        <item name="colorPrimaryVariant">@color/peach_tropico_lighter</item>
-        <item name="colorPrimaryDark">@color/peach_tropico_darker</item>
-        <item name="colorSecondaryVariant">@color/plum_tropico</item>
-
-        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
-    </style>
-
-    <!-- Wave 01 Theme -->
-    <style name="Theme.Wave01" parent="Base.Theme.Unchained">
-
-        <item name="colorPrimary">@color/radical_red</item>
-        <item name="colorPrimaryVariant">@color/peach_tropico_lighter</item>
-        <item name="colorPrimaryDark">@color/peach_tropico_darker</item>
-        <item name="colorSecondary">@color/mortar</item>
-        <item name="colorSecondaryVariant">@color/plum_tropico</item>
-
-        <item name="android:colorBackground">@color/thistle_green</item>
-        <item name="colorSurface">@color/apricot_peach</item>
-        <item name="colorError">@color/red_600</item>
-
-        <item name="colorOnPrimary">@color/white</item>
-        <item name="colorOnSecondary">@color/grey_50</item>
-        <item name="colorOnBackground">@color/grey_1000</item>
-        <item name="colorOnSurface">@color/grey_1000</item>
-        <item name="colorOnError">@color/white</item>
-
-        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
-        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">false</item>
-
-        <item name="mainBackground">@drawable/bg_waves_01</item>
-    </style>
-
-    <!-- Black & White theme -->
-    <style name="Theme.BlackAndWhite" parent="Base.Theme.Unchained">
-
-        <!--colorPrimary colors map to components and elements, such as app bars and buttons. -->
-        <!--colorSecondary colors are most often used as accents on components, such as FABs and -->
-        <!--selection controls.-->
-        <item name="colorPrimary">@color/grey_1000</item>
-        <item name="colorPrimaryVariant">@color/black</item>
-        <item name="colorPrimaryDark">@color/black</item>
-        <item name="colorSecondary">@color/black_800</item>
-        <item name="colorSecondaryVariant">@color/grey_900</item>
-
-        <!--colorBackground appears behind scrollable content and is used for the default window-->
-        <!--background. colorSurface is mapped to the surface of components such as cards, sheets-->
-        <!--and menus. colorError is used to indicate an error state for components such as-->
-        <!--text fields.-->
-        <item name="android:colorBackground">@color/white</item>
-        <item name="colorSurface">@color/grey_50</item>
-        <item name="colorError">@color/red_600</item>
-        <!--"On" colors define how text, icons and strokes are colored in relation to the surface-->
-        <!--on which they appear.-->
-        <item name="colorOnPrimary">@color/white</item>
-        <item name="colorOnSecondary">@color/white</item>
-        <item name="colorOnBackground">@color/black_800</item>
-        <item name="colorOnSurface">@color/black_800</item>
-        <item name="colorOnError">@color/white</item>
-
-        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
-        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">false</item>
-
-    </style>
-
-    <!--BASE CUSTOM THEME which will be shared between both light and dark theme variants-->
-    <style name="Base.Theme.Unchained" parent="Base.Theme.MaterialThemeBuilder">
-        <!--Material type attributes-->
-        <item name="textAppearanceHeadline1">@style/TextAppearance.UnchainedTheme.Headline1</item>
-        <item name="textAppearanceHeadline2">@style/TextAppearance.UnchainedTheme.Headline2</item>
-        <item name="textAppearanceHeadline3">@style/TextAppearance.UnchainedTheme.Headline3</item>
-        <item name="textAppearanceHeadline4">@style/TextAppearance.UnchainedTheme.Headline4</item>
-        <item name="textAppearanceHeadline5">@style/TextAppearance.UnchainedTheme.Headline5</item>
-        <item name="textAppearanceHeadline6">@style/TextAppearance.UnchainedTheme.Headline6</item>
-        <item name="textAppearanceSubtitle1">@style/TextAppearance.UnchainedTheme.Subtitle1</item>
-        <item name="textAppearanceSubtitle2">@style/TextAppearance.UnchainedTheme.Subtitle2</item>
-        <item name="textAppearanceBody1">@style/TextAppearance.UnchainedTheme.Body1</item>
-        <item name="textAppearanceBody2">@style/TextAppearance.UnchainedTheme.Body2</item>
-        <item name="textAppearanceButton">@style/TextAppearance.UnchainedTheme.Button</item>
-        <item name="textAppearanceCaption">@style/TextAppearance.UnchainedTheme.Caption</item>
-        <item name="textAppearanceOverline">@style/TextAppearance.UnchainedTheme.Overline</item>
-        <!--Material shape attributes-->
-        <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.UnchainedTheme.SmallComponent</item>
-        <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.UnchainedTheme.MediumComponent</item>
-        <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.UnchainedTheme.LargeComponent</item>
-        <!--Component styles-->
-        <item name="materialAlertDialogTheme">@style/ThemeOverlay.MaterialComponents.Dialog.Alert</item>
-        <item name="toolbarStyle">@style/Widget.MaterialComponents.Toolbar.PrimarySurface</item>
-        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
-        <!-- custom ones -->
-        <!-- app background, implement to change it from colorBackground -->
-        <item name="mainBackground">@drawable/bg_solid</item>
-        <!-- Status (top) and navigation bar (bottom) color-->
-        <item name="customStatusBarColor">?attr/colorSurface</item>
-        <item name="customNavigationBarColor">?attr/colorPrimary</item>
-    </style>
-
-    <style name="Base.Theme.MaterialThemeBuilder" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="android:statusBarColor">?attr/colorSurface</item>
-        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
-        <item name="android:navigationBarColor">?attr/colorPrimary</item>
-        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">false</item>
-    </style>
-
-    <style name="Widget.Unchained.Toolbar.Primary" parent="Widget.MaterialComponents.Toolbar.Primary">
-        <item name="materialThemeOverlay">@style/ThemeOverlay.Unchained.Toolbar.Primary</item>
-    </style>
-
-    <style name="ThemeOverlay.Unchained.Toolbar.Primary" parent="">
-        <!-- Changes the text color for the SearchView. They're on the top bar, so match it with the primary color. -->
-        <item name="android:editTextColor">?attr/colorOnPrimary</item>
-    </style>
-
-    <style name="Widget.Unchained.Button.Icon.Secondary" parent="Widget.MaterialComponents.Button.Icon">
-        <item name="backgroundTint">?attr/colorSecondary</item>
-        <item name="iconTint">?attr/colorOnSecondary</item>
-        <item name="android:textColor">?attr/colorOnSecondary</item>
-    </style>
-
-    <style name="Widget.Unchained.Button.Icon.Error" parent="Widget.MaterialComponents.Button.Icon">
-        <item name="backgroundTint">?attr/colorError</item>
-        <item name="iconTint">?attr/colorOnError</item>
-        <item name="android:textColor">?attr/colorOnError</item>
-    </style>
-
-
 </resources>

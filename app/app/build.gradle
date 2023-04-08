@@ -220,7 +220,7 @@ dependencies {
     implementation deps.coroutines.core
 
     // material design
-    implementation deps.material
+    implementation deps.material.v_3
 
     // Lifecycle stuff
     implementation deps.lifecycle.viewmodel_ktx

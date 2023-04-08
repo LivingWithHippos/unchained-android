@@ -57,7 +57,6 @@
 
             <Button
                 android:id="@+id/bDelete"
-                style="@style/Widget.Unchained.Button.Icon.Secondary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
@@ -85,7 +84,6 @@
 
             <Button
                 android:id="@+id/bConfirmDelete"
-                style="@style/Widget.Unchained.Button.Icon.Error"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"

@@ -23,7 +23,6 @@
                 android:layout_height="?attr/actionBarSize"
                 app:title="@string/app_name"
                 app:menu="@menu/top_app_bar"
-                style="@style/Widget.Unchained.Toolbar.Primary"
                 />
 
         </com.google.android.material.appbar.AppBarLayout>
@@ -34,7 +33,6 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:background="?mainBackground"
             app:layout_constraintTop_toBottomOf="@id/appBarLayout"
             app:layout_constraintBottom_toTopOf="@id/bottom_nav_view"
             app:defaultNavHost="true"
@@ -42,7 +40,6 @@
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottom_nav_view"
-            style="@style/Widget.MaterialComponents.BottomNavigationView.Colored"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:menu="@menu/bottom_navigation_menu"

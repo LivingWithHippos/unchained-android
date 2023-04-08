@@ -34,7 +34,6 @@
                 android:maxLines="2"
                 android:text="@{user.username, default=`User Name`}"
                 android:textAlignment="viewStart"
-                android:textAppearance="?attr/textAppearanceHeadline5"
                 app:layout_constraintEnd_toStartOf="@id/ivProfilePic"
                 app:layout_constraintStart_toStartOf="@id/cvPremium"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -49,7 +48,6 @@
                 android:focusable="false"
                 android:text="@{user.email, default=`Email@Address`}"
                 android:textAlignment="viewStart"
-                android:textAppearance="?attr/textAppearanceOverline"
                 app:layout_constraintEnd_toStartOf="@id/ivProfilePic"
                 app:layout_constraintStart_toStartOf="@id/tvName"
                 app:layout_constraintTop_toBottomOf="@id/tvName" />
@@ -75,8 +73,6 @@
                 android:clickable="false"
                 android:focusable="false"
                 android:padding="10dp"
-                app:cardCornerRadius="10dp"
-                app:cardElevation="5dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/ivProfilePic"
@@ -89,7 +85,6 @@
 
                     <TextView
                         android:id="@+id/tvStatus"
-                        style="@style/TextAppearance.UnchainedTheme.Overline"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/status"
@@ -98,7 +93,6 @@
 
                     <TextView
                         android:id="@+id/tvPremium"
-                        style="@style/TextAppearance.UnchainedTheme.Headline5"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -110,7 +104,6 @@
 
                     <TextView
                         android:id="@+id/tvPremiumDays"
-                        style="@style/TextAppearance.AppCompat.Body1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -120,7 +113,6 @@
 
                     <com.google.android.material.progressindicator.LinearProgressIndicator
                         android:id="@+id/pointsBar"
-                        style="@style/Widget.MaterialComponents.LinearProgressIndicator"
                         progressCompat="@{user.points}"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -140,8 +132,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@{@string/premium_points_format(user.points), default=`Premium Points: 750/1000`}"
-                        android:textAppearance="?attr/textAppearanceBody2"
-                        android:textColor="?attr/colorOnPrimary"
                         app:layout_constraintBottom_toBottomOf="@id/pointsBar"
                         app:layout_constraintEnd_toEndOf="@id/pointsBar"
                         app:layout_constraintStart_toStartOf="@id/pointsBar"
@@ -154,7 +144,6 @@
 
             <TextView
                 android:id="@+id/tvLoginDescription"
-                style="@style/TextAppearance.UnchainedTheme.Body2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
@@ -168,18 +157,16 @@
                 app:layout_constraintStart_toStartOf="@id/cvPremium"
                 app:layout_constraintTop_toBottomOf="@id/cvPremium" />
 
-            <View
+            <com.google.android.material.divider.MaterialDivider
                 android:id="@+id/divider"
-                style="@style/Divider"
-                android:layout_width="300dp"
-                android:layout_marginStart="20dp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:layout_marginEnd="20dp"
                 app:layout_constraintBottom_toTopOf="@+id/tvDescription"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvLoginDescription" />
+                app:layout_constraintEnd_toEndOf="@id/cvPremium"
+                app:layout_constraintStart_toStartOf="@id/cvPremium"
+                app:layout_constraintTop_toBottomOf="@+id/tvLoginDescription"
+                />
 
             <TextView
                 android:id="@+id/tvDescription"
@@ -198,6 +185,7 @@
 
             <Button
                 android:id="@+id/bAccount"
+                style="@style/Widget.Material3.Button.ElevatedButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
@@ -209,6 +197,7 @@
 
             <Button
                 android:id="@+id/bSettings"
+                style="@style/Widget.Material3.Button.ElevatedButton"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_marginStart="20dp"

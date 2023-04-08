@@ -24,7 +24,8 @@ versions.kotlin = "1.8.20"
 versions.ktlint = "11.0.0"
 versions.lifecycle = "2.6.1"
 versions.lottie = "5.2.0"
-versions.material = "1.8.0"
+versions.material_2 = "1.8.0"
+versions.material_3 = "1.1.0-beta02"
 versions.modernstorage = "1.0.0-alpha06"
 versions.moshi = "1.14.0"
 versions.navigation = "2.5.3"
@@ -165,7 +166,11 @@ lottie.core = "$lottie.package:lottie:$versions.lottie"
 lottie.compose = "$lottie.package:lottie-compose:$versions.lottie"
 deps.lottie = lottie
 
-deps.material = "com.google.android.material:material:$versions.material"
+
+def material = [:]
+material.v_2 = "com.google.android.material:material:$versions.material_2"
+material.v_3 = "androidx.compose.material3:material3:$versions.material_3"
+deps.material = material
 
 def modernstorage = [:]
 modernstorage.core = "com.google.modernstorage:modernstorage-storage:$versions.modernstorage"
