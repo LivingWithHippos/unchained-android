@@ -74,7 +74,6 @@
 
         <TextView
             android:id="@+id/tvErrorMessage"
-            style="@style/TextAppearance.UnchainedTheme.Body1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/loading"

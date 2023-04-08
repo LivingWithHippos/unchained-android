@@ -65,7 +65,6 @@
 
             <TextView
                 android:id="@+id/tvName"
-                style="@style/TextAppearance.UnchainedTheme.Headline5"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="20dp"
@@ -105,7 +104,6 @@
 
                     <TextView
                         android:id="@+id/tvDetails"
-                        style="@style/TextAppearance.UnchainedTheme.Overline"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
@@ -117,7 +115,6 @@
 
                     <TextView
                         android:id="@+id/tvDownloadId"
-                        style="@style/TextAppearance.UnchainedTheme.Headline6"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
@@ -193,7 +190,6 @@
                         app:srcCompat="@drawable/icon_share" />
 
                     <TextView
-                        style="@style/TextAppearance.UnchainedTheme.Body2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:focusable="false"
@@ -218,7 +214,6 @@
                         app:srcCompat="@drawable/icon_open_external" />
 
                     <TextView
-                        style="@style/TextAppearance.UnchainedTheme.Body2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:focusable="false"
@@ -243,7 +238,6 @@
                         app:srcCompat="@drawable/icon_copy" />
 
                     <TextView
-                        style="@style/TextAppearance.UnchainedTheme.Body2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:focusable="false"
@@ -268,7 +262,6 @@
                         app:srcCompat="@drawable/icon_download" />
 
                     <TextView
-                        style="@style/TextAppearance.UnchainedTheme.Body2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:focusable="false"
@@ -293,7 +286,6 @@
                         app:srcCompat="@drawable/icon_play_local" />
 
                     <TextView
-                        style="@style/TextAppearance.UnchainedTheme.Body2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:focusable="false"
@@ -318,7 +310,6 @@
                         app:srcCompat="@drawable/icon_remote" />
 
                     <TextView
-                        style="@style/TextAppearance.UnchainedTheme.Body2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:focusable="false"
@@ -344,7 +335,6 @@
                         app:srcCompat="@drawable/icon_play_outline" />
 
                     <TextView
-                        style="@style/TextAppearance.UnchainedTheme.Body2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:focusable="false"
@@ -369,7 +359,6 @@
                         app:srcCompat="@drawable/icon_browser_stream" />
 
                     <TextView
-                        style="@style/TextAppearance.UnchainedTheme.Body2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:focusable="false"

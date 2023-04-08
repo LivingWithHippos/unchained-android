@@ -16,7 +16,6 @@
 
             <TextView
                 android:id="@+id/tvLoadingTorrent"
-                style="@style/TextAppearance.UnchainedTheme.Body2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="20dp"
@@ -47,7 +46,6 @@
 
             <TextView
                 android:id="@+id/tvStatus"
-                style="@style/TextAppearance.UnchainedTheme.Body2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="20dp"

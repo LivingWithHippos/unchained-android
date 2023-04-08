@@ -35,7 +35,6 @@
 
             <TextView
                 android:id="@+id/streamingOverline1"
-                style="@style/TextAppearance.UnchainedTheme.Overline"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@{item.quality!= null ? item.quality : @string/alternative_link, default=`240p`}"
@@ -47,7 +46,6 @@
 
             <TextView
                 android:id="@+id/tvTitle"
-                style="@style/TextAppearance.UnchainedTheme.Headline6"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="@{item.mimeType, default=`video mp4`}"

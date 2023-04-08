@@ -39,7 +39,6 @@
 
         <TextView
             android:id="@+id/tvName"
-            style="@style/TextAppearance.UnchainedTheme.Body1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
@@ -102,7 +101,6 @@
 
         <TextView
             android:id="@+id/tvVersion"
-            style="@style/TextAppearance.UnchainedTheme.Overline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@{item.version + ``, default=`1.02`}"
@@ -113,7 +111,6 @@
 
         <TextView
             android:id="@+id/tvStatus"
-            style="@style/TextAppearance.UnchainedTheme.Overline"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"

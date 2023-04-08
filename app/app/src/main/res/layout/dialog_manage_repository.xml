@@ -22,7 +22,6 @@
 
             <TextView
                 android:id="@+id/tvName"
-                style="@style/TextAppearance.UnchainedTheme.Headline6"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="@string/repository"
@@ -51,7 +50,6 @@
 
             <TextView
                 android:id="@+id/tvAuthor"
-                style="@style/TextAppearance.UnchainedTheme.Overline"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
@@ -66,7 +64,6 @@
 
             <TextView
                 android:id="@+id/tvDescription"
-                style="@style/TextAppearance.UnchainedTheme.Body2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
@@ -92,7 +89,6 @@
 
             <TextView
                 android:id="@+id/tvInstallAllDescription"
-                style="@style/TextAppearance.UnchainedTheme.Caption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:maxWidth="100dp"
@@ -116,7 +112,6 @@
 
             <TextView
                 android:id="@+id/tvUpdateAllDescription"
-                style="@style/TextAppearance.UnchainedTheme.Caption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:maxWidth="100dp"
@@ -141,7 +136,6 @@
 
             <TextView
                 android:id="@+id/tvUninstallAllDescription"
-                style="@style/TextAppearance.UnchainedTheme.Caption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:maxWidth="100dp"
@@ -167,7 +161,6 @@
 
             <TextView
                 android:id="@+id/tvUninstallRepoDescription"
-                style="@style/TextAppearance.UnchainedTheme.Caption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:maxWidth="100dp"

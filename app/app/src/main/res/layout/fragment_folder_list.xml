@@ -34,7 +34,6 @@
 
         <TextView
             android:id="@+id/tvTitle"
-            style="@style/TextAppearance.UnchainedTheme.Headline6"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:ellipsize="end"
@@ -208,7 +207,6 @@
 
             <TextView
                 android:id="@+id/tvError"
-                style="@style/TextAppearance.UnchainedTheme.Overline"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"

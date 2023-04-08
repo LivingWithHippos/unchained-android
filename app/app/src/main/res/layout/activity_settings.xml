@@ -22,7 +22,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:title="@string/settings"
-                style="@style/Widget.MaterialComponents.Toolbar.Primary"
                 />
 
         </com.google.android.material.appbar.AppBarLayout>

@@ -21,7 +21,6 @@
 
         <TextView
             android:id="@+id/tvName"
-            style="@style/TextAppearance.UnchainedTheme.Headline6"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
@@ -65,7 +64,6 @@
 
             <TextView
                 android:id="@+id/size"
-                style="@style/TextAppearance.UnchainedTheme.Body1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="@{item.size!= null ? item.size : `-`, default=`15 MB`}"
@@ -87,7 +85,6 @@
 
             <TextView
                 android:id="@+id/seeders"
-                style="@style/TextAppearance.UnchainedTheme.Body1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="@{item.seeders!= null ? item.seeders : `-`, default=14}"
@@ -109,7 +106,6 @@
 
             <TextView
                 android:id="@+id/leechers"
-                style="@style/TextAppearance.UnchainedTheme.Body1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="@{item.leechers!= null ? item.leechers : `-`, default=3}"

@@ -124,9 +124,8 @@
                 app:layout_constraintStart_toEndOf="@id/switchRemote"
                 app:layout_constraintTop_toTopOf="@id/switchRemote" />
 
-            <View
+            <com.google.android.material.divider.MaterialDivider
                 android:id="@+id/divider"
-                style="@style/Divider"
                 android:layout_width="300dp"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
@@ -139,7 +138,6 @@
 
             <TextView
                 android:id="@+id/tvUploadTorrent"
-                style="@style/TextAppearance.UnchainedTheme.Caption"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"

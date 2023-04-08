@@ -41,7 +41,6 @@
 
             <TextView
                 android:id="@+id/type"
-                style="@style/TextAppearance.UnchainedTheme.Overline"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="parent"
@@ -52,7 +51,6 @@
 
             <TextView
                 android:id="@+id/cached"
-                style="@style/TextAppearance.UnchainedTheme.Overline"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
@@ -64,7 +62,6 @@
 
             <TextView
                 android:id="@+id/link"
-                style="@style/TextAppearance.UnchainedTheme.Body1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:maxLines="4"
