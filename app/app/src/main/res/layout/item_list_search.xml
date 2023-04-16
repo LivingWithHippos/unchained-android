@@ -17,6 +17,7 @@
     </data>
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/cvScrapedItem"
+        style="?attr/materialCardViewElevatedStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
@@ -36,6 +37,8 @@
 
             <TextView
                 android:id="@+id/tvCached"
+                android:textAppearance="?attr/textAppearanceLabelSmall"
+                android:textAllCaps="true"
                 android:visibility="@{item.isCached ? View.VISIBLE : View.GONE}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -45,6 +48,7 @@
 
             <TextView
                 android:id="@+id/tvName"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@{item.name.trim(), default=`File Name`}"
@@ -65,6 +69,7 @@
 
                 <TextView
                     android:id="@+id/tvLinks"
+                    android:textAppearance="?attr/textAppearanceLabelSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
@@ -75,6 +80,7 @@
 
                 <TextView
                     android:id="@+id/tvSeeders"
+                    android:textAppearance="?attr/textAppearanceLabelSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="5dp"
@@ -85,6 +91,7 @@
 
                 <TextView
                     android:id="@+id/tvLeechers"
+                    android:textAppearance="?attr/textAppearanceLabelSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
@@ -95,6 +102,7 @@
 
                 <TextView
                     android:id="@+id/tvSize"
+                    android:textAppearance="?attr/textAppearanceLabelSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text= "@{item.size, default=`3.4 GB`}"

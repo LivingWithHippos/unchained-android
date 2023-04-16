@@ -66,6 +66,7 @@
 
             <TextView
                 android:id="@+id/tvName"
+                android:textAppearance="?attr/textAppearanceTitleLarge"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="20dp"
@@ -78,6 +79,7 @@
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cvDetails"
+                style="?attr/materialCardViewElevatedStyle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -103,6 +105,7 @@
 
                     <TextView
                         android:id="@+id/tvDetails"
+                        android:textAppearance="?attr/textAppearanceLabelMedium"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/details"
@@ -112,6 +115,7 @@
 
                     <TextView
                         android:id="@+id/tvDownloadId"
+                        android:textAppearance="?attr/textAppearanceLabelSmall"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="5dp"
@@ -136,6 +140,7 @@
 
                     <TextView
                         android:id="@+id/tvSize"
+                        android:textAppearance="?attr/textAppearanceLabelMedium"
                         fileSize="@{details.fileSize}"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -199,8 +204,10 @@
                         app:srcCompat="@drawable/icon_share" />
 
                     <TextView
+                        android:textAppearance="?attr/textAppearanceLabelSmall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
                         android:focusable="false"
                         android:text="@string/share"
                         android:textAlignment="center" />
@@ -223,8 +230,10 @@
                         app:srcCompat="@drawable/icon_open_external" />
 
                     <TextView
+                        android:textAppearance="?attr/textAppearanceLabelSmall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
                         android:focusable="false"
                         android:text="@string/open"
                         android:textAlignment="center" />
@@ -247,8 +256,10 @@
                         app:srcCompat="@drawable/icon_copy" />
 
                     <TextView
+                        android:textAppearance="?attr/textAppearanceLabelSmall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
                         android:focusable="false"
                         android:text="@string/copy"
                         android:textAlignment="center" />
@@ -271,6 +282,7 @@
                         app:srcCompat="@drawable/icon_download" />
 
                     <TextView
+                        android:textAppearance="?attr/textAppearanceLabelSmall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:focusable="false"
@@ -295,8 +307,10 @@
                         app:srcCompat="@drawable/icon_play_local" />
 
                     <TextView
+                        android:textAppearance="?attr/textAppearanceLabelSmall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
                         android:focusable="false"
                         android:text="@string/send_to_player"
                         android:textAlignment="center" />
@@ -319,8 +333,10 @@
                         app:srcCompat="@drawable/icon_remote" />
 
                     <TextView
+                        android:textAppearance="?attr/textAppearanceLabelSmall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
                         android:focusable="false"
                         android:text="@string/kodi"
                         android:textAlignment="center" />
@@ -344,8 +360,10 @@
                         app:srcCompat="@drawable/icon_play_outline" />
 
                     <TextView
+                        android:textAppearance="?attr/textAppearanceLabelSmall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
                         android:focusable="false"
                         android:text="@string/load_streams"
                         android:textAlignment="center" />
@@ -368,8 +386,10 @@
                         app:srcCompat="@drawable/icon_browser_stream" />
 
                     <TextView
+                        android:textAppearance="?attr/textAppearanceLabelSmall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
                         android:focusable="false"
                         android:text="@string/open_browser_stream"
                         android:textAlignment="center" />

@@ -62,6 +62,7 @@ import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.github.livingwithhippos.unchained.utilities.extension.toHex
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.elevation.SurfaceColors
 import dagger.hilt.android.AndroidEntryPoint
 import java.security.MessageDigest
 import javax.inject.Inject
@@ -80,6 +81,10 @@ class MainActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         TelemetryManager.onStart(this)
+
+        val bottomColor = SurfaceColors.SURFACE_2.getColor(this)
+        window.navigationBarColor = bottomColor // Set color of system navigationBar same as BottomNavigationView
+        // window.statusBarColor = color // Set color of system statusBar same as ActionBar
     }
 
     override fun onStop() {

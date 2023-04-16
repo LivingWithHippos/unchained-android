@@ -39,6 +39,7 @@
 
         <TextView
             android:id="@+id/tvName"
+            android:textAppearance="?attr/textAppearanceBodyMedium"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
@@ -101,6 +102,7 @@
 
         <TextView
             android:id="@+id/tvVersion"
+            android:textAppearance="?attr/textAppearanceLabelMedium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@{item.version + ``, default=`1.02`}"
@@ -111,10 +113,12 @@
 
         <TextView
             android:id="@+id/tvStatus"
+            android:textAppearance="?attr/textAppearanceLabelMedium"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:text="@{item.statusTranslation, default=`new`}"
+            android:textAllCaps="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/tvVersion"

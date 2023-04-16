@@ -16,6 +16,7 @@
     </data>
 
     <com.google.android.material.card.MaterialCardView
+        style="?attr/materialCardViewElevatedStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -35,6 +36,7 @@
 
             <TextView
                 android:id="@+id/streamingOverline1"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@{item.quality!= null ? item.quality : @string/alternative_link, default=`240p`}"
@@ -46,6 +48,7 @@
 
             <TextView
                 android:id="@+id/tvTitle"
+                android:textAppearance="?attr/textAppearanceLabelMedium"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="@{item.mimeType, default=`video mp4`}"

@@ -322,7 +322,7 @@
     <string name="error_parsing_container">Errore di analisi del contenitore</string>
     <string name="loading_container_file">Caricamento del contenitore…</string>
     <string name="no_network_connection">Nessuna connessione a internet</string>
-    <string name="download_all">Scarica Tutto</string>
+    <string name="download_all">Scarica tutto</string>
     <string name="sending_crash_report">Unchained è appena andato in crash.
 \nInvio un rapporto…</string>
     <string name="upload">Carica</string>

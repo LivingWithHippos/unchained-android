@@ -26,6 +26,7 @@
 
             <TextView
                 android:id="@+id/tvName"
+                android:textAppearance="?attr/textAppearanceTitleLarge"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
@@ -40,6 +41,7 @@
 
             <TextView
                 android:id="@+id/tvMail"
+                android:textAppearance="?attr/textAppearanceLabelMedium"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="20dp"
@@ -86,6 +88,7 @@
 
                     <TextView
                         android:id="@+id/tvStatus"
+                        android:textAppearance="?attr/textAppearanceLabelMedium"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/status"
@@ -94,6 +97,7 @@
 
                     <TextView
                         android:id="@+id/tvPremium"
+                        android:textAppearance="?attr/textAppearanceBodyMedium"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -105,6 +109,7 @@
 
                     <TextView
                         android:id="@+id/tvPremiumDays"
+                        android:textAppearance="?attr/textAppearanceLabelSmall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -130,6 +135,7 @@
 
                     <TextView
                         android:id="@+id/tvPoints"
+                        android:textAppearance="?attr/textAppearanceLabelMedium"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
@@ -147,6 +153,7 @@
 
             <TextView
                 android:id="@+id/tvLoginDescription"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
@@ -173,6 +180,7 @@
 
             <TextView
                 android:id="@+id/tvDescription"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
