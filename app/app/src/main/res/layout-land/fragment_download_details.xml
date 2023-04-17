@@ -79,6 +79,7 @@
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cvDetails"
+                style="?attr/materialCardViewElevatedStyle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"

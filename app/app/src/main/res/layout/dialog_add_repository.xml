@@ -17,6 +17,7 @@
 
             <TextView
                 android:id="@+id/tvTitle"
+                android:textAppearance="?attr/textAppearanceTitleMedium"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="@string/repository"
@@ -36,7 +37,6 @@
                 android:layout_height="wrap_content"
                 android:indeterminate="false"
                 android:progress="0"
-                app:indicatorColor="?attr/colorPrimary"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tvTitle"
@@ -45,7 +45,7 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/tfAdd"
-                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                style="?attr/textInputFilledStyle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"

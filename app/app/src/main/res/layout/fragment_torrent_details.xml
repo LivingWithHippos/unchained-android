@@ -313,7 +313,6 @@
                             android:layout_marginEnd="10dp"
                             android:indeterminate="false"
                             android:progress="@{torrent.progress, default=60}"
-                            app:indicatorColor="?attr/colorPrimary"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
@@ -327,7 +326,6 @@
 
             <Button
                 android:id="@+id/bDownload"
-                style="@style/Widget.MaterialComponents.Button.Icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -336,6 +334,7 @@
                 android:minLines="3"
                 android:onClick="@{() -> listener.onDownloadClick(torrent)}"
                 android:text="@string/pass_to_download"
+                android:textAllCaps="true"
                 android:visibility="@{torrent.status.equalsIgnoreCase(`downloaded`) ? View.VISIBLE : View.GONE}"
                 app:icon="@drawable/icon_open_external"
                 app:layout_constraintEnd_toStartOf="@id/bCopy"

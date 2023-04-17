@@ -36,7 +36,6 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="20dp"
                 android:indeterminate="true"
-                app:indicatorColor="?attr/colorPrimary"
                 app:layout_constraintBottom_toTopOf="@id/tvStatus"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

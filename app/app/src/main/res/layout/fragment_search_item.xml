@@ -21,6 +21,7 @@
 
         <TextView
             android:id="@+id/tvName"
+            android:textAppearance="?attr/textAppearanceTitleMedium"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
@@ -36,11 +37,10 @@
 
         <Button
             android:id="@+id/linkCaption"
-            style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
-            android:layout_width="45dp"
+            style="?attr/materialIconButtonStyle"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
-            android:paddingStart="10dp"
             android:layout_marginEnd="20dp"
             app:icon="@drawable/icon_link"
             android:contentDescription="@string/link"
@@ -64,6 +64,7 @@
 
             <TextView
                 android:id="@+id/size"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="@{item.size!= null ? item.size : `-`, default=`15 MB`}"
@@ -75,6 +76,7 @@
 
             <TextView
                 android:id="@+id/sizeTitle"
+                android:textAppearance="?attr/textAppearanceLabelMedium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/size"
@@ -85,6 +87,7 @@
 
             <TextView
                 android:id="@+id/seeders"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="@{item.seeders!= null ? item.seeders : `-`, default=14}"
@@ -96,6 +99,7 @@
 
             <TextView
                 android:id="@+id/seedersTitle"
+                android:textAppearance="?attr/textAppearanceLabelMedium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/seeders"
@@ -106,6 +110,7 @@
 
             <TextView
                 android:id="@+id/leechers"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="@{item.leechers!= null ? item.leechers : `-`, default=3}"
@@ -117,6 +122,7 @@
 
             <TextView
                 android:id="@+id/leechersTitle"
+                android:textAppearance="?attr/textAppearanceLabelMedium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/leechers"

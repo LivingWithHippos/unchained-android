@@ -17,6 +17,7 @@
     </data>
 
     <com.google.android.material.card.MaterialCardView
+        style="?attr/materialCardViewElevatedStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -41,6 +42,7 @@
 
             <TextView
                 android:id="@+id/type"
+                android:textAppearance="?attr/textAppearanceLabelMedium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="parent"
@@ -51,17 +53,20 @@
 
             <TextView
                 android:id="@+id/cached"
+                android:textAppearance="?attr/textAppearanceLabelMedium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
                 app:layout_constraintStart_toEndOf="@id/type"
                 android:text="@string/cached"
+                android:textAllCaps="true"
                 app:layout_constraintTop_toTopOf="parent"
                 android:visibility="@{item.cached == false ? View.GONE : View.VISIBLE}"
                 />
 
             <TextView
                 android:id="@+id/link"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:maxLines="4"

@@ -73,9 +73,9 @@
 
                 <Button
                     android:id="@+id/bShare"
-                    style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    style="?attr/materialIconButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:contentDescription="@string/content_description_share_download"
                     android:onClick="@{()->listener.onShareClick(item.download)}"
                     android:paddingStart="13dp"
@@ -84,9 +84,9 @@
 
                 <Button
                     android:id="@+id/bOpen"
-                    style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    style="?attr/materialIconButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:contentDescription="@{@string/open_link_format(item.mimeType)}"
                     android:onClick="@{()->listener.onOpenClick(item.download)}"
                     android:paddingStart="13dp"
@@ -95,9 +95,9 @@
 
                 <Button
                     android:id="@+id/bCopy"
-                    style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    style="?attr/materialIconButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:contentDescription="@{@string/copy_link_format(item.mimeType)}"
                     android:onClick="@{()->listener.onCopyClick(item.download)}"
                     android:paddingStart="13dp"
@@ -106,9 +106,9 @@
 
                 <Button
                     android:id="@+id/bKodi"
-                    style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    style="?attr/materialIconButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:contentDescription="@{@string/open_with_format(item.mimeType)}"
                     android:onClick="@{()->listener.onOpenWithKodi(item.download)}"
                     android:paddingStart="13dp"

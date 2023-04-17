@@ -58,11 +58,12 @@
 
         <Button
             android:id="@+id/bManage"
-            android:layout_width="50dp"
+            style="?attr/materialIconButtonFilledStyle"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="10dp"
             app:icon="@drawable/icon_settings"
-            style="@style/Widget.MaterialComponents.Button.Icon"
+            app:iconSize="25dp"
             android:onClick="@{() ->listener.onRepositoryClick(item)}"
             app:layout_constraintStart_toEndOf="@id/tvName"
             app:layout_constraintTop_toTopOf="@id/tvName"

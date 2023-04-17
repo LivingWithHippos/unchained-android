@@ -125,7 +125,6 @@
                         android:layout_marginTop="10dp"
                         android:indeterminate="false"
                         android:max="1000"
-                        app:indicatorColor="?attr/colorPrimary"
                         app:indicatorSize="25dp"
                         app:layout_constraintBottom_toTopOf="@+id/tvPoints"
                         app:layout_constraintStart_toStartOf="parent"

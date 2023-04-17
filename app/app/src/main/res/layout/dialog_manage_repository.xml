@@ -41,7 +41,6 @@
                 android:layout_height="wrap_content"
                 android:indeterminate="false"
                 android:progress="0"
-                app:indicatorColor="?attr/colorPrimary"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tvName"
@@ -50,6 +49,7 @@
 
             <TextView
                 android:id="@+id/tvAuthor"
+                android:textAppearance="?attr/textAppearanceTitleMedium"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
@@ -64,6 +64,7 @@
 
             <TextView
                 android:id="@+id/tvDescription"
+                android:textAppearance="?attr/textAppearanceLabelMedium"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
@@ -77,8 +78,8 @@
 
             <Button
                 android:id="@+id/bInstallAll"
-                style="@style/Widget.MaterialComponents.Button.Icon"
-                android:layout_width="50dp"
+                style="?attr/materialIconButtonFilledStyle"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 app:icon="@drawable/icon_download"
@@ -89,8 +90,10 @@
 
             <TextView
                 android:id="@+id/tvInstallAllDescription"
+                android:textAppearance="?attr/textAppearanceLabelSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
                 android:maxWidth="100dp"
                 android:textAlignment="center"
                 android:text="@string/install_all"
@@ -101,8 +104,8 @@
 
             <Button
                 android:id="@+id/bUpdateAll"
-                style="@style/Widget.MaterialComponents.Button.Icon"
-                android:layout_width="50dp"
+                style="?attr/materialIconButtonFilledStyle"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:icon="@drawable/icon_reload"
                 app:layout_constraintBottom_toTopOf="@id/tvUpdateAllDescription"
@@ -112,8 +115,10 @@
 
             <TextView
                 android:id="@+id/tvUpdateAllDescription"
+                android:textAppearance="?attr/textAppearanceLabelSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
                 android:maxWidth="100dp"
                 android:textAlignment="center"
                 android:text="@string/update_all"
@@ -124,8 +129,8 @@
 
             <Button
                 android:id="@+id/bUninstallAll"
-                style="@style/Widget.MaterialComponents.Button.Icon"
-                android:layout_width="50dp"
+                style="?attr/materialIconButtonFilledStyle"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 app:icon="@drawable/icon_delete"
@@ -136,8 +141,10 @@
 
             <TextView
                 android:id="@+id/tvUninstallAllDescription"
+                android:textAppearance="?attr/textAppearanceLabelSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
                 android:maxWidth="100dp"
                 android:textAlignment="center"
                 android:layout_marginBottom="10dp"
@@ -149,8 +156,8 @@
 
             <Button
                 android:id="@+id/bUninstallRepo"
-                style="@style/Widget.MaterialComponents.Button.Icon"
-                android:layout_width="50dp"
+                style="?attr/materialIconButtonFilledStyle"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 app:icon="@drawable/icon_close"
@@ -161,8 +168,10 @@
 
             <TextView
                 android:id="@+id/tvUninstallRepoDescription"
+                android:textAppearance="?attr/textAppearanceLabelSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
                 android:maxWidth="100dp"
                 android:textAlignment="center"
                 android:layout_marginBottom="10dp"

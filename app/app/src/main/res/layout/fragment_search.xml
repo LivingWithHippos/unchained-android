@@ -17,7 +17,7 @@
 
         <Button
             android:id="@+id/bManagePlugins"
-            style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
+            style="@style/Widget.Material3.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/reload"
@@ -35,7 +35,7 @@
 
         <Button
             android:id="@+id/bSorting"
-            style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
+            style="@style/Widget.Material3.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/reload"
@@ -53,7 +53,6 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tfSearch"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
@@ -89,7 +88,6 @@
             android:indeterminate="false"
             android:progress="100"
             android:focusable="false"
-            app:indicatorColor="?attr/colorOnBackground"
             app:trackCornerRadius="20dp"
             app:layout_constraintBottom_toBottomOf="@id/tfSearch"
             app:layout_constraintEnd_toEndOf="parent"
@@ -99,7 +97,7 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/pluginPicker"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
@@ -119,7 +117,7 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/categoryPicker"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
