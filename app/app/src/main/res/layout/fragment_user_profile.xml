@@ -87,25 +87,16 @@
                     android:padding="20dp">
 
                     <TextView
-                        android:id="@+id/tvStatus"
-                        android:textAppearance="?attr/textAppearanceLabelMedium"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/status"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <TextView
                         android:id="@+id/tvPremium"
-                        android:textAppearance="?attr/textAppearanceBodyMedium"
+                        android:textAppearance="?attr/textAppearanceBodyLarge"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:text="@{user.premium > 0 ? @string/premium : @string/not_premium, default=`Premium`}"
                         android:textAllCaps="true"
                         android:textStyle="bold"
-                        app:layout_constraintStart_toStartOf="@id/tvStatus"
-                        app:layout_constraintTop_toBottomOf="@id/tvStatus" />
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
                         android:id="@+id/tvPremiumDays"
