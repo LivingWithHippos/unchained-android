@@ -184,7 +184,7 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
 
         val link = SpannableString(getString(R.string.this_link))
         link.setSpan(UnderlineSpan(), 0, link.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        val colorSecondary = requireContext().getThemeColor(R.attr.colorSecondary)
+        val colorSecondary = requireContext().getThemeColor(com.google.android.material.R.attr.colorSecondary)
         link.setSpan(
             ForegroundColorSpan(colorSecondary),
             0,
