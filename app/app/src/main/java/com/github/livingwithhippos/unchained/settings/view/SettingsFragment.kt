@@ -10,7 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.preference.EditTextPreference
 import androidx.preference.ListPreference
 import androidx.preference.Preference
@@ -25,8 +25,8 @@ import com.github.livingwithhippos.unchained.utilities.extension.openExternalWeb
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.mikepenz.aboutlibraries.LibsBuilder
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 import timber.log.Timber
+import javax.inject.Inject
 
 /**
  * A simple [PreferenceFragmentCompat] subclass. Manages the interactions with the items in the
@@ -36,7 +36,7 @@ import timber.log.Timber
 class SettingsFragment : PreferenceFragmentCompat() {
     @Inject lateinit var preferences: SharedPreferences
 
-    private val viewModel: SettingsViewModel by viewModels()
+    private val viewModel: SettingsViewModel by activityViewModels()
 
     private val pickDirectoryLauncher =
         registerForActivityResult(ActivityResultContracts.OpenDocumentTree()) {
@@ -100,6 +100,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
             true
         }
 
+        setupTheme()
+
         setupKodi()
 
         setupVersion()
@@ -141,6 +143,13 @@ class SettingsFragment : PreferenceFragmentCompat() {
         }
 
         return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    private fun setupTheme() {
+        findPreference<Preference>("selected_theme")?.setOnPreferenceClickListener {
+            openThemePickerDialog()
+            true
+        }
     }
 
     private fun setupKodi() {
@@ -247,6 +256,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
     private fun openKodiManagementDialog() {
         val dialog = KodiManagementDialog()
         dialog.show(parentFragmentManager, "KodiManagementDialogFragment")
+    }
+
+    private fun openThemePickerDialog() {
+        val dialog = ThemePickerDialog()
+        dialog.show(parentFragmentManager, "ThemePickerDialogFragment")
     }
 
     private fun openCreditsDialog() {

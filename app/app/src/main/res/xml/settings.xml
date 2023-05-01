@@ -28,6 +28,10 @@
             android:title="@string/night_theme"
             app:useSimpleSummaryProvider="true" />
 
+        <Preference
+            app:key="selected_theme"
+            app:title="@string/title_theme_preference" />
+
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/download">
