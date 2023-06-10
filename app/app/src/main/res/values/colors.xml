@@ -1,5 +1,5 @@
 <resources>
-    <!-- theme one start -->
+    <!-- theme one -->
     <color name="one_seed">#FF4E50</color>
     <color name="one_md_theme_light_primary">#BA1826</color>
     <color name="one_md_theme_light_onPrimary">#FFFFFF</color>
@@ -61,8 +61,8 @@
     <color name="one_md_theme_dark_surfaceTint">#FFB3AE</color>
     <color name="one_md_theme_dark_outlineVariant">#534342</color>
     <color name="one_md_theme_dark_scrim">#000000</color>
-    <!-- theme one end -->
 
+    <!-- theme two -->
     <color name="two_seed">#FFFFFF</color>
     <color name="two_md_theme_light_primary">#006874</color>
     <color name="two_md_theme_light_onPrimary">#FFFFFF</color>
@@ -110,7 +110,7 @@
     <color name="two_md_theme_dark_errorContainer">#93000A</color>
     <color name="two_md_theme_dark_onError">#690005</color>
     <color name="two_md_theme_dark_onErrorContainer">#FFDAD6</color>
-    <color name="two_md_theme_dark_background">#191C1D</color>
+    <color name="two_md_theme_dark_background">#000000</color>
     <color name="two_md_theme_dark_onBackground">#E1E3E3</color>
     <color name="two_md_theme_dark_surface">#191C1D</color>
     <color name="two_md_theme_dark_onSurface">#E1E3E3</color>

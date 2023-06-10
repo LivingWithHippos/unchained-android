@@ -2,7 +2,7 @@ package com.github.livingwithhippos.unchained.settings.view
 
 import android.app.Dialog
 import android.os.Bundle
-import androidx.core.content.res.ResourcesCompat
+import android.widget.TextView
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.DiffUtil
@@ -10,9 +10,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.settings.viewmodel.SettingsViewModel
 import com.github.livingwithhippos.unchained.utilities.DataBindingAdapter
+import com.github.livingwithhippos.unchained.utilities.extension.getThemeList
+import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 
 @AndroidEntryPoint
 class ThemePickerDialog : DialogFragment(), ThemePickListener {
@@ -30,16 +31,27 @@ class ThemePickerDialog : DialogFragment(), ThemePickListener {
             val view = inflater.inflate(R.layout.dialog_theme_picker, null)
             val adapter = ThemePickerAdapter(this)
             val list = view.findViewById<RecyclerView>(R.id.themeList)
+            val label = view.findViewById<TextView>(R.id.selectedTheme)
             list.adapter = adapter
-            adapter.submitList(getThemeList())
+            adapter.submitList(requireContext().getThemeList())
+
+            val currentTheme = requireContext().getThemeList().find { it.id == viewModel.getCurrentTheme() }
+            if (currentTheme != null) {
+                label.text = currentTheme.name
+            }
+
+            viewModel.themeLiveData.observe(this) {
+                label.text = it.name
+            }
 
 
             builder
                 .setView(view)
                 .setNeutralButton(getString(R.string.close)) { dialog, _ -> dialog.cancel() }
-                .setPositiveButton(getString(R.string.select)) { dialog, _ ->
+                .setPositiveButton(getString(R.string.accept)) { dialog, _ ->
+                    viewModel.applyTheme()
+                    context?.showToast(R.string.restart_to_apply)
                     dialog.cancel()
-                    // todo
                 }
                 .setTitle(getString(R.string.themes))
             return builder.create()
@@ -47,15 +59,7 @@ class ThemePickerDialog : DialogFragment(), ThemePickListener {
     }
 
     override fun onThemeClick(item: ThemeItem) {
-        TODO("Not yet implemented")
-    }
-
-    private fun getThemeList(): List<ThemeItem> {
-        Timber.d("Seed one is ${R.color.one_seed}")
-        return listOf(
-            ThemeItem(R.style.Theme_Unchained_Material3_One, "Pink 01", ResourcesCompat.getColor(resources, R.color.one_seed, null)),
-            ThemeItem(R.style.Theme_Unchained_Material3_Two, "White 01", ResourcesCompat.getColor(resources,R.color.two_seed, null)),
-        )
+        viewModel.selectTheme(item)
     }
 }
 
