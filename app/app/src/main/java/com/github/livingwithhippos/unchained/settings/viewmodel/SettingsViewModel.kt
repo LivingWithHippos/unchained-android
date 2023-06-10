@@ -17,8 +17,8 @@ import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewMod
 import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.postEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlinx.coroutines.launch
 
 @HiltViewModel
 class SettingsViewModel
@@ -82,7 +82,7 @@ constructor(
     }
 
     fun getCurrentTheme(): Int {
-       return preferences.getInt(KEY_THEME_NEW, R.style.Theme_Unchained_Material3_One)
+        return preferences.getInt(KEY_THEME_NEW, R.style.Theme_Unchained_Material3_One)
     }
 }
 

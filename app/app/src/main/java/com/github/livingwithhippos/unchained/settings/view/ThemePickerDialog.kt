@@ -35,15 +35,13 @@ class ThemePickerDialog : DialogFragment(), ThemePickListener {
             list.adapter = adapter
             adapter.submitList(requireContext().getThemeList())
 
-            val currentTheme = requireContext().getThemeList().find { it.id == viewModel.getCurrentTheme() }
+            val currentTheme =
+                requireContext().getThemeList().find { it.id == viewModel.getCurrentTheme() }
             if (currentTheme != null) {
                 label.text = currentTheme.name
             }
 
-            viewModel.themeLiveData.observe(this) {
-                label.text = it.name
-            }
-
+            viewModel.themeLiveData.observe(this) { label.text = it.name }
 
             builder
                 .setView(view)
@@ -63,21 +61,15 @@ class ThemePickerDialog : DialogFragment(), ThemePickListener {
     }
 }
 
-data class ThemeItem(
-    val id: Int,
-    val name: String,
-    val seedColor: Int
-)
-
+data class ThemeItem(val id: Int, val name: String, val seedColor: Int)
 
 class ThemePickerAdapter(listener: ThemePickListener) :
-DataBindingAdapter<ThemeItem, ThemePickListener>(DiffCallback(), listener) {
+    DataBindingAdapter<ThemeItem, ThemePickListener>(DiffCallback(), listener) {
     class DiffCallback : DiffUtil.ItemCallback<ThemeItem>() {
         override fun areItemsTheSame(oldItem: ThemeItem, newItem: ThemeItem): Boolean =
             oldItem.id == newItem.id
 
-        override fun areContentsTheSame(oldItem: ThemeItem, newItem: ThemeItem): Boolean =
-            true
+        override fun areContentsTheSame(oldItem: ThemeItem, newItem: ThemeItem): Boolean = true
     }
 
     override fun getItemViewType(position: Int) = R.layout.item_theme_list

@@ -83,7 +83,8 @@ class MainActivity : AppCompatActivity() {
         TelemetryManager.onStart(this)
 
         val bottomColor = SurfaceColors.SURFACE_2.getColor(this)
-        window.navigationBarColor = bottomColor // Set color of system navigationBar same as BottomNavigationView
+        window.navigationBarColor =
+            bottomColor // Set color of system navigationBar same as BottomNavigationView
         // window.statusBarColor = color // Set color of system statusBar same as ActionBar
     }
 
