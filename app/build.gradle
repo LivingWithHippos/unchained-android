@@ -3,7 +3,7 @@ buildscript {
     apply from: 'versions.gradle'
 
     ext {
-        versions_plugin_version = '0.46.0'
+        versions_plugin_version = '0.47.0'
         kotlin_version = '1.8.21'
     }
 
