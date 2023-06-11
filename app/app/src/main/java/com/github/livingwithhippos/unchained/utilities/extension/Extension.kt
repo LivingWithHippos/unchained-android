@@ -38,8 +38,8 @@ import androidx.lifecycle.Observer
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.settings.view.ThemeItem
 import com.github.livingwithhippos.unchained.utilities.EitherResult
-import java.util.Locale
 import timber.log.Timber
+import java.util.Locale
 
 /**
  * Provides the list of available themes, used to easily get them with ids from anything with a
@@ -49,13 +49,23 @@ fun Context.getThemeList(): List<ThemeItem> {
     return listOf(
         ThemeItem(
             R.style.Theme_Unchained_Material3_One,
-            "Pink 01",
+            "Red 01",
             ResourcesCompat.getColor(resources, R.color.one_seed, null)
         ),
         ThemeItem(
             R.style.Theme_Unchained_Material3_Two,
-            "White 01",
+            "Green 01",
             ResourcesCompat.getColor(resources, R.color.two_seed, null)
+        ),
+        ThemeItem(
+            R.style.Theme_Unchained_Material3_Three,
+            "Blue 01",
+            ResourcesCompat.getColor(resources, R.color.three_seed, null)
+        ),
+        ThemeItem(
+            R.style.Theme_Unchained_Material3_Four,
+            "Black and White 01",
+            ResourcesCompat.getColor(resources, R.color.four_seed, null)
         ),
     )
 }

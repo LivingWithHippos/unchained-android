@@ -83,4 +83,62 @@
         <item name="colorSurfaceInverse">@color/two_md_theme_dark_inverseSurface</item>
         <item name="colorPrimaryInverse">@color/two_md_theme_dark_inversePrimary</item>
     </style>
+
+    <style name="Theme.Unchained.Material3.Three" parent="Theme.Unchained.Material3">
+        <item name="colorPrimary">@color/three_md_theme_dark_primary</item>
+        <item name="colorOnPrimary">@color/three_md_theme_dark_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/three_md_theme_dark_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/three_md_theme_dark_onPrimaryContainer</item>
+        <item name="colorSecondary">@color/three_md_theme_dark_secondary</item>
+        <item name="colorOnSecondary">@color/three_md_theme_dark_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/three_md_theme_dark_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/three_md_theme_dark_onSecondaryContainer</item>
+        <item name="colorTertiary">@color/three_md_theme_dark_tertiary</item>
+        <item name="colorOnTertiary">@color/three_md_theme_dark_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/three_md_theme_dark_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/three_md_theme_dark_onTertiaryContainer</item>
+        <item name="colorError">@color/three_md_theme_dark_error</item>
+        <item name="colorErrorContainer">@color/three_md_theme_dark_errorContainer</item>
+        <item name="colorOnError">@color/three_md_theme_dark_onError</item>
+        <item name="colorOnErrorContainer">@color/three_md_theme_dark_onErrorContainer</item>
+        <item name="android:colorBackground">@color/three_md_theme_dark_background</item>
+        <item name="colorOnBackground">@color/three_md_theme_dark_onBackground</item>
+        <item name="colorSurface">@color/three_md_theme_dark_surface</item>
+        <item name="colorOnSurface">@color/three_md_theme_dark_onSurface</item>
+        <item name="colorSurfaceVariant">@color/three_md_theme_dark_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/three_md_theme_dark_onSurfaceVariant</item>
+        <item name="colorOutline">@color/three_md_theme_dark_outline</item>
+        <item name="colorOnSurfaceInverse">@color/three_md_theme_dark_inverseOnSurface</item>
+        <item name="colorSurfaceInverse">@color/three_md_theme_dark_inverseSurface</item>
+        <item name="colorPrimaryInverse">@color/three_md_theme_dark_inversePrimary</item>
+    </style>
+
+    <style name="Theme.Unchained.Material3.Four" parent="Theme.Unchained.Material3">
+        <item name="colorPrimary">@color/four_md_theme_dark_primary</item>
+        <item name="colorOnPrimary">@color/four_md_theme_dark_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/four_md_theme_dark_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/four_md_theme_dark_onPrimaryContainer</item>
+        <item name="colorSecondary">@color/four_md_theme_dark_secondary</item>
+        <item name="colorOnSecondary">@color/four_md_theme_dark_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/four_md_theme_dark_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/four_md_theme_dark_onSecondaryContainer</item>
+        <item name="colorTertiary">@color/four_md_theme_dark_tertiary</item>
+        <item name="colorOnTertiary">@color/four_md_theme_dark_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/four_md_theme_dark_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/four_md_theme_dark_onTertiaryContainer</item>
+        <item name="colorError">@color/four_md_theme_dark_error</item>
+        <item name="colorErrorContainer">@color/four_md_theme_dark_errorContainer</item>
+        <item name="colorOnError">@color/four_md_theme_dark_onError</item>
+        <item name="colorOnErrorContainer">@color/four_md_theme_dark_onErrorContainer</item>
+        <item name="android:colorBackground">@color/four_md_theme_dark_background</item>
+        <item name="colorOnBackground">@color/four_md_theme_dark_onBackground</item>
+        <item name="colorSurface">@color/four_md_theme_dark_surface</item>
+        <item name="colorOnSurface">@color/four_md_theme_dark_onSurface</item>
+        <item name="colorSurfaceVariant">@color/four_md_theme_dark_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/four_md_theme_dark_onSurfaceVariant</item>
+        <item name="colorOutline">@color/four_md_theme_dark_outline</item>
+        <item name="colorOnSurfaceInverse">@color/four_md_theme_dark_inverseOnSurface</item>
+        <item name="colorSurfaceInverse">@color/four_md_theme_dark_inverseSurface</item>
+        <item name="colorPrimaryInverse">@color/four_md_theme_dark_inversePrimary</item>
+    </style>
 </resources>
