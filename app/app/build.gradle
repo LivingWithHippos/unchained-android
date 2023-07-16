@@ -1,5 +1,5 @@
 plugins {
-    id 'com.ncorti.ktfmt.gradle' version '0.12.0'
+    id 'com.ncorti.ktfmt.gradle' version '0.13.0'
 }
 
 apply plugin: 'com.android.application'
@@ -67,17 +67,15 @@ android {
         }
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
-
     packagingOptions {
-        // Exclude AndroidX version files
-        exclude 'META-INF/*.version'
-        // Exclude consumer proguard files
-        exclude 'META-INF/proguard/*'
-        // Exclude the Firebase/Fabric/other random properties files
-        exclude '/*.properties'
-        exclude 'fabric/*.properties'
-        exclude 'META-INF/*.properties'
+        jniLibs {
+            excludes += ['META-INF/proguard/*']
+        }
+        resources {
+            excludes += ['META-INF/*.version', 'META-INF/proguard/*', '/*.properties', 'fabric/*.properties', 'META-INF/*.properties']
+        }
     }
+
 
     signingConfigs {
         // use local file if available or Environment variables (for CI)
