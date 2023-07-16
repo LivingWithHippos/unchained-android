@@ -236,8 +236,7 @@ class MainActivity : AppCompatActivity() {
             // do not inline this variable in the when, because getContentIfNotHandled() will change
             // its
             // value to null if checked again in WaitingUserAction
-            val authState: FSMAuthenticationState? = it?.getContentIfNotHandled()
-            when (authState) {
+            when (val authState: FSMAuthenticationState? = it?.getContentIfNotHandled()) {
                 null -> {
                     // do nothing
                 }
@@ -313,8 +312,13 @@ class MainActivity : AppCompatActivity() {
         // check if the app has been opened by clicking on torrents/magnet on sharing links
         getIntentData()
 
-        // observe for torrents downloaded
-        registerReceiver(downloadReceiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
+        // observe for downloaded torrents
+        ContextCompat.registerReceiver(
+            applicationContext,
+            downloadReceiver,
+            IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE),
+            ContextCompat.RECEIVER_NOT_EXPORTED
+        )
 
         viewModel.linkLiveData.observe(this) {
             it?.getContentIfNotHandled()?.let { link ->
@@ -797,6 +801,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         // if the user is pressing back on an "exiting"fragment, show a toast alerting him and wait
         // for
