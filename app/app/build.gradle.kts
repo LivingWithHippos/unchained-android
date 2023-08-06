@@ -42,6 +42,11 @@ protobuf {
     }
 }
 
+ktfmt {
+    // KotlinLang style - 4 space indentation - From kotlinlang.org/docs/coding-conventions.html
+    kotlinLangStyle()
+}
+
 android {
     namespace = "com.github.livingwithhippos.unchained"
     compileSdk = 33
