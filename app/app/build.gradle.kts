@@ -47,6 +47,10 @@ ktfmt {
     kotlinLangStyle()
 }
 
+kapt {
+    correctErrorTypes = true
+}
+
 android {
     namespace = "com.github.livingwithhippos.unchained"
     compileSdk = 33
@@ -233,4 +237,11 @@ dependencies {
     implementation(libs.about.core)
     implementation(libs.about.ui)
 
+    androidTestImplementation(libs.test.core)
+    androidTestImplementation(libs.test.espresso)
+    androidTestImplementation(libs.test.runner)
+    androidTestImplementation(libs.test.rules)
+    androidTestImplementation(libs.test.junit)
+    androidTestImplementation(libs.test.truth)
+    testImplementation(libs.junit)
 }
