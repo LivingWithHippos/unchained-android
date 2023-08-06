@@ -696,4 +696,6 @@
     <string name="select">Select</string>
     <string name="selected_theme">Selected theme</string>
     <string name="apply">Apply</string>
+    <string name="copy_magnet">Copy Magnet</string>
+    <string name="share_magnet">Share Magnet</string>
 </resources>

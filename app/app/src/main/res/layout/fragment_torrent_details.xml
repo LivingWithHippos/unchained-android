@@ -54,6 +54,69 @@
                 android:maxLines="3"
                 android:text="@{torrent.filename, default=`File Name`}" />
 
+
+            <com.google.android.flexbox.FlexboxLayout
+                android:id="@+id/actionsLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                app:alignItems="flex_start"
+                app:flexWrap="wrap"
+                app:justifyContent="space_around">
+
+                <LinearLayout
+                    android:layout_width="@dimen/fab_download_details_width"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="10dp">
+
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        android:id="@+id/fabShareMagnet"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="@string/share_magnet"
+                        android:onClick="@{() -> listener.onShareMagnetClick()}"
+                        app:srcCompat="@drawable/icon_share" />
+
+                    <TextView
+                        android:textAppearance="?attr/textAppearanceLabelSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:focusable="false"
+                        android:text="@string/share_magnet"
+                        android:textAlignment="center" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="@dimen/fab_download_details_width"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="10dp">
+
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        android:id="@+id/fabCopyMagnet"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="@string/copy_magnet"
+                        android:onClick="@{() -> listener.onCopyMagnetClick()}"
+                        app:srcCompat="@drawable/icon_open_external" />
+
+                    <TextView
+                        android:textAppearance="?attr/textAppearanceLabelSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:focusable="false"
+                        android:text="@string/copy_magnet"
+                        android:textAlignment="center" />
+                </LinearLayout>
+
+            </com.google.android.flexbox.FlexboxLayout>
+
+
             <com.google.android.material.card.MaterialCardView
                 style="?attr/materialCardViewElevatedStyle"
                 android:layout_width="match_parent"
