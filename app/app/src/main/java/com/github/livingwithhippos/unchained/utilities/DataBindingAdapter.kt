@@ -173,6 +173,7 @@ class DataBindingTrackedViewHolder<T, U>(private val binding: ViewDataBinding) :
     fun getItemDetails(): ItemDetailsLookup.ItemDetails<T> =
         object : ItemDetailsLookup.ItemDetails<T>() {
             override fun getPosition(): Int = layoutPosition
+
             override fun getSelectionKey(): T? = mItem
         }
 }

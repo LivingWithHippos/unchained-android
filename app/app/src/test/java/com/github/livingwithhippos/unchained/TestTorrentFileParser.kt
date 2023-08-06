@@ -3580,6 +3580,7 @@ class TestTorrentFileParser {
         print(torrentStructure)
         assert(torrentStructure.children.isNotEmpty())
     }
+
     @Test
     fun testSingleTorrentFile() {
         val json =

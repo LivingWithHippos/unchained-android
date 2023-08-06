@@ -58,7 +58,8 @@ class FolderListFragment : UnchainedFragment(), DownloadListListener {
     private val scope = CoroutineScope(Dispatchers.Default + job)
 
     private val mediaRegex =
-        "\\.(webm|avi|mkv|ogg|MTS|M2TS|TS|mov|wmv|mp4|m4p|m4v|mp2|mpe|mpv|mpg|mpeg|m2v|3gp)$".toRegex()
+        "\\.(webm|avi|mkv|ogg|MTS|M2TS|TS|mov|wmv|mp4|m4p|m4v|mp2|mpe|mpv|mpg|mpeg|m2v|3gp)$"
+            .toRegex()
 
     private fun shareAll() {
         val downloads: List<DownloadItem>? = viewModel.folderLiveData.value?.peekContent()

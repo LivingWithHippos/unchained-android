@@ -760,20 +760,30 @@ class Parser(
 sealed class ParserResult {
     // errors
     object MissingPlugin : ParserResult()
+
     object PluginVersionUnsupported : ParserResult()
+
     object MissingQuery : ParserResult()
+
     object MissingCategory : ParserResult()
+
     object NetworkBodyError : ParserResult()
+
     object EmptyInnerLinks : ParserResult()
+
     object PluginBuildError : ParserResult()
+
     object MissingImplementationError : ParserResult()
 
     // search flow
     data class SearchStarted(val size: Int) : ParserResult()
+
     object SearchFinished : ParserResult()
 
     // results
     data class Results(val values: List<ScrapedItem>) : ParserResult()
+
     data class SingleResult(val value: ScrapedItem) : ParserResult()
+
     object SourceError : ParserResult()
 }

@@ -220,5 +220,6 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
 
 interface TorrentDetailsListener {
     fun onDownloadClick(item: TorrentItem)
+
     fun onDeleteClick(id: String)
 }

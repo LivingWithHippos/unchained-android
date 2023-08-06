@@ -344,7 +344,9 @@ class PluginRepository @Inject constructor() {
 
 sealed class InstallResult {
     object Installed : InstallResult()
+
     data class Error(val exception: Exception) : InstallResult()
+
     object Incompatible : InstallResult()
 }
 

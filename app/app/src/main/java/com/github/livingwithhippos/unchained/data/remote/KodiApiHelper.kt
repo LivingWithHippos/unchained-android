@@ -7,5 +7,6 @@ import retrofit2.Response
 
 interface KodiApiHelper {
     suspend fun openUrl(request: KodiRequest, auth: String?): Response<KodiResponse>
+
     suspend fun getVolume(request: KodiRequest, auth: String?): Response<KodiGenericResponse>
 }

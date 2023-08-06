@@ -9,6 +9,8 @@ package com.github.livingwithhippos.unchained.data.model
 /** Sealed classes representing all the possible network responses */
 sealed class NetworkResponse<out T : Any> {
     data class Success<out T : Any>(val data: T) : NetworkResponse<T>()
+
     data class SuccessEmptyBody(val code: Int) : NetworkResponse<Nothing>()
+
     data class Error(val exception: Exception) : NetworkResponse<Nothing>()
 }

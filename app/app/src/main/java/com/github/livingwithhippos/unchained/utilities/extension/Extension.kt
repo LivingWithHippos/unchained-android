@@ -38,8 +38,8 @@ import androidx.lifecycle.Observer
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.settings.view.ThemeItem
 import com.github.livingwithhippos.unchained.utilities.EitherResult
-import timber.log.Timber
 import java.util.Locale
+import timber.log.Timber
 
 /**
  * Provides the list of available themes, used to easily get them with ids from anything with a
