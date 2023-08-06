@@ -322,7 +322,7 @@
     <string name="error_parsing_container">Errore di analisi del contenitore</string>
     <string name="loading_container_file">Caricamento del contenitore…</string>
     <string name="no_network_connection">Nessuna connessione a internet</string>
-    <string name="download_all">Scarica Tutto</string>
+    <string name="download_all">Scarica tutto</string>
     <string name="sending_crash_report">Unchained è appena andato in crash.
 \nInvio un rapporto…</string>
     <string name="upload">Carica</string>
@@ -475,4 +475,8 @@
     <string name="vibrate_on_download">Vibrazione al completamento dei download</string>
     <string name="kodi_picker_description">Mostra un menu di selezione quando si inviano link a Kodi</string>
     <string name="kodi_picker">Selezionare il server di destinazione</string>
+    <string name="themes">Temi</string>
+    <string name="select">Seleziona</string>
+    <string name="selected_theme">Tema selezionato</string>
+    <string name="apply">Applica</string>
 </resources>

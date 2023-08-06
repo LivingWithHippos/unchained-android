@@ -10,17 +10,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.fragment.app.viewModels
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.fragment.app.activityViewModels
 import androidx.preference.EditTextPreference
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.github.livingwithhippos.unchained.R
-import com.github.livingwithhippos.unchained.base.ThemingCallback.Companion.DAY_ONLY_THEMES
 import com.github.livingwithhippos.unchained.settings.viewmodel.SettingEvent
 import com.github.livingwithhippos.unchained.settings.viewmodel.SettingsViewModel
 import com.github.livingwithhippos.unchained.utilities.FEEDBACK_URL
 import com.github.livingwithhippos.unchained.utilities.GPLV3_URL
+import com.github.livingwithhippos.unchained.utilities.extension.getThemeList
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.mikepenz.aboutlibraries.LibsBuilder
@@ -36,7 +37,7 @@ import timber.log.Timber
 class SettingsFragment : PreferenceFragmentCompat() {
     @Inject lateinit var preferences: SharedPreferences
 
-    private val viewModel: SettingsViewModel by viewModels()
+    private val viewModel: SettingsViewModel by activityViewModels()
 
     private val pickDirectoryLauncher =
         registerForActivityResult(ActivityResultContracts.OpenDocumentTree()) {
@@ -61,22 +62,19 @@ class SettingsFragment : PreferenceFragmentCompat() {
         setPreferencesFromResource(R.xml.settings, rootKey)
 
         val dayNightPreference = findPreference<ListPreference>(KEY_DAY_NIGHT)
-        val themePreference = findPreference<ListPreference>(KEY_THEME)
 
-        dayNightPreference?.setOnPreferenceChangeListener { _, newValue ->
-            if (newValue != THEME_DAY && DAY_ONLY_THEMES.contains(themePreference?.value)) {
-                context?.showToast(R.string.theme_day_support)
-                false
-            } else true
-        }
-
-        themePreference?.setOnPreferenceChangeListener { _, newValue ->
-            if (DAY_ONLY_THEMES.contains(newValue) && dayNightPreference?.entry != THEME_DAY) {
-                setNightMode(THEME_DAY)
-                // todo: this produces a flicker. If possible find another way to update only the
-                // dayNightPreference summary, or restart the app to apply it.
-                // update the  dayNightPreference summary
-                setPreferencesFromResource(R.xml.settings, rootKey)
+        dayNightPreference?.setOnPreferenceChangeListener { oldValue, newValue ->
+            if (oldValue != newValue) {
+                when (newValue) {
+                    THEME_AUTO ->
+                        AppCompatDelegate.setDefaultNightMode(
+                            AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+                        )
+                    THEME_DAY ->
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                    THEME_NIGHT ->
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                }
             }
             true
         }
@@ -99,6 +97,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 .start(requireContext())
             true
         }
+
+        setupTheme()
 
         setupKodi()
 
@@ -141,6 +141,16 @@ class SettingsFragment : PreferenceFragmentCompat() {
         }
 
         return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    private fun setupTheme() {
+        findPreference<Preference>("selected_theme")?.setOnPreferenceClickListener {
+            openThemePickerDialog()
+            true
+        }
+        val themeRes = preferences.getInt(KEY_THEME_NEW, R.style.Theme_Unchained_Material3_One)
+        val currentTheme: ThemeItem? = requireContext().getThemeList().find { it.id == themeRes }
+        findPreference<Preference>("selected_theme")?.summary = currentTheme?.name
     }
 
     private fun setupKodi() {
@@ -194,13 +204,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
         versionPreference?.summary = version
     }
 
-    private fun setNightMode(nightMode: String) {
-        with(preferences.edit()) {
-            putString(KEY_DAY_NIGHT, nightMode)
-            apply()
-        }
-    }
-
     override fun onPreferenceTreeClick(preference: Preference): Boolean {
         when (preference.key) {
             "feedback" -> context?.openExternalWebPage(FEEDBACK_URL)
@@ -249,6 +252,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
         dialog.show(parentFragmentManager, "KodiManagementDialogFragment")
     }
 
+    private fun openThemePickerDialog() {
+        val dialog = ThemePickerDialog()
+        dialog.show(parentFragmentManager, "ThemePickerDialogFragment")
+    }
+
     private fun openCreditsDialog() {
         val dialog = HtmlDialogFragment(R.string.credits_title, R.string.credits_text)
         dialog.show(parentFragmentManager, "CreditsDialogFragment")
@@ -267,7 +275,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
     companion object {
         // these must match the ones used in [xml/settings.xml]
         const val KEY_DAY_NIGHT = "day_night_theme"
-        const val KEY_THEME = "current_theme"
+        const val KEY_THEME_NEW = "new_current_theme"
         const val KEY_TORRENT_NOTIFICATIONS = "notification_torrent_key"
         const val KEY_REFERRAL_ASKED = "referral_asked_key"
         const val KEY_REFERRAL_USE = "use_referral_key"

@@ -44,7 +44,7 @@
 
             <TextView
                 android:id="@+id/tvName"
-                style="@style/TextAppearance.UnchainedTheme.Headline5"
+                android:textAppearance="?attr/textAppearanceTitleLarge"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -55,6 +55,7 @@
                 android:text="@{torrent.filename, default=`File Name`}" />
 
             <com.google.android.material.card.MaterialCardView
+                style="?attr/materialCardViewElevatedStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -77,7 +78,7 @@
                         android:orientation="horizontal">
 
                         <TextView
-                            style="@style/TextAppearance.UnchainedTheme.Body2"
+                            android:textAppearance="?attr/textAppearanceLabelMedium"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="3dp"
@@ -87,7 +88,7 @@
                             android:textAlignment="center" />
 
                         <TextView
-                            style="@style/TextAppearance.UnchainedTheme.Body2"
+                            android:textAppearance="?attr/textAppearanceLabelMedium"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="3dp"
@@ -97,7 +98,7 @@
                             android:textAlignment="center" />
 
                         <TextView
-                            style="@style/TextAppearance.UnchainedTheme.Body2"
+                            android:textAppearance="?attr/textAppearanceLabelMedium"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="3dp"
@@ -115,7 +116,7 @@
                         android:orientation="horizontal">
 
                         <TextView
-                            style="@style/TextAppearance.UnchainedTheme.Headline7"
+                            android:textAppearance="?attr/textAppearanceBodyMedium"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -124,7 +125,7 @@
                             android:textStyle="bold" />
 
                         <TextView
-                            style="@style/TextAppearance.UnchainedTheme.Headline7"
+                            android:textAppearance="?attr/textAppearanceBodyMedium"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -133,7 +134,7 @@
                             android:textStyle="bold" />
 
                         <TextView
-                            style="@style/TextAppearance.UnchainedTheme.Headline7"
+                            android:textAppearance="?attr/textAppearanceBodyMedium"
                             fileSize="@{torrent.originalBytes}"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -157,7 +158,7 @@
                         android:orientation="horizontal">
 
                         <TextView
-                            style="@style/TextAppearance.UnchainedTheme.Body2"
+                            android:textAppearance="?attr/textAppearanceLabelMedium"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="3dp"
@@ -167,7 +168,7 @@
                             android:textAlignment="center" />
 
                         <TextView
-                            style="@style/TextAppearance.UnchainedTheme.Body2"
+                            android:textAppearance="?attr/textAppearanceLabelMedium"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="3dp"
@@ -177,7 +178,7 @@
                             android:textAlignment="center" />
 
                         <TextView
-                            style="@style/TextAppearance.UnchainedTheme.Body2"
+                            android:textAppearance="?attr/textAppearanceLabelMedium"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="3dp"
@@ -195,7 +196,7 @@
                         android:orientation="horizontal">
 
                         <TextView
-                            style="@style/TextAppearance.UnchainedTheme.Headline7"
+                            android:textAppearance="?attr/textAppearanceBodyMedium"
                             fileSize="@{torrent.bytes}"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -206,7 +207,7 @@
 
                         <TextView
                             android:id="@+id/tvTotalFiles"
-                            style="@style/TextAppearance.UnchainedTheme.Headline7"
+                            android:textAppearance="?attr/textAppearanceBodyMedium"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -216,7 +217,7 @@
 
                         <TextView
                             android:id="@+id/tvSelectedFilesNumber"
-                            style="@style/TextAppearance.UnchainedTheme.Headline6"
+                            android:textAppearance="?attr/textAppearanceBodyMedium"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -230,6 +231,7 @@
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cvDownloadDetails"
+                style="?attr/materialCardViewElevatedStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -248,7 +250,7 @@
 
                     <TextView
                         android:id="@+id/tvDownloadOverline"
-                        style="@style/TextAppearance.UnchainedTheme.Overline"
+                        android:textAppearance="?attr/textAppearanceLabelMedium"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/download"
@@ -258,7 +260,7 @@
 
                     <TextView
                         android:id="@+id/tvProgress"
-                        style="@style/TextAppearance.UnchainedTheme.Overline"
+                        android:textAppearance="?attr/textAppearanceLabelMedium"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="5dp"
@@ -269,7 +271,7 @@
 
                     <TextView
                         android:id="@+id/tvSpeed"
-                        style="@style/TextAppearance.UnchainedTheme.Headline6"
+                        android:textAppearance="?attr/textAppearanceBodyMedium"
                         downloadSpeed="@{torrent.speed}"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -285,7 +287,7 @@
 
                     <TextView
                         android:id="@+id/tvSeeders"
-                        style="@style/TextAppearance.AppCompat.Body1"
+                        android:textAppearance="?attr/textAppearanceLabelSmall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@{torrent.seeders == null ? `` : @plurals/seeders_format(torrent.seeders, torrent.seeders), default=`%1$d seeders`}"
@@ -311,7 +313,6 @@
                             android:layout_marginEnd="10dp"
                             android:indeterminate="false"
                             android:progress="@{torrent.progress, default=60}"
-                            app:indicatorColor="?attr/colorPrimary"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
@@ -325,7 +326,6 @@
 
             <Button
                 android:id="@+id/bDownload"
-                style="@style/Widget.MaterialComponents.Button.Icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -334,6 +334,7 @@
                 android:minLines="3"
                 android:onClick="@{() -> listener.onDownloadClick(torrent)}"
                 android:text="@string/pass_to_download"
+                android:textAllCaps="true"
                 android:visibility="@{torrent.status.equalsIgnoreCase(`downloaded`) ? View.VISIBLE : View.GONE}"
                 app:icon="@drawable/icon_open_external"
                 app:layout_constraintEnd_toStartOf="@id/bCopy"
@@ -343,6 +344,7 @@
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cvSelectedTorrentFiles"
+                style="?attr/materialCardViewElevatedStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -359,7 +361,7 @@
                     android:padding="10dp"
                     android:orientation="vertical">
                 <TextView
-                    style="@style/TextAppearance.UnchainedTheme.Headline6"
+                    android:textAppearance="?attr/textAppearanceTitleSmall"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"

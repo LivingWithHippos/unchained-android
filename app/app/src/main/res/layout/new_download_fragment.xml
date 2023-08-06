@@ -27,7 +27,6 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tfLink"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="230dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
@@ -54,9 +53,9 @@
 
         <Button
             android:id="@+id/bPasteLink"
-            style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            style="?attr/materialIconButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             app:icon="@drawable/icon_paste"
             app:iconSize="35dp"
@@ -69,7 +68,6 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tiPassword"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
             android:layout_width="230dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
@@ -95,20 +93,20 @@
 
         <Button
             android:id="@+id/bPastePassword"
-            style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            style="?attr/materialIconButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             app:icon="@drawable/icon_paste"
             app:iconSize="35dp"
             android:contentDescription="@string/paste"
+            app:layout_constraintTop_toTopOf="@id/tiPassword"
             app:layout_constraintBottom_toBottomOf="@id/tiPassword"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/tiPassword" />
 
-        <!-- https://material.io/develop/android/components/switches -->
-        <androidx.appcompat.widget.SwitchCompat
+        <com.google.android.material.materialswitch.MaterialSwitch
             android:id="@+id/switchRemote"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -135,10 +133,10 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/switchRemote" />
 
-        <View
+        <com.google.android.material.divider.MaterialDivider
             android:id="@+id/divider"
-            style="@style/Divider"
             android:layout_width="300dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
             android:layout_marginBottom="10dp"
@@ -150,7 +148,7 @@
 
         <TextView
             android:id="@+id/tvUploadTorrent"
-            style="@style/TextAppearance.UnchainedTheme.Caption"
+            android:textAppearance="?attr/textAppearanceLabelMedium"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"

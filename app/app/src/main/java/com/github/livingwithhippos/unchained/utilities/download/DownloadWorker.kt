@@ -363,9 +363,13 @@ fun makeProgressForegroundInfo(
 
 sealed class DownloadStatus {
     object Queued : DownloadStatus()
+
     object Stopped : DownloadStatus()
+
     object Paused : DownloadStatus()
+
     object Completed : DownloadStatus()
+
     data class Running(
         val totalSize: Double,
         val downloadedSize: Long,
@@ -377,8 +381,12 @@ sealed class DownloadStatus {
 
 sealed class DownloadErrorType {
     object ResponseError : DownloadErrorType()
+
     object Interrupted : DownloadErrorType()
+
     object EmptyBody : DownloadErrorType()
+
     object ServerUnavailable : DownloadErrorType()
+
     object IPBanned : DownloadErrorType()
 }

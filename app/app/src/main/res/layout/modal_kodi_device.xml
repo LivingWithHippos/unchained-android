@@ -40,7 +40,6 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tfName"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="230dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
@@ -64,7 +63,6 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tfAddress"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="230dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
@@ -88,7 +86,6 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tfPort"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="230dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
@@ -114,7 +111,6 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tfUsername"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="230dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
@@ -138,7 +134,7 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tfPassword"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_width="230dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
@@ -163,7 +159,6 @@
 
         <Button
             android:id="@+id/bTest"
-            style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/sort"

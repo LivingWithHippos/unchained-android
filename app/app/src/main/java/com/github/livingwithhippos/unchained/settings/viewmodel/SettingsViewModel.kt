@@ -6,10 +6,13 @@ import android.net.Uri
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.local.ProtoStore
 import com.github.livingwithhippos.unchained.data.repository.HostsRepository
 import com.github.livingwithhippos.unchained.data.repository.KodiRepository
 import com.github.livingwithhippos.unchained.data.repository.PluginRepository
+import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Companion.KEY_THEME_NEW
+import com.github.livingwithhippos.unchained.settings.view.ThemeItem
 import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewModel.Companion.KEY_DOWNLOAD_FOLDER
 import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.postEvent
@@ -32,6 +35,8 @@ constructor(
 
     val eventLiveData = MutableLiveData<Event<SettingEvent>>()
 
+    val themeLiveData = MutableLiveData<ThemeItem>()
+
     fun updateRegexps() {
         viewModelScope.launch {
             hostsRepository.updateHostsRegex()
@@ -48,6 +53,10 @@ constructor(
         }
     }
 
+    fun selectTheme(theme: ThemeItem) {
+        themeLiveData.postValue(theme)
+    }
+
     fun setDownloadFolder(uri: Uri) {
         uri.describeContents()
         with(preferences.edit()) {
@@ -61,6 +70,19 @@ constructor(
             protoStore.deleteCredentials()
             eventLiveData.postEvent(SettingEvent.Logout)
         }
+    }
+
+    fun applyTheme() {
+        themeLiveData.value?.let {
+            with(preferences.edit()) {
+                putInt(KEY_THEME_NEW, it.id)
+                apply()
+            }
+        }
+    }
+
+    fun getCurrentTheme(): Int {
+        return preferences.getInt(KEY_THEME_NEW, R.style.Theme_Unchained_Material3_One)
     }
 }
 

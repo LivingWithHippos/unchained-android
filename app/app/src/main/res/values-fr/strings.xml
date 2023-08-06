@@ -474,4 +474,8 @@
     <string name="vibrate_on_download">Vibrer à la fin des téléchargements</string>
     <string name="kodi_picker_description">Afficher un menu de sélection lors de l\'envoi de liens vers Kodi</string>
     <string name="kodi_picker">Sélectionner le serveur de destination</string>
+    <string name="themes">Thèmes</string>
+    <string name="select">Choisir</string>
+    <string name="selected_theme">Thème choisi</string>
+    <string name="apply">Appliquer</string>
 </resources>

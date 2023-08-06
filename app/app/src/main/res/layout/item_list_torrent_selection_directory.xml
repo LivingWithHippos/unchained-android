@@ -45,7 +45,7 @@
 
         <TextView
             android:id="@+id/tvDirectoryName"
-            style="@style/TextAppearance.UnchainedTheme.Body1"
+            android:textAppearance="?attr/textAppearanceBodyMedium"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textStyle="bold"

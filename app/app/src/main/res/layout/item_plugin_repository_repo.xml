@@ -19,11 +19,10 @@
         android:focusable="true"
         >
 
-        <View
+        <com.google.android.material.divider.MaterialDivider
             android:id="@+id/divider"
-            style="@style/Divider"
             android:layout_width="0dp"
-            android:layout_height="2dp"
+            android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -44,7 +43,6 @@
 
         <TextView
             android:id="@+id/tvName"
-            style="@style/TextAppearance.UnchainedTheme.Headline7"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
@@ -60,11 +58,12 @@
 
         <Button
             android:id="@+id/bManage"
-            android:layout_width="50dp"
+            style="?attr/materialIconButtonFilledStyle"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="10dp"
             app:icon="@drawable/icon_settings"
-            style="@style/Widget.MaterialComponents.Button.Icon"
+            app:iconSize="25dp"
             android:onClick="@{() ->listener.onRepositoryClick(item)}"
             app:layout_constraintStart_toEndOf="@id/tvName"
             app:layout_constraintTop_toTopOf="@id/tvName"
@@ -75,7 +74,6 @@
 
         <TextView
             android:id="@+id/tvVersion"
-            style="@style/TextAppearance.UnchainedTheme.Overline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@{item.version + ``, default=`1.02`}"
@@ -86,7 +84,6 @@
 
         <TextView
             android:id="@+id/tvAuthor"
-            style="@style/TextAppearance.UnchainedTheme.Overline"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"

@@ -44,36 +44,36 @@
 
             <Button
                 android:id="@+id/bDeleteSelected"
-                style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:paddingStart="13dp"
+                style="?attr/materialIconButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:contentDescription="@string/delete"
                 android:onClick="@{() -> listener.deleteSelectedItems()}"
                 app:icon="@drawable/icon_delete"
+                app:iconSize="25dp"
                 android:tooltipText="@string/delete_selected"
                 />
 
             <Button
                 android:id="@+id/bDownloadSelected"
-                style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:paddingStart="13dp"
+                style="?attr/materialIconButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:contentDescription="@string/download"
                 android:onClick="@{() -> listener.downloadSelectedItems()}"
                 app:icon="@drawable/icon_download"
+                app:iconSize="25dp"
                 android:tooltipText="@string/download_selected"
                 />
 
             <Button
                 android:id="@+id/bDetailsSelected"
-                style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:paddingStart="13dp"
+                style="?attr/materialIconButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:contentDescription="@string/torrent_details"
                 app:icon="@drawable/icon_info"
+                app:iconSize="25dp"
                 android:onClick="@{() -> listener.openSelectedDetails()}"
                 android:tooltipText="@string/torrent_details" />
 

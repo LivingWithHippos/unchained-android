@@ -116,9 +116,13 @@ constructor(
 
 sealed class DownloadDetailsMessage {
     object KodiError : DownloadDetailsMessage()
+
     object KodiSuccess : DownloadDetailsMessage()
+
     object KodiMissingCredentials : DownloadDetailsMessage()
+
     object KodiMissingDefault : DownloadDetailsMessage()
+
     data class KodiShowPicker(val url: String) : DownloadDetailsMessage()
 }
 

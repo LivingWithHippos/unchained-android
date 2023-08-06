@@ -12,13 +12,9 @@
         android:summary="@string/restart_to_apply"
         android:title="@string/title_aspect">
 
-        <DropDownPreference
-            android:defaultValue="waves_01"
-            android:entries="@array/themes"
-            android:entryValues="@array/theme_values"
-            android:key="current_theme"
-            android:title="@string/title_theme_preference"
-            app:useSimpleSummaryProvider="true" />
+        <Preference
+            app:key="selected_theme"
+            app:title="@string/title_theme_preference" />
 
         <DropDownPreference
             android:defaultValue="auto"

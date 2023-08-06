@@ -115,9 +115,14 @@ constructor(
 
 sealed class Link {
     data class Host(val link: String) : Link()
+
     data class Folder(val link: String) : Link()
+
     data class Magnet(val link: String) : Link()
+
     data class Torrent(val upload: UploadedTorrent) : Link()
+
     data class Container(val links: List<String>) : Link()
+
     object RetrievalError : Link()
 }

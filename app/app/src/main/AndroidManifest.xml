@@ -30,7 +30,7 @@
         android:networkSecurityConfig="@xml/network_security_config"
         android:roundIcon="@mipmap/icon_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Unchained"
+        android:theme="@style/Theme.Unchained.Material3.Two"
         tools:targetApi="n">
 
         <activity
@@ -259,7 +259,6 @@
                 <data android:host="4shared.com" />
 
                 <data android:host="adf.ly" />
-                <data android:host="alfafile.net" />
                 <data android:host="alfafile.net" />
                 <data android:host="alterupload.cjoint.net" />
                 <data android:host="alterupload.com" />

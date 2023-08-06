@@ -43,7 +43,6 @@
 
             <TextView
                 android:id="@+id/tvLoginMessage"
-                style="@style/TextAppearance.UnchainedTheme.Body1"
                 android:text="@string/login_message_placeholder"
                 android:visibility="@{secrets.clientSecret == null ? View.VISIBLE : View.GONE}"
                 android:layout_width="0dp"
@@ -62,7 +61,6 @@
 
             <TextView
                 android:id="@+id/tvAuthenticationLink"
-                style="@style/TextAppearance.UnchainedTheme.Body1"
                 android:text="@{auth.directVerificationUrl, default=`https://www.real-debrid.com/ABCD1234DEFGH`}"
                 android:visibility="@{auth.directVerificationUrl != null ? View.VISIBLE : View.GONE}"
                 android:layout_width="0dp"
@@ -127,7 +125,6 @@
 
             <TextView
                 android:id="@+id/tvUsePrivateToken"
-                style="@style/TextAppearance.UnchainedTheme.Body2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="30dp"
@@ -146,7 +143,6 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/tfPrivateCode"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"

@@ -22,7 +22,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:title="@string/settings"
-                style="@style/Widget.MaterialComponents.Toolbar.Primary"
                 />
 
         </com.google.android.material.appbar.AppBarLayout>
@@ -32,7 +31,6 @@
             android:name="androidx.navigation.fragment.NavHostFragment"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:background="?mainBackground"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"

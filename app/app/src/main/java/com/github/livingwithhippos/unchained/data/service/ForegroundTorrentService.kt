@@ -139,7 +139,6 @@ class ForegroundTorrentService : LifecycleService() {
         lifecycleScope.launch {
             while (true) {
                 try {
-                    val token = torrentRepository.getToken()
                     torrentsLiveData.postValue(getTorrentList())
                 } catch (ex: IllegalArgumentException) {
                     // no valid token ready, retry later

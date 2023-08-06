@@ -825,13 +825,18 @@ class TorrentsListFragment : UnchainedFragment(), TorrentListListener {
 
 sealed class ListState {
     object UpdateTorrent : ListState()
+
     object UpdateDownload : ListState()
+
     object Ready : ListState()
 }
 
 interface SelectedItemsButtonsListener {
     fun deleteSelectedItems()
+
     fun shareSelectedItems()
+
     fun downloadSelectedItems()
+
     fun openSelectedDetails()
 }

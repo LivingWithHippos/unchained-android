@@ -62,6 +62,7 @@ import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.github.livingwithhippos.unchained.utilities.extension.toHex
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.elevation.SurfaceColors
 import dagger.hilt.android.AndroidEntryPoint
 import java.security.MessageDigest
 import javax.inject.Inject
@@ -80,6 +81,11 @@ class MainActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         TelemetryManager.onStart(this)
+
+        val bottomColor = SurfaceColors.SURFACE_2.getColor(this)
+        window.navigationBarColor =
+            bottomColor // Set color of system navigationBar same as BottomNavigationView
+        // window.statusBarColor = color // Set color of system statusBar same as ActionBar
     }
 
     override fun onStop() {
@@ -230,8 +236,7 @@ class MainActivity : AppCompatActivity() {
             // do not inline this variable in the when, because getContentIfNotHandled() will change
             // its
             // value to null if checked again in WaitingUserAction
-            val authState: FSMAuthenticationState? = it?.getContentIfNotHandled()
-            when (authState) {
+            when (val authState: FSMAuthenticationState? = it?.getContentIfNotHandled()) {
                 null -> {
                     // do nothing
                 }
@@ -307,8 +312,13 @@ class MainActivity : AppCompatActivity() {
         // check if the app has been opened by clicking on torrents/magnet on sharing links
         getIntentData()
 
-        // observe for torrents downloaded
-        registerReceiver(downloadReceiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
+        // observe for downloaded torrents
+        ContextCompat.registerReceiver(
+            applicationContext,
+            downloadReceiver,
+            IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE),
+            ContextCompat.RECEIVER_NOT_EXPORTED
+        )
 
         viewModel.linkLiveData.observe(this) {
             it?.getContentIfNotHandled()?.let { link ->
@@ -791,6 +801,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         // if the user is pressing back on an "exiting"fragment, show a toast alerting him and wait
         // for

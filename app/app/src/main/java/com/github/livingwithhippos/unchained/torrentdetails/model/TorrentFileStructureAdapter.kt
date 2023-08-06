@@ -92,6 +92,7 @@ fun getFilesNodes(
 
 interface TorrentContentListener {
     fun onSelectedFile(item: TorrentFileItem)
+
     fun onSelectedFolder(item: TorrentFileItem)
 }
 

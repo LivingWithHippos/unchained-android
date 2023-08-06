@@ -692,4 +692,8 @@
     <string name="vibrate_on_download">Vibrate on downloads completion</string>
     <string name="kodi_picker">Select destination server</string>
     <string name="kodi_picker_description">Show a selection menu when sending links to Kodi</string>
+    <string name="themes">Themes</string>
+    <string name="select">Select</string>
+    <string name="selected_theme">Selected theme</string>
+    <string name="apply">Apply</string>
 </resources>

@@ -17,6 +17,7 @@
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/cvDevice"
+        style="?attr/materialCardViewElevatedStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -50,7 +51,7 @@
 
             <TextView
                 android:id="@+id/tvTitle"
-                style="@style/TextAppearance.UnchainedTheme.Body1"
+                android:textAppearance="?attr/textAppearanceLabelSmall"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
@@ -64,7 +65,7 @@
 
             <TextView
                 android:id="@+id/tvDetails"
-                style="@style/TextAppearance.UnchainedTheme.Caption"
+                android:textAppearance="?attr/textAppearanceBodySmall"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="@{item.address +':'+ item.port, default=`192.178.4.1:4200`}"

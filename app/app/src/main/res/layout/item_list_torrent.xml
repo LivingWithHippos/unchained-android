@@ -22,6 +22,7 @@
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cvTorrent"
+            style="?attr/materialCardViewElevatedStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
@@ -58,7 +59,8 @@
                 <!-- todo: add status translation (see TorrentDetailsFragment) -->
                 <TextView
                     android:id="@+id/tvTitle"
-                    style="@style/TextAppearance.UnchainedTheme.Overline"
+                    android:textAppearance="?attr/textAppearanceLabelSmall"
+                    android:textAllCaps="true"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
@@ -69,7 +71,7 @@
 
                 <TextView
                     android:id="@+id/tvProgress"
-                    style="@style/TextAppearance.UnchainedTheme.Overline"
+                    android:textAppearance="?attr/textAppearanceLabelMedium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:visibility="@{item.progress >=0 &amp;&amp; item.progress &lt;100 ? View.VISIBLE : View.GONE, default=visible}"
@@ -81,7 +83,7 @@
 
                 <TextView
                     android:id="@+id/tvName"
-                    style="@style/TextAppearance.UnchainedTheme.Body2"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="@{item.filename, default=`Big.Buck.Bunny.BDRip.S01E16.End.Of.The.Buckening.720p.WEB-DL.`}"
@@ -94,7 +96,7 @@
 
                 <TextView
                     android:id="@+id/tvSize"
-                    style="@style/TextAppearance.UnchainedTheme.Caption"
+                    android:textAppearance="?attr/textAppearanceLabelSmall"
                     fileSize="@{item.bytes}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

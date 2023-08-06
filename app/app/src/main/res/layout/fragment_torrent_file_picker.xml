@@ -10,7 +10,6 @@
 
         <TextView
             android:id="@+id/tvPickerTitle"
-            style="@style/TextAppearance.UnchainedTheme.Headline7"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"

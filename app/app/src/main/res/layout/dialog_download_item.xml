@@ -40,7 +40,6 @@
             android:minWidth="150dp"
             android:text="@string/open"
             app:icon="@drawable/icon_open"
-            style="@style/Widget.MaterialComponents.Button.Icon"
             />
 
         <Button
@@ -51,7 +50,7 @@
             android:minWidth="150dp"
             android:text="@string/share"
             app:icon="@drawable/icon_share"
-            style="@style/Widget.MaterialComponents.Button.Icon" />
+            />
 
         <Button
             android:id="@+id/bDelete"
@@ -60,8 +59,7 @@
             android:layout_marginTop="15dp"
             android:minWidth="150dp"
             android:text="@string/remove"
-            app:icon="@drawable/icon_delete"
-            style="@style/Widget.Unchained.Button.Icon.Secondary" />
+            app:icon="@drawable/icon_delete"/>
 
 
     </LinearLayout>
@@ -76,17 +74,17 @@
 
         <TextView
             android:id="@+id/tvConfirmDelete"
+            android:textAppearance="?attr/textAppearanceBodySmall"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:padding="10dp"
             android:textAlignment="center"
             android:text="@string/confirm_download_removal_description"
-            style="@style/TextAppearance.UnchainedTheme.Body1"/>
+            />
 
             <Button
                 android:id="@+id/bConfirmDelete"
-                style="@style/Widget.Unchained.Button.Icon.Error"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"

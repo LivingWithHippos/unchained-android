@@ -20,7 +20,6 @@
 
         <TextView
             android:id="@+id/tvFileID"
-            style="@style/TextAppearance.UnchainedTheme.Body2"
             android:layout_width="40dp"
             android:layout_height="0dp"
             android:text="@{item.id + ``, default=`1234`}"
@@ -35,7 +34,6 @@
 
         <TextView
             android:id="@+id/tvFileName"
-            style="@style/TextAppearance.UnchainedTheme.Body2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
@@ -49,7 +47,6 @@
 
         <TextView
             android:id="@+id/tvFileSize"
-            style="@style/TextAppearance.UnchainedTheme.Caption"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             fileSize="@{item.bytes}"
