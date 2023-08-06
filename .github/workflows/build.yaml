@@ -22,6 +22,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Setup
+        run: java -version
       - name: Checkout
         uses: actions/checkout@v3
       - name: Retrieve keystore for apk signing
