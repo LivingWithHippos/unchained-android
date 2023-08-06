@@ -478,4 +478,5 @@
     <string name="themes">Temi</string>
     <string name="select">Seleziona</string>
     <string name="selected_theme">Tema selezionato</string>
+    <string name="apply">Applica</string>
 </resources>

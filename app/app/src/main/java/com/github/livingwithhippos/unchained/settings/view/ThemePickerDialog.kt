@@ -46,7 +46,7 @@ class ThemePickerDialog : DialogFragment(), ThemePickListener {
             builder
                 .setView(view)
                 .setNeutralButton(getString(R.string.close)) { dialog, _ -> dialog.cancel() }
-                .setPositiveButton(getString(R.string.accept)) { dialog, _ ->
+                .setPositiveButton(getString(R.string.apply)) { dialog, _ ->
                     viewModel.applyTheme()
                     context?.showToast(R.string.restart_to_apply)
                     dialog.cancel()

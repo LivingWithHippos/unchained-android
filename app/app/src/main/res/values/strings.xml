@@ -695,4 +695,5 @@
     <string name="themes">Themes</string>
     <string name="select">Select</string>
     <string name="selected_theme">Selected theme</string>
+    <string name="apply">Apply</string>
 </resources>
