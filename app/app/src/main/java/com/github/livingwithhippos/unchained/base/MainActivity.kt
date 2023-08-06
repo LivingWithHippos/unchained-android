@@ -16,6 +16,7 @@ import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -621,10 +622,20 @@ class MainActivity : AppCompatActivity() {
         when (intent?.action) {
             // shared text link
             Intent.ACTION_SEND -> {
-                if (intent.type == "text/plain")
-                    intent.getStringExtra(Intent.EXTRA_TEXT)?.let { text ->
-                        viewModel.downloadSupportedLink(text)
+                when (intent.type) {
+                    "text/plain" -> {
+                        intent.getStringExtra(Intent.EXTRA_TEXT)?.let { text ->
+                            viewModel.downloadSupportedLink(text)
+                        }
                     }
+                    "*/*" -> {
+                        (intent.getParcelableExtra<Parcelable>(Intent.EXTRA_STREAM) as? Uri)?.let {
+                            if (it.lastPathSegment?.endsWith(TYPE_UNCHAINED, ignoreCase = true) == true)
+                                viewModel.addPluginFromDisk(applicationContext, it)
+                        }
+
+                    }
+                }
             }
             // files clicked
             Intent.ACTION_VIEW -> {
