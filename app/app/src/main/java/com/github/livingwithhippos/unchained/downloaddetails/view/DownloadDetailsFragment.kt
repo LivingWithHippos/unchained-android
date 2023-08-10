@@ -231,13 +231,6 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         context?.openExternalWebPage(RD_STREAMING_URL + id)
     }
 
-    private val tempProgressListener =
-        object : ProgressCallback {
-            override fun onProgress(progress: Double) {
-                Timber.d("Progress: $progress")
-            }
-        }
-
     override fun onDownloadClick(link: String, fileName: String) {
         activityViewModel.enqueueDownload(link, fileName)
     }

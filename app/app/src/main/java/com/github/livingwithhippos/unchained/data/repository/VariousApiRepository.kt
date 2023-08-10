@@ -6,7 +6,7 @@ import javax.inject.Inject
 
 class VariousApiRepository
 @Inject
-constructor(private val protoStore: ProtoStore, private val variousApiHelper: VariousApiHelper) :
+constructor(protoStore: ProtoStore, private val variousApiHelper: VariousApiHelper) :
     BaseRepository(protoStore) {
 
     suspend fun disableToken(): Unit? {
