@@ -31,6 +31,7 @@ class RemoteService(
     @ColumnInfo(name = "is_default") val isDefault: Boolean = false,
     // extra fields for future needs. Otherwise a new entity linked to this one should work
     // or 1 entity per service type with customized fields
+    // or also storing a json object as string and parsing it back
     // extra field example: api token
     @ColumnInfo(name = "field_1") val fieldOne: String = "",
     @ColumnInfo(name = "field_2") val fieldTwo: String = "",
