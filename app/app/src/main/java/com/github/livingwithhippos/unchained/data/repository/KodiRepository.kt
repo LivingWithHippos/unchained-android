@@ -19,7 +19,7 @@ import timber.log.Timber
 
 class KodiRepository
 @Inject
-constructor(private val protoStore: ProtoStore, @ClassicClient private val client: OkHttpClient) :
+constructor(protoStore: ProtoStore, @ClassicClient private val client: OkHttpClient) :
     BaseRepository(protoStore) {
 
     // todo: conflict with other Retrofit with qualifiers?
@@ -36,8 +36,7 @@ constructor(private val protoStore: ProtoStore, @ClassicClient private val clien
     }
 
     private fun provideApiHelper(baseUrl: String): KodiApiHelper {
-        val apiHelper = KodiApiHelperImpl(provideApi(baseUrl))
-        return apiHelper
+        return KodiApiHelperImpl(provideApi(baseUrl))
     }
 
     suspend fun getVolume(
@@ -47,7 +46,10 @@ constructor(private val protoStore: ProtoStore, @ClassicClient private val clien
         password: String? = null
     ): KodiGenericResponse? {
         try {
-            val kodiApiHelper: KodiApiHelper = provideApiHelper("http://$baseUrl:$port/")
+            val kodiApiHelper: KodiApiHelper = if (baseUrl.startsWith("http", ignoreCase = true))
+                provideApiHelper("$baseUrl:$port/")
+            else
+                provideApiHelper("http://$baseUrl:$port/")
             val kodiResponse =
                 safeApiCall(
                     call = {
@@ -79,7 +81,10 @@ constructor(private val protoStore: ProtoStore, @ClassicClient private val clien
     ): KodiResponse? {
 
         try {
-            val kodiApiHelper: KodiApiHelper = provideApiHelper("http://$baseUrl:$port/")
+            val kodiApiHelper: KodiApiHelper = if (baseUrl.startsWith("http", ignoreCase = true))
+                provideApiHelper("$baseUrl:$port/")
+            else
+                provideApiHelper("http://$baseUrl:$port/")
 
             val kodiResponse =
                 safeApiCall(
