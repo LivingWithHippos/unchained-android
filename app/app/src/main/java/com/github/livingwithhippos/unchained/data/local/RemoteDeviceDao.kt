@@ -24,23 +24,61 @@ class RemoteDevice(
 @Dao
 interface RemoteDeviceDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(device: RemoteDevice): Long
+    suspend fun insertDevice(device: RemoteDevice): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(list: List<RemoteDevice>): List<Long>
+    suspend fun insertService(service: RemoteService): Long
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAllDevices(list: List<RemoteDevice>): List<Long>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAllServices(list: List<RemoteService>): List<Long>
+
+    @Query(
+        "SELECT * FROM remote_device JOIN remote_service ON remote_device.id = remote_service.device_id"
+    )
+    suspend fun getDevicesServices(): Map<RemoteDevice, List<RemoteService>>
 
     @Query("SELECT * from remote_device")
     suspend fun getAllDevices(): List<RemoteDevice>
 
+    @Query("SELECT * from remote_service")
+    suspend fun getAllServices(): List<RemoteService>
+
+    /**
+     * Delete has cascade so this will also delete the services
+     */
     @Query("DELETE FROM remote_device") suspend fun deleteAll()
 
-    @Query("DELETE FROM remote_device WHERE id = :id") suspend fun remove(id: Int)
+
+    /**
+     * Delete has cascade so this will also delete the services
+     */
+    @Query("DELETE FROM remote_device WHERE id = :id") suspend fun removeDevice(id: Int)
+
+    @Query("DELETE FROM remote_service WHERE id = :id") suspend fun removeService(id: Int)
+
+    @Query("DELETE FROM remote_service WHERE device_id = :deviceId") suspend fun removeDeviceServices(deviceId: Int)
 
     @Query("SELECT * from remote_device WHERE remote_device.is_default = 1 LIMIT 1")
-    suspend fun getDefault(): KodiDevice?
+    suspend fun getDefaultDevice(): KodiDevice?
+
+    @Query(
+        "SELECT * FROM remote_device JOIN remote_service ON remote_device.id = remote_service.device_id WHERE remote_device.is_default = 1 LIMIT 1"
+    )
+    suspend fun getDefaultDeviceWithServices(): Map<RemoteDevice, List<RemoteService>>
 
     @Query("UPDATE remote_device SET is_default = 1 WHERE id = :id")
-    suspend fun setDefault(id: Int)
+    suspend fun setDefaultDevice(id: Int)
 
-    @Query("UPDATE remote_device SET is_default = 0 WHERE is_default = 1") suspend fun resetDefaults()
+    @Query("UPDATE remote_service SET is_default = 1 WHERE id = :id")
+    suspend fun setDefaultService(id: Int)
+
+    @Query("UPDATE remote_device SET is_default = 0 WHERE is_default = 1")
+    suspend fun resetDefaultDevice()
+
+    @Query("UPDATE remote_service SET is_default = 0 WHERE device_id = :deviceId AND is_default = 1")
+    suspend fun resetDeviceDefaultService(deviceId: Int)
+
 }

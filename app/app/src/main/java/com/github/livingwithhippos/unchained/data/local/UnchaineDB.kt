@@ -20,7 +20,8 @@ import com.github.livingwithhippos.unchained.data.model.RepositoryPlugin
             RepositoryInfo::class,
             RepositoryPlugin::class,
             PluginVersion::class,
-            RemoteDevice::class
+            RemoteDevice::class,
+            RemoteService::class
         ],
     version = 7,
     exportSchema = true,
