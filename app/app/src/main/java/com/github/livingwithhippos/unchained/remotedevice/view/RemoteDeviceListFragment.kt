@@ -4,10 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.MenuRes
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.selection.SelectionPredicates
 import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.selection.StorageStrategy
+import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.data.local.RemoteDevice
 import com.github.livingwithhippos.unchained.data.model.DownloadItem
@@ -48,13 +50,18 @@ class RemoteDeviceListFragment : UnchainedFragment(), DeviceListListener {
         viewModel.deviceLiveData.observe(viewLifecycleOwner) {
             deviceAdapter.submitList(it)
         }
-        
+
         viewModel.fetchRemoteDevices()
+
+        binding.fabNewDevice.setOnClickListener {
+            TODO("add device fragment")
+        }
 
         return binding.root
     }
 
-    override fun onClick(item: RemoteDevice) {
+    override fun onDeviceClick(item: RemoteDevice) {
         TODO("Not yet implemented")
+        // fragment with device details
     }
 }

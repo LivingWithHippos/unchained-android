@@ -37,5 +37,5 @@ class DeviceKeyProvider(private val adapter: RemoteDeviceListAdapter) : ItemKeyP
 
 
 interface DeviceListListener {
-    fun onClick(item: RemoteDevice)
+    fun onDeviceClick(item: RemoteDevice)
 }
