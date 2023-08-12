@@ -23,7 +23,8 @@ import kotlinx.parcelize.Parcelize
 class RemoteService(
     @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id") val id: Int,
     @ColumnInfo(name = "device_id") val device: Int,
-    @ColumnInfo(name = "port") val name: Int,
+    @ColumnInfo(name = "name") val name: String,
+    @ColumnInfo(name = "port") val port: Int,
     @ColumnInfo(name = "username") val username: String,
     @ColumnInfo(name = "password") val password: String,
     // service type, see [RemoteServiceType]
