@@ -544,7 +544,7 @@
     <string name="content_description_plugins_link">Link to plugins page</string>
     <string name="get_plugins">Get more plugins</string>
     <string name="reset_login">Reset login</string>
-    <string name="sort_by_default">Default</string>
+    <string name="default_string">Default</string>
     <string name="sort_by_az">Alphabetical</string>
     <string name="sort_by_za">Reverse alphabetical</string>
     <string name="sort_by_size_desc">Bigger first</string>
@@ -698,4 +698,5 @@
     <string name="apply">Apply</string>
     <string name="copy_magnet">Copy Magnet</string>
     <string name="share_magnet">Share Magnet</string>
+    <!-- TODO: Remove or change this placeholder text -->
 </resources>

@@ -40,7 +40,7 @@
             android:layout_height="wrap_content"
             android:contentDescription="@string/reload"
             app:icon="@drawable/icon_sort_default"
-            android:text="@string/sort_by_default"
+            android:text="@string/default_string"
             android:nextFocusDown="@id/tfSearch"
             android:nextFocusRight="@id/tfSearch"
             app:layout_constraintStart_toEndOf="@id/bManagePlugins"

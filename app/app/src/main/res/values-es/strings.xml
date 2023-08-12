@@ -328,7 +328,7 @@
     <string name="content_description_plugins_link">Enlace a la página de plugins</string>
     <string name="get_plugins">Obtenga más plugins</string>
     <string name="reset_login">Restablecer inicio de sesión</string>
-    <string name="sort_by_default">Predeterminado</string>
+    <string name="default_string">Predeterminado</string>
     <string name="sort_by_az">Alfabético</string>
     <string name="sort_by_za">Alfabético inverso</string>
     <string name="sort_by_size_desc">Primero más grande</string>
@@ -478,4 +478,6 @@
     <string name="select">Selecciona</string>
     <string name="selected_theme">Tema seleccionado</string>
     <string name="apply">Aplicar</string>
+    <string name="copy_magnet">Copiar magnet</string>
+    <string name="share_magnet">Compartir magnet</string>
 </resources>
