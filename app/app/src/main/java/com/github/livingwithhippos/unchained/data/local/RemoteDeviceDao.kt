@@ -81,15 +81,9 @@ interface RemoteDeviceDao {
     )
     suspend fun getDefaultDeviceWithServices(): Map<RemoteDevice, List<RemoteService>>
 
-    @Query("UPDATE remote_device SET is_default = 1 WHERE id = :id")
-    suspend fun setDefaultDevice(id: Int)
+    @Query("UPDATE remote_device SET is_default = CASE WHEN id = :deviceId THEN 1  ELSE 0 END;")
+    suspend fun setDefaultDevice(deviceId: Int)
 
-    @Query("UPDATE remote_service SET is_default = 1 WHERE id = :id")
-    suspend fun setDefaultService(id: Int)
-
-    @Query("UPDATE remote_device SET is_default = 0 WHERE is_default = 1")
-    suspend fun resetDefaultDevice()
-
-    @Query("UPDATE remote_service SET is_default = 0 WHERE device_id = :deviceId AND is_default = 1")
-    suspend fun resetDeviceDefaultService(deviceId: Int)
+    @Query("UPDATE remote_service SET is_default = CASE WHEN id = :serviceId THEN 1  ELSE 0 END WHERE device_id = :deviceId;")
+    suspend fun setDefaultDeviceService(deviceId: Int, serviceId: Int)
 }

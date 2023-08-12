@@ -14,6 +14,7 @@ import androidx.recyclerview.selection.SelectionPredicates
 import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.selection.StorageStrategy
 import com.github.livingwithhippos.unchained.R
+import com.github.livingwithhippos.unchained.authentication.view.AuthenticationFragmentDirections
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.data.local.RemoteDevice
 import com.github.livingwithhippos.unchained.data.local.RemoteService
@@ -135,7 +136,8 @@ class RemoteDeviceFragment : UnchainedFragment(), ServiceListListener {
             // Respond to menu item click.
             when (menuItem.itemId) {
                 R.id.new_remote_service -> {
-                    // todo: navigate to service fragment
+                    val action = RemoteDeviceFragmentDirections.actionRemoteDeviceFragmentToRemoteServiceFragment()
+                    findNavController().navigate(action)
                     true
                 }
                 R.id.delete_all_services -> {
@@ -156,6 +158,7 @@ class RemoteDeviceFragment : UnchainedFragment(), ServiceListListener {
     }
 
     override fun onServiceClick(item: RemoteService) {
-        TODO("Not yet implemented")
+        val action = RemoteDeviceFragmentDirections.actionRemoteDeviceFragmentToRemoteServiceFragment(item)
+        findNavController().navigate(action)
     }
 }

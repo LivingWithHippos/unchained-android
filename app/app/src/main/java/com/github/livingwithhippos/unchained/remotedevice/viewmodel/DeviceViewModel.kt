@@ -3,12 +3,9 @@ package com.github.livingwithhippos.unchained.remotedevice.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.livingwithhippos.unchained.data.local.ProtoStore
 import com.github.livingwithhippos.unchained.data.local.RemoteDevice
 import com.github.livingwithhippos.unchained.data.local.RemoteService
-import com.github.livingwithhippos.unchained.data.model.User
 import com.github.livingwithhippos.unchained.data.repository.RemoteDeviceRepository
-import com.github.livingwithhippos.unchained.data.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -22,7 +19,6 @@ constructor(private val deviceRepository: RemoteDeviceRepository) :
     val deviceLiveData = MutableLiveData<DeviceEvent>()
 
     fun fetchRemoteDevices() {
-
         viewModelScope.launch {
             deviceLiveData.postValue(
                 DeviceEvent.AllDevices(
@@ -33,7 +29,6 @@ constructor(private val deviceRepository: RemoteDeviceRepository) :
     }
 
     fun fetchDeviceServices(deviceId: Int) {
-
         viewModelScope.launch {
             deviceLiveData.postValue(
                 DeviceEvent.DeviceServices(
@@ -49,6 +44,9 @@ constructor(private val deviceRepository: RemoteDeviceRepository) :
             val insertedRow = deviceRepository.insertDevice(device)
             val deviceID = deviceRepository.getDeviceIDByRow(insertedRow)
             if (deviceID != null) {
+                if (device.isDefault) {
+                    deviceRepository.setDefaultDevice(deviceID)
+                }
                 val newDevice = RemoteDevice(
                     id = deviceID,
                     name = device.name,

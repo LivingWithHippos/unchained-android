@@ -39,5 +39,22 @@
             android:id="@+id/action_remoteDeviceFragment_self"
             app:destination="@id/remoteDeviceFragment"
             app:popUpTo="@id/remoteDeviceListFragment" />
+        <action
+            android:id="@+id/action_remoteDeviceFragment_to_remoteServiceFragment"
+            app:destination="@id/remoteServiceFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/remoteServiceFragment"
+        android:name="com.github.livingwithhippos.unchained.remotedevice.view.RemoteServiceFragment"
+        android:label="RemoteServiceFragment" >
+        <argument
+            android:name="item"
+            app:argType="com.github.livingwithhippos.unchained.data.local.RemoteService"
+            app:nullable="true"
+            android:defaultValue="@null" />
+        <action
+            android:id="@+id/action_remoteServiceFragment_self"
+            app:destination="@id/remoteServiceFragment"
+            app:popUpTo="@id/remoteDeviceFragment" />
     </fragment>
 </navigation>
