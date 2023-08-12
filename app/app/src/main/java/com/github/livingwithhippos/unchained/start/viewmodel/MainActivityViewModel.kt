@@ -30,7 +30,6 @@ import com.github.livingwithhippos.unchained.data.model.APIError
 import com.github.livingwithhippos.unchained.data.model.ApiConversionError
 import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.data.model.EmptyBodyError
-import com.github.livingwithhippos.unchained.data.model.KodiDevice
 import com.github.livingwithhippos.unchained.data.model.NetworkError
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkException
@@ -953,7 +952,8 @@ constructor(
     /** Loads the old saved kodi preference into the new db one and then deletes it */
     fun migrateKodiPreferences() {
         viewModelScope.launch {
-            // there was another migration from the old preferences but it's been out a lot so we removed it
+            // there was another migration from the old preferences but it's been out a lot so we
+            // removed it
 
             val oldKodiDevices = kodiDeviceRepository.getDevices()
 
@@ -964,13 +964,14 @@ constructor(
                     // since we delete them and the user won't be able to create new ones
                     // we don't need to check if they already are in the RemoteDevice table
 
-                    val newDevice = RemoteDevice(
-                        // id = 0 should be fine since it's autoincrement
-                        id = 0,
-                        name = kodi.name,
-                        address = kodi.address,
-                        isDefault = false
-                    )
+                    val newDevice =
+                        RemoteDevice(
+                            // id = 0 should be fine since it's autoincrement
+                            id = 0,
+                            name = kodi.name,
+                            address = kodi.address,
+                            isDefault = false
+                        )
 
                     val insertedRow = remoteDeviceRepository.insertDevice(newDevice)
                     val deviceID = remoteDeviceRepository.getDeviceIDByRow(insertedRow)
@@ -980,19 +981,20 @@ constructor(
                         continue
                     }
 
-                    val newService = RemoteService(
-                        id = 0,
-                        device = deviceID,
-                        name = "Kodi",
-                        port = kodi.port,
-                        username = kodi.username,
-                        password = kodi.password,
-                        type = RemoteServiceType.KODI.value
-                    )
+                    val newService =
+                        RemoteService(
+                            id = 0,
+                            device = deviceID,
+                            name = "Kodi",
+                            port = kodi.port,
+                            username = kodi.username,
+                            password = kodi.password,
+                            type = RemoteServiceType.KODI.value
+                        )
 
                     remoteDeviceRepository.insertService(newService)
 
-                    migratedCounter+=1
+                    migratedCounter += 1
                 }
 
                 kodiDeviceRepository.deleteAll()

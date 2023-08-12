@@ -46,10 +46,10 @@ constructor(protoStore: ProtoStore, @ClassicClient private val client: OkHttpCli
         password: String? = null
     ): KodiGenericResponse? {
         try {
-            val kodiApiHelper: KodiApiHelper = if (baseUrl.startsWith("http", ignoreCase = true))
-                provideApiHelper("$baseUrl:$port/")
-            else
-                provideApiHelper("http://$baseUrl:$port/")
+            val kodiApiHelper: KodiApiHelper =
+                if (baseUrl.startsWith("http", ignoreCase = true))
+                    provideApiHelper("$baseUrl:$port/")
+                else provideApiHelper("http://$baseUrl:$port/")
             val kodiResponse =
                 safeApiCall(
                     call = {
@@ -81,10 +81,10 @@ constructor(protoStore: ProtoStore, @ClassicClient private val client: OkHttpCli
     ): KodiResponse? {
 
         try {
-            val kodiApiHelper: KodiApiHelper = if (baseUrl.startsWith("http", ignoreCase = true))
-                provideApiHelper("$baseUrl:$port/")
-            else
-                provideApiHelper("http://$baseUrl:$port/")
+            val kodiApiHelper: KodiApiHelper =
+                if (baseUrl.startsWith("http", ignoreCase = true))
+                    provideApiHelper("$baseUrl:$port/")
+                else provideApiHelper("http://$baseUrl:$port/")
 
             val kodiResponse =
                 safeApiCall(

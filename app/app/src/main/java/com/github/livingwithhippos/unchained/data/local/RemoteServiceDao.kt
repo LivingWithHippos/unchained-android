@@ -11,14 +11,14 @@ import kotlinx.parcelize.Parcelize
 @Entity(
     tableName = "remote_service",
     foreignKeys =
-    [
-        ForeignKey(
-            entity = RemoteDevice::class,
-            parentColumns = ["id"],
-            childColumns = ["device_id"],
-            onDelete = ForeignKey.CASCADE
-        )
-    ],
+        [
+            ForeignKey(
+                entity = RemoteDevice::class,
+                parentColumns = ["id"],
+                childColumns = ["device_id"],
+                onDelete = ForeignKey.CASCADE
+            )
+        ],
 )
 class RemoteService(
     @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id") val id: Int,

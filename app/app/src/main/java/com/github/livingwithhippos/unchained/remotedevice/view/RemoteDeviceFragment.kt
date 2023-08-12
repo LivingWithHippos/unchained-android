@@ -10,19 +10,16 @@ import androidx.annotation.MenuRes
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.selection.SelectionPredicates
 import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.selection.StorageStrategy
 import com.github.livingwithhippos.unchained.R
-import com.github.livingwithhippos.unchained.authentication.view.AuthenticationFragmentDirections
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.data.local.RemoteDevice
 import com.github.livingwithhippos.unchained.data.local.RemoteService
 import com.github.livingwithhippos.unchained.databinding.FragmentRemoteDeviceBinding
 import com.github.livingwithhippos.unchained.remotedevice.viewmodel.DeviceEvent
 import com.github.livingwithhippos.unchained.remotedevice.viewmodel.DeviceViewModel
-import com.github.livingwithhippos.unchained.start.view.StartFragmentDirections
 import com.github.livingwithhippos.unchained.utilities.DataBindingDetailsLookup
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
@@ -35,7 +32,8 @@ class RemoteDeviceFragment : UnchainedFragment(), ServiceListListener {
     private val viewModel: DeviceViewModel by viewModels()
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         val binding = FragmentRemoteDeviceBinding.inflate(inflater, container, false)
@@ -45,12 +43,12 @@ class RemoteDeviceFragment : UnchainedFragment(), ServiceListListener {
 
         val serviceTracker: SelectionTracker<RemoteService> =
             SelectionTracker.Builder(
-                "serviceListSelection",
-                binding.rvServiceList,
-                ServiceKeyProvider(serviceAdapter),
-                DataBindingDetailsLookup(binding.rvServiceList),
-                StorageStrategy.createParcelableStorage(RemoteService::class.java)
-            )
+                    "serviceListSelection",
+                    binding.rvServiceList,
+                    ServiceKeyProvider(serviceAdapter),
+                    DataBindingDetailsLookup(binding.rvServiceList),
+                    StorageStrategy.createParcelableStorage(RemoteService::class.java)
+                )
                 .withSelectionPredicate(SelectionPredicates.createSelectAnything())
                 .build()
 
@@ -63,7 +61,8 @@ class RemoteDeviceFragment : UnchainedFragment(), ServiceListListener {
                 }
                 is DeviceEvent.Device -> {
                     if (args.item == null) {
-                        val action = RemoteDeviceFragmentDirections.actionRemoteDeviceFragmentSelf(it.device)
+                        val action =
+                            RemoteDeviceFragmentDirections.actionRemoteDeviceFragmentSelf(it.device)
                         findNavController().navigate(action)
                     } else {
                         context?.showToast(R.string.updated)
@@ -88,9 +87,7 @@ class RemoteDeviceFragment : UnchainedFragment(), ServiceListListener {
             viewModel.fetchDeviceServices(item.id)
         }
 
-        binding.fabDeviceAction.setOnClickListener {
-            showMenu(it, R.menu.device_page_action)
-        }
+        binding.fabDeviceAction.setOnClickListener { showMenu(it, R.menu.device_page_action) }
 
         binding.bSaveDevice.setOnClickListener {
             val name = binding.tiName.text.toString().trim()
@@ -98,23 +95,24 @@ class RemoteDeviceFragment : UnchainedFragment(), ServiceListListener {
             if (name.isBlank() || address.isBlank()) {
                 context?.showToast(R.string.missing_parameter)
             } else {
-                val updatedDevice = if (item == null) {
-                    // new device
-                    RemoteDevice(
-                        id = 0,
-                        name = name,
-                        address = address,
-                        isDefault = binding.switchDefault.isChecked
-                    )
-                } else {
-                    // edit device
-                    RemoteDevice(
-                        id = item.id,
-                        name = name,
-                        address = address,
-                        isDefault = binding.switchDefault.isChecked
-                    )
-                }
+                val updatedDevice =
+                    if (item == null) {
+                        // new device
+                        RemoteDevice(
+                            id = 0,
+                            name = name,
+                            address = address,
+                            isDefault = binding.switchDefault.isChecked
+                        )
+                    } else {
+                        // edit device
+                        RemoteDevice(
+                            id = item.id,
+                            name = name,
+                            address = address,
+                            isDefault = binding.switchDefault.isChecked
+                        )
+                    }
                 viewModel.updateDevice(updatedDevice)
             }
         }
@@ -126,10 +124,10 @@ class RemoteDeviceFragment : UnchainedFragment(), ServiceListListener {
         val popup = PopupMenu(requireContext(), v)
         popup.menuInflater.inflate(menuRes, popup.menu)
 
-
         if (args.item == null) {
             // todo: we should allow this when creating a new device
-            //  maybe we could just reopen this fragment and pop this from the stack passing the created one as argument
+            //  maybe we could just reopen this fragment and pop this from the stack passing the
+            // created one as argument
             popup.menu.findItem(R.id.new_remote_service).isEnabled = false
         }
 
@@ -137,9 +135,11 @@ class RemoteDeviceFragment : UnchainedFragment(), ServiceListListener {
             // Respond to menu item click.
             when (menuItem.itemId) {
                 R.id.new_remote_service -> {
-                    val action = RemoteDeviceFragmentDirections.actionRemoteDeviceFragmentToRemoteServiceFragment(
-                        deviceID = args.item!!.id
-                    )
+                    val action =
+                        RemoteDeviceFragmentDirections
+                            .actionRemoteDeviceFragmentToRemoteServiceFragment(
+                                deviceID = args.item!!.id
+                            )
                     findNavController().navigate(action)
                     true
                 }
@@ -161,7 +161,11 @@ class RemoteDeviceFragment : UnchainedFragment(), ServiceListListener {
     }
 
     override fun onServiceClick(item: RemoteService) {
-        val action = RemoteDeviceFragmentDirections.actionRemoteDeviceFragmentToRemoteServiceFragment(item=item, deviceID = args.item!!.id)
+        val action =
+            RemoteDeviceFragmentDirections.actionRemoteDeviceFragmentToRemoteServiceFragment(
+                item = item,
+                deviceID = args.item!!.id
+            )
         findNavController().navigate(action)
     }
 }

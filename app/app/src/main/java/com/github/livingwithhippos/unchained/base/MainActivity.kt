@@ -628,12 +628,15 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
                     "*/*" -> {
-                        // replace with intent.getParcelableExtra(Intent.EXTRA_STREAM, Uri::class.java) when stabilized
+                        // replace with intent.getParcelableExtra(Intent.EXTRA_STREAM,
+                        // Uri::class.java) when stabilized
                         (intent.getParcelableExtra<Parcelable>(Intent.EXTRA_STREAM) as? Uri)?.let {
-                            if (it.lastPathSegment?.endsWith(TYPE_UNCHAINED, ignoreCase = true) == true)
+                            if (
+                                it.lastPathSegment?.endsWith(TYPE_UNCHAINED, ignoreCase = true) ==
+                                    true
+                            )
                                 viewModel.addPluginFromDisk(applicationContext, it)
                         }
-
                     }
                 }
             }

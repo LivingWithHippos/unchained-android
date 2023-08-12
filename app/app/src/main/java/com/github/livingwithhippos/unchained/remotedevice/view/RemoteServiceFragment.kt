@@ -1,12 +1,12 @@
 package com.github.livingwithhippos.unchained.remotedevice.view
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -28,21 +28,22 @@ class RemoteServiceFragment : Fragment() {
     private val viewModel: DeviceViewModel by viewModels()
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         val binding = FragmentRemoteServiceBinding.inflate(inflater, container, false)
 
         val item: RemoteService? = args.item
 
-
         val serviceTypeView = binding.serviceTypePicker.editText as? AutoCompleteTextView
 
-        val serviceTypeAdapter = ArrayAdapter(
-            requireContext(),
-            R.layout.basic_dropdown_list_item,
-            resources.getStringArray(R.array.service_types)
-        )
+        val serviceTypeAdapter =
+            ArrayAdapter(
+                requireContext(),
+                R.layout.basic_dropdown_list_item,
+                resources.getStringArray(R.array.service_types)
+            )
         serviceTypeView?.setAdapter(serviceTypeAdapter)
 
         if (item == null) {
@@ -72,17 +73,13 @@ class RemoteServiceFragment : Fragment() {
                     Timber.e("Unknown service type ${item.type}")
                 }
             }
-
         }
 
         serviceTypeView?.setOnItemClickListener { _, _, position, _ ->
             when (val selectedTypeService: String? = serviceTypeAdapter.getItem(position)) {
-                getString(R.string.kodi) -> {
-                }
-                getString(R.string.player_vlc) -> {
-                }
-                getString(R.string.jackett) -> {
-                }
+                getString(R.string.kodi) -> {}
+                getString(R.string.player_vlc) -> {}
+                getString(R.string.jackett) -> {}
                 null -> {
                     Timber.e("Service type picked null!")
                 }
@@ -106,37 +103,36 @@ class RemoteServiceFragment : Fragment() {
 
             when (val selectedService: String = binding.servicePickerText.text.toString()) {
                 getString(R.string.kodi) -> {
-                    val remoteService = RemoteService(
-                        id = serviceId,
-                        device = args.deviceID,
-                        name = name,
-                        port = port,
-                        username = username.ifBlank { null },
-                        password = password.ifBlank { null },
-                        type = RemoteServiceType.KODI.value,
-                        isDefault = binding.switchDefault.isChecked,
-                    )
+                    val remoteService =
+                        RemoteService(
+                            id = serviceId,
+                            device = args.deviceID,
+                            name = name,
+                            port = port,
+                            username = username.ifBlank { null },
+                            password = password.ifBlank { null },
+                            type = RemoteServiceType.KODI.value,
+                            isDefault = binding.switchDefault.isChecked,
+                        )
                     viewModel.updateService(remoteService)
                 }
-                getString(R.string.player_vlc) -> {
-                }
-                getString(R.string.jackett) -> {
-                }
+                getString(R.string.player_vlc) -> {}
+                getString(R.string.jackett) -> {}
                 else -> {
                     Timber.e("Unknown service type saving $selectedService")
                 }
             }
         }
 
-
         viewModel.deviceLiveData.observe(viewLifecycleOwner) {
             when (it) {
                 is DeviceEvent.Service -> {
                     if (args.item == null) {
-                        val action = RemoteServiceFragmentDirections.actionRemoteServiceFragmentSelf(
-                            item = it.service,
-                            deviceID = args.deviceID
-                        )
+                        val action =
+                            RemoteServiceFragmentDirections.actionRemoteServiceFragmentSelf(
+                                item = it.service,
+                                deviceID = args.deviceID
+                            )
                         findNavController().navigate(action)
                     } else {
                         context?.showToast(R.string.updated)

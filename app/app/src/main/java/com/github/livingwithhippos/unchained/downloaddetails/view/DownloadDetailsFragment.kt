@@ -30,7 +30,6 @@ import com.github.livingwithhippos.unchained.downloaddetails.viewmodel.DownloadD
 import com.github.livingwithhippos.unchained.lists.view.ListState
 import com.github.livingwithhippos.unchained.utilities.EventObserver
 import com.github.livingwithhippos.unchained.utilities.RD_STREAMING_URL
-import com.github.livingwithhippos.unchained.utilities.download.ProgressCallback
 import com.github.livingwithhippos.unchained.utilities.extension.copyToClipboard
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import com.github.livingwithhippos.unchained.utilities.extension.showToast

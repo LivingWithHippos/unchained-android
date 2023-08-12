@@ -9,7 +9,6 @@ import android.widget.PopupMenu
 import androidx.annotation.MenuRes
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.selection.SelectionPredicates
 import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.selection.StorageStrategy
@@ -28,7 +27,8 @@ class RemoteDeviceListFragment : UnchainedFragment(), DeviceListListener {
     private val viewModel: DeviceViewModel by viewModels()
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         val binding = FragmentRemoteDeviceListBinding.inflate(inflater, container, false)
@@ -38,12 +38,12 @@ class RemoteDeviceListFragment : UnchainedFragment(), DeviceListListener {
 
         val deviceTracker: SelectionTracker<RemoteDevice> =
             SelectionTracker.Builder(
-                "deviceListSelection",
-                binding.rvDeviceList,
-                DeviceKeyProvider(deviceAdapter),
-                DataBindingDetailsLookup(binding.rvDeviceList),
-                StorageStrategy.createParcelableStorage(RemoteDevice::class.java)
-            )
+                    "deviceListSelection",
+                    binding.rvDeviceList,
+                    DeviceKeyProvider(deviceAdapter),
+                    DataBindingDetailsLookup(binding.rvDeviceList),
+                    StorageStrategy.createParcelableStorage(RemoteDevice::class.java)
+                )
                 .withSelectionPredicate(SelectionPredicates.createSelectAnything())
                 .build()
 
@@ -58,9 +58,7 @@ class RemoteDeviceListFragment : UnchainedFragment(), DeviceListListener {
 
         viewModel.fetchRemoteDevices()
 
-        binding.fabDevicesAction.setOnClickListener {
-            showMenu(it, R.menu.devices_list_action)
-        }
+        binding.fabDevicesAction.setOnClickListener { showMenu(it, R.menu.devices_list_action) }
 
         return binding.root
     }
@@ -73,7 +71,9 @@ class RemoteDeviceListFragment : UnchainedFragment(), DeviceListListener {
             // Respond to menu item click.
             when (menuItem.itemId) {
                 R.id.new_remote_device -> {
-                    val action = RemoteDeviceListFragmentDirections.actionRemoteDeviceListFragmentToRemoteDeviceFragment()
+                    val action =
+                        RemoteDeviceListFragmentDirections
+                            .actionRemoteDeviceListFragmentToRemoteDeviceFragment()
                     findNavController().navigate(action)
                     true
                 }
@@ -95,7 +95,10 @@ class RemoteDeviceListFragment : UnchainedFragment(), DeviceListListener {
     }
 
     override fun onDeviceClick(item: RemoteDevice) {
-        val action = RemoteDeviceListFragmentDirections.actionRemoteDeviceListFragmentToRemoteDeviceFragment(item)
+        val action =
+            RemoteDeviceListFragmentDirections.actionRemoteDeviceListFragmentToRemoteDeviceFragment(
+                item
+            )
         findNavController().navigate(action)
     }
 }

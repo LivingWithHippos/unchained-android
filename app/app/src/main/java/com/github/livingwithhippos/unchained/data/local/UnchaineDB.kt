@@ -25,7 +25,12 @@ import com.github.livingwithhippos.unchained.data.model.RepositoryPlugin
         ],
     version = 7,
     exportSchema = true,
-    autoMigrations = [AutoMigration(from = 4, to = 5), AutoMigration(from = 5, to = 6), AutoMigration(from = 6, to = 7)]
+    autoMigrations =
+        [
+            AutoMigration(from = 4, to = 5),
+            AutoMigration(from = 5, to = 6),
+            AutoMigration(from = 6, to = 7)
+        ]
 )
 abstract class UnchaineDB : RoomDatabase() {
     abstract fun hostRegexDao(): HostRegexDao

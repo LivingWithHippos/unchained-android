@@ -18,7 +18,6 @@ import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.github.livingwithhippos.unchained.R
-import com.github.livingwithhippos.unchained.newdownload.view.NewDownloadFragmentDirections
 import com.github.livingwithhippos.unchained.settings.viewmodel.SettingEvent
 import com.github.livingwithhippos.unchained.settings.viewmodel.SettingsViewModel
 import com.github.livingwithhippos.unchained.utilities.FEEDBACK_URL
@@ -112,7 +111,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
         }
 
         findPreference<Preference>("manage_remote_devices")?.setOnPreferenceClickListener {
-            val action = SettingsFragmentDirections.actionSettingsFragmentToRemoteDeviceListFragment()
+            val action =
+                SettingsFragmentDirections.actionSettingsFragmentToRemoteDeviceListFragment()
             findNavController().navigate(action)
             true
         }
