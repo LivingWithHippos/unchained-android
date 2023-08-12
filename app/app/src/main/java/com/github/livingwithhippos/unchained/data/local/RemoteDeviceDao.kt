@@ -50,6 +50,14 @@ interface RemoteDeviceDao {
     @Query("SELECT id FROM remote_device WHERE rowid = :rowId")
     suspend fun getDeviceIDByRow(rowId: Long): Int?
 
+    @Query("SELECT id FROM remote_service WHERE rowid = :rowId")
+    suspend fun getServiceIDByRow(rowId: Long): Int?
+
+    @Query("SELECT * FROM remote_service WHERE id = :serviceID")
+    suspend fun getService(serviceID: Int): RemoteService?
+    @Query("SELECT * FROM remote_device WHERE id = :deviceID")
+    suspend fun getDevice(deviceID: Int): RemoteDevice?
+
     @Query("SELECT * FROM remote_service WHERE remote_service.device_id = :deviceId")
     suspend fun getDeviceServices(deviceId: Int): List<RemoteService>
 

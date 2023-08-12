@@ -47,15 +47,28 @@ constructor(private val deviceRepository: RemoteDeviceRepository) :
                 if (device.isDefault) {
                     deviceRepository.setDefaultDevice(deviceID)
                 }
-                val newDevice = RemoteDevice(
-                    id = deviceID,
-                    name = device.name,
-                    address = device.address,
-                    isDefault = device.isDefault
-                )
-                deviceLiveData.postValue(
-                    DeviceEvent.Device(newDevice)
-                )
+                val newDevice = deviceRepository.getDevice(deviceID)
+                if (newDevice != null)
+                    deviceLiveData.postValue(
+                        DeviceEvent.Device(newDevice)
+                    )
+            }
+        }
+    }
+
+    fun updateService(remoteService: RemoteService) {
+        viewModelScope.launch {
+            val insertedRow = deviceRepository.insertService(remoteService)
+            val serviceID = deviceRepository.getDeviceIDByRow(insertedRow)
+            if (serviceID != null) {
+                if (remoteService.isDefault) {
+                    deviceRepository.setDefaultDeviceService(remoteService.device, serviceID)
+                }
+                val newService = deviceRepository.getService(serviceID)
+                if (newService != null)
+                    deviceLiveData.postValue(
+                        DeviceEvent.Service(newService)
+                    )
             }
         }
     }
@@ -63,6 +76,7 @@ constructor(private val deviceRepository: RemoteDeviceRepository) :
 
 sealed class DeviceEvent {
     data class Device(val device: RemoteDevice) : DeviceEvent()
+    data class Service(val service: RemoteService) : DeviceEvent()
     data class AllDevices(val devices: List<RemoteDevice>) : DeviceEvent()
     data class DeviceServices(val deviceId: Int, val services: List<RemoteService>) : DeviceEvent()
     data class AllServices(val services: List<RemoteDevice>) : DeviceEvent()

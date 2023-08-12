@@ -10,6 +10,7 @@ import androidx.annotation.MenuRes
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.selection.SelectionPredicates
 import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.selection.StorageStrategy
@@ -136,7 +137,9 @@ class RemoteDeviceFragment : UnchainedFragment(), ServiceListListener {
             // Respond to menu item click.
             when (menuItem.itemId) {
                 R.id.new_remote_service -> {
-                    val action = RemoteDeviceFragmentDirections.actionRemoteDeviceFragmentToRemoteServiceFragment()
+                    val action = RemoteDeviceFragmentDirections.actionRemoteDeviceFragmentToRemoteServiceFragment(
+                        deviceID = args.item!!.id
+                    )
                     findNavController().navigate(action)
                     true
                 }
@@ -158,7 +161,7 @@ class RemoteDeviceFragment : UnchainedFragment(), ServiceListListener {
     }
 
     override fun onServiceClick(item: RemoteService) {
-        val action = RemoteDeviceFragmentDirections.actionRemoteDeviceFragmentToRemoteServiceFragment(item)
+        val action = RemoteDeviceFragmentDirections.actionRemoteDeviceFragmentToRemoteServiceFragment(item=item, deviceID = args.item!!.id)
         findNavController().navigate(action)
     }
 }

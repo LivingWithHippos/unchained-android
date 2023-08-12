@@ -46,7 +46,9 @@
     <fragment
         android:id="@+id/remoteServiceFragment"
         android:name="com.github.livingwithhippos.unchained.remotedevice.view.RemoteServiceFragment"
-        android:label="RemoteServiceFragment" >
+        android:label="RemoteServiceFragment"
+        tools:layout="@layout/fragment_remote_service"
+        >
         <argument
             android:name="item"
             app:argType="com.github.livingwithhippos.unchained.data.local.RemoteService"
@@ -56,5 +58,8 @@
             android:id="@+id/action_remoteServiceFragment_self"
             app:destination="@id/remoteServiceFragment"
             app:popUpTo="@id/remoteDeviceFragment" />
+        <argument
+            android:name="deviceID"
+            app:argType="integer" />
     </fragment>
 </navigation>

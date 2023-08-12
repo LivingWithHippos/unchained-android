@@ -57,17 +57,17 @@
                 android:layout_marginBottom="5dp"
                 android:maxLines="2"
                 android:text="@{item.name, default=`Remote service #X`}"
-                app:layout_constraintBottom_toTopOf="@+id/tvDetails"
+                app:layout_constraintBottom_toTopOf="@+id/tvPort"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/defaultIndicator"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/tvDetails"
+                android:id="@+id/tvPort"
                 android:textAppearance="?attr/textAppearanceBodySmall"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@{item.port, default=`8080`}"
+                android:text="@{item.port + ``, default=`8080`}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/tvTitle"
