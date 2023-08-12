@@ -14,6 +14,8 @@ class KodiDeviceRepository @Inject constructor(private val kodiDeviceDao: KodiDe
         return kodiDeviceDao.getAllDevices()
     }
 
+    suspend fun deleteAll() = kodiDeviceDao.deleteAll()
+
     suspend fun add(device: KodiDevice): Long {
         if (device.isDefault) kodiDeviceDao.resetDefaults()
         return kodiDeviceDao.insert(device)

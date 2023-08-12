@@ -481,4 +481,10 @@
     <string name="apply">Applica</string>
     <string name="copy_magnet">Copia magnet</string>
     <string name="share_magnet">Condividi magnet</string>
+    <string name="remote_devices">Dispositivi Remoti</string>
+    <string name="remote_devices_summary">Gestisci servizi come Kodi e VLC in esecuzione su altri dispositivi</string>
+    <string name="manage_remote_devices">Gestisci dispositivi remoti</string>
+    <string name="delete_services">Rimuovi servizi</string>
+    <string name="new_service">Nuovo servizio</string>
+    <string name="remote_device">Dispositivo remoto</string>
 </resources>

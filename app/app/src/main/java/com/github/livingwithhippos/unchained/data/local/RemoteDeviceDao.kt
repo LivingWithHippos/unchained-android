@@ -45,7 +45,13 @@ interface RemoteDeviceDao {
     suspend fun insertAllServices(list: List<RemoteService>): List<Long>
 
     @Query("SELECT * FROM remote_device JOIN remote_service ON remote_device.id = remote_service.device_id")
-    suspend fun getDevicesServices(): Map<RemoteDevice, List<RemoteService>>
+    suspend fun getDevicesAndServices(): Map<RemoteDevice, List<RemoteService>>
+
+    @Query("SELECT id FROM remote_device WHERE rowid = :rowId")
+    suspend fun getDeviceIDByRow(rowId: Long): Int?
+
+    @Query("SELECT * FROM remote_service WHERE remote_service.device_id = :deviceId")
+    suspend fun getDeviceServices(deviceId: Int): List<RemoteService>
 
     @Query("SELECT * from remote_device")
     suspend fun getAllDevices(): List<RemoteDevice>

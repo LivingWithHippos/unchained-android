@@ -701,5 +701,7 @@
     <string name="remote_devices">Remote Devices</string>
     <string name="remote_devices_summary">Manage services such as Kodi and VLC running on different devices</string>
     <string name="manage_remote_devices">Manage Remote Devices</string>
-    <!-- TODO: Remove or change this placeholder text -->
+    <string name="delete_services">Delete Services</string>
+    <string name="new_service">New Service</string>
+    <string name="remote_device">Remote Device</string>
 </resources>

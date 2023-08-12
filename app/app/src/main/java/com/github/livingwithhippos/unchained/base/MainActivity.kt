@@ -84,8 +84,8 @@ class MainActivity : AppCompatActivity() {
         TelemetryManager.onStart(this)
 
         val bottomColor = SurfaceColors.SURFACE_2.getColor(this)
-        window.navigationBarColor =
-            bottomColor // Set color of system navigationBar same as BottomNavigationView
+        window.navigationBarColor = bottomColor
+        // Set color of system navigationBar same as BottomNavigationView
         // window.statusBarColor = color // Set color of system statusBar same as ActionBar
     }
 
@@ -582,8 +582,7 @@ class MainActivity : AppCompatActivity() {
             ContextCompat.startForegroundService(this, notificationIntent)
         }
 
-        // load the old share preferences of kodi devices into the db and then delete them
-        viewModel.updateOldKodiPreferences()
+        viewModel.migrateKodiPreferences()
 
         viewModel.connectivityLiveData.observe(this) {
             when (it) {

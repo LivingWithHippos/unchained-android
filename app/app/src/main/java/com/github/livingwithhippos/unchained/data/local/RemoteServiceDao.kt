@@ -25,8 +25,8 @@ class RemoteService(
     @ColumnInfo(name = "device_id") val device: Int,
     @ColumnInfo(name = "name") val name: String,
     @ColumnInfo(name = "port") val port: Int,
-    @ColumnInfo(name = "username") val username: String,
-    @ColumnInfo(name = "password") val password: String,
+    @ColumnInfo(name = "username") val username: String? = null,
+    @ColumnInfo(name = "password") val password: String? = null,
     // service type, see [RemoteServiceType]
     @ColumnInfo(name = "type") val type: Int,
     @ColumnInfo(name = "is_default") val isDefault: Boolean = false,

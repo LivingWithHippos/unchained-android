@@ -2,10 +2,13 @@ package com.github.livingwithhippos.unchained.remotedevice.view
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.PopupMenu
 import androidx.annotation.MenuRes
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.selection.SelectionPredicates
 import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.selection.StorageStrategy
@@ -15,7 +18,9 @@ import com.github.livingwithhippos.unchained.data.local.RemoteDevice
 import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.databinding.FragmentRemoteDeviceListBinding
 import com.github.livingwithhippos.unchained.lists.view.DownloadKeyProvider
+import com.github.livingwithhippos.unchained.remotedevice.viewmodel.DeviceEvent
 import com.github.livingwithhippos.unchained.remotedevice.viewmodel.DeviceViewModel
+import com.github.livingwithhippos.unchained.search.view.SearchFragmentDirections
 import com.github.livingwithhippos.unchained.user.viewmodel.UserProfileViewModel
 import com.github.livingwithhippos.unchained.utilities.DataBindingDetailsLookup
 import dagger.hilt.android.AndroidEntryPoint
@@ -48,20 +53,52 @@ class RemoteDeviceListFragment : UnchainedFragment(), DeviceListListener {
         deviceAdapter.tracker = deviceTracker
 
         viewModel.deviceLiveData.observe(viewLifecycleOwner) {
-            deviceAdapter.submitList(it)
+            when (it) {
+                is DeviceEvent.AllDevices -> deviceAdapter.submitList(it.devices)
+                else -> {}
+            }
         }
 
         viewModel.fetchRemoteDevices()
 
-        binding.fabNewDevice.setOnClickListener {
-            TODO("add device fragment")
+        binding.fabDevicesAction.setOnClickListener {
+            showMenu(it, R.menu.devices_list_action)
         }
 
         return binding.root
     }
 
+    private fun showMenu(v: View, @MenuRes menuRes: Int) {
+        val popup = PopupMenu(requireContext(), v)
+        popup.menuInflater.inflate(menuRes, popup.menu)
+
+        popup.setOnMenuItemClickListener { menuItem: MenuItem ->
+            // Respond to menu item click.
+            when (menuItem.itemId) {
+                R.id.new_remote_device -> {
+                    val action = RemoteDeviceListFragmentDirections.actionRemoteDeviceListFragmentToRemoteDeviceFragment()
+                    findNavController().navigate(action)
+                    true
+                }
+                R.id.delete_all_devices -> {
+                    // todo: open dialog and ask for confirmation
+                    true
+                }
+                else -> {
+                    false
+                }
+            }
+        }
+
+        popup.setOnDismissListener {
+            // Respond to popup being dismissed.
+        }
+        // Show the popup menu.
+        popup.show()
+    }
+
     override fun onDeviceClick(item: RemoteDevice) {
-        TODO("Not yet implemented")
-        // fragment with device details
+        val action = RemoteDeviceListFragmentDirections.actionRemoteDeviceListFragmentToRemoteDeviceFragment(item)
+        findNavController().navigate(action)
     }
 }

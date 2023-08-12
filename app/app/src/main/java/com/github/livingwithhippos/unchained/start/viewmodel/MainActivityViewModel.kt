@@ -23,6 +23,9 @@ import androidx.work.WorkManager
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.local.Credentials
 import com.github.livingwithhippos.unchained.data.local.ProtoStore
+import com.github.livingwithhippos.unchained.data.local.RemoteDevice
+import com.github.livingwithhippos.unchained.data.local.RemoteService
+import com.github.livingwithhippos.unchained.data.local.RemoteServiceType
 import com.github.livingwithhippos.unchained.data.model.APIError
 import com.github.livingwithhippos.unchained.data.model.ApiConversionError
 import com.github.livingwithhippos.unchained.data.model.DownloadItem
@@ -41,6 +44,7 @@ import com.github.livingwithhippos.unchained.data.repository.InstallResult
 import com.github.livingwithhippos.unchained.data.repository.KodiDeviceRepository
 import com.github.livingwithhippos.unchained.data.repository.PluginRepository
 import com.github.livingwithhippos.unchained.data.repository.PluginRepository.Companion.TYPE_UNCHAINED
+import com.github.livingwithhippos.unchained.data.repository.RemoteDeviceRepository
 import com.github.livingwithhippos.unchained.data.repository.TorrentsRepository
 import com.github.livingwithhippos.unchained.data.repository.UpdateRepository
 import com.github.livingwithhippos.unchained.data.repository.UserRepository
@@ -100,6 +104,7 @@ constructor(
     private val customDownloadRepository: CustomDownloadRepository,
     private val torrentsRepository: TorrentsRepository,
     private val updateRepository: UpdateRepository,
+    private val remoteDeviceRepository: RemoteDeviceRepository,
     @ApplicationContext applicationContext: Context
 ) : ViewModel() {
 
@@ -946,27 +951,52 @@ constructor(
     }
 
     /** Loads the old saved kodi preference into the new db one and then deletes it */
-    fun updateOldKodiPreferences() {
+    fun migrateKodiPreferences() {
+        viewModelScope.launch {
+            // there was another migration from the old preferences but it's been out a lot so we removed it
 
-        val address: String? = preferences.getString("kodi_ip_address", null)
-        val port: Int? = preferences.getString("kodi_port", null)?.toIntOrNull()
+            val oldKodiDevices = kodiDeviceRepository.getDevices()
 
-        if (!address.isNullOrBlank() && port != null) {
-            val user: String? = preferences.getString("kodi_username", null)
-            val password: String? = preferences.getString("kodi_password", null)
+            var migratedCounter = 0
 
-            viewModelScope.launch {
-                kodiDeviceRepository.add(
-                    KodiDevice("Imported Kodi Device", address, port, user, password, true)
-                )
+            if (oldKodiDevices.isNotEmpty()) {
+                for (kodi in oldKodiDevices) {
+                    // since we delete them and the user won't be able to create new ones
+                    // we don't need to check if they already are in the RemoteDevice table
 
-                with(preferences.edit()) {
-                    remove("kodi_ip_address")
-                    remove("kodi_port")
-                    remove("kodi_username")
-                    remove("kodi_password")
-                    apply()
+                    val newDevice = RemoteDevice(
+                        // id = 0 should be fine since it's autoincrement
+                        id = 0,
+                        name = kodi.name,
+                        address = kodi.address,
+                        isDefault = false
+                    )
+
+                    val insertedRow = remoteDeviceRepository.insertDevice(newDevice)
+                    val deviceID = remoteDeviceRepository.getDeviceIDByRow(insertedRow)
+
+                    if (deviceID == null) {
+                        Timber.e("Error inserting remote device $newDevice")
+                        continue
+                    }
+
+                    val newService = RemoteService(
+                        id = 0,
+                        device = deviceID,
+                        name = "Kodi",
+                        port = kodi.port,
+                        username = kodi.username,
+                        password = kodi.password,
+                        type = RemoteServiceType.KODI.value
+                    )
+
+                    remoteDeviceRepository.insertService(newService)
+
+                    migratedCounter+=1
                 }
+
+                kodiDeviceRepository.deleteAll()
+                Timber.i("Migrated $migratedCounter kodi devices out of ${oldKodiDevices.size}")
             }
         }
     }
