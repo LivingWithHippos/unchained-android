@@ -8,8 +8,8 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.PrimaryKey
 import androidx.room.Query
-import com.github.livingwithhippos.unchained.data.model.KodiDevice
 import kotlinx.parcelize.Parcelize
+import java.util.Objects
 
 
 @Parcelize
@@ -19,7 +19,16 @@ class RemoteDevice(
     @ColumnInfo(name = "name") val name: String,
     @ColumnInfo(name = "address") val address: String,
     @ColumnInfo(name = "is_default") val isDefault: Boolean = false,
-) : Parcelable
+) : Parcelable {
+    override fun equals(other: Any?): Boolean {
+        if (other is RemoteDevice) {
+            return other.id == id
+        }
+        return false
+    }
+
+    override fun hashCode(): Int  = Objects.hash(id)
+}
 
 @Dao
 interface RemoteDeviceDao {
@@ -59,7 +68,7 @@ interface RemoteDeviceDao {
     @Query("DELETE FROM remote_service WHERE device_id = :deviceId") suspend fun removeDeviceServices(deviceId: Int)
 
     @Query("SELECT * from remote_device WHERE remote_device.is_default = 1 LIMIT 1")
-    suspend fun getDefaultDevice(): KodiDevice?
+    suspend fun getDefaultDevice(): RemoteDevice?
 
     @Query(
         "SELECT * FROM remote_device JOIN remote_service ON remote_device.id = remote_service.device_id WHERE remote_device.is_default = 1 LIMIT 1"
