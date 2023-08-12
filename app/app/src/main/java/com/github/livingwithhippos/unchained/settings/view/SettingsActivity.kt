@@ -20,12 +20,6 @@ class SettingsActivity : AppCompatActivity() {
         // todo: restore MainActivity fragment on back press
         setSupportActionBar(findViewById(R.id.emptyAppBar))
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
-        val settingsFragment = SettingsFragment()
-        supportFragmentManager
-            .beginTransaction()
-            .replace(R.id.fragment_container, settingsFragment)
-            .commit()
     }
 
     override fun onSupportNavigateUp(): Boolean {

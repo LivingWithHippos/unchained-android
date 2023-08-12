@@ -13,7 +13,7 @@ class RemoteDeviceListAdapter(listener: DeviceListListener): DataBindingTrackedA
             oldItem.id == newItem.id
 
         override fun areContentsTheSame(oldItem: RemoteDevice, newItem: RemoteDevice): Boolean {
-            return oldItem.isDefault == newItem.isDefault
+            return oldItem.isDefault == newItem.isDefault && oldItem.name == newItem.name && oldItem.address == newItem.address
         }
     }
 

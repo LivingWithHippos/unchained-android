@@ -95,6 +95,18 @@
         app:allowDividerBelow="false">
 
         <PreferenceCategory
+            android:title="@string/remote_devices"
+            app:allowDividerBelow="false">
+
+            <Preference
+                app:key="manage_remote_devices"
+                app:summary="@string/remote_devices_summary"
+                app:title="@string/manage_remote_devices"
+               />
+
+        </PreferenceCategory>
+
+        <PreferenceCategory
             android:title="@string/kodi"
             app:allowDividerBelow="false">
             <Preference

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/settings_nav_graph"
+    app:startDestination="@id/settingsFragment">
+
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.github.livingwithhippos.unchained.settings.view.SettingsFragment"
+        android:label="SettingsFragment" >
+        <action
+            android:id="@+id/action_settingsFragment_to_remoteDeviceListFragment"
+            app:destination="@id/remoteDeviceListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/remoteDeviceListFragment"
+        android:name="com.github.livingwithhippos.unchained.remotedevice.view.RemoteDeviceListFragment"
+        android:label="RemoteDeviceListFragment" >
+        <action
+            android:id="@+id/action_remoteDeviceListFragment_to_remoteDeviceFragment"
+            app:destination="@id/remoteDeviceFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/remoteDeviceFragment"
+        android:name="com.github.livingwithhippos.unchained.remotedevice.view.RemoteDeviceFragment"
+        android:label="RemoteDeviceFragment" >
+        <argument
+            android:name="item"
+            app:argType="com.github.livingwithhippos.unchained.data.local.RemoteDevice" />
+    </fragment>
+</navigation>
