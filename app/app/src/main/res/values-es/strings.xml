@@ -488,4 +488,5 @@
     <string name="remote_device">Dispositivo remoto</string>
     <string name="service_deleted">Servicio suprimido</string>
     <string name="service">Servicio</string>
+    <string name="dialog_confirm_action">¿Estás seguro de que quieres continuar?</string>
 </resources>

@@ -15,6 +15,7 @@ class RemoteServiceListAdapter(listener: ServiceListListener) :
         override fun areContentsTheSame(oldItem: RemoteService, newItem: RemoteService): Boolean {
             return oldItem.isDefault == newItem.isDefault &&
                 oldItem.name == newItem.name &&
+                oldItem.type == newItem.type &&
                 oldItem.port == newItem.port
         }
     }

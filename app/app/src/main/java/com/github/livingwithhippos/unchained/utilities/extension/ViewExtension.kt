@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.github.livingwithhippos.unchained.R
+import com.github.livingwithhippos.unchained.data.local.RemoteServiceType
 import com.github.livingwithhippos.unchained.repository.model.PluginStatus
 import com.github.livingwithhippos.unchained.utilities.extensionIconMap
 import com.google.android.material.progressindicator.BaseProgressIndicator
@@ -354,6 +355,16 @@ fun ImageView.setDrawableByPluginStatus(status: String) {
         PluginStatus.incompatible -> this.setImageResource(R.drawable.icon_close)
         PluginStatus.unknown -> this.setImageResource(R.drawable.icon_question_mark)
         else -> this.setImageResource(R.drawable.icon_question_mark)
+    }
+}
+
+@BindingAdapter("mapServiceTypeDrawable")
+fun ImageView.setDrawableByServiceType(type: Int) {
+    return when (type) {
+        RemoteServiceType.KODI.value -> this.setImageResource(R.drawable.icon_kodi)
+        RemoteServiceType.VLC.value -> this.setImageResource(R.drawable.icon_vlc)
+        RemoteServiceType.JACKETT.value -> this.setImageResource(R.drawable.icon_jackett)
+        else -> this.setImageResource(R.drawable.icon_play_outline)
     }
 }
 

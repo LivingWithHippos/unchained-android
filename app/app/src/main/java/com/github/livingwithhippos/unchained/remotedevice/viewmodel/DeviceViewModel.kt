@@ -74,9 +74,17 @@ class DeviceViewModel @Inject constructor(private val deviceRepository: RemoteDe
             deviceLiveData.postValue(DeviceEvent.DeletedDeviceServices(deviceId))
         }
     }
+
+    fun deleteAllDevices() {
+        viewModelScope.launch {
+            deviceRepository.deleteAll()
+            deviceLiveData.postValue(DeviceEvent.DeletedAll)
+        }
+    }
 }
 
 sealed class DeviceEvent {
+    object DeletedAll: DeviceEvent()
     data class Device(val device: RemoteDevice) : DeviceEvent()
     data class DeletedDevice(val device: RemoteDevice) : DeviceEvent()
     data class Service(val service: RemoteService) : DeviceEvent()

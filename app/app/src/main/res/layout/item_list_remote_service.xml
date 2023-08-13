@@ -50,28 +50,41 @@
 
             <TextView
                 android:id="@+id/tvTitle"
-                android:textAppearance="?attr/textAppearanceLabelSmall"
+                android:textAppearance="?attr/textAppearanceLabelLarge"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
+                android:layout_marginStart="10dp"
                 android:layout_marginBottom="5dp"
                 android:maxLines="2"
                 android:text="@{item.name, default=`Remote service #X`}"
                 app:layout_constraintBottom_toTopOf="@+id/tvPort"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/defaultIndicator"
+                app:layout_constraintEnd_toStartOf="@+id/ivType"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/tvPort"
-                android:textAppearance="?attr/textAppearanceBodySmall"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="@{item.port + ``, default=`8080`}"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/tvTitle"
                 app:layout_constraintStart_toStartOf="@+id/tvTitle"
                 app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
+
+            <ImageView
+                android:id="@+id/ivType"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                mapServiceTypeDrawable="@{item.type}"
+                android:contentDescription="@string/service"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/tvTitle"
+                />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

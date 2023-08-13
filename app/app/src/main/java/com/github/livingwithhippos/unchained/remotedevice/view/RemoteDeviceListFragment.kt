@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.annotation.MenuRes
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.selection.SelectionPredicates
@@ -52,6 +53,7 @@ class RemoteDeviceListFragment : UnchainedFragment(), DeviceListListener {
         viewModel.deviceLiveData.observe(viewLifecycleOwner) {
             when (it) {
                 is DeviceEvent.AllDevices -> deviceAdapter.submitList(it.devices)
+                is DeviceEvent.DeletedAll -> viewModel.fetchRemoteDevices()
                 else -> {}
             }
         }
@@ -78,7 +80,7 @@ class RemoteDeviceListFragment : UnchainedFragment(), DeviceListListener {
                     true
                 }
                 R.id.delete_all_devices -> {
-                    // todo: open dialog and ask for confirmation
+                    showConfirmationDialog()
                     true
                 }
                 else -> {
@@ -92,6 +94,19 @@ class RemoteDeviceListFragment : UnchainedFragment(), DeviceListListener {
         }
         // Show the popup menu.
         popup.show()
+    }
+
+    private fun showConfirmationDialog() {
+        val builder: AlertDialog.Builder? = activity?.let {
+            AlertDialog.Builder(it)
+        }
+        builder?.setMessage(R.string.dialog_confirm_action)?.setTitle(R.string.delete_all)?.setPositiveButton(R.string.yes) { _, _ ->
+            viewModel.deleteAllDevices()
+        }?.setNegativeButton(R.string.no) { dialog, _ ->
+            dialog.cancel()
+        }
+        val dialog: AlertDialog? = builder?.create()
+        dialog?.show()
     }
 
     override fun onDeviceClick(item: RemoteDevice) {

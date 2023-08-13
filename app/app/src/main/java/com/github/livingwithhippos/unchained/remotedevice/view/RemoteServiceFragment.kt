@@ -57,6 +57,7 @@ class RemoteServiceFragment : Fragment() {
         if (item == null) {
             // new service
             serviceTypeView.setText(getString(R.string.kodi), false)
+            binding.bDeleteService.isEnabled = false
         } else {
             // edit service
             binding.bSaveService.text = getString(R.string.update)
@@ -92,7 +93,7 @@ class RemoteServiceFragment : Fragment() {
                 return@setOnClickListener
             }
 
-            when (getServiceType(binding.servicePickerText.text.toString())) {
+            when (val serviceType = getServiceType(binding.servicePickerText.text.toString())) {
                 RemoteServiceType.JACKETT -> {
                     val remoteService =
                         RemoteService(
@@ -102,7 +103,7 @@ class RemoteServiceFragment : Fragment() {
                             port = port,
                             username = username.ifBlank { null },
                             password = password.ifBlank { null },
-                            type = RemoteServiceType.KODI.value,
+                            type = serviceType.value,
                             isDefault = false,
                         )
                     viewModel.updateService(remoteService)
@@ -116,7 +117,7 @@ class RemoteServiceFragment : Fragment() {
                             port = port,
                             username = username.ifBlank { null },
                             password = password.ifBlank { null },
-                            type = RemoteServiceType.KODI.value,
+                            type = serviceType.value,
                             isDefault = binding.switchDefault.isChecked,
                         )
                     viewModel.updateService(remoteService)
@@ -130,7 +131,7 @@ class RemoteServiceFragment : Fragment() {
                             port = port,
                             username = username.ifBlank { null },
                             password = password.ifBlank { null },
-                            type = RemoteServiceType.KODI.value,
+                            type = serviceType.value,
                             isDefault = binding.switchDefault.isChecked,
                         )
                     viewModel.updateService(remoteService)

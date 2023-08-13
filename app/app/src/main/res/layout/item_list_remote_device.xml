@@ -50,10 +50,10 @@
 
             <TextView
                 android:id="@+id/tvTitle"
-                android:textAppearance="?attr/textAppearanceLabelSmall"
+                android:textAppearance="?attr/textAppearanceLabelLarge"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
+                android:layout_marginStart="10dp"
                 android:layout_marginBottom="5dp"
                 android:maxLines="2"
                 android:text="@{item.name, default=`Remote device #X`}"
@@ -64,7 +64,7 @@
 
             <TextView
                 android:id="@+id/tvDetails"
-                android:textAppearance="?attr/textAppearanceBodySmall"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="@{item.address, default=`192.178.4.1`}"
