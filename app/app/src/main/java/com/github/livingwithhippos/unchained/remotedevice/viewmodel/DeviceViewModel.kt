@@ -9,6 +9,7 @@ import com.github.livingwithhippos.unchained.data.repository.RemoteDeviceReposit
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @HiltViewModel
 class DeviceViewModel @Inject constructor(private val deviceRepository: RemoteDeviceRepository) :
@@ -47,26 +48,43 @@ class DeviceViewModel @Inject constructor(private val deviceRepository: RemoteDe
     fun updateService(remoteService: RemoteService) {
         viewModelScope.launch {
             val insertedRow = deviceRepository.insertService(remoteService)
-            val serviceID = deviceRepository.getDeviceIDByRow(insertedRow)
+            val serviceID = deviceRepository.getServiceIDByRow(insertedRow)
             if (serviceID != null) {
                 if (remoteService.isDefault) {
                     deviceRepository.setDefaultDeviceService(remoteService.device, serviceID)
                 }
                 val newService = deviceRepository.getService(serviceID)
                 if (newService != null) deviceLiveData.postValue(DeviceEvent.Service(newService))
+            } else {
+                Timber.e("Service ID is null trying to save on the db")
             }
+        }
+    }
+
+    fun deleteService(service: RemoteService) {
+        viewModelScope.launch {
+            deviceRepository.deleteService(service)
+            deviceLiveData.postValue(DeviceEvent.DeletedService(service))
+        }
+    }
+
+    fun deleteDeviceServices(deviceId: Int) {
+        viewModelScope.launch {
+            deviceRepository.deleteDeviceServices(deviceId)
+            deviceLiveData.postValue(DeviceEvent.DeletedDeviceServices(deviceId))
         }
     }
 }
 
 sealed class DeviceEvent {
     data class Device(val device: RemoteDevice) : DeviceEvent()
-
+    data class DeletedDevice(val device: RemoteDevice) : DeviceEvent()
     data class Service(val service: RemoteService) : DeviceEvent()
+    data class DeletedService(val service: RemoteService) : DeviceEvent()
+
+    data class DeletedDeviceServices(val deviceId: Int) : DeviceEvent()
 
     data class AllDevices(val devices: List<RemoteDevice>) : DeviceEvent()
 
     data class DeviceServices(val deviceId: Int, val services: List<RemoteService>) : DeviceEvent()
-
-    data class AllServices(val services: List<RemoteDevice>) : DeviceEvent()
 }

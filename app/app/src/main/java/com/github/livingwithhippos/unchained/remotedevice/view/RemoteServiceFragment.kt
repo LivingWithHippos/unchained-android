@@ -13,6 +13,7 @@ import androidx.navigation.fragment.navArgs
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.local.RemoteService
 import com.github.livingwithhippos.unchained.data.local.RemoteServiceType
+import com.github.livingwithhippos.unchained.data.local.serviceTypeMap
 import com.github.livingwithhippos.unchained.databinding.FragmentRemoteServiceBinding
 import com.github.livingwithhippos.unchained.remotedevice.viewmodel.DeviceEvent
 import com.github.livingwithhippos.unchained.remotedevice.viewmodel.DeviceViewModel
@@ -38,17 +39,24 @@ class RemoteServiceFragment : Fragment() {
 
         val serviceTypeView = binding.serviceTypePicker.editText as? AutoCompleteTextView
 
+        if (serviceTypeView == null) {
+            // should not happen, used just to avoid successive checks
+            Timber.e("serviceTypeView is null")
+            context?.showToast(R.string.error)
+            return binding.root
+        }
+
         val serviceTypeAdapter =
             ArrayAdapter(
                 requireContext(),
                 R.layout.basic_dropdown_list_item,
                 resources.getStringArray(R.array.service_types)
             )
-        serviceTypeView?.setAdapter(serviceTypeAdapter)
+        serviceTypeView.setAdapter(serviceTypeAdapter)
 
         if (item == null) {
             // new service
-            serviceTypeView?.setText(getString(R.string.kodi), false)
+            serviceTypeView.setText(getString(R.string.kodi), false)
         } else {
             // edit service
             binding.bSaveService.text = getString(R.string.update)
@@ -59,33 +67,16 @@ class RemoteServiceFragment : Fragment() {
             binding.tiPassword.setText(item.password.toString())
             binding.switchDefault.isChecked = item.isDefault
 
-            when (item.type) {
-                RemoteServiceType.KODI.value -> {
-                    serviceTypeView?.setText(getString(R.string.kodi), false)
-                }
-                RemoteServiceType.VLC.value -> {
-                    serviceTypeView?.setText(getString(R.string.player_vlc), false)
-                }
-                RemoteServiceType.JACKETT.value -> {
-                    serviceTypeView?.setText(getString(R.string.jackett), false)
-                }
-                else -> {
-                    Timber.e("Unknown service type ${item.type}")
-                }
-            }
+            setupServiceType(binding, item.type, serviceTypeView)
         }
 
-        serviceTypeView?.setOnItemClickListener { _, _, position, _ ->
-            when (val selectedTypeService: String? = serviceTypeAdapter.getItem(position)) {
-                getString(R.string.kodi) -> {}
-                getString(R.string.player_vlc) -> {}
-                getString(R.string.jackett) -> {}
-                null -> {
-                    Timber.e("Service type picked null!")
-                }
-                else -> {
-                    Timber.e("Unknown service type picked $selectedTypeService")
-                }
+        serviceTypeView.setOnItemClickListener { _, _, position, _ ->
+            val selectedService = getServiceType(serviceTypeAdapter.getItem(position))
+            if (selectedService != null) {
+                setupServiceType(
+                    binding,
+                    selectedService.value
+                )
             }
         }
 
@@ -101,8 +92,22 @@ class RemoteServiceFragment : Fragment() {
                 return@setOnClickListener
             }
 
-            when (val selectedService: String = binding.servicePickerText.text.toString()) {
-                getString(R.string.kodi) -> {
+            when (getServiceType(binding.servicePickerText.text.toString())) {
+                RemoteServiceType.JACKETT -> {
+                    val remoteService =
+                        RemoteService(
+                            id = serviceId,
+                            device = args.deviceID,
+                            name = name,
+                            port = port,
+                            username = username.ifBlank { null },
+                            password = password.ifBlank { null },
+                            type = RemoteServiceType.KODI.value,
+                            isDefault = false,
+                        )
+                    viewModel.updateService(remoteService)
+                }
+                RemoteServiceType.KODI -> {
                     val remoteService =
                         RemoteService(
                             id = serviceId,
@@ -116,11 +121,29 @@ class RemoteServiceFragment : Fragment() {
                         )
                     viewModel.updateService(remoteService)
                 }
-                getString(R.string.player_vlc) -> {}
-                getString(R.string.jackett) -> {}
-                else -> {
-                    Timber.e("Unknown service type saving $selectedService")
+                RemoteServiceType.VLC -> {
+                    val remoteService =
+                        RemoteService(
+                            id = serviceId,
+                            device = args.deviceID,
+                            name = name,
+                            port = port,
+                            username = username.ifBlank { null },
+                            password = password.ifBlank { null },
+                            type = RemoteServiceType.KODI.value,
+                            isDefault = binding.switchDefault.isChecked,
+                        )
+                    viewModel.updateService(remoteService)
                 }
+                null -> {
+                    Timber.e("Unknown service type saving ${binding.servicePickerText.text}")
+                }
+            }
+        }
+
+        binding.bDeleteService.setOnClickListener {
+            item?.let {rs ->
+                viewModel.deleteService(rs)
             }
         }
 
@@ -138,10 +161,55 @@ class RemoteServiceFragment : Fragment() {
                         context?.showToast(R.string.updated)
                     }
                 }
+                is DeviceEvent.DeletedService -> {
+                    context?.showToast(R.string.service_deleted)
+                    // go back
+                    findNavController().popBackStack()
+                }
                 else -> {}
             }
         }
 
         return binding.root
+    }
+
+    private fun getServiceType(text: String?): RemoteServiceType? {
+        return when (text) {
+            getString(R.string.kodi) -> {
+                RemoteServiceType.KODI
+            }
+
+            getString(R.string.player_vlc) -> {
+                RemoteServiceType.VLC
+            }
+
+            getString(R.string.jackett) -> {
+                RemoteServiceType.JACKETT
+            }
+
+            else -> {
+                null
+            }
+        }
+    }
+
+    private fun setupServiceType(binding: FragmentRemoteServiceBinding, type: Int, serviceDropdown: AutoCompleteTextView? = null)  {
+        if (args.item == null) {
+            binding.bDeleteService.isEnabled = false
+        }
+        val serviceType = serviceTypeMap[type]
+        if (serviceType == null) {
+            Timber.e("Unknown service type $type")
+            return
+        }
+        // set up default switch, enable the button only for services that reproduce media
+        if (serviceType.playable) {
+            binding.switchDefault.isEnabled = true
+        } else {
+            binding.switchDefault.isEnabled = false
+            binding.switchDefault.isChecked = false
+        }
+        // set the text only if the view has been passed (when starting the fragment)
+        serviceDropdown?.setText(getString(serviceType.nameRes), false)
     }
 }

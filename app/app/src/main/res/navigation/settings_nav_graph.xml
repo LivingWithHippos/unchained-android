@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.github.livingwithhippos.unchained.settings.view.SettingsFragment"
-        android:label="SettingsFragment"
+        android:label="@string/settings"
         >
         <action
             android:id="@+id/action_settingsFragment_to_remoteDeviceListFragment"
@@ -46,7 +46,7 @@
     <fragment
         android:id="@+id/remoteServiceFragment"
         android:name="com.github.livingwithhippos.unchained.remotedevice.view.RemoteServiceFragment"
-        android:label="RemoteServiceFragment"
+        android:label="@string/service"
         tools:layout="@layout/fragment_remote_service"
         >
         <argument

@@ -3,11 +3,13 @@ package com.github.livingwithhippos.unchained.data.local
 import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Entity
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.PrimaryKey
 import androidx.room.Query
+import com.github.livingwithhippos.unchained.data.model.Repository
 import java.util.Objects
 import kotlinx.parcelize.Parcelize
 
@@ -36,6 +38,12 @@ interface RemoteDeviceDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertService(service: RemoteService): Long
+
+    @Delete
+    suspend fun deleteService(service: RemoteService)
+
+    @Delete
+    suspend fun deleteDevice(device: RemoteDevice)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAllDevices(list: List<RemoteDevice>): List<Long>

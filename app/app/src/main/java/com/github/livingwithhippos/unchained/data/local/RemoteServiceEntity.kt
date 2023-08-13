@@ -1,11 +1,14 @@
 package com.github.livingwithhippos.unchained.data.local
 
 import android.os.Parcelable
+import androidx.annotation.StringRes
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import com.github.livingwithhippos.unchained.R
 import kotlinx.parcelize.Parcelize
+import java.util.Objects
 
 @Parcelize
 @Entity(
@@ -37,10 +40,26 @@ class RemoteService(
     @ColumnInfo(name = "field_1") val fieldOne: String = "",
     @ColumnInfo(name = "field_2") val fieldTwo: String = "",
     @ColumnInfo(name = "field_3") val fieldThree: String = ""
-) : Parcelable
+) : Parcelable {
+    override fun equals(other: Any?): Boolean {
+        if (other is RemoteService) {
+            return other.id == id
+        }
+        return false
+    }
 
-enum class RemoteServiceType(val value: Int) {
-    KODI(0),
-    VLC(1),
-    JACKETT(2)
+    override fun hashCode(): Int = Objects.hash(id)
 }
+
+
+sealed class RemoteServiceType(val value: Int,val playable: Boolean,@StringRes val nameRes: Int) {
+    object KODI : RemoteServiceType(0, true, R.string.kodi)
+    object VLC : RemoteServiceType(1, true, R.string.player_vlc)
+    object JACKETT : RemoteServiceType(2, false, R.string.jackett)
+}
+
+val serviceTypeMap = mapOf(
+    RemoteServiceType.KODI.value to RemoteServiceType.KODI,
+    RemoteServiceType.VLC.value to RemoteServiceType.VLC,
+    RemoteServiceType.JACKETT.value to RemoteServiceType.JACKETT
+)

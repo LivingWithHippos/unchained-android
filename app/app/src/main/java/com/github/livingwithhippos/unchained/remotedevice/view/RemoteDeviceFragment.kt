@@ -59,6 +59,11 @@ class RemoteDeviceFragment : UnchainedFragment(), ServiceListListener {
                 is DeviceEvent.DeviceServices -> {
                     serviceAdapter.submitList(it.services)
                 }
+                is DeviceEvent.DeletedDeviceServices -> {
+                    args.item?.let {device ->
+                        viewModel.fetchDeviceServices(device.id)
+                    }
+                }
                 is DeviceEvent.Device -> {
                     if (args.item == null) {
                         val action =
@@ -129,6 +134,7 @@ class RemoteDeviceFragment : UnchainedFragment(), ServiceListListener {
             //  maybe we could just reopen this fragment and pop this from the stack passing the
             // created one as argument
             popup.menu.findItem(R.id.new_remote_service).isEnabled = false
+            popup.menu.findItem(R.id.delete_all_services).isEnabled = false
         }
 
         popup.setOnMenuItemClickListener { menuItem: MenuItem ->
@@ -144,7 +150,7 @@ class RemoteDeviceFragment : UnchainedFragment(), ServiceListListener {
                     true
                 }
                 R.id.delete_all_services -> {
-                    // todo: open dialog and ask for confirmation
+                    viewModel.deleteDeviceServices(args.item!!.id)
                     true
                 }
                 else -> {

@@ -43,7 +43,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="10dp"
+                android:padding="20dp"
                 >
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -51,8 +51,6 @@
                     style="?attr/textInputFilledStyle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginHorizontal="10dp"
                     android:hint="@string/name_required"
                     android:importantForAutofill="no"
                     app:layout_constraintBottom_toTopOf="@+id/tfPort"
@@ -75,7 +73,6 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:layout_marginHorizontal="10dp"
                     android:hint="@string/port_required"
                     android:importantForAutofill="no"
                     app:endIconMode="clear_text"
@@ -102,7 +99,6 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:layout_marginHorizontal="10dp"
                     android:hint="@string/username"
                     android:importantForAutofill="no"
                     app:endIconMode="clear_text"
@@ -128,14 +124,13 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:layout_marginHorizontal="10dp"
                     android:hint="@string/password"
                     android:importantForAutofill="no"
-                    app:endIconMode="clear_text"
+                    app:endIconMode="password_toggle"
                     app:layout_constraintTop_toBottomOf="@+id/tfUsername"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintBottom_toTopOf="@+id/switchDefault"
+                    app:layout_constraintBottom_toTopOf="@+id/serviceTypePicker"
                     >
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -143,35 +138,22 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:imeOptions="actionNext"
-                        android:inputType="textVisiblePassword"
+                        android:inputType="textPassword"
                         android:singleLine="true" />
 
                 </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.materialswitch.MaterialSwitch
-                    android:id="@+id/switchDefault"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
-                    android:text="@string/set_as_default"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tfPassword"
-                    app:layout_constraintBottom_toTopOf="@+id/bSaveService"
-                    />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/serviceTypePicker"
                     style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginEnd="10dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:layout_marginTop="10dp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/bSaveService"
-                    app:layout_constraintTop_toBottomOf="@id/switchDefault">
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tfPassword"
+                    app:layout_constraintBottom_toTopOf="@+id/switchDefault"
+                    >
 
                     <AutoCompleteTextView
                         android:id="@+id/servicePickerText"
@@ -183,16 +165,43 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <com.google.android.material.materialswitch.MaterialSwitch
+                    android:id="@+id/switchDefault"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/set_as_default"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/serviceTypePicker"
+                    app:layout_constraintBottom_toTopOf="@+id/bSaveService"
+                    />
+
+                <Button
+                    android:id="@+id/bDeleteService"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/remove"
+                    android:backgroundTint="?attr/colorError"
+                    android:textColor="?attr/colorOnError"
+                    android:contentDescription="@string/remove"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/switchDefault"
+                    app:layout_constraintEnd_toStartOf="@+id/bSaveService"
+                    />
+
                 <Button
                     android:id="@+id/bSaveService"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
                     android:text="@string/save"
                     android:contentDescription="@string/save"
-                    app:layout_constraintBottom_toBottomOf="@+id/serviceTypePicker"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/serviceTypePicker"
-                    app:layout_constraintTop_toTopOf="@+id/serviceTypePicker"
+                    app:layout_constraintStart_toEndOf="@+id/bDeleteService"
+                    app:layout_constraintTop_toBottomOf="@+id/switchDefault"
                     />
 
             </androidx.constraintlayout.widget.ConstraintLayout>

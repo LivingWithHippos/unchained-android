@@ -33,4 +33,7 @@ class RemoteDeviceRepository @Inject constructor(private val remoteDeviceDao: Re
     suspend fun getService(serviceID: Int): RemoteService? = remoteDeviceDao.getService(serviceID)
 
     suspend fun getDevice(deviceID: Int): RemoteDevice? = remoteDeviceDao.getDevice(deviceID)
+    suspend fun deleteService(service: RemoteService) = remoteDeviceDao.deleteService(service)
+    suspend fun deleteDevice(device: RemoteDevice) = remoteDeviceDao.deleteDevice(device)
+    suspend fun deleteDeviceServices(deviceID: Int) = remoteDeviceDao.removeDeviceServices(deviceID)
 }

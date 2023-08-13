@@ -486,4 +486,6 @@
     <string name="delete_services">Eliminar servicios</string>
     <string name="new_service">Nuevo servicio</string>
     <string name="remote_device">Dispositivo remoto</string>
+    <string name="service_deleted">Servicio suprimido</string>
+    <string name="service">Servicio</string>
 </resources>

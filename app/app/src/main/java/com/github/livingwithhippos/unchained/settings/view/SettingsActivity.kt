@@ -2,6 +2,10 @@ package com.github.livingwithhippos.unchained.settings.view
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupActionBarWithNavController
 import com.github.livingwithhippos.unchained.R
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -17,9 +21,13 @@ class SettingsActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_settings)
 
-        // todo: restore MainActivity fragment on back press
         setSupportActionBar(findViewById(R.id.emptyAppBar))
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        val navController = (supportFragmentManager.findFragmentById(R.id.fragment_container) as NavHostFragment)
+            .navController
+        val appBarConfiguration = AppBarConfiguration(navController.graph)
+        setupActionBarWithNavController(navController, appBarConfiguration)
     }
 
     override fun onSupportNavigateUp(): Boolean {

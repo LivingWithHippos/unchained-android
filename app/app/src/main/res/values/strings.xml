@@ -705,4 +705,6 @@
     <string name="new_service">New Service</string>
     <string name="remote_device">Remote Device</string>
     <string name="jackett" translatable="false">Jackett</string>
+    <string name="service_deleted">Service deleted</string>
+    <string name="service">Service</string>
 </resources>
