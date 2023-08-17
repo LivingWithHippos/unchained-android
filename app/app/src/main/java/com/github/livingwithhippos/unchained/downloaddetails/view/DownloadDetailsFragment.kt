@@ -11,12 +11,15 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.PopupMenu
+import androidx.annotation.MenuRes
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.DeleteDialogFragment
@@ -28,6 +31,7 @@ import com.github.livingwithhippos.unchained.downloaddetails.model.AlternativeDo
 import com.github.livingwithhippos.unchained.downloaddetails.viewmodel.DownloadDetailsMessage
 import com.github.livingwithhippos.unchained.downloaddetails.viewmodel.DownloadDetailsViewModel
 import com.github.livingwithhippos.unchained.lists.view.ListState
+import com.github.livingwithhippos.unchained.remotedevice.view.RemoteDeviceFragmentDirections
 import com.github.livingwithhippos.unchained.utilities.EventObserver
 import com.github.livingwithhippos.unchained.utilities.RD_STREAMING_URL
 import com.github.livingwithhippos.unchained.utilities.extension.copyToClipboard
@@ -193,11 +197,43 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                     dialog.arguments = bundle
                     dialog.show(parentFragmentManager, "KodiServerPickerDialog")
                 }
-                null -> {}
+                else -> {}
             }
         }
 
+        detailsBinding.fabPickStreaming.setOnClickListener {
+            showMenu(it, R.menu.stream_fab_action)
+        }
+
         return detailsBinding.root
+    }
+
+    private fun showMenu(v: View, @MenuRes menuRes: Int) {
+        val popup = PopupMenu(requireContext(), v)
+        popup.menuInflater.inflate(menuRes, popup.menu)
+
+        popup.setOnMenuItemClickListener { menuItem: MenuItem ->
+            // Respond to menu item click.
+            when (menuItem.itemId) {
+                R.id.default_service -> {
+                    viewModel.fetchDefaultService()
+                }
+                R.id.pick_service -> {
+                    // todo: implement a picker
+                }
+                R.id.stream_browser -> {
+                    onBrowserStreamsClick(args.details.id)
+                }
+            }
+            true
+        }
+
+        popup.setOnDismissListener {
+            // Respond to popup being dismissed.
+        }
+        // Show the popup menu.
+        popup.show()
+
     }
 
     override fun onCopyClick(text: String) {

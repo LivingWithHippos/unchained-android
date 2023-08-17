@@ -4,11 +4,14 @@ import android.content.SharedPreferences
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.livingwithhippos.unchained.data.local.RemoteDevice
+import com.github.livingwithhippos.unchained.data.local.RemoteService
 import com.github.livingwithhippos.unchained.data.model.KodiDevice
 import com.github.livingwithhippos.unchained.data.model.Stream
 import com.github.livingwithhippos.unchained.data.repository.DownloadRepository
 import com.github.livingwithhippos.unchained.data.repository.KodiDeviceRepository
 import com.github.livingwithhippos.unchained.data.repository.KodiRepository
+import com.github.livingwithhippos.unchained.data.repository.RemoteDeviceRepository
 import com.github.livingwithhippos.unchained.data.repository.StreamingRepository
 import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.PreferenceKeys
@@ -27,6 +30,7 @@ constructor(
     private val downloadRepository: DownloadRepository,
     private val kodiRepository: KodiRepository,
     private val kodiDeviceRepository: KodiDeviceRepository,
+    private val remoteDeviceRepository: RemoteDeviceRepository
 ) : ViewModel() {
 
     val streamLiveData = MutableLiveData<Stream?>()
@@ -112,6 +116,19 @@ constructor(
     fun getCustomPlayerPreference(): String {
         return preferences.getString("custom_media_player", "") ?: ""
     }
+
+    fun fetchDefaultService() {
+        viewModelScope.launch {
+            val devices: Map<RemoteDevice, List<RemoteService>> = remoteDeviceRepository.getDefaultDeviceWithServices()
+            if (devices.isNotEmpty()) {
+                val device = devices.keys.first()
+                val services = devices[device]
+                if (services.isNullOrEmpty().not()) {
+                    eventLiveData.postEvent(DownloadEvent.DefaultDeviceService(device, services!!.first()))
+                }
+            }
+        }
+    }
 }
 
 sealed class DownloadDetailsMessage {
@@ -128,4 +145,5 @@ sealed class DownloadDetailsMessage {
 
 sealed class DownloadEvent {
     data class KodiDevices(val devices: List<KodiDevice>) : DownloadEvent()
+    data class DefaultDeviceService(val device: RemoteDevice, val service: RemoteService) : DownloadEvent()
 }

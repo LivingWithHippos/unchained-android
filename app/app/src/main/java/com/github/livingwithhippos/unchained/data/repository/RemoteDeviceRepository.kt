@@ -6,7 +6,6 @@ import com.github.livingwithhippos.unchained.data.local.RemoteService
 import javax.inject.Inject
 
 class RemoteDeviceRepository @Inject constructor(private val remoteDeviceDao: RemoteDeviceDao) {
-
     suspend fun getAllDevices() = remoteDeviceDao.getAllDevices()
 
     suspend fun deleteAll() = remoteDeviceDao.deleteAll()
@@ -36,4 +35,5 @@ class RemoteDeviceRepository @Inject constructor(private val remoteDeviceDao: Re
     suspend fun deleteService(service: RemoteService) = remoteDeviceDao.deleteService(service)
     suspend fun deleteDevice(device: RemoteDevice) = remoteDeviceDao.deleteDevice(device)
     suspend fun deleteDeviceServices(deviceID: Int) = remoteDeviceDao.removeDeviceServices(deviceID)
+    suspend fun getDefaultDeviceWithServices() = remoteDeviceDao.getDefaultDeviceWithServices()
 }

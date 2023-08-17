@@ -81,18 +81,26 @@ class DeviceViewModel @Inject constructor(private val deviceRepository: RemoteDe
             deviceLiveData.postValue(DeviceEvent.DeletedAll)
         }
     }
+
+    fun fetchDevicesAndServices() {
+        viewModelScope.launch {
+            deviceLiveData.postValue(
+                DeviceEvent.AllDevicesAndServices(deviceRepository.getDevicesAndServices())
+            )
+        }
+    }
 }
 
 sealed class DeviceEvent {
     object DeletedAll: DeviceEvent()
+    data class AllDevicesAndServices(val itemsMap: Map<RemoteDevice, List<RemoteService>>) : DeviceEvent()
     data class Device(val device: RemoteDevice) : DeviceEvent()
     data class DeletedDevice(val device: RemoteDevice) : DeviceEvent()
-    data class Service(val service: RemoteService) : DeviceEvent()
-    data class DeletedService(val service: RemoteService) : DeviceEvent()
-
-    data class DeletedDeviceServices(val deviceId: Int) : DeviceEvent()
-
     data class AllDevices(val devices: List<RemoteDevice>) : DeviceEvent()
 
     data class DeviceServices(val deviceId: Int, val services: List<RemoteService>) : DeviceEvent()
+
+    data class DeletedDeviceServices(val deviceId: Int) : DeviceEvent()
+    data class Service(val service: RemoteService) : DeviceEvent()
+    data class DeletedService(val service: RemoteService) : DeviceEvent()
 }

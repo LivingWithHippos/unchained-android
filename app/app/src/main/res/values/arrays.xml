@@ -69,4 +69,15 @@
         <item>@string/player_vlc</item>
         <item>@string/jackett</item>
     </string-array>
+
+    <declare-styleable name="StatComponent">
+        <attr name="show_label" format="boolean" />
+        <attr name="show_caption" format="boolean" />
+        <attr name="show_icon" format="boolean" />
+        <attr name="statDirection" format="enum">
+            <enum name="horizontal" value="0"/>
+            <enum name="vertical" value="1"/>
+        </attr>
+    </declare-styleable>
+
 </resources>

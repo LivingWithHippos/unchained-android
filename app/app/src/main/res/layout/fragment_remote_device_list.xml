@@ -5,13 +5,26 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:padding="20dp"
+        >
+
+        <com.github.livingwithhippos.unchained.customview.StatComponent
+            android:id="@+id/remoteDeviceStats"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:show_caption="false"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/rvDeviceList"
+            />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvDeviceList"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginBottom="20dp"
             android:layout_gravity="center_horizontal"
             android:scrollbars="vertical"
             android:visibility="visible"
@@ -20,7 +33,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/remoteDeviceStats"
+            />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fabDevicesAction"

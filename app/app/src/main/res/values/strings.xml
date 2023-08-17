@@ -708,4 +708,7 @@
     <string name="service_deleted">Service deleted</string>
     <string name="service">Service</string>
     <string name="dialog_confirm_action">Are you sure you want to proceed?</string>
+    <string name="browser">Browser</string>
+    <string name="pick_service">Pick Service</string>
+    <string name="default_service">Default Service</string>
 </resources>

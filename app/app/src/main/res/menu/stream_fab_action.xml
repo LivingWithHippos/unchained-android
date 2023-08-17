@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/default_service"
+        android:title="@string/default_service" />
+    <item android:id="@+id/pick_service"
+        android:title="@string/pick_service" />
+    <item android:id="@+id/stream_browser"
+        android:title="@string/browser" />
+</menu>
