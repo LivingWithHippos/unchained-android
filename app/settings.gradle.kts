@@ -25,7 +25,7 @@ dependencyResolutionManagement {
             version("core_ktx", "1.10.1")
             version("coroutines", "1.7.3")
             version("countly", "23.6.0")
-            version("dagger", "2.47")
+            version("dagger", "2.48")
             version("espresso", "3.5.1")
             version("datastore", "1.0.0")
             version("fast_adapter", "5.7.0")

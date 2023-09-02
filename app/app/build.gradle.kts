@@ -53,7 +53,7 @@ kapt {
 
 android {
     namespace = "com.github.livingwithhippos.unchained"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.github.livingwithhippos.unchained"
