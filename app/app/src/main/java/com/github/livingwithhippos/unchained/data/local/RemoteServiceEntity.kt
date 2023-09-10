@@ -1,6 +1,7 @@
 package com.github.livingwithhippos.unchained.data.local
 
 import android.os.Parcelable
+import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.room.ColumnInfo
 import androidx.room.Entity
@@ -52,10 +53,10 @@ class RemoteService(
 }
 
 
-sealed class RemoteServiceType(val value: Int,val playable: Boolean,@StringRes val nameRes: Int) {
-    object KODI : RemoteServiceType(0, true, R.string.kodi)
-    object VLC : RemoteServiceType(1, true, R.string.player_vlc)
-    object JACKETT : RemoteServiceType(2, false, R.string.jackett)
+sealed class RemoteServiceType(val value: Int,val playable: Boolean,@StringRes val nameRes: Int, @DrawableRes val iconRes: Int) {
+    object KODI : RemoteServiceType(0, true, R.string.kodi, R.drawable.icon_kodi)
+    object VLC : RemoteServiceType(1, true, R.string.player_vlc, R.drawable.icon_vlc)
+    object JACKETT : RemoteServiceType(2, false, R.string.jackett, R.drawable.icon_jackett)
 }
 
 val serviceTypeMap = mapOf(
