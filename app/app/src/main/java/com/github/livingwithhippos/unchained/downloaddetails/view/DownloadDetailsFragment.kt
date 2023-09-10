@@ -1,5 +1,6 @@
 package com.github.livingwithhippos.unchained.downloaddetails.view
 
+import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
 import android.content.ComponentName
 import android.content.Intent
@@ -11,7 +12,9 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.PopupMenu
+import android.widget.TextView
 import androidx.annotation.MenuRes
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
@@ -19,24 +22,27 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.DeleteDialogFragment
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
+import com.github.livingwithhippos.unchained.data.local.RemoteDevice
+import com.github.livingwithhippos.unchained.data.local.RemoteService
+import com.github.livingwithhippos.unchained.data.local.RemoteServiceType
 import com.github.livingwithhippos.unchained.data.model.Alternative
 import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.databinding.FragmentDownloadDetailsBinding
 import com.github.livingwithhippos.unchained.downloaddetails.model.AlternativeDownloadAdapter
 import com.github.livingwithhippos.unchained.downloaddetails.viewmodel.DownloadDetailsMessage
 import com.github.livingwithhippos.unchained.downloaddetails.viewmodel.DownloadDetailsViewModel
+import com.github.livingwithhippos.unchained.downloaddetails.viewmodel.DownloadEvent
 import com.github.livingwithhippos.unchained.lists.view.ListState
-import com.github.livingwithhippos.unchained.remotedevice.view.RemoteDeviceFragmentDirections
 import com.github.livingwithhippos.unchained.utilities.EventObserver
 import com.github.livingwithhippos.unchained.utilities.RD_STREAMING_URL
 import com.github.livingwithhippos.unchained.utilities.extension.copyToClipboard
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
+import com.github.livingwithhippos.unchained.utilities.postEvent
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -50,6 +56,8 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
     private val viewModel: DownloadDetailsViewModel by activityViewModels()
 
     private val args: DownloadDetailsFragmentArgs by navArgs()
+
+    private val deviceServiceMap: MutableMap<RemoteDevice, List<RemoteService>> = mutableMapOf()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -107,6 +115,10 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
             viewModel.getButtonVisibilityPreference(SHOW_LOAD_STREAM_BUTTON)
         detailsBinding.showStreamBrowser =
             viewModel.getButtonVisibilityPreference(SHOW_STREAM_BROWSER_BUTTON)
+
+        detailsBinding.fabPickStreaming.setOnClickListener {
+            showStreamingMenu(it, R.menu.stream_fab_action)
+        }
 
         viewModel.streamLiveData.observe(viewLifecycleOwner) {
             if (it != null) {
@@ -201,16 +213,82 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
             }
         }
 
-        detailsBinding.fabPickStreaming.setOnClickListener {
-            showMenu(it, R.menu.stream_fab_action)
+        viewModel.eventLiveData.observe(viewLifecycleOwner) {
+            when(val content = it.peekContent()) {
+                is DownloadEvent.DefaultDeviceService -> {
+                    // send media to default device
+                }
+                is DownloadEvent.DeviceAndServices -> {
+                    // used to populate the menu
+                    deviceServiceMap.clear()
+                    deviceServiceMap.putAll(content.devicesServices)
+                }
+                is DownloadEvent.KodiDevices -> {}
+            }
         }
+
+        viewModel.fetchDevicesAndServices()
 
         return detailsBinding.root
     }
 
-    private fun showMenu(v: View, @MenuRes menuRes: Int) {
+    @SuppressLint("SetTextI18n")
+    private fun showStreamingMenu(v: View, @MenuRes menuRes: Int) {
+
+        // todo: https://medium.com/android-beginners/popupwindow-android-example-in-kotlin-5919245c8b8a
         val popup = PopupMenu(requireContext(), v)
         popup.menuInflater.inflate(menuRes, popup.menu)
+
+        val recentService: Int = viewModel.getRecentService()
+
+        val defaultDevice: Map.Entry<RemoteDevice, List<RemoteService>>? = deviceServiceMap.firstNotNullOfOrNull {
+            if (it.key.isDefault) it else null
+        }
+        val defaultService: RemoteService? = defaultDevice?.value?.firstOrNull { it.isDefault }
+
+
+        // get all the services of the corresponding menu item
+        // populate according to results
+
+        if (defaultService != null) {
+            val serviceType: RemoteServiceType? = getServiceType(defaultService.type)
+            if (serviceType != null) {
+                popup.menu.findItem(R.id.default_service).actionView?.let {
+                    it.findViewById<ImageView>(R.id.serviceIcon).setImageResource(serviceType.iconRes)
+                    it.findViewById<TextView>(R.id.serviceName).text = getString(serviceType.nameRes)
+                    // ip from device, port from service
+                    it.findViewById<TextView>(R.id.serviceAddress).text = "${defaultDevice.key.address}:${defaultService.port}"
+                }
+            } else {
+                popup.menu.findItem(R.id.default_service).isVisible = false
+            }
+        } else {
+            popup.menu.findItem(R.id.default_service).isVisible = false
+        }
+
+        if (recentService != -1) {
+            val recentServiceItem: RemoteService? = deviceServiceMap.firstNotNullOfOrNull {
+                it.value.firstOrNull { service -> service.id == recentService }
+            }
+            if (recentServiceItem != null) {
+                val recentDeviceItem = deviceServiceMap.keys.firstOrNull { it.id == recentServiceItem.device }
+                val serviceType: RemoteServiceType? = getServiceType(recentServiceItem.type)
+                if (recentDeviceItem != null && serviceType!=null) {
+                    popup.menu.findItem(R.id.recent_service).actionView?.let {
+                        it.findViewById<ImageView>(R.id.serviceIcon).setImageResource(serviceType.iconRes)
+                        it.findViewById<TextView>(R.id.serviceName).text = getString(serviceType.nameRes)
+                        // ip from device, port from service
+                        it.findViewById<TextView>(R.id.serviceAddress).text = "${recentDeviceItem.address}:${recentServiceItem.port}"
+                    }
+                } else {
+                    popup.menu.findItem(R.id.recent_service).isVisible = false
+                }
+            } else {
+                popup.menu.findItem(R.id.recent_service).isVisible = false
+            }
+        } else {
+            popup.menu.findItem(R.id.recent_service).isVisible = false
+        }
 
         popup.setOnMenuItemClickListener { menuItem: MenuItem ->
             // Respond to menu item click.
@@ -220,6 +298,8 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                 }
                 R.id.pick_service -> {
                     // todo: implement a picker
+                }
+                R.id.recent_service -> {
                 }
                 R.id.stream_browser -> {
                     onBrowserStreamsClick(args.details.id)
@@ -250,7 +330,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         }
     }
 
-    override fun onOpenWithKodi(url: String) {
+    override fun onOpenTranscodedStream(url: String) {
         viewModel.openKodiPickerIfNeeded(url)
     }
 
@@ -340,6 +420,18 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         }
     }
 
+    private fun getServiceType(type: Int): RemoteServiceType? {
+        return when (type) {
+            RemoteServiceType.KODI.value -> RemoteServiceType.KODI
+            RemoteServiceType.VLC.value -> RemoteServiceType.VLC
+            RemoteServiceType.JACKETT.value -> RemoteServiceType.JACKETT
+            else -> {
+                Timber.e("Unknown service type ${type}")
+               null
+            }
+        }
+    }
+
     companion object {
         const val SHOW_SHARE_BUTTON = "show_share_button"
         const val SHOW_OPEN_BUTTON = "show_open_button"
@@ -357,7 +449,7 @@ interface DownloadDetailsListener {
 
     fun onOpenClick(url: String)
 
-    fun onOpenWithKodi(url: String)
+    fun onOpenTranscodedStream(url: String)
 
     fun onLoadStreamsClick(id: String)
 

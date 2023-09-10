@@ -129,6 +129,33 @@ constructor(
             }
         }
     }
+
+    fun fetchDevicesAndServices() {
+        viewModelScope.launch {
+            val devices: Map<RemoteDevice, List<RemoteService>> = remoteDeviceRepository.getDevicesAndServices()
+            eventLiveData.postEvent(DownloadEvent.DeviceAndServices(devices))
+        }
+    }
+
+    /**
+     * returns the IDs of the most recently used service, which also has its device ID
+     * the IDs are the DB entities' IDs
+     */
+    fun getRecentService(): Int {
+        return preferences.getInt(RECENT_SERVICE_KEY, -1)
+    }
+
+    fun setRecentService(serviceId: Int) {
+        with(preferences.edit()) {
+            putInt(RECENT_SERVICE_KEY, serviceId).apply()
+            apply()
+        }
+    }
+
+    companion object {
+        const val RECENT_DEVICE_KEY = "RECENT_DEVICE"
+        const val RECENT_SERVICE_KEY = "RECENT_SERVICE"
+    }
 }
 
 sealed class DownloadDetailsMessage {
@@ -145,5 +172,6 @@ sealed class DownloadDetailsMessage {
 
 sealed class DownloadEvent {
     data class KodiDevices(val devices: List<KodiDevice>) : DownloadEvent()
+    data class DeviceAndServices(val devicesServices: Map<RemoteDevice, List<RemoteService>>) : DownloadEvent()
     data class DefaultDeviceService(val device: RemoteDevice, val service: RemoteService) : DownloadEvent()
 }

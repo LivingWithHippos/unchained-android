@@ -103,12 +103,12 @@
                     />
 
                 <Button
-                    android:id="@+id/bKodi"
+                    android:id="@+id/bStream"
                     style="?attr/materialIconButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:contentDescription="@{@string/open_with_format(item.mimeType)}"
-                    android:onClick="@{()->listener.onOpenWithKodi(item.download)}"
+                    android:onClick="@{()->listener.onOpenTranscodedStream(item.download)}"
                     android:paddingStart="13dp"
                     app:icon="@drawable/icon_remote"
                     />
