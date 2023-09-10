@@ -870,14 +870,6 @@ constructor(
         viewModelScope.launch { protoStore.updateDeviceCode(deviceCode) }
     }
 
-    fun updateCredentialsClientId(clientId: String) {
-        viewModelScope.launch { protoStore.updateClientId(clientId) }
-    }
-
-    fun updateCredentialsClientSecret(clientSecret: String) {
-        viewModelScope.launch { protoStore.updateClientSecret(clientSecret) }
-    }
-
     fun updateCredentialsAccessToken(accessToken: String) {
         viewModelScope.launch { protoStore.updateAccessToken(accessToken) }
     }
@@ -886,18 +878,6 @@ constructor(
         viewModelScope.launch { protoStore.updateRefreshToken(refreshToken) }
     }
 
-    suspend fun getCredentials(): Credentials.CurrentCredential {
-        // todo: find a better way to get the first valid value
-        val credentials =
-            credentialsFlow.firstOrNull {
-                it.clientId.isNotBlank() ||
-                    it.refreshToken.isNotBlank() ||
-                    it.deviceCode.isNotBlank() ||
-                    it.accessToken.isNotBlank() ||
-                    it.clientSecret.isNotBlank()
-            }
-        if (credentials == null) return protoStore.getCredentials() else return credentials
-    }
     /**
      * ***********************
      * AUTH MACHINE FUNCTIONS *

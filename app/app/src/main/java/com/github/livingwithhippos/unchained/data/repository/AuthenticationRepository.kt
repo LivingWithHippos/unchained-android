@@ -85,11 +85,6 @@ constructor(private val protoStore: ProtoStore, private val apiHelper: AuthApiHe
     suspend fun refreshToken(clientId: String, clientSecret: String, refreshToken: String): Token? =
         getToken(clientId, clientSecret, refreshToken)
 
-    suspend fun refreshToken(
-        credentials: com.github.livingwithhippos.unchained.data.local.Credentials.CurrentCredential
-    ): Token? =
-        refreshToken(credentials.clientId!!, credentials.clientSecret!!, credentials.refreshToken!!)
-
     suspend fun refreshTokenWithError(
         credentials: com.github.livingwithhippos.unchained.data.local.Credentials.CurrentCredential
     ): EitherResult<UnchainedNetworkException, Token> =
