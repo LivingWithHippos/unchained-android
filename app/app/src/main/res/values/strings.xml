@@ -711,4 +711,5 @@
     <string name="browser">Browser</string>
     <string name="pick_service">Pick Service</string>
     <string name="default_service">Default Service</string>
+    <string name="transcoding">Transcoding</string>
 </resources>

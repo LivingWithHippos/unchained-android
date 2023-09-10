@@ -355,7 +355,7 @@
                         android:contentDescription="@string/load_streams"
                         android:enabled="@{stream == null &amp;&amp; (details.alternative == null || details.alternative.size == 0)? true : false, default = true}"
                         android:onClick="@{() -> listener.onLoadStreamsClick(details.id)}"
-                        app:srcCompat="@drawable/icon_play_outline" />
+                        app:srcCompat="@drawable/icon_transform" />
 
                     <TextView
                         android:textAppearance="?attr/textAppearanceLabelSmall"
@@ -363,7 +363,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
                         android:focusable="false"
-                        android:text="@string/load_streams"
+                        android:text="@string/transcoding"
                         android:textAlignment="center" />
                 </LinearLayout>
 
