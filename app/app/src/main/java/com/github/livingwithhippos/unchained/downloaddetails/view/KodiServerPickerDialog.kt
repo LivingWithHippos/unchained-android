@@ -40,8 +40,8 @@ class KodiServerPickerDialog : DialogFragment(), KodiDeviceListener {
                         // populate the list
                         adapter.submitList(content.devices)
                     }
-                    is DownloadEvent.DefaultDeviceService -> {
-                    }
+                    is DownloadEvent.DefaultDeviceService -> {}
+                    is DownloadEvent.DeviceAndServices -> {}
                     null -> {}
                 }
             }
