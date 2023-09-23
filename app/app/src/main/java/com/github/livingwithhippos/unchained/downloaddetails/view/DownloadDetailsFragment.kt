@@ -13,9 +13,9 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.PopupMenu
+import android.widget.PopupWindow
 import android.widget.TextView
-import androidx.annotation.MenuRes
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.activityViewModels
@@ -42,7 +42,6 @@ import com.github.livingwithhippos.unchained.utilities.RD_STREAMING_URL
 import com.github.livingwithhippos.unchained.utilities.extension.copyToClipboard
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
-import com.github.livingwithhippos.unchained.utilities.postEvent
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -59,6 +58,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
 
     private val deviceServiceMap: MutableMap<RemoteDevice, List<RemoteService>> = mutableMapOf()
 
+    @SuppressLint("SetTextI18n")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -86,6 +86,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                             dialog.show(parentFragmentManager, "DeleteDialogFragment")
                             true
                         }
+
                         else -> false
                     }
                 }
@@ -116,8 +117,111 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         detailsBinding.showStreamBrowser =
             viewModel.getButtonVisibilityPreference(SHOW_STREAM_BROWSER_BUTTON)
 
-        detailsBinding.fabPickStreaming.setOnClickListener {
-            showStreamingMenu(it, R.menu.stream_fab_action)
+        detailsBinding.fabPickStreaming.setOnClickListener { popView ->
+            // todo: move code to function
+            val layoutInflater = LayoutInflater.from(requireContext())
+            val popup = showStreamingPopupWindow(layoutInflater)
+            popup.isOutsideTouchable = true
+            popup.isFocusable = true
+            popup.showAsDropDown(popView)
+            // popup.showAtLocation(it, Gravity.CENTER, 0, 0)
+
+            val recentService: Int = viewModel.getRecentService()
+
+            val defaultDevice: Map.Entry<RemoteDevice, List<RemoteService>>? =
+                deviceServiceMap.firstNotNullOfOrNull {
+                    if (it.key.isDefault) it else null
+                }
+            val defaultService: RemoteService? = defaultDevice?.value?.firstOrNull { it.isDefault }
+
+
+            // get all the services of the corresponding menu item
+            // populate according to results
+            val defaultLayout =
+                popup.contentView.findViewById<ConstraintLayout>(R.id.defaultServiceLayout)
+
+            if (defaultService != null) {
+                val serviceType: RemoteServiceType? = getServiceType(defaultService.type)
+                if (serviceType != null) {
+                    defaultLayout.findViewById<ImageView>(R.id.defaultServiceIcon)
+                        .setImageResource(serviceType.iconRes)
+                    defaultLayout.findViewById<TextView>(R.id.defaultServiceName).text = defaultService.name
+                    // ip from device, port from service
+                    defaultLayout.findViewById<TextView>(R.id.defaultServiceAddress).text =
+                        "${defaultDevice.key.address}:${defaultService.port}"
+
+                    defaultLayout.setOnClickListener {
+                        playOnDeviceService(
+                            args.details,
+                            defaultDevice.key,
+                            defaultService,
+                            serviceType
+                        )
+                        if (popup.isShowing)
+                            popup.dismiss()
+                    }
+                } else {
+                    defaultLayout.visibility = View.GONE
+                }
+            } else {
+                defaultLayout.visibility = View.GONE
+            }
+
+
+            val recentLayout = popup.contentView.findViewById<ConstraintLayout>(R.id.recentServiceLayout)
+            if (recentService != -1) {
+                val recentServiceItem: RemoteService? = deviceServiceMap.firstNotNullOfOrNull {
+                    it.value.firstOrNull { service -> service.id == recentService }
+                }
+                if (recentServiceItem != null) {
+                    val recentDeviceItem =
+                        deviceServiceMap.keys.firstOrNull { it.id == recentServiceItem.device }
+                    val serviceType: RemoteServiceType? = getServiceType(recentServiceItem.type)
+                    if (recentDeviceItem != null && serviceType != null) {
+                        recentLayout.findViewById<ImageView>(R.id.defaultServiceIcon)
+                            .setImageResource(serviceType.iconRes)
+                        recentLayout.findViewById<TextView>(R.id.defaultServiceName).text = recentServiceItem.name
+                        // ip from device, port from service
+                        recentLayout.findViewById<TextView>(R.id.defaultServiceAddress).text =
+                            "${recentDeviceItem.address}:${recentServiceItem.port}"
+
+                        recentLayout.setOnClickListener {
+                            // todo: send to selected recent service
+                            if (popup.isShowing)
+                                popup.dismiss()
+                        }
+                    } else {
+                        recentLayout.visibility = View.GONE
+                    }
+                } else {
+                    recentLayout.visibility = View.GONE
+                }
+            } else {
+                recentLayout.visibility = View.GONE
+            }
+
+            // todo: distinguish between devices for streaming and for searching content
+            val pickerLayout = popup.contentView.findViewById<ConstraintLayout>(R.id.pickServiceLayout)
+            pickerLayout.findViewById<TextView>(R.id.servicesNumber).text = resources.getQuantityString(
+                R.plurals.service_number_format,
+                deviceServiceMap.values.size
+            )
+            pickerLayout.findViewById<TextView>(R.id.devicesNumber).text = resources.getQuantityString(
+                R.plurals.device_number_format,
+                deviceServiceMap.keys.size
+            )
+            pickerLayout.setOnClickListener {
+                // todo: picker dialog
+                if (popup.isShowing)
+                    popup.dismiss()
+            }
+
+            val browserLayout = popup.contentView.findViewById<ConstraintLayout>(R.id.streamBrowserLayout)
+            browserLayout.setOnClickListener {
+                onBrowserStreamsClick(args.details.id)
+                if (popup.isShowing)
+                    popup.dismiss()
+            }
         }
 
         viewModel.streamLiveData.observe(viewLifecycleOwner) {
@@ -193,15 +297,19 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                 is DownloadDetailsMessage.KodiError -> {
                     context?.showToast(R.string.kodi_connection_error)
                 }
+
                 is DownloadDetailsMessage.KodiSuccess -> {
                     context?.showToast(R.string.kodi_connection_successful)
                 }
+
                 DownloadDetailsMessage.KodiMissingCredentials -> {
                     context?.showToast(R.string.kodi_configure_credentials)
                 }
+
                 DownloadDetailsMessage.KodiMissingDefault -> {
                     context?.showToast(R.string.kodi_missing_default)
                 }
+
                 is DownloadDetailsMessage.KodiShowPicker -> {
                     val dialog = KodiServerPickerDialog()
                     val bundle = Bundle()
@@ -209,20 +317,23 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                     dialog.arguments = bundle
                     dialog.show(parentFragmentManager, "KodiServerPickerDialog")
                 }
+
                 else -> {}
             }
         }
 
         viewModel.eventLiveData.observe(viewLifecycleOwner) {
-            when(val content = it.peekContent()) {
+            when (val content = it.peekContent()) {
                 is DownloadEvent.DefaultDeviceService -> {
                     // send media to default device
                 }
+
                 is DownloadEvent.DeviceAndServices -> {
                     // used to populate the menu
                     deviceServiceMap.clear()
                     deviceServiceMap.putAll(content.devicesServices)
                 }
+
                 is DownloadEvent.KodiDevices -> {}
             }
         }
@@ -232,6 +343,45 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         return detailsBinding.root
     }
 
+    private fun playOnDeviceService(
+        item: DownloadItem,
+        device: RemoteDevice,
+        service: RemoteService,
+        serviceType: RemoteServiceType
+    ) {
+        when (serviceType) {
+            RemoteServiceType.KODI -> {
+                viewModel.openUrlOnKodi(
+                    mediaURL = item.download,
+                    kodiDevice = device,
+                    kodiService = service
+                )
+            }
+
+            RemoteServiceType.VLC -> {
+                viewModel.playOnVlc(
+                    mediaURL = item.download,
+                    vlcDevice = device,
+                    vlcService = service
+                )
+            }
+
+            RemoteServiceType.JACKETT -> {
+                // todo: only streamable services allowed, rework db and queries to only get streaming services in this fragment
+            }
+        }
+    }
+
+    private fun showStreamingPopupWindow(inflater: LayoutInflater): PopupWindow {
+        val view = inflater.inflate(R.layout.popup_window, null)
+        return PopupWindow(
+            view,
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+    }
+
+    /*
     @SuppressLint("SetTextI18n")
     private fun showStreamingMenu(v: View, @MenuRes menuRes: Int) {
 
@@ -254,10 +404,10 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
             val serviceType: RemoteServiceType? = getServiceType(defaultService.type)
             if (serviceType != null) {
                 popup.menu.findItem(R.id.default_service).actionView?.let {
-                    it.findViewById<ImageView>(R.id.serviceIcon).setImageResource(serviceType.iconRes)
-                    it.findViewById<TextView>(R.id.serviceName).text = getString(serviceType.nameRes)
+                    it.findViewById<ImageView>(R.id.defaultServiceIcon).setImageResource(serviceType.iconRes)
+                    it.findViewById<TextView>(R.id.defaultServiceName).text = getString(serviceType.nameRes)
                     // ip from device, port from service
-                    it.findViewById<TextView>(R.id.serviceAddress).text = "${defaultDevice.key.address}:${defaultService.port}"
+                    it.findViewById<TextView>(R.id.defaultServiceAddress).text = "${defaultDevice.key.address}:${defaultService.port}"
                 }
             } else {
                 popup.menu.findItem(R.id.default_service).isVisible = false
@@ -275,10 +425,10 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                 val serviceType: RemoteServiceType? = getServiceType(recentServiceItem.type)
                 if (recentDeviceItem != null && serviceType!=null) {
                     popup.menu.findItem(R.id.recent_service).actionView?.let {
-                        it.findViewById<ImageView>(R.id.serviceIcon).setImageResource(serviceType.iconRes)
-                        it.findViewById<TextView>(R.id.serviceName).text = getString(serviceType.nameRes)
+                        it.findViewById<ImageView>(R.id.defaultServiceIcon).setImageResource(serviceType.iconRes)
+                        it.findViewById<TextView>(R.id.defaultServiceName).text = getString(serviceType.nameRes)
                         // ip from device, port from service
-                        it.findViewById<TextView>(R.id.serviceAddress).text = "${recentDeviceItem.address}:${recentServiceItem.port}"
+                        it.findViewById<TextView>(R.id.defaultServiceAddress).text = "${recentDeviceItem.address}:${recentServiceItem.port}"
                     }
                 } else {
                     popup.menu.findItem(R.id.recent_service).isVisible = false
@@ -315,6 +465,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         popup.show()
 
     }
+     */
 
     override fun onCopyClick(text: String) {
         copyToClipboard("Real-Debrid Download Link", text)
@@ -387,10 +538,12 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                 val vlcIntent = createMediaIntent("org.videolan.vlc", url)
                 tryStartExternalApp(vlcIntent)
             }
+
             "mpv" -> {
                 val mpvIntent = createMediaIntent("is.xyz.mpv", url)
                 tryStartExternalApp(mpvIntent)
             }
+
             "mx_player" -> {
                 val mxIntent = createMediaIntent("com.mxtech.videoplayer.pro", url)
 
@@ -401,10 +554,12 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                     tryStartExternalApp(mxIntent)
                 }
             }
+
             "web_video_cast" -> {
                 val wvcIntent = createMediaIntent("com.instantbits.cast.webvideo", url)
                 tryStartExternalApp(wvcIntent)
             }
+
             "custom_player" -> {
                 val customPlayerPackage = viewModel.getCustomPlayerPreference()
                 if (customPlayerPackage.isBlank()) {
@@ -414,6 +569,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                     tryStartExternalApp(customIntent)
                 }
             }
+
             else -> {
                 context?.showToast(R.string.missing_default_player)
             }
@@ -427,7 +583,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
             RemoteServiceType.JACKETT.value -> RemoteServiceType.JACKETT
             else -> {
                 Timber.e("Unknown service type ${type}")
-               null
+                null
             }
         }
     }

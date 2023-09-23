@@ -488,5 +488,19 @@
     <string name="remote_device">Dispositif à distance</string>
     <string name="service_deleted">Service supprimé</string>
     <string name="service">Service</string>
+    <string name="services">Services</string>
     <string name="dialog_confirm_action">Êtes-vous sûr de vouloir continuer ?</string>
+    <string name="browser">Navigateur</string>
+    <string name="pick_service">Choisir service</string>
+    <string name="default_service">Service par défaut</string>
+    <string name="transcoding">Transcodage</string>
+    <string name="recent">Récent</string>
+    <plurals name="service_number_format">
+        <item quantity="one">%d service</item>
+        <item quantity="many">%d services</item>
+    </plurals>
+    <plurals name="device_number_format">
+        <item quantity="one">%d dispositif</item>
+        <item quantity="many">%d dispositifs</item>
+    </plurals>
 </resources>

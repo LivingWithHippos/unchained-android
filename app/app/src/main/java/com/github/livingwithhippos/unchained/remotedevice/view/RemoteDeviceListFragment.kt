@@ -76,13 +76,13 @@ class RemoteDeviceListFragment : UnchainedFragment(), DeviceListListener {
     private fun deviceToStats(dataMap: Map<RemoteDevice, List<RemoteService>>): List<StatItem> {
         return listOf(
             StatItem(
-                label = "Total devices",
+                label = getString(R.string.remote_devices),
                 content = dataMap.size.toString(),
                 caption = "",
                 icon = R.drawable.icon_devices
             ),
             StatItem(
-                label = "Total services",
+                label = getString(R.string.services),
                 content = dataMap.values.size.toString(),
                 caption = "",
                 icon = R.drawable.icon_service

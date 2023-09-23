@@ -12,13 +12,16 @@ import com.github.livingwithhippos.unchained.data.repository.DownloadRepository
 import com.github.livingwithhippos.unchained.data.repository.KodiDeviceRepository
 import com.github.livingwithhippos.unchained.data.repository.KodiRepository
 import com.github.livingwithhippos.unchained.data.repository.RemoteDeviceRepository
+import com.github.livingwithhippos.unchained.data.repository.RemoteRepository
 import com.github.livingwithhippos.unchained.data.repository.StreamingRepository
+import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.PreferenceKeys
 import com.github.livingwithhippos.unchained.utilities.postEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 /** A [ViewModel] subclass. It offers LiveData to observe the calls to the streaming endpoint */
 @HiltViewModel
@@ -29,6 +32,7 @@ constructor(
     private val streamingRepository: StreamingRepository,
     private val downloadRepository: DownloadRepository,
     private val kodiRepository: KodiRepository,
+    private val remoteServiceRepository: RemoteRepository,
     private val kodiDeviceRepository: KodiDeviceRepository,
     private val remoteDeviceRepository: RemoteDeviceRepository
 ) : ViewModel() {
@@ -76,6 +80,50 @@ constructor(
         }
     }
 
+    fun openUrlOnKodi(mediaURL: String, kodiDevice: RemoteDevice, kodiService: RemoteService) {
+        viewModelScope.launch {
+            try {
+                val response = kodiRepository.openUrl(
+                    kodiDevice.address,
+                    kodiService.port,
+                    mediaURL,
+                    kodiService.username,
+                    kodiService.password
+                )
+                if (response != null)
+                    messageLiveData.postEvent(DownloadDetailsMessage.KodiSuccess)
+                else
+                    messageLiveData.postEvent(DownloadDetailsMessage.KodiError)
+            } catch (e: Exception) {
+                Timber.e("Error playing on Kodi: ${e.message}")
+                messageLiveData.postEvent(DownloadDetailsMessage.KodiError)
+            }
+        }
+    }
+
+    fun playOnVlc(mediaURL: String, vlcDevice: RemoteDevice, vlcService: RemoteService) {
+
+        viewModelScope.launch {
+            try {
+                val response = remoteServiceRepository.openUrl(
+                    vlcDevice.address,
+                    vlcService.port,
+                    mediaURL,
+                    vlcService.username,
+                    vlcService.password
+                )
+                // todo: use a single message valid for all players
+                if (response is EitherResult.Failure)
+                    messageLiveData.postEvent(DownloadDetailsMessage.KodiError)
+                else
+                    messageLiveData.postEvent(DownloadDetailsMessage.KodiSuccess)
+            } catch (e: Exception) {
+                Timber.e("Error playing on VLC: ${e.message}")
+                messageLiveData.postEvent(DownloadDetailsMessage.KodiError)
+            }
+        }
+    }
+
     fun openKodiPickerIfNeeded(url: String) {
         viewModelScope.launch {
             if (preferences.getBoolean(PreferenceKeys.Kodi.SERVER_PICKER, false)) {
@@ -119,12 +167,18 @@ constructor(
 
     fun fetchDefaultService() {
         viewModelScope.launch {
-            val devices: Map<RemoteDevice, List<RemoteService>> = remoteDeviceRepository.getDefaultDeviceWithServices()
+            val devices: Map<RemoteDevice, List<RemoteService>> =
+                remoteDeviceRepository.getDefaultDeviceWithServices()
             if (devices.isNotEmpty()) {
                 val device = devices.keys.first()
                 val services = devices[device]
                 if (services.isNullOrEmpty().not()) {
-                    eventLiveData.postEvent(DownloadEvent.DefaultDeviceService(device, services!!.first()))
+                    eventLiveData.postEvent(
+                        DownloadEvent.DefaultDeviceService(
+                            device,
+                            services!!.first()
+                        )
+                    )
                 }
             }
         }
@@ -132,7 +186,8 @@ constructor(
 
     fun fetchDevicesAndServices() {
         viewModelScope.launch {
-            val devices: Map<RemoteDevice, List<RemoteService>> = remoteDeviceRepository.getDevicesAndServices()
+            val devices: Map<RemoteDevice, List<RemoteService>> =
+                remoteDeviceRepository.getDevicesAndServices()
             eventLiveData.postEvent(DownloadEvent.DeviceAndServices(devices))
         }
     }
@@ -172,6 +227,9 @@ sealed class DownloadDetailsMessage {
 
 sealed class DownloadEvent {
     data class KodiDevices(val devices: List<KodiDevice>) : DownloadEvent()
-    data class DeviceAndServices(val devicesServices: Map<RemoteDevice, List<RemoteService>>) : DownloadEvent()
-    data class DefaultDeviceService(val device: RemoteDevice, val service: RemoteService) : DownloadEvent()
+    data class DeviceAndServices(val devicesServices: Map<RemoteDevice, List<RemoteService>>) :
+        DownloadEvent()
+
+    data class DefaultDeviceService(val device: RemoteDevice, val service: RemoteService) :
+        DownloadEvent()
 }

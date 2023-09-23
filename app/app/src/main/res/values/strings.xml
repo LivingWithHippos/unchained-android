@@ -707,10 +707,21 @@
     <string name="jackett" translatable="false">Jackett</string>
     <string name="service_deleted">Service deleted</string>
     <string name="service">Service</string>
+    <string name="services">Services</string>
     <string name="dialog_confirm_action">Are you sure you want to proceed?</string>
-    <string name="browser">Browser</string>
     <string name="pick_service">Pick Service</string>
     <string name="default_service">Default Service</string>
     <string name="transcoding">Transcoding</string>
     <string name="recent">Recent</string>
+    <string name="browser">Browser</string>
+    <plurals name="service_number_format">
+        <item quantity="zero">No services</item>
+        <item quantity="one">1 service</item>
+        <item quantity="other">%d services</item>
+    </plurals>
+    <plurals name="device_number_format">
+        <item quantity="zero">No devices</item>
+        <item quantity="one">1 device</item>
+        <item quantity="other">%d devices</item>
+    </plurals>
 </resources>

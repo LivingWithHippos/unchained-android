@@ -490,4 +490,20 @@
     <string name="service_deleted">Servizio eliminato</string>
     <string name="service">Servizio</string>
     <string name="dialog_confirm_action">Confermi di voler procedere?</string>
+    <string name="browser">Browser</string>
+    <string name="pick_service">Seleziona servizio</string>
+    <string name="default_service">Servizio di default</string>
+    <string name="transcoding">Transcoding</string>
+    <string name="recent">Recente</string>
+    <plurals name="service_number_format">
+        <item quantity="zero">Nessun servizio</item>
+        <item quantity="one">1 servizio</item>
+        <item quantity="other">%d servizi</item>
+    </plurals>
+    <plurals name="device_number_format">
+        <item quantity="zero">Nessun dispositivo</item>
+        <item quantity="one">1 dispositivo</item>
+        <item quantity="other">%d dispositivi</item>
+    </plurals>
+    <string name="services">Servizi</string>
 </resources>
