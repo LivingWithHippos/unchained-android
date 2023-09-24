@@ -118,110 +118,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
             viewModel.getButtonVisibilityPreference(SHOW_STREAM_BROWSER_BUTTON)
 
         detailsBinding.fabPickStreaming.setOnClickListener { popView ->
-            // todo: move code to function
-            val layoutInflater = LayoutInflater.from(requireContext())
-            val popup = showStreamingPopupWindow(layoutInflater)
-            popup.isOutsideTouchable = true
-            popup.isFocusable = true
-            popup.showAsDropDown(popView)
-            // popup.showAtLocation(it, Gravity.CENTER, 0, 0)
-
-            val recentService: Int = viewModel.getRecentService()
-
-            val defaultDevice: Map.Entry<RemoteDevice, List<RemoteService>>? =
-                deviceServiceMap.firstNotNullOfOrNull {
-                    if (it.key.isDefault) it else null
-                }
-            val defaultService: RemoteService? = defaultDevice?.value?.firstOrNull { it.isDefault }
-
-
-            // get all the services of the corresponding menu item
-            // populate according to results
-            val defaultLayout =
-                popup.contentView.findViewById<ConstraintLayout>(R.id.defaultServiceLayout)
-
-            if (defaultService != null) {
-                val serviceType: RemoteServiceType? = getServiceType(defaultService.type)
-                if (serviceType != null) {
-                    defaultLayout.findViewById<ImageView>(R.id.defaultServiceIcon)
-                        .setImageResource(serviceType.iconRes)
-                    defaultLayout.findViewById<TextView>(R.id.defaultServiceName).text = defaultService.name
-                    // ip from device, port from service
-                    defaultLayout.findViewById<TextView>(R.id.defaultServiceAddress).text =
-                        "${defaultDevice.key.address}:${defaultService.port}"
-
-                    defaultLayout.setOnClickListener {
-                        playOnDeviceService(
-                            args.details,
-                            defaultDevice.key,
-                            defaultService,
-                            serviceType
-                        )
-                        if (popup.isShowing)
-                            popup.dismiss()
-                    }
-                } else {
-                    defaultLayout.visibility = View.GONE
-                }
-            } else {
-                defaultLayout.visibility = View.GONE
-            }
-
-
-            val recentLayout = popup.contentView.findViewById<ConstraintLayout>(R.id.recentServiceLayout)
-            if (recentService != -1) {
-                val recentServiceItem: RemoteService? = deviceServiceMap.firstNotNullOfOrNull {
-                    it.value.firstOrNull { service -> service.id == recentService }
-                }
-                if (recentServiceItem != null) {
-                    val recentDeviceItem =
-                        deviceServiceMap.keys.firstOrNull { it.id == recentServiceItem.device }
-                    val serviceType: RemoteServiceType? = getServiceType(recentServiceItem.type)
-                    if (recentDeviceItem != null && serviceType != null) {
-                        recentLayout.findViewById<ImageView>(R.id.defaultServiceIcon)
-                            .setImageResource(serviceType.iconRes)
-                        recentLayout.findViewById<TextView>(R.id.defaultServiceName).text = recentServiceItem.name
-                        // ip from device, port from service
-                        recentLayout.findViewById<TextView>(R.id.defaultServiceAddress).text =
-                            "${recentDeviceItem.address}:${recentServiceItem.port}"
-
-                        recentLayout.setOnClickListener {
-                            // todo: send to selected recent service
-                            if (popup.isShowing)
-                                popup.dismiss()
-                        }
-                    } else {
-                        recentLayout.visibility = View.GONE
-                    }
-                } else {
-                    recentLayout.visibility = View.GONE
-                }
-            } else {
-                recentLayout.visibility = View.GONE
-            }
-
-            // todo: distinguish between devices for streaming and for searching content
-            val pickerLayout = popup.contentView.findViewById<ConstraintLayout>(R.id.pickServiceLayout)
-            pickerLayout.findViewById<TextView>(R.id.servicesNumber).text = resources.getQuantityString(
-                R.plurals.service_number_format,
-                deviceServiceMap.values.size
-            )
-            pickerLayout.findViewById<TextView>(R.id.devicesNumber).text = resources.getQuantityString(
-                R.plurals.device_number_format,
-                deviceServiceMap.keys.size
-            )
-            pickerLayout.setOnClickListener {
-                // todo: picker dialog
-                if (popup.isShowing)
-                    popup.dismiss()
-            }
-
-            val browserLayout = popup.contentView.findViewById<ConstraintLayout>(R.id.streamBrowserLayout)
-            browserLayout.setOnClickListener {
-                onBrowserStreamsClick(args.details.id)
-                if (popup.isShowing)
-                    popup.dismiss()
-            }
+            manageStreamingPopup(popView)
         }
 
         viewModel.streamLiveData.observe(viewLifecycleOwner) {
@@ -341,6 +238,112 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         viewModel.fetchDevicesAndServices()
 
         return detailsBinding.root
+    }
+
+    private fun manageStreamingPopup(popView: View) {
+        val layoutInflater = LayoutInflater.from(requireContext())
+        val popup = showStreamingPopupWindow(layoutInflater)
+        popup.isOutsideTouchable = true
+        popup.isFocusable = true
+        popup.showAsDropDown(popView)
+        // popup.showAtLocation(it, Gravity.CENTER, 0, 0)
+
+        val recentService: Int = viewModel.getRecentService()
+
+        val defaultDevice: Map.Entry<RemoteDevice, List<RemoteService>>? =
+            deviceServiceMap.firstNotNullOfOrNull {
+                if (it.key.isDefault) it else null
+            }
+        val defaultService: RemoteService? = defaultDevice?.value?.firstOrNull { it.isDefault }
+
+
+        // get all the services of the corresponding menu item
+        // populate according to results
+        val defaultLayout =
+            popup.contentView.findViewById<ConstraintLayout>(R.id.defaultServiceLayout)
+
+        if (defaultService != null) {
+            val serviceType: RemoteServiceType? = getServiceType(defaultService.type)
+            if (serviceType != null) {
+                defaultLayout.findViewById<ImageView>(R.id.defaultServiceIcon)
+                    .setImageResource(serviceType.iconRes)
+                defaultLayout.findViewById<TextView>(R.id.defaultServiceName).text = defaultService.name
+                // ip from device, port from service
+                defaultLayout.findViewById<TextView>(R.id.defaultServiceAddress).text =
+                    "${defaultDevice.key.address}:${defaultService.port}"
+
+                defaultLayout.setOnClickListener {
+                    playOnDeviceService(
+                        args.details,
+                        defaultDevice.key,
+                        defaultService,
+                        serviceType
+                    )
+                    if (popup.isShowing)
+                        popup.dismiss()
+                }
+            } else {
+                defaultLayout.visibility = View.GONE
+            }
+        } else {
+            defaultLayout.visibility = View.GONE
+        }
+
+
+        val recentLayout = popup.contentView.findViewById<ConstraintLayout>(R.id.recentServiceLayout)
+        if (recentService != -1) {
+            val recentServiceItem: RemoteService? = deviceServiceMap.firstNotNullOfOrNull {
+                it.value.firstOrNull { service -> service.id == recentService }
+            }
+            if (recentServiceItem != null) {
+                val recentDeviceItem =
+                    deviceServiceMap.keys.firstOrNull { it.id == recentServiceItem.device }
+                val serviceType: RemoteServiceType? = getServiceType(recentServiceItem.type)
+                if (recentDeviceItem != null && serviceType != null) {
+                    recentLayout.findViewById<ImageView>(R.id.defaultServiceIcon)
+                        .setImageResource(serviceType.iconRes)
+                    recentLayout.findViewById<TextView>(R.id.defaultServiceName).text = recentServiceItem.name
+                    // ip from device, port from service
+                    recentLayout.findViewById<TextView>(R.id.defaultServiceAddress).text =
+                        "${recentDeviceItem.address}:${recentServiceItem.port}"
+
+                    recentLayout.setOnClickListener {
+                        // todo: send to selected recent service
+                        if (popup.isShowing)
+                            popup.dismiss()
+                    }
+                } else {
+                    recentLayout.visibility = View.GONE
+                }
+            } else {
+                recentLayout.visibility = View.GONE
+            }
+        } else {
+            recentLayout.visibility = View.GONE
+        }
+
+        // todo: distinguish between devices for streaming and for searching content
+        val pickerLayout = popup.contentView.findViewById<ConstraintLayout>(R.id.pickServiceLayout)
+        pickerLayout.findViewById<TextView>(R.id.servicesNumber).text = resources.getQuantityString(
+            R.plurals.service_number_format,
+            deviceServiceMap.values.size
+        )
+        pickerLayout.findViewById<TextView>(R.id.devicesNumber).text = resources.getQuantityString(
+            R.plurals.device_number_format,
+            deviceServiceMap.keys.size
+        )
+        pickerLayout.setOnClickListener {
+            // todo: picker dialog
+            if (popup.isShowing)
+                popup.dismiss()
+        }
+
+        val browserLayout = popup.contentView.findViewById<ConstraintLayout>(R.id.streamBrowserLayout)
+        browserLayout.setOnClickListener {
+            onBrowserStreamsClick(args.details.id)
+            if (popup.isShowing)
+                popup.dismiss()
+        }
     }
 
     private fun playOnDeviceService(
