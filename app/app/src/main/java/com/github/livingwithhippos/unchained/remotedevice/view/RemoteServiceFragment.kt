@@ -204,7 +204,7 @@ class RemoteServiceFragment : Fragment() {
             return
         }
         // set up default switch, enable the button only for services that reproduce media
-        if (serviceType.playable) {
+        if (serviceType.isMediaPlayer) {
             binding.switchDefault.isEnabled = true
         } else {
             binding.switchDefault.isEnabled = false

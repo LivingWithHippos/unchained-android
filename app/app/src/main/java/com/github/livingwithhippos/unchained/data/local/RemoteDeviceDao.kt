@@ -56,6 +56,11 @@ interface RemoteDeviceDao {
     )
     suspend fun getDevicesAndServices(): Map<RemoteDevice, List<RemoteService>>
 
+    @Query(
+        "SELECT * FROM remote_device JOIN remote_service ON remote_device.id = remote_service.device_id WHERE remote_service.type IN (:types)"
+    )
+    suspend fun getMediaPlayerDevicesAndServices(types: List<Int>): Map<RemoteDevice, List<RemoteService>>
+
     @Query("SELECT id FROM remote_device WHERE rowid = :rowId")
     suspend fun getDeviceIDByRow(rowId: Long): Int?
 

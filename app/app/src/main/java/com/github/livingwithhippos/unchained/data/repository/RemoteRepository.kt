@@ -13,7 +13,7 @@ import javax.inject.Inject
 
 
 class RemoteRepository @Inject constructor(@ClassicClient private val client: OkHttpClient) {
-    // todo: add https://mpv.io/manual/stable/
+    // todo: add https://mpv.io/manual/stable/#json-ipc
 
     suspend fun openUrl(
         baseUrl: String,
@@ -25,6 +25,8 @@ class RemoteRepository @Inject constructor(@ClassicClient private val client: Ok
         // https://wiki.videolan.org/Documentation:Modules/http_intf/#VLC_2.0.0_and_later
         // needs a password or it won't work:
         // vlc --http-host 0.0.0.0 --http-port 9090 --http-password pass
+        // also on some linux distro there may be a bug crashing the app 'glconv_vaapi_x11 gl error: vaInitialize: unknown libva error'
+        // workaround with export LIBVA_DRIVER_NAME=nvidia
         val credential = okhttp3.Credentials.basic(username ?: "", password ?: "")
         val request = Request.Builder()
                 .url("${addHttpScheme(baseUrl)}:$port/requests/status.xml?command=in_play&input=$url")

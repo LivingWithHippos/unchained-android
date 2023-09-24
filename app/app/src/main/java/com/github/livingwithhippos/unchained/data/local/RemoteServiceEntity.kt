@@ -53,7 +53,7 @@ class RemoteService(
 }
 
 
-sealed class RemoteServiceType(val value: Int,val playable: Boolean,@StringRes val nameRes: Int, @DrawableRes val iconRes: Int) {
+sealed class RemoteServiceType(val value: Int, val isMediaPlayer: Boolean, @StringRes val nameRes: Int, @DrawableRes val iconRes: Int) {
     object KODI : RemoteServiceType(0, true, R.string.kodi, R.drawable.icon_kodi)
     object VLC : RemoteServiceType(1, true, R.string.player_vlc, R.drawable.icon_vlc)
     object JACKETT : RemoteServiceType(2, false, R.string.jackett, R.drawable.icon_jackett)

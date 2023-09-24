@@ -184,10 +184,13 @@ constructor(
         }
     }
 
-    fun fetchDevicesAndServices() {
+    fun fetchDevicesAndServices(mediaPlayerOnly: Boolean = true) {
         viewModelScope.launch {
-            val devices: Map<RemoteDevice, List<RemoteService>> =
+            val devices: Map<RemoteDevice, List<RemoteService>> = if (mediaPlayerOnly)
+                remoteDeviceRepository.getMediaPlayerDevicesAndServices()
+            else
                 remoteDeviceRepository.getDevicesAndServices()
+
             eventLiveData.postEvent(DownloadEvent.DeviceAndServices(devices))
         }
     }
@@ -208,7 +211,6 @@ constructor(
     }
 
     companion object {
-        const val RECENT_DEVICE_KEY = "RECENT_DEVICE"
         const val RECENT_SERVICE_KEY = "RECENT_SERVICE"
     }
 }
