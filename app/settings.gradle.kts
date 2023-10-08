@@ -14,7 +14,7 @@ dependencyResolutionManagement {
     // https://docs.gradle.org/current/userguide/platforms.html#sub:central-declaration-of-dependencies
     versionCatalogs {
         create("libs") {
-            version("aboutlibraries", "10.9.0")
+            version("aboutlibraries", "10.9.1")
             version("android_gradle_plugin", "8.1.1")
             version("annotations", "1.3.0")
             version("appcompat", "1.6.1")
@@ -25,7 +25,7 @@ dependencyResolutionManagement {
             version("core_ktx", "1.12.0")
             version("coroutines", "1.7.3")
             version("countly", "23.8.2")
-            version("dagger", "2.48")
+            version("dagger", "2.48.1")
             version("espresso", "3.5.1")
             version("datastore", "1.0.0")
             version("fast_adapter", "5.7.0")
@@ -34,7 +34,7 @@ dependencyResolutionManagement {
             version("hilt_navigation", "1.0.0")
             version("jsoup", "1.16.1")
             version("junit", "4.13.2")
-            version("kotlin", "1.9.0")
+            version("kotlin", "1.9.10")
             version("ktlint", "11.0.0")
             version("lifecycle", "2.6.2")
             version("lottie", "5.2.0")
@@ -42,12 +42,11 @@ dependencyResolutionManagement {
             version("material_3", "1.9.0")
             version("modernstorage", "1.0.0-alpha06")
             version("moshi", "1.15.0")
-            // 2.7.0 requires sdk 34
-            version("navigation", "2.7.3")
+            version("navigation", "2.7.4")
             version("okhttp", "4.11.0")
             version("okio", "3.2.0")
             version("paging", "3.2.1")
-            version("protobuf", "3.24.3")
+            version("protobuf", "3.24.4")
             version("protobuf_plugin", "0.9.4")
             version("preference", "1.2.1")
             version("recyclerview", "1.3.1")
