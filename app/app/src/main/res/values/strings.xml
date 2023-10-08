@@ -520,7 +520,7 @@
     <string name="port_range_error">Port must be between 1 and 65535</string>
     <string name="kodi_configure_credentials">Please configure Kodi in the app settings</string>
     <string name="kodi_remote_control">Kodi remote control instructions</string>
-    <string name="enable_kodi_control">Tap here for instructions on how to set up Kodi for remote control (usually enabled in system->services->control). After that complete the required fields below</string>
+    <string name="enable_kodi_control">Tap here for instructions on how to set up Kodi for remote control (usually enabled in system->services->control)</string>
     <string name="only_if_auth">Required only if the authentication is enabled in Kodi</string>
     <string name="rd_status">Real Debrid status</string>
     <string name="show_kodi">Show Kodi button</string>

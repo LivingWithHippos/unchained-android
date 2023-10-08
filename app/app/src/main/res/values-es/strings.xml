@@ -304,7 +304,7 @@
     <string name="port_range_error">El puerto debe estar entre 1 y 65535</string>
     <string name="kodi_configure_credentials">Por favor, configure Kodi en los ajustes de la aplicación</string>
     <string name="kodi_remote_control">Instrucciones del mando a distancia de Kodi</string>
-    <string name="enable_kodi_control">Pulse aquí para ver las instrucciones sobre cómo configurar Kodi para el control remoto (normalmente se activa en sistema-&gt;servicios-&gt;control). Después de eso, complete los campos requeridos a continuación</string>
+    <string name="enable_kodi_control">Pulse aquí para ver las instrucciones sobre cómo configurar Kodi para el control remoto (normalmente se activa en sistema-&gt;servicios-&gt;control)</string>
     <string name="only_if_auth">Requerido sólo si la autenticación está habilitada en Kodi</string>
     <string name="rd_status">Estatus de Real-Debrid</string>
     <string name="show_kodi">Mostrar el botón Kodi</string>
