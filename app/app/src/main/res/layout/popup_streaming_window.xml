@@ -33,26 +33,26 @@
                 android:maxLines="1"
                 android:clickable="false"
                 android:focusable="false"
-                android:text="@string/default_service"
+                android:text="@string/default_string"
                 android:textAppearance="?attr/textAppearanceTitleSmall"
-                app:layout_constraintBottom_toBottomOf="@id/defaultServiceIcon"
-                app:layout_constraintEnd_toStartOf="@id/defaultServiceIcon"
+                app:layout_constraintBottom_toBottomOf="@id/serviceIcon"
+                app:layout_constraintEnd_toStartOf="@id/serviceIcon"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/defaultServiceIcon" />
+                app:layout_constraintTop_toTopOf="@id/serviceIcon" />
 
             <ImageView
-                android:id="@+id/defaultServiceIcon"
+                android:id="@+id/serviceIcon"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:clickable="false"
                 android:focusable="false"
-                app:layout_constraintBottom_toTopOf="@id/defaultServiceName"
+                app:layout_constraintBottom_toTopOf="@id/serviceName"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/icon_service" />
 
             <TextView
-                android:id="@+id/defaultServiceName"
+                android:id="@+id/serviceName"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="@string/name_required"
@@ -60,13 +60,13 @@
                 android:clickable="false"
                 android:focusable="false"
                 android:textAppearance="?attr/textAppearanceBodyLarge"
-                app:layout_constraintBottom_toTopOf="@id/defaultServiceAddress"
+                app:layout_constraintBottom_toTopOf="@id/serviceAddress"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/defaultServiceIcon" />
+                app:layout_constraintTop_toBottomOf="@id/serviceIcon" />
 
             <TextView
-                android:id="@+id/defaultServiceAddress"
+                android:id="@+id/serviceAddress"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="@string/ip_address"
@@ -77,7 +77,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/defaultServiceName" />
+                app:layout_constraintTop_toBottomOf="@id/serviceName" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -169,9 +169,24 @@
                 android:text="@string/remote_devices"
                 android:textAppearance="?attr/textAppearanceTitleSmall"
                 app:layout_constraintBottom_toBottomOf="@id/pickServiceIcon"
-                app:layout_constraintEnd_toStartOf="@id/pickServiceIcon"
+                app:layout_constraintEnd_toStartOf="@id/servicesNumber"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/pickServiceIcon" />
+
+            <TextView
+                android:id="@+id/servicesNumber"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/service"
+                android:maxLines="1"
+                android:clickable="false"
+                android:focusable="false"
+                android:textAppearance="?attr/textAppearanceTitleSmall"
+                app:layout_constraintBottom_toBottomOf="@id/devicesNumber"
+                app:layout_constraintEnd_toStartOf="@id/pickServiceIcon"
+                app:layout_constraintStart_toEndOf="@id/devicesNumber"
+                app:layout_constraintTop_toTopOf="@id/devicesNumber"
+                />
 
             <ImageView
                 android:id="@+id/pickServiceIcon"
@@ -193,24 +208,10 @@
                 android:clickable="false"
                 android:focusable="false"
                 android:textAppearance="?attr/textAppearanceBodyLarge"
-                app:layout_constraintBottom_toTopOf="@id/servicesNumber"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/pickServiceIcon" />
-
-            <TextView
-                android:id="@+id/servicesNumber"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="@string/service"
-                android:maxLines="1"
-                android:clickable="false"
-                android:focusable="false"
-                android:textAppearance="?attr/textAppearanceCaption"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/pickServiceTitle" />
+                app:layout_constraintTop_toBottomOf="@id/pickServiceIcon" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -231,7 +232,7 @@
                 android:clickable="false"
                 android:focusable="false"
                 android:maxLines="1"
-                android:text="@string/streaming"
+                android:text="@string/browser"
                 android:textAppearance="?attr/textAppearanceTitleSmall"
                 app:layout_constraintBottom_toBottomOf="@id/streamBrowserIcon"
                 app:layout_constraintEnd_toStartOf="@id/streamBrowserIcon"

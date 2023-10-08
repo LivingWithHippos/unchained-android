@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.livingwithhippos.unchained.data.local.RemoteDevice
 import com.github.livingwithhippos.unchained.data.local.RemoteService
+import com.github.livingwithhippos.unchained.data.local.RemoteServiceDetails
+import com.github.livingwithhippos.unchained.data.local.RemoteServiceType
 import com.github.livingwithhippos.unchained.data.model.KodiDevice
 import com.github.livingwithhippos.unchained.data.model.Stream
 import com.github.livingwithhippos.unchained.data.repository.DownloadRepository
@@ -101,7 +103,7 @@ constructor(
         }
     }
 
-    fun playOnVlc(mediaURL: String, vlcDevice: RemoteDevice, vlcService: RemoteService) {
+    fun openUrlOnVLC(mediaURL: String, vlcDevice: RemoteDevice, vlcService: RemoteService) {
 
         viewModelScope.launch {
             try {
@@ -207,6 +209,21 @@ constructor(
         with(preferences.edit()) {
             putInt(RECENT_SERVICE_KEY, serviceId).apply()
             apply()
+        }
+    }
+
+    fun openOnRemoteService(serviceDetails: RemoteServiceDetails, link: String) {
+        setRecentService(serviceDetails.service.id)
+        when (serviceDetails.service.type) {
+            RemoteServiceType.KODI.value -> {
+                openUrlOnKodi(link, serviceDetails.device, serviceDetails.service)
+            }
+            RemoteServiceType.VLC.value -> {
+                openUrlOnVLC(link, serviceDetails.device, serviceDetails.service)
+            }
+            else -> {
+                Timber.e("Unknown service type: ${serviceDetails.service.type}")
+            }
         }
     }
 

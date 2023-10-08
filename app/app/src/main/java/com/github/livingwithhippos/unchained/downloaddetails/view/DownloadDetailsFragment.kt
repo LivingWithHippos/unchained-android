@@ -240,6 +240,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         return detailsBinding.root
     }
 
+    @SuppressLint("SetTextI18n")
     private fun manageStreamingPopup(popView: View) {
         val layoutInflater = LayoutInflater.from(requireContext())
         val popup = showStreamingPopupWindow(layoutInflater)
@@ -265,22 +266,22 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         if (defaultService != null) {
             val serviceType: RemoteServiceType? = getServiceType(defaultService.type)
             if (serviceType != null) {
-                defaultLayout.findViewById<ImageView>(R.id.defaultServiceIcon)
+                defaultLayout.findViewById<ImageView>(R.id.serviceIcon)
                     .setImageResource(serviceType.iconRes)
-                defaultLayout.findViewById<TextView>(R.id.defaultServiceName).text = defaultService.name
+                defaultLayout.findViewById<TextView>(R.id.serviceName).text = defaultService.name
                 // ip from device, port from service
-                defaultLayout.findViewById<TextView>(R.id.defaultServiceAddress).text =
+                defaultLayout.findViewById<TextView>(R.id.serviceAddress).text =
                     "${defaultDevice.key.address}:${defaultService.port}"
 
                 defaultLayout.setOnClickListener {
+                    if (popup.isShowing)
+                        popup.dismiss()
                     playOnDeviceService(
                         args.details,
                         defaultDevice.key,
                         defaultService,
                         serviceType
                     )
-                    if (popup.isShowing)
-                        popup.dismiss()
                 }
             } else {
                 defaultLayout.visibility = View.GONE
@@ -291,7 +292,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
 
 
         val recentLayout = popup.contentView.findViewById<ConstraintLayout>(R.id.recentServiceLayout)
-        if (recentService != -1) {
+        if (recentService != -1 && recentService != defaultService?.id) {
             val recentServiceItem: RemoteService? = deviceServiceMap.firstNotNullOfOrNull {
                 it.value.firstOrNull { service -> service.id == recentService }
             }
@@ -300,17 +301,23 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                     deviceServiceMap.keys.firstOrNull { it.id == recentServiceItem.device }
                 val serviceType: RemoteServiceType? = getServiceType(recentServiceItem.type)
                 if (recentDeviceItem != null && serviceType != null) {
-                    recentLayout.findViewById<ImageView>(R.id.defaultServiceIcon)
+                    recentLayout.findViewById<ImageView>(R.id.recentServiceIcon)
                         .setImageResource(serviceType.iconRes)
-                    recentLayout.findViewById<TextView>(R.id.defaultServiceName).text = recentServiceItem.name
+                    recentLayout.findViewById<TextView>(R.id.recentServiceName).text = recentServiceItem.name
                     // ip from device, port from service
-                    recentLayout.findViewById<TextView>(R.id.defaultServiceAddress).text =
+                    recentLayout.findViewById<TextView>(R.id.recentServiceAddress).text =
                         "${recentDeviceItem.address}:${recentServiceItem.port}"
 
                     recentLayout.setOnClickListener {
-                        // todo: send to selected recent service
                         if (popup.isShowing)
                             popup.dismiss()
+
+                        playOnDeviceService(
+                            args.details,
+                            recentDeviceItem,
+                            recentServiceItem,
+                            serviceType
+                        )
                     }
                 } else {
                     recentLayout.visibility = View.GONE
@@ -322,7 +329,6 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
             recentLayout.visibility = View.GONE
         }
 
-        // todo: distinguish between devices for streaming and for searching content
         val pickerLayout = popup.contentView.findViewById<ConstraintLayout>(R.id.pickServiceLayout)
         pickerLayout.findViewById<TextView>(R.id.servicesNumber).text = resources.getQuantityString(
             R.plurals.service_number_format,
@@ -333,9 +339,14 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
             deviceServiceMap.keys.size
         )
         pickerLayout.setOnClickListener {
-            // todo: picker dialog
             if (popup.isShowing)
                 popup.dismiss()
+
+            val dialog = ServicePickerDialog()
+            val bundle = Bundle()
+            bundle.putString("downloadUrl", args.details.download)
+            dialog.arguments = bundle
+            dialog.show(parentFragmentManager, "ServicePickerDialog")
         }
 
         val browserLayout = popup.contentView.findViewById<ConstraintLayout>(R.id.streamBrowserLayout)
@@ -362,113 +373,28 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
             }
 
             RemoteServiceType.VLC -> {
-                viewModel.playOnVlc(
+                viewModel.openUrlOnVLC(
                     mediaURL = item.download,
                     vlcDevice = device,
                     vlcService = service
                 )
             }
 
-            RemoteServiceType.JACKETT -> {
-                // todo: only streamable services allowed, rework db and queries to only get streaming services in this fragment
+            else -> {
+                // should not happen
+                Timber.e("Unknown service type $serviceType")
             }
         }
     }
 
     private fun showStreamingPopupWindow(inflater: LayoutInflater): PopupWindow {
-        val view = inflater.inflate(R.layout.popup_window, null)
+        val view = inflater.inflate(R.layout.popup_streaming_window, null)
         return PopupWindow(
             view,
             ViewGroup.LayoutParams.WRAP_CONTENT,
             ViewGroup.LayoutParams.WRAP_CONTENT
         )
     }
-
-    /*
-    @SuppressLint("SetTextI18n")
-    private fun showStreamingMenu(v: View, @MenuRes menuRes: Int) {
-
-        // todo: https://medium.com/android-beginners/popupwindow-android-example-in-kotlin-5919245c8b8a
-        val popup = PopupMenu(requireContext(), v)
-        popup.menuInflater.inflate(menuRes, popup.menu)
-
-        val recentService: Int = viewModel.getRecentService()
-
-        val defaultDevice: Map.Entry<RemoteDevice, List<RemoteService>>? = deviceServiceMap.firstNotNullOfOrNull {
-            if (it.key.isDefault) it else null
-        }
-        val defaultService: RemoteService? = defaultDevice?.value?.firstOrNull { it.isDefault }
-
-
-        // get all the services of the corresponding menu item
-        // populate according to results
-
-        if (defaultService != null) {
-            val serviceType: RemoteServiceType? = getServiceType(defaultService.type)
-            if (serviceType != null) {
-                popup.menu.findItem(R.id.default_service).actionView?.let {
-                    it.findViewById<ImageView>(R.id.defaultServiceIcon).setImageResource(serviceType.iconRes)
-                    it.findViewById<TextView>(R.id.defaultServiceName).text = getString(serviceType.nameRes)
-                    // ip from device, port from service
-                    it.findViewById<TextView>(R.id.defaultServiceAddress).text = "${defaultDevice.key.address}:${defaultService.port}"
-                }
-            } else {
-                popup.menu.findItem(R.id.default_service).isVisible = false
-            }
-        } else {
-            popup.menu.findItem(R.id.default_service).isVisible = false
-        }
-
-        if (recentService != -1) {
-            val recentServiceItem: RemoteService? = deviceServiceMap.firstNotNullOfOrNull {
-                it.value.firstOrNull { service -> service.id == recentService }
-            }
-            if (recentServiceItem != null) {
-                val recentDeviceItem = deviceServiceMap.keys.firstOrNull { it.id == recentServiceItem.device }
-                val serviceType: RemoteServiceType? = getServiceType(recentServiceItem.type)
-                if (recentDeviceItem != null && serviceType!=null) {
-                    popup.menu.findItem(R.id.recent_service).actionView?.let {
-                        it.findViewById<ImageView>(R.id.defaultServiceIcon).setImageResource(serviceType.iconRes)
-                        it.findViewById<TextView>(R.id.defaultServiceName).text = getString(serviceType.nameRes)
-                        // ip from device, port from service
-                        it.findViewById<TextView>(R.id.defaultServiceAddress).text = "${recentDeviceItem.address}:${recentServiceItem.port}"
-                    }
-                } else {
-                    popup.menu.findItem(R.id.recent_service).isVisible = false
-                }
-            } else {
-                popup.menu.findItem(R.id.recent_service).isVisible = false
-            }
-        } else {
-            popup.menu.findItem(R.id.recent_service).isVisible = false
-        }
-
-        popup.setOnMenuItemClickListener { menuItem: MenuItem ->
-            // Respond to menu item click.
-            when (menuItem.itemId) {
-                R.id.default_service -> {
-                    viewModel.fetchDefaultService()
-                }
-                R.id.pick_service -> {
-                    // todo: implement a picker
-                }
-                R.id.recent_service -> {
-                }
-                R.id.stream_browser -> {
-                    onBrowserStreamsClick(args.details.id)
-                }
-            }
-            true
-        }
-
-        popup.setOnDismissListener {
-            // Respond to popup being dismissed.
-        }
-        // Show the popup menu.
-        popup.show()
-
-    }
-     */
 
     override fun onCopyClick(text: String) {
         copyToClipboard("Real-Debrid Download Link", text)
