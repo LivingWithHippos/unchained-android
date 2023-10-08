@@ -15,7 +15,6 @@ import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.selection.StorageStrategy
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
-import com.github.livingwithhippos.unchained.customview.StatAdapter
 import com.github.livingwithhippos.unchained.customview.StatItem
 import com.github.livingwithhippos.unchained.data.local.RemoteDevice
 import com.github.livingwithhippos.unchained.data.local.RemoteService
@@ -122,14 +121,12 @@ class RemoteDeviceListFragment : UnchainedFragment(), DeviceListListener {
     }
 
     private fun showConfirmationDialog() {
-        val builder: AlertDialog.Builder? = activity?.let {
-            AlertDialog.Builder(it)
-        }
-        builder?.setMessage(R.string.dialog_confirm_action)?.setTitle(R.string.delete_all)?.setPositiveButton(R.string.yes) { _, _ ->
-            viewModel.deleteAllDevices()
-        }?.setNegativeButton(R.string.no) { dialog, _ ->
-            dialog.cancel()
-        }
+        val builder: AlertDialog.Builder? = activity?.let { AlertDialog.Builder(it) }
+        builder
+            ?.setMessage(R.string.dialog_confirm_action)
+            ?.setTitle(R.string.delete_all)
+            ?.setPositiveButton(R.string.yes) { _, _ -> viewModel.deleteAllDevices() }
+            ?.setNegativeButton(R.string.no) { dialog, _ -> dialog.cancel() }
         val dialog: AlertDialog? = builder?.create()
         dialog?.show()
     }

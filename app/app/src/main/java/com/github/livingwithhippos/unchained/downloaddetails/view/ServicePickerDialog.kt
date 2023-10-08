@@ -6,7 +6,6 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.github.livingwithhippos.unchained.R
-import com.github.livingwithhippos.unchained.data.local.RemoteService
 import com.github.livingwithhippos.unchained.data.local.RemoteServiceDetails
 import com.github.livingwithhippos.unchained.data.local.serviceTypeMap
 import com.github.livingwithhippos.unchained.downloaddetails.model.ServicePickerAdapter
@@ -42,15 +41,16 @@ class ServicePickerDialog : DialogFragment(), ServicePickerListener {
                 when (val content = event.getContentIfNotHandled()) {
                     is DownloadEvent.DeviceAndServices -> {
 
-                        val devSer: List<RemoteServiceDetails> = content.devicesServices.flatMap {
-                            it.value.map { serv ->
-                                RemoteServiceDetails(
-                                    service = serv,
-                                    device = it.key,
-                                    type = serviceTypeMap[serv.type]!!
-                                )
+                        val devSer: List<RemoteServiceDetails> =
+                            content.devicesServices.flatMap {
+                                it.value.map { serv ->
+                                    RemoteServiceDetails(
+                                        service = serv,
+                                        device = it.key,
+                                        type = serviceTypeMap[serv.type]!!
+                                    )
+                                }
                             }
-                        }
                         adapter.submitList(devSer)
                     }
                     else -> {}
@@ -59,9 +59,7 @@ class ServicePickerDialog : DialogFragment(), ServicePickerListener {
 
             viewModel.fetchDevicesAndServices()
 
-            builder.setView(view)
-                .setTitle(R.string.services)
-                .setNegativeButton(
+            builder.setView(view).setTitle(R.string.services).setNegativeButton(
                 getString(R.string.close)
             ) { dialog, _ ->
                 dialog.cancel()

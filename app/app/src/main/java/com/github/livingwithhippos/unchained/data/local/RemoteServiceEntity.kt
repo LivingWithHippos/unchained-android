@@ -8,8 +8,8 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import com.github.livingwithhippos.unchained.R
-import kotlinx.parcelize.Parcelize
 import java.util.Objects
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 @Entity(
@@ -52,22 +52,27 @@ class RemoteService(
     override fun hashCode(): Int = Objects.hash(id)
 }
 
-
-sealed class RemoteServiceType(val value: Int, val isMediaPlayer: Boolean, @StringRes val nameRes: Int, @DrawableRes val iconRes: Int) {
+sealed class RemoteServiceType(
+    val value: Int,
+    val isMediaPlayer: Boolean,
+    @StringRes val nameRes: Int,
+    @DrawableRes val iconRes: Int
+) {
     data object KODI : RemoteServiceType(0, true, R.string.kodi, R.drawable.icon_kodi)
+
     data object VLC : RemoteServiceType(1, true, R.string.player_vlc, R.drawable.icon_vlc)
+
     data object JACKETT : RemoteServiceType(2, false, R.string.jackett, R.drawable.icon_jackett)
 }
 
-val serviceTypeMap = mapOf(
-    RemoteServiceType.KODI.value to RemoteServiceType.KODI,
-    RemoteServiceType.VLC.value to RemoteServiceType.VLC,
-    RemoteServiceType.JACKETT.value to RemoteServiceType.JACKETT
-)
+val serviceTypeMap =
+    mapOf(
+        RemoteServiceType.KODI.value to RemoteServiceType.KODI,
+        RemoteServiceType.VLC.value to RemoteServiceType.VLC,
+        RemoteServiceType.JACKETT.value to RemoteServiceType.JACKETT
+    )
 
-/**
- * Helper class to have all the service details together
- */
+/** Helper class to have all the service details together */
 data class RemoteServiceDetails(
     val service: RemoteService,
     val device: RemoteDevice,

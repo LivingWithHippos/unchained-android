@@ -85,17 +85,16 @@ constructor(
     fun openUrlOnKodi(mediaURL: String, kodiDevice: RemoteDevice, kodiService: RemoteService) {
         viewModelScope.launch {
             try {
-                val response = kodiRepository.openUrl(
-                    kodiDevice.address,
-                    kodiService.port,
-                    mediaURL,
-                    kodiService.username,
-                    kodiService.password
-                )
-                if (response != null)
-                    messageLiveData.postEvent(DownloadDetailsMessage.KodiSuccess)
-                else
-                    messageLiveData.postEvent(DownloadDetailsMessage.KodiError)
+                val response =
+                    kodiRepository.openUrl(
+                        kodiDevice.address,
+                        kodiService.port,
+                        mediaURL,
+                        kodiService.username,
+                        kodiService.password
+                    )
+                if (response != null) messageLiveData.postEvent(DownloadDetailsMessage.KodiSuccess)
+                else messageLiveData.postEvent(DownloadDetailsMessage.KodiError)
             } catch (e: Exception) {
                 Timber.e("Error playing on Kodi: ${e.message}")
                 messageLiveData.postEvent(DownloadDetailsMessage.KodiError)
@@ -107,18 +106,18 @@ constructor(
 
         viewModelScope.launch {
             try {
-                val response = remoteServiceRepository.openUrl(
-                    vlcDevice.address,
-                    vlcService.port,
-                    mediaURL,
-                    vlcService.username,
-                    vlcService.password
-                )
+                val response =
+                    remoteServiceRepository.openUrl(
+                        vlcDevice.address,
+                        vlcService.port,
+                        mediaURL,
+                        vlcService.username,
+                        vlcService.password
+                    )
                 // todo: use a single message valid for all players
                 if (response is EitherResult.Failure)
                     messageLiveData.postEvent(DownloadDetailsMessage.KodiError)
-                else
-                    messageLiveData.postEvent(DownloadDetailsMessage.KodiSuccess)
+                else messageLiveData.postEvent(DownloadDetailsMessage.KodiSuccess)
             } catch (e: Exception) {
                 Timber.e("Error playing on VLC: ${e.message}")
                 messageLiveData.postEvent(DownloadDetailsMessage.KodiError)
@@ -176,10 +175,7 @@ constructor(
                 val services = devices[device]
                 if (services.isNullOrEmpty().not()) {
                     eventLiveData.postEvent(
-                        DownloadEvent.DefaultDeviceService(
-                            device,
-                            services!!.first()
-                        )
+                        DownloadEvent.DefaultDeviceService(device, services!!.first())
                     )
                 }
             }
@@ -188,18 +184,17 @@ constructor(
 
     fun fetchDevicesAndServices(mediaPlayerOnly: Boolean = true) {
         viewModelScope.launch {
-            val devices: Map<RemoteDevice, List<RemoteService>> = if (mediaPlayerOnly)
-                remoteDeviceRepository.getMediaPlayerDevicesAndServices()
-            else
-                remoteDeviceRepository.getDevicesAndServices()
+            val devices: Map<RemoteDevice, List<RemoteService>> =
+                if (mediaPlayerOnly) remoteDeviceRepository.getMediaPlayerDevicesAndServices()
+                else remoteDeviceRepository.getDevicesAndServices()
 
             eventLiveData.postEvent(DownloadEvent.DeviceAndServices(devices))
         }
     }
 
     /**
-     * returns the IDs of the most recently used service, which also has its device ID
-     * the IDs are the DB entities' IDs
+     * returns the IDs of the most recently used service, which also has its device ID the IDs are
+     * the DB entities' IDs
      */
     fun getRecentService(): Int {
         return preferences.getInt(RECENT_SERVICE_KEY, -1)
@@ -246,6 +241,7 @@ sealed class DownloadDetailsMessage {
 
 sealed class DownloadEvent {
     data class KodiDevices(val devices: List<KodiDevice>) : DownloadEvent()
+
     data class DeviceAndServices(val devicesServices: Map<RemoteDevice, List<RemoteService>>) :
         DownloadEvent()
 

@@ -86,7 +86,6 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                             dialog.show(parentFragmentManager, "DeleteDialogFragment")
                             true
                         }
-
                         else -> false
                     }
                 }
@@ -194,19 +193,15 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                 is DownloadDetailsMessage.KodiError -> {
                     context?.showToast(R.string.kodi_connection_error)
                 }
-
                 is DownloadDetailsMessage.KodiSuccess -> {
                     context?.showToast(R.string.kodi_connection_successful)
                 }
-
                 DownloadDetailsMessage.KodiMissingCredentials -> {
                     context?.showToast(R.string.kodi_configure_credentials)
                 }
-
                 DownloadDetailsMessage.KodiMissingDefault -> {
                     context?.showToast(R.string.kodi_missing_default)
                 }
-
                 is DownloadDetailsMessage.KodiShowPicker -> {
                     val dialog = KodiServerPickerDialog()
                     val bundle = Bundle()
@@ -214,7 +209,6 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                     dialog.arguments = bundle
                     dialog.show(parentFragmentManager, "KodiServerPickerDialog")
                 }
-
                 else -> {}
             }
         }
@@ -224,13 +218,11 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                 is DownloadEvent.DefaultDeviceService -> {
                     // send media to default device
                 }
-
                 is DownloadEvent.DeviceAndServices -> {
                     // used to populate the menu
                     deviceServiceMap.clear()
                     deviceServiceMap.putAll(content.devicesServices)
                 }
-
                 is DownloadEvent.KodiDevices -> {}
             }
         }
@@ -252,11 +244,8 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         val recentService: Int = viewModel.getRecentService()
 
         val defaultDevice: Map.Entry<RemoteDevice, List<RemoteService>>? =
-            deviceServiceMap.firstNotNullOfOrNull {
-                if (it.key.isDefault) it else null
-            }
+            deviceServiceMap.firstNotNullOfOrNull { if (it.key.isDefault) it else null }
         val defaultService: RemoteService? = defaultDevice?.value?.firstOrNull { it.isDefault }
-
 
         // get all the services of the corresponding menu item
         // populate according to results
@@ -266,7 +255,8 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         if (defaultService != null) {
             val serviceType: RemoteServiceType? = getServiceType(defaultService.type)
             if (serviceType != null) {
-                defaultLayout.findViewById<ImageView>(R.id.serviceIcon)
+                defaultLayout
+                    .findViewById<ImageView>(R.id.serviceIcon)
                     .setImageResource(serviceType.iconRes)
                 defaultLayout.findViewById<TextView>(R.id.serviceName).text = defaultService.name
                 // ip from device, port from service
@@ -274,8 +264,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                     "${defaultDevice.key.address}:${defaultService.port}"
 
                 defaultLayout.setOnClickListener {
-                    if (popup.isShowing)
-                        popup.dismiss()
+                    if (popup.isShowing) popup.dismiss()
                     playOnDeviceService(
                         args.details,
                         defaultDevice.key,
@@ -290,27 +279,29 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
             defaultLayout.visibility = View.GONE
         }
 
-
-        val recentLayout = popup.contentView.findViewById<ConstraintLayout>(R.id.recentServiceLayout)
+        val recentLayout =
+            popup.contentView.findViewById<ConstraintLayout>(R.id.recentServiceLayout)
         if (recentService != -1 && recentService != defaultService?.id) {
-            val recentServiceItem: RemoteService? = deviceServiceMap.firstNotNullOfOrNull {
-                it.value.firstOrNull { service -> service.id == recentService }
-            }
+            val recentServiceItem: RemoteService? =
+                deviceServiceMap.firstNotNullOfOrNull {
+                    it.value.firstOrNull { service -> service.id == recentService }
+                }
             if (recentServiceItem != null) {
                 val recentDeviceItem =
                     deviceServiceMap.keys.firstOrNull { it.id == recentServiceItem.device }
                 val serviceType: RemoteServiceType? = getServiceType(recentServiceItem.type)
                 if (recentDeviceItem != null && serviceType != null) {
-                    recentLayout.findViewById<ImageView>(R.id.recentServiceIcon)
+                    recentLayout
+                        .findViewById<ImageView>(R.id.recentServiceIcon)
                         .setImageResource(serviceType.iconRes)
-                    recentLayout.findViewById<TextView>(R.id.recentServiceName).text = recentServiceItem.name
+                    recentLayout.findViewById<TextView>(R.id.recentServiceName).text =
+                        recentServiceItem.name
                     // ip from device, port from service
                     recentLayout.findViewById<TextView>(R.id.recentServiceAddress).text =
                         "${recentDeviceItem.address}:${recentServiceItem.port}"
 
                     recentLayout.setOnClickListener {
-                        if (popup.isShowing)
-                            popup.dismiss()
+                        if (popup.isShowing) popup.dismiss()
 
                         playOnDeviceService(
                             args.details,
@@ -330,17 +321,15 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         }
 
         val pickerLayout = popup.contentView.findViewById<ConstraintLayout>(R.id.pickServiceLayout)
-        pickerLayout.findViewById<TextView>(R.id.servicesNumber).text = resources.getQuantityString(
-            R.plurals.service_number_format,
-            deviceServiceMap.values.size
-        )
-        pickerLayout.findViewById<TextView>(R.id.devicesNumber).text = resources.getQuantityString(
-            R.plurals.device_number_format,
-            deviceServiceMap.keys.size
-        )
+        pickerLayout.findViewById<TextView>(R.id.servicesNumber).text =
+            resources.getQuantityString(
+                R.plurals.service_number_format,
+                deviceServiceMap.values.size
+            )
+        pickerLayout.findViewById<TextView>(R.id.devicesNumber).text =
+            resources.getQuantityString(R.plurals.device_number_format, deviceServiceMap.keys.size)
         pickerLayout.setOnClickListener {
-            if (popup.isShowing)
-                popup.dismiss()
+            if (popup.isShowing) popup.dismiss()
 
             val dialog = ServicePickerDialog()
             val bundle = Bundle()
@@ -349,11 +338,11 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
             dialog.show(parentFragmentManager, "ServicePickerDialog")
         }
 
-        val browserLayout = popup.contentView.findViewById<ConstraintLayout>(R.id.streamBrowserLayout)
+        val browserLayout =
+            popup.contentView.findViewById<ConstraintLayout>(R.id.streamBrowserLayout)
         browserLayout.setOnClickListener {
             onBrowserStreamsClick(args.details.id)
-            if (popup.isShowing)
-                popup.dismiss()
+            if (popup.isShowing) popup.dismiss()
         }
     }
 
@@ -371,7 +360,6 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                     kodiService = service
                 )
             }
-
             RemoteServiceType.VLC -> {
                 viewModel.openUrlOnVLC(
                     mediaURL = item.download,
@@ -379,7 +367,6 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                     vlcService = service
                 )
             }
-
             else -> {
                 // should not happen
                 Timber.e("Unknown service type $serviceType")
@@ -467,12 +454,10 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                 val vlcIntent = createMediaIntent("org.videolan.vlc", url)
                 tryStartExternalApp(vlcIntent)
             }
-
             "mpv" -> {
                 val mpvIntent = createMediaIntent("is.xyz.mpv", url)
                 tryStartExternalApp(mpvIntent)
             }
-
             "mx_player" -> {
                 val mxIntent = createMediaIntent("com.mxtech.videoplayer.pro", url)
 
@@ -483,12 +468,10 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                     tryStartExternalApp(mxIntent)
                 }
             }
-
             "web_video_cast" -> {
                 val wvcIntent = createMediaIntent("com.instantbits.cast.webvideo", url)
                 tryStartExternalApp(wvcIntent)
             }
-
             "custom_player" -> {
                 val customPlayerPackage = viewModel.getCustomPlayerPreference()
                 if (customPlayerPackage.isBlank()) {
@@ -498,7 +481,6 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                     tryStartExternalApp(customIntent)
                 }
             }
-
             else -> {
                 context?.showToast(R.string.missing_default_player)
             }

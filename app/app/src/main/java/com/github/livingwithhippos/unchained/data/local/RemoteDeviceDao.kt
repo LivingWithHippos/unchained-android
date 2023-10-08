@@ -9,7 +9,6 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.PrimaryKey
 import androidx.room.Query
-import com.github.livingwithhippos.unchained.data.model.Repository
 import java.util.Objects
 import kotlinx.parcelize.Parcelize
 
@@ -39,11 +38,9 @@ interface RemoteDeviceDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertService(service: RemoteService): Long
 
-    @Delete
-    suspend fun deleteService(service: RemoteService)
+    @Delete suspend fun deleteService(service: RemoteService)
 
-    @Delete
-    suspend fun deleteDevice(device: RemoteDevice)
+    @Delete suspend fun deleteDevice(device: RemoteDevice)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAllDevices(list: List<RemoteDevice>): List<Long>
@@ -59,7 +56,9 @@ interface RemoteDeviceDao {
     @Query(
         "SELECT * FROM remote_device JOIN remote_service ON remote_device.id = remote_service.device_id WHERE remote_service.type IN (:types)"
     )
-    suspend fun getMediaPlayerDevicesAndServices(types: List<Int>): Map<RemoteDevice, List<RemoteService>>
+    suspend fun getMediaPlayerDevicesAndServices(
+        types: List<Int>
+    ): Map<RemoteDevice, List<RemoteService>>
 
     @Query("SELECT id FROM remote_device WHERE rowid = :rowId")
     suspend fun getDeviceIDByRow(rowId: Long): Int?

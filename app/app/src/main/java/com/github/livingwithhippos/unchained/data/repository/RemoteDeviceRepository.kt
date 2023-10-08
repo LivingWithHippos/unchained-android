@@ -19,10 +19,7 @@ class RemoteDeviceRepository @Inject constructor(private val remoteDeviceDao: Re
 
     suspend fun getMediaPlayerDevicesAndServices(): Map<RemoteDevice, List<RemoteService>> =
         remoteDeviceDao.getMediaPlayerDevicesAndServices(
-            types = listOf(
-                RemoteServiceType.KODI.value,
-                RemoteServiceType.VLC.value
-            )
+            types = listOf(RemoteServiceType.KODI.value, RemoteServiceType.VLC.value)
         )
 
     suspend fun insertDevice(device: RemoteDevice): Long = remoteDeviceDao.insertDevice(device)
@@ -41,8 +38,12 @@ class RemoteDeviceRepository @Inject constructor(private val remoteDeviceDao: Re
     suspend fun getService(serviceID: Int): RemoteService? = remoteDeviceDao.getService(serviceID)
 
     suspend fun getDevice(deviceID: Int): RemoteDevice? = remoteDeviceDao.getDevice(deviceID)
+
     suspend fun deleteService(service: RemoteService) = remoteDeviceDao.deleteService(service)
+
     suspend fun deleteDevice(device: RemoteDevice) = remoteDeviceDao.deleteDevice(device)
+
     suspend fun deleteDeviceServices(deviceID: Int) = remoteDeviceDao.removeDeviceServices(deviceID)
+
     suspend fun getDefaultDeviceWithServices() = remoteDeviceDao.getDefaultDeviceWithServices()
 }

@@ -15,12 +15,10 @@ import com.github.livingwithhippos.unchained.R
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.divider.MaterialDividerItemDecoration
 
-
-class StatComponent @JvmOverloads constructor(
-    context: Context,
-    attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0
-) : MaterialCardView(context, attrs, defStyleAttr) {
+class StatComponent
+@JvmOverloads
+constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
+    MaterialCardView(context, attrs, defStyleAttr) {
 
     private val recyclerView: RecyclerView
     val adapter: StatAdapter
@@ -35,11 +33,7 @@ class StatComponent @JvmOverloads constructor(
 
         recyclerView = findViewById(R.id.recyclerView)
 
-        context.theme.obtainStyledAttributes(
-            attrs,
-            R.styleable.StatComponent,
-            0, 0
-        ).apply {
+        context.theme.obtainStyledAttributes(attrs, R.styleable.StatComponent, 0, 0).apply {
             try {
                 cardElevation =
                     resources.getDimensionPixelSize(R.dimen.stat_corner_radius).toFloat()
@@ -54,19 +48,15 @@ class StatComponent @JvmOverloads constructor(
                 adapter = StatAdapter(showLabel, showCaption, showIcon)
                 recyclerView.adapter = adapter
 
-                val orientation = when (direction) {
-                    1 -> androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
-                    else -> androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
-                }
-                recyclerView.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(
-                    context,
-                    orientation,
-                    false
-                )
-                dividerItemDecoration = MaterialDividerItemDecoration(
-                    recyclerView.context,
-                    orientation
-                )
+                val orientation =
+                    when (direction) {
+                        1 -> androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
+                        else -> androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
+                    }
+                recyclerView.layoutManager =
+                    androidx.recyclerview.widget.LinearLayoutManager(context, orientation, false)
+                dividerItemDecoration =
+                    MaterialDividerItemDecoration(recyclerView.context, orientation)
                 recyclerView.addItemDecoration(dividerItemDecoration)
             } finally {
                 recycle()
@@ -90,17 +80,15 @@ class StatAdapter(
 
     class DiffCallback : DiffUtil.ItemCallback<StatItem>() {
         override fun areItemsTheSame(oldItem: StatItem, newItem: StatItem): Boolean =
-            oldItem.content == newItem.content && oldItem.label == newItem.label
-                    && oldItem.caption == newItem.caption
-                    && oldItem.icon == newItem.icon
+            oldItem.content == newItem.content &&
+                oldItem.label == newItem.label &&
+                oldItem.caption == newItem.caption &&
+                oldItem.icon == newItem.icon
 
         override fun areContentsTheSame(oldItem: StatItem, newItem: StatItem): Boolean = true
     }
 
-    /**
-     * Provide a reference to the type of views that you are using
-     * (custom ViewHolder)
-     */
+    /** Provide a reference to the type of views that you are using (custom ViewHolder) */
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val labelTextView: TextView
         val contentTextView: TextView
@@ -116,8 +104,9 @@ class StatAdapter(
     }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(viewGroup.context)
-            .inflate(R.layout.stat_component_item, viewGroup, false)
+        val view =
+            LayoutInflater.from(viewGroup.context)
+                .inflate(R.layout.stat_component_item, viewGroup, false)
 
         return ViewHolder(view)
     }
@@ -127,21 +116,14 @@ class StatAdapter(
 
         viewHolder.contentTextView.text = stat.content
 
-        if (showLabel.not())
-            viewHolder.labelTextView.visibility = View.GONE
-        else
-            viewHolder.labelTextView.text = stat.label
+        if (showLabel.not()) viewHolder.labelTextView.visibility = View.GONE
+        else viewHolder.labelTextView.text = stat.label
 
-        if (showCaption.not())
-            viewHolder.captionTextView.visibility = View.GONE
-        else
-            viewHolder.captionTextView.text = stat.caption
+        if (showCaption.not()) viewHolder.captionTextView.visibility = View.GONE
+        else viewHolder.captionTextView.text = stat.caption
 
-        if (showIcon.not())
-            viewHolder.iconImageView.visibility = View.GONE
-        else
-            viewHolder.iconImageView.setImageResource(stat.icon)
-
+        if (showIcon.not()) viewHolder.iconImageView.visibility = View.GONE
+        else viewHolder.iconImageView.setImageResource(stat.icon)
     }
 
     override fun getItemViewType(position: Int) = R.layout.stat_component_item

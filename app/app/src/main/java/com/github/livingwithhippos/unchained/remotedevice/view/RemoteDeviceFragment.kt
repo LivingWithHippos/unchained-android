@@ -60,9 +60,7 @@ class RemoteDeviceFragment : UnchainedFragment(), ServiceListListener {
                     serviceAdapter.submitList(it.services)
                 }
                 is DeviceEvent.DeletedDeviceServices -> {
-                    args.item?.let {device ->
-                        viewModel.fetchDeviceServices(device.id)
-                    }
+                    args.item?.let { device -> viewModel.fetchDeviceServices(device.id) }
                 }
                 is DeviceEvent.Device -> {
                     if (args.item == null) {

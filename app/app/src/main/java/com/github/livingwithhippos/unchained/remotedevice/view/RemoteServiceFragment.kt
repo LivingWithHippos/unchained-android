@@ -74,10 +74,7 @@ class RemoteServiceFragment : Fragment() {
         serviceTypeView.setOnItemClickListener { _, _, position, _ ->
             val selectedService = getServiceType(serviceTypeAdapter.getItem(position))
             if (selectedService != null) {
-                setupServiceType(
-                    binding,
-                    selectedService.value
-                )
+                setupServiceType(binding, selectedService.value)
             }
         }
 
@@ -143,9 +140,7 @@ class RemoteServiceFragment : Fragment() {
         }
 
         binding.bDeleteService.setOnClickListener {
-            item?.let {rs ->
-                viewModel.deleteService(rs)
-            }
+            item?.let { rs -> viewModel.deleteService(rs) }
         }
 
         viewModel.deviceLiveData.observe(viewLifecycleOwner) {
@@ -179,22 +174,23 @@ class RemoteServiceFragment : Fragment() {
             getString(R.string.kodi) -> {
                 RemoteServiceType.KODI
             }
-
             getString(R.string.player_vlc) -> {
                 RemoteServiceType.VLC
             }
-
             getString(R.string.jackett) -> {
                 RemoteServiceType.JACKETT
             }
-
             else -> {
                 null
             }
         }
     }
 
-    private fun setupServiceType(binding: FragmentRemoteServiceBinding, type: Int, serviceDropdown: AutoCompleteTextView? = null)  {
+    private fun setupServiceType(
+        binding: FragmentRemoteServiceBinding,
+        type: Int,
+        serviceDropdown: AutoCompleteTextView? = null
+    ) {
         if (args.item == null) {
             binding.bDeleteService.isEnabled = false
         }

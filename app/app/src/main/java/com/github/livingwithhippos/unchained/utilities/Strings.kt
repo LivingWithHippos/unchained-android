@@ -36,15 +36,11 @@ fun getManualPluginFilename(author: String?, name: String): String {
         PluginRepository.TYPE_UNCHAINED
 }
 
-
 /**
- * Add the http scheme to the base url if it's not already there
- * Optionally add https
- * No checks are performed on the url validity
+ * Add the http scheme to the base url if it's not already there Optionally add https No checks are
+ * performed on the url validity
  */
 fun addHttpScheme(baseUrl: String, useSecureHttp: Boolean = false): String {
-    return if (baseUrl.startsWith("http", ignoreCase = true))
-        baseUrl
-    else if(useSecureHttp) "https://$baseUrl"
-    else "http://$baseUrl"
+    return if (baseUrl.startsWith("http", ignoreCase = true)) baseUrl
+    else if (useSecureHttp) "https://$baseUrl" else "http://$baseUrl"
 }
