@@ -69,21 +69,11 @@
             app:title="@string/manage_remote_devices"
             />
 
-        <PreferenceCategory
-            android:title="@string/kodi"
-            app:allowDividerBelow="false">
-            <Preference
-                app:key="kodi_remote_control_info"
-                app:summary="@string/enable_kodi_control"
-                app:title="@string/kodi_remote_control" />
+        <Preference
+            app:key="kodi_remote_control_info"
+            app:summary="@string/enable_kodi_control"
+            app:title="@string/kodi_remote_control" />
 
-            <SwitchPreference
-                android:defaultValue="false"
-                app:key="select_kodi_on_play"
-                app:summary="@string/kodi_picker_description"
-                app:title="@string/kodi_picker" />
-
-        </PreferenceCategory>
         <PreferenceCategory
             android:title="@string/default_media_player"
             app:allowDividerAbove="false"
