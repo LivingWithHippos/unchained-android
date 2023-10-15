@@ -167,10 +167,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
             context?.openExternalWebPage("https://kodi.wiki/view/Settings/Services/Control")
                 ?: false
         }
-        findPreference<Preference>("kodi_list_editor")?.setOnPreferenceClickListener {
-            openKodiManagementDialog()
-            true
-        }
         // todo: sistema per kodi
         val ipPreference = findPreference<EditTextPreference>("kodi_ip_address")
         val portPreference = findPreference<EditTextPreference>("kodi_port")
@@ -252,12 +248,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
         else {
             viewModel.testKodi(ip, port, username, password)
         }
-    }
-
-    /** This function opens a dialog to manage the kodi list */
-    private fun openKodiManagementDialog() {
-        val dialog = KodiManagementDialog()
-        dialog.show(parentFragmentManager, "KodiManagementDialogFragment")
     }
 
     private fun openThemePickerDialog() {

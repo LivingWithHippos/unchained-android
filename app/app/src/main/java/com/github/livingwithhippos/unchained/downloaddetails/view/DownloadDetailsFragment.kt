@@ -202,13 +202,6 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                 DownloadDetailsMessage.KodiMissingDefault -> {
                     context?.showToast(R.string.kodi_missing_default)
                 }
-                is DownloadDetailsMessage.KodiShowPicker -> {
-                    val dialog = KodiServerPickerDialog()
-                    val bundle = Bundle()
-                    bundle.putString("url", content.url)
-                    dialog.arguments = bundle
-                    dialog.show(parentFragmentManager, "KodiServerPickerDialog")
-                }
                 else -> {}
             }
         }

@@ -11,7 +11,6 @@ import com.github.livingwithhippos.unchained.data.local.RemoteServiceType
 import com.github.livingwithhippos.unchained.data.model.KodiDevice
 import com.github.livingwithhippos.unchained.data.model.Stream
 import com.github.livingwithhippos.unchained.data.repository.DownloadRepository
-import com.github.livingwithhippos.unchained.data.repository.KodiDeviceRepository
 import com.github.livingwithhippos.unchained.data.repository.KodiRepository
 import com.github.livingwithhippos.unchained.data.repository.RemoteDeviceRepository
 import com.github.livingwithhippos.unchained.data.repository.RemoteRepository
@@ -35,7 +34,6 @@ constructor(
     private val downloadRepository: DownloadRepository,
     private val kodiRepository: KodiRepository,
     private val remoteServiceRepository: RemoteRepository,
-    private val kodiDeviceRepository: KodiDeviceRepository,
     private val remoteDeviceRepository: RemoteDeviceRepository
 ) : ViewModel() {
 
@@ -56,29 +54,6 @@ constructor(
             val deleted = downloadRepository.deleteDownload(id)
             if (deleted == null) deletedDownloadLiveData.postEvent(-1)
             else deletedDownloadLiveData.postEvent(1)
-        }
-    }
-
-    fun openUrlOnKodi(url: String, customDevice: KodiDevice? = null) {
-        viewModelScope.launch {
-            val device = customDevice ?: kodiDeviceRepository.getDefault()
-            if (device != null) {
-                val response =
-                    kodiRepository.openUrl(
-                        device.address,
-                        device.port,
-                        url,
-                        device.username,
-                        device.password
-                    )
-                if (response != null) messageLiveData.postEvent(DownloadDetailsMessage.KodiSuccess)
-                else messageLiveData.postEvent(DownloadDetailsMessage.KodiError)
-            } else {
-                val allDevices = kodiDeviceRepository.getDevices()
-                if (allDevices.isNotEmpty())
-                    messageLiveData.postEvent(DownloadDetailsMessage.KodiMissingDefault)
-                else messageLiveData.postEvent(DownloadDetailsMessage.KodiMissingCredentials)
-            }
         }
     }
 
@@ -122,14 +97,6 @@ constructor(
                 Timber.e("Error playing on VLC: ${e.message}")
                 messageLiveData.postEvent(DownloadDetailsMessage.KodiError)
             }
-        }
-    }
-
-    fun getKodiDevices() {
-
-        viewModelScope.launch {
-            val devices = kodiDeviceRepository.getDevices()
-            eventLiveData.postEvent(DownloadEvent.KodiDevices(devices))
         }
     }
 
@@ -196,15 +163,13 @@ constructor(
 }
 
 sealed class DownloadDetailsMessage {
-    object KodiError : DownloadDetailsMessage()
+    data object KodiError : DownloadDetailsMessage()
 
-    object KodiSuccess : DownloadDetailsMessage()
+    data object KodiSuccess : DownloadDetailsMessage()
 
-    object KodiMissingCredentials : DownloadDetailsMessage()
+    data object KodiMissingCredentials : DownloadDetailsMessage()
 
-    object KodiMissingDefault : DownloadDetailsMessage()
-
-    data class KodiShowPicker(val url: String) : DownloadDetailsMessage()
+    data object KodiMissingDefault : DownloadDetailsMessage()
 }
 
 sealed class DownloadEvent {
