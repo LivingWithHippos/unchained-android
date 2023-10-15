@@ -717,11 +717,11 @@
     <plurals name="service_number_format">
         <item quantity="zero">No services</item>
         <item quantity="one">1 service</item>
-        <item quantity="other">%d services</item>
+        <item quantity="other">%1$d services</item>
     </plurals>
     <plurals name="device_number_format">
         <item quantity="zero">No devices</item>
         <item quantity="one">1 device</item>
-        <item quantity="other">%d devices</item>
+        <item quantity="other">%1$d devices</item>
     </plurals>
 </resources>

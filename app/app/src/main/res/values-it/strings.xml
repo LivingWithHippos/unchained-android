@@ -496,14 +496,14 @@
     <string name="transcoding">Transcoding</string>
     <string name="recent">Recente</string>
     <plurals name="service_number_format">
-        <item quantity="zero">Nessun servizio</item>
         <item quantity="one">1 servizio</item>
-        <item quantity="other">%d servizi</item>
+        <item quantity="many">%1$d servizi</item>
+        <item quantity="other">%1$d servizi</item>
     </plurals>
     <plurals name="device_number_format">
-        <item quantity="zero">Nessun dispositivo</item>
         <item quantity="one">1 dispositivo</item>
-        <item quantity="other">%d dispositivi</item>
+        <item quantity="many">%1$d dispositivi</item>
+        <item quantity="other">%1$d dispositivi</item>
     </plurals>
     <string name="services">Servizi</string>
 </resources>

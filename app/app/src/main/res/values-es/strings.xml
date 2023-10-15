@@ -497,10 +497,10 @@
     <string name="recent">Reciente</string>
     <plurals name="service_number_format">
         <item quantity="one">1 servicio</item>
-        <item quantity="many">%d servicios</item>
+        <item quantity="many">%1$d servicios</item>
     </plurals>
     <plurals name="device_number_format">
         <item quantity="one">1 dispositivo</item>
-        <item quantity="many">%d dispositivos</item>
+        <item quantity="many">%1$d dispositivos</item>
     </plurals>
 </resources>

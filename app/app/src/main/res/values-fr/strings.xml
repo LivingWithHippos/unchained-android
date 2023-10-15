@@ -496,11 +496,11 @@
     <string name="transcoding">Transcodage</string>
     <string name="recent">Récent</string>
     <plurals name="service_number_format">
-        <item quantity="one">%d service</item>
-        <item quantity="many">%d services</item>
+        <item quantity="one">%1$d service</item>
+        <item quantity="many">%1$d services</item>
     </plurals>
     <plurals name="device_number_format">
-        <item quantity="one">%d dispositif</item>
-        <item quantity="many">%d dispositifs</item>
+        <item quantity="one">%1$d dispositif</item>
+        <item quantity="many">%1$d dispositifs</item>
     </plurals>
 </resources>

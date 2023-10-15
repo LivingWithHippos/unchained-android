@@ -320,15 +320,15 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         }
 
         val pickerLayout = popup.contentView.findViewById<ConstraintLayout>(R.id.pickServiceLayout)
-        val totalServices: Int = deviceServiceMap.values.sumOf { it.size }
-        // fixme: not working anymore??
+        val servicesNumber = deviceServiceMap.values.sumOf { it.size }
         pickerLayout.findViewById<TextView>(R.id.servicesNumber).text =
             resources.getQuantityString(
                 R.plurals.service_number_format,
-                totalServices
+                servicesNumber,
+                servicesNumber
             )
         pickerLayout.findViewById<TextView>(R.id.devicesNumber).text =
-            resources.getQuantityString(R.plurals.device_number_format, deviceServiceMap.keys.size)
+            resources.getQuantityString(R.plurals.device_number_format, deviceServiceMap.keys.size, deviceServiceMap.keys.size)
         pickerLayout.setOnClickListener {
             if (popup.isShowing) popup.dismiss()
 
