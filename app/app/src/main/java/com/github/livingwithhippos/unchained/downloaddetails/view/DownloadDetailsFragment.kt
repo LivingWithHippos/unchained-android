@@ -133,8 +133,8 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                         "h264WebM",
                         "h264WebM",
                         it.h264WebM.link,
-                        getString(R.string.h264_webm),
-                        getString(R.string.streaming)
+                        getString(R.string.streaming),
+                        "h264 WebM"
                     )
                 )
                 streams.add(
@@ -142,26 +142,26 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                         "liveMP4",
                         "liveMP4",
                         it.liveMP4.link,
-                        getString(R.string.liveMP4),
-                        getString(R.string.streaming)
+                        getString(R.string.streaming),
+                        "mp4"
                     )
                 )
                 streams.add(
                     Alternative(
                         "apple",
-                        "apple",
+                        "m3u8",
                         it.apple.link,
-                        getString(R.string.apple),
-                        getString(R.string.streaming)
+                        getString(R.string.streaming),
+                        "m3u8"
                     )
                 )
                 streams.add(
                     Alternative(
                         "dash",
-                        "dash",
+                        "mpd",
                         it.dash.link,
-                        getString(R.string.dash),
-                        getString(R.string.streaming)
+                        getString(R.string.streaming),
+                        "mpd"
                     )
                 )
 
