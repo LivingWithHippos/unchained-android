@@ -380,8 +380,7 @@ fun View.hideKeyboard() {
 }
 
 /**
- * This function returns the available space around a view
- * Order is top, right, bottom, left
+ * This function returns the available space around a view Order is top, right, bottom, left
  * Multiscreen will return sizes against the screen, not the app window
  */
 fun getAvailableSpace(view: View): List<Int> {

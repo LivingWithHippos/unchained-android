@@ -18,11 +18,10 @@ import com.github.livingwithhippos.unchained.data.repository.RemoteRepository
 import com.github.livingwithhippos.unchained.data.repository.StreamingRepository
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.Event
-import com.github.livingwithhippos.unchained.utilities.PreferenceKeys
 import com.github.livingwithhippos.unchained.utilities.postEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 

@@ -162,13 +162,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                     )
                 )
                 streams.add(
-                    Alternative(
-                        "dash",
-                        "mpd",
-                        it.dash.link,
-                        getString(R.string.streaming),
-                        "mpd"
-                    )
+                    Alternative("dash", "mpd", it.dash.link, getString(R.string.streaming), "mpd")
                 )
 
                 if (!args.details.alternative.isNullOrEmpty())
@@ -226,7 +220,6 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                 deviceServiceMap.putAll(it)
             }
         }
-
 
         viewModel.eventLiveData.observe(viewLifecycleOwner) {
             when (val content = it.peekContent()) {
@@ -336,7 +329,11 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                 servicesNumber
             )
         pickerLayout.findViewById<TextView>(R.id.devicesNumber).text =
-            resources.getQuantityString(R.plurals.device_number_format, deviceServiceMap.keys.size, deviceServiceMap.keys.size)
+            resources.getQuantityString(
+                R.plurals.device_number_format,
+                deviceServiceMap.keys.size,
+                deviceServiceMap.keys.size
+            )
         pickerLayout.setOnClickListener {
             if (popup.isShowing) popup.dismiss()
 
@@ -367,18 +364,10 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
     ) {
         when (serviceType) {
             RemoteServiceType.KODI -> {
-                viewModel.openUrlOnKodi(
-                    mediaURL = link,
-                    kodiDevice = device,
-                    kodiService = service
-                )
+                viewModel.openUrlOnKodi(mediaURL = link, kodiDevice = device, kodiService = service)
             }
             RemoteServiceType.VLC -> {
-                viewModel.openUrlOnVLC(
-                    mediaURL = link,
-                    vlcDevice = device,
-                    vlcService = service
-                )
+                viewModel.openUrlOnVLC(mediaURL = link, vlcDevice = device, vlcService = service)
             }
             else -> {
                 // should not happen
@@ -389,39 +378,42 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
 
     private fun showStreamingPopupWindow(parentView: View): PopupWindow {
         val screenDistances = getAvailableSpace(parentView)
-        val popup = PopupWindow(parentView.context).apply {
-            isOutsideTouchable = true
-            val inflater = LayoutInflater.from(parentView.context)
-            contentView = inflater.inflate(R.layout.popup_streaming_window, null).apply {
-                measure(
-                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
-                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
-                )
-            }
-        }.also { popupWindow ->
-            popupWindow.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-            if (screenDistances[2] < 600 && screenDistances[0] > 600) {
-            // Absolute location of the anchor view
-            val location = IntArray(2).apply {
-                parentView.getLocationOnScreen(this)
-            }
-            val size = Size(
-                popupWindow.contentView.measuredWidth,
-                popupWindow.contentView.measuredHeight
-            )
-            Timber.d(
-                "Size: $size, location: ${location[0]}, ${location[1]}, anchor: ${parentView.width}, ${parentView.height}, height ${popupWindow.height}"
-            )
-            popupWindow.showAtLocation(
-                parentView,
-                Gravity.TOP or Gravity.START,
-                location[0] - (size.width - parentView.width) / 2,
-                location[1] - (size.height / 2)
-            )
-            } else {
-                popupWindow.showAsDropDown(parentView)
-            }
-        }
+        val popup =
+            PopupWindow(parentView.context)
+                .apply {
+                    isOutsideTouchable = true
+                    val inflater = LayoutInflater.from(parentView.context)
+                    contentView =
+                        inflater.inflate(R.layout.popup_streaming_window, null).apply {
+                            measure(
+                                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+                            )
+                        }
+                }
+                .also { popupWindow ->
+                    popupWindow.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                    if (screenDistances[2] < 600 && screenDistances[0] > 600) {
+                        // Absolute location of the anchor view
+                        val location = IntArray(2).apply { parentView.getLocationOnScreen(this) }
+                        val size =
+                            Size(
+                                popupWindow.contentView.measuredWidth,
+                                popupWindow.contentView.measuredHeight
+                            )
+                        Timber.d(
+                            "Size: $size, location: ${location[0]}, ${location[1]}, anchor: ${parentView.width}, ${parentView.height}, height ${popupWindow.height}"
+                        )
+                        popupWindow.showAtLocation(
+                            parentView,
+                            Gravity.TOP or Gravity.START,
+                            location[0] - (size.width - parentView.width) / 2,
+                            location[1] - (size.height / 2)
+                        )
+                    } else {
+                        popupWindow.showAsDropDown(parentView)
+                    }
+                }
 
         return popup
     }
