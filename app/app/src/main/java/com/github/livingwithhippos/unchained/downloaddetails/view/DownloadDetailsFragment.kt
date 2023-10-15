@@ -4,8 +4,12 @@ import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
 import android.content.ComponentName
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
+import android.util.Size
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -40,6 +44,7 @@ import com.github.livingwithhippos.unchained.lists.view.ListState
 import com.github.livingwithhippos.unchained.utilities.EventObserver
 import com.github.livingwithhippos.unchained.utilities.RD_STREAMING_URL
 import com.github.livingwithhippos.unchained.utilities.extension.copyToClipboard
+import com.github.livingwithhippos.unchained.utilities.extension.getAvailableSpace
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
@@ -233,13 +238,8 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
     }
 
     @SuppressLint("SetTextI18n")
-    private fun manageStreamingPopup(popView: View) {
-        val layoutInflater = LayoutInflater.from(requireContext())
-        val popup = showStreamingPopupWindow(layoutInflater)
-        popup.isOutsideTouchable = true
-        popup.isFocusable = true
-        popup.showAsDropDown(popView)
-        // popup.showAtLocation(it, Gravity.CENTER, 0, 0)
+    private fun manageStreamingPopup(popView: View, url: String? = null) {
+        val popup = showStreamingPopupWindow(popView)
 
         val recentService: Int = viewModel.getRecentService()
 
@@ -266,7 +266,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                 defaultLayout.setOnClickListener {
                     if (popup.isShowing) popup.dismiss()
                     playOnDeviceService(
-                        args.details,
+                        url ?: args.details.download,
                         defaultDevice.key,
                         defaultService,
                         serviceType
@@ -302,9 +302,8 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
 
                     recentLayout.setOnClickListener {
                         if (popup.isShowing) popup.dismiss()
-
                         playOnDeviceService(
-                            args.details,
+                            url ?: args.details.download,
                             recentDeviceItem,
                             recentServiceItem,
                             serviceType
@@ -321,10 +320,12 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         }
 
         val pickerLayout = popup.contentView.findViewById<ConstraintLayout>(R.id.pickServiceLayout)
+        val totalServices: Int = deviceServiceMap.values.sumOf { it.size }
+        // fixme: not working anymore??
         pickerLayout.findViewById<TextView>(R.id.servicesNumber).text =
             resources.getQuantityString(
                 R.plurals.service_number_format,
-                deviceServiceMap.values.size
+                totalServices
             )
         pickerLayout.findViewById<TextView>(R.id.devicesNumber).text =
             resources.getQuantityString(R.plurals.device_number_format, deviceServiceMap.keys.size)
@@ -333,21 +334,25 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
 
             val dialog = ServicePickerDialog()
             val bundle = Bundle()
-            bundle.putString("downloadUrl", args.details.download)
+            bundle.putString("downloadUrl", url ?: args.details.download)
             dialog.arguments = bundle
             dialog.show(parentFragmentManager, "ServicePickerDialog")
         }
 
         val browserLayout =
             popup.contentView.findViewById<ConstraintLayout>(R.id.streamBrowserLayout)
-        browserLayout.setOnClickListener {
-            onBrowserStreamsClick(args.details.id)
-            if (popup.isShowing) popup.dismiss()
+        if (url != null) {
+            browserLayout.visibility = View.GONE
+        } else {
+            browserLayout.setOnClickListener {
+                onBrowserStreamsClick(args.details.id)
+                if (popup.isShowing) popup.dismiss()
+            }
         }
     }
 
     private fun playOnDeviceService(
-        item: DownloadItem,
+        link: String,
         device: RemoteDevice,
         service: RemoteService,
         serviceType: RemoteServiceType
@@ -355,14 +360,14 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         when (serviceType) {
             RemoteServiceType.KODI -> {
                 viewModel.openUrlOnKodi(
-                    mediaURL = item.download,
+                    mediaURL = link,
                     kodiDevice = device,
                     kodiService = service
                 )
             }
             RemoteServiceType.VLC -> {
                 viewModel.openUrlOnVLC(
-                    mediaURL = item.download,
+                    mediaURL = link,
                     vlcDevice = device,
                     vlcService = service
                 )
@@ -374,13 +379,43 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         }
     }
 
-    private fun showStreamingPopupWindow(inflater: LayoutInflater): PopupWindow {
-        val view = inflater.inflate(R.layout.popup_streaming_window, null)
-        return PopupWindow(
-            view,
-            ViewGroup.LayoutParams.WRAP_CONTENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        )
+    private fun showStreamingPopupWindow(parentView: View): PopupWindow {
+        val screenDistances = getAvailableSpace(parentView)
+        val popup = PopupWindow(parentView.context).apply {
+            isOutsideTouchable = true
+            val inflater = LayoutInflater.from(parentView.context)
+            contentView = inflater.inflate(R.layout.popup_streaming_window, null).apply {
+                measure(
+                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+                )
+            }
+        }.also { popupWindow ->
+            popupWindow.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            if (screenDistances[2] < 600 && screenDistances[0] > 600) {
+            // Absolute location of the anchor view
+            val location = IntArray(2).apply {
+                parentView.getLocationOnScreen(this)
+            }
+            val size = Size(
+                popupWindow.contentView.measuredWidth,
+                popupWindow.contentView.measuredHeight
+            )
+            Timber.d(
+                "Size: $size, location: ${location[0]}, ${location[1]}, anchor: ${parentView.width}, ${parentView.height}, height ${popupWindow.height}"
+            )
+            popupWindow.showAtLocation(
+                parentView,
+                Gravity.TOP or Gravity.START,
+                location[0] - (size.width - parentView.width) / 2,
+                location[1] - (size.height / 2)
+            )
+            } else {
+                popupWindow.showAsDropDown(parentView)
+            }
+        }
+
+        return popup
     }
 
     override fun onCopyClick(text: String) {
@@ -397,8 +432,8 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         }
     }
 
-    override fun onOpenTranscodedStream(url: String) {
-        viewModel.openKodiPickerIfNeeded(url)
+    override fun onOpenTranscodedStream(view: View, url: String) {
+        manageStreamingPopup(view, url)
     }
 
     override fun onLoadStreamsClick(id: String) {
@@ -516,7 +551,7 @@ interface DownloadDetailsListener {
 
     fun onOpenClick(url: String)
 
-    fun onOpenTranscodedStream(url: String)
+    fun onOpenTranscodedStream(view: View, url: String)
 
     fun onLoadStreamsClick(id: String)
 

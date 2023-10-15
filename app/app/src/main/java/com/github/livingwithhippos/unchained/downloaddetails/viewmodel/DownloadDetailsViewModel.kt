@@ -146,16 +146,8 @@ constructor(
         }
     }
 
-    fun getKodiPreference(): Boolean {
-        return preferences.getBoolean("show_kodi", true)
-    }
-
     fun getDefaultPlayer(): String? {
         return preferences.getString("default_media_player", null)
-    }
-
-    fun getDefaultPlayerButtonVisibility(): Boolean {
-        return preferences.getBoolean("show_media_button", true)
     }
 
     fun getButtonVisibilityPreference(buttonKey: String, default: Boolean = true): Boolean {
