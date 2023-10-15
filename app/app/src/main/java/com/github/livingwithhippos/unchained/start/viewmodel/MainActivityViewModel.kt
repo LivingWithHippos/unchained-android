@@ -1075,8 +1075,7 @@ constructor(
                             break
                         }
                         else -> {
-                            // report to countly?
-                            Timber.e("Unknown apk signature, may be debugging: $upperSignature")
+                            Timber.w("Unknown apk signature, may be debugging: $upperSignature")
                         }
                     }
                 }

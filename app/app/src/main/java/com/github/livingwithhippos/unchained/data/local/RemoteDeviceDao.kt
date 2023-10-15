@@ -9,6 +9,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.PrimaryKey
 import androidx.room.Query
+import kotlinx.coroutines.flow.Flow
 import java.util.Objects
 import kotlinx.parcelize.Parcelize
 
@@ -59,6 +60,13 @@ interface RemoteDeviceDao {
     suspend fun getMediaPlayerDevicesAndServices(
         types: List<Int>
     ): Map<RemoteDevice, List<RemoteService>>
+
+    @Query(
+        "SELECT * FROM remote_device JOIN remote_service ON remote_device.id = remote_service.device_id WHERE remote_service.type IN (:types)"
+    )
+    fun getMediaPlayerDevicesAndServicesFlow(
+        types: List<Int>
+    ): Flow<Map<RemoteDevice, List<RemoteService>>>
 
     @Query("SELECT id FROM remote_device WHERE rowid = :rowId")
     suspend fun getDeviceIDByRow(rowId: Long): Int?

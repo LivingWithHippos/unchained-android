@@ -25,6 +25,7 @@ import androidx.core.view.MenuProvider
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.coroutineScope
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import com.github.livingwithhippos.unchained.R
@@ -218,6 +219,15 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
             }
         }
 
+        lifecycle.coroutineScope.launch {
+            viewModel.devicesAndServices().collect {
+                // used to populate the menu
+                deviceServiceMap.clear()
+                deviceServiceMap.putAll(it)
+            }
+        }
+
+
         viewModel.eventLiveData.observe(viewLifecycleOwner) {
             when (val content = it.peekContent()) {
                 is DownloadEvent.DefaultDeviceService -> {
@@ -231,8 +241,6 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                 is DownloadEvent.KodiDevices -> {}
             }
         }
-
-        viewModel.fetchDevicesAndServices()
 
         return detailsBinding.root
     }

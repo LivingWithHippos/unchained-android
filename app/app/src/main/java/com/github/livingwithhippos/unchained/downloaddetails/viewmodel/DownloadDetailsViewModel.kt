@@ -21,6 +21,7 @@ import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.PreferenceKeys
 import com.github.livingwithhippos.unchained.utilities.postEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -125,19 +126,6 @@ constructor(
         }
     }
 
-    fun openKodiPickerIfNeeded(url: String) {
-        viewModelScope.launch {
-            if (preferences.getBoolean(PreferenceKeys.Kodi.SERVER_PICKER, false)) {
-                val devices = kodiDeviceRepository.getDevices()
-                // if there is only one device do not show the picker
-                if (devices.size == 1) openUrlOnKodi(url)
-                else if (devices.isEmpty())
-                    messageLiveData.postEvent(DownloadDetailsMessage.KodiMissingDefault)
-                else messageLiveData.postEvent(DownloadDetailsMessage.KodiShowPicker(url))
-            } else openUrlOnKodi(url)
-        }
-    }
-
     fun getKodiDevices() {
 
         viewModelScope.launch {
@@ -158,23 +146,8 @@ constructor(
         return preferences.getString("custom_media_player", "") ?: ""
     }
 
-    fun fetchDefaultService() {
-        viewModelScope.launch {
-            val devices: Map<RemoteDevice, List<RemoteService>> =
-                remoteDeviceRepository.getDefaultDeviceWithServices()
-            if (devices.isNotEmpty()) {
-                val device = devices.keys.first()
-                val services = devices[device]
-                if (services.isNullOrEmpty().not()) {
-                    eventLiveData.postEvent(
-                        DownloadEvent.DefaultDeviceService(device, services!!.first())
-                    )
-                }
-            }
-        }
-    }
-
     fun fetchDevicesAndServices(mediaPlayerOnly: Boolean = true) {
+        // todo: replace other uses with [devicesAndServices]
         viewModelScope.launch {
             val devices: Map<RemoteDevice, List<RemoteService>> =
                 if (mediaPlayerOnly) remoteDeviceRepository.getMediaPlayerDevicesAndServices()
@@ -182,6 +155,10 @@ constructor(
 
             eventLiveData.postEvent(DownloadEvent.DeviceAndServices(devices))
         }
+    }
+
+    suspend fun devicesAndServices(): Flow<Map<RemoteDevice, List<RemoteService>>> {
+        return remoteDeviceRepository.getMediaPlayerDevicesAndServicesFlow()
     }
 
     /**

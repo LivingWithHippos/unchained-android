@@ -4,6 +4,7 @@ import com.github.livingwithhippos.unchained.data.local.RemoteDevice
 import com.github.livingwithhippos.unchained.data.local.RemoteDeviceDao
 import com.github.livingwithhippos.unchained.data.local.RemoteService
 import com.github.livingwithhippos.unchained.data.local.RemoteServiceType
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class RemoteDeviceRepository @Inject constructor(private val remoteDeviceDao: RemoteDeviceDao) {
@@ -19,6 +20,11 @@ class RemoteDeviceRepository @Inject constructor(private val remoteDeviceDao: Re
 
     suspend fun getMediaPlayerDevicesAndServices(): Map<RemoteDevice, List<RemoteService>> =
         remoteDeviceDao.getMediaPlayerDevicesAndServices(
+            types = listOf(RemoteServiceType.KODI.value, RemoteServiceType.VLC.value)
+        )
+
+    suspend fun getMediaPlayerDevicesAndServicesFlow(): Flow<Map<RemoteDevice, List<RemoteService>>> =
+        remoteDeviceDao.getMediaPlayerDevicesAndServicesFlow(
             types = listOf(RemoteServiceType.KODI.value, RemoteServiceType.VLC.value)
         )
 
