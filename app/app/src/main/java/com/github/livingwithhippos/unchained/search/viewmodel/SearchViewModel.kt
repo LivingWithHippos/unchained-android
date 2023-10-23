@@ -187,8 +187,7 @@ constructor(
         return preferences.getString(
             FolderListViewModel.KEY_LIST_SORTING,
             FolderListFragment.TAG_DEFAULT_SORT
-        )
-            ?: FolderListFragment.TAG_DEFAULT_SORT
+        ) ?: FolderListFragment.TAG_DEFAULT_SORT
     }
 
     companion object {

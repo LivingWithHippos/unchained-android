@@ -296,9 +296,9 @@ class ListsTabFragment : UnchainedFragment() {
                                 binding.listPager.currentItem = TORRENTS_TAB
                         }
                     }
-
                     ListEvent.NewDownload -> {
-                        val action = ListsTabFragmentDirections.actionListTabsDestToNewDownloadFragment()
+                        val action =
+                            ListsTabFragmentDirections.actionListTabsDestToNewDownloadFragment()
                         findNavController().navigate(action)
                     }
                 }
@@ -846,5 +846,6 @@ interface SelectedItemsButtonsListener {
     fun downloadSelectedItems()
 
     fun openSelectedDetails()
+
     fun openNewDownload()
 }

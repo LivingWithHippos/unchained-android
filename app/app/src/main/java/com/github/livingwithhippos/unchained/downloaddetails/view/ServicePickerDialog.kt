@@ -66,8 +66,7 @@ class ServicePickerDialog : DialogFragment(), ServicePickerListener {
             }
 
             builder.create()
-        }
-            ?: throw IllegalStateException("Activity cannot be null")
+        } ?: throw IllegalStateException("Activity cannot be null")
     }
 
     override fun onServiceClick(serviceDetails: RemoteServiceDetails) {

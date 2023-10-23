@@ -1124,8 +1124,7 @@ constructor(
         return preferences.getString(
             PreferenceKeys.DownloadManager.KEY,
             PreferenceKeys.DownloadManager.SYSTEM
-        )
-            ?: PreferenceKeys.DownloadManager.SYSTEM
+        ) ?: PreferenceKeys.DownloadManager.SYSTEM
     }
 
     fun startDownloadWorker(content: MainActivityMessage.DownloadEnqueued, folder: Uri) {
