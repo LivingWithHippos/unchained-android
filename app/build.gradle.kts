@@ -4,7 +4,7 @@ plugins {
     id("org.jetbrains.kotlin.android") version "1.9.10" apply false
     id("com.mikepenz.aboutlibraries.plugin") version "10.9.1"
     id("com.google.protobuf") version "0.9.4" apply false
-    id("com.github.ben-manes.versions") version "0.48.0"
+    id("com.github.ben-manes.versions") version "0.49.0"
 }
 
 buildscript {
