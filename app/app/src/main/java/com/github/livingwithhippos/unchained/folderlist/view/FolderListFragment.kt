@@ -35,6 +35,7 @@ import com.github.livingwithhippos.unchained.folderlist.model.FolderKeyProvider
 import com.github.livingwithhippos.unchained.folderlist.viewmodel.FolderListViewModel
 import com.github.livingwithhippos.unchained.lists.view.DownloadListListener
 import com.github.livingwithhippos.unchained.lists.view.SelectedItemsButtonsListener
+import com.github.livingwithhippos.unchained.lists.viewmodel.ListEvent
 import com.github.livingwithhippos.unchained.utilities.DataBindingDetailsLookup
 import com.github.livingwithhippos.unchained.utilities.extension.copyToClipboard
 import com.github.livingwithhippos.unchained.utilities.extension.delayedScrolling
@@ -218,6 +219,10 @@ class FolderListFragment : UnchainedFragment(), DownloadListListener {
 
                 override fun openSelectedDetails() {
                     // not implemented at the moment
+                }
+
+                override fun openNewDownload() {
+                    // only for the download and torrent lists
                 }
             }
 

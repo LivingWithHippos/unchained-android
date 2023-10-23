@@ -22,7 +22,7 @@
         android:layout_marginBottom="5dp"
         android:paddingVertical="5dp"
         android:clickable="true"
-        android:focusable="true"
+        android:focusable="false"
         >
 
         <ImageView
@@ -73,6 +73,7 @@
                 app:icon="@drawable/icon_download"
                 android:visibility="@{item.status == PluginStatus.isNew ? View.VISIBLE : View.GONE}"
                 style="?attr/materialIconButtonFilledStyle"
+                android:focusable="true"
                 android:onClick="@{() ->listener.onPluginDownloadClick(item)}"
                 />
 
@@ -84,6 +85,7 @@
                 app:icon="@drawable/icon_reload"
                 android:visibility="@{item.status == PluginStatus.hasUpdate ? View.VISIBLE : View.GONE}"
                 style="?attr/materialIconButtonFilledStyle"
+                android:focusable="true"
                 android:onClick="@{() ->listener.onPluginDownloadClick(item)}"
                 />
 
@@ -95,6 +97,7 @@
                 app:icon="@drawable/icon_delete"
                 android:visibility="@{item.status == PluginStatus.updated || item.status == PluginStatus.hasUpdate || item.status == PluginStatus.hasIncompatibleUpdate ? View.VISIBLE : View.GONE}"
                 style="?attr/materialIconButtonFilledStyle"
+                android:focusable="true"
                 android:onClick="@{() ->listener.onPluginRemoveClick(item)}"
                 />
 

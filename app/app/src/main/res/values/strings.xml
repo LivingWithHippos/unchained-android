@@ -714,6 +714,7 @@
     <string name="transcoding">Transcoding</string>
     <string name="recent">Recent</string>
     <string name="browser">Browser</string>
+    <string name="add">Add</string>
     <plurals name="service_number_format">
         <item quantity="zero">No services</item>
         <item quantity="one">1 service</item>

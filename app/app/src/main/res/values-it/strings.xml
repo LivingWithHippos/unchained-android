@@ -506,4 +506,5 @@
         <item quantity="other">%1$d dispositivi</item>
     </plurals>
     <string name="services">Servizi</string>
+    <string name="add">Aggiungi</string>
 </resources>

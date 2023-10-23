@@ -33,6 +33,17 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
+
+            <Button
+                android:id="@+id/bAddNew"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:text="@string/add"
+                android:onClick="@{() -> listener.openNewDownload()}"
+                app:icon="@drawable/icon_add"
+                />
+
             <CheckBox
                 android:id="@+id/cbSelectAll"
                 android:layout_width="wrap_content"

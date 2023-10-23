@@ -191,6 +191,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="20dp"
                 android:text="@string/account_page"
+                android:nextFocusRight="@id/bSettings"
                 app:layout_constraintEnd_toStartOf="@+id/bSettings"
                 app:layout_constraintStart_toStartOf="@id/cvPremium"
                 app:layout_constraintTop_toBottomOf="@id/tvDescription" />
@@ -202,6 +203,7 @@
                 android:layout_height="0dp"
                 android:layout_marginStart="20dp"
                 android:text="@string/settings"
+                android:nextFocusLeft="@id/bAccount"
                 app:layout_constraintBottom_toBottomOf="@id/bAccount"
                 app:layout_constraintEnd_toEndOf="@id/cvPremium"
                 app:layout_constraintStart_toEndOf="@+id/bAccount"

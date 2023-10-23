@@ -16,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clickable="true"
-        android:focusable="true"
+        android:focusable="false"
         >
 
         <com.google.android.material.divider.MaterialDivider
@@ -64,6 +64,7 @@
             android:layout_marginHorizontal="10dp"
             app:icon="@drawable/icon_settings"
             app:iconSize="25dp"
+            android:focusable="true"
             android:onClick="@{() ->listener.onRepositoryClick(item)}"
             app:layout_constraintStart_toEndOf="@id/tvName"
             app:layout_constraintTop_toTopOf="@id/tvName"

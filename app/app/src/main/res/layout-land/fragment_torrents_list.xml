@@ -6,7 +6,7 @@
     <data>
 
         <variable
-            name="selectedDownloads"
+            name="selectedTorrents"
             type="Integer" />
 
         <variable
@@ -33,14 +33,23 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
+            <Button
+                android:id="@+id/bAddNew"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:text="@string/add"
+                android:onClick="@{() -> listener.openNewDownload()}"
+                app:icon="@drawable/icon_add"
+                />
+
             <CheckBox
                 android:id="@+id/cbSelectAll"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="false"
                 android:tooltipText="@string/select_deselect_all"
-                android:text="@{selectedDownloads.toString(), default=`2`}"
-                android:nextFocusDown="@id/rvDownloadList"
+                android:text="@{selectedTorrents.toString(), default=`2`}"
                 />
 
             <Button
@@ -53,7 +62,6 @@
                 app:icon="@drawable/icon_delete"
                 app:iconSize="25dp"
                 android:tooltipText="@string/delete_selected"
-                android:nextFocusDown="@id/rvDownloadList"
                 />
 
             <Button
@@ -66,23 +74,18 @@
                 app:icon="@drawable/icon_download"
                 app:iconSize="25dp"
                 android:tooltipText="@string/download_selected"
-                android:nextFocusDown="@id/rvDownloadList"
                 />
 
-
             <Button
-                android:id="@+id/bShareSelected"
+                android:id="@+id/bDetailsSelected"
                 style="?attr/materialIconButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:contentDescription="@string/share"
-                android:onClick="@{() -> listener.shareSelectedItems()}"
-                app:icon="@drawable/icon_share"
+                android:contentDescription="@string/torrent_details"
+                app:icon="@drawable/icon_info"
                 app:iconSize="25dp"
-                android:tooltipText="@string/share_selected"
-                android:nextFocusDown="@id/rvDownloadList"
-                android:nextFocusRight="@id/rvDownloadList"
-                />
+                android:onClick="@{() -> listener.openSelectedDetails()}"
+                android:tooltipText="@string/torrent_details" />
 
         </LinearLayout>
 
@@ -97,15 +100,14 @@
             app:layout_constraintTop_toBottomOf="@id/llMultiSelection">
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvDownloadList"
+                android:id="@+id/rvTorrentList"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:scrollbars="vertical"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:listitem="@layout/item_list_download" />
-
+                app:layout_constraintTop_toBottomOf="@id/llMultiSelection"
+                tools:listitem="@layout/item_list_torrent" />
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

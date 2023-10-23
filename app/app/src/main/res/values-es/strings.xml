@@ -503,4 +503,5 @@
         <item quantity="one">1 dispositivo</item>
         <item quantity="many">%1$d dispositivos</item>
     </plurals>
+    <string name="add">Añadir</string>
 </resources>
