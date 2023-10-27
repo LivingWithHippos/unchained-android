@@ -508,4 +508,5 @@
     <string name="services">Servizi</string>
     <string name="add">Aggiungi</string>
     <string name="show_streaming">Mostra bottone streaming</string>
+    <string name="connection_error">Errore di connessione</string>
 </resources>

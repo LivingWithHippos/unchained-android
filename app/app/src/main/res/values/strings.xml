@@ -716,6 +716,7 @@
     <string name="browser">Browser</string>
     <string name="add">Add</string>
     <string name="show_streaming">Show streaming button</string>
+    <string name="connection_error">Connection error</string>
     <plurals name="service_number_format">
         <item quantity="zero">No services</item>
         <item quantity="one">1 service</item>

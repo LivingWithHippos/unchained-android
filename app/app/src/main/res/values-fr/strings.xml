@@ -505,4 +505,5 @@
     </plurals>
     <string name="add">Ajouter</string>
     <string name="show_streaming">Afficher le bouton de streaming</string>
+    <string name="connection_error">Erreur de connexion</string>
 </resources>

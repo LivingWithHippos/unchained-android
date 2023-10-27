@@ -188,10 +188,10 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         viewModel.messageLiveData.observe(viewLifecycleOwner) {
             when (val content = it.getContentIfNotHandled()) {
                 is DownloadDetailsMessage.KodiError -> {
-                    context?.showToast(R.string.kodi_connection_error)
+                    context?.showToast(R.string.connection_error)
                 }
                 is DownloadDetailsMessage.KodiSuccess -> {
-                    context?.showToast(R.string.kodi_connection_successful)
+                    context?.showToast(R.string.connection_successful)
                 }
                 DownloadDetailsMessage.KodiMissingCredentials -> {
                     context?.showToast(R.string.kodi_configure_credentials)
@@ -391,9 +391,6 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                                 popupWindow.contentView.measuredWidth,
                                 popupWindow.contentView.measuredHeight
                             )
-                        Timber.d(
-                            "Size: $size, location: ${location[0]}, ${location[1]}, anchor: ${parentView.width}, ${parentView.height}, height ${popupWindow.height}"
-                        )
                         popupWindow.showAtLocation(
                             parentView,
                             Gravity.TOP or Gravity.START,
