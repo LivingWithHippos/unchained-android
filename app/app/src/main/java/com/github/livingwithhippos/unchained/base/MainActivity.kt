@@ -65,12 +65,12 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.elevation.SurfaceColors
 import dagger.hilt.android.AndroidEntryPoint
+import java.lang.RuntimeException
 import java.security.MessageDigest
 import javax.inject.Inject
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.lang.RuntimeException
 
 /** A [AppCompatActivity] subclass. Shared between all the fragments except for the preferences. */
 @AndroidEntryPoint

@@ -57,7 +57,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-
 /**
  * A simple [UnchainedFragment] subclass. It is capable of showing the details of a [DownloadItem]
  */
@@ -121,9 +120,11 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         detailsBinding.showOpen = viewModel.getButtonVisibilityPreference(SHOW_OPEN_BUTTON)
         detailsBinding.showCopy = viewModel.getButtonVisibilityPreference(SHOW_COPY_BUTTON)
         detailsBinding.showDownload = viewModel.getButtonVisibilityPreference(SHOW_DOWNLOAD_BUTTON)
-        detailsBinding.showStreaming = viewModel.getButtonVisibilityPreference(SHOW_STREAMING_BUTTON)
+        detailsBinding.showStreaming =
+            viewModel.getButtonVisibilityPreference(SHOW_STREAMING_BUTTON)
         detailsBinding.showLocalPlay = viewModel.getButtonVisibilityPreference(SHOW_MEDIA_BUTTON)
-        detailsBinding.showLoadStream = viewModel.getButtonVisibilityPreference(SHOW_TRANSCODING_BUTTON)
+        detailsBinding.showLoadStream =
+            viewModel.getButtonVisibilityPreference(SHOW_TRANSCODING_BUTTON)
 
         detailsBinding.fabPickStreaming.setOnClickListener { popView ->
             manageStreamingPopup(popView)
@@ -250,25 +251,22 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         val popup = PopupMenu(requireContext(), v)
         popup.menuInflater.inflate(R.menu.basic_streaming_popup, popup.menu)
 
-        if (recentService == -1 || recentService == defaultService?.id || recentServiceItem == null) {
+        if (
+            recentService == -1 || recentService == defaultService?.id || recentServiceItem == null
+        ) {
             popup.menu.findItem(R.id.recent_service).isVisible = false
         } else {
             val serviceName = getString(serviceTypeMap[recentServiceItem.type]!!.nameRes)
             popup.menu.findItem(R.id.recent_service).title =
-                getString(
-                    R.string.recent_service_format,
-                    serviceName
-                )
+                getString(R.string.recent_service_format, serviceName)
         }
 
         if (defaultDevice == null || defaultService == null) {
             popup.menu.findItem(R.id.default_service).isVisible = false
         } else {
             val serviceName = getString(serviceTypeMap[defaultService.type]!!.nameRes)
-            popup.menu.findItem(R.id.default_service).title = getString(
-                R.string.default_service_format,
-                serviceName
-            )
+            popup.menu.findItem(R.id.default_service).title =
+                getString(R.string.default_service_format, serviceName)
         }
 
         if (servicesNumber == 0) {
@@ -283,11 +281,13 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
             // save the new sorting preference
             when (menuItem.itemId) {
                 R.id.recent_service -> {
-                    val recentDeviceItem = deviceServiceMap.keys.firstOrNull { it.id == recentServiceItem?.device }
+                    val recentDeviceItem =
+                        deviceServiceMap.keys.firstOrNull { it.id == recentServiceItem?.device }
 
                     if (recentServiceItem != null && recentDeviceItem != null) {
 
-                        val serviceType: RemoteServiceType = getServiceType(recentServiceItem.type)!!
+                        val serviceType: RemoteServiceType =
+                            getServiceType(recentServiceItem.type)!!
                         playOnDeviceService(
                             url ?: args.details.download,
                             recentDeviceItem,
@@ -330,8 +330,10 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
 
     @SuppressLint("SetTextI18n")
     private fun manageStreamingPopup(popView: View, url: String? = null) {
-        val uiModeManager: UiModeManager = requireContext().getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
-        // custom popup menu does not work on android tv (emulator at least), maybe it's the size check
+        val uiModeManager: UiModeManager =
+            requireContext().getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
+        // custom popup menu does not work on android tv (emulator at least), maybe it's the size
+        // check
         if (uiModeManager.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION) {
             showBasicStreamingPopup(popView, url)
             return
