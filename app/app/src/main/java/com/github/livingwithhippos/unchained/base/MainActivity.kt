@@ -70,6 +70,7 @@ import javax.inject.Inject
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.lang.RuntimeException
 
 /** A [AppCompatActivity] subclass. Shared between all the fragments except for the preferences. */
 @AndroidEntryPoint
@@ -314,12 +315,17 @@ class MainActivity : AppCompatActivity() {
         getIntentData()
 
         // observe for downloaded torrents
-        ContextCompat.registerReceiver(
-            applicationContext,
-            downloadReceiver,
-            IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE),
-            ContextCompat.RECEIVER_NOT_EXPORTED
-        )
+
+        try {
+            ContextCompat.registerReceiver(
+                applicationContext,
+                downloadReceiver,
+                IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE),
+                ContextCompat.RECEIVER_NOT_EXPORTED
+            )
+        } catch (ex: RuntimeException) {
+            Timber.w(ex, "Download receiver already registered")
+        }
 
         viewModel.linkLiveData.observe(this) {
             it?.getContentIfNotHandled()?.let { link ->
@@ -716,7 +722,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        unregisterReceiver(downloadReceiver)
+        try {
+            unregisterReceiver(downloadReceiver)
+        } catch (ex: RuntimeException) {
+            Timber.w(ex, "Download receiver not registered")
+        }
     }
 
     private fun processTorrentNotificationIntent(torrentID: String) {
