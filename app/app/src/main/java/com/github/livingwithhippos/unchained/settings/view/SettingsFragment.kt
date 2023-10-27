@@ -190,7 +190,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
         }
     }
 
-    @Suppress("DEPRECATION")
     private fun setupVersion() {
         val pi =
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {

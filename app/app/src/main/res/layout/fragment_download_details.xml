@@ -36,15 +36,11 @@
             type="Boolean" />
 
         <variable
-            name="showKodi"
+            name="showStreaming"
             type="Boolean" />
 
         <variable
             name="showLoadStream"
-            type="Boolean" />
-
-        <variable
-            name="showStreamBrowser"
             type="Boolean" />
 
         <variable
@@ -320,7 +316,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:orientation="vertical"
-                    android:visibility="@{details.streamable == 1 &amp;&amp; showKodi == true? View.VISIBLE : View.GONE, default=visible}"
+                    android:visibility="@{details.streamable == 1 &amp;&amp; showStreaming == true? View.VISIBLE : View.GONE, default=visible}"
                     android:layout_marginBottom="10dp">
 
                     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -364,32 +360,6 @@
                         android:layout_marginTop="5dp"
                         android:focusable="false"
                         android:text="@string/transcoding"
-                        android:textAlignment="center" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="@dimen/fab_download_details_width"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:visibility="@{details.streamable == 1 &amp;&amp; showStreamBrowser == true? View.VISIBLE : View.GONE, default=visible}"
-                    android:layout_marginBottom="10dp">
-
-                    <com.google.android.material.floatingactionbutton.FloatingActionButton
-                        android:id="@+id/fabStreamBrowser"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:contentDescription="@string/open_browser_stream"
-                        android:onClick="@{() -> listener.onBrowserStreamsClick(details.id)}"
-                        app:srcCompat="@drawable/icon_browser_stream" />
-
-                    <TextView
-                        android:textAppearance="?attr/textAppearanceLabelSmall"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:focusable="false"
-                        android:text="@string/open_browser_stream"
                         android:textAlignment="center" />
                 </LinearLayout>
 

@@ -504,4 +504,5 @@
         <item quantity="many">%1$d dispositivos</item>
     </plurals>
     <string name="add">Añadir</string>
+    <string name="show_streaming">Mostrar el botón de streaming</string>
 </resources>

@@ -115,12 +115,9 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         detailsBinding.showOpen = viewModel.getButtonVisibilityPreference(SHOW_OPEN_BUTTON)
         detailsBinding.showCopy = viewModel.getButtonVisibilityPreference(SHOW_COPY_BUTTON)
         detailsBinding.showDownload = viewModel.getButtonVisibilityPreference(SHOW_DOWNLOAD_BUTTON)
-        detailsBinding.showKodi = viewModel.getButtonVisibilityPreference(SHOW_KODI_BUTTON)
+        detailsBinding.showStreaming = viewModel.getButtonVisibilityPreference(SHOW_STREAMING_BUTTON)
         detailsBinding.showLocalPlay = viewModel.getButtonVisibilityPreference(SHOW_MEDIA_BUTTON)
-        detailsBinding.showLoadStream =
-            viewModel.getButtonVisibilityPreference(SHOW_LOAD_STREAM_BUTTON)
-        detailsBinding.showStreamBrowser =
-            viewModel.getButtonVisibilityPreference(SHOW_STREAM_BROWSER_BUTTON)
+        detailsBinding.showLoadStream = viewModel.getButtonVisibilityPreference(SHOW_TRANSCODING_BUTTON)
 
         detailsBinding.fabPickStreaming.setOnClickListener { popView ->
             manageStreamingPopup(popView)
@@ -533,9 +530,8 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         const val SHOW_COPY_BUTTON = "show_copy_button"
         const val SHOW_DOWNLOAD_BUTTON = "show_download_button"
         const val SHOW_MEDIA_BUTTON = "show_media_button"
-        const val SHOW_KODI_BUTTON = "show_kodi"
-        const val SHOW_LOAD_STREAM_BUTTON = "show_load_stream_button"
-        const val SHOW_STREAM_BROWSER_BUTTON = "show_stream_browser_button"
+        const val SHOW_STREAMING_BUTTON = "show_streaming"
+        const val SHOW_TRANSCODING_BUTTON = "show_load_stream_button"
     }
 }
 

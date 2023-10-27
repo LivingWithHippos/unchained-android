@@ -507,4 +507,5 @@
     </plurals>
     <string name="services">Servizi</string>
     <string name="add">Aggiungi</string>
+    <string name="show_streaming">Mostra bottone streaming</string>
 </resources>

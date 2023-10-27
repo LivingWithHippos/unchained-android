@@ -185,18 +185,13 @@
 
             <SwitchPreference
                 android:defaultValue="true"
-                android:key="show_kodi"
-                android:title="@string/show_kodi" />
+                android:key="show_streaming"
+                android:title="@string/show_streaming" />
 
             <SwitchPreference
                 android:defaultValue="true"
                 android:key="show_load_stream_button"
                 android:title="@string/show_load_stream_button" />
-
-            <SwitchPreference
-                android:defaultValue="true"
-                android:key="show_stream_browser_button"
-                android:title="@string/show_stream_browser_button" />
 
         </PreferenceCategory>
 
