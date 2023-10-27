@@ -1,9 +1,12 @@
 package com.github.livingwithhippos.unchained.downloaddetails.view
 
 import android.annotation.SuppressLint
+import android.app.UiModeManager
 import android.content.ActivityNotFoundException
 import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
@@ -19,6 +22,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.PopupWindow
 import android.widget.TextView
+import androidx.appcompat.widget.PopupMenu
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
@@ -34,6 +38,7 @@ import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.data.local.RemoteDevice
 import com.github.livingwithhippos.unchained.data.local.RemoteService
 import com.github.livingwithhippos.unchained.data.local.RemoteServiceType
+import com.github.livingwithhippos.unchained.data.local.serviceTypeMap
 import com.github.livingwithhippos.unchained.data.model.Alternative
 import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.databinding.FragmentDownloadDetailsBinding
@@ -51,6 +56,7 @@ import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
+
 
 /**
  * A simple [UnchainedFragment] subclass. It is capable of showing the details of a [DownloadItem]
@@ -228,9 +234,109 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         return detailsBinding.root
     }
 
+    private fun showBasicStreamingPopup(v: View, url: String?) {
+
+        val recentService: Int = viewModel.getRecentService()
+
+        val defaultDevice: Map.Entry<RemoteDevice, List<RemoteService>>? =
+            deviceServiceMap.firstNotNullOfOrNull { if (it.key.isDefault) it else null }
+        val defaultService: RemoteService? = defaultDevice?.value?.firstOrNull { it.isDefault }
+        val servicesNumber = deviceServiceMap.values.sumOf { it.size }
+        val recentServiceItem: RemoteService? =
+            deviceServiceMap.firstNotNullOfOrNull {
+                it.value.firstOrNull { service -> service.id == recentService }
+            }
+
+        val popup = PopupMenu(requireContext(), v)
+        popup.menuInflater.inflate(R.menu.basic_streaming_popup, popup.menu)
+
+        if (recentService == -1 || recentService == defaultService?.id || recentServiceItem == null) {
+            popup.menu.findItem(R.id.recent_service).isVisible = false
+        } else {
+            val serviceName = getString(serviceTypeMap[recentServiceItem.type]!!.nameRes)
+            popup.menu.findItem(R.id.recent_service).title =
+                getString(
+                    R.string.recent_service_format,
+                    serviceName
+                )
+        }
+
+        if (defaultDevice == null || defaultService == null) {
+            popup.menu.findItem(R.id.default_service).isVisible = false
+        } else {
+            val serviceName = getString(serviceTypeMap[defaultService.type]!!.nameRes)
+            popup.menu.findItem(R.id.default_service).title = getString(
+                R.string.default_service_format,
+                serviceName
+            )
+        }
+
+        if (servicesNumber == 0) {
+            popup.menu.findItem(R.id.pick_service).isVisible = false
+        }
+
+        if (url != null) {
+            popup.menu.findItem(R.id.browser_streaming).isVisible = false
+        }
+
+        popup.setOnMenuItemClickListener { menuItem: MenuItem ->
+            // save the new sorting preference
+            when (menuItem.itemId) {
+                R.id.recent_service -> {
+                    val recentDeviceItem = deviceServiceMap.keys.firstOrNull { it.id == recentServiceItem?.device }
+
+                    if (recentServiceItem != null && recentDeviceItem != null) {
+
+                        val serviceType: RemoteServiceType = getServiceType(recentServiceItem.type)!!
+                        playOnDeviceService(
+                            url ?: args.details.download,
+                            recentDeviceItem,
+                            recentServiceItem,
+                            serviceType
+                        )
+                    }
+                }
+                R.id.default_service -> {
+                    if (defaultDevice != null && defaultService != null) {
+                        val serviceType: RemoteServiceType = getServiceType(defaultService.type)!!
+                        playOnDeviceService(
+                            url ?: args.details.download,
+                            defaultDevice.key,
+                            defaultService,
+                            serviceType
+                        )
+                    }
+                }
+                R.id.pick_service -> {
+                    val dialog = ServicePickerDialog()
+                    val bundle = Bundle()
+                    bundle.putString("downloadUrl", url ?: args.details.download)
+                    dialog.arguments = bundle
+                    dialog.show(parentFragmentManager, "ServicePickerDialog")
+                }
+                R.id.browser_streaming -> {
+                    onBrowserStreamsClick(args.details.id)
+                }
+            }
+            true
+        }
+
+        popup.setOnDismissListener {
+            // Respond to popup being dismissed.
+        }
+        // Show the popup menu.
+        popup.show()
+    }
+
     @SuppressLint("SetTextI18n")
     private fun manageStreamingPopup(popView: View, url: String? = null) {
-        val popup = showStreamingPopupWindow(popView)
+        val uiModeManager: UiModeManager = requireContext().getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
+        // custom popup menu does not work on android tv (emulator at least), maybe it's the size check
+        if (uiModeManager.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION) {
+            showBasicStreamingPopup(popView, url)
+            return
+        }
+        val popup: PopupWindow = getFullStreamingPopupWindow(popView)
 
         val recentService: Int = viewModel.getRecentService()
 
@@ -336,6 +442,8 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
 
         val browserLayout =
             popup.contentView.findViewById<ConstraintLayout>(R.id.streamBrowserLayout)
+        // the url is passed when clicking on the streaming button in the transcoding list
+        // which has no "stream in browser" support
         if (url != null) {
             browserLayout.visibility = View.GONE
         } else {
@@ -366,7 +474,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         }
     }
 
-    private fun showStreamingPopupWindow(parentView: View): PopupWindow {
+    private fun getFullStreamingPopupWindow(parentView: View): PopupWindow {
         val screenDistances = getAvailableSpace(parentView)
         val popup =
             PopupWindow(parentView.context)

@@ -506,4 +506,6 @@
     <string name="add">Añadir</string>
     <string name="show_streaming">Mostrar el botón de streaming</string>
     <string name="connection_error">Error de conexión</string>
+    <string name="recent_service_format">Reciente: %s</string>
+    <string name="default_service_format">Predeterminado: %s</string>
 </resources>
