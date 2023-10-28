@@ -1,6 +1,7 @@
 package com.github.livingwithhippos.unchained.lists.viewmodel
 
 import TorrentPagingSource
+import android.content.SharedPreferences
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
@@ -26,6 +27,8 @@ import com.github.livingwithhippos.unchained.utilities.postEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.launch
+import kotlin.math.max
+import kotlin.math.min
 
 /**
  * A [ViewModel] subclass. It offers LiveData to be observed to populate lists with paging support
@@ -35,10 +38,14 @@ class ListTabsViewModel
 @Inject
 constructor(
     private val savedStateHandle: SavedStateHandle,
+    private val preferences: SharedPreferences,
     private val downloadRepository: DownloadRepository,
     private val torrentsRepository: TorrentsRepository,
     private val unrestrictRepository: UnrestrictRepository
 ) : ViewModel() {
+
+    private val MAX_PAGE_SIZE = 2500
+    private val INITIAL_LOAD = 100
 
     // stores the last query value
     private val queryLiveData = MutableLiveData<String>()
@@ -46,7 +53,9 @@ constructor(
     // items are filtered returning only if their names contain the query
     val downloadsLiveData: LiveData<PagingData<DownloadItem>> =
         queryLiveData.switchMap { query: String ->
-            Pager(PagingConfig(pageSize = 50, initialLoadSize = 100)) {
+            val size = getPagingSize()
+            val initialSize = max(size, INITIAL_LOAD)
+            Pager(PagingConfig(pageSize = size, initialLoadSize = initialSize)) {
                     DownloadPagingSource(downloadRepository, query)
                 }
                 .liveData
@@ -55,7 +64,9 @@ constructor(
 
     val torrentsLiveData: LiveData<PagingData<TorrentItem>> =
         queryLiveData.switchMap { query: String ->
-            Pager(PagingConfig(pageSize = 50, initialLoadSize = 100)) {
+            val size = getPagingSize()
+            val initialSize = max(size, INITIAL_LOAD)
+            Pager(PagingConfig(pageSize = size, initialLoadSize = initialSize)) {
                     TorrentPagingSource(torrentsRepository, query)
                 }
                 .liveData
@@ -89,6 +100,10 @@ constructor(
             downloadItemLiveData.postEvent(values)
             if (errors.isNotEmpty()) errorsLiveData.postEvent(errors)
         }
+    }
+
+    fun getPagingSize(): Int {
+        return min(preferences.getInt("paging_size", 50), MAX_PAGE_SIZE)
     }
 
     fun downloadTorrentFolder(torrent: TorrentItem) {

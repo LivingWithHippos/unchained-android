@@ -155,6 +155,16 @@
 
         <PreferenceCategory android:title="@string/download_details">
 
+            <SeekBarPreference
+                app:title="@string/loading_size"
+                app:key="paging_size"
+                app:summary="@string/summary_loading_size"
+                android:min="0"
+                android:max="2500"
+                android:defaultValue="50"
+                app:showSeekBarValue="true"
+                />
+
             <Preference app:summary="@string/download_details_button_choice" />
 
             <SwitchPreference
