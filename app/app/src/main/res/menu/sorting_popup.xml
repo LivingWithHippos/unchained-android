@@ -24,4 +24,8 @@
         android:id="@+id/sortBySeeders"
         android:icon="@drawable/icon_sort_seeders"
         android:title="@string/seeders" />
+    <item
+        android:id="@+id/sortByAdded"
+        android:icon="@drawable/icon_date"
+        android:title="@string/added_date" />
 </menu>

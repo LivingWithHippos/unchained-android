@@ -447,5 +447,6 @@ class FolderListFragment : UnchainedFragment(), DownloadListListener {
         const val TAG_SORT_SIZE_ASC = "sort_size_asc_tag"
         const val TAG_SORT_SIZE_DESC = "sort_size_desc_tag"
         const val TAG_SORT_SEEDERS = "sort_seeders_tag"
+        const val TAG_SORT_ADDED = "sort_added_tag"
     }
 }

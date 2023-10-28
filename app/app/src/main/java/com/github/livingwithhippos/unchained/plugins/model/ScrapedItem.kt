@@ -12,6 +12,7 @@ data class ScrapedItem(
     val seeders: String? = null,
     val leechers: String? = null,
     val size: String? = null,
+    val addedDate: String? = null,
     val parsedSize: Double? = null,
     val magnets: List<String>,
     val torrents: List<String>,

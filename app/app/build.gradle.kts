@@ -171,6 +171,7 @@ android {
 dependencies {
     implementation(libs.kotlin.stdlib)
     implementation(libs.kotlin.reflect)
+    implementation(libs.kotlin.datetime)
     implementation(libs.core.ktx)
     implementation(libs.android.appcompat)
     implementation(libs.android.constraintlayout)

@@ -729,4 +729,5 @@
     </plurals>
     <string name="recent_service_format">Recent: %s</string>
     <string name="default_service_format">Default: %s</string>
+    <string name="added_date">Date</string>
 </resources>

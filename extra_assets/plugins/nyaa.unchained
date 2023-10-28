@@ -1,6 +1,6 @@
 {
-  "engine_version": 2.0,
-  "version": 1.0,
+  "engine_version": 2.5,
+  "version": 1.2,
   "url": "https://nyaa.si",
   "name": "Nyaa",
   "description": "Parser for Nyaa",
@@ -15,9 +15,21 @@
     "books": "3_0"
   },
   "search": {
-    "category": "${url}/?q=${query}&c=${category}&p=${page}",
-    "no_category": "${url}/?q=${query}&p=${page}",
-    "page_start": 1
+    "category": "${url}/?q=${query}&c=${category}&p=${page}&s=${sorting}&o=${order}",
+    "no_category": "${url}/?q=${query}&p=${page}&s=${sorting}&o=${order}",
+    "page_start": 1,
+    "sorting": {
+      "comments": "comments",
+      "downloads": "downloads",
+      "size": "size",
+      "date": "id",
+      "seeders": "seeders",
+      "leechers": "leechers"
+    },
+    "order": {
+      "ascending": "asc",
+      "descending": "desc"
+    }
   },
   "download": {
     "table_direct": {
@@ -27,6 +39,7 @@
         "seeders_column": 5,
         "leechers_column": 6,
         "size_column": 3,
+        "added_date_column": 4,
         "magnet_column": 2,
         "torrent_column": 2,
         "details_column": 1
@@ -78,6 +91,16 @@
         "regexps": [
           {
             "regex": "(\\d*)",
+            "group": 1,
+            "slug_type": "complete"
+          }
+        ]
+      },
+      "date_added": {
+        "regex_use": "first",
+        "regexps": [
+          {
+            "regex": "(\\w+)",
             "group": 1,
             "slug_type": "complete"
           }

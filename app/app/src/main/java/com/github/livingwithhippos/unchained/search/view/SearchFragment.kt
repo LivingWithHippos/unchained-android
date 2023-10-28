@@ -34,6 +34,7 @@ import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.google.android.material.button.MaterialButton
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import kotlinx.datetime.toInstant
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -117,9 +118,10 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
         // load the sorting preference if set
         val sortTag = viewModel.getListSortPreference()
         val sortDrawableID = getSortingDrawable(sortTag)
-        (binding.bSorting as MaterialButton).icon =
-            requireContext().getThemedDrawable(sortDrawableID)
-
+        (binding.bSorting as MaterialButton).apply {
+            icon = requireContext().getThemedDrawable(sortDrawableID)
+            text = getSortingTitle(sortTag)
+        }
         binding.bSorting.setOnClickListener {
             showSortingPopup(it, R.menu.sorting_popup, adapter, binding.rvSearchList)
         }
@@ -182,6 +184,9 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
                 R.id.sortBySeeders -> {
                     viewModel.setListSortPreference(FolderListFragment.TAG_SORT_SEEDERS)
                 }
+                R.id.sortByAdded -> {
+                    viewModel.setListSortPreference(FolderListFragment.TAG_SORT_ADDED)
+                }
             }
             // update the list and scroll it to the top
             submitSortedList(searchAdapter, viewModel.getSearchResults())
@@ -200,6 +205,7 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
         viewModel
             .completeSearch(
                 query = binding.tiSearch.text.toString(),
+                // fixme: this will break with same-name plugins
                 pluginName = binding.pluginPicker.editText?.text.toString(),
                 category = getSelectedCategory(binding.categoryPicker.editText?.text.toString())
             )
@@ -248,8 +254,24 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
             FolderListFragment.TAG_SORT_SIZE_DESC -> R.drawable.icon_sort_size_desc
             FolderListFragment.TAG_SORT_SIZE_ASC -> R.drawable.icon_sort_size_asc
             FolderListFragment.TAG_SORT_SEEDERS -> R.drawable.icon_sort_seeders
+            FolderListFragment.TAG_SORT_ADDED -> R.drawable.icon_date
             else -> R.drawable.icon_sort_default
         }
+    }
+
+    private fun getSortingTitle(tag: String): String {
+        val res = when (tag) {
+            FolderListFragment.TAG_DEFAULT_SORT -> R.string.default_string
+            FolderListFragment.TAG_SORT_AZ -> R.string.sort_by_az
+            FolderListFragment.TAG_SORT_ZA -> R.string.sort_by_za
+            FolderListFragment.TAG_SORT_SIZE_DESC -> R.string.sort_by_size_asc
+            FolderListFragment.TAG_SORT_SIZE_ASC -> R.string.sort_by_size_desc
+            FolderListFragment.TAG_SORT_SEEDERS -> R.string.seeders
+            FolderListFragment.TAG_SORT_ADDED -> R.string.added_date
+            else -> R.string.default_string
+        }
+
+        return getString(res)
     }
 
     private fun submitCachedList(cache: InstantAvailability, adapter: SearchItemAdapter) {
@@ -301,6 +323,19 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
                     items.sortedByDescending { item ->
                         if (item.seeders != null) {
                             digitRegex.find(item.seeders)?.value?.toInt()
+                        } else null
+                    }
+                )
+            }
+            FolderListFragment.TAG_SORT_ADDED -> {
+                adapter.submitList(
+                    items.sortedByDescending { item ->
+                        if (item.addedDate != null) {
+                            try {
+                                item.addedDate.toInstant().toEpochMilliseconds()
+                            } catch (e: Exception) {
+                                null
+                            }
                         } else null
                     }
                 )

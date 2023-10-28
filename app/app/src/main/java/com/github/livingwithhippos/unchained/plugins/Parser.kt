@@ -300,6 +300,16 @@ class Parser(
             }
         }
 
+        var dateAdded: String? = null
+        regexes.dateAddedRegex?.regexps?.forEach { regex ->
+            val date = parseSingle(regex, source, baseUrl)
+
+            if (!date.isNullOrBlank()) {
+                dateAdded = date
+                return@forEach
+            }
+        }
+
         var size: String? = null
         regexes.sizeRegex?.regexps?.forEach { regex ->
             val currSize = parseSingle(regex, source, baseUrl)
@@ -319,6 +329,7 @@ class Parser(
             leechers = leechers,
             size = size,
             parsedSize = parsedSize,
+            addedDate = dateAdded,
             magnets = magnets.toList(),
             torrents = torrents.toList(),
             hosting = hosting.toList(),
@@ -365,6 +376,7 @@ class Parser(
                 var name: String? = null
                 var details: String? = null
                 var seeders: String? = null
+                var addedDate: String? = null
                 var leechers: String? = null
                 var size: String? = null
                 val magnets = mutableSetOf<String>()
@@ -394,6 +406,13 @@ class Parser(
                             parseSingle(
                                 regexes.seedersRegex,
                                 columns[tableLink.columns.seedersColumn].html(),
+                                baseUrl
+                            )
+                    if (tableLink.columns.addedDateColumn != null)
+                        addedDate =
+                            parseSingle(
+                                regexes.dateAddedRegex,
+                                columns[tableLink.columns.addedDateColumn].html(),
                                 baseUrl
                             )
                     if (tableLink.columns.leechersColumn != null)
@@ -450,6 +469,7 @@ class Parser(
                             link = details,
                             seeders = seeders,
                             leechers = leechers,
+                            addedDate = addedDate,
                             size = size,
                             parsedSize = parsedSize,
                             magnets = magnets.toList(),
@@ -499,6 +519,9 @@ class Parser(
         var newUrl = oldUrl.replace("\${url}", url).replace("\${query}", query)
         if (category != null) newUrl = newUrl.replace("\${category}", category)
         if (page != null) newUrl = newUrl.replace("\${page}", page.toString())
+        // todo: implement
+        newUrl = newUrl.replace("\${sorting}", "")
+        newUrl = newUrl.replace("\${order}", "")
 
         return newUrl
     }
@@ -692,19 +715,21 @@ class Parser(
                 val leechers = parseSingle(regexes.leechersRegex, html, url)
                 val size = parseSingle(regexes.sizeRegex, html, url)
                 val details = parseSingle(regexes.detailsRegex, html, url)
+                val addedDate= parseSingle(regexes.dateAddedRegex, html, url)
 
                 directItems.add(
                     ScrapedItem(
-                        name,
-                        details,
-                        seeders,
-                        leechers,
-                        size,
-                        parseCommonSize(size),
-                        magnets,
-                        torrents,
-                        hosting,
-                        false
+                        name=name,
+                        link=details,
+                        seeders=seeders,
+                        leechers=leechers,
+                        size=size,
+                        parsedSize=parseCommonSize(size),
+                        addedDate = addedDate,
+                        magnets=magnets,
+                        torrents=torrents,
+                        hosting=hosting,
+                        isCached=false
                     )
                 )
             }
@@ -745,42 +770,49 @@ class Parser(
 
     companion object {
         /**
-         * CHANGELOG: 1.0: first version 1.1: added skipping of empty rows in tables 1.2: added
-         * table_indirect 2.0: use array for all regexps 2.1: added direct parsing mode 2.2: added
-         * entry class to direct parsing mode (required) 2.3: added optional table index to table
-         * parsers (for tables with no specific class/id) 2.4: added more categories
+         * CHANGELOG:
+         *
+         * - 1.0: first version
+         * - 1.1: added skipping of empty rows in tables
+         * - 1.2: added table_indirect
+         * - 2.0: use array for all regexps
+         * - 2.1: added direct parsing mode
+         * - 2.2: added entry class to direct parsing mode (required)
+         * - 2.3: added optional table index to table parsers (for tables with no specific class/id)
+         * - 2.4: added more categories
+         * - 2.5: parse added date
          */
-        const val PLUGIN_ENGINE_VERSION: Float = 2.4f
+        const val PLUGIN_ENGINE_VERSION: Float = 2.5f
     }
 }
 
 sealed class ParserResult {
     // errors
-    object MissingPlugin : ParserResult()
+    data object MissingPlugin : ParserResult()
 
-    object PluginVersionUnsupported : ParserResult()
+    data object PluginVersionUnsupported : ParserResult()
 
-    object MissingQuery : ParserResult()
+    data object MissingQuery : ParserResult()
 
-    object MissingCategory : ParserResult()
+    data object MissingCategory : ParserResult()
 
-    object NetworkBodyError : ParserResult()
+    data object NetworkBodyError : ParserResult()
 
-    object EmptyInnerLinks : ParserResult()
+    data object EmptyInnerLinks : ParserResult()
 
-    object PluginBuildError : ParserResult()
+    data object PluginBuildError : ParserResult()
 
-    object MissingImplementationError : ParserResult()
+    data object MissingImplementationError : ParserResult()
 
     // search flow
     data class SearchStarted(val size: Int) : ParserResult()
 
-    object SearchFinished : ParserResult()
+    data object SearchFinished : ParserResult()
 
     // results
     data class Results(val values: List<ScrapedItem>) : ParserResult()
 
     data class SingleResult(val value: ScrapedItem) : ParserResult()
 
-    object SourceError : ParserResult()
+    data object SourceError : ParserResult()
 }

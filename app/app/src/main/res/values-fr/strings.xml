@@ -508,4 +508,5 @@
     <string name="connection_error">Erreur de connexion</string>
     <string name="recent_service_format">Récent: %s</string>
     <string name="default_service_format">Défaut: %s</string>
+    <string name="added_date">Date</string>
 </resources>

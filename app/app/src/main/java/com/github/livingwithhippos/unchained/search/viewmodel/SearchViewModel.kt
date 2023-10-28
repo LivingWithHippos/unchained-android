@@ -33,9 +33,7 @@ constructor(
     private val savedStateHandle: SavedStateHandle,
     private val preferences: SharedPreferences,
     private val pluginRepository: PluginRepository,
-    private val torrentsRepository: TorrentsRepository,
-    private val parser: Parser,
-    private val protoStore: ProtoStore
+    private val parser: Parser
 ) : ViewModel() {
 
     // used to simulate a debounce effect while typing on the search bar

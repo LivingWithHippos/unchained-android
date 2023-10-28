@@ -136,7 +136,7 @@ class PluginRepository @Inject constructor() {
             LocalPlugins(pluginsData, errors)
         }
 
-    suspend fun removePlugin(
+    private suspend fun removePlugin(
         context: Context,
         repository: String,
         author: String?,
@@ -247,7 +247,7 @@ class PluginRepository @Inject constructor() {
             return@withContext true
         }
 
-    suspend fun readPassedPlugin(context: Context, data: Uri): Plugin? =
+    private suspend fun readPassedPlugin(context: Context, data: Uri): Plugin? =
         withContext(Dispatchers.IO) {
             val filename = data.path?.split("/")?.last()
             if (filename != null) {
@@ -258,7 +258,7 @@ class PluginRepository @Inject constructor() {
                         return@withContext getPluginFromJSON(json)
                     }
                 } catch (exception: Exception) {
-                    Timber.e("Error adding the plugin $filename: ${exception.message}")
+                    Timber.e(exception, "Error adding the plugin $filename: ${exception.message}")
                 }
             }
 
