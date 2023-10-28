@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/new_remote_device"
+        android:title="@string/new_device" />
+    <item android:id="@+id/delete_all_devices"
+        android:title="@string/delete_all" />
+</menu>

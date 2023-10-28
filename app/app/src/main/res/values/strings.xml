@@ -520,7 +520,7 @@
     <string name="port_range_error">Port must be between 1 and 65535</string>
     <string name="kodi_configure_credentials">Please configure Kodi in the app settings</string>
     <string name="kodi_remote_control">Kodi remote control instructions</string>
-    <string name="enable_kodi_control">Tap here for instructions on how to set up Kodi for remote control (usually enabled in system->services->control). After that complete the required fields below</string>
+    <string name="enable_kodi_control">Tap here for instructions on how to set up Kodi for remote control (usually enabled in system->services->control)</string>
     <string name="only_if_auth">Required only if the authentication is enabled in Kodi</string>
     <string name="rd_status">Real Debrid status</string>
     <string name="show_kodi">Show Kodi button</string>
@@ -544,7 +544,7 @@
     <string name="content_description_plugins_link">Link to plugins page</string>
     <string name="get_plugins">Get more plugins</string>
     <string name="reset_login">Reset login</string>
-    <string name="sort_by_default">Default</string>
+    <string name="default_string">Default</string>
     <string name="sort_by_az">Alphabetical</string>
     <string name="sort_by_za">Reverse alphabetical</string>
     <string name="sort_by_size_desc">Bigger first</string>
@@ -698,4 +698,35 @@
     <string name="apply">Apply</string>
     <string name="copy_magnet">Copy Magnet</string>
     <string name="share_magnet">Share Magnet</string>
+    <string name="remote_devices">Remote Devices</string>
+    <string name="remote_devices_summary">Manage services such as Kodi and VLC running on different devices</string>
+    <string name="manage_remote_devices">Manage Remote Devices</string>
+    <string name="delete_services">Delete Services</string>
+    <string name="new_service">New Service</string>
+    <string name="remote_device">Remote Device</string>
+    <string name="jackett" translatable="false">Jackett</string>
+    <string name="service_deleted">Service deleted</string>
+    <string name="service">Service</string>
+    <string name="services">Services</string>
+    <string name="dialog_confirm_action">Are you sure you want to proceed?</string>
+    <string name="pick_service">Pick Service</string>
+    <string name="default_service">Default Service</string>
+    <string name="transcoding">Transcoding</string>
+    <string name="recent">Recent</string>
+    <string name="browser">Browser</string>
+    <string name="add">Add</string>
+    <string name="show_streaming">Show streaming button</string>
+    <string name="connection_error">Connection error</string>
+    <plurals name="service_number_format">
+        <item quantity="zero">No services</item>
+        <item quantity="one">1 service</item>
+        <item quantity="other">%1$d services</item>
+    </plurals>
+    <plurals name="device_number_format">
+        <item quantity="zero">No devices</item>
+        <item quantity="one">1 device</item>
+        <item quantity="other">%1$d devices</item>
+    </plurals>
+    <string name="recent_service_format">Recent: %s</string>
+    <string name="default_service_format">Default: %s</string>
 </resources>

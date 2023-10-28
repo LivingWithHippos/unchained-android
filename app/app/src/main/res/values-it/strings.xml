@@ -233,7 +233,7 @@
     <string name="host_match_not_found">Nessun host compatibile trovato. Aggiorna gli host dalle impostazioni se necessario.</string>
     <string name="refreshing_token">Aggiornando autenticazione, riprova tra poco</string>
     <string name="black_and_white">Bianco e nero</string>
-    <string name="open_browser_stream">Stream via browser</string>
+    <string name="open_browser_stream">Stream su browser</string>
     <string name="folder">Cartella</string>
     <string name="files_list">Lista files</string>
     <string name="error_loading_folder">Errore durante il caricamento dei files</string>
@@ -308,8 +308,8 @@
     <string name="kodi_connection_error">Errore di connessione a Kodi</string>
     <string name="port_range_error">La porta deve essere compresa tra 1 e 65535</string>
     <string name="kodi_configure_credentials">Configura Kodi nelle impostazioni dell\'app</string>
-    <string name="kodi_remote_control">Controllo remoto per Kodi</string>
-    <string name="enable_kodi_control">Leggi qui le istruzioni su come impostare Kodi per il controllo remoto (di solito in system-&gt;services-&gt;control). Poi completa i campi richiesti qui sotto</string>
+    <string name="kodi_remote_control">Istruzioni per Kodi</string>
+    <string name="enable_kodi_control">Leggi le istruzioni per impostare Kodi per il controllo remoto (di solito system-&gt;services-&gt;control)</string>
     <string name="only_if_auth">Richiesto solo se l\'autenticazione è abilitata in Kodi</string>
     <string name="rd_status">Stato Real Debrid</string>
     <string name="show_kodi">Mostra pulsante Kodi</string>
@@ -334,7 +334,7 @@
     <string name="content_description_plugins_link">Collegamento alla pagina dei plugin</string>
     <string name="get_plugins">Ottieni più plugins</string>
     <string name="reset_login">Reset Login</string>
-    <string name="sort_by_default">Default</string>
+    <string name="default_string">Default</string>
     <string name="sort_by_az">Alfabetico</string>
     <string name="sort_by_za">Alfabetico inverso</string>
     <string name="sort_by_size_desc">Dal più grande</string>
@@ -479,4 +479,36 @@
     <string name="select">Seleziona</string>
     <string name="selected_theme">Tema selezionato</string>
     <string name="apply">Applica</string>
+    <string name="copy_magnet">Copia magnet</string>
+    <string name="share_magnet">Condividi magnet</string>
+    <string name="remote_devices">Dispositivi Remoti</string>
+    <string name="remote_devices_summary">Gestisci servizi come Kodi e VLC in esecuzione su altri dispositivi</string>
+    <string name="manage_remote_devices">Gestisci dispositivi remoti</string>
+    <string name="delete_services">Rimuovi servizi</string>
+    <string name="new_service">Nuovo servizio</string>
+    <string name="remote_device">Dispositivo remoto</string>
+    <string name="service_deleted">Servizio eliminato</string>
+    <string name="service">Servizio</string>
+    <string name="dialog_confirm_action">Confermi di voler procedere?</string>
+    <string name="browser">Browser</string>
+    <string name="pick_service">Seleziona servizio</string>
+    <string name="default_service">Servizio di default</string>
+    <string name="transcoding">Transcoding</string>
+    <string name="recent">Recente</string>
+    <plurals name="service_number_format">
+        <item quantity="one">1 servizio</item>
+        <item quantity="many">%1$d servizi</item>
+        <item quantity="other">%1$d servizi</item>
+    </plurals>
+    <plurals name="device_number_format">
+        <item quantity="one">1 dispositivo</item>
+        <item quantity="many">%1$d dispositivi</item>
+        <item quantity="other">%1$d dispositivi</item>
+    </plurals>
+    <string name="services">Servizi</string>
+    <string name="add">Aggiungi</string>
+    <string name="show_streaming">Mostra bottone streaming</string>
+    <string name="connection_error">Errore di connessione</string>
+    <string name="recent_service_format">Recente: %s</string>
+    <string name="default_service_format">Default: %s</string>
 </resources>

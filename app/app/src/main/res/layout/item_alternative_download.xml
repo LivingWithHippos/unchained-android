@@ -23,6 +23,7 @@
         android:layout_marginBottom="15dp"
         android:checkable="false"
         android:clickable="false"
+        android:focusable="false"
         app:cardCornerRadius="10dp"
         app:cardElevation="3dp">
 
@@ -74,6 +75,7 @@
                     style="?attr/materialIconButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:focusable="true"
                     android:contentDescription="@string/content_description_share_download"
                     android:onClick="@{()->listener.onShareClick(item.download)}"
                     android:paddingStart="13dp"
@@ -85,6 +87,7 @@
                     style="?attr/materialIconButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:focusable="true"
                     android:contentDescription="@{@string/open_link_format(item.mimeType)}"
                     android:onClick="@{()->listener.onOpenClick(item.download)}"
                     android:paddingStart="13dp"
@@ -96,6 +99,7 @@
                     style="?attr/materialIconButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:focusable="true"
                     android:contentDescription="@{@string/copy_link_format(item.mimeType)}"
                     android:onClick="@{()->listener.onCopyClick(item.download)}"
                     android:paddingStart="13dp"
@@ -103,12 +107,13 @@
                     />
 
                 <Button
-                    android:id="@+id/bKodi"
+                    android:id="@+id/bStream"
                     style="?attr/materialIconButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:focusable="true"
                     android:contentDescription="@{@string/open_with_format(item.mimeType)}"
-                    android:onClick="@{()->listener.onOpenWithKodi(item.download)}"
+                    android:onClick="@{(view)->listener.onOpenTranscodedStream(view, item.download)}"
                     android:paddingStart="13dp"
                     app:icon="@drawable/icon_remote"
                     />

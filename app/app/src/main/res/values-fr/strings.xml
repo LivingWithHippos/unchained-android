@@ -304,7 +304,7 @@
     <string name="port_range_error">Le port doit être compris entre 1 et 65535</string>
     <string name="kodi_configure_credentials">Veuillez configurer Kodi dans les paramètres de l\'application</string>
     <string name="kodi_remote_control">Télécommande pour Kodi</string>
-    <string name="enable_kodi_control">Lisez ici les instructions sur la façon de configurer Kodi pour le contrôle à distance (généralement dans système-&gt;services-&gt;control). Après cela, remplissez les champs obligatoires ci-dessous</string>
+    <string name="enable_kodi_control">Lisez ici les instructions sur la façon de configurer Kodi pour le contrôle à distance (généralement dans système-&gt;services-&gt;control)</string>
     <string name="only_if_auth">Requis uniquement si l\'authentification est activée dans Kodi</string>
     <string name="rd_status">Statut de Real Debrid</string>
     <string name="show_kodi">Afficher le bouton de Kodi</string>
@@ -328,7 +328,7 @@
     <string name="content_description_plugins_link">Lien vers la page des plugins</string>
     <string name="get_plugins">Obtenir plus de plugins</string>
     <string name="reset_login">Réinitialiser l\'authentification</string>
-    <string name="sort_by_default">Défaut</string>
+    <string name="default_string">Défaut</string>
     <string name="sort_by_az">Alphabétique</string>
     <string name="sort_by_za">Alphabétique inversé</string>
     <string name="sort_by_size_desc">Plus grand d\'abord</string>
@@ -478,4 +478,34 @@
     <string name="select">Choisir</string>
     <string name="selected_theme">Thème choisi</string>
     <string name="apply">Appliquer</string>
+    <string name="copy_magnet">Copie Magnet</string>
+    <string name="share_magnet">Partager Magnet</string>
+    <string name="remote_devices">Dispositifs à distance</string>
+    <string name="remote_devices_summary">Gérer des services tels que Kodi et VLC fonctionnant sur différents appareils</string>
+    <string name="manage_remote_devices">Gérer les dispositifs à distance</string>
+    <string name="delete_services">Supprimer les services</string>
+    <string name="new_service">Nouveau service</string>
+    <string name="remote_device">Dispositif à distance</string>
+    <string name="service_deleted">Service supprimé</string>
+    <string name="service">Service</string>
+    <string name="services">Services</string>
+    <string name="dialog_confirm_action">Êtes-vous sûr de vouloir continuer ?</string>
+    <string name="browser">Navigateur</string>
+    <string name="pick_service">Choisir service</string>
+    <string name="default_service">Service par défaut</string>
+    <string name="transcoding">Transcodage</string>
+    <string name="recent">Récent</string>
+    <plurals name="service_number_format">
+        <item quantity="one">%1$d service</item>
+        <item quantity="many">%1$d services</item>
+    </plurals>
+    <plurals name="device_number_format">
+        <item quantity="one">%1$d dispositif</item>
+        <item quantity="many">%1$d dispositifs</item>
+    </plurals>
+    <string name="add">Ajouter</string>
+    <string name="show_streaming">Afficher le bouton de streaming</string>
+    <string name="connection_error">Erreur de connexion</string>
+    <string name="recent_service_format">Récent: %s</string>
+    <string name="default_service_format">Défaut: %s</string>
 </resources>

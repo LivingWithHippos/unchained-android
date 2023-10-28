@@ -59,7 +59,7 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
         showDialogsIfNeeded()
         // setup the plugin dropdown
         val pluginAdapter =
-            ArrayAdapter(requireContext(), R.layout.plugin_list_item, arrayListOf<String>())
+            ArrayAdapter(requireContext(), R.layout.basic_dropdown_list_item, arrayListOf<String>())
         (binding.pluginPicker.editText as? AutoCompleteTextView)?.setAdapter(pluginAdapter)
 
         binding.bManagePlugins.setOnClickListener {
@@ -376,7 +376,7 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
         if (plugin.supportedCategories.books != null)
             choices.add(getString(R.string.category_books))
 
-        val adapter = ArrayAdapter(requireContext(), R.layout.plugin_list_item, choices)
+        val adapter = ArrayAdapter(requireContext(), R.layout.basic_dropdown_list_item, choices)
         autoCompleteView?.setAdapter(adapter)
 
         autoCompleteView?.setText(choices.first(), false)

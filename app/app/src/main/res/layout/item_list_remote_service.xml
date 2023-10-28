@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="android.view.View" />
+
+        <variable
+            name="item"
+            type="com.github.livingwithhippos.unchained.data.local.RemoteService" />
+
+        <variable
+            name="listener"
+            type="com.github.livingwithhippos.unchained.remotedevice.view.ServiceListListener" />
+    </data>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cvDevice"
+        style="?attr/materialCardViewElevatedStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:checkable="false"
+        android:focusable="true"
+        android:clickable="true"
+        android:onClick="@{() ->listener.onServiceClick(item)}"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="3dp"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="3dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            >
+
+            <View
+                android:id="@+id/defaultIndicator"
+                android:layout_width="10dp"
+                android:layout_height="0dp"
+                android:backgroundTint="?attr/colorPrimary"
+                android:background="@drawable/rectangle"
+                android:visibility="@{item.isDefault ? View.VISIBLE : View.INVISIBLE, default=visible}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tvTitle"
+                android:textAppearance="?attr/textAppearanceLabelLarge"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginBottom="5dp"
+                android:maxLines="2"
+                android:text="@{item.name, default=`Remote service #X`}"
+                app:layout_constraintBottom_toTopOf="@+id/tvPort"
+                app:layout_constraintStart_toEndOf="@id/defaultIndicator"
+                app:layout_constraintEnd_toStartOf="@+id/ivType"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tvPort"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@{item.port + ``, default=`8080`}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/tvTitle"
+                app:layout_constraintStart_toStartOf="@+id/tvTitle"
+                app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
+
+            <ImageView
+                android:id="@+id/ivType"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                mapServiceTypeDrawable="@{item.type}"
+                android:contentDescription="@string/service"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/tvTitle"
+                />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+</layout>

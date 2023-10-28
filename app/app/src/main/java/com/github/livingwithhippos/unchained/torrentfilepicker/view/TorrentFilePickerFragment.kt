@@ -18,8 +18,6 @@ import com.github.livingwithhippos.unchained.torrentfilepicker.viewmodel.Torrent
 import com.github.livingwithhippos.unchained.utilities.Node
 import timber.log.Timber
 
-private const val ARG_TORRENT = "torrent_arg"
-
 class TorrentFilePickerFragment : Fragment(), TorrentContentListener {
 
     // https://developer.android.com/training/dependency-injection/hilt-jetpack#viewmodel-navigation

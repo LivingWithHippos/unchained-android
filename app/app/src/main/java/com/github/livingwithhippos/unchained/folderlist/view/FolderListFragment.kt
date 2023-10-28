@@ -219,6 +219,10 @@ class FolderListFragment : UnchainedFragment(), DownloadListListener {
                 override fun openSelectedDetails() {
                     // not implemented at the moment
                 }
+
+                override fun openNewDownload() {
+                    // only for the download and torrent lists
+                }
             }
 
         binding.cbSelectAll.setOnCheckedChangeListener { _, isChecked ->

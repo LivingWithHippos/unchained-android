@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="item"
+            type="com.github.livingwithhippos.unchained.data.local.RemoteServiceDetails" />
+
+        <variable
+            name="listener"
+            type="com.github.livingwithhippos.unchained.downloaddetails.model.ServicePickerListener" />
+    </data>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cvService"
+        style="?attr/materialCardViewElevatedStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="3dp"
+        android:checkable="false"
+        android:clickable="true"
+        android:focusable="true"
+        android:onClick="@{() -> listener.onServiceClick(item)}"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="3dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            >
+
+            <TextView
+                android:id="@+id/serviceType"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:focusable="false"
+                android:maxLines="1"
+                android:text="@{item.type.nameRes, default=`Kodi`}"
+                android:textAppearance="?attr/textAppearanceTitleSmall"
+                app:layout_constraintBottom_toBottomOf="@id/serviceIcon"
+                app:layout_constraintEnd_toStartOf="@id/serviceIcon"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/serviceIcon" />
+
+            <ImageView
+                android:id="@+id/serviceIcon"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:clickable="false"
+                android:focusable="false"
+                app:layout_constraintBottom_toTopOf="@id/serviceName"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                mapServiceTypeDrawable="@{item.service.type}"
+                />
+
+            <TextView
+                android:id="@+id/serviceName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:focusable="false"
+                android:maxLines="1"
+                android:text="@{item.service.name, default=`Kodi Home`}"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
+                app:layout_constraintBottom_toTopOf="@id/serviceAddress"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/serviceIcon" />
+
+            <TextView
+                android:id="@+id/serviceAddress"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:focusable="false"
+                android:maxLines="1"
+                android:text="@{item.device.address + `:` + item.service.port, default=`120.0.0.1:8080`}"
+                android:textAppearance="?attr/textAppearanceCaption"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/serviceName" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+</layout>

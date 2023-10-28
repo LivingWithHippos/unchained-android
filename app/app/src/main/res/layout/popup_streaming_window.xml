@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="?attr/materialCardViewElevatedStyle"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="5dp"
+    app:cardElevation="3dp"
+    >
+
+    <LinearLayout
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/defaultServiceLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nextFocusDown="@id/recentServiceLayout"
+            android:clickable="true"
+            android:focusable="true"
+            android:paddingHorizontal="15dp"
+            android:paddingBottom="10dp"
+            android:paddingTop="15dp"
+            >
+
+            <TextView
+                android:id="@+id/serviceType"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:clickable="false"
+                android:focusable="false"
+                android:text="@string/default_string"
+                android:textAppearance="?attr/textAppearanceTitleSmall"
+                app:layout_constraintBottom_toTopOf="@id/serviceName"
+                app:layout_constraintEnd_toStartOf="@id/serviceIcon"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                />
+
+            <ImageView
+                android:id="@+id/serviceIcon"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:clickable="false"
+                android:focusable="false"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/icon_service" />
+
+            <TextView
+                android:id="@+id/serviceName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/name_required"
+                android:maxLines="1"
+                android:clickable="false"
+                android:focusable="false"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
+                app:layout_constraintBottom_toTopOf="@id/serviceAddress"
+                app:layout_constraintEnd_toStartOf="@id/serviceIcon"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/serviceName" />
+
+            <TextView
+                android:id="@+id/serviceAddress"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/ip_address"
+                android:maxLines="1"
+                android:clickable="false"
+                android:focusable="false"
+                android:textAppearance="?attr/textAppearanceCaption"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/serviceIcon"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/serviceName" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/recentServiceLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nextFocusDown="@id/pickServiceLayout"
+            android:paddingHorizontal="15dp"
+            android:paddingBottom="10dp"
+            android:paddingTop="7dp"
+            android:clickable="true"
+            android:focusable="true"
+            >
+
+            <TextView
+                android:id="@+id/recentServiceType"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:clickable="false"
+                android:focusable="false"
+                android:text="@string/recent"
+                android:textAppearance="?attr/textAppearanceTitleSmall"
+                app:layout_constraintBottom_toTopOf="@+id/recentServiceName"
+                app:layout_constraintEnd_toStartOf="@id/recentServiceIcon"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                />
+
+            <ImageView
+                android:id="@+id/recentServiceIcon"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:clickable="false"
+                android:focusable="false"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/icon_kodi" />
+
+            <TextView
+                android:id="@+id/recentServiceName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/name_required"
+                android:maxLines="1"
+                android:clickable="false"
+                android:focusable="false"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
+                app:layout_constraintBottom_toTopOf="@id/recentServiceAddress"
+                app:layout_constraintEnd_toStartOf="@id/recentServiceIcon"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/recentServiceType" />
+
+            <TextView
+                android:id="@+id/recentServiceAddress"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/ip_address"
+                android:maxLines="1"
+                android:clickable="false"
+                android:focusable="false"
+                android:textAppearance="?attr/textAppearanceCaption"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/recentServiceIcon"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/recentServiceName" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/pickServiceLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nextFocusDown="@id/streamBrowserLayout"
+            android:paddingHorizontal="15dp"
+            android:paddingBottom="10dp"
+            android:paddingTop="7dp"
+            android:clickable="true"
+            android:focusable="true">
+
+            <TextView
+                android:id="@+id/devicesNumber"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:clickable="false"
+                android:focusable="false"
+                android:text="@string/remote_devices"
+                android:textAppearance="?attr/textAppearanceTitleSmall"
+                app:layout_constraintBottom_toTopOf="@id/pickServiceTitle"
+                app:layout_constraintEnd_toStartOf="@id/servicesNumber"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+            <TextView
+                android:id="@+id/servicesNumber"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/service"
+                android:maxLines="1"
+                android:clickable="false"
+                android:focusable="false"
+                android:textAppearance="?attr/textAppearanceTitleSmall"
+                app:layout_constraintBottom_toBottomOf="@id/devicesNumber"
+                app:layout_constraintEnd_toStartOf="@id/pickServiceIcon"
+                app:layout_constraintStart_toEndOf="@id/devicesNumber"
+                app:layout_constraintTop_toTopOf="@id/devicesNumber"
+                />
+
+            <ImageView
+                android:id="@+id/pickServiceIcon"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:clickable="false"
+                android:focusable="false"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/icon_apps" />
+
+            <TextView
+                android:id="@+id/pickServiceTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/pick_service"
+                android:maxLines="1"
+                android:clickable="false"
+                android:focusable="false"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/pickServiceIcon"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/devicesNumber"
+                />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/streamBrowserLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="15dp"
+            android:paddingBottom="15dp"
+            android:paddingTop="7dp"
+            android:clickable="true"
+            android:focusable="true"
+            >
+
+            <TextView
+                android:id="@+id/streamBrowserType"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:focusable="false"
+                android:maxLines="1"
+                android:text="@string/browser"
+                android:textAppearance="?attr/textAppearanceTitleSmall"
+                app:layout_constraintEnd_toStartOf="@id/streamBrowserIcon"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/streamBrowserTitle"
+                />
+
+            <ImageView
+                android:id="@+id/streamBrowserIcon"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:clickable="false"
+                android:focusable="false"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/icon_browser_stream" />
+
+            <TextView
+                android:id="@+id/streamBrowserTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:focusable="false"
+                android:text="@string/open_browser_stream"
+                android:maxLines="1"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/streamBrowserIcon"
+                app:layout_constraintTop_toBottomOf="@id/streamBrowserType"
+                />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

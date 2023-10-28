@@ -65,6 +65,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.elevation.SurfaceColors
 import dagger.hilt.android.AndroidEntryPoint
+import java.lang.RuntimeException
 import java.security.MessageDigest
 import javax.inject.Inject
 import kotlinx.coroutines.delay
@@ -84,8 +85,8 @@ class MainActivity : AppCompatActivity() {
         TelemetryManager.onStart(this)
 
         val bottomColor = SurfaceColors.SURFACE_2.getColor(this)
-        window.navigationBarColor =
-            bottomColor // Set color of system navigationBar same as BottomNavigationView
+        window.navigationBarColor = bottomColor
+        // Set color of system navigationBar same as BottomNavigationView
         // window.statusBarColor = color // Set color of system statusBar same as ActionBar
     }
 
@@ -314,12 +315,17 @@ class MainActivity : AppCompatActivity() {
         getIntentData()
 
         // observe for downloaded torrents
-        ContextCompat.registerReceiver(
-            applicationContext,
-            downloadReceiver,
-            IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE),
-            ContextCompat.RECEIVER_NOT_EXPORTED
-        )
+
+        try {
+            ContextCompat.registerReceiver(
+                applicationContext,
+                downloadReceiver,
+                IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE),
+                ContextCompat.RECEIVER_NOT_EXPORTED
+            )
+        } catch (ex: RuntimeException) {
+            Timber.w(ex, "Download receiver already registered")
+        }
 
         viewModel.linkLiveData.observe(this) {
             it?.getContentIfNotHandled()?.let { link ->
@@ -582,8 +588,7 @@ class MainActivity : AppCompatActivity() {
             ContextCompat.startForegroundService(this, notificationIntent)
         }
 
-        // load the old share preferences of kodi devices into the db and then delete them
-        viewModel.updateOldKodiPreferences()
+        viewModel.migrateKodiPreferences()
 
         viewModel.connectivityLiveData.observe(this) {
             when (it) {
@@ -629,11 +634,15 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
                     "*/*" -> {
+                        // replace with intent.getParcelableExtra(Intent.EXTRA_STREAM,
+                        // Uri::class.java) when stabilized
                         (intent.getParcelableExtra<Parcelable>(Intent.EXTRA_STREAM) as? Uri)?.let {
-                            if (it.lastPathSegment?.endsWith(TYPE_UNCHAINED, ignoreCase = true) == true)
+                            if (
+                                it.lastPathSegment?.endsWith(TYPE_UNCHAINED, ignoreCase = true) ==
+                                    true
+                            )
                                 viewModel.addPluginFromDisk(applicationContext, it)
                         }
-
                     }
                 }
             }
@@ -713,7 +722,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        unregisterReceiver(downloadReceiver)
+        try {
+            unregisterReceiver(downloadReceiver)
+        } catch (ex: RuntimeException) {
+            Timber.w(ex, "Download receiver not registered")
+        }
     }
 
     private fun processTorrentNotificationIntent(torrentID: String) {

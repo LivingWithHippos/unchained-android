@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.preference.EditTextPreference
 import androidx.preference.ListPreference
 import androidx.preference.Preference
@@ -108,6 +109,13 @@ class SettingsFragment : PreferenceFragmentCompat() {
             pickDirectoryLauncher.launch(null)
             true
         }
+
+        findPreference<Preference>("manage_remote_devices")?.setOnPreferenceClickListener {
+            val action =
+                SettingsFragmentDirections.actionSettingsFragmentToRemoteDeviceListFragment()
+            findNavController().navigate(action)
+            true
+        }
     }
 
     override fun onCreateView(
@@ -159,10 +167,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
             context?.openExternalWebPage("https://kodi.wiki/view/Settings/Services/Control")
                 ?: false
         }
-        findPreference<Preference>("kodi_list_editor")?.setOnPreferenceClickListener {
-            openKodiManagementDialog()
-            true
-        }
         // todo: sistema per kodi
         val ipPreference = findPreference<EditTextPreference>("kodi_ip_address")
         val portPreference = findPreference<EditTextPreference>("kodi_port")
@@ -186,7 +190,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
         }
     }
 
-    @Suppress("DEPRECATION")
     private fun setupVersion() {
         val pi =
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -244,12 +247,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
         else {
             viewModel.testKodi(ip, port, username, password)
         }
-    }
-
-    /** This function opens a dialog to manage the kodi list */
-    private fun openKodiManagementDialog() {
-        val dialog = KodiManagementDialog()
-        dialog.show(parentFragmentManager, "KodiManagementDialogFragment")
     }
 
     private fun openThemePickerDialog() {

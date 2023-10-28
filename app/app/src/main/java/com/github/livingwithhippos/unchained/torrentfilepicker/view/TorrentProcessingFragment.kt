@@ -53,9 +53,7 @@ class TorrentProcessingFragment : UnchainedFragment() {
 
     private var cachedTorrent: CachedTorrent? = null
 
-    /**
-     * Save the torrent/magnet has when loaded
-     */
+    /** Save the torrent/magnet has when loaded */
     private var torrentHash: String? = null
 
     override fun onCreateView(
@@ -278,7 +276,7 @@ class TorrentProcessingFragment : UnchainedFragment() {
         val lastSelection: Node<TorrentFileItem>? = viewModel.structureLiveData.value?.peekContent()
         if (lastSelection == null) popup.menu.findItem(R.id.manual_pick).isEnabled = false
 
-        if (torrentHash==null) {
+        if (torrentHash == null) {
             popup.menu.findItem(R.id.copy_magnet).isVisible = false
             popup.menu.findItem(R.id.share_magnet).isVisible = false
         }

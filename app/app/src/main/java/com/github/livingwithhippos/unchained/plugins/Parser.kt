@@ -193,8 +193,7 @@ class Parser(
                         }
                     }
                     else -> doc.getElementsByTag("table").first()
-                }
-                    ?: return emptyList()
+                } ?: return emptyList()
 
             // parse all the rows
             val rows = table.select("tr")
@@ -354,8 +353,7 @@ class Parser(
                         }
                     }
                     else -> doc.getElementsByTag("table").first()
-                }
-                    ?: return emptyList()
+                } ?: return emptyList()
 
             // parse all the rows
             val rows = table.select("tr")
@@ -381,8 +379,7 @@ class Parser(
                                     regexes.nameRegex,
                                     columns[tableLink.columns.nameColumn].html(),
                                     baseUrl
-                                )
-                                    ?: ""
+                                ) ?: ""
                             )
 
                     if (tableLink.columns.detailsColumn != null)

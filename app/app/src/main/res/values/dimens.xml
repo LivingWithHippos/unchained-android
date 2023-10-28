@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="fab_download_details_width">80dp</dimen>
+    <dimen name="stat_corner_radius">3dp</dimen>
+    <dimen name="stat_card_elevation">10dp</dimen>
 </resources>

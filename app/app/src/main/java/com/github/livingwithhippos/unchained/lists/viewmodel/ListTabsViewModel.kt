@@ -223,4 +223,6 @@ sealed class ListEvent {
     data class OpenTorrent(val item: TorrentItem) : ListEvent()
 
     data class SetTab(val tab: Int) : ListEvent()
+
+    data object NewDownload : ListEvent()
 }
