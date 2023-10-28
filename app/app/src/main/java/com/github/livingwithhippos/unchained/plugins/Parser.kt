@@ -715,21 +715,21 @@ class Parser(
                 val leechers = parseSingle(regexes.leechersRegex, html, url)
                 val size = parseSingle(regexes.sizeRegex, html, url)
                 val details = parseSingle(regexes.detailsRegex, html, url)
-                val addedDate= parseSingle(regexes.dateAddedRegex, html, url)
+                val addedDate = parseSingle(regexes.dateAddedRegex, html, url)
 
                 directItems.add(
                     ScrapedItem(
-                        name=name,
-                        link=details,
-                        seeders=seeders,
-                        leechers=leechers,
-                        size=size,
-                        parsedSize=parseCommonSize(size),
+                        name = name,
+                        link = details,
+                        seeders = seeders,
+                        leechers = leechers,
+                        size = size,
+                        parsedSize = parseCommonSize(size),
                         addedDate = addedDate,
-                        magnets=magnets,
-                        torrents=torrents,
-                        hosting=hosting,
-                        isCached=false
+                        magnets = magnets,
+                        torrents = torrents,
+                        hosting = hosting,
+                        isCached = false
                     )
                 )
             }
@@ -771,7 +771,6 @@ class Parser(
     companion object {
         /**
          * CHANGELOG:
-         *
          * - 1.0: first version
          * - 1.1: added skipping of empty rows in tables
          * - 1.2: added table_indirect
