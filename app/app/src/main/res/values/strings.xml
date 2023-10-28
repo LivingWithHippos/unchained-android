@@ -732,4 +732,5 @@
     <string name="added_date">Date</string>
     <string name="loading_size">Loading size</string>
     <string name="summary_loading_size">How many items should be loaded at once from the downloads and torrents sections. Bigger is slower.</string>
+    <string name="refresh">Refresh</string>
 </resources>

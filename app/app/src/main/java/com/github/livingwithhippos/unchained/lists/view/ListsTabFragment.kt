@@ -470,6 +470,13 @@ class DownloadsListFragment : UnchainedFragment(), DownloadListListener {
                 override fun openNewDownload() {
                     viewModel.postEventNotice(ListEvent.NewDownload)
                 }
+
+                override fun refreshList() {
+                    if (!binding.srLayout.isRefreshing) {
+                        binding.srLayout.isRefreshing = true
+                        downloadAdapter.refresh()
+                    }
+                }
             }
 
         binding.cbSelectAll.setOnCheckedChangeListener { _, isChecked ->
@@ -681,6 +688,13 @@ class TorrentsListFragment : UnchainedFragment(), TorrentListListener {
                 override fun openNewDownload() {
                     viewModel.postEventNotice(ListEvent.NewDownload)
                 }
+
+                override fun refreshList() {
+                    if (!binding.srLayout.isRefreshing) {
+                        binding.srLayout.isRefreshing = true
+                        torrentAdapter.refresh()
+                    }
+                }
             }
 
         binding.cbSelectAll.setOnCheckedChangeListener { _, isChecked ->
@@ -848,4 +862,5 @@ interface SelectedItemsButtonsListener {
     fun openSelectedDetails()
 
     fun openNewDownload()
+    fun refreshList()
 }

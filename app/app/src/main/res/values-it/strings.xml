@@ -512,4 +512,7 @@
     <string name="recent_service_format">Recente: %s</string>
     <string name="default_service_format">Default: %s</string>
     <string name="added_date">Data</string>
+    <string name="loading_size">Dimensione caricamento</string>
+    <string name="summary_loading_size">Quanti elementi devono essere caricati contemporaneamente dalle sezioni download e torrent. Più grande è più lento.</string>
+    <string name="refresh">Aggiorna</string>
 </resources>

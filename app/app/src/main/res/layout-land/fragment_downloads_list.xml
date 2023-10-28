@@ -92,6 +92,20 @@
                 app:iconSize="25dp"
                 android:tooltipText="@string/share_selected"
                 android:nextFocusDown="@id/rvDownloadList"
+                android:nextFocusRight="@id/bRefresh"
+                />
+
+            <Button
+                android:id="@+id/bRefresh"
+                style="?attr/materialIconButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/refresh"
+                android:onClick="@{() -> listener.refreshList()}"
+                app:icon="@drawable/icon_reload"
+                app:iconSize="25dp"
+                android:tooltipText="@string/refresh"
+                android:nextFocusDown="@id/rvDownloadList"
                 android:nextFocusRight="@id/rvDownloadList"
                 />
 
