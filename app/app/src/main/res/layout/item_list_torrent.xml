@@ -28,6 +28,7 @@
             android:layout_marginTop="12dp"
             android:layout_marginEnd="20dp"
             android:checkable="false"
+            android:focusable="true"
             android:onClick="@{() -> listener.onClick(item)}"
             android:layout_gravity="center_horizontal"
             app:cardCornerRadius="10dp"
