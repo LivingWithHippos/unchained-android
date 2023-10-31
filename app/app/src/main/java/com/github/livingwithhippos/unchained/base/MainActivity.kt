@@ -319,7 +319,6 @@ class MainActivity : AppCompatActivity() {
             Timber.w(ex, "Download receiver already registered")
         }
 
-
         viewModel.linkLiveData.observe(this) {
             it?.getContentIfNotHandled()?.let { link ->
                 when {
