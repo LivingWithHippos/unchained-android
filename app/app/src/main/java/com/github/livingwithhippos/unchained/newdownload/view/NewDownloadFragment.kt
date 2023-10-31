@@ -275,6 +275,15 @@ class NewDownloadFragment : UnchainedFragment() {
                          */
                         // downloadTorrentToCache(binding, link)
                     }
+                    link.isMagnet() -> {
+                        val action =
+                            NewDownloadFragmentDirections
+                                .actionNewDownloadFragmentToTorrentProcessingFragment(link = link)
+                        findNavController().navigate(action)
+                        // viewModel.postMessage(getString(R.string.loading_magnet_link))
+                        // enableButtons(binding, false)
+                        // viewModel.fetchAddedMagnet(link)
+                    }
                     link.isWebUrl() || link.isSimpleWebUrl() -> {
                         viewModel.postMessage(getString(R.string.loading_host_link))
                         enableButtons(binding, false)
@@ -289,15 +298,6 @@ class NewDownloadFragment : UnchainedFragment() {
                             if (binding.switchRemote.isChecked) REMOTE_TRAFFIC_ON else null
 
                         viewModel.fetchUnrestrictedLink(link, password, remote)
-                    }
-                    link.isMagnet() -> {
-                        val action =
-                            NewDownloadFragmentDirections
-                                .actionNewDownloadFragmentToTorrentProcessingFragment(link = link)
-                        findNavController().navigate(action)
-                        // viewModel.postMessage(getString(R.string.loading_magnet_link))
-                        // enableButtons(binding, false)
-                        // viewModel.fetchAddedMagnet(link)
                     }
                     link.isBlank() -> {
                         viewModel.postMessage(getString(R.string.please_insert_url))
