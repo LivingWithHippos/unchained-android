@@ -308,7 +308,17 @@ class MainActivity : AppCompatActivity() {
         getIntentData()
 
         // observe for torrents downloaded
-        registerReceiver(downloadReceiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
+        try {
+            ContextCompat.registerReceiver(
+                applicationContext,
+                downloadReceiver,
+                IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE),
+                ContextCompat.RECEIVER_NOT_EXPORTED
+            )
+        } catch (ex: RuntimeException) {
+            Timber.w(ex, "Download receiver already registered")
+        }
+
 
         viewModel.linkLiveData.observe(this) {
             it?.getContentIfNotHandled()?.let { link ->
@@ -692,7 +702,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        unregisterReceiver(downloadReceiver)
+        try {
+            unregisterReceiver(downloadReceiver)
+        } catch (ex: RuntimeException) {
+            Timber.w(ex, "Download receiver not registered")
+        }
     }
 
     private fun processTorrentNotificationIntent(torrentID: String) {
