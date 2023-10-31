@@ -46,14 +46,14 @@ ktfmt {
 
 android {
 
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.github.livingwithhippos.unchained"
         minSdk 22
-        targetSdk 33
-        versionCode 37
-        versionName "1.0.0"
+        targetSdk 34
+        versionCode 38
+        versionName "1.1.0"
         // limit resources for a list of locales
         // resConfigs "en", "it"
 
