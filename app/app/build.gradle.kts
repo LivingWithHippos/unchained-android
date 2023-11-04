@@ -186,6 +186,9 @@ dependencies {
     implementation(libs.datastore.core)
     implementation(libs.datastore.prefs)
 
+    implementation(libs.jackson.kotlin)
+    implementation(libs.jackson.xml)
+
     kapt(libs.moshi.kapt)
     implementation(libs.moshi.runtime)
 
