@@ -21,6 +21,7 @@ internal val xmlMapper = XmlMapper.builder(XmlFactory(
     .build()
  */
 
-internal val xmlMapper: ObjectMapper = XmlMapper(JacksonXmlModule().apply {
-    setDefaultUseWrapper(false)
-}).registerKotlinModule().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+internal val xmlMapper = XmlMapper.builder()
+    .defaultUseWrapper(false)
+    .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+    .build()
