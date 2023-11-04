@@ -9,7 +9,7 @@ plugins {
     id("androidx.navigation.safeargs.kotlin")
     id("com.google.protobuf") version "0.9.4"
     id("com.mikepenz.aboutlibraries.plugin")
-    id("com.ncorti.ktfmt.gradle") version "0.14.0"
+    id("com.ncorti.ktfmt.gradle") version "0.15.1"
     kotlin("kapt")
 }
 
