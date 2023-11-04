@@ -188,6 +188,8 @@ dependencies {
 
     implementation(libs.jackson.kotlin)
     implementation(libs.jackson.xml)
+    implementation(libs.woodstox)
+    implementation(libs.stax)
 
     kapt(libs.moshi.kapt)
     implementation(libs.moshi.runtime)

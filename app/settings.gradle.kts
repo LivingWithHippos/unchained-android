@@ -56,12 +56,14 @@ dependencyResolutionManagement {
             version("retrofit", "2.9.0")
             version("room", "2.6.0")
             version("statemachine", "0.2.0")
+            version("stax", "1.0-2")
             version("swiperefresh", "1.1.0")
             version("test", "1.5.0")
             version("test_junit", "1.1.5")
             version("test_orchestrator", "1.4.2")
             version("timber", "5.0.1")
             version("viewpager2", "1.0.0")
+            version("woodstox", "6.5.1")
             version("work", "2.8.1")
 
             library("protobuf_core", "com.google.protobuf", "protoc").versionRef("protobuf")
@@ -145,6 +147,7 @@ dependencyResolutionManagement {
             library("room_compiler", "androidx.room", "room-compiler").versionRef("room")
             library("room_ktx", "androidx.room", "room-ktx").versionRef("room")
             library("rxjava2", "androidx.room", "room-rxjava2").versionRef("room")
+            library("stax", "javax.xml.stream", "stax-api").versionRef("stax")
             library("testing", "androidx.room", "room-testing").versionRef("room")
             library("statemachine", "com.tinder.statemachine", "statemachine").versionRef("statemachine")
             library("swiperefreshlayout", "androidx.swiperefreshlayout", "swiperefreshlayout").versionRef("swiperefresh")
@@ -157,6 +160,7 @@ dependencyResolutionManagement {
             library("test_truth", "androidx.test.ext", "truth").versionRef("test")
             library("timber", "com.jakewharton.timber", "timber").versionRef("timber")
             library("viewpager2", "androidx.viewpager2", "viewpager2").versionRef("viewpager2")
+            library("woodstox", "com.fasterxml.woodstox", "woodstox-core").versionRef("woodstox")
             library("android_work", "androidx.work", "work-runtime-ktx").versionRef("work")
 
         }
