@@ -2,7 +2,9 @@ package com.github.livingwithhippos.unchained.data.repository
 
 import android.net.Uri
 import com.fasterxml.jackson.module.kotlin.readValue
-import com.github.livingwithhippos.unchained.data.model.torznab.Caps
+import com.github.livingwithhippos.unchained.data.model.torznab.Capabilities
+import com.github.livingwithhippos.unchained.data.model.torznab.Channel
+import com.github.livingwithhippos.unchained.data.model.torznab.SearchRSS
 import com.github.livingwithhippos.unchained.di.ClassicClient
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.xml.xmlMapper
@@ -25,14 +27,18 @@ class JackettRepository @Inject constructor(@ClassicClient private val client: O
         useSecureHttp: Boolean = false
     ): Uri.Builder? {
         var existingUri: Uri = try {
-             Uri.parse("$baseUrl:$port")
+            Uri.parse("$baseUrl:$port")
         } catch (ex: Exception) {
             Timber.e(ex, "Error parsing url: $baseUrl:$port")
             return null
         }
 
-        if (!(existingUri.scheme.equals("http", ignoreCase = true) || existingUri.scheme.equals("https", ignoreCase = true))) {
-            existingUri = Uri.parse("${if(useSecureHttp) "https" else "http"}://$baseUrl:$port")
+        if (!(existingUri.scheme.equals(
+                "http",
+                ignoreCase = true
+            ) || existingUri.scheme.equals("https", ignoreCase = true))
+        ) {
+            existingUri = Uri.parse("${if (useSecureHttp) "https" else "http"}://$baseUrl:$port")
         }
         val baseBuilder: Uri.Builder = try {
             val builder = Uri.Builder()
@@ -62,7 +68,7 @@ class JackettRepository @Inject constructor(@ClassicClient private val client: O
         apiKey: String,
         query: String,
         mediaType: JackettMediaType? = null,
-        categories: String? = null,
+        categories: String = "",
         genre: JackettGenre? = null,
         year: String? = null,
         season: String? = null,
@@ -73,17 +79,18 @@ class JackettRepository @Inject constructor(@ClassicClient private val client: O
         publisher: String? = null,
     ): EitherResult<Exception, Boolean> =
         withContext(Dispatchers.IO) {
-            val builder = getBasicBuilder(baseUrl, port, apiKey, indexer) ?: return@withContext EitherResult.Failure(
-                IllegalArgumentException("Impossible to parse url")
-            )
+            val builder = getBasicBuilder(baseUrl, port, apiKey, indexer)
+                ?: return@withContext EitherResult.Failure(
+                    IllegalArgumentException("Impossible to parse url")
+                )
 
             if (mediaType == null)
                 builder.appendQueryParameter("t", "search")
             else
                 builder.appendQueryParameter("t", mediaType.value)
 
-            if (categories != null)
-                builder.appendQueryParameter("cat", categories)
+            // the search fails with no "cat" element, even if empty
+            builder.appendQueryParameter("cat", categories)
 
             if (year != null)
                 builder.appendQueryParameter("year", year)
@@ -120,8 +127,16 @@ class JackettRepository @Inject constructor(@ClassicClient private val client: O
                     return@withContext EitherResult.Failure(
                         IOException("Unexpected http code $response")
                     )
+                val body: String = response.body?.string()
+                    ?: return@withContext EitherResult.Failure(
+                        IOException("Unexpected empty body")
+                    )
+                try {
+                    val search = xmlMapper.readValue<SearchRSS>(body)
+                } catch (ex: Exception) {
+                    Timber.e(ex, "Error parsing Search response")
+                }
 
-                Timber.d(response.body!!.string())
                 return@withContext EitherResult.Success(true)
             }
         }
@@ -133,11 +148,11 @@ class JackettRepository @Inject constructor(@ClassicClient private val client: O
         apiKey: String,
         indexer: String = "all"
     ): EitherResult<Exception, Boolean> = withContext(Dispatchers.IO) {
-        val builder = getBasicBuilder(baseUrl, port, apiKey, indexer) ?: return@withContext EitherResult.Failure(
-            IllegalArgumentException("Impossible to parse url")
-        )
+        val builder = getBasicBuilder(baseUrl, port, apiKey, indexer)
+            ?: return@withContext EitherResult.Failure(
+                IllegalArgumentException("Impossible to parse url")
+            )
         builder.appendQueryParameter("t", "caps")
-        Timber.i("uri: ${builder.build()}")
 
         val request = Request.Builder()
             .url(builder.build().toString())
@@ -152,12 +167,10 @@ class JackettRepository @Inject constructor(@ClassicClient private val client: O
                 ?: return@withContext EitherResult.Failure(
                     IOException("Unexpected empty body")
                 )
-            Timber.d("body: '${body.slice(0..100)}'")
             try {
-                val caps = xmlMapper.readValue<Caps>(body)
-                Timber.d("caps: $caps")
+                val capabilities = xmlMapper.readValue<Capabilities>(body)
             } catch (ex: Exception) {
-                Timber.e(ex, "Error parsing response")
+                Timber.e(ex, "Error parsing Capabilities response")
             }
             return@withContext EitherResult.Success(true)
         }

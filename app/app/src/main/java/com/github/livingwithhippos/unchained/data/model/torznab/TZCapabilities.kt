@@ -5,7 +5,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement
 
 @JacksonXmlRootElement(localName ="caps")
-data class Caps(
+data class Capabilities(
     @JacksonXmlProperty(localName = "server")
     val server: Server,
     @JacksonXmlProperty(localName = "limits")
@@ -26,15 +26,15 @@ data class Limits(
 )
 
 data class Searching(
-    @JacksonXmlProperty(localName = "search") val search: Search,
-    @JacksonXmlProperty(localName = "tv-search") val tvSearch: Search,
-    @JacksonXmlProperty(localName = "movie-search") val movieSearch: Search,
-    @JacksonXmlProperty(localName = "music-search") val musicSearch: Search,
-    @JacksonXmlProperty(localName = "audio-search") val audioSearch: Search,
-    @JacksonXmlProperty(localName = "book-search") val bookSearch: Search
+    @JacksonXmlProperty(localName = "search") val search: CapsSearch,
+    @JacksonXmlProperty(localName = "tv-search") val tvSearch: CapsSearch,
+    @JacksonXmlProperty(localName = "movie-search") val movieSearch: CapsSearch,
+    @JacksonXmlProperty(localName = "music-search") val musicSearch: CapsSearch,
+    @JacksonXmlProperty(localName = "audio-search") val audioSearch: CapsSearch,
+    @JacksonXmlProperty(localName = "book-search") val bookSearch: CapsSearch
 )
 
-data class Search(
+data class CapsSearch(
     @JacksonXmlProperty(isAttribute = true, localName = "available") val available: String,
     @JacksonXmlProperty(isAttribute = true, localName = "supportedParams") val supportedParams: String,
     @JacksonXmlProperty(isAttribute = true, localName = "searchEngine") val searchEngine: String
