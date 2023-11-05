@@ -303,6 +303,9 @@ class MainActivity : AppCompatActivity() {
                 // unlock the bottom menu
                 enableAllBottomNavItems()
             }
+            is FSMAuthenticationState.CheckCredentials -> {
+                // avoid issues with restoring activity state
+            }
             else -> {
                 // todo: decide if we need to check other possible values or reset the fsm to
                 // checkCredentials in these states and call startAuthenticationMachine
