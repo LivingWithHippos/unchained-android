@@ -37,7 +37,7 @@ data class Searching(
 data class CapsSearch(
     @JacksonXmlProperty(isAttribute = true, localName = "available") val available: String,
     @JacksonXmlProperty(isAttribute = true, localName = "supportedParams") val supportedParams: String,
-    @JacksonXmlProperty(isAttribute = true, localName = "searchEngine") val searchEngine: String
+    @JacksonXmlProperty(isAttribute = true, localName = "searchEngine") val searchEngine: String?
 )
 
 data class Categories(
@@ -51,7 +51,7 @@ data class Category(
     @JacksonXmlProperty(isAttribute = true, localName = "name") val name: String,
     @JacksonXmlElementWrapper(useWrapping = false)
     @JacksonXmlProperty(localName = "subcat")
-    val subcat: List<SubCategory>
+    val subcat: List<SubCategory>?
 )
 
 data class SubCategory(

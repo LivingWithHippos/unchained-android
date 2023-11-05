@@ -2,8 +2,8 @@ package com.github.livingwithhippos.unchained.data.repository
 
 import android.net.Uri
 import com.fasterxml.jackson.module.kotlin.readValue
+import com.github.livingwithhippos.unchained.data.model.jackett.Indexers
 import com.github.livingwithhippos.unchained.data.model.torznab.Capabilities
-import com.github.livingwithhippos.unchained.data.model.torznab.Channel
 import com.github.livingwithhippos.unchained.data.model.torznab.SearchRSS
 import com.github.livingwithhippos.unchained.di.ClassicClient
 import com.github.livingwithhippos.unchained.utilities.EitherResult
@@ -23,7 +23,7 @@ class JackettRepository @Inject constructor(@ClassicClient private val client: O
         baseUrl: String,
         port: Int = 9117,
         apiKey: String,
-        indexer: String = "all",
+        indexersFilter: String = "all",
         useSecureHttp: Boolean = false
     ): Uri.Builder? {
         var existingUri: Uri = try {
@@ -54,7 +54,7 @@ class JackettRepository @Inject constructor(@ClassicClient private val client: O
             .appendPath("api")
             .appendPath("v2.0")
             .appendPath("indexers")
-            .appendPath(indexer)
+            .appendPath(indexersFilter)
             .appendPath("results")
             .appendPath("torznab")
             .appendPath("api")
@@ -195,6 +195,53 @@ class JackettRepository @Inject constructor(@ClassicClient private val client: O
 
             return@withContext EitherResult.Failure(
                 IOException("Unexpected capabilities failure")
+            )
+        }
+    }
+
+    suspend fun getValidIndexers(
+        baseUrl: String,
+        port: Int = 9117,
+        apiKey: String,
+        configured: Boolean = true,
+    ): EitherResult<Exception, Indexers> = withContext(Dispatchers.IO) {
+        val builder = getBasicBuilder(
+            baseUrl,
+            port,
+            apiKey,
+            indexersFilter = "!status:failing,test:passed"
+        ) ?: return@withContext EitherResult.Failure(
+            IllegalArgumentException("Impossible to parse url")
+        )
+        builder.appendQueryParameter("t", "indexers")
+
+        if (configured)
+            builder.appendQueryParameter("configured", "true")
+        else
+            builder.appendQueryParameter("configured", "false")
+
+        val request = Request.Builder()
+            .url(builder.build().toString())
+            .build()
+
+        client.newCall(request).execute().use { response ->
+            if (!response.isSuccessful)
+                return@withContext EitherResult.Failure(
+                    IOException("Unexpected http code $response")
+                )
+            val body: String = response.body?.string()
+                ?: return@withContext EitherResult.Failure(
+                    IOException("Unexpected empty body")
+                )
+            try {
+                val indexers = xmlMapper.readValue<Indexers>(body)
+                return@withContext EitherResult.Success(indexers)
+            } catch (ex: Exception) {
+                Timber.e(ex, "Error parsing indexers response")
+            }
+
+            return@withContext EitherResult.Failure(
+                IOException("Unexpected indexers failure")
             )
         }
     }
