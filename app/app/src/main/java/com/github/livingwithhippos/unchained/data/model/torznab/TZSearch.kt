@@ -29,6 +29,7 @@ data class Item(
     @JacksonXmlProperty(localName = "link") val link: String,
     @JacksonXmlProperty(localName = "category") val categories: List<String>,
     @JacksonXmlProperty(localName = "enclosure") val enclosure: Enclosure,
+    // todo: check what happens with empty responses, nullable? default emptyList()?
     @JacksonXmlElementWrapper(useWrapping = false)
     @JacksonXmlProperty(namespace = "torznab", localName = "attr") val torznabAttributes: List<TorznabAttribute>
 )

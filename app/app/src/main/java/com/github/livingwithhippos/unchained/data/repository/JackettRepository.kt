@@ -67,8 +67,12 @@ class JackettRepository @Inject constructor(@ClassicClient private val client: O
         indexer: String = "all",
         apiKey: String,
         query: String,
-        mediaType: JackettMediaType? = null,
         categories: String = "",
+        attributes: String? = null,
+        extended: Boolean? = null,
+        offset: Int? = null,
+        limit: Int? = null,
+        mediaType: JackettMediaType? = null,
         genre: JackettGenre? = null,
         year: String? = null,
         season: String? = null,
@@ -77,7 +81,7 @@ class JackettRepository @Inject constructor(@ClassicClient private val client: O
         album: String? = null,
         artist: String? = null,
         publisher: String? = null,
-    ): EitherResult<Exception, Boolean> =
+    ): EitherResult<Exception, SearchRSS> =
         withContext(Dispatchers.IO) {
             val builder = getBasicBuilder(baseUrl, port, apiKey, indexer)
                 ?: return@withContext EitherResult.Failure(
@@ -92,7 +96,19 @@ class JackettRepository @Inject constructor(@ClassicClient private val client: O
             // the search fails with no "cat" element, even if empty
             builder.appendQueryParameter("cat", categories)
 
-            if (year != null)
+            if (attributes != null)
+                builder.appendQueryParameter("attrs", attributes)
+
+            if (extended != null)
+                builder.appendQueryParameter("extended", if (extended) "1" else "0")
+
+            if (offset != null)
+                builder.appendQueryParameter("offset", offset.toString())
+
+            if (limit != null)
+                builder.appendQueryParameter("limit", limit.toString())
+
+            if (limit != null)
                 builder.appendQueryParameter("year", year)
 
             if (season != null)
@@ -133,11 +149,14 @@ class JackettRepository @Inject constructor(@ClassicClient private val client: O
                     )
                 try {
                     val search = xmlMapper.readValue<SearchRSS>(body)
+                    return@withContext EitherResult.Success(search)
                 } catch (ex: Exception) {
                     Timber.e(ex, "Error parsing Search response")
                 }
 
-                return@withContext EitherResult.Success(true)
+                return@withContext EitherResult.Failure(
+                    IOException("Unexpected search failure")
+                )
             }
         }
 
@@ -147,7 +166,7 @@ class JackettRepository @Inject constructor(@ClassicClient private val client: O
         port: Int = 9117,
         apiKey: String,
         indexer: String = "all"
-    ): EitherResult<Exception, Boolean> = withContext(Dispatchers.IO) {
+    ): EitherResult<Exception, Capabilities> = withContext(Dispatchers.IO) {
         val builder = getBasicBuilder(baseUrl, port, apiKey, indexer)
             ?: return@withContext EitherResult.Failure(
                 IllegalArgumentException("Impossible to parse url")
@@ -169,10 +188,14 @@ class JackettRepository @Inject constructor(@ClassicClient private val client: O
                 )
             try {
                 val capabilities = xmlMapper.readValue<Capabilities>(body)
+                return@withContext EitherResult.Success(capabilities)
             } catch (ex: Exception) {
                 Timber.e(ex, "Error parsing Capabilities response")
             }
-            return@withContext EitherResult.Success(true)
+
+            return@withContext EitherResult.Failure(
+                IOException("Unexpected capabilities failure")
+            )
         }
     }
 }
