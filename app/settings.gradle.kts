@@ -32,7 +32,7 @@ dependencyResolutionManagement {
             version("fast_adapter", "5.7.0")
             version("flexbox", "3.0.0")
             version("fragment", "1.6.2")
-            version("hilt_navigation", "1.0.0")
+            version("hilt_navigation", "1.1.0")
             version("jackson", "2.15.3")
             version("jsoup", "1.16.2")
             version("junit", "4.13.2")
