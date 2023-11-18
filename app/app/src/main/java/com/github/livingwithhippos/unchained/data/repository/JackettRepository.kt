@@ -205,43 +205,51 @@ class JackettRepository @Inject constructor(@ClassicClient private val client: O
         apiKey: String,
         configured: Boolean = true,
     ): EitherResult<Exception, Indexers> = withContext(Dispatchers.IO) {
-        val builder = getBasicBuilder(
-            baseUrl,
-            port,
-            apiKey,
-            indexersFilter = "!status:failing,test:passed"
-        ) ?: return@withContext EitherResult.Failure(
-            IllegalArgumentException("Impossible to parse url")
-        )
-        builder.appendQueryParameter("t", "indexers")
+        try {
+            val builder = getBasicBuilder(
+                baseUrl,
+                port,
+                apiKey,
+                indexersFilter = "!status:failing,test:passed"
+            ) ?: return@withContext EitherResult.Failure(
+                IllegalArgumentException("Impossible to parse url")
+            )
+            builder.appendQueryParameter("t", "indexers")
 
-        if (configured)
-            builder.appendQueryParameter("configured", "true")
-        else
-            builder.appendQueryParameter("configured", "false")
+            if (configured)
+                builder.appendQueryParameter("configured", "true")
+            else
+                builder.appendQueryParameter("configured", "false")
 
-        val request = Request.Builder()
-            .url(builder.build().toString())
-            .build()
+            val request = Request.Builder()
+                .url(builder.build().toString())
+                .build()
 
-        client.newCall(request).execute().use { response ->
-            if (!response.isSuccessful)
+            client.newCall(request).execute().use { response ->
+                if (!response.isSuccessful)
+                    return@withContext EitherResult.Failure(
+                        IOException("Unexpected http code $response")
+                    )
+                val body: String = response.body?.string()
+                    ?: return@withContext EitherResult.Failure(
+                        IOException("Unexpected empty body")
+                    )
+                try {
+                    val indexers = xmlMapper.readValue<Indexers>(body)
+                    return@withContext EitherResult.Success(indexers)
+                } catch (ex: Exception) {
+                    Timber.e(ex, "Error parsing indexers response")
+                }
+
                 return@withContext EitherResult.Failure(
-                    IOException("Unexpected http code $response")
+                    IOException("Unexpected indexers failure")
                 )
-            val body: String = response.body?.string()
-                ?: return@withContext EitherResult.Failure(
-                    IOException("Unexpected empty body")
-                )
-            try {
-                val indexers = xmlMapper.readValue<Indexers>(body)
-                return@withContext EitherResult.Success(indexers)
-            } catch (ex: Exception) {
-                Timber.e(ex, "Error parsing indexers response")
             }
 
+        } catch (ex: Exception) {
+            Timber.e(ex, "Error getting indexers")
             return@withContext EitherResult.Failure(
-                IOException("Unexpected indexers failure")
+                ex
             )
         }
     }
