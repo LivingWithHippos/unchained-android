@@ -33,7 +33,7 @@ dependencyResolutionManagement {
             version("flexbox", "3.0.0")
             version("fragment", "1.6.2")
             version("hilt_navigation", "1.1.0")
-            version("jackson", "2.15.3")
+            version("jackson", "2.16.0")
             version("jsoup", "1.16.2")
             version("junit", "4.13.2")
             version("kotlin", "1.9.20")
