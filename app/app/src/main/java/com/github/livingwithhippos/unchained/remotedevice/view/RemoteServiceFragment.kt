@@ -101,6 +101,7 @@ class RemoteServiceFragment : Fragment() {
                             username = username.ifBlank { null },
                             password = password.ifBlank { null },
                             type = serviceType.value,
+                            apiToken = binding.tiApiToken.text.toString().trim(),
                             isDefault = false,
                         )
                     viewModel.updateService(remoteService)
@@ -195,11 +196,28 @@ class RemoteServiceFragment : Fragment() {
             binding.bDeleteService.isEnabled = false
         }
         val serviceType = serviceTypeMap[type]
-        if (serviceType == null) {
-            Timber.e("Unknown service type $type")
-            return
-        }
         // set up default switch, enable the button only for services that reproduce media
+        when (serviceType) {
+            RemoteServiceType.KODI -> {
+                binding.switchDefault.isEnabled = true
+                binding.tfApiToken.visibility = View.GONE
+            }
+            RemoteServiceType.VLC -> {
+                binding.switchDefault.isEnabled = true
+                binding.tfApiToken.visibility = View.GONE
+            }
+            RemoteServiceType.JACKETT -> {
+                binding.switchDefault.isEnabled = false
+                binding.switchDefault.isChecked = false
+            }
+            null -> {
+                Timber.e("Unknown service type $type")
+                return
+            }
+            else -> {
+            }
+        }
+
         if (serviceType.isMediaPlayer) {
             binding.switchDefault.isEnabled = true
         } else {
