@@ -103,7 +103,6 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
             pluginPickerView?.setOnItemClickListener { _, _, position, _ ->
                 val selection: String? = pluginAdapter.getItem(position)
                 if (selection != null) {
-                    binding.pluginPicker.hideKeyboard()
                     setupCategory(categoryPickerView, plugins.first { it.name == selection })
                     viewModel.setLastSelectedPlugin(plugins.first { it.name == selection }.name)
                 }
@@ -138,6 +137,13 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
                     true
                 }
                 else -> false
+            }
+        }
+
+        binding.tiSearch.setOnFocusChangeListener { v, hasFocus ->
+            Timber.d("search focus changed $hasFocus")
+            if (!hasFocus) {
+                v.hideKeyboard()
             }
         }
 
