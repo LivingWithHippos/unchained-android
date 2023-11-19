@@ -141,7 +141,6 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
         }
 
         binding.tiSearch.setOnFocusChangeListener { v, hasFocus ->
-            Timber.d("search focus changed $hasFocus")
             if (!hasFocus) {
                 v.hideKeyboard()
             }

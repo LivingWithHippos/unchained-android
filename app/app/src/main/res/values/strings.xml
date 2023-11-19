@@ -733,4 +733,11 @@
     <string name="loading_size">Loading size</string>
     <string name="summary_loading_size">How many items should be loaded at once from the downloads and torrents sections. Bigger is slower.</string>
     <string name="refresh">Refresh</string>
+    <string name="api_token">API token</string>
+    <string name="pick_search_type">Pick a search type</string>
+    <string name="plugin_search_description">Use community-created plugins specifically for Unchained. This is the default method if you don\'t know what to choose.</string>
+    <string name="plugins">Plugins</string>
+    <string name="services_search_description">Use services such as Jackett, Prowlarr or any Torznab app.</string>
+    <string name="all">all</string>
+    <string name="search_options">Search Options</string>
 </resources>
