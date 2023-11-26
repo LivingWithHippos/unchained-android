@@ -48,7 +48,7 @@ dependencyResolutionManagement {
             version("okhttp", "4.12.0")
             version("okio", "3.2.0")
             version("paging", "3.2.1")
-            version("protobuf", "3.25.0")
+            version("protobuf", "3.25.1")
             version("protobuf_plugin", "0.9.4")
             version("preference", "1.2.1")
             version("recyclerview", "1.3.2")
