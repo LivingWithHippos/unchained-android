@@ -19,7 +19,7 @@ import com.github.livingwithhippos.unchained.BR
  * A [ListAdapter] subclass. Allows for a generic list of items with data binding and an optional
  * listener.
  */
-abstract class DataBindingAdapter<T, U>(diffCallback: DiffUtil.ItemCallback<T>, val listener: U) :
+abstract class DataBindingAdapter<T, U>(diffCallback: DiffUtil.ItemCallback<T>, val listener: U? = null) :
     ListAdapter<T, DataBindingViewHolder<T, U>>(diffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DataBindingViewHolder<T, U> {
