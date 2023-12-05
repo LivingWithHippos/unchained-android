@@ -186,12 +186,27 @@ constructor(
         ) ?: FolderListFragment.TAG_DEFAULT_SORT
     }
 
+    fun saveSearchCategory(category: String) {
+        with(preferences.edit()) {
+            putString(KEY_CATEGORY, category)
+            apply()
+        }
+    }
+
+    fun getSearchCategory() : String{
+        return preferences.getString(
+            KEY_CATEGORY,
+            "all"
+        ) ?:  "all"
+    }
+
     companion object {
         // todo: these needs to be moved to a single object because if I reuse the same keys for two
         // objects I'll get the wrong result
         const val KEY_RESULTS = "search_results_key"
         const val KEY_CACHE = "search_cache_key"
         const val KEY_PLUGINS = "plugins_key"
+        const val KEY_CATEGORY = "category_key"
         const val KEY_LAST_SELECTED_PLUGIN = "plugin_last_selected_key"
         const val KEY_PLUGIN_DIALOG_NEEDED = "plugin_dialog_needed_key"
         const val KEY_DOH_DIALOG_NEEDED = "doh_dialog_needed_key"
