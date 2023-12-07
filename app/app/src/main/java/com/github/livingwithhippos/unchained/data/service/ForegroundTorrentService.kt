@@ -26,9 +26,9 @@ import com.github.livingwithhippos.unchained.utilities.extension.getStatusTransl
 import com.github.livingwithhippos.unchained.utilities.extension.vibrate
 import com.github.livingwithhippos.unchained.utilities.loadingStatusList
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 @SuppressLint("MissingPermission")
@@ -166,7 +166,11 @@ class ForegroundTorrentService : LifecycleService() {
                 torrentBuilder
                     .setProgress(100, torrent.progress.toInt(), false)
                     .setContentTitle(
-                        getString(R.string.torrent_in_progress_format, torrent.progress.toInt(), speedMBs)
+                        getString(
+                            R.string.torrent_in_progress_format,
+                            torrent.progress.toInt(),
+                            speedMBs
+                        )
                     )
                     .setOngoing(true)
             } else {
