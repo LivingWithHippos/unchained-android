@@ -23,7 +23,6 @@ class DeleteDialogFragment : DialogFragment() {
                 }
                 .setNegativeButton(R.string.close) { dialog, _ -> dialog.cancel() }
             builder.create()
-        }
-            ?: throw IllegalStateException("Activity cannot be null")
+        } ?: throw IllegalStateException("Activity cannot be null")
     }
 }

@@ -103,6 +103,8 @@ constructor(
 
 sealed class SecretResult {
     object Empty : SecretResult()
+
     object Expired : SecretResult()
+
     data class Retrieved(val value: Secrets) : SecretResult()
 }

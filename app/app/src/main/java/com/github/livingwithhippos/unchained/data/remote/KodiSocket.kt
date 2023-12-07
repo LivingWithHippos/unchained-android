@@ -41,7 +41,8 @@ class KodiSocket @Inject constructor(private val client: OkHttpClient) {
                     trySend(
                         WebSocketEvents.ConnectionError(
                             t.message
-                                ?: response?.message ?: "Failure using the websocket for url $url"
+                                ?: response?.message
+                                ?: "Failure using the websocket for url $url"
                         )
                     )
                 }
@@ -57,8 +58,12 @@ class KodiSocket @Inject constructor(private val client: OkHttpClient) {
 
 sealed class WebSocketEvents {
     object ConnectionOpened : WebSocketEvents()
+
     object ConnectionClosed : WebSocketEvents()
+
     data class ConnectionError(val error: String) : WebSocketEvents()
+
     data class MessageReceived(val message: String) : WebSocketEvents()
+
     data class BinaryMessageReceived(val message: ByteString) : WebSocketEvents()
 }

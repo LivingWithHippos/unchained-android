@@ -29,8 +29,7 @@ fun getPluginFilename(plugin: String): String {
  * @return
  */
 fun getManualPluginFilename(author: String?, name: String): String {
-    return (author?.lowercase()?.replace(noWordDigitRegex, "")
-        ?: "unknownAuthor") +
+    return (author?.lowercase()?.replace(noWordDigitRegex, "") ?: "unknownAuthor") +
         "_" +
         name.lowercase().replace(noWordDigitRegex, "") +
         PluginRepository.TYPE_UNCHAINED

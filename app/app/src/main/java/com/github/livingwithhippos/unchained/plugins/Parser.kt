@@ -193,8 +193,7 @@ class Parser(
                         }
                     }
                     else -> doc.getElementsByTag("table").first()
-                }
-                    ?: return emptyList()
+                } ?: return emptyList()
 
             // parse all the rows
             val rows = table.select("tr")
@@ -354,8 +353,7 @@ class Parser(
                         }
                     }
                     else -> doc.getElementsByTag("table").first()
-                }
-                    ?: return emptyList()
+                } ?: return emptyList()
 
             // parse all the rows
             val rows = table.select("tr")
@@ -381,8 +379,7 @@ class Parser(
                                     regexes.nameRegex,
                                     columns[tableLink.columns.nameColumn].html(),
                                     baseUrl
-                                )
-                                    ?: ""
+                                ) ?: ""
                             )
 
                     if (tableLink.columns.detailsColumn != null)
@@ -760,20 +757,30 @@ class Parser(
 sealed class ParserResult {
     // errors
     object MissingPlugin : ParserResult()
+
     object PluginVersionUnsupported : ParserResult()
+
     object MissingQuery : ParserResult()
+
     object MissingCategory : ParserResult()
+
     object NetworkBodyError : ParserResult()
+
     object EmptyInnerLinks : ParserResult()
+
     object PluginBuildError : ParserResult()
+
     object MissingImplementationError : ParserResult()
 
     // search flow
     data class SearchStarted(val size: Int) : ParserResult()
+
     object SearchFinished : ParserResult()
 
     // results
     data class Results(val values: List<ScrapedItem>) : ParserResult()
+
     data class SingleResult(val value: ScrapedItem) : ParserResult()
+
     object SourceError : ParserResult()
 }

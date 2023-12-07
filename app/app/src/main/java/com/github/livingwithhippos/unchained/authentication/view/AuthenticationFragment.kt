@@ -234,6 +234,8 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
 
 interface ButtonListener {
     fun onSaveCodeClick(codeInputField: TextInputEditText)
+
     fun onPasteCodeClick(codeInputField: TextInputEditText)
+
     fun onOpenLinkClick(url: String)
 }

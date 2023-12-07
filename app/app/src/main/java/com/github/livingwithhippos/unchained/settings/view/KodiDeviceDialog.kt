@@ -129,8 +129,7 @@ class KodiDeviceDialog() : DialogFragment() {
                 }
             }
             builder.create()
-        }
-            ?: throw IllegalStateException("Activity cannot be null")
+        } ?: throw IllegalStateException("Activity cannot be null")
     }
 
     private fun loadDeviceInfo(view: View, device: KodiDevice) {

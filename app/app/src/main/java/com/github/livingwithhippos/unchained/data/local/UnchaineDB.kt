@@ -27,6 +27,8 @@ import com.github.livingwithhippos.unchained.data.model.RepositoryPlugin
 )
 abstract class UnchaineDB : RoomDatabase() {
     abstract fun hostRegexDao(): HostRegexDao
+
     abstract fun kodiDeviceDao(): KodiDeviceDao
+
     abstract fun pluginRepositoryDao(): RepositoryDataDao
 }

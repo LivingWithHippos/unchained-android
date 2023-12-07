@@ -1113,8 +1113,7 @@ constructor(
         return preferences.getString(
             PreferenceKeys.DownloadManager.KEY,
             PreferenceKeys.DownloadManager.SYSTEM
-        )
-            ?: PreferenceKeys.DownloadManager.SYSTEM
+        ) ?: PreferenceKeys.DownloadManager.SYSTEM
     }
 
     fun startDownloadWorker(content: MainActivityMessage.DownloadEnqueued, folder: Uri) {
@@ -1248,11 +1247,17 @@ constructor(
 
 sealed class MainActivityMessage {
     data class StringID(val id: Int) : MainActivityMessage()
+
     data class InstalledPlugins(val number: Int) : MainActivityMessage()
+
     data class UpdateFound(val signature: String) : MainActivityMessage()
+
     object RequireDownloadFolder : MainActivityMessage()
+
     object RequireDownloadPermissions : MainActivityMessage()
+
     object RequireNotificationPermissions : MainActivityMessage()
+
     data class DownloadEnqueued(val source: String, val fileName: String) : MainActivityMessage()
 
     data class MultipleDownloadsEnqueued(val downloads: List<DownloadItem>) : MainActivityMessage()

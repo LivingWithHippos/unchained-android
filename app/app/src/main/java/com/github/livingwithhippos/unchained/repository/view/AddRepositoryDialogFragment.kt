@@ -61,8 +61,7 @@ class AddRepositoryDialogFragment : DialogFragment() {
                 }
             // Create the AlertDialog object and return it
             builder.create()
-        }
-            ?: throw IllegalStateException("Activity cannot be null")
+        } ?: throw IllegalStateException("Activity cannot be null")
     }
 
     override fun onCreateView(

@@ -258,18 +258,23 @@ sealed class PluginRepositoryEvent {
     ) : PluginRepositoryEvent()
 
     data class Uninstalled(val quantity: Int) : PluginRepositoryEvent()
+
     object Updated : PluginRepositoryEvent()
+
     data class FullData(
         val dbData: Map<RepositoryInfo, Map<RepositoryPlugin, List<PluginVersion>>>,
         val installedData: LocalPlugins
     ) : PluginRepositoryEvent()
 
     data class InvalidRepositoryLink(val reason: InvalidLinkReason) : PluginRepositoryEvent()
+
     data class ValidRepositoryLink(val repository: JsonPluginRepository) : PluginRepositoryEvent()
 }
 
 sealed class InvalidLinkReason {
     object NotAnUrl : InvalidLinkReason()
+
     object ConnectionError : InvalidLinkReason()
+
     object ParsingError : InvalidLinkReason()
 }

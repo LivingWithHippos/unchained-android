@@ -47,8 +47,8 @@ constructor(
     val downloadsLiveData: LiveData<PagingData<DownloadItem>> =
         queryLiveData.switchMap { query: String ->
             Pager(PagingConfig(pageSize = 50, initialLoadSize = 100)) {
-                DownloadPagingSource(downloadRepository, query)
-            }
+                    DownloadPagingSource(downloadRepository, query)
+                }
                 .liveData
                 .cachedIn(viewModelScope)
         }
@@ -56,8 +56,8 @@ constructor(
     val torrentsLiveData: LiveData<PagingData<TorrentItem>> =
         queryLiveData.switchMap { query: String ->
             Pager(PagingConfig(pageSize = 50, initialLoadSize = 100)) {
-                TorrentPagingSource(torrentsRepository, query)
-            }
+                    TorrentPagingSource(torrentsRepository, query)
+                }
                 .liveData
                 .cachedIn(viewModelScope)
         }
@@ -217,7 +217,10 @@ constructor(
 
 sealed class ListEvent {
     data class DownloadItemClick(val item: DownloadItem) : ListEvent()
+
     data class TorrentItemClick(val item: TorrentItem) : ListEvent()
+
     data class OpenTorrent(val item: TorrentItem) : ListEvent()
+
     data class SetTab(val tab: Int) : ListEvent()
 }

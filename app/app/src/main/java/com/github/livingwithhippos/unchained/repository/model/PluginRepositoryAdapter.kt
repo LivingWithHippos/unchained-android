@@ -52,7 +52,9 @@ object PluginStatus {
 
 interface PluginListener {
     fun onPluginDownloadClick(plugin: RepositoryListItem.Plugin)
+
     fun onPluginRemoveClick(plugin: RepositoryListItem.Plugin)
+
     fun onRepositoryClick(repository: RepositoryListItem.Repository)
 }
 

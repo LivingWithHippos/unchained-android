@@ -26,9 +26,9 @@ import com.github.livingwithhippos.unchained.utilities.extension.getStatusTransl
 import com.github.livingwithhippos.unchained.utilities.extension.vibrate
 import com.github.livingwithhippos.unchained.utilities.loadingStatusList
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @AndroidEntryPoint
 @SuppressLint("MissingPermission")

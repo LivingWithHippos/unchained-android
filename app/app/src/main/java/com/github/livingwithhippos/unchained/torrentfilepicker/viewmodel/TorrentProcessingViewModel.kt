@@ -238,14 +238,24 @@ constructor(
 
 sealed class TorrentEvent {
     data class Uploaded(val torrent: UploadedTorrent) : TorrentEvent()
+
     data class TorrentInfo(val item: TorrentItem) : TorrentEvent()
+
     data class CacheHit(val cache: CachedTorrent) : TorrentEvent()
+
     object CacheMiss : TorrentEvent()
+
     data class FilesSelected(val torrent: TorrentItem) : TorrentEvent()
+
     object DownloadAll : TorrentEvent()
+
     data class DownloadCache(val position: Int, val files: Int) : TorrentEvent()
+
     data class DownloadSelection(val filesNumber: Int) : TorrentEvent()
+
     object DownloadedFileSuccess : TorrentEvent()
+
     object DownloadedFileFailure : TorrentEvent()
+
     data class DownloadedFileProgress(val progress: Int) : TorrentEvent()
 }

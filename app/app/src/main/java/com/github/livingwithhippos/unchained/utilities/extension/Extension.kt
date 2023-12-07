@@ -37,8 +37,8 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Observer
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.utilities.EitherResult
-import timber.log.Timber
 import java.util.Locale
+import timber.log.Timber
 
 /**
  * Show a toast message
