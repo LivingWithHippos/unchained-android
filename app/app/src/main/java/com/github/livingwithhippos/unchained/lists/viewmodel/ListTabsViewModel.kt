@@ -4,8 +4,8 @@ import TorrentPagingSource
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -45,19 +45,19 @@ constructor(
 
     // items are filtered returning only if their names contain the query
     val downloadsLiveData: LiveData<PagingData<DownloadItem>> =
-        Transformations.switchMap(queryLiveData) { query: String ->
+        queryLiveData.switchMap { query: String ->
             Pager(PagingConfig(pageSize = 50, initialLoadSize = 100)) {
-                    DownloadPagingSource(downloadRepository, query)
-                }
+                DownloadPagingSource(downloadRepository, query)
+            }
                 .liveData
                 .cachedIn(viewModelScope)
         }
 
     val torrentsLiveData: LiveData<PagingData<TorrentItem>> =
-        Transformations.switchMap(queryLiveData) { query: String ->
+        queryLiveData.switchMap { query: String ->
             Pager(PagingConfig(pageSize = 50, initialLoadSize = 100)) {
-                    TorrentPagingSource(torrentsRepository, query)
-                }
+                TorrentPagingSource(torrentsRepository, query)
+            }
                 .liveData
                 .cachedIn(viewModelScope)
         }

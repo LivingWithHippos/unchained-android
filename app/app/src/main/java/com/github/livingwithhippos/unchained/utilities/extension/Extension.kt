@@ -37,8 +37,8 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Observer
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.utilities.EitherResult
-import java.util.Locale
 import timber.log.Timber
+import java.util.Locale
 
 /**
  * Show a toast message
@@ -302,10 +302,10 @@ fun <T> LiveData<T>.observeOnce(
     observe(
         lifecycleOwner,
         object : Observer<T> {
-            override fun onChanged(t: T?) {
-                observer.onChanged(t)
+            override fun onChanged(value: T) {
+                observer.onChanged(value)
                 if (untilNotNull) {
-                    if (t != null) removeObserver(this)
+                    if (value != null) removeObserver(this)
                 } else removeObserver(this)
             }
         }

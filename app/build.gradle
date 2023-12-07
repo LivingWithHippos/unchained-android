@@ -3,8 +3,8 @@ buildscript {
     apply from: 'versions.gradle'
 
     ext {
-        versions_plugin_version = '0.46.0'
-        kotlin_version = '1.8.10'
+        versions_plugin_version = '0.50.0'
+        kotlin_version = '1.8.22'
     }
 
     repositories {
@@ -27,7 +27,7 @@ buildscript {
 
 plugins {
     id "com.github.ben-manes.versions" version "$versions_plugin_version"
-    id 'org.jetbrains.kotlin.android' version '1.8.10' apply false
+    id 'org.jetbrains.kotlin.android' version '1.8.22' apply false
 }
 
 allprojects {
