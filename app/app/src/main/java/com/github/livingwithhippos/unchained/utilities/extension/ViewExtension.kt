@@ -181,6 +181,16 @@ fun BaseProgressIndicator<*>.setRealProgress(progress: Int) {
 }
 
 /**
+ * set the [ProgressIndicator] progress value, not available as xml tag
+ *
+ * @param progress: the progress to be set
+ */
+@BindingAdapter("floatProgress")
+fun BaseProgressIndicator<*>.setFloatProgress(progress: Float) {
+    this.setProgressCompat(progress.toInt(), true)
+}
+
+/**
  * This function format the download speed from bytes/s to kb/s and MB/s and assign it to the
  * [TextView]
  *

@@ -398,7 +398,7 @@
     <string name="confirm_item_removal_description">Are you sure you want to remove this item? The action cannot be undone.</string>
     <string name="confirm_removal">Confirm removal</string>
     <string name="multiple_links_warning">This torrent has multiple links. Check the downloads list to find all of them.</string>
-    <string name="percent_format" translatable="false">%1$d%%</string>
+    <string name="percent_format" translatable="false">%1$s%%</string>
     <string name="theme_day_support">This theme supports only the day mode</string>
     <string name="app_not_installed">App not installed. Check your settings.</string>
     <string name="limitations">Error: your phone is limiting background activity.</string>
