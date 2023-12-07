@@ -45,6 +45,7 @@ ktfmt {
 }
 
 android {
+    namespace "com.github.livingwithhippos.unchained"
 
     compileSdk 34
 
@@ -158,6 +159,7 @@ android {
 
     buildFeatures {
         dataBinding true
+        buildConfig true
     }
 
     compileOptions {

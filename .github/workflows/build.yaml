@@ -8,7 +8,7 @@ on:
       - master
 defaults:
   run:
-  # github does not appreciate ~ as home indicator. Prefer the full path.
+    # github does not appreciate ~ as home indicator. Prefer the full path.
     working-directory: /home/runner/work/unchained-android/unchained-android/app
 jobs:
   lint-release:
@@ -17,6 +17,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      - name: Setup
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
       - name: Run tests
         run: ./gradlew ktfmtCheck
   build:
@@ -24,41 +29,50 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      - name: Setup
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
       - name: Retrieve keystore for apk signing
         env:
-            ENCODED_KEYSTORE: ${{ secrets.KEYSTORE }}
+          ENCODED_KEYSTORE: ${{ secrets.KEYSTORE }}
         run: echo "$ENCODED_KEYSTORE" | base64 --decode > /home/runner/work/unchained-android/unchained-android/app/release.pfk
       - name: Build the app
         env:
-            KEYSTORE: /home/runner/work/unchained-android/unchained-android/app/release.pfk
-            KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-            KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-            KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          KEYSTORE: /home/runner/work/unchained-android/unchained-android/app/release.pfk
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: ./gradlew clean assembleRelease --stacktrace
       - name: Save apk
         uses: actions/upload-artifact@v3
         with:
-            name: apk
-            path: /home/runner/work/unchained-android/unchained-android/app/app/build/outputs/apk/release/*.apk
+          name: apk
+          path: /home/runner/work/unchained-android/unchained-android/app/app/build/outputs/apk/release/*.apk
   build-debug:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      - name: Setup
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
       - name: Retrieve keystore for apk signing
         env:
-            ENCODED_KEYSTORE: ${{ secrets.KEYSTORE }}
+          ENCODED_KEYSTORE: ${{ secrets.KEYSTORE }}
         run: echo "$ENCODED_KEYSTORE" | base64 --decode > /home/runner/work/unchained-android/unchained-android/app/release.pfk
       - name: Build the app
         env:
-            KEYSTORE: /home/runner/work/unchained-android/unchained-android/app/release.pfk
-            KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-            KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-            KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          KEYSTORE: /home/runner/work/unchained-android/unchained-android/app/release.pfk
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: ./gradlew clean assembleDebug --stacktrace
       - name: Save apk
         uses: actions/upload-artifact@v3
         with:
-            name: apk-debug
-            path: /home/runner/work/unchained-android/unchained-android/app/app/build/outputs/apk/debug/*.apk
-
+          name: apk-debug
+          path: /home/runner/work/unchained-android/unchained-android/app/app/build/outputs/apk/debug/*.apk

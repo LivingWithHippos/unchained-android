@@ -332,12 +332,12 @@ fun SwipeRefreshLayout.setRefreshThemeColor(themed: Boolean) {
         // get a reference to the current theme
         val typedValue = TypedValue()
         val theme: Resources.Theme = context.theme
-        theme.resolveAttribute(R.attr.colorSurface, typedValue, true)
+        theme.resolveAttribute(com.google.android.material.R.attr.colorSurface, typedValue, true)
         // arrow color
         val arrowColor = typedValue.data
         // this function accept a number of colors, the refresh indicator will rotate between them.
         setColorSchemeColors(arrowColor)
-        theme.resolveAttribute(R.attr.colorPrimary, typedValue, true)
+        theme.resolveAttribute(com.google.android.material.R.attr.colorPrimary, typedValue, true)
         // background color
         val backgroundColor = typedValue.data
         setProgressBackgroundColorSchemeColor(backgroundColor)
