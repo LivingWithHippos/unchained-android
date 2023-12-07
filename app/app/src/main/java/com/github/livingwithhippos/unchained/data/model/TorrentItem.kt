@@ -78,7 +78,7 @@ data class TorrentItem(
     @Json(name = "original_bytes") val originalBytes: Long?,
     @Json(name = "host") val host: String,
     @Json(name = "split") val split: Int,
-    @Json(name = "progress") val progress: Int,
+    @Json(name = "progress") val progress: Float,
     @Json(name = "status") val status: String,
     @Json(name = "added") val added: String,
     @Json(name = "files") val files: List<InnerTorrentFile>?,

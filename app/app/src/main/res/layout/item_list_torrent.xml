@@ -74,7 +74,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:visibility="@{item.progress >=0 &amp;&amp; item.progress &lt;100 ? View.VISIBLE : View.GONE, default=visible}"
-                    android:text="@{@string/percent_format(item.progress), default=`90%`}"
+                    android:text="@{@string/percent_format(String.valueOf(item.progress)), default=`90%`}"
                     android:layout_marginStart="5dp"
                     android:textColor="?attr/colorPrimary"
                     app:layout_constraintBottom_toBottomOf="@+id/tvTitle"

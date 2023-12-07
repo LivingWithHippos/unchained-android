@@ -164,9 +164,9 @@ class ForegroundTorrentService : LifecycleService() {
             if (torrent.status == "downloading") {
                 val speedMBs = (torrent.speed ?: 0).toFloat().div(1000000)
                 torrentBuilder
-                    .setProgress(100, torrent.progress, false)
+                    .setProgress(100, torrent.progress.toInt(), false)
                     .setContentTitle(
-                        getString(R.string.torrent_in_progress_format, torrent.progress, speedMBs)
+                        getString(R.string.torrent_in_progress_format, torrent.progress.toInt(), speedMBs)
                     )
                     .setOngoing(true)
             } else {

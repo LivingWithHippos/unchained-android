@@ -128,7 +128,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="@{@string/percent_format(torrent.progress), default=`75 %`}"
+                            android:text="@{@string/percent_format(String.valueOf(torrent.progress)), default=`75 %`}"
                             android:textAlignment="center"
                             android:textStyle="bold" />
 
@@ -262,7 +262,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="5dp"
-                        android:text="@{@string/percent_format(torrent.progress), default=`90%`}"
+                        android:text="@{@string/percent_format(String.valueOf(torrent.progress)), default=`90%`}"
                         android:visibility="@{torrent.progress >=0 &amp;&amp; torrent.progress &lt;100 ? View.VISIBLE : View.GONE, default=visible}"
                         app:layout_constraintBottom_toBottomOf="@+id/tvDownloadOverline"
                         app:layout_constraintStart_toEndOf="@id/tvDownloadOverline" />
@@ -310,8 +310,8 @@
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="10dp"
                             android:indeterminate="false"
-                            android:progress="@{torrent.progress, default=60}"
                             app:indicatorColor="?attr/colorPrimary"
+                            floatProgress="@{torrent.progress, default=60}"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
