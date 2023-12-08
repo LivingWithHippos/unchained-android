@@ -75,6 +75,7 @@ open class BaseRepository(private val protoStore: ProtoStore) {
                 try {
                     call.invoke()
                 } catch (e: Exception) {
+                    Timber.e(e, "Error Occurred while getting api result")
                     return@withContext EitherResult.Failure(NetworkError(-1, errorMessage))
                 }
             val code = response.code()
@@ -95,6 +96,7 @@ open class BaseRepository(private val protoStore: ProtoStore) {
                     return@withContext if (error != null) EitherResult.Failure(error)
                     else EitherResult.Failure(ApiConversionError(-1))
                 } catch (e: IOException) {
+                    Timber.e(e, "Error parsing error body")
                     // todo: analyze error to return code
                     return@withContext EitherResult.Failure(
                         NetworkError(-1, "$errorMessage, http code $code")
