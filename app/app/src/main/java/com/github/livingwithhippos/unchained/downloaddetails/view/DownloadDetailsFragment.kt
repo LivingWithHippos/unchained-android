@@ -276,16 +276,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
     override fun onSendToPlayer(url: String) {
         when (viewModel.getDefaultPlayer()) {
             "vlc" -> {
-                val vlcIntent =
-                    createMediaIntent(
-                        "org.videolan.vlc",
-                        url,
-                        ComponentName(
-                            "org.videolan.vlc",
-                            "org.videolan.vlc.gui.video.VideoPlayerActivity"
-                        )
-                    )
-
+                val vlcIntent = createMediaIntent("org.videolan.vlc", url)
                 tryStartExternalApp(vlcIntent)
             }
             "mpv" -> {
