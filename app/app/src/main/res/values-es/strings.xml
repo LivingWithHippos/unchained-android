@@ -207,6 +207,7 @@
     <plurals name="seeders_format">
         <item quantity="one">%d seeder</item>
         <item quantity="other">%d seeders</item>
+        <item quantity="many">%d seeders</item>
     </plurals>
     <string name="seeders_string_format">seeder/s: %s</string>
     <string name="torrent_in_progress_format">%1$d%% - %2$.2f MB/s</string>
@@ -264,18 +265,22 @@
     <plurals name="magnet_format">
         <item quantity="one">%d magnet</item>
         <item quantity="other">%d magnets</item>
+        <item quantity="many">%d magnets</item>
     </plurals>
     <plurals name="torrent_format">
         <item quantity="one">%d torrent</item>
         <item quantity="other">%d torrents</item>
+        <item quantity="many">%d torrents</item>
     </plurals>
     <plurals name="links_format">
         <item quantity="one">1 enlace</item>
         <item quantity="other">%d enlaces</item>
+        <item quantity="many">%d enlaces</item>
     </plurals>
     <plurals name="plugins_version_old_format">
         <item quantity="one">1 plugin needs an update. Check for a new version</item>
         <item quantity="other">%d plugins need an update. Check for a new version</item>
+        <item quantity="many">%d plugins need an update. Check for a new version</item>
     </plurals>
     <string name="n_plugins_installed">%d plugins instalados. Reinicie la aplicación para utilizarlos.</string>
     <string name="size_format">tamaño: %s</string>
