@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 7,
-    "identityHash": "4b2d6b07a4aa7d84db95ac7e77c52788",
+    "identityHash": "39a4e2df9bdf2ac3f5bc60fb84497a57",
     "entities": [
       {
         "tableName": "host_regex",
@@ -295,7 +295,7 @@
       },
       {
         "tableName": "remote_service",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `device_id` INTEGER NOT NULL, `name` TEXT NOT NULL, `port` INTEGER NOT NULL, `username` TEXT, `password` TEXT, `type` INTEGER NOT NULL, `is_default` INTEGER NOT NULL, `field_1` TEXT NOT NULL, `field_2` TEXT NOT NULL, `field_3` TEXT NOT NULL, FOREIGN KEY(`device_id`) REFERENCES `remote_device`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `device_id` INTEGER NOT NULL, `name` TEXT NOT NULL, `port` INTEGER NOT NULL, `username` TEXT, `password` TEXT, `type` INTEGER NOT NULL, `is_default` INTEGER NOT NULL, `api_token` TEXT NOT NULL, `field_1` TEXT NOT NULL, `field_2` TEXT NOT NULL, `field_3` TEXT NOT NULL, FOREIGN KEY(`device_id`) REFERENCES `remote_device`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -346,6 +346,12 @@
             "notNull": true
           },
           {
+            "fieldPath": "apiToken",
+            "columnName": "api_token",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
             "fieldPath": "fieldOne",
             "columnName": "field_1",
             "affinity": "TEXT",
@@ -389,7 +395,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '4b2d6b07a4aa7d84db95ac7e77c52788')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '39a4e2df9bdf2ac3f5bc60fb84497a57')"
     ]
   }
 }

@@ -9,7 +9,7 @@ plugins {
     id("androidx.navigation.safeargs.kotlin")
     id("com.google.protobuf") version "0.9.4"
     id("com.mikepenz.aboutlibraries.plugin")
-    id("com.ncorti.ktfmt.gradle") version "0.14.0"
+    id("com.ncorti.ktfmt.gradle") version "0.17.0"
     kotlin("kapt")
 }
 
@@ -60,8 +60,8 @@ android {
         applicationId = "com.github.livingwithhippos.unchained"
         minSdk = 22
         targetSdk = 34
-        versionCode = 38
-        versionName = "1.1.0"
+        versionCode = 41
+        versionName = "1.2.0"
 
         javaCompileOptions {
             annotationProcessorOptions {
@@ -185,6 +185,11 @@ dependencies {
 
     implementation(libs.datastore.core)
     implementation(libs.datastore.prefs)
+
+    implementation(libs.jackson.kotlin)
+    implementation(libs.jackson.xml)
+    implementation(libs.woodstox)
+    implementation(libs.stax)
 
     kapt(libs.moshi.kapt)
     implementation(libs.moshi.runtime)

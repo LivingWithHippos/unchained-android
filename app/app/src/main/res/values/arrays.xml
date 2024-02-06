@@ -69,6 +69,30 @@
         <item>@string/player_vlc</item>
         <item>@string/jackett</item>
     </string-array>
+    <string-array name="search_categories">
+        <item>@string/category_all</item>
+        <item>@string/category_anime</item>
+        <item>@string/category_art</item>
+        <item>@string/category_books</item>
+        <item>@string/category_doujinshi</item>
+        <item>@string/category_games</item>
+        <item>@string/category_manga</item>
+        <item>@string/category_movies</item>
+        <item>@string/category_music</item>
+        <item>@string/category_pictures</item>
+        <item>@string/category_software</item>
+        <item>@string/category_tv</item>
+        <item>@string/category_videos</item>
+    </string-array>
+    <string-array name="search_sorting">
+        <item>@string/default_string</item>
+        <item>@string/seeders</item>
+        <item>@string/sort_by_size_asc</item>
+        <item>@string/sort_by_size_desc</item>
+        <item>@string/sort_by_az</item>
+        <item>@string/sort_by_za</item>
+        <item>@string/added_date</item>
+    </string-array>
 
     <declare-styleable name="StatComponent">
         <attr name="show_label" format="boolean" />

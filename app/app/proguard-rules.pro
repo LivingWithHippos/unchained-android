@@ -25,10 +25,11 @@
   <fields>;
    }
 
--dontwarn org.bouncycastle.jsse.BCSSLParameters
--dontwarn org.bouncycastle.jsse.BCSSLSocket
--dontwarn org.bouncycastle.jsse.provider.BouncyCastleJsseProvider
--dontwarn org.conscrypt.*
--dontwarn org.openjsse.javax.net.ssl.SSLParameters
--dontwarn org.openjsse.javax.net.ssl.SSLSocket
--dontwarn org.openjsse.net.ssl.OpenJSSE
+# https://github.com/square/retrofit#r8--proguard
+# With R8 full mode generic signatures are stripped for classes that are not
+# kept. Suspend functions are wrapped in continuations where the type argument
+# is used.
+-keep,allowobfuscation,allowshrinking class kotlin.coroutines.Continuation
+
+# With R8 full mode generic signatures are stripped for classes that are not kept.
+-keep,allowobfuscation,allowshrinking class retrofit2.Response

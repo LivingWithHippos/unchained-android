@@ -38,6 +38,7 @@ class RemoteService(
     // or 1 entity per service type with customized fields
     // or also storing a json object as string and parsing it back
     // extra field example: api token
+    @ColumnInfo(name = "api_token") val apiToken: String = "",
     @ColumnInfo(name = "field_1") val fieldOne: String = "",
     @ColumnInfo(name = "field_2") val fieldTwo: String = "",
     @ColumnInfo(name = "field_3") val fieldThree: String = ""
