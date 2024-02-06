@@ -193,11 +193,8 @@ constructor(
         }
     }
 
-    fun getSearchCategory() : String{
-        return preferences.getString(
-            KEY_CATEGORY,
-            "all"
-        ) ?:  "all"
+    fun getSearchCategory(): String {
+        return preferences.getString(KEY_CATEGORY, "all") ?: "all"
     }
 
     companion object {

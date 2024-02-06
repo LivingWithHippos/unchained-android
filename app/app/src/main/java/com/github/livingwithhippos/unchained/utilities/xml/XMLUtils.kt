@@ -18,7 +18,8 @@ internal val xmlMapper = XmlMapper.builder(XmlFactory(
     .build()
  */
 
-internal val xmlMapper = XmlMapper.builder()
-    .defaultUseWrapper(false)
-    .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-    .build()
+internal val xmlMapper =
+    XmlMapper.builder()
+        .defaultUseWrapper(false)
+        .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+        .build()

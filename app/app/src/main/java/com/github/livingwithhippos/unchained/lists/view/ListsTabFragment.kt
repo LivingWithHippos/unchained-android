@@ -862,5 +862,6 @@ interface SelectedItemsButtonsListener {
     fun openSelectedDetails()
 
     fun openNewDownload()
+
     fun refreshList()
 }

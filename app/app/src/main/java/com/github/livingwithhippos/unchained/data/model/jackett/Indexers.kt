@@ -5,8 +5,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement
 import com.github.livingwithhippos.unchained.data.model.torznab.Capabilities
 
-
-@JacksonXmlRootElement(localName ="indexers")
+@JacksonXmlRootElement(localName = "indexers")
 data class Indexers(
     @JacksonXmlElementWrapper(useWrapping = false)
     @JacksonXmlProperty(localName = "indexer")

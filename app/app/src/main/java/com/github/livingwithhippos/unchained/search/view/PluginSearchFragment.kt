@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.AutoCompleteTextView
 import android.widget.Button
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.databinding.FragmentSearchPluginsTabBinding
@@ -18,14 +17,9 @@ import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.sidesheet.SideSheetDialog
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
-import timber.log.Timber
 
 @AndroidEntryPoint
-class PluginSearchFragment: UnchainedFragment() {
+class PluginSearchFragment : UnchainedFragment() {
 
     private val viewModel: SearchViewModel by viewModels()
 
@@ -53,30 +47,35 @@ class PluginSearchFragment: UnchainedFragment() {
             sideSheetDialog.dismiss()
         }
 
-        val pluginsChipsGroup: ChipGroup = sideSheetDialog.findViewById<ChipGroup>(R.id.pluginsChipGroup) ?: return
+        val pluginsChipsGroup: ChipGroup =
+            sideSheetDialog.findViewById<ChipGroup>(R.id.pluginsChipGroup) ?: return
 
         for (plugin in plugins) {
-            pluginsChipsGroup.addView((inflater.inflate(R.layout.custom_chip_layout, pluginsChipsGroup, false) as Chip).apply {
-                text = plugin.name
-                isCheckable = true
-                // todo: load this from preferences
-                isChecked = false
-            })
+            pluginsChipsGroup.addView(
+                (inflater.inflate(R.layout.custom_chip_layout, pluginsChipsGroup, false) as Chip)
+                    .apply {
+                        text = plugin.name
+                        isCheckable = true
+                        // todo: load this from preferences
+                        isChecked = false
+                    }
+            )
             // todo: on checked listener to get the enabled list on search click
         }
 
-        sideSheetDialog.findViewById<Chip>(R.id.allPluginsChip)?.setOnCheckedChangeListener { _, isChecked ->
+        sideSheetDialog.findViewById<Chip>(R.id.allPluginsChip)?.setOnCheckedChangeListener {
+            _,
+            isChecked ->
             for (i in 0 until pluginsChipsGroup.childCount) {
                 val chip = pluginsChipsGroup.getChildAt(i) as? Chip
-                chip?.let {
-                    if (it.id != R.id.allPluginsChip)
-                        it.isChecked = isChecked
-                }
+                chip?.let { if (it.id != R.id.allPluginsChip) it.isChecked = isChecked }
             }
         }
 
-        val categoryPicker: AutoCompleteTextView? = sideSheetDialog.findViewById(R.id.categoryPickerTextView) as? AutoCompleteTextView
-        val orderPicker: AutoCompleteTextView? = sideSheetDialog.findViewById(R.id.sortingPickerTextView) as? AutoCompleteTextView
+        val categoryPicker: AutoCompleteTextView? =
+            sideSheetDialog.findViewById(R.id.categoryPickerTextView) as? AutoCompleteTextView
+        val orderPicker: AutoCompleteTextView? =
+            sideSheetDialog.findViewById(R.id.sortingPickerTextView) as? AutoCompleteTextView
 
         if (categoryPicker != null) {
             categoryPicker.setOnItemClickListener { parent, _, position, _ ->
@@ -133,7 +132,8 @@ class PluginSearchFragment: UnchainedFragment() {
             "videos" -> getString(R.string.category_videos)
             "music" -> getString(R.string.category_music)
             "tv" -> getString(R.string.category_tv)
-            "books" -> getString(R.string.category_books) // Assuming this is the correct string resource
+            "books" ->
+                getString(R.string.category_books) // Assuming this is the correct string resource
             // searches on "all" will just be redirected to the no_category search
             else -> getString(R.string.category_all)
         }
@@ -165,10 +165,7 @@ class PluginSearchFragment: UnchainedFragment() {
         }
     }
 
-
     private fun setup(binding: FragmentSearchPluginsTabBinding) {
-        binding.bOptions.setOnClickListener {
-            viewModel.fetchPlugins(requireContext())
-        }
+        binding.bOptions.setOnClickListener { viewModel.fetchPlugins(requireContext()) }
     }
 }

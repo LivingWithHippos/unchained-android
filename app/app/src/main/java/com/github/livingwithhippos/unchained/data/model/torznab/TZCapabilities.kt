@@ -4,21 +4,15 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement
 
-@JacksonXmlRootElement(localName ="caps")
+@JacksonXmlRootElement(localName = "caps")
 data class Capabilities(
-    @JacksonXmlProperty(localName = "server")
-    val server: Server,
-    @JacksonXmlProperty(localName = "limits")
-    val limits: Limits,
-    @JacksonXmlProperty(localName = "searching")
-    val searching: Searching,
-    @JacksonXmlProperty(localName = "categories")
-    val categories: Categories
+    @JacksonXmlProperty(localName = "server") val server: Server,
+    @JacksonXmlProperty(localName = "limits") val limits: Limits,
+    @JacksonXmlProperty(localName = "searching") val searching: Searching,
+    @JacksonXmlProperty(localName = "categories") val categories: Categories
 )
 
-data class Server(
-    @JacksonXmlProperty(isAttribute = true, localName = "title") val title: String
-)
+data class Server(@JacksonXmlProperty(isAttribute = true, localName = "title") val title: String)
 
 data class Limits(
     @JacksonXmlProperty(isAttribute = true, localName = "default") val default: Int,
@@ -36,7 +30,8 @@ data class Searching(
 
 data class CapsSearch(
     @JacksonXmlProperty(isAttribute = true, localName = "available") val available: String,
-    @JacksonXmlProperty(isAttribute = true, localName = "supportedParams") val supportedParams: String,
+    @JacksonXmlProperty(isAttribute = true, localName = "supportedParams")
+    val supportedParams: String,
     @JacksonXmlProperty(isAttribute = true, localName = "searchEngine") val searchEngine: String?
 )
 

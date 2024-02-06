@@ -31,7 +31,8 @@ data class Item(
     @JacksonXmlProperty(localName = "enclosure") val enclosure: Enclosure,
     // todo: check what happens with empty responses, nullable? default emptyList()?
     @JacksonXmlElementWrapper(useWrapping = false)
-    @JacksonXmlProperty(namespace = "torznab", localName = "attr") val torznabAttributes: List<TorznabAttribute>
+    @JacksonXmlProperty(namespace = "torznab", localName = "attr")
+    val torznabAttributes: List<TorznabAttribute>
 )
 
 data class Enclosure(

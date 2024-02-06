@@ -214,8 +214,7 @@ class RemoteServiceFragment : Fragment() {
                 Timber.e("Unknown service type $type")
                 return
             }
-            else -> {
-            }
+            else -> {}
         }
 
         if (serviceType.isMediaPlayer) {
