@@ -33,6 +33,7 @@ import com.github.livingwithhippos.unchained.utilities.extension.hideKeyboard
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.google.android.material.button.MaterialButton
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -219,10 +220,13 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
                         binding.loadingCircle.isIndeterminate = true
                     }
                     is ParserResult.SearchFinished -> {
-                        activityViewModel.checkTorrentCache(searchAdapter.currentList)
                         binding.loadingCircle.isIndeterminate = false
                         binding.loadingCircle.progress = 100
                         // update the data with cached results
+                        lifecycleScope.launch {
+                            delay(500)
+                            activityViewModel.checkTorrentCache(searchAdapter.currentList)
+                        }
                     }
                     is ParserResult.EmptyInnerLinks -> {
                         context?.showToast(R.string.no_links)
