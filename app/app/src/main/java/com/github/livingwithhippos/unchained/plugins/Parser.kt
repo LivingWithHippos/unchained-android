@@ -54,8 +54,8 @@ class Parser(
                     val queryUrl =
                         replaceData(
                             oldUrl =
-                            if (currentCategory == null) plugin.search.urlNoCategory
-                            else plugin.search.urlCategory!!,
+                                if (currentCategory == null) plugin.search.urlNoCategory
+                                else plugin.search.urlCategory!!,
                             url = plugin.url,
                             query = currentQuery,
                             category = currentCategory,
@@ -708,7 +708,7 @@ class Parser(
 
             if (
                 !name.isNullOrBlank() &&
-                (magnets.isNotEmpty() || torrents.isNotEmpty() || hosting.isNotEmpty())
+                    (magnets.isNotEmpty() || torrents.isNotEmpty() || hosting.isNotEmpty())
             ) {
 
                 val seeders = parseSingle(regexes.seedersRegex, html, url)
@@ -788,6 +788,7 @@ class Parser(
 sealed class ParserResult {
     // errors
     data object MissingPlugin : ParserResult()
+
     data object NoEnabledPlugins : ParserResult()
 
     data object PluginVersionUnsupported : ParserResult()

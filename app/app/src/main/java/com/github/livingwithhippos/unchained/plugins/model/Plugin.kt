@@ -22,13 +22,13 @@ data class Plugin(
 ) : Parcelable {
     fun isCompatible(): Boolean {
         return engineVersion.toInt() == Parser.PLUGIN_ENGINE_VERSION.toInt() &&
-                Parser.PLUGIN_ENGINE_VERSION >= engineVersion
+            Parser.PLUGIN_ENGINE_VERSION >= engineVersion
     }
 }
 
 fun isCompatible(engineVersion: Double): Boolean {
     return engineVersion.toInt() == Parser.PLUGIN_ENGINE_VERSION.toInt() &&
-            Parser.PLUGIN_ENGINE_VERSION >= engineVersion
+        Parser.PLUGIN_ENGINE_VERSION >= engineVersion
 }
 
 @JsonClass(generateAdapter = true)
