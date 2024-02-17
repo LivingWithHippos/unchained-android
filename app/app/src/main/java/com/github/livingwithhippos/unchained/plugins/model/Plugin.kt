@@ -22,13 +22,13 @@ data class Plugin(
 ) : Parcelable {
     fun isCompatible(): Boolean {
         return engineVersion.toInt() == Parser.PLUGIN_ENGINE_VERSION.toInt() &&
-            Parser.PLUGIN_ENGINE_VERSION >= engineVersion
+                Parser.PLUGIN_ENGINE_VERSION >= engineVersion
     }
 }
 
 fun isCompatible(engineVersion: Double): Boolean {
     return engineVersion.toInt() == Parser.PLUGIN_ENGINE_VERSION.toInt() &&
-        Parser.PLUGIN_ENGINE_VERSION >= engineVersion
+            Parser.PLUGIN_ENGINE_VERSION >= engineVersion
 }
 
 @JsonClass(generateAdapter = true)
@@ -54,7 +54,27 @@ data class SupportedCategories(
 data class PluginSearch(
     @Json(name = "category") val urlCategory: String?,
     @Json(name = "no_category") val urlNoCategory: String,
-    @Json(name = "page_start") val pageStart: Int? = 1
+    @Json(name = "page_start") val pageStart: Int? = 1,
+    @Json(name = "sorting") val sorting: PluginSorting?,
+    @Json(name = "order") val order: PluginOrdering?,
+) : Parcelable
+
+@JsonClass(generateAdapter = true)
+@Parcelize
+data class PluginSorting(
+    @Json(name = "comments") val comments: String?,
+    @Json(name = "downloads") val downloads: String?,
+    @Json(name = "size") val size: String?,
+    @Json(name = "date") val date: String?,
+    @Json(name = "seeders") val seeders: String?,
+    @Json(name = "leechers") val leechers: String?,
+) : Parcelable
+
+@JsonClass(generateAdapter = true)
+@Parcelize
+data class PluginOrdering(
+    @Json(name = "ascending") val ascending: String?,
+    @Json(name = "descending") val descending: String?,
 ) : Parcelable
 
 @JsonClass(generateAdapter = true)
@@ -115,6 +135,7 @@ data class PluginRegexes(
     @Json(name = "seeders") val seedersRegex: RegexpsGroup?,
     @Json(name = "leechers") val leechersRegex: RegexpsGroup?,
     @Json(name = "size") val sizeRegex: RegexpsGroup?,
+    @Json(name = "date_added") val dateAddedRegex: RegexpsGroup?,
     @Json(name = "magnet") val magnetRegex: RegexpsGroup?,
     @Json(name = "torrents") val torrentRegexes: RegexpsGroup?,
     @Json(name = "hosting") val hostingRegexes: RegexpsGroup?,
@@ -127,6 +148,7 @@ data class Columns(
     @Json(name = "name_column") val nameColumn: Int?,
     @Json(name = "seeders_column") val seedersColumn: Int?,
     @Json(name = "leechers_column") val leechersColumn: Int?,
+    @Json(name = "added_date_column") val addedDateColumn: Int?,
     @Json(name = "size_column") val sizeColumn: Int?,
     @Json(name = "magnet_column") val magnetColumn: Int?,
     @Json(name = "torrent_column") val torrentColumn: Int?,
