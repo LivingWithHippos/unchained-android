@@ -6,4 +6,8 @@
         android:title="@string/download_all" />
     <item android:id="@+id/manual_pick"
         android:title="@string/download_selected_files" />
+    <item android:id="@+id/copy_magnet"
+        android:title="@string/copy_magnet" />
+    <item android:id="@+id/share_magnet"
+        android:title="@string/share_magnet" />
 </menu>

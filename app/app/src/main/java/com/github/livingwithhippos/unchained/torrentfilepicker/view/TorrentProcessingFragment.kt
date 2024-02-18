@@ -1,5 +1,6 @@
 package com.github.livingwithhippos.unchained.torrentfilepicker.view
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -27,6 +28,7 @@ import com.github.livingwithhippos.unchained.torrentfilepicker.viewmodel.Torrent
 import com.github.livingwithhippos.unchained.torrentfilepicker.viewmodel.TorrentProcessingViewModel
 import com.github.livingwithhippos.unchained.utilities.Node
 import com.github.livingwithhippos.unchained.utilities.beforeSelectionStatusList
+import com.github.livingwithhippos.unchained.utilities.extension.copyToClipboard
 import com.github.livingwithhippos.unchained.utilities.extension.isMagnet
 import com.github.livingwithhippos.unchained.utilities.extension.isTorrent
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
@@ -51,6 +53,9 @@ class TorrentProcessingFragment : UnchainedFragment() {
 
     private var cachedTorrent: CachedTorrent? = null
 
+    /** Save the torrent/magnet has when loaded */
+    private var torrentHash: String? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -74,10 +79,12 @@ class TorrentProcessingFragment : UnchainedFragment() {
                         content.item.files?.size == 1 &&
                             "waiting_files_selection".equals(content.item.status, ignoreCase = true)
                     ) {
+                        // todo: make this configurable in settings
                         context?.showToast(R.string.single_torrent_file_available)
                         viewModel.triggerTorrentEvent(TorrentEvent.DownloadAll)
                         viewModel.startSelectionLoop()
                     } else {
+                        torrentHash = content.item.hash
                         // torrent loaded
                         if (
                             activityViewModel.getCurrentTorrentCachePick()?.first != content.item.id
@@ -269,6 +276,11 @@ class TorrentProcessingFragment : UnchainedFragment() {
         val lastSelection: Node<TorrentFileItem>? = viewModel.structureLiveData.value?.peekContent()
         if (lastSelection == null) popup.menu.findItem(R.id.manual_pick).isEnabled = false
 
+        if (torrentHash == null) {
+            popup.menu.findItem(R.id.copy_magnet).isVisible = false
+            popup.menu.findItem(R.id.share_magnet).isVisible = false
+        }
+
         popup.setOnMenuItemClickListener { menuItem: MenuItem ->
             // Respond to menu item click.
             when (menuItem.itemId) {
@@ -325,6 +337,16 @@ class TorrentProcessingFragment : UnchainedFragment() {
                     } else {
                         Timber.e("Last files selection should not have been null")
                     }
+                }
+                R.id.copy_magnet -> {
+                    copyToClipboard("Real-Debrid Magnet", "magnet:?xt=urn:btih:$torrentHash")
+                    context?.showToast(R.string.link_copied)
+                }
+                R.id.share_magnet -> {
+                    val shareIntent = Intent(Intent.ACTION_SEND)
+                    shareIntent.type = "text/plain"
+                    shareIntent.putExtra(Intent.EXTRA_TEXT, "magnet:?xt=urn:btih:$torrentHash")
+                    startActivity(Intent.createChooser(shareIntent, getString(R.string.share_with)))
                 }
                 else -> {
                     Timber.e("Unknown menu button pressed: $menuItem")

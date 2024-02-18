@@ -520,7 +520,7 @@
     <string name="port_range_error">Port must be between 1 and 65535</string>
     <string name="kodi_configure_credentials">Please configure Kodi in the app settings</string>
     <string name="kodi_remote_control">Kodi remote control instructions</string>
-    <string name="enable_kodi_control">Tap here for instructions on how to set up Kodi for remote control (usually enabled in system->services->control). After that complete the required fields below</string>
+    <string name="enable_kodi_control">Tap here for instructions on how to set up Kodi for remote control (usually enabled in system->services->control)</string>
     <string name="only_if_auth">Required only if the authentication is enabled in Kodi</string>
     <string name="rd_status">Real Debrid status</string>
     <string name="show_kodi">Show Kodi button</string>
@@ -544,7 +544,7 @@
     <string name="content_description_plugins_link">Link to plugins page</string>
     <string name="get_plugins">Get more plugins</string>
     <string name="reset_login">Reset login</string>
-    <string name="sort_by_default">Default</string>
+    <string name="default_string">Default</string>
     <string name="sort_by_az">Alphabetical</string>
     <string name="sort_by_za">Reverse alphabetical</string>
     <string name="sort_by_size_desc">Bigger first</string>
@@ -692,4 +692,52 @@
     <string name="vibrate_on_download">Vibrate on downloads completion</string>
     <string name="kodi_picker">Select destination server</string>
     <string name="kodi_picker_description">Show a selection menu when sending links to Kodi</string>
+    <string name="themes">Themes</string>
+    <string name="select">Select</string>
+    <string name="selected_theme">Selected theme</string>
+    <string name="apply">Apply</string>
+    <string name="copy_magnet">Copy Magnet</string>
+    <string name="share_magnet">Share Magnet</string>
+    <string name="remote_devices">Remote Devices</string>
+    <string name="remote_devices_summary">Manage services such as Kodi and VLC running on different devices</string>
+    <string name="manage_remote_devices">Manage Remote Devices</string>
+    <string name="delete_services">Delete Services</string>
+    <string name="new_service">New Service</string>
+    <string name="remote_device">Remote Device</string>
+    <string name="jackett" translatable="false">Jackett</string>
+    <string name="service_deleted">Service deleted</string>
+    <string name="service">Service</string>
+    <string name="services">Services</string>
+    <string name="dialog_confirm_action">Are you sure you want to proceed?</string>
+    <string name="pick_service">Pick Service</string>
+    <string name="default_service">Default Service</string>
+    <string name="transcoding">Transcoding</string>
+    <string name="recent">Recent</string>
+    <string name="browser">Browser</string>
+    <string name="add">Add</string>
+    <string name="show_streaming">Show streaming button</string>
+    <string name="connection_error">Connection error</string>
+    <plurals name="service_number_format">
+        <item quantity="zero">No services</item>
+        <item quantity="one">1 service</item>
+        <item quantity="other">%1$d services</item>
+    </plurals>
+    <plurals name="device_number_format">
+        <item quantity="zero">No devices</item>
+        <item quantity="one">1 device</item>
+        <item quantity="other">%1$d devices</item>
+    </plurals>
+    <string name="recent_service_format">Recent: %s</string>
+    <string name="default_service_format">Default: %s</string>
+    <string name="added_date">Date</string>
+    <string name="loading_size">Loading size</string>
+    <string name="summary_loading_size">How many items should be loaded at once from the downloads and torrents sections. Bigger is slower.</string>
+    <string name="refresh">Refresh</string>
+    <string name="api_token">API token</string>
+    <string name="pick_search_type">Pick a search type</string>
+    <string name="plugin_search_description">Use community-created plugins specifically for Unchained. This is the default method if you don\'t know what to choose.</string>
+    <string name="plugins">Plugins</string>
+    <string name="services_search_description">Use services such as Jackett, Prowlarr or any Torznab app.</string>
+    <string name="all">all</string>
+    <string name="search_options">Search Options</string>
 </resources>

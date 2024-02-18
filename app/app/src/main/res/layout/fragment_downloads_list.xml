@@ -38,45 +38,61 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="false"
-                android:tooltipText="@string/select_deselect_all"
-                android:text="@{selectedDownloads.toString(), default=`2`}" />
+                android:nextFocusDown="@id/rvDownloadList"
+                android:text="@{selectedDownloads.toString(), default=`2`}"
+                android:tooltipText="@string/select_deselect_all" />
 
-            <Button
+            <ImageView
                 android:id="@+id/bDeleteSelected"
-                style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:paddingStart="13dp"
+                android:layout_width="70dp"
+                android:layout_height="wrap_content"
                 android:contentDescription="@string/delete"
+                android:nextFocusRight="@id/bDownloadSelected"
+                android:nextFocusDown="@id/rvDownloadList"
                 android:onClick="@{() -> listener.deleteSelectedItems()}"
-                app:icon="@drawable/icon_delete"
-                android:tooltipText="@string/delete_selected"
-                />
+                android:paddingVertical="12dp"
+                android:src="@drawable/icon_delete"
+                android:tooltipText="@string/delete"
+                app:tint="?attr/colorPrimary" />
 
-            <Button
+            <ImageView
                 android:id="@+id/bDownloadSelected"
-                style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:paddingStart="13dp"
+                android:layout_width="70dp"
+                android:layout_height="wrap_content"
                 android:contentDescription="@string/download"
+                android:nextFocusRight="@id/bShareSelected"
+                android:nextFocusDown="@id/rvDownloadList"
                 android:onClick="@{() -> listener.downloadSelectedItems()}"
-                app:icon="@drawable/icon_download"
-                android:tooltipText="@string/download_selected"
-                />
+                android:paddingVertical="12dp"
+                android:src="@drawable/icon_download"
+                android:tooltipText="@string/download"
+                app:tint="?attr/colorPrimary" />
 
-
-            <Button
+            <ImageView
                 android:id="@+id/bShareSelected"
-                style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:paddingStart="13dp"
+                android:layout_width="70dp"
+                android:layout_height="wrap_content"
                 android:contentDescription="@string/share"
+                android:nextFocusRight="@id/bRefresh"
+                android:nextFocusDown="@id/rvDownloadList"
                 android:onClick="@{() -> listener.shareSelectedItems()}"
-                app:icon="@drawable/icon_share"
-                android:tooltipText="@string/share_selected"
-                />
+                android:paddingVertical="12dp"
+                android:src="@drawable/icon_share"
+                android:tooltipText="@string/share"
+                app:tint="?attr/colorPrimary" />
+
+            <ImageView
+                android:id="@+id/bRefresh"
+                android:layout_width="70dp"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/refresh"
+                android:nextFocusRight="@id/rvDownloadList"
+                android:nextFocusDown="@id/rvDownloadList"
+                android:onClick="@{() -> listener.refreshList()}"
+                android:paddingVertical="12dp"
+                android:src="@drawable/icon_reload"
+                android:tooltipText="@string/refresh"
+                app:tint="?attr/colorPrimary" />
 
         </LinearLayout>
 

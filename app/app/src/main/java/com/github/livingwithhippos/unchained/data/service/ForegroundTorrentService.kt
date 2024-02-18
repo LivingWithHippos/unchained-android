@@ -5,11 +5,13 @@ import android.app.Notification
 import android.app.PendingIntent
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.ServiceInfo
 import android.os.Binder
 import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.app.ServiceCompat
 import androidx.core.app.TaskStackBuilder
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.MutableLiveData
@@ -122,7 +124,16 @@ class ForegroundTorrentService : LifecycleService() {
             if (shouldVibrate && finishedTorrents.isNotEmpty()) applicationContext.vibrate()
         }
 
-        startForeground(SUMMARY_ID, summaryBuilder.build())
+        ServiceCompat.startForeground(
+            this,
+            SUMMARY_ID,
+            summaryBuilder.build(),
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
+            } else {
+                0
+            }
+        )
 
         preferences.registerOnSharedPreferenceChangeListener(preferenceListener)
     }
@@ -139,7 +150,6 @@ class ForegroundTorrentService : LifecycleService() {
         lifecycleScope.launch {
             while (true) {
                 try {
-                    val token = torrentRepository.getToken()
                     torrentsLiveData.postValue(getTorrentList())
                 } catch (ex: IllegalArgumentException) {
                     // no valid token ready, retry later

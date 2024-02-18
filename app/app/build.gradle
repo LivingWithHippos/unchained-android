@@ -1,5 +1,5 @@
 plugins {
-    id 'com.ncorti.ktfmt.gradle' version '0.15.1'
+    id 'com.ncorti.ktfmt.gradle' version '0.17.0'
     id 'com.google.dagger.hilt.android'
 
 }
@@ -54,8 +54,8 @@ android {
         applicationId "com.github.livingwithhippos.unchained"
         minSdk 22
         targetSdk 34
-        versionCode 40
-        versionName "1.1.2"
+        versionCode 41
+        versionName "1.2.0"
         // limit resources for a list of locales
         // resConfigs "en", "it"
 
@@ -191,6 +191,9 @@ dependencies {
     // datastore
     implementation deps.datastore.datastore
     implementation deps.protobuf.javalite
+
+    // datetime
+    implementation deps.datetime.core
 
     implementation deps.flexbox
 

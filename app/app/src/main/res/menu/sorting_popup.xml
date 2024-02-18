@@ -3,7 +3,7 @@
     <item
         android:id="@+id/sortByDefault"
         android:icon="@drawable/icon_sort_default"
-        android:title="@string/sort_by_default" />
+        android:title="@string/default_string" />
     <item
         android:id="@+id/sortByAZ"
         android:icon="@drawable/icon_sort_az"
@@ -24,4 +24,8 @@
         android:id="@+id/sortBySeeders"
         android:icon="@drawable/icon_sort_seeders"
         android:title="@string/seeders" />
+    <item
+        android:id="@+id/sortByAdded"
+        android:icon="@drawable/icon_date"
+        android:title="@string/added_date" />
 </menu>

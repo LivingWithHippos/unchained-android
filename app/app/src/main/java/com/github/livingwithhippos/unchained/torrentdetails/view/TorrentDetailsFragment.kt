@@ -1,5 +1,6 @@
 package com.github.livingwithhippos.unchained.torrentdetails.view
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -31,6 +32,7 @@ import com.github.livingwithhippos.unchained.torrentdetails.model.getFilesNodes
 import com.github.livingwithhippos.unchained.torrentdetails.viewmodel.TorrentDetailsViewModel
 import com.github.livingwithhippos.unchained.utilities.EventObserver
 import com.github.livingwithhippos.unchained.utilities.Node
+import com.github.livingwithhippos.unchained.utilities.extension.copyToClipboard
 import com.github.livingwithhippos.unchained.utilities.extension.getApiErrorMessage
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.github.livingwithhippos.unchained.utilities.loadingStatusList
@@ -216,10 +218,26 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
     override fun onDeleteClick(id: String) {
         viewModel.deleteTorrent(id)
     }
+
+    override fun onShareMagnetClick() {
+        val shareIntent = Intent(Intent.ACTION_SEND)
+        shareIntent.type = "text/plain"
+        shareIntent.putExtra(Intent.EXTRA_TEXT, "magnet:?xt=urn:btih:${args.item.hash}")
+        startActivity(Intent.createChooser(shareIntent, getString(R.string.share_with)))
+    }
+
+    override fun onCopyMagnetClick() {
+        copyToClipboard("Real-Debrid Magnet", "magnet:?xt=urn:btih:${args.item.hash}")
+        context?.showToast(R.string.link_copied)
+    }
 }
 
 interface TorrentDetailsListener {
     fun onDownloadClick(item: TorrentItem)
 
     fun onDeleteClick(id: String)
+
+    fun onShareMagnetClick()
+
+    fun onCopyMagnetClick()
 }

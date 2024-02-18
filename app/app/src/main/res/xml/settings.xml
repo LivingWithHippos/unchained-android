@@ -32,6 +32,16 @@
 
     <PreferenceCategory android:title="@string/download">
 
+        <SeekBarPreference
+            app:title="@string/loading_size"
+            app:key="paging_size"
+            app:summary="@string/summary_loading_size"
+            android:min="50"
+            android:max="2500"
+            android:defaultValue="50"
+            app:showSeekBarValue="true"
+            />
+
         <DropDownPreference
             android:defaultValue="download_manager_system"
             android:entries="@array/downloader"

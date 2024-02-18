@@ -42,7 +42,7 @@ fun getFilesNodes(
 ): Node<TorrentFileItem> {
     val rootFolder = Node(TorrentFileItem(TYPE_FOLDER, "", 0, selected = false, "/"))
 
-    if (item.files != null && item.files.isNotEmpty()) {
+    if (!item.files.isNullOrEmpty()) {
         val files = if (selectedOnly) item.files.filter { it.selected == 1 } else item.files
         for (file in files) {
             val paths = file.path.split("/").drop(1)
