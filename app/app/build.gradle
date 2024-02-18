@@ -192,6 +192,9 @@ dependencies {
     implementation deps.datastore.datastore
     implementation deps.protobuf.javalite
 
+    // datetime
+    implementation deps.datetime.core
+
     implementation deps.flexbox
 
     // moshi
