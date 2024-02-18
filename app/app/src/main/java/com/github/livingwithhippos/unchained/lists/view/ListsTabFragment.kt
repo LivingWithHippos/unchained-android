@@ -296,6 +296,11 @@ class ListsTabFragment : UnchainedFragment() {
                                 binding.listPager.currentItem = TORRENTS_TAB
                         }
                     }
+                    ListEvent.NewDownload -> {
+                        val action =
+                            ListsTabFragmentDirections.actionListTabsDestToNewDownloadFragment()
+                        findNavController().navigate(action)
+                    }
                 }
             }
         )
@@ -387,9 +392,6 @@ class DownloadsListFragment : UnchainedFragment(), DownloadListListener {
 
     private val viewModel: ListTabsViewModel by activityViewModels()
 
-    // used to simulate a debounce effect while typing on the search bar
-    var queryJob: Job? = null
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -463,6 +465,17 @@ class DownloadsListFragment : UnchainedFragment(), DownloadListListener {
 
                 override fun openSelectedDetails() {
                     // used only in torrent view
+                }
+
+                override fun openNewDownload() {
+                    viewModel.postEventNotice(ListEvent.NewDownload)
+                }
+
+                override fun refreshList() {
+                    if (!binding.srLayout.isRefreshing) {
+                        binding.srLayout.isRefreshing = true
+                        downloadAdapter.refresh()
+                    }
                 }
             }
 
@@ -597,9 +610,6 @@ class TorrentsListFragment : UnchainedFragment(), TorrentListListener {
 
     private val viewModel: ListTabsViewModel by activityViewModels()
 
-    // used to simulate a debounce effect while typing on the search bar
-    var queryJob: Job? = null
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -673,6 +683,17 @@ class TorrentsListFragment : UnchainedFragment(), TorrentListListener {
                         Timber.e(
                             "Somehow user triggered openSelectedDetails with a selection size of ${torrentTracker.selection.toList().size}"
                         )
+                }
+
+                override fun openNewDownload() {
+                    viewModel.postEventNotice(ListEvent.NewDownload)
+                }
+
+                override fun refreshList() {
+                    if (!binding.srLayout.isRefreshing) {
+                        binding.srLayout.isRefreshing = true
+                        torrentAdapter.refresh()
+                    }
                 }
             }
 
@@ -824,11 +845,11 @@ class TorrentsListFragment : UnchainedFragment(), TorrentListListener {
 }
 
 sealed class ListState {
-    object UpdateTorrent : ListState()
+    data object UpdateTorrent : ListState()
 
-    object UpdateDownload : ListState()
+    data object UpdateDownload : ListState()
 
-    object Ready : ListState()
+    data object Ready : ListState()
 }
 
 interface SelectedItemsButtonsListener {
@@ -839,4 +860,8 @@ interface SelectedItemsButtonsListener {
     fun downloadSelectedItems()
 
     fun openSelectedDetails()
+
+    fun openNewDownload()
+
+    fun refreshList()
 }
