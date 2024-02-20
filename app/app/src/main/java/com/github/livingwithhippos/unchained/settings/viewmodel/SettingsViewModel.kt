@@ -58,12 +58,19 @@ constructor(
 
     fun userLogout() {
         viewModelScope.launch {
-            protoStore.deleteCredentials()
-            eventLiveData.postEvent(SettingEvent.Logout)
+            val credentials = protoStore.getCredentials()
+            if (credentials.accessToken.isBlank() && credentials.clientId.isBlank()) {
+                eventLiveData.postEvent(SettingEvent.LogoutNoCredentials)
+            } else {
+                protoStore.deleteCredentials()
+                eventLiveData.postEvent(SettingEvent.Logout)
+            }
         }
     }
 }
 
 sealed class SettingEvent {
-    object Logout : SettingEvent()
+    data object Logout : SettingEvent()
+
+    data object LogoutNoCredentials : SettingEvent()
 }

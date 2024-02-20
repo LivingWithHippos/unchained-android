@@ -79,7 +79,7 @@
                         app:srcCompat="@drawable/icon_share" />
 
                     <TextView
-                        android:textAppearance="?attr/textAppearanceLabelSmall"
+                        style="@style/TextAppearance.UnchainedTheme.Body2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
@@ -104,7 +104,7 @@
                         app:srcCompat="@drawable/icon_open_external" />
 
                     <TextView
-                        android:textAppearance="?attr/textAppearanceLabelSmall"
+                        style="@style/TextAppearance.UnchainedTheme.Body2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"

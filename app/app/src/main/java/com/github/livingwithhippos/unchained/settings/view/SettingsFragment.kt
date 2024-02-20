@@ -134,6 +134,9 @@ class SettingsFragment : PreferenceFragmentCompat() {
                     context?.showToast(R.string.user_logged_out)
                     activity?.finishAffinity()
                 }
+                SettingEvent.LogoutNoCredentials -> {
+                    context?.showToast(R.string.no_credentials_found)
+                }
                 null -> {
                     // do nothing
                 }
