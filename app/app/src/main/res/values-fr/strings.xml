@@ -524,4 +524,5 @@
     <string name="services_search_description">Utilisez des services tels que Jackett, Prowlarr ou toute autre application Torznab.</string>
     <string name="all">tous</string>
     <string name="search_options">Options de recherche</string>
+    <string name="no_credentials_found">Aucun justificatif n\'a été trouvé</string>
 </resources>

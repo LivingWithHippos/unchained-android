@@ -527,4 +527,5 @@
     <string name="services_search_description">Utilizza servizi come Jackett, Prowlarr o qualunque server Torznab.</string>
     <string name="all">tutti</string>
     <string name="search_options">Opzioni ricerca</string>
+    <string name="no_credentials_found">Nessuna credenziale trovata</string>
 </resources>

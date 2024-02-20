@@ -740,4 +740,5 @@
     <string name="services_search_description">Use services such as Jackett, Prowlarr or any Torznab app.</string>
     <string name="all">all</string>
     <string name="search_options">Search Options</string>
+    <string name="no_credentials_found">No credentials found</string>
 </resources>
