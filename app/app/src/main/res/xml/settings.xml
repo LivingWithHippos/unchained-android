@@ -2,12 +2,6 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-
-    <Preference
-        android:key="user_logout"
-        app:title="@string/logout"
-        />
-
     <PreferenceCategory
         android:summary="@string/restart_to_apply"
         android:title="@string/title_aspect">
@@ -33,14 +27,13 @@
     <PreferenceCategory android:title="@string/download">
 
         <SeekBarPreference
-            app:title="@string/loading_size"
-            app:key="paging_size"
-            app:summary="@string/summary_loading_size"
-            android:min="50"
-            android:max="2500"
             android:defaultValue="50"
+            android:max="2500"
+            android:min="50"
+            app:key="paging_size"
             app:showSeekBarValue="true"
-            />
+            app:summary="@string/summary_loading_size"
+            app:title="@string/loading_size" />
 
         <DropDownPreference
             android:defaultValue="download_manager_system"
@@ -88,8 +81,7 @@
         <Preference
             app:key="install_plugins_instructions"
             app:summary="@string/install_plugins_summary"
-            app:title="@string/install_plugins"
-            />
+            app:title="@string/install_plugins" />
 
         <Preference
             app:key="delete_external_plugins"
@@ -140,9 +132,7 @@
                 android:title="@string/default_media_player"
                 app:useSimpleSummaryProvider="true" />
 
-            <Preference
-                android:summary="@string/custom_media_player_summary"
-                />
+            <Preference android:summary="@string/custom_media_player_summary" />
 
             <EditTextPreference
                 android:defaultValue=""
@@ -150,8 +140,7 @@
                 android:selectAllOnFocus="true"
                 android:singleLine="true"
                 android:title="@string/custom_media_player"
-                app:useSimpleSummaryProvider="true"
-                />
+                app:useSimpleSummaryProvider="true" />
         </PreferenceCategory>
     </PreferenceCategory>
 
@@ -226,6 +215,10 @@
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/title_various">
+
+        <Preference
+            android:key="user_logout"
+            app:title="@string/logout" />
 
         <EditTextPreference
             android:defaultValue="10"
