@@ -18,21 +18,16 @@ object TelemetryManager {
         Countly.sharedInstance().onStop()
     }
 
-    fun onConfigurationChanged(newConfig: Configuration) {
-        Countly.sharedInstance().onConfigurationChanged(newConfig)
-    }
-
     fun onCreate(application: Application) {
         // remove these lines from the release file
         Timber.plant(Timber.DebugTree())
 
         val config: CountlyConfig =
             CountlyConfig(application, BuildConfig.COUNTLY_APP_KEY, BuildConfig.COUNTLY_URL)
-                .setIdMode(DeviceIdType.OPEN_UDID)
-                .enableCrashReporting()
                 // if true will print internal countly logs to the console
                 .setLoggingEnabled(false)
         // .setParameterTamperingProtectionSalt("SampleSalt")
+        config.crashes.enableCrashReporting()
 
         Countly.sharedInstance().init(config)
     }

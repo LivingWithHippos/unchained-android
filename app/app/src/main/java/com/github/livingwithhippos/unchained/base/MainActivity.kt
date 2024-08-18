@@ -142,11 +142,6 @@ class MainActivity : AppCompatActivity() {
         return emptyList()
     }
 
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-        TelemetryManager.onConfigurationChanged(newConfig)
-    }
-
     private lateinit var binding: ActivityMainBinding
 
     val viewModel: MainActivityViewModel by viewModels()

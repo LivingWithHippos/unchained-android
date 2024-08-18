@@ -13,7 +13,5 @@ object TelemetryManager {
 
     fun onStop() {}
 
-    fun onConfigurationChanged(newConfig: Configuration) {}
-
     fun onCreate(application: Application) {}
 }
