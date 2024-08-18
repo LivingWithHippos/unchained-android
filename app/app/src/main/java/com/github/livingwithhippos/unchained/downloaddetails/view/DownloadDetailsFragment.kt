@@ -31,6 +31,7 @@ import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.coroutineScope
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.DeleteDialogFragment
@@ -168,10 +169,10 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
             viewLifecycleOwner,
             EventObserver {
                 // todo: check returned value (it)
-                activity?.baseContext?.showToast(R.string.download_removed)
-                // if deleted go back
-                activity?.onBackPressed()
+                context?.showToast(R.string.download_removed)
                 activityViewModel.setListState(ListState.UpdateDownload)
+                // if deleted go back
+                findNavController().popBackStack()
             })
 
         setFragmentResultListener("deleteActionKey") { _, bundle ->

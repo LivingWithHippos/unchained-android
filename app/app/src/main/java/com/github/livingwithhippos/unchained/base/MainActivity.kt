@@ -789,9 +789,8 @@ class MainActivity : AppCompatActivity() {
 
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
-        // if the user is pressing back on an "exiting"fragment, show a toast alerting him and wait
-        // for
-        // him to press back again for confirmation
+        // if the user is pressing back on an "exiting" fragment, show a toast alerting him and wait
+        // for him to press back again for confirmation
 
         val currentDestination = navController.currentDestination
         val previousDestination = navController.previousBackStackEntry

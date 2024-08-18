@@ -142,10 +142,10 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
             viewLifecycleOwner,
             EventObserver {
                 // todo: check returned value (it)
-                activity?.baseContext?.showToast(R.string.torrent_removed)
+                context?.showToast(R.string.torrent_removed)
                 activityViewModel.setListState(ListState.UpdateTorrent)
                 // if deleted go back
-                activity?.onBackPressed()
+                findNavController().popBackStack()
             })
 
         setFragmentResultListener("deleteActionKey") { _, bundle ->
