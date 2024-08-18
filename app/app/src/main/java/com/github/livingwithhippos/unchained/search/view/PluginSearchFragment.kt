@@ -11,17 +11,23 @@ import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.databinding.FragmentSearchPluginsTabBinding
 import com.github.livingwithhippos.unchained.folderlist.view.FolderListFragment
+import com.github.livingwithhippos.unchained.plugins.ParserResult
 import com.github.livingwithhippos.unchained.plugins.model.Plugin
 import com.github.livingwithhippos.unchained.search.viewmodel.SearchViewModel
+import com.github.livingwithhippos.unchained.utilities.extension.hideKeyboard
+import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.sidesheet.SideSheetDialog
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 @AndroidEntryPoint
 class PluginSearchFragment : UnchainedFragment() {
 
     private val viewModel: SearchViewModel by viewModels()
+
+    private val pluginsList: MutableList<Plugin> = mutableListOf()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -33,6 +39,8 @@ class PluginSearchFragment : UnchainedFragment() {
         setup(binding)
 
         viewModel.pluginLiveData.observe(viewLifecycleOwner) { parsedPlugins ->
+            if (pluginsList.isNotEmpty()) pluginsList.clear()
+            pluginsList.addAll(parsedPlugins.first)
             setupAndShowSheet(inflater, parsedPlugins.first)
         }
 
@@ -51,15 +59,20 @@ class PluginSearchFragment : UnchainedFragment() {
             sideSheetDialog.findViewById<ChipGroup>(R.id.pluginsChipGroup) ?: return
 
         for (plugin in plugins) {
-            pluginsChipsGroup.addView(
-                (inflater.inflate(R.layout.custom_chip_layout, pluginsChipsGroup, false) as Chip)
-                    .apply {
-                        text = plugin.name
-                        isCheckable = true
-                        // todo: load this from preferences
-                        isChecked = false
-                    }
-            )
+            val pluginChip: Chip = (inflater.inflate(R.layout.custom_chip_layout, pluginsChipsGroup, false) as Chip)
+                .apply {
+                    text = plugin.name
+                    isCheckable = true
+                    // todo: load this from preferences
+                    isChecked = false
+                }
+            pluginChip.setOnCheckedChangeListener { _, isChecked ->
+                viewModel.setPluginEnabled(
+                    plugin.name,
+                    isChecked
+                )
+            }
+            pluginsChipsGroup.addView(pluginChip)
             // todo: on checked listener to get the enabled list on search click
         }
 
@@ -113,7 +126,7 @@ class PluginSearchFragment : UnchainedFragment() {
             getString(R.string.category_videos) -> "videos"
             getString(R.string.category_music) -> "music"
             getString(R.string.category_tv) -> "tv"
-            getString(R.string.category_tv) -> "books"
+            getString(R.string.category_books) -> "books"
             // searches on "all" will just be redirected to the no_category search
             else -> "all"
         }
@@ -166,6 +179,43 @@ class PluginSearchFragment : UnchainedFragment() {
     }
 
     private fun setup(binding: FragmentSearchPluginsTabBinding) {
-        binding.bOptions.setOnClickListener { viewModel.fetchPlugins(requireContext()) }
+        binding.tfSearch.hideKeyboard()
+        binding.bPluginSettings.setOnClickListener { viewModel.fetchPlugins(requireContext()) }
+        binding.bStartSearch.setOnClickListener {
+            val query: String = binding.tiSearch.text?.toString()?.trim() ?: ""
+            if (query.isBlank()) {
+                // todo: add string
+                context?.showToast(R.string.file_not_allowed)
+            } else {
+                // todo: category etc
+                viewModel
+                    .pluginSearchWithSettings(
+                        query = query
+                    )
+                    .observe(viewLifecycleOwner) { result ->
+                        when (result) {
+                            is ParserResult.SingleResult -> {
+                                Timber.d("Single result: ${result.value}")
+                            }
+                            is ParserResult.Results -> {
+                                Timber.d("Results: ${result.values}")
+                            }
+                            is ParserResult.SearchStarted -> {
+                                Timber.d("Search started")
+                            }
+                            is ParserResult.SearchFinished -> {
+                                Timber.d("Search finished")
+                            }
+                            is ParserResult.EmptyInnerLinks -> {
+                                Timber.d("Empty inner links")
+                            }
+                            else -> {
+                                Timber.d("Unknown result: $result")
+                            }
+                        }
+                    }
+
+            }
+        }
     }
 }
