@@ -37,7 +37,7 @@ constructor(
     private val torrentsRepository: TorrentsRepository
 ) : ViewModel() {
 
-    private val networkExceptionLiveData = MutableLiveData<Event<UnchainedNetworkException>>()
+    val networkExceptionLiveData = MutableLiveData<Event<UnchainedNetworkException>>()
     val torrentLiveData = MutableLiveData<Event<TorrentEvent>>()
     val structureLiveData = MutableLiveData<Event<Node<TorrentFileItem>>>()
 
@@ -52,6 +52,7 @@ constructor(
                 val addedMagnet = torrentsRepository.addMagnet(magnet, availableHosts.first().host)
                 when (addedMagnet) {
                     is EitherResult.Failure -> {
+                        Timber.e("Error adding magnet: ${addedMagnet.failure}")
                         networkExceptionLiveData.postEvent(addedMagnet.failure)
                     }
                     is EitherResult.Success -> {

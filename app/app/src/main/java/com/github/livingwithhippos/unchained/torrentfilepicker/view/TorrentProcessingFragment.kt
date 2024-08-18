@@ -16,11 +16,18 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
+import com.github.livingwithhippos.unchained.data.model.APIError
+import com.github.livingwithhippos.unchained.data.model.ApiConversionError
+import com.github.livingwithhippos.unchained.data.model.EmptyBodyError
+import com.github.livingwithhippos.unchained.data.model.NetworkError
+import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkException
 import com.github.livingwithhippos.unchained.data.model.cache.CachedAlternative
 import com.github.livingwithhippos.unchained.data.model.cache.CachedTorrent
 import com.github.livingwithhippos.unchained.data.repository.DownloadResult
 import com.github.livingwithhippos.unchained.databinding.FragmentTorrentProcessingBinding
 import com.github.livingwithhippos.unchained.lists.view.ListState
+import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationEvent
+import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationState
 import com.github.livingwithhippos.unchained.torrentdetails.model.TorrentFileItem
 import com.github.livingwithhippos.unchained.torrentdetails.model.TorrentFileItem.Companion.TYPE_FOLDER
 import com.github.livingwithhippos.unchained.torrentfilepicker.view.TorrentProcessingFragment.Companion.POSITION_FILE_PICKER
@@ -29,6 +36,7 @@ import com.github.livingwithhippos.unchained.torrentfilepicker.viewmodel.Torrent
 import com.github.livingwithhippos.unchained.utilities.Node
 import com.github.livingwithhippos.unchained.utilities.beforeSelectionStatusList
 import com.github.livingwithhippos.unchained.utilities.extension.copyToClipboard
+import com.github.livingwithhippos.unchained.utilities.extension.getApiErrorMessage
 import com.github.livingwithhippos.unchained.utilities.extension.isMagnet
 import com.github.livingwithhippos.unchained.utilities.extension.isTorrent
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
@@ -191,6 +199,38 @@ class TorrentProcessingFragment : UnchainedFragment() {
                 else -> {
                     Timber.d("Found unknown torrentLiveData event $content")
                     // reloaded fragment, close?
+                }
+            }
+        }
+
+        viewModel.networkExceptionLiveData.observe(viewLifecycleOwner) {
+
+            when (val response = it.getContentIfNotHandled()) {
+                null -> {}
+                is APIError -> {
+                    Timber.e("API error: ${response.errorCode}")
+                    if (response.errorCode == 8) {
+                            if (activityViewModel.getAuthenticationMachineState()
+                                        is FSMAuthenticationState.AuthenticatedOpenToken)
+                                activityViewModel.transitionAuthenticationMachine(
+                                    FSMAuthenticationEvent.OnExpiredOpenToken)
+                            context?.showToast(R.string.refreshing_token)
+                    } else {
+                        context?.let { c -> c.showToast(c.getApiErrorMessage(response.errorCode)) }
+                    }
+                    findNavController().popBackStack()
+                }
+                is NetworkError -> {
+                    context?.showToast(R.string.network_error)
+                    findNavController().popBackStack()
+                }
+                is ApiConversionError -> {
+                    context?.showToast(R.string.unknown_error)
+                    findNavController().popBackStack()
+                }
+                is EmptyBodyError -> {
+                    context?.showToast(R.string.network_error)
+                    findNavController().popBackStack()
                 }
             }
         }
