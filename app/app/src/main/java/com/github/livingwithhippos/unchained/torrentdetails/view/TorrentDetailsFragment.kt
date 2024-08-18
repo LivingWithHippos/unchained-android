@@ -143,9 +143,9 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
             EventObserver {
                 // todo: check returned value (it)
                 activity?.baseContext?.showToast(R.string.torrent_removed)
+                activityViewModel.setListState(ListState.UpdateTorrent)
                 // if deleted go back
                 activity?.onBackPressed()
-                activityViewModel.setListState(ListState.UpdateTorrent)
             })
 
         setFragmentResultListener("deleteActionKey") { _, bundle ->
