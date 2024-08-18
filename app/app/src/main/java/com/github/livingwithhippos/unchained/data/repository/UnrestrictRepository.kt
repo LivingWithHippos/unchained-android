@@ -13,10 +13,8 @@ import okhttp3.RequestBody.Companion.toRequestBody
 
 class UnrestrictRepository
 @Inject
-constructor(
-    protoStore: ProtoStore,
-    private val unrestrictApiHelper: UnrestrictApiHelper
-) : BaseRepository(protoStore) {
+constructor(protoStore: ProtoStore, private val unrestrictApiHelper: UnrestrictApiHelper) :
+    BaseRepository(protoStore) {
 
     suspend fun getEitherUnrestrictedLink(
         link: String,

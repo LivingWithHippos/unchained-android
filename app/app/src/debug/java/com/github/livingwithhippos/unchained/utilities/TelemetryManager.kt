@@ -2,11 +2,9 @@ package com.github.livingwithhippos.unchained.utilities
 
 import android.app.Activity
 import android.app.Application
-import android.content.res.Configuration
 import com.github.livingwithhippos.unchained.BuildConfig
 import ly.count.android.sdk.Countly
 import ly.count.android.sdk.CountlyConfig
-import ly.count.android.sdk.DeviceIdType
 import timber.log.Timber
 
 object TelemetryManager {

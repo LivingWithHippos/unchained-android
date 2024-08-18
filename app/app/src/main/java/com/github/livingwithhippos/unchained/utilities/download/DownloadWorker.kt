@@ -41,7 +41,6 @@ class DownloadWorker(private val appContext: Context, workerParams: WorkerParame
     private var shutdown = false
     private val preferences = PreferenceManager.getDefaultSharedPreferences(appContext)
 
-
     override suspend fun doWork(): Result {
 
         if (ActivityCompat.checkSelfPermission(
@@ -56,7 +55,8 @@ class DownloadWorker(private val appContext: Context, workerParams: WorkerParame
         val folderSetting: String? = inputData.getString(MainActivityViewModel.KEY_FOLDER_URI)
 
         if (sourceUrl == null || fileName == null || folderSetting == null) {
-            Timber.e("Error getting download source ${sourceUrl == null}, name ${fileName==null} or destination ${folderSetting == null}")
+            Timber.e(
+                "Error getting download source ${sourceUrl == null}, name ${fileName==null} or destination ${folderSetting == null}")
             showToast(R.string.download_queued_error)
             return Result.failure()
         }
