@@ -5,6 +5,7 @@ import android.app.Notification
 import android.app.PendingIntent
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
 import android.os.Binder
 import android.os.Build
 import android.os.IBinder
@@ -122,7 +123,11 @@ class ForegroundTorrentService : LifecycleService() {
             if (shouldVibrate && finishedTorrents.isNotEmpty()) applicationContext.vibrate()
         }
 
-        startForeground(SUMMARY_ID, summaryBuilder.build())
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            startForeground(SUMMARY_ID, summaryBuilder.build())
+        } else {
+            startForeground(SUMMARY_ID, summaryBuilder.build(), FOREGROUND_SERVICE_TYPE_DATA_SYNC)
+        }
 
         preferences.registerOnSharedPreferenceChangeListener(preferenceListener)
     }

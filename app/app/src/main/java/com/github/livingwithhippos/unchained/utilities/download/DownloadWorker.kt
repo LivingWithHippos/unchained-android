@@ -2,8 +2,10 @@ package com.github.livingwithhippos.unchained.utilities.download
 
 import android.Manifest
 import android.app.Notification
+import android.app.NotificationManager
 import android.content.Context
 import android.content.pm.PackageManager
+import android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
 import android.net.Uri
 import android.webkit.MimeTypeMap
 import androidx.core.app.ActivityCompat
@@ -30,6 +32,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import timber.log.Timber
+import java.io.OutputStream
 
 class DownloadWorker(private val appContext: Context, workerParams: WorkerParameters) :
     CoroutineWorker(appContext, workerParams) {
@@ -38,6 +41,12 @@ class DownloadWorker(private val appContext: Context, workerParams: WorkerParame
     private val scope = CoroutineScope(Dispatchers.IO + job)
     var shutdown = false
     private val preferences = PreferenceManager.getDefaultSharedPreferences(appContext)
+
+
+    private val notificationManager =
+        appContext.getSystemService(Context.NOTIFICATION_SERVICE) as
+                NotificationManager
+
 
     override suspend fun doWork(): Result {
 
@@ -48,13 +57,17 @@ class DownloadWorker(private val appContext: Context, workerParams: WorkerParame
             return Result.failure()
         }
 
-        val sourceUrl: String =
-            inputData.getString(MainActivityViewModel.KEY_DOWNLOAD_SOURCE)
-                ?: return Result.failure()
-        val fileName: String =
-            inputData.getString(MainActivityViewModel.KEY_DOWNLOAD_NAME) ?: return Result.failure()
+        val sourceUrl: String? = inputData.getString(MainActivityViewModel.KEY_DOWNLOAD_SOURCE)
+        val fileName: String? = inputData.getString(MainActivityViewModel.KEY_DOWNLOAD_NAME)
+        val folderSetting: String? = inputData.getString(MainActivityViewModel.KEY_FOLDER_URI)
 
-        val folderUri: Uri = Uri.parse(inputData.getString(MainActivityViewModel.KEY_FOLDER_URI)!!)
+        if (sourceUrl == null || fileName == null || folderSetting == null) {
+            Timber.e("Error getting download source ${sourceUrl == null}, name ${fileName==null} or destination ${folderSetting == null}")
+            showToast(R.string.download_queued_error)
+            return Result.failure()
+        }
+
+        val folderUri: Uri = Uri.parse(folderSetting)
 
         val newFile: DocumentFile? =
             try {
@@ -301,7 +314,7 @@ fun makeStatusForegroundInfo(
     onGoing: Boolean = true
 ): ForegroundInfo {
     val notification = makeStatusNotification(workerId, filename, title, context, onGoing)
-    return ForegroundInfo(id, notification)
+    return ForegroundInfo(id, notification, FOREGROUND_SERVICE_TYPE_DATA_SYNC)
 }
 
 fun makeProgressStatusNotification(
@@ -344,7 +357,7 @@ fun makeProgressForegroundInfo(
     context: Context
 ): ForegroundInfo {
     val notification = makeProgressStatusNotification(workerId, filename, progress, context)
-    return ForegroundInfo(id, notification)
+    return ForegroundInfo(id, notification, FOREGROUND_SERVICE_TYPE_DATA_SYNC)
 }
 
 sealed class DownloadStatus {
