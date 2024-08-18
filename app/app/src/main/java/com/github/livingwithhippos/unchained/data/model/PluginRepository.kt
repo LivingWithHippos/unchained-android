@@ -44,7 +44,8 @@ data class RepositoryInfo(
 )
 data class RepositoryPlugin(
     @ColumnInfo(name = "repository") val repository: String,
-    @ColumnInfo(name = "plugin_name") val name: String
+    @ColumnInfo(name = "plugin_name") val name: String,
+    @ColumnInfo(name = "search_enabled") val searchEnabled: Boolean? = null
 )
 
 @Entity(

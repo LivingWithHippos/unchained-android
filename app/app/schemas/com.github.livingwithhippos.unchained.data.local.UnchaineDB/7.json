@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 7,
-    "identityHash": "39a4e2df9bdf2ac3f5bc60fb84497a57",
+    "identityHash": "72b33d99768f1d69325ecd898b403bcd",
     "entities": [
       {
         "tableName": "host_regex",
@@ -158,7 +158,7 @@
       },
       {
         "tableName": "plugin",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`repository` TEXT NOT NULL, `plugin_name` TEXT NOT NULL, PRIMARY KEY(`repository`, `plugin_name`), FOREIGN KEY(`repository`) REFERENCES `repository_info`(`link`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`repository` TEXT NOT NULL, `plugin_name` TEXT NOT NULL, `search_enabled` INTEGER, PRIMARY KEY(`repository`, `plugin_name`), FOREIGN KEY(`repository`) REFERENCES `repository_info`(`link`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "repository",
@@ -171,6 +171,12 @@
             "columnName": "plugin_name",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "searchEnabled",
+            "columnName": "search_enabled",
+            "affinity": "INTEGER",
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -395,7 +401,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '39a4e2df9bdf2ac3f5bc60fb84497a57')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '72b33d99768f1d69325ecd898b403bcd')"
     ]
   }
 }

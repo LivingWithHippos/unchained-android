@@ -789,6 +789,8 @@ sealed class ParserResult {
     // errors
     data object MissingPlugin : ParserResult()
 
+    data object NoEnabledPlugins : ParserResult()
+
     data object PluginVersionUnsupported : ParserResult()
 
     data object MissingQuery : ParserResult()

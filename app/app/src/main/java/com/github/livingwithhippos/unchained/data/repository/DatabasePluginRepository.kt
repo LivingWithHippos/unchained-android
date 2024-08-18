@@ -117,4 +117,9 @@ constructor(private val repositoryDataDao: RepositoryDataDao) {
         }
         return pluginsMap
     }
+
+    suspend fun getEnabledPlugins(): Map<RepositoryInfo, List<RepositoryPlugin>> = repositoryDataDao.getEnabledPlugins()
+    suspend fun enablePlugin(name: String, enabled: Boolean) {
+        repositoryDataDao.enablePlugin(name, enabled)
+    }
 }
