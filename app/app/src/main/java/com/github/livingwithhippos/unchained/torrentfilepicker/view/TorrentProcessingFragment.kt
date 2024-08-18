@@ -16,11 +16,17 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
+import com.github.livingwithhippos.unchained.data.model.APIError
+import com.github.livingwithhippos.unchained.data.model.ApiConversionError
+import com.github.livingwithhippos.unchained.data.model.EmptyBodyError
+import com.github.livingwithhippos.unchained.data.model.NetworkError
 import com.github.livingwithhippos.unchained.data.model.cache.CachedAlternative
 import com.github.livingwithhippos.unchained.data.model.cache.CachedTorrent
 import com.github.livingwithhippos.unchained.data.repository.DownloadResult
 import com.github.livingwithhippos.unchained.databinding.FragmentTorrentProcessingBinding
 import com.github.livingwithhippos.unchained.lists.view.ListState
+import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationEvent
+import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationState
 import com.github.livingwithhippos.unchained.torrentdetails.model.TorrentFileItem
 import com.github.livingwithhippos.unchained.torrentdetails.model.TorrentFileItem.Companion.TYPE_FOLDER
 import com.github.livingwithhippos.unchained.torrentfilepicker.view.TorrentProcessingFragment.Companion.POSITION_FILE_PICKER
@@ -29,6 +35,7 @@ import com.github.livingwithhippos.unchained.torrentfilepicker.viewmodel.Torrent
 import com.github.livingwithhippos.unchained.utilities.Node
 import com.github.livingwithhippos.unchained.utilities.beforeSelectionStatusList
 import com.github.livingwithhippos.unchained.utilities.extension.copyToClipboard
+import com.github.livingwithhippos.unchained.utilities.extension.getApiErrorMessage
 import com.github.livingwithhippos.unchained.utilities.extension.isMagnet
 import com.github.livingwithhippos.unchained.utilities.extension.isTorrent
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
@@ -75,10 +82,8 @@ class TorrentProcessingFragment : UnchainedFragment() {
                     // fragment
                 }
                 is TorrentEvent.TorrentInfo -> {
-                    if (
-                        content.item.files?.size == 1 &&
-                            "waiting_files_selection".equals(content.item.status, ignoreCase = true)
-                    ) {
+                    if (content.item.files?.size == 1 &&
+                        "waiting_files_selection".equals(content.item.status, ignoreCase = true)) {
                         // todo: make this configurable in settings
                         context?.showToast(R.string.single_torrent_file_available)
                         viewModel.triggerTorrentEvent(TorrentEvent.DownloadAll)
@@ -86,9 +91,8 @@ class TorrentProcessingFragment : UnchainedFragment() {
                     } else {
                         torrentHash = content.item.hash
                         // torrent loaded
-                        if (
-                            activityViewModel.getCurrentTorrentCachePick()?.first != content.item.id
-                        ) {
+                        if (activityViewModel.getCurrentTorrentCachePick()?.first !=
+                            content.item.id) {
                             // clear up old cache
                             activityViewModel.clearCurrentTorrentCachePick()
                         }
@@ -97,8 +101,7 @@ class TorrentProcessingFragment : UnchainedFragment() {
                             val action =
                                 TorrentProcessingFragmentDirections
                                     .actionTorrentProcessingFragmentToTorrentDetailsDest(
-                                        item = content.item
-                                    )
+                                        item = content.item)
                             findNavController().navigate(action)
                         } else {
                             binding.tvStatus.text = getString(R.string.checking_cache)
@@ -153,8 +156,7 @@ class TorrentProcessingFragment : UnchainedFragment() {
                     val action =
                         TorrentProcessingFragmentDirections
                             .actionTorrentProcessingFragmentToTorrentDetailsDest(
-                                item = content.torrent
-                            )
+                                item = content.torrent)
                     findNavController().navigate(action)
                 }
                 TorrentEvent.DownloadAll -> {
@@ -196,6 +198,37 @@ class TorrentProcessingFragment : UnchainedFragment() {
                 else -> {
                     Timber.d("Found unknown torrentLiveData event $content")
                     // reloaded fragment, close?
+                }
+            }
+        }
+
+        viewModel.networkExceptionLiveData.observe(viewLifecycleOwner) {
+            when (val response = it.getContentIfNotHandled()) {
+                null -> {}
+                is APIError -> {
+                    Timber.e("API error: ${response.errorCode}")
+                    if (response.errorCode == 8) {
+                        if (activityViewModel.getAuthenticationMachineState()
+                            is FSMAuthenticationState.AuthenticatedOpenToken)
+                            activityViewModel.transitionAuthenticationMachine(
+                                FSMAuthenticationEvent.OnExpiredOpenToken)
+                        context?.showToast(R.string.refreshing_token)
+                    } else {
+                        context?.let { c -> c.showToast(c.getApiErrorMessage(response.errorCode)) }
+                    }
+                    findNavController().popBackStack()
+                }
+                is NetworkError -> {
+                    context?.showToast(R.string.network_error)
+                    findNavController().popBackStack()
+                }
+                is ApiConversionError -> {
+                    context?.showToast(R.string.unknown_error)
+                    findNavController().popBackStack()
+                }
+                is EmptyBodyError -> {
+                    context?.showToast(R.string.network_error)
+                    findNavController().popBackStack()
                 }
             }
         }
@@ -258,8 +291,7 @@ class TorrentProcessingFragment : UnchainedFragment() {
             }
         } else {
             throw IllegalArgumentException(
-                "No torrent link or torrent id was passed to TorrentProcessingFragment"
-            )
+                "No torrent link or torrent id was passed to TorrentProcessingFragment")
         }
 
         val adapter = TorrentFilePagerAdapter(this, viewModel)
@@ -291,10 +323,7 @@ class TorrentProcessingFragment : UnchainedFragment() {
                         if (pickedCache != null) {
                             viewModel.triggerTorrentEvent(
                                 TorrentEvent.DownloadCache(
-                                    pick.second + 1,
-                                    pickedCache.cachedFiles.count()
-                                )
-                            )
+                                    pick.second + 1, pickedCache.cachedFiles.count()))
                             val selectedFiles =
                                 pickedCache.cachedFiles.joinToString(separator = ",") {
                                     it.id.toString()
@@ -369,26 +398,24 @@ class TorrentProcessingFragment : UnchainedFragment() {
         val cacheDir = context?.cacheDir
         if (!torrentName.isNullOrBlank() && cacheDir != null) {
             activityViewModel.downloadFileToCache(link, torrentName, cacheDir).observe(
-                viewLifecycleOwner
-            ) {
-                when (it) {
-                    is DownloadResult.End -> {
-                        viewModel.triggerTorrentEvent(TorrentEvent.DownloadedFileSuccess)
-                        loadCachedTorrent(cacheDir, it.fileName)
-                    }
-                    DownloadResult.Failure -> {
-                        viewModel.triggerTorrentEvent(TorrentEvent.DownloadedFileFailure)
-                    }
-                    is DownloadResult.Progress -> {
-                        viewModel.triggerTorrentEvent(
-                            TorrentEvent.DownloadedFileProgress(it.percent)
-                        )
-                    }
-                    DownloadResult.WrongURL -> {
-                        viewModel.triggerTorrentEvent(TorrentEvent.DownloadedFileFailure)
+                viewLifecycleOwner) {
+                    when (it) {
+                        is DownloadResult.End -> {
+                            viewModel.triggerTorrentEvent(TorrentEvent.DownloadedFileSuccess)
+                            loadCachedTorrent(cacheDir, it.fileName)
+                        }
+                        DownloadResult.Failure -> {
+                            viewModel.triggerTorrentEvent(TorrentEvent.DownloadedFileFailure)
+                        }
+                        is DownloadResult.Progress -> {
+                            viewModel.triggerTorrentEvent(
+                                TorrentEvent.DownloadedFileProgress(it.percent))
+                        }
+                        DownloadResult.WrongURL -> {
+                            viewModel.triggerTorrentEvent(TorrentEvent.DownloadedFileFailure)
+                        }
                     }
                 }
-            }
         }
     }
 
@@ -407,13 +434,11 @@ class TorrentProcessingFragment : UnchainedFragment() {
                 }
                 is IOException -> {
                     Timber.e(
-                        "Torrent conversion: IOException error getting the file: ${exception.message}"
-                    )
+                        "Torrent conversion: IOException error getting the file: ${exception.message}")
                 }
                 else -> {
                     Timber.e(
-                        "Torrent conversion: Other error getting the file: ${exception.message}"
-                    )
+                        "Torrent conversion: Other error getting the file: ${exception.message}")
                 }
             }
         }

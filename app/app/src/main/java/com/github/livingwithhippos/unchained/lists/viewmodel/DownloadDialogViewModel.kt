@@ -11,11 +11,11 @@ class DownloadDialogViewModel @Inject constructor(private val savedStateHandle: 
     ViewModel() {
 
     fun setItem(item: DownloadItem?) {
-        item.let { savedStateHandle.set(KEY_ITEM, it) }
+        item.let { savedStateHandle[KEY_ITEM] = it }
     }
 
     fun getItem(): DownloadItem? {
-        return savedStateHandle.get(KEY_ITEM)
+        return savedStateHandle[KEY_ITEM]
     }
 
     companion object {

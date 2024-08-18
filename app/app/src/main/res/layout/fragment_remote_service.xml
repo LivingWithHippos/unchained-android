@@ -152,7 +152,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tfPassword"
-                    app:layout_constraintBottom_toTopOf="@+id/switchDefault"
+                    app:layout_constraintBottom_toTopOf="@+id/customServiceLayout"
                     >
 
                     <AutoCompleteTextView
@@ -165,6 +165,44 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <LinearLayout
+                    android:id="@+id/customServiceLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="5dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/serviceTypePicker"
+                    app:layout_constraintBottom_toTopOf="@+id/switchDefault"
+                    android:orientation="vertical">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tfApiToken"
+                        style="?attr/textInputFilledStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:hint="@string/api_token"
+                        android:importantForAutofill="no"
+                        app:endIconMode="clear_text"
+                        app:layout_constraintTop_toBottomOf="@+id/tfPort"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintBottom_toTopOf="@+id/tfPassword"
+                        >
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/tiApiToken"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:imeOptions="actionNext"
+                            android:inputType="text"
+                            android:singleLine="true" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                </LinearLayout>
+
                 <com.google.android.material.materialswitch.MaterialSwitch
                     android:id="@+id/switchDefault"
                     android:layout_width="wrap_content"
@@ -174,7 +212,7 @@
                     android:focusable="true"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/serviceTypePicker"
+                    app:layout_constraintTop_toBottomOf="@+id/customServiceLayout"
                     app:layout_constraintBottom_toTopOf="@+id/bSaveService"
                     />
 

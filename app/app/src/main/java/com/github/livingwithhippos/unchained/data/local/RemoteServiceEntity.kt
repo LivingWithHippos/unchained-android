@@ -20,9 +20,7 @@ import kotlinx.parcelize.Parcelize
                 entity = RemoteDevice::class,
                 parentColumns = ["id"],
                 childColumns = ["device_id"],
-                onDelete = ForeignKey.CASCADE
-            )
-        ],
+                onDelete = ForeignKey.CASCADE)],
 )
 class RemoteService(
     @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id") val id: Int,
@@ -38,6 +36,7 @@ class RemoteService(
     // or 1 entity per service type with customized fields
     // or also storing a json object as string and parsing it back
     // extra field example: api token
+    @ColumnInfo(name = "api_token") val apiToken: String = "",
     @ColumnInfo(name = "field_1") val fieldOne: String = "",
     @ColumnInfo(name = "field_2") val fieldTwo: String = "",
     @ColumnInfo(name = "field_3") val fieldThree: String = ""
@@ -69,8 +68,7 @@ val serviceTypeMap =
     mapOf(
         RemoteServiceType.KODI.value to RemoteServiceType.KODI,
         RemoteServiceType.VLC.value to RemoteServiceType.VLC,
-        RemoteServiceType.JACKETT.value to RemoteServiceType.JACKETT
-    )
+        RemoteServiceType.JACKETT.value to RemoteServiceType.JACKETT)
 
 /** Helper class to have all the service details together */
 data class RemoteServiceDetails(

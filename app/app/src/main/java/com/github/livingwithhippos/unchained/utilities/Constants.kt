@@ -11,7 +11,6 @@ const val BASE_AUTH_URL = "https://api.real-debrid.com/oauth/v2/"
 const val INSTANT_AVAILABILITY_ENDPOINT = "torrents/instantAvailability"
 const val REFERRAL_LINK = "http://real-debrid.com/?id=78841"
 const val ACCOUNT_LINK = "https://real-debrid.com/account"
-const val PLUGINS_PACK_FOLDER = "pack"
 const val DEFAULT_PLUGINS_REPOSITORY_LINK =
     "https://gitlab.com/LivingWithHippos/unchained-plugins/-/raw/main/repository/repository.json"
 /** Folder name for the plugins installed manually, not from a web repository */
@@ -22,7 +21,6 @@ const val RD_STREAMING_URL = "https://real-debrid.com/streaming-"
 
 const val PRIVATE_TOKEN: String = "private_token"
 
-const val REMOTE_TRAFFIC_OFF: Int = 0
 const val REMOTE_TRAFFIC_ON: Int = 1
 
 const val MAGNET_PATTERN: String = "magnet:\\?xt=urn:btih:([a-zA-Z0-9]{32,})"
@@ -72,8 +70,7 @@ val errorMap =
         30 to "Torrent file invalid",
         31 to "Action already done",
         32 to "Image resolution error",
-        33 to "Torrent already active"
-    )
+        33 to "Torrent already active")
 
 // Torrent status list
 // possible status are magnet_error, magnet_conversion, waiting_files_selection,
@@ -90,8 +87,7 @@ val loadingStatusList =
         "waiting_files_selection",
         "queued",
         "compressing",
-        "uploading"
-    )
+        "uploading")
 
 /** Statuses where the torrent hasn't had its file selected yet */
 val beforeSelectionStatusList =

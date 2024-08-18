@@ -42,9 +42,6 @@ import com.github.livingwithhippos.unchained.utilities.extension.getThemedDrawab
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -53,9 +50,6 @@ class FolderListFragment : UnchainedFragment(), DownloadListListener {
 
     private val viewModel: FolderListViewModel by viewModels()
     private val args: FolderListFragmentArgs by navArgs()
-
-    private val job = Job()
-    private val scope = CoroutineScope(Dispatchers.Default + job)
 
     private val mediaRegex =
         "\\.(webm|avi|mkv|ogg|MTS|M2TS|TS|mov|wmv|mp4|m4p|m4v|mp2|mpe|mpv|mpg|mpeg|m2v|3gp)$"
@@ -132,8 +126,7 @@ class FolderListFragment : UnchainedFragment(), DownloadListListener {
                 }
             },
             viewLifecycleOwner,
-            Lifecycle.State.RESUMED
-        )
+            Lifecycle.State.RESUMED)
 
         return binding.root
     }
@@ -166,8 +159,7 @@ class FolderListFragment : UnchainedFragment(), DownloadListListener {
                     binding.rvFolderList,
                     FolderKeyProvider(adapter),
                     DataBindingDetailsLookup(binding.rvFolderList),
-                    StorageStrategy.createParcelableStorage(DownloadItem::class.java)
-                )
+                    StorageStrategy.createParcelableStorage(DownloadItem::class.java))
                 .withSelectionPredicate(SelectionPredicates.createSelectAnything())
                 .build()
 
@@ -179,8 +171,7 @@ class FolderListFragment : UnchainedFragment(), DownloadListListener {
                     super.onSelectionChanged()
                     binding.selectedLinks = linkTracker.selection.size()
                 }
-            }
-        )
+            })
 
         binding.listener =
             object : SelectedItemsButtonsListener {
@@ -197,8 +188,7 @@ class FolderListFragment : UnchainedFragment(), DownloadListListener {
                         val shareLinks = linkTracker.selection.joinToString("\n") { it.download }
                         shareIntent.putExtra(Intent.EXTRA_TEXT, shareLinks)
                         startActivity(
-                            Intent.createChooser(shareIntent, getString(R.string.share_with))
-                        )
+                            Intent.createChooser(shareIntent, getString(R.string.share_with)))
                     } else context?.showToast(R.string.select_one_item)
                 }
 
@@ -207,9 +197,7 @@ class FolderListFragment : UnchainedFragment(), DownloadListListener {
                     if (downloads.isNotEmpty()) {
                         if (downloads.size == 1) {
                             activityViewModel.enqueueDownload(
-                                downloads.first().download,
-                                downloads.first().filename
-                            )
+                                downloads.first().download, downloads.first().filename)
                         } else {
                             activityViewModel.enqueueDownloads(downloads)
                         }

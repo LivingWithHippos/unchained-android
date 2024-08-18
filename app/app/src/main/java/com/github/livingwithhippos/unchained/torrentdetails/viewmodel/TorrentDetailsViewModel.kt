@@ -64,10 +64,6 @@ constructor(
         }
     }
 
-    fun stopPolling() {
-        job.cancelIfActive()
-    }
-
     fun deleteTorrent(id: String) {
         viewModelScope.launch {
             when (val deleted = torrentsRepository.deleteTorrent(id)) {

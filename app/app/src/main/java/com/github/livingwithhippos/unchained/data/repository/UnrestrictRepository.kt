@@ -13,10 +13,8 @@ import okhttp3.RequestBody.Companion.toRequestBody
 
 class UnrestrictRepository
 @Inject
-constructor(
-    private val protoStore: ProtoStore,
-    private val unrestrictApiHelper: UnrestrictApiHelper
-) : BaseRepository(protoStore) {
+constructor(protoStore: ProtoStore, private val unrestrictApiHelper: UnrestrictApiHelper) :
+    BaseRepository(protoStore) {
 
     suspend fun getEitherUnrestrictedLink(
         link: String,
@@ -29,14 +27,9 @@ constructor(
             eitherApiResult(
                 call = {
                     unrestrictApiHelper.getUnrestrictedLink(
-                        token = "Bearer $token",
-                        link = link,
-                        password = password,
-                        remote = remote
-                    )
+                        token = "Bearer $token", link = link, password = password, remote = remote)
                 },
-                errorMessage = "Error Fetching Unrestricted Link Info"
-            )
+                errorMessage = "Error Fetching Unrestricted Link Info")
 
         return linkResponse
     }
@@ -57,28 +50,6 @@ constructor(
         return unrestrictedLinks
     }
 
-    suspend fun getEitherUnrestrictedFolder(
-        link: String,
-        password: String? = null,
-        remote: Int? = null
-    ): List<EitherResult<UnchainedNetworkException, DownloadItem>> {
-        val token = getToken()
-
-        val folderResponse: EitherResult<UnchainedNetworkException, List<String>> =
-            eitherApiResult(
-                call = {
-                    unrestrictApiHelper.getUnrestrictedFolder(token = "Bearer $token", link = link)
-                },
-                errorMessage = "Error Fetching Unrestricted Folders Info"
-            )
-
-        return when (folderResponse) {
-            is EitherResult.Success ->
-                getUnrestrictedLinkList(folderResponse.success, password, remote)
-            is EitherResult.Failure -> listOf(EitherResult.Failure(folderResponse.failure))
-        }
-    }
-
     suspend fun getEitherFolderLinks(
         link: String
     ): EitherResult<UnchainedNetworkException, List<String>> {
@@ -89,8 +60,7 @@ constructor(
                 call = {
                     unrestrictApiHelper.getUnrestrictedFolder(token = "Bearer $token", link = link)
                 },
-                errorMessage = "Error Fetching Unrestricted Folders Info"
-            )
+                errorMessage = "Error Fetching Unrestricted Folders Info")
 
         return folderResponse
     }
@@ -102,21 +72,15 @@ constructor(
 
         val requestBody: RequestBody =
             container.toRequestBody(
-                "application/octet-stream".toMediaTypeOrNull(),
-                0,
-                container.size
-            )
+                "application/octet-stream".toMediaTypeOrNull(), 0, container.size)
 
         val uploadResponse =
             eitherApiResult(
                 call = {
                     unrestrictApiHelper.uploadContainer(
-                        token = "Bearer $token",
-                        container = requestBody
-                    )
+                        token = "Bearer $token", container = requestBody)
                 },
-                errorMessage = "Error Uploading Container"
-            )
+                errorMessage = "Error Uploading Container")
 
         return uploadResponse
     }
@@ -129,8 +93,7 @@ constructor(
                 call = {
                     unrestrictApiHelper.getContainerLinks(token = "Bearer $token", link = link)
                 },
-                errorMessage = "Error getting container files"
-            )
+                errorMessage = "Error getting container files")
 
         return containerResponse
     }

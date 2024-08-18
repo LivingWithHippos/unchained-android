@@ -59,8 +59,7 @@ class Parser(
                             url = plugin.url,
                             query = currentQuery,
                             category = currentCategory,
-                            page = page
-                        )
+                            page = page)
 
                     emit(ParserResult.SearchStarted(-1))
                     val source = getSource(queryUrl)
@@ -91,11 +90,7 @@ class Parser(
                                         if (s.isNotBlank()) {
                                             val scrapedItem =
                                                 parseInnerLink(
-                                                    plugin.download.regexes,
-                                                    s,
-                                                    link,
-                                                    plugin.url
-                                                )
+                                                    plugin.download.regexes, s, link, plugin.url)
                                             emit(ParserResult.SingleResult(scrapedItem))
                                         } else {
                                             emit(ParserResult.SourceError)
@@ -113,10 +108,7 @@ class Parser(
                                             plugin.download.directParser,
                                             plugin.download.regexes,
                                             source,
-                                            plugin.url
-                                        )
-                                    )
-                                )
+                                            plugin.url)))
                                 emit(ParserResult.SearchFinished)
                             }
                             plugin.download.tableLink != null -> {
@@ -126,10 +118,7 @@ class Parser(
                                             plugin.download.tableLink,
                                             plugin.download.regexes,
                                             source,
-                                            plugin.url
-                                        )
-                                    )
-                                )
+                                            plugin.url)))
                                 emit(ParserResult.SearchFinished)
                             }
                             plugin.download.indirectTableLink != null -> {
@@ -139,19 +128,14 @@ class Parser(
                                         plugin.download.indirectTableLink,
                                         plugin.download.regexes,
                                         source,
-                                        plugin.url
-                                    )
+                                        plugin.url)
                                 emit(ParserResult.SearchStarted(links.size))
                                 links.forEach {
                                     val itemSource = getSource(it)
                                     if (itemSource.isNotBlank()) {
                                         val scrapedItem =
                                             parseInnerLink(
-                                                plugin.download.regexes,
-                                                itemSource,
-                                                it,
-                                                plugin.url
-                                            )
+                                                plugin.download.regexes, itemSource, it, plugin.url)
                                         emit(ParserResult.SingleResult(scrapedItem))
                                     } else {
                                         emit(ParserResult.SourceError)
@@ -187,8 +171,7 @@ class Parser(
                         if (tables.size - 1 >= tableParser.index) tables[tableParser.index]
                         else {
                             Timber.w(
-                                "No table found for index ${tableParser.index}, found ${tables.size} tables"
-                            )
+                                "No table found for index ${tableParser.index}, found ${tables.size} tables")
                             return emptyList()
                         }
                     }
@@ -208,10 +191,7 @@ class Parser(
                         try {
                             val details =
                                 parseSingle(
-                                    it,
-                                    columns[tableParser.columns.detailsColumn].html(),
-                                    baseUrl
-                                )
+                                    it, columns[tableParser.columns.detailsColumn].html(), baseUrl)
                             if (details != null) tableLinks.add(details)
 
                             if (regexes.detailsRegex.regexUse == "first") {
@@ -333,8 +313,7 @@ class Parser(
             magnets = magnets.toList(),
             torrents = torrents.toList(),
             hosting = hosting.toList(),
-            isCached = false
-        )
+            isCached = false)
     }
 
     private fun parseTable(
@@ -358,8 +337,7 @@ class Parser(
                         if (tables.size - 1 >= tableLink.index) tables[tableLink.index]
                         else {
                             Timber.w(
-                                "No table found for index ${tableLink.index}, found ${tables.size} tables"
-                            )
+                                "No table found for index ${tableLink.index}, found ${tables.size} tables")
                             return emptyList()
                         }
                     }
@@ -390,45 +368,38 @@ class Parser(
                                 parseSingle(
                                     regexes.nameRegex,
                                     columns[tableLink.columns.nameColumn].html(),
-                                    baseUrl
-                                ) ?: ""
-                            )
+                                    baseUrl) ?: "")
 
                     if (tableLink.columns.detailsColumn != null)
                         details =
                             parseSingle(
                                 regexes.detailsRegex,
                                 columns[tableLink.columns.detailsColumn].html(),
-                                baseUrl
-                            )
+                                baseUrl)
                     if (tableLink.columns.seedersColumn != null)
                         seeders =
                             parseSingle(
                                 regexes.seedersRegex,
                                 columns[tableLink.columns.seedersColumn].html(),
-                                baseUrl
-                            )
+                                baseUrl)
                     if (tableLink.columns.addedDateColumn != null)
                         addedDate =
                             parseSingle(
                                 regexes.dateAddedRegex,
                                 columns[tableLink.columns.addedDateColumn].html(),
-                                baseUrl
-                            )
+                                baseUrl)
                     if (tableLink.columns.leechersColumn != null)
                         leechers =
                             parseSingle(
                                 regexes.leechersRegex,
                                 columns[tableLink.columns.leechersColumn].html(),
-                                baseUrl
-                            )
+                                baseUrl)
                     if (tableLink.columns.sizeColumn != null)
                         size =
                             parseSingle(
                                 regexes.sizeRegex,
                                 columns[tableLink.columns.sizeColumn].html(),
-                                baseUrl
-                            )
+                                baseUrl)
                     if (tableLink.columns.magnetColumn != null)
                         magnets.addAll(
                             parseList(
@@ -437,25 +408,19 @@ class Parser(
                                     .html()
                                     .removeWebFormatting(),
                                 baseUrl,
-                                toLowerCase = true
-                            )
-                        )
+                                toLowerCase = true))
                     if (tableLink.columns.torrentColumn != null)
                         torrents.addAll(
                             parseList(
                                 regexes.torrentRegexes,
                                 columns[tableLink.columns.torrentColumn].html(),
-                                baseUrl
-                            )
-                        )
+                                baseUrl))
                     if (tableLink.columns.hostingColumn != null)
                         hosting.addAll(
                             parseList(
                                 regexes.hostingRegexes,
                                 columns[tableLink.columns.hostingColumn].html(),
-                                baseUrl
-                            )
-                        )
+                                baseUrl))
                 } catch (e: IndexOutOfBoundsException) {
                     Timber.d("skipping row")
                 }
@@ -475,9 +440,7 @@ class Parser(
                             magnets = magnets.toList(),
                             torrents = torrents.toList(),
                             hosting = hosting.toList(),
-                            isCached = false
-                        )
-                    )
+                            isCached = false))
             }
         } catch (exception: NullPointerException) {
             Timber.d("Some not nullable values were null: ${exception.message}")
@@ -492,8 +455,7 @@ class Parser(
                     .url(url)
                     .header(
                         "User-Agent",
-                        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36"
-                    )
+                        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36")
                     .build()
 
             // todo: check if this works
@@ -619,8 +581,7 @@ class Parser(
                             }
                             "complete" -> result
                             else -> result
-                        }
-                    )
+                        })
             }
         }
 
@@ -658,8 +619,7 @@ class Parser(
                             }
                             "complete" -> result
                             else -> result
-                        }
-                    )
+                        })
             }
 
             if (regexpsGroup.regexUse == "single") {
@@ -706,10 +666,8 @@ class Parser(
             val torrents: List<String> = parseList(regexes.torrentRegexes, html, url)
             val hosting: List<String> = parseList(regexes.hostingRegexes, html, url)
 
-            if (
-                !name.isNullOrBlank() &&
-                    (magnets.isNotEmpty() || torrents.isNotEmpty() || hosting.isNotEmpty())
-            ) {
+            if (!name.isNullOrBlank() &&
+                (magnets.isNotEmpty() || torrents.isNotEmpty() || hosting.isNotEmpty())) {
 
                 val seeders = parseSingle(regexes.seedersRegex, html, url)
                 val leechers = parseSingle(regexes.leechersRegex, html, url)
@@ -729,9 +687,7 @@ class Parser(
                         magnets = magnets,
                         torrents = torrents,
                         hosting = hosting,
-                        isCached = false
-                    )
-                )
+                        isCached = false))
             }
         }
 
@@ -789,17 +745,15 @@ sealed class ParserResult {
     // errors
     data object MissingPlugin : ParserResult()
 
+    data object NoEnabledPlugins : ParserResult()
+
     data object PluginVersionUnsupported : ParserResult()
 
     data object MissingQuery : ParserResult()
 
-    data object MissingCategory : ParserResult()
-
     data object NetworkBodyError : ParserResult()
 
     data object EmptyInnerLinks : ParserResult()
-
-    data object PluginBuildError : ParserResult()
 
     data object MissingImplementationError : ParserResult()
 

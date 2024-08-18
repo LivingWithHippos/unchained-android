@@ -32,4 +32,10 @@
         android:label="@string/manage_plugins"
         tools:layout="@layout/fragment_repository"
         />
+    <fragment
+        android:id="@+id/pluginSearchFragment"
+        android:label="@string/search_files"
+        android:name="com.github.livingwithhippos.unchained.search.view.PluginSearchFragment"
+        tools:layout="@layout/fragment_search_plugins_tab"
+        />
 </navigation>

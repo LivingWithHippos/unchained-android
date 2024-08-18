@@ -100,16 +100,11 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
                             it.installResults.count { result -> result is InstallResult.Installed }
                         if (failures == 0) {
                             context?.showToast(
-                                getString(R.string.plugins_installed_format, success)
-                            )
+                                getString(R.string.plugins_installed_format, success))
                         } else {
                             context?.showToast(
                                 getString(
-                                    R.string.plugins_install_results_format,
-                                    failures,
-                                    success
-                                )
-                            )
+                                    R.string.plugins_install_results_format, failures, success))
                         }
                     }
                     is PluginRepositoryEvent.InvalidRepositoryLink,
@@ -117,8 +112,7 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
                         // do nothing, these are for dialogs
                     }
                 }
-            }
-        )
+            })
 
         binding.progressBar.isIndeterminate = true
         viewModel.checkCurrentRepositories()
@@ -155,8 +149,7 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
                     version = repository.key.version,
                     description = repository.key.description,
                     author = repository.key.author,
-                )
-            )
+                ))
             val hashedRepoName = getRepositoryString(repository.key.link)
             // no installed plugins from this repo
             if (installedData.pluginsData[hashedRepoName] == null) {
@@ -167,8 +160,7 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
                         val latestVersion: PluginVersion? = plug.value.maxByOrNull { it.version }
                         if (latestVersion == null) {
                             Timber.w(
-                                "BAD PACKAGER! DO NOT RELEASE PLUGINS WITHOUT VERSIONS!  Info: ${plug.key}"
-                            )
+                                "BAD PACKAGER! DO NOT RELEASE PLUGINS WITHOUT VERSIONS!  Info: ${plug.key}")
                             pickedVersion =
                                 PluginVersion(
                                     repository = repository.key.link,
@@ -193,8 +185,7 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
                             }
 
                         getPluginItemFromVersion(pickedVersion, pickedStatus, repository.key.author)
-                    }
-                )
+                    })
             } else {
                 // check against installed plugins from this repo
                 plugins.addAll(
@@ -215,8 +206,7 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
                         // check if this plugin has available versions (it should)
                         if (latestVersion == null) {
                             Timber.w(
-                                "BAD PACKAGER! DO NOT RELEASE PLUGINS WITHOUT VERSIONS!  Info: ${onlinePlugin.key}"
-                            )
+                                "BAD PACKAGER! DO NOT RELEASE PLUGINS WITHOUT VERSIONS!  Info: ${onlinePlugin.key}")
                             val pickedVersion: PluginVersion =
                                 if (installedPlugin == null) {
                                     PluginVersion(
@@ -228,8 +218,7 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
                                     )
                                 } else {
                                     Timber.w(
-                                        "BAD PACKAGER! DO NOT REMOVE VERSIONS, CREATE A NEW VERSION INSTEAD!  Info: ${onlinePlugin.key}"
-                                    )
+                                        "BAD PACKAGER! DO NOT REMOVE VERSIONS, CREATE A NEW VERSION INSTEAD!  Info: ${onlinePlugin.key}")
                                     PluginVersion(
                                         repository = repository.key.link,
                                         plugin = onlinePlugin.key.name,
@@ -246,10 +235,7 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
                                     else -> PluginStatus.incompatible
                                 }
                             getPluginItemFromVersion(
-                                pickedVersion,
-                                pickedStatus,
-                                repository.key.author
-                            )
+                                pickedVersion, pickedStatus, repository.key.author)
                         } else {
                             // at least a version from the repo is available, check compatibility
                             // and install
@@ -260,48 +246,39 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
                                 // no compatible versions
                                 if (latestCompatibleVersion == null) {
                                     getPluginItemFromVersion(
-                                        latestVersion,
-                                        PluginStatus.incompatible,
-                                        null
-                                    )
+                                        latestVersion, PluginStatus.incompatible, null)
                                 } else {
                                     // latest compatible version
                                     getPluginItemFromVersion(
                                         latestCompatibleVersion,
                                         PluginStatus.isNew,
-                                        repository.key.author
-                                    )
+                                        repository.key.author)
                                 }
                             } else {
                                 // plugin installed
                                 if (latestCompatibleVersion == null) {
                                     Timber.w(
-                                        "BAD PACKAGER! DO NOT REMOVE VERSIONS, CREATE A NEW VERSION INSTEAD!  Info: ${onlinePlugin.key}, installed version is ${installedPlugin.version}"
-                                    )
+                                        "BAD PACKAGER! DO NOT REMOVE VERSIONS, CREATE A NEW VERSION INSTEAD!  Info: ${onlinePlugin.key}, installed version is ${installedPlugin.version}")
                                     getPluginItemFromVersion(
                                         latestVersion,
                                         PluginStatus.hasIncompatibleUpdate,
-                                        repository.key.author
-                                    )
+                                        repository.key.author)
                                 } else {
                                     if (latestCompatibleVersion.version > installedPlugin.version) {
                                         getPluginItemFromVersion(
                                             latestCompatibleVersion,
                                             PluginStatus.hasUpdate,
-                                            repository.key.author
-                                        )
+                                            repository.key.author)
                                     } else {
                                         getPluginItemFromVersion(
                                             latestCompatibleVersion,
                                             PluginStatus.updated,
-                                            repository.key.author
-                                        )
+                                            repository.key.author)
                                     }
                                 }
                             }
                         }
-                    }
-                )
+                    })
             }
             // add fake repo for plugins installed manually without going through a web repository
             // otherwise users won't be able to uninstall them
@@ -313,8 +290,7 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
                         version = 1.0,
                         description = getString(R.string.manually_installed_plugins_description),
                         author = getString(R.string.various),
-                    )
-                )
+                    ))
 
                 plugins.addAll(
                     installedData.pluginsData.getValue(MANUAL_PLUGINS_REPOSITORY_NAME).map {
@@ -328,10 +304,8 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
                             link = MANUAL_PLUGINS_REPOSITORY_NAME,
                             author = it.author,
                             status = currentStatus,
-                            statusTranslation = getStatusTranslation(currentStatus)
-                        )
-                    }
-                )
+                            statusTranslation = getStatusTranslation(currentStatus))
+                    })
             }
 
             adapter.submitList(plugins)
@@ -351,8 +325,7 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
             link = pluginVersion.link,
             author = author,
             status = pluginStatus,
-            statusTranslation = getStatusTranslation(pluginStatus)
-        )
+            statusTranslation = getStatusTranslation(pluginStatus))
     }
 
     private fun getStatusTranslation(status: String): String {

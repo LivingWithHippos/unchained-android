@@ -94,13 +94,11 @@ class ProtoStoreImpl @Inject constructor(@ApplicationContext private val context
 
     override suspend fun deleteIncompleteCredentials() {
         val credentials = getCredentials()
-        if (
-            credentials.deviceCode.isNullOrBlank() ||
-                credentials.accessToken.isNullOrBlank() ||
-                credentials.clientId.isNullOrBlank() ||
-                credentials.clientSecret.isNullOrBlank() ||
-                credentials.refreshToken.isNullOrBlank()
-        ) {
+        if (credentials.deviceCode.isNullOrBlank() ||
+            credentials.accessToken.isNullOrBlank() ||
+            credentials.clientId.isNullOrBlank() ||
+            credentials.clientSecret.isNullOrBlank() ||
+            credentials.refreshToken.isNullOrBlank()) {
             context.credentialsDataStore.updateData { it.toBuilder().clear().build() }
         }
     }

@@ -62,8 +62,7 @@ open class BaseRepository(private val protoStore: ProtoStore) {
         }
 
         return NetworkResponse.Error(
-            IOException("Error Occurred while getting api result, error : $errorMessage")
-        )
+            IOException("Error Occurred while getting api result, error : $errorMessage"))
     }
 
     suspend fun <T : Any> eitherApiResult(
@@ -97,8 +96,7 @@ open class BaseRepository(private val protoStore: ProtoStore) {
                 } catch (e: IOException) {
                     // todo: analyze error to return code
                     return@withContext EitherResult.Failure(
-                        NetworkError(-1, "$errorMessage, http code $code")
-                    )
+                        NetworkError(-1, "$errorMessage, http code $code"))
                 }
             }
         }

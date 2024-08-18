@@ -122,8 +122,7 @@ class ListsTabFragment : UnchainedFragment() {
                                     }
                                 return true
                             }
-                        }
-                    )
+                        })
                 }
 
                 override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
@@ -144,8 +143,7 @@ class ListsTabFragment : UnchainedFragment() {
                 }
             },
             viewLifecycleOwner,
-            Lifecycle.State.RESUMED
-        )
+            Lifecycle.State.RESUMED)
 
         val listsAdapter = ListsAdapter(this)
         binding.listPager.adapter = listsAdapter
@@ -164,8 +162,7 @@ class ListsTabFragment : UnchainedFragment() {
                 override fun onTabReselected(tab: TabLayout.Tab?) {
                     // either do nothing or refresh
                 }
-            }
-        )
+            })
 
         binding.fabNewDownload.setOnClickListener {
             val action = ListsTabFragmentDirections.actionListTabsDestToNewDownloadFragment()
@@ -178,11 +175,9 @@ class ListsTabFragment : UnchainedFragment() {
             EventObserver { uri ->
                 val action =
                     ListsTabFragmentDirections.actionListTabsDestToNewDownloadFragment(
-                        externalUri = uri
-                    )
+                        externalUri = uri)
                 findNavController().navigate(action)
-            }
-        )
+            })
 
         // a file has been downloaded, usually a torrent, and needs to be unrestricted
         activityViewModel.downloadedFileLiveData.observe(
@@ -194,12 +189,10 @@ class ListsTabFragment : UnchainedFragment() {
                 if (uri?.path != null) {
                     val action =
                         ListsTabFragmentDirections.actionListTabsDestToNewDownloadFragment(
-                            externalUri = uri
-                        )
+                            externalUri = uri)
                     findNavController().navigate(action)
                 }
-            }
-        )
+            })
 
         // a notification has been clicked
         activityViewModel.notificationTorrentLiveData.observe(
@@ -207,8 +200,7 @@ class ListsTabFragment : UnchainedFragment() {
             EventObserver { torrentID ->
                 val action = ListsTabFragmentDirections.actionListsTabToTorrentDetails(torrentID)
                 findNavController().navigate(action)
-            }
-        )
+            })
 
         viewModel.eventLiveData.observe(
             viewLifecycleOwner,
@@ -220,10 +212,8 @@ class ListsTabFragment : UnchainedFragment() {
                         var loop = 0
                         val controller = findNavController()
                         lifecycleScope.launch {
-                            while (
-                                loop++ < 20 &&
-                                    controller.currentDestination?.id != R.id.list_tabs_dest
-                            ) {
+                            while (loop++ < 20 &&
+                                controller.currentDestination?.id != R.id.list_tabs_dest) {
                                 delay(100)
                             }
                             if (controller.currentDestination?.id == R.id.list_tabs_dest)
@@ -239,8 +229,7 @@ class ListsTabFragment : UnchainedFragment() {
                                             .actionListTabsDestToFolderListFragment2(
                                                 folder = null,
                                                 torrent = event.item,
-                                                linkList = null
-                                            )
+                                                linkList = null)
                                     findNavController().navigate(action)
                                 } else viewModel.unrestrictTorrent(event.item)
                             }
@@ -248,16 +237,13 @@ class ListsTabFragment : UnchainedFragment() {
                             else -> {
                                 val action =
                                     ListsTabFragmentDirections.actionListsTabToTorrentDetails(
-                                        event.item
-                                    )
+                                        event.item)
                                 var loop = 0
 
                                 val controller = findNavController()
                                 lifecycleScope.launch {
-                                    while (
-                                        loop++ < 20 &&
-                                            controller.currentDestination?.id != R.id.list_tabs_dest
-                                    ) {
+                                    while (loop++ < 20 &&
+                                        controller.currentDestination?.id != R.id.list_tabs_dest) {
                                         delay(100)
                                     }
                                     if (controller.currentDestination?.id == R.id.list_tabs_dest)
@@ -276,10 +262,8 @@ class ListsTabFragment : UnchainedFragment() {
                         val controller = findNavController()
                         var loop = 0
                         lifecycleScope.launch {
-                            while (
-                                loop++ < 20 &&
-                                    controller.currentDestination?.id != R.id.list_tabs_dest
-                            ) {
+                            while (loop++ < 20 &&
+                                controller.currentDestination?.id != R.id.list_tabs_dest) {
                                 delay(100)
                             }
                             if (controller.currentDestination?.id == R.id.list_tabs_dest)
@@ -302,8 +286,7 @@ class ListsTabFragment : UnchainedFragment() {
                         findNavController().navigate(action)
                     }
                 }
-            }
-        )
+            })
 
         viewModel.errorsLiveData.observe(
             viewLifecycleOwner,
@@ -315,13 +298,10 @@ class ListsTabFragment : UnchainedFragment() {
                             when (error.errorCode) {
                                 8 -> {
                                     // bad token, try refreshing it
-                                    if (
-                                        activityViewModel.getAuthenticationMachineState()
-                                            is FSMAuthenticationState.AuthenticatedOpenToken
-                                    )
+                                    if (activityViewModel.getAuthenticationMachineState()
+                                        is FSMAuthenticationState.AuthenticatedOpenToken)
                                         activityViewModel.transitionAuthenticationMachine(
-                                            FSMAuthenticationEvent.OnExpiredOpenToken
-                                        )
+                                            FSMAuthenticationEvent.OnExpiredOpenToken)
                                     context?.showToast(R.string.refreshing_token)
                                 }
                             }
@@ -335,8 +315,7 @@ class ListsTabFragment : UnchainedFragment() {
                         }
                     }
                 }
-            }
-        )
+            })
 
         return binding.root
     }
@@ -363,8 +342,7 @@ class ListsTabFragment : UnchainedFragment() {
             .setTitle(getString(R.string.delete_all))
             .setMessage(
                 if (selectedTab == DOWNLOADS_TAB) getString(R.string.delete_all_downloads_message)
-                else getString(R.string.delete_all_torrents_message)
-            )
+                else getString(R.string.delete_all_torrents_message))
             .setNegativeButton(getString(R.string.decline)) { _, _ -> }
             .setPositiveButton(getString(R.string.accept)) { _, _ ->
                 if (selectedTab == DOWNLOADS_TAB) viewModel.deleteAllDownloads()
@@ -411,8 +389,7 @@ class DownloadsListFragment : UnchainedFragment(), DownloadListListener {
                     binding.rvDownloadList,
                     DownloadKeyProvider(downloadAdapter),
                     DataBindingDetailsLookup(binding.rvDownloadList),
-                    StorageStrategy.createParcelableStorage(DownloadItem::class.java)
-                )
+                    StorageStrategy.createParcelableStorage(DownloadItem::class.java))
                 .withSelectionPredicate(SelectionPredicates.createSelectAnything())
                 .build()
 
@@ -424,8 +401,7 @@ class DownloadsListFragment : UnchainedFragment(), DownloadListListener {
                     super.onSelectionChanged()
                     binding.selectedDownloads = downloadTracker.selection.size()
                 }
-            }
-        )
+            })
 
         // listener for selection buttons
         binding.listener =
@@ -444,8 +420,7 @@ class DownloadsListFragment : UnchainedFragment(), DownloadListListener {
                             downloadTracker.selection.joinToString("\n") { it.download }
                         shareIntent.putExtra(Intent.EXTRA_TEXT, shareLinks)
                         startActivity(
-                            Intent.createChooser(shareIntent, getString(R.string.share_with))
-                        )
+                            Intent.createChooser(shareIntent, getString(R.string.share_with)))
                     } else context?.showToast(R.string.select_one_item)
                 }
 
@@ -454,9 +429,7 @@ class DownloadsListFragment : UnchainedFragment(), DownloadListListener {
                     if (downloads.isNotEmpty()) {
                         if (downloads.size == 1) {
                             activityViewModel.enqueueDownload(
-                                downloads.first().download,
-                                downloads.first().filename
-                            )
+                                downloads.first().download, downloads.first().filename)
                         } else {
                             activityViewModel.enqueueDownloads(downloads)
                         }
@@ -538,8 +511,7 @@ class DownloadsListFragment : UnchainedFragment(), DownloadListListener {
 
                     viewModel.postEventNotice(ListEvent.SetTab(DOWNLOADS_TAB))
                 }
-            }
-        )
+            })
 
         activityViewModel.listStateLiveData.observe(
             viewLifecycleOwner,
@@ -556,8 +528,7 @@ class DownloadsListFragment : UnchainedFragment(), DownloadListListener {
                     }
                     else -> {}
                 }
-            }
-        )
+            })
 
         viewModel.deletedDownloadLiveData.observe(
             viewLifecycleOwner,
@@ -589,8 +560,7 @@ class DownloadsListFragment : UnchainedFragment(), DownloadListListener {
                         downloadAdapter.refresh()
                     }
                 }
-            }
-        )
+            })
 
         // starts the Transformations.switchMap(queryLiveData) which otherwise won't trigger the
         // Paging
@@ -628,8 +598,7 @@ class TorrentsListFragment : UnchainedFragment(), TorrentListListener {
                     binding.rvTorrentList,
                     TorrentKeyProvider(torrentAdapter),
                     DataBindingDetailsLookup(binding.rvTorrentList),
-                    StorageStrategy.createParcelableStorage(TorrentItem::class.java)
-                )
+                    StorageStrategy.createParcelableStorage(TorrentItem::class.java))
                 .withSelectionPredicate(SelectionPredicates.createSelectAnything())
                 .build()
 
@@ -646,8 +615,7 @@ class TorrentsListFragment : UnchainedFragment(), TorrentListListener {
                         binding.bDetailsSelected.visibility = View.GONE
                     }
                 }
-            }
-        )
+            })
 
         // listener for selection buttons
         binding.listener =
@@ -675,14 +643,12 @@ class TorrentsListFragment : UnchainedFragment(), TorrentListListener {
                             if (beforeSelectionStatusList.contains(item.status))
                                 ListsTabFragmentDirections
                                     .actionListTabsDestToTorrentProcessingFragment(
-                                        torrentID = item.id
-                                    )
+                                        torrentID = item.id)
                             else ListsTabFragmentDirections.actionListsTabToTorrentDetails(item)
                         findNavController().navigate(action)
                     } else
                         Timber.e(
-                            "Somehow user triggered openSelectedDetails with a selection size of ${torrentTracker.selection.toList().size}"
-                        )
+                            "Somehow user triggered openSelectedDetails with a selection size of ${torrentTracker.selection.toList().size}")
                 }
 
                 override fun openNewDownload() {
@@ -766,8 +732,7 @@ class TorrentsListFragment : UnchainedFragment(), TorrentListListener {
                         torrentAdapter.refresh()
                     }
                 }
-            }
-        )
+            })
 
         activityViewModel.listStateLiveData.observe(
             viewLifecycleOwner,
@@ -784,8 +749,7 @@ class TorrentsListFragment : UnchainedFragment(), TorrentListListener {
                     }
                     else -> {}
                 }
-            }
-        )
+            })
 
         return binding.root
     }
@@ -807,29 +771,23 @@ class TorrentsListFragment : UnchainedFragment(), TorrentListListener {
                 if (item.links.size > 1) {
                     val action =
                         ListsTabFragmentDirections.actionListTabsDestToFolderListFragment2(
-                            folder = null,
-                            torrent = item,
-                            linkList = null
-                        )
+                            folder = null, torrent = item, linkList = null)
                     if (controller.currentDestination?.id == R.id.list_tabs_dest)
                         controller.navigate(action)
                     else
                         Timber.e(
-                            "Correct tab was not ready within 2 seconds after clicking torrent $item"
-                        )
+                            "Correct tab was not ready within 2 seconds after clicking torrent $item")
                 } else viewModel.unrestrictTorrent(item)
             } else if (beforeSelectionStatusList.contains(item.status)) {
                 // go to torrent processing since it is still loading
                 val action =
                     ListsTabFragmentDirections.actionListTabsDestToTorrentProcessingFragment(
-                        torrentID = item.id
-                    )
+                        torrentID = item.id)
                 if (controller.currentDestination?.id == R.id.list_tabs_dest)
                     controller.navigate(action)
                 else
                     Timber.e(
-                        "Correct tab was not ready within 2 seconds after clicking torrent $item"
-                    )
+                        "Correct tab was not ready within 2 seconds after clicking torrent $item")
             } else {
                 // go to torrent details
                 val action = ListsTabFragmentDirections.actionListsTabToTorrentDetails(item)
@@ -837,19 +795,16 @@ class TorrentsListFragment : UnchainedFragment(), TorrentListListener {
                     controller.navigate(action)
                 else
                     Timber.e(
-                        "Correct tab was not ready within 2 seconds after clicking torrent $item"
-                    )
+                        "Correct tab was not ready within 2 seconds after clicking torrent $item")
             }
         }
     }
 }
 
 sealed class ListState {
-    object UpdateTorrent : ListState()
+    data object UpdateTorrent : ListState()
 
-    object UpdateDownload : ListState()
-
-    object Ready : ListState()
+    data object UpdateDownload : ListState()
 }
 
 interface SelectedItemsButtonsListener {
@@ -862,5 +817,6 @@ interface SelectedItemsButtonsListener {
     fun openSelectedDetails()
 
     fun openNewDownload()
+
     fun refreshList()
 }

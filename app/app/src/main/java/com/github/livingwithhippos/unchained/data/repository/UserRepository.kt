@@ -9,7 +9,7 @@ import javax.inject.Inject
 
 class UserRepository
 @Inject
-constructor(private val protoStore: ProtoStore, private val userApiHelper: UserApiHelper) :
+constructor(protoStore: ProtoStore, private val userApiHelper: UserApiHelper) :
     BaseRepository(protoStore) {
 
     suspend fun getUserInfo(token: String): User? {
@@ -17,8 +17,7 @@ constructor(private val protoStore: ProtoStore, private val userApiHelper: UserA
         val userResponse =
             safeApiCall(
                 call = { userApiHelper.getUser("Bearer $token") },
-                errorMessage = "Error Fetching User Info"
-            )
+                errorMessage = "Error Fetching User Info")
 
         return userResponse
     }
@@ -28,8 +27,7 @@ constructor(private val protoStore: ProtoStore, private val userApiHelper: UserA
         val userResponse =
             eitherApiResult(
                 call = { userApiHelper.getUser("Bearer $token") },
-                errorMessage = "Error Fetching User Info"
-            )
+                errorMessage = "Error Fetching User Info")
 
         return userResponse
     }

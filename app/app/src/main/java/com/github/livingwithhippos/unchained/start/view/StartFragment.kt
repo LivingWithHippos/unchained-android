@@ -81,16 +81,14 @@ class StartFragment : UnchainedFragment() {
 
         binding.bRetry.setOnClickListener {
             activityViewModel.transitionAuthenticationMachine(
-                FSMAuthenticationEvent.OnUserActionRetry
-            )
+                FSMAuthenticationEvent.OnUserActionRetry)
             binding.loadingCircle.visibility = View.VISIBLE
             binding.buttonsLayout.visibility = View.INVISIBLE
         }
 
         binding.bReset.setOnClickListener {
             activityViewModel.transitionAuthenticationMachine(
-                FSMAuthenticationEvent.OnUserActionReset
-            )
+                FSMAuthenticationEvent.OnUserActionReset)
             binding.loadingCircle.visibility = View.VISIBLE
             binding.buttonsLayout.visibility = View.INVISIBLE
         }

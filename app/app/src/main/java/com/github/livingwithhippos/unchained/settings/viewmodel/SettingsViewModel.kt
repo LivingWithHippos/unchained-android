@@ -87,5 +87,5 @@ constructor(
 }
 
 sealed class SettingEvent {
-    object Logout : SettingEvent()
+    data object Logout : SettingEvent()
 }

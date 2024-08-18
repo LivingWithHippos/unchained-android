@@ -16,9 +16,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Setup
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
@@ -28,9 +28,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Setup
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
@@ -46,7 +46,7 @@ jobs:
             KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: ./gradlew clean assembleRelease --stacktrace
       - name: Save apk
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
             name: apk
             path: /home/runner/work/unchained-android/unchained-android/app/app/build/outputs/apk/release/*.apk
@@ -54,9 +54,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Setup
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
@@ -72,7 +72,7 @@ jobs:
             KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: ./gradlew clean assembleDebug --stacktrace
       - name: Save apk
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
             name: apk-debug
             path: /home/runner/work/unchained-android/unchained-android/app/app/build/outputs/apk/debug/*.apk

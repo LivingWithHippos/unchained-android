@@ -69,8 +69,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 when (newValue) {
                     THEME_AUTO ->
                         AppCompatDelegate.setDefaultNightMode(
-                            AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-                        )
+                            AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
                     THEME_DAY ->
                         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
                     THEME_NIGHT ->
@@ -196,9 +195,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 context
                     ?.packageManager
                     ?.getPackageInfo(
-                        requireContext().packageName,
-                        PackageManager.PackageInfoFlags.of(0)
-                    )
+                        requireContext().packageName, PackageManager.PackageInfoFlags.of(0))
             } else {
                 context?.packageManager?.getPackageInfo(requireContext().packageName, 0)
             }
@@ -276,7 +273,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
         const val KEY_TORRENT_NOTIFICATIONS = "notification_torrent_key"
         const val KEY_REFERRAL_ASKED = "referral_asked_key"
         const val KEY_REFERRAL_USE = "use_referral_key"
-        const val KEY_APP_VERSION = "app_version_key"
         const val KEY_USE_DOH = "use_doh_key"
         const val THEME_AUTO = "auto"
         const val THEME_NIGHT = "night"

@@ -7,9 +7,9 @@ plugins {
     id("org.jetbrains.kotlin.plugin.parcelize")
     id("dagger.hilt.android.plugin")
     id("androidx.navigation.safeargs.kotlin")
-    id("com.google.protobuf") version "0.9.4"
     id("com.mikepenz.aboutlibraries.plugin")
-    id("com.ncorti.ktfmt.gradle") version "0.14.0"
+    alias(libs.plugins.protobuf)
+    alias(libs.plugins.ktfmt)
     kotlin("kapt")
 }
 
@@ -60,8 +60,8 @@ android {
         applicationId = "com.github.livingwithhippos.unchained"
         minSdk = 22
         targetSdk = 34
-        versionCode = 38
-        versionName = "1.1.0"
+        versionCode = 41
+        versionName = "1.2.0"
 
         javaCompileOptions {
             annotationProcessorOptions {
@@ -172,12 +172,16 @@ dependencies {
     implementation(libs.kotlin.stdlib)
     implementation(libs.kotlin.reflect)
     implementation(libs.kotlin.datetime)
+
     implementation(libs.core.ktx)
     implementation(libs.android.appcompat)
+
     implementation(libs.android.constraintlayout)
     implementation(libs.fragment.ktx)
-    implementation(libs.swiperefreshlayout)
+
+    implementation(libs.swiperefresh.layout)
     implementation(libs.preference.ktx)
+
     implementation(libs.recyclerview.core)
     implementation(libs.recyclerview.selection)
     implementation(libs.viewpager2)
@@ -185,6 +189,11 @@ dependencies {
 
     implementation(libs.datastore.core)
     implementation(libs.datastore.prefs)
+
+    implementation(libs.jackson.kotlin)
+    implementation(libs.jackson.xml)
+    implementation(libs.woodstox)
+    implementation(libs.stax)
 
     kapt(libs.moshi.kapt)
     implementation(libs.moshi.runtime)

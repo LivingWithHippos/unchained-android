@@ -57,8 +57,7 @@ constructor(private val repositoryDataDao: RepositoryDataDao) {
                 name = jsonRepository.name,
                 description = jsonRepository.description,
                 author = jsonRepository.author,
-            )
-        )
+            ))
         for (plugin in jsonRepository.plugins) {
             repositoryDataDao.insert(RepositoryPlugin(repository = link, name = plugin.id))
             repositoryDataDao.insert(
@@ -68,15 +67,9 @@ constructor(private val repositoryDataDao: RepositoryDataDao) {
                         plugin = plugin.id,
                         version = it.plugin,
                         engine = it.engine,
-                        link = it.link
-                    )
-                }
-            )
+                        link = it.link)
+                })
         }
-    }
-
-    suspend fun removeRepository(repository: Repository) {
-        repositoryDataDao.delete(repository)
     }
 
     suspend fun removeRepository(link: String) {
@@ -116,5 +109,12 @@ constructor(private val repositoryDataDao: RepositoryDataDao) {
             pluginsMap[entry.key] = repoPlugins
         }
         return pluginsMap
+    }
+
+    suspend fun getEnabledPlugins(): Map<RepositoryInfo, List<RepositoryPlugin>> =
+        repositoryDataDao.getEnabledPlugins()
+
+    suspend fun enablePlugin(name: String, enabled: Boolean) {
+        repositoryDataDao.enablePlugin(name, enabled)
     }
 }

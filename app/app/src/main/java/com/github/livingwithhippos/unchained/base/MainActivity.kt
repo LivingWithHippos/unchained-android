@@ -11,7 +11,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
-import android.content.res.Configuration
 import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.Build
@@ -142,11 +141,6 @@ class MainActivity : AppCompatActivity() {
         return emptyList()
     }
 
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-        TelemetryManager.onConfigurationChanged(newConfig)
-    }
-
     private lateinit var binding: ActivityMainBinding
 
     val viewModel: MainActivityViewModel by viewModels()
@@ -158,8 +152,7 @@ class MainActivity : AppCompatActivity() {
             override fun onReceive(context: Context?, intent: Intent?) {
                 intent?.let {
                     viewModel.checkTorrentDownload(
-                        it.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
-                    )
+                        it.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1))
                 }
             }
         }
@@ -231,8 +224,7 @@ class MainActivity : AppCompatActivity() {
                         else -> false
                     }
                 }
-            }
-        )
+            })
 
         viewModel.fsmAuthenticationState.observe(this) {
             // do not inline this variable in the when, because getContentIfNotHandled() will change
@@ -303,6 +295,9 @@ class MainActivity : AppCompatActivity() {
                 // unlock the bottom menu
                 enableAllBottomNavItems()
             }
+            is FSMAuthenticationState.CheckCredentials -> {
+                // avoid issues with restoring activity state
+            }
             else -> {
                 // todo: decide if we need to check other possible values or reset the fsm to
                 // checkCredentials in these states and call startAuthenticationMachine
@@ -321,8 +316,7 @@ class MainActivity : AppCompatActivity() {
                 applicationContext,
                 downloadReceiver,
                 IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE),
-                ContextCompat.RECEIVER_NOT_EXPORTED
-            )
+                ContextCompat.RECEIVER_NOT_EXPORTED)
         } catch (ex: RuntimeException) {
             Timber.w(ex, "Download receiver already registered")
         }
@@ -355,8 +349,7 @@ class MainActivity : AppCompatActivity() {
                         lifecycleScope.launch { doubleClickBottomItem(R.id.navigation_search) }
                     }
                 }
-            }
-        )
+            })
 
         // monitor if the torrent notification service needs to be started. It monitor the
         // preference
@@ -386,8 +379,7 @@ class MainActivity : AppCompatActivity() {
                             delay(200)
                         }
                         currentToast.setText(
-                            getString(R.string.n_plugins_installed, content.number)
-                        )
+                            getString(R.string.n_plugins_installed, content.number))
                         currentToast.show()
                     }
                 }
@@ -406,21 +398,16 @@ class MainActivity : AppCompatActivity() {
                     when (content.signature) {
                         SIGNATURE.F_DROID -> {
                             showUpdateDialog(
-                                getString(R.string.fdroid_update_description),
-                                APP_LINK.F_DROID
-                            )
+                                getString(R.string.fdroid_update_description), APP_LINK.F_DROID)
                         }
                         SIGNATURE.PLAY_STORE -> {
                             showUpdateDialog(
                                 getString(R.string.playstore_update_description),
-                                APP_LINK.PLAY_STORE
-                            )
+                                APP_LINK.PLAY_STORE)
                         }
                         SIGNATURE.GITHUB -> {
                             showUpdateDialog(
-                                getString(R.string.github_update_description),
-                                APP_LINK.GITHUB
-                            )
+                                getString(R.string.github_update_description), APP_LINK.GITHUB)
                         }
                         else -> {}
                     }
@@ -430,25 +417,20 @@ class MainActivity : AppCompatActivity() {
                 }
                 MainActivityMessage.RequireDownloadPermissions -> {
                     requestDownloadPermissionLauncher.launch(
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE
-                    )
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 }
                 MainActivityMessage.RequireNotificationPermissions -> {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                         requestNotificationPermissionLauncher.launch(
-                            Manifest.permission.POST_NOTIFICATIONS
-                        )
+                            Manifest.permission.POST_NOTIFICATIONS)
                     }
                 }
                 is MainActivityMessage.MultipleDownloadsEnqueued -> {
 
-                    if (
-                        Build.VERSION.SDK_INT in 23..28 &&
-                            ContextCompat.checkSelfPermission(
-                                applicationContext,
-                                Manifest.permission.WRITE_EXTERNAL_STORAGE
-                            ) != PERMISSION_GRANTED
-                    ) {
+                    if (Build.VERSION.SDK_INT in 23..28 &&
+                        ContextCompat.checkSelfPermission(
+                            applicationContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
+                            PERMISSION_GRANTED) {
                         viewModel.requireDownloadPermissions()
                     } else {
 
@@ -464,13 +446,11 @@ class MainActivity : AppCompatActivity() {
                                             source = Uri.parse(download.download),
                                             title = download.filename,
                                             description = getString(R.string.app_name),
-                                            fileName = download.filename
-                                        )
+                                            fileName = download.filename)
                                     when (queuedDownload) {
                                         is EitherResult.Failure -> {
                                             Timber.e(
-                                                "Error queuing ${download.link}: ${queuedDownload.failure.message}"
-                                            )
+                                                "Error queuing ${download.link}: ${queuedDownload.failure.message}")
                                         }
                                         is EitherResult.Success -> {
                                             downloadsStarted++
@@ -482,9 +462,7 @@ class MainActivity : AppCompatActivity() {
                                     getString(
                                         R.string.multiple_downloads_enqueued_format,
                                         downloadsStarted,
-                                        content.downloads.size
-                                    )
-                                )
+                                        content.downloads.size))
                             }
                             PreferenceKeys.DownloadManager.OKHTTP -> {
 
@@ -493,18 +471,14 @@ class MainActivity : AppCompatActivity() {
                                     if (viewModel.getDownloadOnUnmeteredOnlyPreference()) {
                                         val connectivityManager =
                                             applicationContext.getSystemService(
-                                                Context.CONNECTIVITY_SERVICE
-                                            ) as ConnectivityManager
+                                                Context.CONNECTIVITY_SERVICE) as ConnectivityManager
                                         if (connectivityManager.isActiveNetworkMetered) {
                                             applicationContext.showToast(
-                                                R.string.download_on_metered_connection
-                                            )
+                                                R.string.download_on_metered_connection)
                                         }
                                     }
                                     viewModel.startMultipleDownloadWorkers(
-                                        folder,
-                                        content.downloads
-                                    )
+                                        folder, content.downloads)
                                 } else viewModel.requireDownloadFolder()
                             }
                         }
@@ -512,13 +486,10 @@ class MainActivity : AppCompatActivity() {
                 }
                 is MainActivityMessage.DownloadEnqueued -> {
 
-                    if (
-                        Build.VERSION.SDK_INT in 23..28 &&
-                            ContextCompat.checkSelfPermission(
-                                applicationContext,
-                                Manifest.permission.WRITE_EXTERNAL_STORAGE
-                            ) != PERMISSION_GRANTED
-                    ) {
+                    if (Build.VERSION.SDK_INT in 23..28 &&
+                        ContextCompat.checkSelfPermission(
+                            applicationContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
+                            PERMISSION_GRANTED) {
                         viewModel.requireDownloadPermissions()
                     } else {
                         when (val dm = viewModel.getDownloadManagerPreference()) {
@@ -533,16 +504,13 @@ class MainActivity : AppCompatActivity() {
                                         source = Uri.parse(content.source),
                                         title = content.fileName,
                                         description = getString(R.string.app_name),
-                                        fileName = content.fileName
-                                    )
+                                        fileName = content.fileName)
                                 when (queuedDownload) {
                                     is EitherResult.Failure -> {
                                         applicationContext.showToast(
                                             getString(
                                                 R.string.download_not_started_format,
-                                                content.fileName
-                                            )
-                                        )
+                                                content.fileName))
                                     }
                                     is EitherResult.Success -> {
                                         applicationContext.showToast(R.string.download_started)
@@ -557,12 +525,10 @@ class MainActivity : AppCompatActivity() {
                                     if (viewModel.getDownloadOnUnmeteredOnlyPreference()) {
                                         val connectivityManager =
                                             applicationContext.getSystemService(
-                                                Context.CONNECTIVITY_SERVICE
-                                            ) as ConnectivityManager
+                                                Context.CONNECTIVITY_SERVICE) as ConnectivityManager
                                         if (connectivityManager.isActiveNetworkMetered) {
                                             applicationContext.showToast(
-                                                R.string.download_on_metered_connection
-                                            )
+                                                R.string.download_on_metered_connection)
                                         }
                                     }
 
@@ -637,10 +603,8 @@ class MainActivity : AppCompatActivity() {
                         // replace with intent.getParcelableExtra(Intent.EXTRA_STREAM,
                         // Uri::class.java) when stabilized
                         (intent.getParcelableExtra<Parcelable>(Intent.EXTRA_STREAM) as? Uri)?.let {
-                            if (
-                                it.lastPathSegment?.endsWith(TYPE_UNCHAINED, ignoreCase = true) ==
-                                    true
-                            )
+                            if (it.lastPathSegment?.endsWith(TYPE_UNCHAINED, ignoreCase = true) ==
+                                true)
                                 viewModel.addPluginFromDisk(applicationContext, it)
                         }
                     }
@@ -796,9 +760,7 @@ class MainActivity : AppCompatActivity() {
                     R.id.start_dest,
                     R.id.user_dest,
                     R.id.list_tabs_dest,
-                    R.id.search_dest
-                )
-            )
+                    R.id.search_dest))
         setupActionBarWithNavController(navController, appBarConfiguration)
 
         binding.bottomNavView.setOnItemReselectedListener {
@@ -827,9 +789,8 @@ class MainActivity : AppCompatActivity() {
 
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
-        // if the user is pressing back on an "exiting"fragment, show a toast alerting him and wait
-        // for
-        // him to press back again for confirmation
+        // if the user is pressing back on an "exiting" fragment, show a toast alerting him and wait
+        // for him to press back again for confirmation
 
         val currentDestination = navController.currentDestination
         val previousDestination = navController.previousBackStackEntry
@@ -839,13 +800,11 @@ class MainActivity : AppCompatActivity() {
             R.id.user_dest,
             R.id.authentication_dest -> {
                 // check the destination for the back action
-                if (
-                    previousDestination == null ||
-                        previousDestination.destination.id == R.id.authentication_dest ||
-                        previousDestination.destination.id == R.id.start_dest ||
-                        previousDestination.destination.id == R.id.user_dest ||
-                        previousDestination.destination.id == R.id.search_dest
-                ) {
+                if (previousDestination == null ||
+                    previousDestination.destination.id == R.id.authentication_dest ||
+                    previousDestination.destination.id == R.id.start_dest ||
+                    previousDestination.destination.id == R.id.user_dest ||
+                    previousDestination.destination.id == R.id.search_dest) {
                     // check if it has been 2 seconds since the last time we pressed back
                     val pressedTime = System.currentTimeMillis()
                     val lastPressedTime = viewModel.getLastBackPress()

@@ -225,9 +225,7 @@ fun TextView.setFileSize(size: Long) {
             // value
             size < 9999999999999 ->
                 this.context.getString(
-                    R.string.file_size_format_gb,
-                    size.toFloat() / 1024 / 1024 / 1024
-                )
+                    R.string.file_size_format_gb, size.toFloat() / 1024 / 1024 / 1024)
             // todo: shorten this
             else -> this.context.getString(R.string.size_error)
         }
@@ -257,8 +255,7 @@ fun View.runRippleAnimation(delay: Long = 300) {
                 background.state =
                     intArrayOf(android.R.attr.state_pressed, android.R.attr.state_enabled)
             },
-            delay
-        )
+            delay)
     }
 }
 

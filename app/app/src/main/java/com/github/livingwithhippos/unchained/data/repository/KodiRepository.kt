@@ -55,13 +55,10 @@ constructor(protoStore: ProtoStore, @ClassicClient private val client: OkHttpCli
                             request =
                                 KodiRequest(
                                     method = "Application.GetProperties",
-                                    params = KodiParams(properties = listOf("volume"))
-                                ),
-                            auth = encodeAuthentication(username, password)
-                        )
+                                    params = KodiParams(properties = listOf("volume"))),
+                            auth = encodeAuthentication(username, password))
                     },
-                    errorMessage = "Error getting Kodi volume"
-                )
+                    errorMessage = "Error getting Kodi volume")
 
             return kodiResponse
         } catch (e: Exception) {
@@ -91,13 +88,10 @@ constructor(protoStore: ProtoStore, @ClassicClient private val client: OkHttpCli
                             request =
                                 KodiRequest(
                                     method = "Player.Open",
-                                    params = KodiParams(item = KodiItem(fileUrl = url))
-                                ),
-                            auth = encodeAuthentication(username, password)
-                        )
+                                    params = KodiParams(item = KodiItem(fileUrl = url))),
+                            auth = encodeAuthentication(username, password))
                     },
-                    errorMessage = "Error Sending url to Kodi"
-                )
+                    errorMessage = "Error Sending url to Kodi")
 
             return kodiResponse
         } catch (e: Exception) {

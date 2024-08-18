@@ -66,8 +66,7 @@ constructor(
                         kodiService.port,
                         mediaURL,
                         kodiService.username,
-                        kodiService.password
-                    )
+                        kodiService.password)
                 if (response != null) messageLiveData.postEvent(DownloadDetailsMessage.KodiSuccess)
                 else messageLiveData.postEvent(DownloadDetailsMessage.KodiError)
             } catch (e: Exception) {
@@ -87,8 +86,7 @@ constructor(
                         vlcService.port,
                         mediaURL,
                         vlcService.username,
-                        vlcService.password
-                    )
+                        vlcService.password)
                 // todo: use a single message valid for all players
                 if (response is EitherResult.Failure)
                     messageLiveData.postEvent(DownloadDetailsMessage.KodiError)
@@ -135,7 +133,7 @@ constructor(
         return preferences.getInt(RECENT_SERVICE_KEY, -1)
     }
 
-    fun setRecentService(serviceId: Int) {
+    private fun setRecentService(serviceId: Int) {
         with(preferences.edit()) {
             putInt(RECENT_SERVICE_KEY, serviceId).apply()
             apply()

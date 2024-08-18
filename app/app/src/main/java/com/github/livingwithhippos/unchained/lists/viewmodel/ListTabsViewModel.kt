@@ -1,6 +1,5 @@
 package com.github.livingwithhippos.unchained.lists.viewmodel
 
-import TorrentPagingSource
 import android.content.SharedPreferences
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -20,15 +19,16 @@ import com.github.livingwithhippos.unchained.data.repository.DownloadRepository
 import com.github.livingwithhippos.unchained.data.repository.TorrentsRepository
 import com.github.livingwithhippos.unchained.data.repository.UnrestrictRepository
 import com.github.livingwithhippos.unchained.lists.model.DownloadPagingSource
+import com.github.livingwithhippos.unchained.lists.model.TorrentPagingSource
 import com.github.livingwithhippos.unchained.utilities.DOWNLOADS_TAB
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.postEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
-import kotlinx.coroutines.launch
 import kotlin.math.max
 import kotlin.math.min
+import kotlinx.coroutines.launch
 
 /**
  * A [ViewModel] subclass. It offers LiveData to be observed to populate lists with paging support
@@ -102,54 +102,16 @@ constructor(
         }
     }
 
-    fun getPagingSize(): Int {
+    private fun getPagingSize(): Int {
         return min(preferences.getInt("paging_size", 50), MAX_PAGE_SIZE)
     }
 
-    fun downloadTorrentFolder(torrent: TorrentItem) {
-        viewModelScope.launch {
-            val items = unrestrictRepository.getUnrestrictedLinkList(torrent.links)
-            val values =
-                items.filterIsInstance<EitherResult.Success<DownloadItem>>().map { it.success }
-            val errors =
-                items.filterIsInstance<EitherResult.Failure<UnchainedNetworkException>>().map {
-                    it.failure
-                }
-
-            downloadItemLiveData.postEvent(values)
-            if (errors.isNotEmpty()) errorsLiveData.postEvent(errors)
-        }
-    }
-
-    fun deleteTorrent(id: String) {
-        viewModelScope.launch {
-            val deleted = torrentsRepository.deleteTorrent(id)
-            when (deleted) {
-                is EitherResult.Failure -> {
-                    errorsLiveData.postEvent(listOf(deleted.failure))
-                    deletedTorrentLiveData.postEvent(TORRENT_NOT_DELETED)
-                }
-                is EitherResult.Success -> {
-                    deletedTorrentLiveData.postEvent(TORRENT_DELETED)
-                }
-            }
-        }
-    }
-
-    fun deleteDownload(id: String) {
-        viewModelScope.launch {
-            val deleted = downloadRepository.deleteDownload(id)
-            if (deleted == null) deletedDownloadLiveData.postEvent(DOWNLOAD_NOT_DELETED)
-            else deletedDownloadLiveData.postEvent(DOWNLOAD_DELETED)
-        }
-    }
-
     fun setSelectedTab(tabID: Int) {
-        savedStateHandle.set(KEY_SELECTED_TAB, tabID)
+        savedStateHandle[KEY_SELECTED_TAB] = tabID
     }
 
     fun getSelectedTab(): Int {
-        return savedStateHandle.get(KEY_SELECTED_TAB) ?: DOWNLOADS_TAB
+        return savedStateHandle[KEY_SELECTED_TAB] ?: DOWNLOADS_TAB
     }
 
     fun setListFilter(query: String?) {
