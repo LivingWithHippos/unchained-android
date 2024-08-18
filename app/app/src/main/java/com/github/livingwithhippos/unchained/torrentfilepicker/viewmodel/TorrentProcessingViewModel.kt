@@ -181,22 +181,9 @@ constructor(
                         }
                     }
                 }
-                delay(1000)
+                delay(1500)
             }
         }
-    }
-
-    fun pollTorrentStatus() {
-        Timer()
-            .scheduleAtFixedRate(
-                object : TimerTask() {
-                    override fun run() {
-                        // check if it goes into select files
-                        // todo: create a service to do this, check the download one
-                    }
-                },
-                0,
-                1000)
     }
 
     fun triggerTorrentEvent(event: TorrentEvent) {
