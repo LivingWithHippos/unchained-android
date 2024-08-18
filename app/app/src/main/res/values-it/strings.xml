@@ -515,4 +515,14 @@
     <string name="loading_size">Dimensione caricamento</string>
     <string name="summary_loading_size">Quanti elementi devono essere caricati contemporaneamente dalle sezioni download e torrent. Più grande è più lento.</string>
     <string name="refresh">Aggiorna</string>
+    <string name="infringing_file">File illecito bloccato</string>
+    <string name="api_token">API token</string>
+    <string name="pick_search_type">Scegli tipo di ricerca</string>
+    <string name="plugin_search_description">Utilizza plugins creati dalla community per Unchained. Opzione di default se non sai cosa scegliere</string>
+    <string name="plugins">Plugins</string>
+    <string name="services_search_description">Utilizza servizi come Jackett, Prowlarr o altre app Torznab</string>
+    <string name="all">tutti</string>
+    <string name="search_options">Opzioni di ricerca</string>
+    <string name="too_many_requests">Troppe richieste</string>
+    <string name="usage_limit_reached">Raggiunto limite di utilizzo</string>
 </resources>

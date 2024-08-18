@@ -400,6 +400,9 @@ fun Context.getApiErrorMessage(errorCode: Int?): String {
         31 -> getString(R.string.action_already_done)
         32 -> getString(R.string.image_resolution_error)
         33 -> getString(R.string.torrent_already_active)
+        34 -> getString(R.string.too_many_requests)
+        35 -> getString(R.string.infringing_file)
+        36 -> getString(R.string.usage_limit_reached)
         else -> getString(R.string.unknown_error)
     }
 }

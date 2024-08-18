@@ -740,4 +740,7 @@
     <string name="services_search_description">Use services such as Jackett, Prowlarr or any Torznab app.</string>
     <string name="all">all</string>
     <string name="search_options">Search Options</string>
+    <string name="infringing_file">Infringing file locked</string>
+    <string name="too_many_requests">Too many requests</string>
+    <string name="usage_limit_reached">Usage limit reached</string>
 </resources>
