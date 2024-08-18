@@ -20,7 +20,6 @@ import com.github.livingwithhippos.unchained.data.model.APIError
 import com.github.livingwithhippos.unchained.data.model.ApiConversionError
 import com.github.livingwithhippos.unchained.data.model.EmptyBodyError
 import com.github.livingwithhippos.unchained.data.model.NetworkError
-import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkException
 import com.github.livingwithhippos.unchained.data.model.cache.CachedAlternative
 import com.github.livingwithhippos.unchained.data.model.cache.CachedTorrent
 import com.github.livingwithhippos.unchained.data.repository.DownloadResult
@@ -204,17 +203,16 @@ class TorrentProcessingFragment : UnchainedFragment() {
         }
 
         viewModel.networkExceptionLiveData.observe(viewLifecycleOwner) {
-
             when (val response = it.getContentIfNotHandled()) {
                 null -> {}
                 is APIError -> {
                     Timber.e("API error: ${response.errorCode}")
                     if (response.errorCode == 8) {
-                            if (activityViewModel.getAuthenticationMachineState()
-                                        is FSMAuthenticationState.AuthenticatedOpenToken)
-                                activityViewModel.transitionAuthenticationMachine(
-                                    FSMAuthenticationEvent.OnExpiredOpenToken)
-                            context?.showToast(R.string.refreshing_token)
+                        if (activityViewModel.getAuthenticationMachineState()
+                            is FSMAuthenticationState.AuthenticatedOpenToken)
+                            activityViewModel.transitionAuthenticationMachine(
+                                FSMAuthenticationEvent.OnExpiredOpenToken)
+                        context?.showToast(R.string.refreshing_token)
                     } else {
                         context?.let { c -> c.showToast(c.getApiErrorMessage(response.errorCode)) }
                     }
