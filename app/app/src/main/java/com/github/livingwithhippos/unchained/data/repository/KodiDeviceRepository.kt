@@ -54,7 +54,6 @@ class KodiDeviceRepository @Inject constructor(private val kodiDeviceDao: KodiDe
             device.username,
             device.password,
             if (device.isDefault) 1 else 0,
-            oldDeviceName
-        )
+            oldDeviceName)
     }
 }

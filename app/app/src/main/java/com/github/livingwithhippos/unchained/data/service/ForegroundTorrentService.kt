@@ -165,8 +165,7 @@ class ForegroundTorrentService : LifecycleService() {
                 torrentBuilder
                     .setProgress(100, torrent.progress, false)
                     .setContentTitle(
-                        getString(R.string.torrent_in_progress_format, torrent.progress, speedMBs)
-                    )
+                        getString(R.string.torrent_in_progress_format, torrent.progress, speedMBs))
                     .setOngoing(true)
             } else {
                 torrentBuilder
@@ -193,8 +192,7 @@ class ForegroundTorrentService : LifecycleService() {
                         torrent.id.hashCode(),
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
                             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-                        else PendingIntent.FLAG_UPDATE_CURRENT
-                    )
+                        else PendingIntent.FLAG_UPDATE_CURRENT)
                 }
 
             torrentBuilder.setContentIntent(resultPendingIntent)
@@ -228,8 +226,7 @@ class ForegroundTorrentService : LifecycleService() {
                     item.id.hashCode(),
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
                         PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-                    else PendingIntent.FLAG_UPDATE_CURRENT
-                )
+                    else PendingIntent.FLAG_UPDATE_CURRENT)
             }
 
         notificationManager.apply {

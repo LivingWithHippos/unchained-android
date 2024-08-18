@@ -58,10 +58,7 @@ fun getFilesNodes(
                                 paths.dropLast(1).joinToString("/"),
                                 file.bytes,
                                 selected = file.selected == 1,
-                                value
-                            )
-                        )
-                    )
+                                value)))
                 } else {
                     // this is a folder, if we are not in flattening mode we add it to the list
                     if (flattenFolders.not()) {
@@ -74,10 +71,7 @@ fun getFilesNodes(
                                         paths.subList(0, index + 1).joinToString("/"),
                                         0,
                                         selected = false,
-                                        value
-                                    )
-                                )
-                            )
+                                        value)))
                         }
 
                         currentNode = currentNode.children.first { it.value.name == value }

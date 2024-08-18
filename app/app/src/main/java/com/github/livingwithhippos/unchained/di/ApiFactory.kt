@@ -76,9 +76,7 @@ object ApiFactory {
                         ConnectionSpec.Builder(ConnectionSpec.MODERN_TLS)
                             .allEnabledTlsVersions()
                             .allEnabledCipherSuites()
-                            .build()
-                    )
-                )
+                            .build()))
                 // logs all the calls, removed in the release channel
                 .addInterceptor(logInterceptor)
                 // avoid issues with empty bodies on delete/put and 20x return codes
@@ -93,9 +91,7 @@ object ApiFactory {
                         ConnectionSpec.Builder(ConnectionSpec.MODERN_TLS)
                             .allEnabledTlsVersions()
                             .allEnabledCipherSuites()
-                            .build()
-                    )
-                )
+                            .build()))
                 // avoid issues with empty bodies on delete/put and 20x return codes
                 .addInterceptor(EmptyBodyInterceptor)
                 .build()
@@ -127,9 +123,7 @@ object ApiFactory {
                             ConnectionSpec.Builder(ConnectionSpec.MODERN_TLS)
                                 .allEnabledTlsVersions()
                                 .allEnabledCipherSuites()
-                                .build()
-                        )
-                    )
+                                .build()))
                     // logs all the calls, removed in the release channel
                     .addInterceptor(logInterceptor)
                     // avoid issues with empty bodies on delete/put and 20x return codes
@@ -144,9 +138,7 @@ object ApiFactory {
                             ConnectionSpec.Builder(ConnectionSpec.MODERN_TLS)
                                 .allEnabledTlsVersions()
                                 .allEnabledCipherSuites()
-                                .build()
-                        )
-                    )
+                                .build()))
                     .addInterceptor(EmptyBodyInterceptor)
                     .build()
             }
@@ -156,9 +148,7 @@ object ApiFactory {
                 .client(bootstrapClient)
                 .url("https://dns.google/dns-query".toHttpUrl())
                 .bootstrapDnsHosts(
-                    InetAddress.getByName("8.8.8.8"),
-                    InetAddress.getByName("8.8.4.4")
-                )
+                    InetAddress.getByName("8.8.8.8"), InetAddress.getByName("8.8.4.4"))
                 .build()
 
         return bootstrapClient.newBuilder().dns(dns).build()

@@ -184,9 +184,8 @@ constructor(
 
     fun getListSortPreference(): String {
         return preferences.getString(
-            FolderListViewModel.KEY_LIST_SORTING,
-            FolderListFragment.TAG_DEFAULT_SORT
-        ) ?: FolderListFragment.TAG_DEFAULT_SORT
+            FolderListViewModel.KEY_LIST_SORTING, FolderListFragment.TAG_DEFAULT_SORT)
+            ?: FolderListFragment.TAG_DEFAULT_SORT
     }
 
     fun saveSearchCategory(category: String) {
@@ -219,9 +218,11 @@ constructor(
                 // search for each one and publish
 
                 // todo: repo + plugin name?
-                val enabledPlugins: List<Plugin> = databasePluginsRepository.getEnabledPlugins().values.flatten().mapNotNull { repoPlugin ->
-                    pluginLiveData.value?.first?.firstOrNull { it.name == repoPlugin.name }
-                }
+                val enabledPlugins: List<Plugin> =
+                    databasePluginsRepository.getEnabledPlugins().values.flatten().mapNotNull {
+                        repoPlugin ->
+                        pluginLiveData.value?.first?.firstOrNull { it.name == repoPlugin.name }
+                    }
                 if (enabledPlugins.isEmpty()) {
                     parsingLiveData.postValue(ParserResult.NoEnabledPlugins)
                     return@launch
@@ -261,7 +262,8 @@ constructor(
                                     parsingLiveData.value = it
                                 }
                                 else -> {
-                                    // todo: check if we are stopping on the fragment side, with parallel search it's ok to continue if a single one fails
+                                    // todo: check if we are stopping on the fragment side, with
+                                    // parallel search it's ok to continue if a single one fails
                                     parsingLiveData.value = it
                                 }
                             }
@@ -274,9 +276,7 @@ constructor(
     }
 
     fun setPluginEnabled(name: String, checked: Boolean) {
-        viewModelScope.launch {
-            databasePluginsRepository.enablePlugin(name, checked)
-        }
+        viewModelScope.launch { databasePluginsRepository.enablePlugin(name, checked) }
     }
 
     companion object {

@@ -84,8 +84,7 @@ constructor(
         viewModelScope.launch {
             val result = diskPluginsRepository.removePlugin(context, plugin)
             pluginsRepositoryLiveData.postEvent(
-                PluginRepositoryEvent.Uninstalled(if (result) 1 else 0)
-            )
+                PluginRepositoryEvent.Uninstalled(if (result) 1 else 0))
         }
     }
 
@@ -148,8 +147,7 @@ constructor(
 
         // report errors and installed
         pluginsRepositoryLiveData.postEvent(
-            PluginRepositoryEvent.MultipleInstallation(errors, installResults)
-        )
+            PluginRepositoryEvent.MultipleInstallation(errors, installResults))
     }
 
     fun updateAllRepositoryPlugins(context: Context, repository: RepositoryListItem.Repository) {
@@ -203,8 +201,7 @@ constructor(
                 is EitherResult.Failure -> {
                     Timber.e("Error downloading repo at ${url}: ${result.failure}")
                     return (PluginRepositoryEvent.InvalidRepositoryLink(
-                        InvalidLinkReason.ConnectionError
-                    ))
+                        InvalidLinkReason.ConnectionError))
                 }
                 is EitherResult.Success -> {
                     return try {
@@ -213,18 +210,15 @@ constructor(
                             (PluginRepositoryEvent.ValidRepositoryLink(repository))
                         else
                             (PluginRepositoryEvent.InvalidRepositoryLink(
-                                InvalidLinkReason.ParsingError
-                            ))
+                                InvalidLinkReason.ParsingError))
                     } catch (ex: JSONException) {
                         Timber.e("Error while parsing repo from $url:\n${ex.message}")
                         (PluginRepositoryEvent.InvalidRepositoryLink(
-                            InvalidLinkReason.ParsingError
-                        ))
+                            InvalidLinkReason.ParsingError))
                     } catch (ex: JsonEncodingException) {
                         Timber.e("Error while parsing repo from $url:\n${ex.message}")
                         (PluginRepositoryEvent.InvalidRepositoryLink(
-                            InvalidLinkReason.ParsingError
-                        ))
+                            InvalidLinkReason.ParsingError))
                     }
                 }
             }

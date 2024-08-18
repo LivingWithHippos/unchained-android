@@ -89,12 +89,10 @@ class TorrentFilePickerFragment : Fragment(), TorrentContentListener {
         currentStructure?.let { structure ->
             var folderNode: Node<TorrentFileItem>? = null
             Node.traverseNodeDepthFirst(structure) {
-                if (
-                    it.value.absolutePath == item.absolutePath &&
-                        it.value.name == item.name &&
-                        it.value.id == TYPE_FOLDER &&
-                        item.id == TYPE_FOLDER
-                ) {
+                if (it.value.absolutePath == item.absolutePath &&
+                    it.value.name == item.name &&
+                    it.value.id == TYPE_FOLDER &&
+                    item.id == TYPE_FOLDER) {
                     folderNode = it
                     return@traverseNodeDepthFirst
                 }

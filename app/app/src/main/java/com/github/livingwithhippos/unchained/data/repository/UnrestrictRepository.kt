@@ -29,14 +29,9 @@ constructor(
             eitherApiResult(
                 call = {
                     unrestrictApiHelper.getUnrestrictedLink(
-                        token = "Bearer $token",
-                        link = link,
-                        password = password,
-                        remote = remote
-                    )
+                        token = "Bearer $token", link = link, password = password, remote = remote)
                 },
-                errorMessage = "Error Fetching Unrestricted Link Info"
-            )
+                errorMessage = "Error Fetching Unrestricted Link Info")
 
         return linkResponse
     }
@@ -69,8 +64,7 @@ constructor(
                 call = {
                     unrestrictApiHelper.getUnrestrictedFolder(token = "Bearer $token", link = link)
                 },
-                errorMessage = "Error Fetching Unrestricted Folders Info"
-            )
+                errorMessage = "Error Fetching Unrestricted Folders Info")
 
         return when (folderResponse) {
             is EitherResult.Success ->
@@ -89,8 +83,7 @@ constructor(
                 call = {
                     unrestrictApiHelper.getUnrestrictedFolder(token = "Bearer $token", link = link)
                 },
-                errorMessage = "Error Fetching Unrestricted Folders Info"
-            )
+                errorMessage = "Error Fetching Unrestricted Folders Info")
 
         return folderResponse
     }
@@ -102,21 +95,15 @@ constructor(
 
         val requestBody: RequestBody =
             container.toRequestBody(
-                "application/octet-stream".toMediaTypeOrNull(),
-                0,
-                container.size
-            )
+                "application/octet-stream".toMediaTypeOrNull(), 0, container.size)
 
         val uploadResponse =
             eitherApiResult(
                 call = {
                     unrestrictApiHelper.uploadContainer(
-                        token = "Bearer $token",
-                        container = requestBody
-                    )
+                        token = "Bearer $token", container = requestBody)
                 },
-                errorMessage = "Error Uploading Container"
-            )
+                errorMessage = "Error Uploading Container")
 
         return uploadResponse
     }
@@ -129,8 +116,7 @@ constructor(
                 call = {
                     unrestrictApiHelper.getContainerLinks(token = "Bearer $token", link = link)
                 },
-                errorMessage = "Error getting container files"
-            )
+                errorMessage = "Error getting container files")
 
         return containerResponse
     }

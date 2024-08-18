@@ -69,8 +69,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 when (newValue) {
                     THEME_AUTO ->
                         AppCompatDelegate.setDefaultNightMode(
-                            AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-                        )
+                            AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
                     THEME_DAY ->
                         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
                     THEME_NIGHT ->
@@ -196,9 +195,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 context
                     ?.packageManager
                     ?.getPackageInfo(
-                        requireContext().packageName,
-                        PackageManager.PackageInfoFlags.of(0)
-                    )
+                        requireContext().packageName, PackageManager.PackageInfoFlags.of(0))
             } else {
                 context?.packageManager?.getPackageInfo(requireContext().packageName, 0)
             }

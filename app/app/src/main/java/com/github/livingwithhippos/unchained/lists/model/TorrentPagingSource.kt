@@ -31,8 +31,7 @@ class TorrentPagingSource(
             LoadResult.Page(
                 data = response,
                 prevKey = if (page == TORRENT_STARTING_PAGE_INDEX) null else page - 1,
-                nextKey = if (response.isEmpty()) null else page + 1
-            )
+                nextKey = if (response.isEmpty()) null else page + 1)
         } catch (exception: IOException) {
             return LoadResult.Error(exception)
         } catch (exception: HttpException) {

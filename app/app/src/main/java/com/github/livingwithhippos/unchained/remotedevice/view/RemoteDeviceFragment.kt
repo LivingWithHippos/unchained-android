@@ -47,8 +47,7 @@ class RemoteDeviceFragment : UnchainedFragment(), ServiceListListener {
                     binding.rvServiceList,
                     ServiceKeyProvider(serviceAdapter),
                     DataBindingDetailsLookup(binding.rvServiceList),
-                    StorageStrategy.createParcelableStorage(RemoteService::class.java)
-                )
+                    StorageStrategy.createParcelableStorage(RemoteService::class.java))
                 .withSelectionPredicate(SelectionPredicates.createSelectAnything())
                 .build()
 
@@ -105,16 +104,14 @@ class RemoteDeviceFragment : UnchainedFragment(), ServiceListListener {
                             id = 0,
                             name = name,
                             address = address,
-                            isDefault = binding.switchDefault.isChecked
-                        )
+                            isDefault = binding.switchDefault.isChecked)
                     } else {
                         // edit device
                         RemoteDevice(
                             id = item.id,
                             name = name,
                             address = address,
-                            isDefault = binding.switchDefault.isChecked
-                        )
+                            isDefault = binding.switchDefault.isChecked)
                     }
                 viewModel.updateDevice(updatedDevice)
             }
@@ -142,8 +139,7 @@ class RemoteDeviceFragment : UnchainedFragment(), ServiceListListener {
                     val action =
                         RemoteDeviceFragmentDirections
                             .actionRemoteDeviceFragmentToRemoteServiceFragment(
-                                deviceID = args.item!!.id
-                            )
+                                deviceID = args.item!!.id)
                     findNavController().navigate(action)
                     true
                 }
@@ -167,9 +163,7 @@ class RemoteDeviceFragment : UnchainedFragment(), ServiceListListener {
     override fun onServiceClick(item: RemoteService) {
         val action =
             RemoteDeviceFragmentDirections.actionRemoteDeviceFragmentToRemoteServiceFragment(
-                item = item,
-                deviceID = args.item!!.id
-            )
+                item = item, deviceID = args.item!!.id)
         findNavController().navigate(action)
     }
 }

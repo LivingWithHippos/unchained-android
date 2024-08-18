@@ -19,8 +19,7 @@ constructor(private val protoStore: ProtoStore, private val apiHelper: AuthApiHe
         val authResponse =
             safeApiCall(
                 call = { apiHelper.getAuthentication() },
-                errorMessage = "Error Fetching Authentication Info"
-            )
+                errorMessage = "Error Fetching Authentication Info")
 
         return authResponse
     }
@@ -30,8 +29,7 @@ constructor(private val protoStore: ProtoStore, private val apiHelper: AuthApiHe
         val secretResponse =
             safeApiCall(
                 call = { apiHelper.getSecrets(deviceCode = code) },
-                errorMessage = "Error Fetching Secrets"
-            )
+                errorMessage = "Error Fetching Secrets")
 
         return secretResponse
     }
@@ -42,13 +40,9 @@ constructor(private val protoStore: ProtoStore, private val apiHelper: AuthApiHe
             safeApiCall(
                 call = {
                     apiHelper.getToken(
-                        clientId = clientId,
-                        clientSecret = clientSecret,
-                        code = code
-                    )
+                        clientId = clientId, clientSecret = clientSecret, code = code)
                 },
-                errorMessage = "Error Fetching Token"
-            )
+                errorMessage = "Error Fetching Token")
 
         return tokenResponse
     }
@@ -63,13 +57,9 @@ constructor(private val protoStore: ProtoStore, private val apiHelper: AuthApiHe
             eitherApiResult(
                 call = {
                     apiHelper.getToken(
-                        clientId = clientId,
-                        clientSecret = clientSecret,
-                        code = code
-                    )
+                        clientId = clientId, clientSecret = clientSecret, code = code)
                 },
-                errorMessage = "Error Fetching Token"
-            )
+                errorMessage = "Error Fetching Token")
 
         return tokenResponse
     }
@@ -89,8 +79,5 @@ constructor(private val protoStore: ProtoStore, private val apiHelper: AuthApiHe
         credentials: com.github.livingwithhippos.unchained.data.local.Credentials.CurrentCredential
     ): EitherResult<UnchainedNetworkException, Token> =
         getTokenOrError(
-            credentials.clientId!!,
-            credentials.clientSecret!!,
-            credentials.refreshToken!!
-        )
+            credentials.clientId!!, credentials.clientSecret!!, credentials.refreshToken!!)
 }

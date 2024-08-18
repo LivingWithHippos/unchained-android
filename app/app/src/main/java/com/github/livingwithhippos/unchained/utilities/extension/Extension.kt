@@ -50,23 +50,19 @@ fun Context.getThemeList(): List<ThemeItem> {
         ThemeItem(
             R.style.Theme_Unchained_Material3_One,
             "Red 01",
-            ResourcesCompat.getColor(resources, R.color.one_seed, null)
-        ),
+            ResourcesCompat.getColor(resources, R.color.one_seed, null)),
         ThemeItem(
             R.style.Theme_Unchained_Material3_Two,
             "Green 01",
-            ResourcesCompat.getColor(resources, R.color.two_seed, null)
-        ),
+            ResourcesCompat.getColor(resources, R.color.two_seed, null)),
         ThemeItem(
             R.style.Theme_Unchained_Material3_Three,
             "Blue 01",
-            ResourcesCompat.getColor(resources, R.color.three_seed, null)
-        ),
+            ResourcesCompat.getColor(resources, R.color.three_seed, null)),
         ThemeItem(
             R.style.Theme_Unchained_Material3_Four,
             "Black and White 01",
-            ResourcesCompat.getColor(resources, R.color.four_seed, null)
-        ),
+            ResourcesCompat.getColor(resources, R.color.four_seed, null)),
     )
 }
 
@@ -138,17 +134,14 @@ fun Fragment.copyToClipboard(label: String, text: String) {
 fun Fragment.getClipboardText(): String {
     val clipboard = requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
     var text = ""
-    if (
-        clipboard.hasPrimaryClip() &&
-            (clipboard.primaryClipDescription?.hasMimeType(MIMETYPE_TEXT_PLAIN) == true ||
-                clipboard.primaryClipDescription?.hasMimeType(MIMETYPE_TEXT_HTML) == true)
-    ) {
+    if (clipboard.hasPrimaryClip() &&
+        (clipboard.primaryClipDescription?.hasMimeType(MIMETYPE_TEXT_PLAIN) == true ||
+            clipboard.primaryClipDescription?.hasMimeType(MIMETYPE_TEXT_HTML) == true)) {
         val item = clipboard.primaryClip!!.getItemAt(0)
         text = item.text.toString()
     } else {
         Timber.d(
-            "Clipboard was empty or did not contain any text mime type: ${clipboard.primaryClipDescription}"
-        )
+            "Clipboard was empty or did not contain any text mime type: ${clipboard.primaryClipDescription}")
     }
     return text
 }
@@ -209,8 +202,7 @@ fun DownloadManager.downloadFileInCustomFolder(
         EitherResult.Success(downloadID)
     } catch (e: Exception) {
         Timber.e(
-            "Error starting download in custom folder $destination of ${source.path}, exception ${e.message}"
-        )
+            "Error starting download in custom folder $destination of ${source.path}, exception ${e.message}")
         e.printStackTrace()
         EitherResult.Failure(e)
     }
@@ -230,8 +222,7 @@ fun Context.getDownloadedFileUri(id: Long): Uri? {
         val columnIndex: Int = cursor.getColumnIndex(DownloadManager.COLUMN_STATUS)
         if (cursor.getInt(columnIndex) == DownloadManager.STATUS_SUCCESSFUL)
             return Uri.parse(
-                cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI))
-            )
+                cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI)))
     }
     cursor.close()
     return null
@@ -338,8 +329,7 @@ fun <T> LiveData<T>.observeOnce(
                     if (value != null) removeObserver(this)
                 } else removeObserver(this)
             }
-        }
-    )
+        })
 }
 
 fun AppCompatActivity.setNavigationBarColor(color: Int, alpha: Int = 0) {
@@ -355,8 +345,7 @@ fun AppCompatActivity.setNavigationBarColor(color: Int, alpha: Int = 0) {
                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> {
                     window.insetsController?.setSystemBarsAppearance(
                         WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS,
-                        WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS
-                    )
+                        WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS)
                 }
                 Build.VERSION.SDK_INT in Build.VERSION_CODES.O..Build.VERSION_CODES.Q -> {
                     // the check above is not recognized

@@ -63,9 +63,7 @@ constructor(protoStore: ProtoStore, private val customDownloadHelper: CustomDown
                                 fileSizeDownloaded += read.toLong()
                                 send(
                                     DownloadResult.Progress(
-                                        (fileSizeDownloaded / fileSize * 100).toInt()
-                                    )
-                                )
+                                        (fileSizeDownloaded / fileSize * 100).toInt()))
                             }
                             // todo: add check for fileSizeDownloaded and fileSize difference
                             outputStream.flush()
@@ -92,15 +90,12 @@ constructor(protoStore: ProtoStore, private val customDownloadHelper: CustomDown
 
         return eitherApiResult(
             call = { customDownloadHelper.getPluginsRepository(link) },
-            errorMessage = "Error Fetching plugins repository"
-        )
+            errorMessage = "Error Fetching plugins repository")
     }
 
     suspend fun downloadPlugin(link: String): EitherResult<UnchainedNetworkException, Plugin> {
         return eitherApiResult(
-            call = { customDownloadHelper.getPlugin(link) },
-            errorMessage = "Error fetching plugin"
-        )
+            call = { customDownloadHelper.getPlugin(link) }, errorMessage = "Error fetching plugin")
     }
 
     /**
@@ -112,8 +107,7 @@ constructor(protoStore: ProtoStore, private val customDownloadHelper: CustomDown
     suspend fun downloadAsString(url: String): EitherResult<UnchainedNetworkException, String> {
         return eitherApiResult(
             call = { customDownloadHelper.getAsString(url) },
-            errorMessage = "Error fetching url as a string"
-        )
+            errorMessage = "Error fetching url as a string")
     }
 }
 

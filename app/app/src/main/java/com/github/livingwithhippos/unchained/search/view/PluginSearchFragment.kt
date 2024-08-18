@@ -59,18 +59,16 @@ class PluginSearchFragment : UnchainedFragment() {
             sideSheetDialog.findViewById<ChipGroup>(R.id.pluginsChipGroup) ?: return
 
         for (plugin in plugins) {
-            val pluginChip: Chip = (inflater.inflate(R.layout.custom_chip_layout, pluginsChipsGroup, false) as Chip)
-                .apply {
-                    text = plugin.name
-                    isCheckable = true
-                    // todo: load this from preferences
-                    isChecked = false
-                }
+            val pluginChip: Chip =
+                (inflater.inflate(R.layout.custom_chip_layout, pluginsChipsGroup, false) as Chip)
+                    .apply {
+                        text = plugin.name
+                        isCheckable = true
+                        // todo: load this from preferences
+                        isChecked = false
+                    }
             pluginChip.setOnCheckedChangeListener { _, isChecked ->
-                viewModel.setPluginEnabled(
-                    plugin.name,
-                    isChecked
-                )
+                viewModel.setPluginEnabled(plugin.name, isChecked)
             }
             pluginsChipsGroup.addView(pluginChip)
             // todo: on checked listener to get the enabled list on search click
@@ -188,33 +186,29 @@ class PluginSearchFragment : UnchainedFragment() {
                 context?.showToast(R.string.file_not_allowed)
             } else {
                 // todo: category etc
-                viewModel
-                    .pluginSearchWithSettings(
-                        query = query
-                    )
-                    .observe(viewLifecycleOwner) { result ->
-                        when (result) {
-                            is ParserResult.SingleResult -> {
-                                Timber.d("Single result: ${result.value}")
-                            }
-                            is ParserResult.Results -> {
-                                Timber.d("Results: ${result.values}")
-                            }
-                            is ParserResult.SearchStarted -> {
-                                Timber.d("Search started")
-                            }
-                            is ParserResult.SearchFinished -> {
-                                Timber.d("Search finished")
-                            }
-                            is ParserResult.EmptyInnerLinks -> {
-                                Timber.d("Empty inner links")
-                            }
-                            else -> {
-                                Timber.d("Unknown result: $result")
-                            }
+                viewModel.pluginSearchWithSettings(query = query).observe(viewLifecycleOwner) {
+                    result ->
+                    when (result) {
+                        is ParserResult.SingleResult -> {
+                            Timber.d("Single result: ${result.value}")
+                        }
+                        is ParserResult.Results -> {
+                            Timber.d("Results: ${result.values}")
+                        }
+                        is ParserResult.SearchStarted -> {
+                            Timber.d("Search started")
+                        }
+                        is ParserResult.SearchFinished -> {
+                            Timber.d("Search finished")
+                        }
+                        is ParserResult.EmptyInnerLinks -> {
+                            Timber.d("Empty inner links")
+                        }
+                        else -> {
+                            Timber.d("Unknown result: $result")
                         }
                     }
-
+                }
             }
         }
     }

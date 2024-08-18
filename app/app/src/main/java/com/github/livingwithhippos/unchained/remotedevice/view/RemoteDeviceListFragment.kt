@@ -45,8 +45,7 @@ class RemoteDeviceListFragment : UnchainedFragment(), DeviceListListener {
                     binding.rvDeviceList,
                     DeviceKeyProvider(deviceAdapter),
                     DataBindingDetailsLookup(binding.rvDeviceList),
-                    StorageStrategy.createParcelableStorage(RemoteDevice::class.java)
-                )
+                    StorageStrategy.createParcelableStorage(RemoteDevice::class.java))
                 .withSelectionPredicate(SelectionPredicates.createSelectAnything())
                 .build()
 
@@ -78,15 +77,12 @@ class RemoteDeviceListFragment : UnchainedFragment(), DeviceListListener {
                 label = getString(R.string.remote_devices),
                 content = dataMap.size.toString(),
                 caption = "",
-                icon = R.drawable.icon_devices
-            ),
+                icon = R.drawable.icon_devices),
             StatItem(
                 label = getString(R.string.services),
                 content = dataMap.values.size.toString(),
                 caption = "",
-                icon = R.drawable.icon_service
-            )
-        )
+                icon = R.drawable.icon_service))
     }
 
     private fun showMenu(v: View, @MenuRes menuRes: Int) {
@@ -134,8 +130,7 @@ class RemoteDeviceListFragment : UnchainedFragment(), DeviceListListener {
     override fun onDeviceClick(item: RemoteDevice) {
         val action =
             RemoteDeviceListFragmentDirections.actionRemoteDeviceListFragmentToRemoteDeviceFragment(
-                item
-            )
+                item)
         findNavController().navigate(action)
     }
 }

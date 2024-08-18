@@ -126,13 +126,10 @@ class UserProfileFragment : UnchainedFragment() {
             startActivity(intent)
         }
 
-        if (
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
-                ContextCompat.checkSelfPermission(
-                    requireContext(),
-                    Manifest.permission.POST_NOTIFICATIONS
-                ) != PermissionChecker.PERMISSION_GRANTED
-        ) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+            ContextCompat.checkSelfPermission(
+                requireContext(), Manifest.permission.POST_NOTIFICATIONS) !=
+                PermissionChecker.PERMISSION_GRANTED) {
             activityViewModel.requireNotificationPermissions()
         }
 

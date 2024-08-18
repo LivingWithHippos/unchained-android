@@ -20,9 +20,7 @@ import kotlinx.parcelize.Parcelize
                 entity = RemoteDevice::class,
                 parentColumns = ["id"],
                 childColumns = ["device_id"],
-                onDelete = ForeignKey.CASCADE
-            )
-        ],
+                onDelete = ForeignKey.CASCADE)],
 )
 class RemoteService(
     @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id") val id: Int,
@@ -70,8 +68,7 @@ val serviceTypeMap =
     mapOf(
         RemoteServiceType.KODI.value to RemoteServiceType.KODI,
         RemoteServiceType.VLC.value to RemoteServiceType.VLC,
-        RemoteServiceType.JACKETT.value to RemoteServiceType.JACKETT
-    )
+        RemoteServiceType.JACKETT.value to RemoteServiceType.JACKETT)
 
 /** Helper class to have all the service details together */
 data class RemoteServiceDetails(

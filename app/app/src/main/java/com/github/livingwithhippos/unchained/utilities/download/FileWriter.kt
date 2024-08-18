@@ -29,11 +29,7 @@ class FileWriter(private val outputStream: OutputStream) : AutoCloseable {
                     outputStream.write(dataBuffer, 0, readBytes)
                     _state.emit(
                         DownloadStatus.Running(
-                            length,
-                            totalBytes,
-                            (totalBytes / length * 100).toInt()
-                        )
-                    )
+                            length, totalBytes, (totalBytes / length * 100).toInt()))
                 }
                 if (!stopDownload) _state.emit(DownloadStatus.Completed)
                 else _state.emit(DownloadStatus.Stopped)

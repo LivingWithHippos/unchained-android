@@ -92,10 +92,8 @@ class PluginRepository @Inject constructor() {
                             }
                             repoFolder = currentFile.name
                             Timber.d("Found folder $repoFolder")
-                        } else if (
-                            currentFile.isFile &&
-                                currentFile.name.endsWith(TYPE_UNCHAINED, ignoreCase = true)
-                        ) {
+                        } else if (currentFile.isFile &&
+                            currentFile.name.endsWith(TYPE_UNCHAINED, ignoreCase = true)) {
                             Timber.d("Found plugin ${currentFile.name}")
                             files.add(currentFile)
                         } else {
@@ -204,8 +202,7 @@ class PluginRepository @Inject constructor() {
             }
             val deleted = pluginFolder.deleteRecursively()
             Timber.d(
-                "Found $pluginCounter plugins, deleted $deleteCounter plugins. Main directory deleted: $deleted"
-            )
+                "Found $pluginCounter plugins, deleted $deleteCounter plugins. Main directory deleted: $deleted")
             deleteCounter
         } catch (e: SecurityException) {
             Timber.d("Security exception deleting plugins files: ${e.message}")

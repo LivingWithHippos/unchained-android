@@ -103,13 +103,11 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
                     activityViewModel.updateCredentialsDeviceCode(auth.deviceCode)
                     // transition state machine
                     activityViewModel.transitionAuthenticationMachine(
-                        FSMAuthenticationEvent.OnAuthLoaded
-                    )
+                        FSMAuthenticationEvent.OnAuthLoaded)
                     // set up values for calling the secrets endpoint
                     viewModel.setupSecretLoop(auth.expiresIn)
                 }
-            }
-        )
+            })
 
         // 2. start checking for user confirmation
         viewModel.secretLiveData.observe(
@@ -118,25 +116,19 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
                 when (secrets) {
                     SecretResult.Empty -> {
                         // will launch another call, re-entering WaitingUserConfirmation
-                        if (
-                            activityViewModel.getAuthenticationMachineState()
-                                is FSMAuthenticationState.WaitingUserConfirmation
-                        )
+                        if (activityViewModel.getAuthenticationMachineState()
+                            is FSMAuthenticationState.WaitingUserConfirmation)
                             activityViewModel.transitionAuthenticationMachine(
-                                FSMAuthenticationEvent.OnUserConfirmationMissing
-                            )
+                                FSMAuthenticationEvent.OnUserConfirmationMissing)
                     }
                     SecretResult.Expired -> {
                         // will restart the authentication process
                         activityViewModel.transitionAuthenticationMachine(
-                            FSMAuthenticationEvent.OnUserConfirmationExpired
-                        )
+                            FSMAuthenticationEvent.OnUserConfirmationExpired)
                     }
                     is SecretResult.Retrieved -> {
-                        if (
-                            activityViewModel.getAuthenticationMachineState()
-                                is FSMAuthenticationState.WaitingUserConfirmation
-                        ) {
+                        if (activityViewModel.getAuthenticationMachineState()
+                            is FSMAuthenticationState.WaitingUserConfirmation) {
 
                             authBinding.secrets = secrets.value
 
@@ -144,18 +136,15 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
                                 // update the currently saved credentials
                                 activityViewModel.updateCredentials(
                                     clientId = secrets.value.clientId,
-                                    clientSecret = secrets.value.clientSecret
-                                )
+                                    clientSecret = secrets.value.clientSecret)
                                 // start the next auth step
                                 activityViewModel.transitionAuthenticationMachine(
-                                    FSMAuthenticationEvent.OnUserConfirmationLoaded
-                                )
+                                    FSMAuthenticationEvent.OnUserConfirmationLoaded)
                             }
                         }
                     }
                 }
-            }
-        )
+            })
 
         // 3. start checking for the authentication token
         viewModel.tokenLiveData.observe(
@@ -168,11 +157,9 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
                     activityViewModel.updateCredentialsAccessToken(token.accessToken)
                     activityViewModel.updateCredentialsRefreshToken(token.refreshToken)
                     activityViewModel.transitionAuthenticationMachine(
-                        FSMAuthenticationEvent.OnOpenTokenLoaded
-                    )
+                        FSMAuthenticationEvent.OnOpenTokenLoaded)
                 }
-            }
-        )
+            })
 
         return authBinding.root
     }
@@ -187,11 +174,7 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
         val colorSecondary =
             requireContext().getThemeColor(com.google.android.material.R.attr.colorSecondary)
         link.setSpan(
-            ForegroundColorSpan(colorSecondary),
-            0,
-            link.length,
-            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-        )
+            ForegroundColorSpan(colorSecondary), 0, link.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         sb.append(link)
 
         sb.append(getString(R.string.to_authenticate))
@@ -212,8 +195,7 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
                 clientId = PRIVATE_TOKEN,
                 clientSecret = PRIVATE_TOKEN,
                 deviceCode = PRIVATE_TOKEN,
-                refreshToken = PRIVATE_TOKEN
-            )
+                refreshToken = PRIVATE_TOKEN)
             activityViewModel.transitionAuthenticationMachine(FSMAuthenticationEvent.OnPrivateToken)
         }
     }

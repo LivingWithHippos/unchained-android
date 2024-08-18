@@ -158,13 +158,11 @@ constructor(
                         is EitherResult.Failure -> {
                             if (selectResponse.failure is EmptyBodyError) {
                                 Timber.d(
-                                    "Select torrent files success returned ${selectResponse.failure.returnCode}"
-                                )
+                                    "Select torrent files success returned ${selectResponse.failure.returnCode}")
                                 selected = true
                             } else {
                                 Timber.e(
-                                    "Exception during torrent files selection call: ${selectResponse.failure}"
-                                )
+                                    "Exception during torrent files selection call: ${selectResponse.failure}")
                             }
                         }
                         is EitherResult.Success -> {
@@ -198,8 +196,7 @@ constructor(
                     }
                 },
                 0,
-                1000
-            )
+                1000)
     }
 
     fun triggerTorrentEvent(event: TorrentEvent) {

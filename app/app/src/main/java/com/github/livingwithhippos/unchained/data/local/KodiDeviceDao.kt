@@ -36,8 +36,7 @@ interface KodiDeviceDao {
     suspend fun resetDefaultsExcept(name: String)
 
     @Query(
-        "UPDATE kodi_device SET name = :name, ip = :address, port =:port, username =:username, password=:password, is_default = :isDefault WHERE name = :oldDeviceName"
-    )
+        "UPDATE kodi_device SET name = :name, ip = :address, port =:port, username =:username, password=:password, is_default = :isDefault WHERE name = :oldDeviceName")
     suspend fun update(
         name: String,
         address: String,

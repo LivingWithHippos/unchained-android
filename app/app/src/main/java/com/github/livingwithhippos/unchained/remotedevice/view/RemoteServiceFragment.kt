@@ -50,8 +50,7 @@ class RemoteServiceFragment : Fragment() {
             ArrayAdapter(
                 requireContext(),
                 R.layout.basic_dropdown_list_item,
-                resources.getStringArray(R.array.service_types)
-            )
+                resources.getStringArray(R.array.service_types))
         serviceTypeView.setAdapter(serviceTypeAdapter)
 
         if (item == null) {
@@ -150,9 +149,7 @@ class RemoteServiceFragment : Fragment() {
                     if (args.item == null) {
                         val action =
                             RemoteServiceFragmentDirections.actionRemoteServiceFragmentSelf(
-                                item = it.service,
-                                deviceID = args.deviceID
-                            )
+                                item = it.service, deviceID = args.deviceID)
                         findNavController().navigate(action)
                     } else {
                         context?.showToast(R.string.updated)

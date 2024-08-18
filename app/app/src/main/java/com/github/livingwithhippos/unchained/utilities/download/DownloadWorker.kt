@@ -41,12 +41,9 @@ class DownloadWorker(private val appContext: Context, workerParams: WorkerParame
 
     override suspend fun doWork(): Result {
 
-        if (
-            ActivityCompat.checkSelfPermission(
-                appContext,
-                Manifest.permission.POST_NOTIFICATIONS
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
+        if (ActivityCompat.checkSelfPermission(
+            appContext, Manifest.permission.POST_NOTIFICATIONS) !=
+            PackageManager.PERMISSION_GRANTED) {
             appContext.showToast(R.string.notifications_permission_denied)
             return Result.failure()
         }
@@ -115,8 +112,7 @@ class DownloadWorker(private val appContext: Context, workerParams: WorkerParame
                                         applicationContext.getString(R.string.error),
                                         applicationContext,
                                         onGoing = false,
-                                        stopAction = false
-                                    )
+                                        stopAction = false)
                                 NotificationManagerCompat.from(applicationContext)
                                     .notify(externalNotificationID, notification)
                             }
@@ -127,9 +123,7 @@ class DownloadWorker(private val appContext: Context, workerParams: WorkerParame
                                         notificationID,
                                         fileName,
                                         applicationContext.getString(R.string.paused),
-                                        applicationContext
-                                    )
-                                )
+                                        applicationContext))
                             }
                             DownloadStatus.Queued -> {
                                 setForeground(
@@ -138,9 +132,7 @@ class DownloadWorker(private val appContext: Context, workerParams: WorkerParame
                                         notificationID,
                                         fileName,
                                         applicationContext.getString(R.string.queued),
-                                        applicationContext
-                                    )
-                                )
+                                        applicationContext))
                             }
                             DownloadStatus.Stopped -> {
                                 val notification =
@@ -150,18 +142,15 @@ class DownloadWorker(private val appContext: Context, workerParams: WorkerParame
                                         applicationContext.getString(R.string.stopped),
                                         applicationContext,
                                         onGoing = false,
-                                        stopAction = false
-                                    )
+                                        stopAction = false)
                                 NotificationManagerCompat.from(applicationContext)
                                     .notify(externalNotificationID, notification)
                             }
                             is DownloadStatus.Running -> {
-                                if (
-                                    it.percent < 100 &&
-                                        it.percent != progressCounter &&
-                                        System.currentTimeMillis() - lastNotificationTime > 500 &&
-                                        !isStopped
-                                ) {
+                                if (it.percent < 100 &&
+                                    it.percent != progressCounter &&
+                                    System.currentTimeMillis() - lastNotificationTime > 500 &&
+                                    !isStopped) {
                                     lastNotificationTime = System.currentTimeMillis()
                                     progressCounter = it.percent
 
@@ -171,9 +160,7 @@ class DownloadWorker(private val appContext: Context, workerParams: WorkerParame
                                             notificationID,
                                             fileName,
                                             it.percent,
-                                            applicationContext
-                                        )
-                                    )
+                                            applicationContext))
                                 }
                             }
                         }
@@ -206,8 +193,7 @@ class DownloadWorker(private val appContext: Context, workerParams: WorkerParame
                         applicationContext.getString(R.string.download_complete),
                         applicationContext,
                         onGoing = false,
-                        stopAction = false
-                    )
+                        stopAction = false)
                 NotificationManagerCompat.from(applicationContext)
                     .notify(externalNotificationID, notification)
                 if (shouldVibrate) applicationContext.vibrate()

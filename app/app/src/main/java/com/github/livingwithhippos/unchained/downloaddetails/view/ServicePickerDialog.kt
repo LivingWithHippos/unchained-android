@@ -47,8 +47,7 @@ class ServicePickerDialog : DialogFragment(), ServicePickerListener {
                                     RemoteServiceDetails(
                                         service = serv,
                                         device = it.key,
-                                        type = serviceTypeMap[serv.type]!!
-                                    )
+                                        type = serviceTypeMap[serv.type]!!)
                                 }
                             }
                         adapter.submitList(devSer)
@@ -60,10 +59,9 @@ class ServicePickerDialog : DialogFragment(), ServicePickerListener {
             viewModel.fetchDevicesAndServices()
 
             builder.setView(view).setTitle(R.string.services).setNegativeButton(
-                getString(R.string.close)
-            ) { dialog, _ ->
-                dialog.cancel()
-            }
+                getString(R.string.close)) { dialog, _ ->
+                    dialog.cancel()
+                }
 
             builder.create()
         } ?: throw IllegalStateException("Activity cannot be null")

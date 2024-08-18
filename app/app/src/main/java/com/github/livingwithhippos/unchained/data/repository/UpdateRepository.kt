@@ -15,9 +15,7 @@ constructor(private val protoStore: ProtoStore, private val updateApiHelper: Upd
 
         val response =
             safeApiCall(
-                call = { updateApiHelper.getUpdates(url) },
-                errorMessage = "Error getting updates"
-            )
+                call = { updateApiHelper.getUpdates(url) }, errorMessage = "Error getting updates")
 
         return response
     }

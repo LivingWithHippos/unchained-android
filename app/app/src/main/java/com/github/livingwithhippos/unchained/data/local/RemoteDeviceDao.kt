@@ -50,20 +50,17 @@ interface RemoteDeviceDao {
     suspend fun insertAllServices(list: List<RemoteService>): List<Long>
 
     @Query(
-        "SELECT * FROM remote_device JOIN remote_service ON remote_device.id = remote_service.device_id"
-    )
+        "SELECT * FROM remote_device JOIN remote_service ON remote_device.id = remote_service.device_id")
     suspend fun getDevicesAndServices(): Map<RemoteDevice, List<RemoteService>>
 
     @Query(
-        "SELECT * FROM remote_device JOIN remote_service ON remote_device.id = remote_service.device_id WHERE remote_service.type IN (:types)"
-    )
+        "SELECT * FROM remote_device JOIN remote_service ON remote_device.id = remote_service.device_id WHERE remote_service.type IN (:types)")
     suspend fun getMediaPlayerDevicesAndServices(
         types: List<Int>
     ): Map<RemoteDevice, List<RemoteService>>
 
     @Query(
-        "SELECT * FROM remote_device JOIN remote_service ON remote_device.id = remote_service.device_id WHERE remote_service.type IN (:types)"
-    )
+        "SELECT * FROM remote_device JOIN remote_service ON remote_device.id = remote_service.device_id WHERE remote_service.type IN (:types)")
     fun getMediaPlayerDevicesAndServicesFlow(
         types: List<Int>
     ): Flow<Map<RemoteDevice, List<RemoteService>>>
@@ -102,15 +99,13 @@ interface RemoteDeviceDao {
     suspend fun getDefaultDevice(): RemoteDevice?
 
     @Query(
-        "SELECT * FROM remote_device JOIN remote_service ON remote_device.id = remote_service.device_id WHERE remote_device.is_default = 1 LIMIT 1"
-    )
+        "SELECT * FROM remote_device JOIN remote_service ON remote_device.id = remote_service.device_id WHERE remote_device.is_default = 1 LIMIT 1")
     suspend fun getDefaultDeviceWithServices(): Map<RemoteDevice, List<RemoteService>>
 
     @Query("UPDATE remote_device SET is_default = CASE WHEN id = :deviceId THEN 1  ELSE 0 END;")
     suspend fun setDefaultDevice(deviceId: Int)
 
     @Query(
-        "UPDATE remote_service SET is_default = CASE WHEN id = :serviceId THEN 1  ELSE 0 END WHERE device_id = :deviceId;"
-    )
+        "UPDATE remote_service SET is_default = CASE WHEN id = :serviceId THEN 1  ELSE 0 END WHERE device_id = :deviceId;")
     suspend fun setDefaultDeviceService(deviceId: Int, serviceId: Int)
 }

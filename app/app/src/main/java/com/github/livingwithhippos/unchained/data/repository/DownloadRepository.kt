@@ -16,8 +16,7 @@ constructor(private val protoStore: ProtoStore, private val downloadApiHelper: D
                 call = {
                     downloadApiHelper.getDownloads("Bearer ${getToken()}", offset, page, limit)
                 },
-                errorMessage = "Error Fetching Downloads list or list empty"
-            )
+                errorMessage = "Error Fetching Downloads list or list empty")
 
         return downloadResponse ?: emptyList()
     }
@@ -29,8 +28,7 @@ constructor(private val protoStore: ProtoStore, private val downloadApiHelper: D
                 call = {
                     downloadApiHelper.deleteDownload(token = "Bearer ${getToken()}", id = id)
                 },
-                errorMessage = "Error deleting download"
-            )
+                errorMessage = "Error deleting download")
 
         return response
     }

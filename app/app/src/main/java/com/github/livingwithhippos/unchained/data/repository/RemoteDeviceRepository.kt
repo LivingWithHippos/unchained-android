@@ -20,14 +20,12 @@ class RemoteDeviceRepository @Inject constructor(private val remoteDeviceDao: Re
 
     suspend fun getMediaPlayerDevicesAndServices(): Map<RemoteDevice, List<RemoteService>> =
         remoteDeviceDao.getMediaPlayerDevicesAndServices(
-            types = listOf(RemoteServiceType.KODI.value, RemoteServiceType.VLC.value)
-        )
+            types = listOf(RemoteServiceType.KODI.value, RemoteServiceType.VLC.value))
 
     suspend fun getMediaPlayerDevicesAndServicesFlow():
         Flow<Map<RemoteDevice, List<RemoteService>>> =
         remoteDeviceDao.getMediaPlayerDevicesAndServicesFlow(
-            types = listOf(RemoteServiceType.KODI.value, RemoteServiceType.VLC.value)
-        )
+            types = listOf(RemoteServiceType.KODI.value, RemoteServiceType.VLC.value))
 
     suspend fun insertDevice(device: RemoteDevice): Long = remoteDeviceDao.insertDevice(device)
 

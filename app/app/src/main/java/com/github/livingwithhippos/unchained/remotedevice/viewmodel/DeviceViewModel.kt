@@ -26,8 +26,7 @@ class DeviceViewModel @Inject constructor(private val deviceRepository: RemoteDe
     fun fetchDeviceServices(deviceId: Int) {
         viewModelScope.launch {
             deviceLiveData.postValue(
-                DeviceEvent.DeviceServices(deviceId, deviceRepository.getDeviceServices(deviceId))
-            )
+                DeviceEvent.DeviceServices(deviceId, deviceRepository.getDeviceServices(deviceId)))
         }
     }
 
@@ -85,8 +84,7 @@ class DeviceViewModel @Inject constructor(private val deviceRepository: RemoteDe
     fun fetchDevicesAndServices() {
         viewModelScope.launch {
             deviceLiveData.postValue(
-                DeviceEvent.AllDevicesAndServices(deviceRepository.getDevicesAndServices())
-            )
+                DeviceEvent.AllDevicesAndServices(deviceRepository.getDevicesAndServices()))
         }
     }
 }
