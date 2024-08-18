@@ -133,7 +133,7 @@ constructor(
         return preferences.getInt(RECENT_SERVICE_KEY, -1)
     }
 
-    fun setRecentService(serviceId: Int) {
+    private fun setRecentService(serviceId: Int) {
         with(preferences.edit()) {
             putInt(RECENT_SERVICE_KEY, serviceId).apply()
             apply()

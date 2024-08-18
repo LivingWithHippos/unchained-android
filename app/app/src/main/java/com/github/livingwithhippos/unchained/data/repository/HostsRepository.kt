@@ -2,7 +2,6 @@ package com.github.livingwithhippos.unchained.data.repository
 
 import com.github.livingwithhippos.unchained.data.local.HostRegexDao
 import com.github.livingwithhippos.unchained.data.local.ProtoStore
-import com.github.livingwithhippos.unchained.data.model.Host
 import com.github.livingwithhippos.unchained.data.model.HostRegex
 import com.github.livingwithhippos.unchained.data.model.REGEX_TYPE_FOLDER
 import com.github.livingwithhippos.unchained.data.model.REGEX_TYPE_HOST
@@ -14,20 +13,10 @@ import javax.inject.Inject
 class HostsRepository
 @Inject
 constructor(
-    private val protoStore: ProtoStore,
+    protoStore: ProtoStore,
     private val hostsApiHelper: HostsApiHelper,
     private val hostRegexDao: HostRegexDao
 ) : BaseRepository(protoStore) {
-
-    suspend fun getHostsStatus(): Host? {
-
-        val hostResponse =
-            safeApiCall(
-                call = { hostsApiHelper.getHostsStatus("Bearer ${getToken()}") },
-                errorMessage = "Error Fetching Streaming Info")
-
-        return hostResponse
-    }
 
     /**
      * Gets the regexps to filter supported hosts from the network. Custom regexps are also added
@@ -152,9 +141,10 @@ constructor(
             originalRegex
                 .trim()
                 .replace("/(http|https):\\/\\/", "^https?:\\/\\/", ignoreCase = true)
-        if (newRegex[newRegex.lastIndex] == "/"[0])
-        // substring endIndex is not included
-        newRegex = newRegex.substring(0, newRegex.lastIndex) + "$"
+        if (newRegex[newRegex.lastIndex] == "/"[0]) {
+            // substring endIndex is not included
+            newRegex = newRegex.substring(0, newRegex.lastIndex) + "$"
+        }
         try {
             Pattern.compile(newRegex)
         } catch (e: PatternSyntaxException) {

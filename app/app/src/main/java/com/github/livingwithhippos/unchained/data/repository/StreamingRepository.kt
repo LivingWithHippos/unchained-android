@@ -8,7 +8,7 @@ import javax.inject.Inject
 class StreamingRepository
 @Inject
 constructor(
-    private val protoStore: ProtoStore,
+    protoStore: ProtoStore,
     private val streamingApiHelper: StreamingApiHelper
 ) : BaseRepository(protoStore) {
 

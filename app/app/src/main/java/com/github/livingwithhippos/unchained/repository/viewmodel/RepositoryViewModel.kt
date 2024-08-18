@@ -253,7 +253,7 @@ sealed class PluginRepositoryEvent {
 
     data class Uninstalled(val quantity: Int) : PluginRepositoryEvent()
 
-    object Updated : PluginRepositoryEvent()
+    data object Updated : PluginRepositoryEvent()
 
     data class FullData(
         val dbData: Map<RepositoryInfo, Map<RepositoryPlugin, List<PluginVersion>>>,
@@ -266,9 +266,9 @@ sealed class PluginRepositoryEvent {
 }
 
 sealed class InvalidLinkReason {
-    object NotAnUrl : InvalidLinkReason()
+    data object NotAnUrl : InvalidLinkReason()
 
-    object ConnectionError : InvalidLinkReason()
+    data object ConnectionError : InvalidLinkReason()
 
-    object ParsingError : InvalidLinkReason()
+    data object ParsingError : InvalidLinkReason()
 }

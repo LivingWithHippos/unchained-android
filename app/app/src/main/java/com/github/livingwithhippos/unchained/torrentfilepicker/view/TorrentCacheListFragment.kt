@@ -11,7 +11,7 @@ import com.github.livingwithhippos.unchained.databinding.FragmentCacheBinding
 import com.github.livingwithhippos.unchained.torrentfilepicker.model.CacheFileAdapter
 import com.github.livingwithhippos.unchained.utilities.extension.setFileSize
 
-class TorrentCacheListFragment() : Fragment() {
+class TorrentCacheListFragment : Fragment() {
 
     private var cache: CachedAlternative? = null
 

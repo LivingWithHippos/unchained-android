@@ -61,7 +61,6 @@ import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.INSTANT_AVAILABILITY_ENDPOINT
 import com.github.livingwithhippos.unchained.utilities.MAGNET_PATTERN
-import com.github.livingwithhippos.unchained.utilities.PLUGINS_PACK_FOLDER
 import com.github.livingwithhippos.unchained.utilities.PRIVATE_TOKEN
 import com.github.livingwithhippos.unchained.utilities.PreferenceKeys
 import com.github.livingwithhippos.unchained.utilities.SIGNATURE
@@ -110,7 +109,6 @@ constructor(
     private val magnetPattern = Regex(MAGNET_PATTERN, RegexOption.IGNORE_CASE)
 
     val fsmAuthenticationState = MutableLiveData<Event<FSMAuthenticationState>?>()
-    private val credentialsFlow = protoStore.credentialsFlow
 
     val externalLinkLiveData = MutableLiveData<Event<Uri>>()
 
@@ -464,13 +462,6 @@ constructor(
         }
     }
 
-    fun logout() {
-        viewModelScope.launch {
-            protoStore.deleteCredentials()
-            recheckAuthenticationStatus()
-        }
-    }
-
     private fun recheckAuthenticationStatus() {
         when (getAuthenticationMachineState()) {
             FSMAuthenticationState.AuthenticatedOpenToken,
@@ -636,7 +627,7 @@ constructor(
     }
 
     fun setLastBackPress(time: Long) {
-        savedStateHandle.set(KEY_LAST_BACK_PRESS, time)
+        savedStateHandle[KEY_LAST_BACK_PRESS] = time
     }
 
     private fun programTokenRefresh(secondsDelay: Int) {
@@ -924,32 +915,6 @@ constructor(
         suffix: String? = null
     ) = customDownloadRepository.downloadToCache(link, fileName, cacheDir, suffix).asLiveData()
 
-    private suspend fun installPluginsPack(cacheDir: File, pluginsDir: File) {
-        val pluginsFolder = File(cacheDir, PLUGINS_PACK_FOLDER)
-        var installedPlugins = 0
-        if (pluginsFolder.exists() && pluginsFolder.isDirectory) {
-            pluginsFolder.walk().forEach { pluginFile ->
-                if (pluginFile.path.endsWith(".unchained")) {
-                    val plugin = pluginRepository.readPluginFile(pluginFile)
-                    if (plugin != null) {
-                        val installed = pluginRepository.addExternalPlugin(pluginsDir, pluginFile)
-                        if (installed) {
-                            Timber.d("Installed plugin ${pluginFile.name}")
-                            installedPlugins++
-                        } else Timber.d("Error installing plugin ${pluginFile.name}")
-                    } else {
-                        Timber.d("Error parsing plugin ${pluginFile.name}")
-                    }
-                } else {
-                    // this also gets triggered by the plugins own folder which is traversed by walk
-                    Timber.d(
-                        "Skipping unrecognized file into the plugin folder: ${pluginFile.name}")
-                }
-            }
-        }
-        messageLiveData.postValue(Event(MainActivityMessage.InstalledPlugins(installedPlugins)))
-    }
-
     fun clearCache(cacheDir: File) {
         cacheDir.listFiles()?.forEach { if (it.name != "image_cache") it.deleteRecursively() }
     }
@@ -1172,7 +1137,6 @@ constructor(
     companion object {
         const val KEY_DOWNLOAD_FOLDER = "download_folder_key"
         const val KEY_TORRENT_DOWNLOAD_ID = "torrent_download_id_key"
-        const val KEY_PLUGIN_DOWNLOAD_ID = "plugin_download_id_key"
         const val KEY_LAST_BACK_PRESS = "last_back_press_key"
         const val KEY_LAST_UPDATE_VERSION_CHECKED = "last_update_version_checked_key"
 
@@ -1189,11 +1153,11 @@ sealed class MainActivityMessage {
 
     data class UpdateFound(val signature: String) : MainActivityMessage()
 
-    object RequireDownloadFolder : MainActivityMessage()
+    data object RequireDownloadFolder : MainActivityMessage()
 
-    object RequireDownloadPermissions : MainActivityMessage()
+    data object RequireDownloadPermissions : MainActivityMessage()
 
-    object RequireNotificationPermissions : MainActivityMessage()
+    data object RequireNotificationPermissions : MainActivityMessage()
 
     data class DownloadEnqueued(val source: String, val fileName: String) : MainActivityMessage()
 

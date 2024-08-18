@@ -8,11 +8,7 @@ import javax.inject.Qualifier
 
 @Qualifier @Retention(AnnotationRetention.BINARY) annotation class TorrentNotification
 
-@Qualifier @Retention(AnnotationRetention.BINARY) annotation class DownloadNotification
-
 @Qualifier @Retention(AnnotationRetention.BINARY) annotation class TorrentSummaryNotification
-
-@Qualifier @Retention(AnnotationRetention.BINARY) annotation class DownloadSummaryNotification
 
 @Qualifier @Retention(AnnotationRetention.BINARY) annotation class ClassicClient
 

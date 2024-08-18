@@ -273,7 +273,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
         const val KEY_TORRENT_NOTIFICATIONS = "notification_torrent_key"
         const val KEY_REFERRAL_ASKED = "referral_asked_key"
         const val KEY_REFERRAL_USE = "use_referral_key"
-        const val KEY_APP_VERSION = "app_version_key"
         const val KEY_USE_DOH = "use_doh_key"
         const val THEME_AUTO = "auto"
         const val THEME_NIGHT = "night"

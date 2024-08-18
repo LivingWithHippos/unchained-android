@@ -24,9 +24,6 @@ fun getPluginFilename(plugin: String): String {
 
 /**
  * Get a file name for a plugin installed manually and not from a repo
- *
- * @param plugin
- * @return
  */
 fun getManualPluginFilename(author: String?, name: String): String {
     return (author?.lowercase()?.replace(noWordDigitRegex, "") ?: "unknownAuthor") +

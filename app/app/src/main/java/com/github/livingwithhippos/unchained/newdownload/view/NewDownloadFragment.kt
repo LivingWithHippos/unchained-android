@@ -22,7 +22,6 @@ import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.data.model.APIError
 import com.github.livingwithhippos.unchained.data.model.EmptyBodyError
 import com.github.livingwithhippos.unchained.data.model.NetworkError
-import com.github.livingwithhippos.unchained.data.repository.DownloadResult
 import com.github.livingwithhippos.unchained.databinding.NewDownloadFragmentBinding
 import com.github.livingwithhippos.unchained.lists.view.ListState
 import com.github.livingwithhippos.unchained.newdownload.viewmodel.Link
@@ -45,10 +44,7 @@ import com.github.livingwithhippos.unchained.utilities.extension.isSimpleWebUrl
 import com.github.livingwithhippos.unchained.utilities.extension.isTorrent
 import com.github.livingwithhippos.unchained.utilities.extension.isWebUrl
 import dagger.hilt.android.AndroidEntryPoint
-import java.io.File
 import java.io.IOException
-import java.util.regex.Matcher
-import java.util.regex.Pattern
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -428,37 +424,6 @@ class NewDownloadFragment : UnchainedFragment() {
         }
     }
 
-    private fun loadCachedTorrent(
-        binding: NewDownloadFragmentBinding,
-        cacheDir: File,
-        fileName: String
-    ) {
-        try {
-            viewModel.postMessage(getString(R.string.loading_torrent_file))
-            val cacheFile = File(cacheDir, fileName)
-            cacheFile.inputStream().use { inputStream ->
-                val buffer: ByteArray = inputStream.readBytes()
-                viewModel.fetchUploadedTorrent(buffer)
-            }
-        } catch (exception: Exception) {
-            when (exception) {
-                is java.io.FileNotFoundException -> {
-                    Timber.e("Torrent conversion: file not found: ${exception.message}")
-                }
-                is IOException -> {
-                    Timber.e(
-                        "Torrent conversion: IOException error getting the file: ${exception.message}")
-                }
-                else -> {
-                    Timber.e(
-                        "Torrent conversion: Other error getting the file: ${exception.message}")
-                }
-            }
-            enableButtons(binding, true)
-            viewModel.postMessage(getString(R.string.error_loading_torrent))
-        }
-    }
-
     private fun loadTorrent(binding: NewDownloadFragmentBinding, uri: Uri) {
         // https://developer.android.com/training/data-storage/shared/documents-files#open
         try {
@@ -514,36 +479,6 @@ class NewDownloadFragment : UnchainedFragment() {
             }
             enableButtons(binding, true)
             viewModel.postMessage(getString(R.string.error_loading_file))
-        }
-    }
-
-    private fun downloadTorrentToCache(binding: NewDownloadFragmentBinding, link: String) {
-        val nameRegex = "/([^/]+\\.torrent)\$"
-        val m: Matcher = Pattern.compile(nameRegex).matcher(link)
-        val torrentName = if (m.find()) m.group(1) else null
-        val cacheDir = context?.cacheDir
-        if (!torrentName.isNullOrBlank() && cacheDir != null) {
-            lifecycleScope.launch {
-                activityViewModel.downloadFileToCache(link, torrentName, cacheDir).observe(
-                    viewLifecycleOwner) {
-                        when (it) {
-                            is DownloadResult.End -> {
-                                loadCachedTorrent(binding, cacheDir, it.fileName)
-                            }
-                            DownloadResult.Failure -> {
-                                viewModel.postMessage(
-                                    getString(R.string.download_not_started_format, torrentName))
-                            }
-                            is DownloadResult.Progress -> {
-                                Timber.d("$torrentName progress: ${it.percent}")
-                            }
-                            DownloadResult.WrongURL -> {
-                                viewModel.postMessage(
-                                    getString(R.string.download_not_started_format, torrentName))
-                            }
-                        }
-                    }
-            }
         }
     }
 }

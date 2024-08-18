@@ -180,7 +180,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         }
 
         viewModel.messageLiveData.observe(viewLifecycleOwner) {
-            when (val content = it.getContentIfNotHandled()) {
+            when (it.getContentIfNotHandled()) {
                 is DownloadDetailsMessage.KodiError -> {
                     context?.showToast(R.string.connection_error)
                 }
@@ -601,7 +601,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
             RemoteServiceType.VLC.value -> RemoteServiceType.VLC
             RemoteServiceType.JACKETT.value -> RemoteServiceType.JACKETT
             else -> {
-                Timber.e("Unknown service type ${type}")
+                Timber.e("Unknown service type $type")
                 null
             }
         }

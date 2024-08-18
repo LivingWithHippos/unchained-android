@@ -114,9 +114,9 @@ constructor(protoStore: ProtoStore, private val customDownloadHelper: CustomDown
 sealed class DownloadResult {
     data class Progress(val percent: Int) : DownloadResult()
 
-    object WrongURL : DownloadResult()
+    data object WrongURL : DownloadResult()
 
     data class End(val fileName: String) : DownloadResult()
 
-    object Failure : DownloadResult()
+    data object Failure : DownloadResult()
 }

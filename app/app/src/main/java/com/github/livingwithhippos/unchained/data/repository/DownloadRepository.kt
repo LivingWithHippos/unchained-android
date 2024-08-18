@@ -7,7 +7,7 @@ import javax.inject.Inject
 
 class DownloadRepository
 @Inject
-constructor(private val protoStore: ProtoStore, private val downloadApiHelper: DownloadApiHelper) :
+constructor(protoStore: ProtoStore, private val downloadApiHelper: DownloadApiHelper) :
     BaseRepository(protoStore) {
     suspend fun getDownloads(offset: Int?, page: Int = 1, limit: Int = 50): List<DownloadItem> {
 

@@ -2,11 +2,11 @@ package com.github.livingwithhippos.unchained.utilities.download
 
 import android.Manifest
 import android.app.Notification
-import android.app.NotificationManager
 import android.content.Context
 import android.content.pm.PackageManager
 import android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
 import android.net.Uri
+import android.os.Build
 import android.webkit.MimeTypeMap
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
@@ -32,20 +32,14 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import timber.log.Timber
-import java.io.OutputStream
 
 class DownloadWorker(private val appContext: Context, workerParams: WorkerParameters) :
     CoroutineWorker(appContext, workerParams) {
 
     private var job = Job()
     private val scope = CoroutineScope(Dispatchers.IO + job)
-    var shutdown = false
+    private var shutdown = false
     private val preferences = PreferenceManager.getDefaultSharedPreferences(appContext)
-
-
-    private val notificationManager =
-        appContext.getSystemService(Context.NOTIFICATION_SERVICE) as
-                NotificationManager
 
 
     override suspend fun doWork(): Result {
@@ -314,7 +308,11 @@ fun makeStatusForegroundInfo(
     onGoing: Boolean = true
 ): ForegroundInfo {
     val notification = makeStatusNotification(workerId, filename, title, context, onGoing)
-    return ForegroundInfo(id, notification, FOREGROUND_SERVICE_TYPE_DATA_SYNC)
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        ForegroundInfo(id, notification, FOREGROUND_SERVICE_TYPE_DATA_SYNC)
+    } else {
+        ForegroundInfo(id, notification)
+    }
 }
 
 fun makeProgressStatusNotification(
@@ -357,17 +355,21 @@ fun makeProgressForegroundInfo(
     context: Context
 ): ForegroundInfo {
     val notification = makeProgressStatusNotification(workerId, filename, progress, context)
-    return ForegroundInfo(id, notification, FOREGROUND_SERVICE_TYPE_DATA_SYNC)
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        ForegroundInfo(id, notification, FOREGROUND_SERVICE_TYPE_DATA_SYNC)
+    } else {
+        ForegroundInfo(id, notification)
+    }
 }
 
 sealed class DownloadStatus {
-    object Queued : DownloadStatus()
+    data object Queued : DownloadStatus()
 
-    object Stopped : DownloadStatus()
+    data object Stopped : DownloadStatus()
 
-    object Paused : DownloadStatus()
+    data object Paused : DownloadStatus()
 
-    object Completed : DownloadStatus()
+    data object Completed : DownloadStatus()
 
     data class Running(
         val totalSize: Double,
@@ -379,13 +381,13 @@ sealed class DownloadStatus {
 }
 
 sealed class DownloadErrorType {
-    object ResponseError : DownloadErrorType()
+    data object ResponseError : DownloadErrorType()
 
-    object Interrupted : DownloadErrorType()
+    data object Interrupted : DownloadErrorType()
 
-    object EmptyBody : DownloadErrorType()
+    data object EmptyBody : DownloadErrorType()
 
-    object ServerUnavailable : DownloadErrorType()
+    data object ServerUnavailable : DownloadErrorType()
 
-    object IPBanned : DownloadErrorType()
+    data object IPBanned : DownloadErrorType()
 }

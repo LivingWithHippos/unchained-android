@@ -802,11 +802,9 @@ class TorrentsListFragment : UnchainedFragment(), TorrentListListener {
 }
 
 sealed class ListState {
-    object UpdateTorrent : ListState()
+    data object UpdateTorrent : ListState()
 
-    object UpdateDownload : ListState()
-
-    object Ready : ListState()
+    data object UpdateDownload : ListState()
 }
 
 interface SelectedItemsButtonsListener {

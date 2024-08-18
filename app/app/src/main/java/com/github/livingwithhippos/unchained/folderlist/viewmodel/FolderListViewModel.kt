@@ -87,11 +87,11 @@ constructor(
     }
 
     private fun setRetrievedLinks(links: Int) {
-        savedStateHandle.set(KEY_RETRIEVED_LINKS, links)
+        savedStateHandle[KEY_RETRIEVED_LINKS] = links
     }
 
     private fun getRetrievedLinks(): Int {
-        return savedStateHandle.get(KEY_RETRIEVED_LINKS) ?: -1
+        return savedStateHandle[KEY_RETRIEVED_LINKS] ?: -1
     }
 
     fun deleteDownloadList(downloads: List<DownloadItem>) {

@@ -47,7 +47,7 @@ constructor(private val protoStore: ProtoStore, private val apiHelper: AuthApiHe
         return tokenResponse
     }
 
-    suspend fun getTokenOrError(
+    private suspend fun getTokenOrError(
         clientId: String,
         clientSecret: String,
         code: String

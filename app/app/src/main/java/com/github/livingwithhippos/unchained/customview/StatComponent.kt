@@ -90,17 +90,10 @@ class StatAdapter(
 
     /** Provide a reference to the type of views that you are using (custom ViewHolder) */
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val labelTextView: TextView
-        val contentTextView: TextView
-        val captionTextView: TextView
-        val iconImageView: ImageView
-
-        init {
-            labelTextView = view.findViewById(R.id.tvLabel)
-            captionTextView = view.findViewById(R.id.tvCaption)
-            contentTextView = view.findViewById(R.id.tvContent)
-            iconImageView = view.findViewById(R.id.ivIcon)
-        }
+        val labelTextView: TextView = view.findViewById(R.id.tvLabel)
+        val contentTextView: TextView = view.findViewById(R.id.tvContent)
+        val captionTextView: TextView = view.findViewById(R.id.tvCaption)
+        val iconImageView: ImageView = view.findViewById(R.id.ivIcon)
     }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {

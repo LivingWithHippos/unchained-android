@@ -42,9 +42,6 @@ import com.github.livingwithhippos.unchained.utilities.extension.getThemedDrawab
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -53,9 +50,6 @@ class FolderListFragment : UnchainedFragment(), DownloadListListener {
 
     private val viewModel: FolderListViewModel by viewModels()
     private val args: FolderListFragmentArgs by navArgs()
-
-    private val job = Job()
-    private val scope = CoroutineScope(Dispatchers.Default + job)
 
     private val mediaRegex =
         "\\.(webm|avi|mkv|ogg|MTS|M2TS|TS|mov|wmv|mp4|m4p|m4v|mp2|mpe|mpv|mpg|mpeg|m2v|3gp)$"

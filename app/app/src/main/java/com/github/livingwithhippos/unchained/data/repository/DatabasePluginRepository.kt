@@ -72,10 +72,6 @@ constructor(private val repositoryDataDao: RepositoryDataDao) {
         }
     }
 
-    suspend fun removeRepository(repository: Repository) {
-        repositoryDataDao.delete(repository)
-    }
-
     suspend fun removeRepository(link: String) {
         repositoryDataDao.delete(Repository(link))
     }

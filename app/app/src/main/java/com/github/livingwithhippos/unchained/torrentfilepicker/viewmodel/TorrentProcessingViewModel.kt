@@ -20,8 +20,6 @@ import com.github.livingwithhippos.unchained.utilities.beforeSelectionStatusList
 import com.github.livingwithhippos.unchained.utilities.extension.cancelIfActive
 import com.github.livingwithhippos.unchained.utilities.postEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
-import java.util.Timer
-import java.util.TimerTask
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -39,7 +37,7 @@ constructor(
     private val torrentsRepository: TorrentsRepository
 ) : ViewModel() {
 
-    val networkExceptionLiveData = MutableLiveData<Event<UnchainedNetworkException>>()
+    private val networkExceptionLiveData = MutableLiveData<Event<UnchainedNetworkException>>()
     val torrentLiveData = MutableLiveData<Event<TorrentEvent>>()
     val structureLiveData = MutableLiveData<Event<Node<TorrentFileItem>>>()
 
@@ -105,10 +103,6 @@ constructor(
         } else {
             torrentLiveData.postEvent(TorrentEvent.CacheMiss)
         }
-    }
-
-    fun getTorrentDetails(): TorrentItem? {
-        return savedStateHandle[KEY_CURRENT_TORRENT]
     }
 
     private fun setTorrentDetails(item: TorrentItem) {
@@ -216,7 +210,6 @@ constructor(
         const val KEY_CACHE = "cache_key"
         const val KEY_CURRENT_TORRENT = "current_torrent_key"
         const val KEY_CURRENT_TORRENT_ID = "current_torrent_id_key"
-        const val KEY_CURRENT_TORRENT_STRUCTURE = "current_torrent_structure_key"
     }
 }
 
@@ -227,19 +220,19 @@ sealed class TorrentEvent {
 
     data class CacheHit(val cache: CachedTorrent) : TorrentEvent()
 
-    object CacheMiss : TorrentEvent()
+    data object CacheMiss : TorrentEvent()
 
     data class FilesSelected(val torrent: TorrentItem) : TorrentEvent()
 
-    object DownloadAll : TorrentEvent()
+    data object DownloadAll : TorrentEvent()
 
     data class DownloadCache(val position: Int, val files: Int) : TorrentEvent()
 
     data class DownloadSelection(val filesNumber: Int) : TorrentEvent()
 
-    object DownloadedFileSuccess : TorrentEvent()
+    data object DownloadedFileSuccess : TorrentEvent()
 
-    object DownloadedFileFailure : TorrentEvent()
+    data object DownloadedFileFailure : TorrentEvent()
 
     data class DownloadedFileProgress(val progress: Int) : TorrentEvent()
 }

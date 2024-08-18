@@ -751,13 +751,9 @@ sealed class ParserResult {
 
     data object MissingQuery : ParserResult()
 
-    data object MissingCategory : ParserResult()
-
     data object NetworkBodyError : ParserResult()
 
     data object EmptyInnerLinks : ParserResult()
-
-    data object PluginBuildError : ParserResult()
 
     data object MissingImplementationError : ParserResult()
 

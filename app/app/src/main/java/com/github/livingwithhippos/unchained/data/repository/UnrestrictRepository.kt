@@ -14,7 +14,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 class UnrestrictRepository
 @Inject
 constructor(
-    private val protoStore: ProtoStore,
+    protoStore: ProtoStore,
     private val unrestrictApiHelper: UnrestrictApiHelper
 ) : BaseRepository(protoStore) {
 
@@ -50,27 +50,6 @@ constructor(
             delay(callDelay)
         }
         return unrestrictedLinks
-    }
-
-    suspend fun getEitherUnrestrictedFolder(
-        link: String,
-        password: String? = null,
-        remote: Int? = null
-    ): List<EitherResult<UnchainedNetworkException, DownloadItem>> {
-        val token = getToken()
-
-        val folderResponse: EitherResult<UnchainedNetworkException, List<String>> =
-            eitherApiResult(
-                call = {
-                    unrestrictApiHelper.getUnrestrictedFolder(token = "Bearer $token", link = link)
-                },
-                errorMessage = "Error Fetching Unrestricted Folders Info")
-
-        return when (folderResponse) {
-            is EitherResult.Success ->
-                getUnrestrictedLinkList(folderResponse.success, password, remote)
-            is EitherResult.Failure -> listOf(EitherResult.Failure(folderResponse.failure))
-        }
     }
 
     suspend fun getEitherFolderLinks(

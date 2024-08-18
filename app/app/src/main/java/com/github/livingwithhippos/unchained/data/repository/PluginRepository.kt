@@ -340,11 +340,11 @@ class PluginRepository @Inject constructor() {
 }
 
 sealed class InstallResult {
-    object Installed : InstallResult()
+    data object Installed : InstallResult()
 
     data class Error(val exception: Exception) : InstallResult()
 
-    object Incompatible : InstallResult()
+    data object Incompatible : InstallResult()
 }
 
 data class LocalPlugins(val pluginsData: Map<String, List<Plugin>>, val errors: Int)

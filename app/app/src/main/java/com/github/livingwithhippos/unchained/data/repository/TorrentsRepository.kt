@@ -16,7 +16,7 @@ import timber.log.Timber
 
 class TorrentsRepository
 @Inject
-constructor(private val protoStore: ProtoStore, private val torrentApiHelper: TorrentApiHelper) :
+constructor(protoStore: ProtoStore, private val torrentApiHelper: TorrentApiHelper) :
     BaseRepository(protoStore) {
 
     suspend fun getAvailableHosts(): List<AvailableHost>? {
