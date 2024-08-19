@@ -193,7 +193,10 @@ dependencies {
     implementation(libs.jackson.kotlin)
     implementation(libs.jackson.xml)
     implementation(libs.woodstox)
-    implementation(libs.stax)
+    // replaced legacy jaxb with jakarta
+    // https://github.com/FasterXML/jackson-modules-base
+    // implementation(libs.stax)
+    implementation(libs.jakarta.xmlapi)
 
     kapt(libs.moshi.kapt)
     implementation(libs.moshi.runtime)
