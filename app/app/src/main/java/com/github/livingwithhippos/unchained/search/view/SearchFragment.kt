@@ -265,8 +265,8 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
                 FolderListFragment.TAG_DEFAULT_SORT -> R.string.default_string
                 FolderListFragment.TAG_SORT_AZ -> R.string.sort_by_az
                 FolderListFragment.TAG_SORT_ZA -> R.string.sort_by_za
-                FolderListFragment.TAG_SORT_SIZE_DESC -> R.string.sort_by_size_asc
-                FolderListFragment.TAG_SORT_SIZE_ASC -> R.string.sort_by_size_desc
+                FolderListFragment.TAG_SORT_SIZE_ASC -> R.string.sort_by_size_asc
+                FolderListFragment.TAG_SORT_SIZE_DESC -> R.string.sort_by_size_desc
                 FolderListFragment.TAG_SORT_SEEDERS -> R.string.seeders
                 FolderListFragment.TAG_SORT_ADDED -> R.string.added_date
                 else -> R.string.default_string
