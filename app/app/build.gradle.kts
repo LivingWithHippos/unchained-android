@@ -81,6 +81,9 @@ android {
             excludes.addAll(
                 listOf(
                     "META-INF/*.version",
+                    // manually added, markdown files should not be needed
+                    // was crashing with the jakarta xml bind api
+                    "META-INF/*.md",
                     "META-INF/proguard/*",
                     "/*.properties",
                     "fabric/*.properties",
