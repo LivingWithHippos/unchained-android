@@ -230,73 +230,102 @@ class NewDownloadFragment : UnchainedFragment() {
             if (authState is FSMAuthenticationState.AuthenticatedPrivateToken ||
                 authState is FSMAuthenticationState.AuthenticatedOpenToken) {
                 val link: String = binding.tiLink.text.toString().trim()
-                when {
-                    // this must be before the link.isWebUrl() check or it won't trigger
-                    link.isTorrent() -> {
-                        val action =
-                            NewDownloadFragmentDirections
-                                .actionNewDownloadFragmentToTorrentProcessingFragment(link = link)
-                        findNavController().navigate(action)
 
-                        // viewModel.postMessage(getString(R.string.loading_torrent))
-                        // enableButtons(binding, false)
-                        /**
-                         * DownloadManager does not support insecure (https) links anymore to add
-                         * support for it, follow these instructions
-                         * [https://stackoverflow.com/a/50834600] val secureLink = if
-                         * (link.startsWith("http://")) link.replaceFirst( "http:", "https:" ) else
-                         * link downloadTorrent(Uri.parse(secureLink))
-                         */
-                        // downloadTorrentToCache(binding, link)
+                val splitLinks: List<String> = link
+                    .split("\n")
+                    .dropWhile { it.isBlank() }
+                    .map { it.trim() }
+                    .filter {
+                        it.length > 10 && (
+                            it.isTorrent() ||
+                            it.isMagnet() ||
+                            it.isWebUrl() ||
+                            it.isSimpleWebUrl() ||
+                            it.isContainerWebLink()
+                        )
                     }
-                    link.isMagnet() -> {
-                        // this one must stay above link.isWebUrl() || link.isSimpleWebUrl()
-                        // because some magnets have http in their link, getting recognized as urls
-                        val action =
-                            NewDownloadFragmentDirections
-                                .actionNewDownloadFragmentToTorrentProcessingFragment(link = link)
-                        findNavController().navigate(action)
-                    }
-                    link.isWebUrl() || link.isSimpleWebUrl() -> {
-                        viewModel.postMessage(getString(R.string.loading_host_link))
-                        enableButtons(binding, false)
 
-                        var password: String? = binding.tePassword.text.toString()
-                        // we don't pass the password if it is blank.
-                        // N.B. it won't work if your password is made up of spaces but then again
-                        // you deserve
-                        // it
-                        if (password.isNullOrBlank()) password = null
-                        val remote: Int? =
-                            if (binding.switchRemote.isChecked) REMOTE_TRAFFIC_ON else null
-
-                        viewModel.fetchUnrestrictedLink(link, password, remote)
-                    }
-                    link.isBlank() -> {
-                        viewModel.postMessage(getString(R.string.please_insert_url))
-                    }
-                    link.isContainerWebLink() -> {
-                        viewModel.unrestrictContainer(link)
-                    }
-                    link.split("\n").firstOrNull()?.trim()?.isWebUrl() == true -> {
-                        // todo: support list of magnets/torrents
-                        val splitLinks: List<String> =
-                            link.split("\n").map { it.trim() }.filter { it.length > 10 }
-                        viewModel.postMessage(getString(R.string.loading))
-                        enableButtons(binding, false)
-
-                        // new folder list, alert the list fragment that it needs updating
-                        activityViewModel.setListState(ListState.UpdateDownload)
-                        val action =
-                            NewDownloadFragmentDirections.actionNewDownloadDestToFolderListFragment(
-                                folder = null, torrent = null, linkList = splitLinks.toTypedArray())
-                        findNavController().navigate(action)
-                    }
-                    else -> {
-                        Timber.w("Invalid link: $link")
-                        viewModel.postMessage(getString(R.string.invalid_url))
-                    }
+                if (splitLinks.isEmpty()) {
+                    Timber.w("Invalid link: $link")
+                    viewModel.postMessage(getString(R.string.invalid_url))
+                    return@setOnClickListener
                 }
+
+                if (splitLinks.size == 1) {
+                    val link = splitLinks.first()
+
+                    when {
+                        // this must be before the link.isWebUrl() check or it won't trigger
+                        link.isTorrent() -> {
+                            val action =
+                                NewDownloadFragmentDirections
+                                    .actionNewDownloadFragmentToTorrentProcessingFragment(link = link)
+                            findNavController().navigate(action)
+
+                            // viewModel.postMessage(getString(R.string.loading_torrent))
+                            // enableButtons(binding, false)
+                            /**
+                             * DownloadManager does not support insecure (https) links anymore to add
+                             * support for it, follow these instructions
+                             * [https://stackoverflow.com/a/50834600] val secureLink = if
+                             * (link.startsWith("http://")) link.replaceFirst( "http:", "https:" ) else
+                             * link downloadTorrent(Uri.parse(secureLink))
+                             */
+                            // downloadTorrentToCache(binding, link)
+                        }
+                        link.isMagnet() -> {
+                            // this one must stay above link.isWebUrl() || link.isSimpleWebUrl()
+                            // because some magnets have http in their link, getting recognized as urls
+                            val action =
+                                NewDownloadFragmentDirections
+                                    .actionNewDownloadFragmentToTorrentProcessingFragment(link = link)
+                            findNavController().navigate(action)
+                        }
+                        // put this above the web url checks since this is a web link too
+                        link.isContainerWebLink() -> {
+                            viewModel.unrestrictContainer(link)
+                        }
+                        link.isWebUrl() || link.isSimpleWebUrl() -> {
+                            viewModel.postMessage(getString(R.string.loading_host_link))
+                            enableButtons(binding, false)
+
+                            var password: String? = binding.tePassword.text.toString()
+                            // we don't pass the password if it is blank.
+                            // N.B. it won't work if your password is made up of spaces but then again
+                            // you deserve it
+                            if (password.isNullOrBlank()) password = null
+                            val remote: Int? =
+                                if (binding.switchRemote.isChecked) REMOTE_TRAFFIC_ON else null
+
+                            viewModel.fetchUnrestrictedLink(link, password, remote)
+                        }
+                        else -> {
+                            Timber.w("Invalid link: $link")
+                            viewModel.postMessage(getString(R.string.invalid_url))
+                        }
+                    }
+
+                    return@setOnClickListener
+                }
+
+                val multipleLinks: List<String> = splitLinks.filter { it.isWebUrl() || it.isSimpleWebUrl() }
+
+                if (multipleLinks.isEmpty()) {
+                    Timber.w("Invalid link: $link")
+                    viewModel.postMessage(getString(R.string.invalid_url))
+                    return@setOnClickListener
+                }
+
+                viewModel.postMessage(getString(R.string.loading))
+                enableButtons(binding, false)
+
+                // new folder list, alert the list fragment that it needs updating
+                activityViewModel.setListState(ListState.UpdateDownload)
+                val action =
+                    NewDownloadFragmentDirections.actionNewDownloadDestToFolderListFragment(
+                        folder = null, torrent = null, linkList = multipleLinks.toTypedArray())
+                findNavController().navigate(action)
+
             } else viewModel.postMessage(getString(R.string.premium_needed))
         }
 
