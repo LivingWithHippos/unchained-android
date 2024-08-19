@@ -15,8 +15,8 @@ import java.util.regex.Pattern
 /** check if a String is an url */
 fun String.isWebUrl(): Boolean = Patterns.WEB_URL.matcher(this).lookingAt()
 
-val urlPattern =
-    "https?://(-\\.)?([\\w]+\\.)+([\\w]{2,})+(#([\\w\\-]+))?(/[\\w\\-\\.,?^=%&:/~+#]*)?"
+const val urlPattern =
+    "^https?://(-\\.)?([\\w]+\\.)+([\\w]{2,})+(#([\\w\\-]+))?(/[\\w\\-\\.,?^=%&:/~+#]*)?"
 
 val simpleWebRegex = Regex(urlPattern)
 
