@@ -45,7 +45,8 @@ class MainActivityTest {
         // if the app is already logged in this is going to fail, clear it with adb before launching
         // set the TOKEN arguments editing the MainActivityTest Configuration
         val args = InstrumentationRegistry.getArguments().getString("TOKEN")
-        onView(withId(R.id.tiPrivateCode)).perform(replaceText(args))
+        assert(args != null)
+        onView(withId(R.id.tiPrivateCode)).perform(replaceText(args!!))
         onView(withId(R.id.bInsertPrivate)).perform(click())
         onView(isRoot()).perform(waitForView(R.id.tvMail, 5000))
         onView(withId(R.id.tvMail)).check(matches(isDisplayed()))
