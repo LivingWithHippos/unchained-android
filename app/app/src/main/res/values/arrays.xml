@@ -95,13 +95,21 @@
     </string-array>
 
     <declare-styleable name="StatComponent">
-        <attr name="show_label" format="boolean" />
-        <attr name="show_caption" format="boolean" />
-        <attr name="show_icon" format="boolean" />
+        <attr name="show_dividers" format="boolean" />
         <attr name="statDirection" format="enum">
             <enum name="horizontal" value="0"/>
             <enum name="vertical" value="1"/>
         </attr>
+    </declare-styleable>
+
+    <declare-styleable name="StatItemComponent">
+        <attr name="label" format="string" />
+        <attr name="caption" format="string" />
+        <attr name="item_content" format="string" />
+        <attr name="show_label" format="boolean" />
+        <attr name="show_caption" format="boolean" />
+        <attr name="show_icon" format="boolean" />
+        <attr name="item_icon" format="reference" />
     </declare-styleable>
 
 </resources>

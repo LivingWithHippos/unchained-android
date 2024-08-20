@@ -522,4 +522,6 @@
     <string name="search_options">Opciones de búsqueda</string>
     <string name="too_many_requests">Demasiadas solicitudes</string>
     <string name="usage_limit_reached">Límite de uso alcanzado</string>
+    <string name="devices">Dispositivos</string>
+    <string name="remote_devices_services_description">Los dispositivos remotos son computadoras, televisores o teléfonos en los que se están ejecutando servicios como Kodi y VLC. Primero, crea un dispositivo para añadir uno o más servicios.</string>
 </resources>

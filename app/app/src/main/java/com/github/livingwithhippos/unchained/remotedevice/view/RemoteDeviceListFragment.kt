@@ -23,6 +23,7 @@ import com.github.livingwithhippos.unchained.remotedevice.viewmodel.DeviceEvent
 import com.github.livingwithhippos.unchained.remotedevice.viewmodel.DeviceViewModel
 import com.github.livingwithhippos.unchained.utilities.DataBindingDetailsLookup
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 @AndroidEntryPoint
 class RemoteDeviceListFragment : UnchainedFragment(), DeviceListListener {
@@ -55,8 +56,10 @@ class RemoteDeviceListFragment : UnchainedFragment(), DeviceListListener {
             when (it) {
                 is DeviceEvent.AllDevicesAndServices -> {
                     deviceAdapter.submitList(it.itemsMap.keys.toList())
-                    val stats = deviceToStats(it.itemsMap)
-                    binding.remoteDeviceStats.adapter.submitList(stats)
+
+                    binding.devicesStat.setContent(it.itemsMap.size.toString())
+                    binding.servicesStat.setContent(it.itemsMap.values.size.toString())
+
                 }
                 is DeviceEvent.AllDevices -> deviceAdapter.submitList(it.devices)
                 is DeviceEvent.DeletedAll -> viewModel.fetchRemoteDevices()
@@ -74,7 +77,7 @@ class RemoteDeviceListFragment : UnchainedFragment(), DeviceListListener {
     private fun deviceToStats(dataMap: Map<RemoteDevice, List<RemoteService>>): List<StatItem> {
         return listOf(
             StatItem(
-                label = getString(R.string.remote_devices),
+                label = getString(R.string.devices),
                 content = dataMap.size.toString(),
                 caption = "",
                 icon = R.drawable.icon_devices),

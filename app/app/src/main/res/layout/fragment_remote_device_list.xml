@@ -7,20 +7,56 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
-        android:padding="20dp"
-        >
+        android:padding="20dp">
 
-        <com.github.livingwithhippos.unchained.customview.StatComponent
+        <LinearLayout
             android:id="@+id/remoteDeviceStats"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:orientation="horizontal"
             android:layout_marginBottom="10dp"
-            app:show_caption="false"
-            app:layout_constraintTop_toTopOf="parent"
+            android:paddingVertical="3dp"
+            app:layout_constraintBottom_toTopOf="@+id/tvDescription"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.github.livingwithhippos.unchained.customview.StatItemComponent
+                android:id="@+id/devicesStat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:item_icon="@drawable/icon_devices"
+                app:label="@string/devices"
+                app:show_caption="false" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="?android:attr/listDivider" />
+
+            <com.github.livingwithhippos.unchained.customview.StatItemComponent
+                android:id="@+id/servicesStat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:item_icon="@drawable/icon_service"
+                app:label="@string/services"
+                app:show_caption="false" />
+
+        </LinearLayout>
+
+
+        <TextView
+            android:id="@+id/tvDescription"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:text="@string/remote_devices_services_description"
+            android:textAlignment="center"
+            android:textAppearance="?attr/textAppearanceBodyMedium"
             app:layout_constraintBottom_toTopOf="@id/rvDeviceList"
-            />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/remoteDeviceStats" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvDeviceList"
@@ -30,12 +66,11 @@
             android:scrollbars="vertical"
             android:visibility="visible"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/item_list_remote_device"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/remoteDeviceStats"
-            />
+            app:layout_constraintTop_toBottomOf="@id/tvDescription"
+            tools:listitem="@layout/item_list_remote_device" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fabDevicesAction"
@@ -43,11 +78,12 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="15dp"
             android:layout_marginBottom="15dp"
-            android:focusable="true"
             android:contentDescription="@string/manage_remote_devices"
+            android:focusable="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:srcCompat="@drawable/icon_more">
+
             <requestFocus />
         </com.google.android.material.floatingactionbutton.FloatingActionButton>
 

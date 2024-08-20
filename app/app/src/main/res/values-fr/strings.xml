@@ -522,4 +522,6 @@
     <string name="search_options">Options de recherche</string>
     <string name="too_many_requests">Trop de demandes</string>
     <string name="usage_limit_reached">Limite d\'utilisation atteinte</string>
+    <string name="devices">Dispositifs</string>
+    <string name="remote_devices_services_description">Les appareils distants sont des ordinateurs, téléviseurs ou téléphones sur lesquels des services comme Kodi et VLC sont en cours d\'exécution. D\'abord, créez un appareil pour ajouter un ou plusieurs services.</string>
 </resources>

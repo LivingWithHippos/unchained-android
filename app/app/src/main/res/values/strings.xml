@@ -743,4 +743,6 @@
     <string name="infringing_file">Infringing file locked</string>
     <string name="too_many_requests">Too many requests</string>
     <string name="usage_limit_reached">Usage limit reached</string>
+    <string name="devices">Devices</string>
+    <string name="remote_devices_services_description">Remote devices are computers, TVs, or phones on which services like Kodi and VLC are running. First, create a device to add one or more services.</string>
 </resources>
