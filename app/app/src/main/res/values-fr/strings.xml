@@ -514,7 +514,7 @@
     <string name="default_service_format">Défaut: %s</string>
     <string name="added_date">Date</string>
     <string name="loading_size">Taille de chargement</string>
-    <string name="summary_loading_size">Combien d\'éléments doivent être chargés en même temps à partir des sections de téléchargements et de torrents. Plus c\'est gros, plus c\'est lent.</string>
+    <string name="summary_loading_size">Combien d\'éléments doivent être chargés à la fois depuis les sections de téléchargements et de torrents ? Un nombre plus élevé peut ralentir le chargement.</string>
     <string name="refresh">Rafraîchir</string>
     <string name="infringing_file">Fichier en infraction verrouillé</string>
     <string name="api_token">API token</string>

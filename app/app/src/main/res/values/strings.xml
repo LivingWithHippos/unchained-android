@@ -735,7 +735,7 @@
     <string name="default_service_format">Default: %s</string>
     <string name="added_date">Date</string>
     <string name="loading_size">Loading size</string>
-    <string name="summary_loading_size">How many items should be loaded at once from the downloads and torrents sections. Bigger is slower.</string>
+    <string name="summary_loading_size">How many items should be loaded at once from the downloads and torrents sections? Larger numbers may result in slower loading.</string>
     <string name="refresh">Refresh</string>
     <string name="api_token">API token</string>
     <string name="pick_search_type">Pick a search type</string>
