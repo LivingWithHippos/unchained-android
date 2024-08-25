@@ -48,30 +48,45 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/tvTitle"
-                android:textAppearance="?attr/textAppearanceLabelLarge"
+            <LinearLayout
+                android:id="@+id/llContent"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:layout_marginBottom="5dp"
-                android:maxLines="2"
-                android:text="@{item.name, default=`Remote device #X`}"
-                app:layout_constraintBottom_toTopOf="@+id/tvDetails"
+                android:orientation="vertical"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/defaultIndicator"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                >
+
+            <TextView
+                android:id="@+id/tvServices"
+                android:textAppearance="?attr/textAppearanceLabelMedium"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@{item.services == null ? `` : @plurals/services_format(item.services, item.services), default=`2 services`}"
+                android:visibility="@{item.services == null ? View.GONE : View.VISIBLE}"
+                />
+
+            <TextView
+                android:id="@+id/tvTitle"
+                android:textAppearance="?attr/textAppearanceLabelLarge"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="2dp"
+                android:maxLines="2"
+                android:text="@{item.name, default=`Remote device #X`}"
+                />
 
             <TextView
                 android:id="@+id/tvDetails"
                 android:textAppearance="?attr/textAppearanceBodyMedium"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@{item.address, default=`192.178.4.1`}"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/tvTitle"
-                app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
+                />
+
+            </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

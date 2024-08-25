@@ -55,7 +55,19 @@ class RemoteDeviceListFragment : UnchainedFragment(), DeviceListListener {
         viewModel.deviceLiveData.observe(viewLifecycleOwner) {
             when (it) {
                 is DeviceEvent.AllDevicesAndServices -> {
-                    deviceAdapter.submitList(it.itemsMap.keys.toList())
+                    // set the services number to the key.services value
+
+                    val newDevicesList = it.itemsMap.mapKeys { entry ->
+                            RemoteDevice(
+                                entry.key.id,
+                                entry.key.name,
+                                entry.key.address,
+                                entry.key.isDefault,
+                                entry.value.size
+                            )
+                    }.keys.toList()
+
+                    deviceAdapter.submitList(newDevicesList)
 
                     binding.devicesStat.setContent(it.itemsMap.size.toString())
                     binding.servicesStat.setContent(
@@ -74,20 +86,6 @@ class RemoteDeviceListFragment : UnchainedFragment(), DeviceListListener {
         binding.fabDevicesAction.setOnClickListener { showMenu(it, R.menu.devices_list_action) }
 
         return binding.root
-    }
-
-    private fun deviceToStats(dataMap: Map<RemoteDevice, List<RemoteService>>): List<StatItem> {
-        return listOf(
-            StatItem(
-                label = getString(R.string.devices),
-                content = dataMap.size.toString(),
-                caption = "",
-                icon = R.drawable.icon_devices),
-            StatItem(
-                label = getString(R.string.services),
-                content = dataMap.values.size.toString(),
-                caption = "",
-                icon = R.drawable.icon_service))
     }
 
     private fun showMenu(v: View, @MenuRes menuRes: Int) {

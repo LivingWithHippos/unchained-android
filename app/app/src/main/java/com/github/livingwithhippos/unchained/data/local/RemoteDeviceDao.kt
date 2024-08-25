@@ -1,10 +1,12 @@
 package com.github.livingwithhippos.unchained.data.local
 
+import android.os.Parcel
 import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Entity
+import androidx.room.Ignore
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.PrimaryKey
@@ -12,6 +14,8 @@ import androidx.room.Query
 import androidx.room.Upsert
 import java.util.Objects
 import kotlinx.coroutines.flow.Flow
+import kotlinx.parcelize.IgnoredOnParcel
+import kotlinx.parcelize.Parceler
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -21,7 +25,12 @@ class RemoteDevice(
     @ColumnInfo(name = "name") val name: String,
     @ColumnInfo(name = "address") val address: String,
     @ColumnInfo(name = "is_default") val isDefault: Boolean = false,
+    @Ignore
+    @IgnoredOnParcel
+    val services: Int? = null
 ) : Parcelable {
+    constructor(id: Int, name: String, address: String, isDefault: Boolean) : this(id, name, address, isDefault, null)
+
     override fun equals(other: Any?): Boolean {
         if (other is RemoteDevice) {
             return other.id == id
