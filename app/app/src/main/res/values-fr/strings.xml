@@ -489,6 +489,10 @@
     <string name="service_deleted">Service supprimé</string>
     <string name="service">Service</string>
     <string name="services">Services</string>
+    <plurals name="services_format">
+        <item quantity="one">%d service</item>
+        <item quantity="other">%d services</item>
+    </plurals>
     <string name="dialog_confirm_action">Êtes-vous sûr de vouloir continuer ?</string>
     <string name="browser">Navigateur</string>
     <string name="pick_service">Choisir service</string>

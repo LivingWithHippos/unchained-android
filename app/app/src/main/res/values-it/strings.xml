@@ -489,6 +489,10 @@
     <string name="remote_device">Dispositivo remoto</string>
     <string name="service_deleted">Servizio eliminato</string>
     <string name="service">Servizio</string>
+    <plurals name="services_format">
+        <item quantity="one">%d servizio</item>
+        <item quantity="other">%d servizi</item>
+    </plurals>
     <string name="dialog_confirm_action">Confermi di voler procedere?</string>
     <string name="browser">Browser</string>
     <string name="pick_service">Seleziona servizio</string>
