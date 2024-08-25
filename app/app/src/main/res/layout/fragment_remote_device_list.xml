@@ -53,10 +53,23 @@
             android:text="@string/remote_devices_services_description"
             android:textAlignment="center"
             android:textAppearance="?attr/textAppearanceBodyMedium"
-            app:layout_constraintBottom_toTopOf="@id/rvDeviceList"
+            app:layout_constraintBottom_toTopOf="@id/tvListTitle"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/remoteDeviceStats" />
+
+        <TextView
+            android:id="@+id/tvListTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:text="@string/services"
+            android:textAppearance="?attr/textAppearanceTitleMedium"
+            app:layout_constraintBottom_toTopOf="@id/rvDeviceList"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvDescription" />
+
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvDeviceList"
@@ -69,7 +82,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvDescription"
+            app:layout_constraintTop_toBottomOf="@id/tvListTitle"
             tools:listitem="@layout/item_list_remote_device" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton

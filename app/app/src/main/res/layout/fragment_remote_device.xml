@@ -13,7 +13,9 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginHorizontal="10dp"
+        >
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/cvDevice"
@@ -24,7 +26,6 @@
         android:checkable="false"
         android:focusable="false"
         android:clickable="false"
-        android:layout_marginHorizontal="10dp"
         android:layout_marginTop="12dp"
         android:layout_marginBottom="3dp"
         android:padding="3dp"
@@ -33,7 +34,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/rvServiceList"
+        app:layout_constraintBottom_toTopOf="@+id/tvListTitle"
         >
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -121,6 +122,20 @@
 
     </com.google.android.material.card.MaterialCardView>
 
+
+        <TextView
+            android:id="@+id/tvListTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="5dp"
+            android:text="@string/services"
+            android:textAppearance="?attr/textAppearanceTitleMedium"
+            app:layout_constraintBottom_toTopOf="@id/rvServiceList"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/cvDevice" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvServiceList"
         android:layout_width="match_parent"
@@ -134,7 +149,7 @@
         app:layout_constraintBottom_toTopOf="@+id/fabDeviceAction"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cvDevice" />
+        app:layout_constraintTop_toBottomOf="@+id/tvListTitle" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fabDeviceAction"
