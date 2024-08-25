@@ -67,7 +67,7 @@
     <string-array name="service_types">
         <item>@string/kodi</item>
         <item>@string/player_vlc</item>
-        <item>@string/jackett</item>
+        <!-- item>@string/jackett</item -->
     </string-array>
     <string-array name="search_categories">
         <item>@string/category_all</item>
