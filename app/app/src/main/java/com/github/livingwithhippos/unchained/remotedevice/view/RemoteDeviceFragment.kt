@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.annotation.MenuRes
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -144,7 +145,8 @@ class RemoteDeviceFragment : UnchainedFragment(), ServiceListListener {
                     true
                 }
                 R.id.delete_all_services -> {
-                    viewModel.deleteDeviceServices(args.item!!.id)
+
+                    showDeleteConfirmationDialog()
                     true
                 }
                 else -> {
@@ -158,6 +160,17 @@ class RemoteDeviceFragment : UnchainedFragment(), ServiceListListener {
         }
         // Show the popup menu.
         popup.show()
+    }
+
+    private fun showDeleteConfirmationDialog() {
+        val builder: AlertDialog.Builder? = activity?.let { AlertDialog.Builder(it) }
+        builder
+            ?.setMessage(R.string.dialog_confirm_action)
+            ?.setTitle(R.string.delete_all)
+            ?.setPositiveButton(R.string.yes) { _, _ -> viewModel.deleteDeviceServices(args.item!!.id) }
+            ?.setNegativeButton(R.string.no) { dialog, _ -> dialog.cancel() }
+        val dialog: AlertDialog? = builder?.create()
+        dialog?.show()
     }
 
     override fun onServiceClick(item: RemoteService) {
