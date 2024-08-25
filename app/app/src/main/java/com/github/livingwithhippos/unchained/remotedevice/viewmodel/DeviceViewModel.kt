@@ -32,8 +32,9 @@ class DeviceViewModel @Inject constructor(private val deviceRepository: RemoteDe
 
     fun updateDevice(device: RemoteDevice) {
         viewModelScope.launch {
-            val insertedRow = deviceRepository.insertDevice(device)
+            val insertedRow = deviceRepository.upsertDevice(device)
             val deviceID = deviceRepository.getDeviceIDByRow(insertedRow)
+            // if the default device is updated, remove the old preference
             if (deviceID != null) {
                 if (device.isDefault) {
                     deviceRepository.setDefaultDevice(deviceID)

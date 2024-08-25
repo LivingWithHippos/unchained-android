@@ -58,7 +58,9 @@ class RemoteDeviceListFragment : UnchainedFragment(), DeviceListListener {
                     deviceAdapter.submitList(it.itemsMap.keys.toList())
 
                     binding.devicesStat.setContent(it.itemsMap.size.toString())
-                    binding.servicesStat.setContent(it.itemsMap.values.size.toString())
+                    binding.servicesStat.setContent(
+                        it.itemsMap.values.sumOf { serv -> serv.size }.toString()
+                    )
 
                 }
                 is DeviceEvent.AllDevices -> deviceAdapter.submitList(it.devices)
