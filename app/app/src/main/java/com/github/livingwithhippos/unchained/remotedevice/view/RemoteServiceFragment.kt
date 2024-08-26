@@ -55,11 +55,7 @@ class RemoteServiceFragment : Fragment() {
 
         if (item == null) {
             // new service, default to kodi
-            setupServiceType(
-                binding,
-                RemoteServiceType.KODI.value,
-                serviceTypeView
-            )
+            setupServiceType(binding, RemoteServiceType.KODI.value, serviceTypeView)
         } else {
             // edit service
             binding.bSaveService.text = getString(R.string.update)

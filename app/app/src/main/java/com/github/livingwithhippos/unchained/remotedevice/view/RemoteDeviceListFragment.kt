@@ -15,15 +15,12 @@ import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.selection.StorageStrategy
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
-import com.github.livingwithhippos.unchained.customview.StatItem
 import com.github.livingwithhippos.unchained.data.local.RemoteDevice
-import com.github.livingwithhippos.unchained.data.local.RemoteService
 import com.github.livingwithhippos.unchained.databinding.FragmentRemoteDeviceListBinding
 import com.github.livingwithhippos.unchained.remotedevice.viewmodel.DeviceEvent
 import com.github.livingwithhippos.unchained.remotedevice.viewmodel.DeviceViewModel
 import com.github.livingwithhippos.unchained.utilities.DataBindingDetailsLookup
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 
 @AndroidEntryPoint
 class RemoteDeviceListFragment : UnchainedFragment(), DeviceListListener {
@@ -57,23 +54,24 @@ class RemoteDeviceListFragment : UnchainedFragment(), DeviceListListener {
                 is DeviceEvent.AllDevicesAndServices -> {
                     // set the services number to the key.services value
 
-                    val newDevicesList = it.itemsMap.mapKeys { entry ->
-                            RemoteDevice(
-                                entry.key.id,
-                                entry.key.name,
-                                entry.key.address,
-                                entry.key.isDefault,
-                                entry.value.size
-                            )
-                    }.keys.toList()
+                    val newDevicesList =
+                        it.itemsMap
+                            .mapKeys { entry ->
+                                RemoteDevice(
+                                    entry.key.id,
+                                    entry.key.name,
+                                    entry.key.address,
+                                    entry.key.isDefault,
+                                    entry.value.size)
+                            }
+                            .keys
+                            .toList()
 
                     deviceAdapter.submitList(newDevicesList)
 
                     binding.devicesStat.setContent(it.itemsMap.size.toString())
                     binding.servicesStat.setContent(
-                        it.itemsMap.values.sumOf { serv -> serv.size }.toString()
-                    )
-
+                        it.itemsMap.values.sumOf { serv -> serv.size }.toString())
                 }
                 is DeviceEvent.AllDevices -> deviceAdapter.submitList(it.devices)
                 is DeviceEvent.DeletedAll -> viewModel.fetchRemoteDevices()

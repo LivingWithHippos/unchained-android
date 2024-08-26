@@ -7,10 +7,8 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.DrawableRes
-import androidx.annotation.StringRes
 import androidx.core.content.res.getResourceIdOrThrow
 import com.github.livingwithhippos.unchained.R
-
 
 class StatItemComponent
 @JvmOverloads
@@ -65,9 +63,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
         }
     }
 
-    fun setLabel(
-        label: String
-    ) {
+    fun setLabel(label: String) {
         tvLabel.text = label
         invalidate()
         requestLayout()
@@ -79,9 +75,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
         requestLayout()
     }
 
-    fun setContent(
-        content: String
-    ) {
+    fun setContent(content: String) {
         tvContent.text = content
         invalidate()
         requestLayout()
@@ -93,9 +87,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
         requestLayout()
     }
 
-    fun setCaption(
-        caption: String
-    ) {
+    fun setCaption(caption: String) {
         tvCaption.text = caption
         invalidate()
         requestLayout()
@@ -107,9 +99,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
         requestLayout()
     }
 
-    fun setIcon(
-        @DrawableRes icon: Int
-    ) {
+    fun setIcon(@DrawableRes icon: Int) {
         ivIcon.setImageResource(icon)
         invalidate()
         requestLayout()

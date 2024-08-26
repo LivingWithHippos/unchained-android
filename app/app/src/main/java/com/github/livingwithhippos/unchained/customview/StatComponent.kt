@@ -19,7 +19,6 @@ import com.google.android.flexbox.JustifyContent
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.divider.MaterialDividerItemDecoration
 
-
 class StatComponent
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
@@ -56,14 +55,16 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
                 recyclerView.adapter = adapter
 
                 val layoutManager: FlexboxLayoutManager = FlexboxLayoutManager(context)
-                layoutManager.flexDirection = if (direction == 1) FlexDirection.COLUMN else FlexDirection.ROW
+                layoutManager.flexDirection =
+                    if (direction == 1) FlexDirection.COLUMN else FlexDirection.ROW
                 layoutManager.justifyContent = JustifyContent.CENTER
                 layoutManager.alignItems = AlignItems.CENTER
 
-                dividerItemDecoration = MaterialDividerItemDecoration(
-                    context,
-                    if (direction == 1) MaterialDividerItemDecoration.VERTICAL else MaterialDividerItemDecoration.HORIZONTAL
-                )
+                dividerItemDecoration =
+                    MaterialDividerItemDecoration(
+                        context,
+                        if (direction == 1) MaterialDividerItemDecoration.VERTICAL
+                        else MaterialDividerItemDecoration.HORIZONTAL)
 
                 if (showDividers) {
                     recyclerView.addItemDecoration(dividerItemDecoration)

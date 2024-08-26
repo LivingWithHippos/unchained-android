@@ -1,6 +1,5 @@
 package com.github.livingwithhippos.unchained.data.local
 
-import android.os.Parcel
 import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Dao
@@ -15,7 +14,6 @@ import androidx.room.Upsert
 import java.util.Objects
 import kotlinx.coroutines.flow.Flow
 import kotlinx.parcelize.IgnoredOnParcel
-import kotlinx.parcelize.Parceler
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -25,11 +23,14 @@ class RemoteDevice(
     @ColumnInfo(name = "name") val name: String,
     @ColumnInfo(name = "address") val address: String,
     @ColumnInfo(name = "is_default") val isDefault: Boolean = false,
-    @Ignore
-    @IgnoredOnParcel
-    val services: Int? = null
+    @Ignore @IgnoredOnParcel val services: Int? = null
 ) : Parcelable {
-    constructor(id: Int, name: String, address: String, isDefault: Boolean) : this(id, name, address, isDefault, null)
+    constructor(
+        id: Int,
+        name: String,
+        address: String,
+        isDefault: Boolean
+    ) : this(id, name, address, isDefault, null)
 
     override fun equals(other: Any?): Boolean {
         if (other is RemoteDevice) {
@@ -46,8 +47,7 @@ interface RemoteDeviceDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertDevice(device: RemoteDevice): Long
 
-    @Upsert
-    suspend fun upsertDevice(device: RemoteDevice): Long
+    @Upsert suspend fun upsertDevice(device: RemoteDevice): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertService(service: RemoteService): Long

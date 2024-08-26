@@ -231,19 +231,19 @@ class NewDownloadFragment : UnchainedFragment() {
                 authState is FSMAuthenticationState.AuthenticatedOpenToken) {
                 val link: String = binding.tiLink.text.toString().trim()
 
-                val splitLinks: List<String> = link
-                    .split("\n")
-                    .dropWhile { it.isBlank() }
-                    .map { it.trim() }
-                    .filter {
-                        it.length > 10 && (
-                            it.isTorrent() ||
-                            it.isMagnet() ||
-                            it.isWebUrl() ||
-                            it.isSimpleWebUrl() ||
-                            it.isContainerWebLink()
-                        )
-                    }
+                val splitLinks: List<String> =
+                    link
+                        .split("\n")
+                        .dropWhile { it.isBlank() }
+                        .map { it.trim() }
+                        .filter {
+                            it.length > 10 &&
+                                (it.isTorrent() ||
+                                    it.isMagnet() ||
+                                    it.isWebUrl() ||
+                                    it.isSimpleWebUrl() ||
+                                    it.isContainerWebLink())
+                        }
 
                 if (splitLinks.isEmpty()) {
                     Timber.w("Invalid link: $link")
@@ -259,26 +259,29 @@ class NewDownloadFragment : UnchainedFragment() {
                         link.isTorrent() -> {
                             val action =
                                 NewDownloadFragmentDirections
-                                    .actionNewDownloadFragmentToTorrentProcessingFragment(link = link)
+                                    .actionNewDownloadFragmentToTorrentProcessingFragment(
+                                        link = link)
                             findNavController().navigate(action)
 
                             // viewModel.postMessage(getString(R.string.loading_torrent))
                             // enableButtons(binding, false)
                             /**
-                             * DownloadManager does not support insecure (https) links anymore to add
-                             * support for it, follow these instructions
+                             * DownloadManager does not support insecure (https) links anymore to
+                             * add support for it, follow these instructions
                              * [https://stackoverflow.com/a/50834600] val secureLink = if
-                             * (link.startsWith("http://")) link.replaceFirst( "http:", "https:" ) else
-                             * link downloadTorrent(Uri.parse(secureLink))
+                             * (link.startsWith("http://")) link.replaceFirst( "http:", "https:" )
+                             * else link downloadTorrent(Uri.parse(secureLink))
                              */
                             // downloadTorrentToCache(binding, link)
                         }
                         link.isMagnet() -> {
                             // this one must stay above link.isWebUrl() || link.isSimpleWebUrl()
-                            // because some magnets have http in their link, getting recognized as urls
+                            // because some magnets have http in their link, getting recognized as
+                            // urls
                             val action =
                                 NewDownloadFragmentDirections
-                                    .actionNewDownloadFragmentToTorrentProcessingFragment(link = link)
+                                    .actionNewDownloadFragmentToTorrentProcessingFragment(
+                                        link = link)
                             findNavController().navigate(action)
                         }
                         // put this above the web url checks since this is a web link too
@@ -291,7 +294,8 @@ class NewDownloadFragment : UnchainedFragment() {
 
                             var password: String? = binding.tePassword.text.toString()
                             // we don't pass the password if it is blank.
-                            // N.B. it won't work if your password is made up of spaces but then again
+                            // N.B. it won't work if your password is made up of spaces but then
+                            // again
                             // you deserve it
                             if (password.isNullOrBlank()) password = null
                             val remote: Int? =
@@ -308,7 +312,8 @@ class NewDownloadFragment : UnchainedFragment() {
                     return@setOnClickListener
                 }
 
-                val multipleLinks: List<String> = splitLinks.filter { it.isWebUrl() || it.isSimpleWebUrl() }
+                val multipleLinks: List<String> =
+                    splitLinks.filter { it.isWebUrl() || it.isSimpleWebUrl() }
 
                 if (multipleLinks.isEmpty()) {
                     Timber.w("Invalid link: $link")
@@ -325,7 +330,6 @@ class NewDownloadFragment : UnchainedFragment() {
                     NewDownloadFragmentDirections.actionNewDownloadDestToFolderListFragment(
                         folder = null, torrent = null, linkList = multipleLinks.toTypedArray())
                 findNavController().navigate(action)
-
             } else viewModel.postMessage(getString(R.string.premium_needed))
         }
 

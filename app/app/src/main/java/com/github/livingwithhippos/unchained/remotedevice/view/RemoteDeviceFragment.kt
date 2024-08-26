@@ -173,7 +173,9 @@ class RemoteDeviceFragment : UnchainedFragment(), ServiceListListener {
         builder
             ?.setMessage(R.string.dialog_confirm_action)
             ?.setTitle(R.string.delete_all)
-            ?.setPositiveButton(R.string.yes) { _, _ -> viewModel.deleteAllDeviceServices(args.item!!.id) }
+            ?.setPositiveButton(R.string.yes) { _, _ ->
+                viewModel.deleteAllDeviceServices(args.item!!.id)
+            }
             ?.setNegativeButton(R.string.no) { dialog, _ -> dialog.cancel() }
         val dialog: AlertDialog? = builder?.create()
         dialog?.show()
@@ -184,9 +186,7 @@ class RemoteDeviceFragment : UnchainedFragment(), ServiceListListener {
         builder
             ?.setMessage(R.string.dialog_confirm_action)
             ?.setTitle(R.string.delete)
-            ?.setPositiveButton(R.string.yes) { _, _ ->
-                viewModel.deleteDevice(deviceID)
-            }
+            ?.setPositiveButton(R.string.yes) { _, _ -> viewModel.deleteDevice(deviceID) }
             ?.setNegativeButton(R.string.no) { dialog, _ -> dialog.cancel() }
         val dialog: AlertDialog? = builder?.create()
         dialog?.show()
