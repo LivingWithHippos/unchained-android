@@ -54,9 +54,12 @@ class RemoteServiceFragment : Fragment() {
         serviceTypeView.setAdapter(serviceTypeAdapter)
 
         if (item == null) {
-            // new service
-            serviceTypeView.setText(getString(R.string.kodi), false)
-            binding.bDeleteService.isEnabled = false
+            // new service, default to kodi
+            setupServiceType(
+                binding,
+                RemoteServiceType.KODI.value,
+                serviceTypeView
+            )
         } else {
             // edit service
             binding.bSaveService.text = getString(R.string.update)

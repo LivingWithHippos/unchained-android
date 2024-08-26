@@ -56,6 +56,8 @@ interface RemoteDeviceDao {
 
     @Delete suspend fun deleteDevice(device: RemoteDevice)
 
+    @Query("DELETE FROM remote_device WHERE id = :deviceID") suspend fun deleteDevice(deviceID: Int)
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAllDevices(list: List<RemoteDevice>): List<Long>
 

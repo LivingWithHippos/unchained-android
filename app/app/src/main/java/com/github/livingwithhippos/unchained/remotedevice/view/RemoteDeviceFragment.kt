@@ -92,6 +92,12 @@ class RemoteDeviceFragment : UnchainedFragment(), ServiceListListener {
 
         binding.fabDeviceAction.setOnClickListener { showMenu(it, R.menu.device_page_action) }
 
+        binding.bDeleteDevice.setOnClickListener {
+            if (item != null) {
+                showDeleteDeviceConfirmationDialog(item.id)
+            }
+        }
+
         binding.bSaveDevice.setOnClickListener {
             val name = binding.tiName.text.toString().trim()
             val address = binding.tiAddress.text.toString().trim()
@@ -146,7 +152,7 @@ class RemoteDeviceFragment : UnchainedFragment(), ServiceListListener {
                 }
                 R.id.delete_all_services -> {
 
-                    showDeleteConfirmationDialog()
+                    showDeleteServicesConfirmationDialog()
                     true
                 }
                 else -> {
@@ -162,12 +168,25 @@ class RemoteDeviceFragment : UnchainedFragment(), ServiceListListener {
         popup.show()
     }
 
-    private fun showDeleteConfirmationDialog() {
+    private fun showDeleteServicesConfirmationDialog() {
         val builder: AlertDialog.Builder? = activity?.let { AlertDialog.Builder(it) }
         builder
             ?.setMessage(R.string.dialog_confirm_action)
             ?.setTitle(R.string.delete_all)
-            ?.setPositiveButton(R.string.yes) { _, _ -> viewModel.deleteDeviceServices(args.item!!.id) }
+            ?.setPositiveButton(R.string.yes) { _, _ -> viewModel.deleteAllDeviceServices(args.item!!.id) }
+            ?.setNegativeButton(R.string.no) { dialog, _ -> dialog.cancel() }
+        val dialog: AlertDialog? = builder?.create()
+        dialog?.show()
+    }
+
+    private fun showDeleteDeviceConfirmationDialog(deviceID: Int) {
+        val builder: AlertDialog.Builder? = activity?.let { AlertDialog.Builder(it) }
+        builder
+            ?.setMessage(R.string.dialog_confirm_action)
+            ?.setTitle(R.string.delete)
+            ?.setPositiveButton(R.string.yes) { _, _ ->
+                viewModel.deleteDevice(deviceID)
+            }
             ?.setNegativeButton(R.string.no) { dialog, _ -> dialog.cancel() }
         val dialog: AlertDialog? = builder?.create()
         dialog?.show()

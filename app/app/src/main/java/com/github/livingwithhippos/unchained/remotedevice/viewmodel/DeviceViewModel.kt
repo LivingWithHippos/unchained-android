@@ -68,10 +68,17 @@ class DeviceViewModel @Inject constructor(private val deviceRepository: RemoteDe
         }
     }
 
-    fun deleteDeviceServices(deviceId: Int) {
+    fun deleteAllDeviceServices(deviceId: Int) {
         viewModelScope.launch {
-            deviceRepository.deleteDeviceServices(deviceId)
+            deviceRepository.deleteAllDeviceServices(deviceId)
             deviceLiveData.postValue(DeviceEvent.DeletedDeviceServices(deviceId))
+        }
+    }
+
+    fun deleteDevice(deviceId: Int) {
+        viewModelScope.launch {
+            deviceRepository.deleteDevice(deviceId)
+            deviceLiveData.postValue(DeviceEvent.DeletedDevice)
         }
     }
 
@@ -92,6 +99,8 @@ class DeviceViewModel @Inject constructor(private val deviceRepository: RemoteDe
 
 sealed class DeviceEvent {
     data object DeletedAll : DeviceEvent()
+
+    data object DeletedDevice : DeviceEvent()
 
     data class AllDevicesAndServices(val itemsMap: Map<RemoteDevice, List<RemoteService>>) :
         DeviceEvent()

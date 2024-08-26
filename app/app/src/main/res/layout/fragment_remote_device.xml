@@ -106,15 +106,29 @@
                 />
 
             <Button
+                android:id="@+id/bDeleteDevice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/remove"
+                android:backgroundTint="?attr/colorError"
+                android:textColor="?attr/colorOnError"
+                android:contentDescription="@string/remove"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/switchDefault"
+                app:layout_constraintEnd_toStartOf="@+id/bSaveDevice"
+                />
+
+            <Button
                 android:id="@+id/bSaveDevice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:text="@string/save"
                 android:contentDescription="@string/save"
-                android:focusable="true"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/bDeleteDevice"
                 app:layout_constraintTop_toBottomOf="@+id/switchDefault"
                 />
 
