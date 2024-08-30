@@ -661,18 +661,17 @@ class Parser(
 
         val doc: Document = Jsoup.parse(source)
 
-        val containerClass: Element? = if (parser.className != null) doc.getElementsByClass(parser.className).firstOrNull() else if (parser.idName != null) doc.getElementById(parser.idName) else null
+        val containerClass: Element? =
+            if (parser.className != null) doc.getElementsByClass(parser.className).firstOrNull()
+            else if (parser.idName != null) doc.getElementById(parser.idName) else null
         val entries: Elements = Elements()
         if (containerClass != null) {
             if (parser.entryClass != null)
                 entries.addAll(containerClass.getElementsByClass(parser.entryClass))
-            else
-                entries.addAll(containerClass.getElementsByTag(parser.entryTag))
+            else entries.addAll(containerClass.getElementsByTag(parser.entryTag))
         } else {
-            if (parser.entryClass != null)
-                entries.addAll(doc.getElementsByClass(parser.entryClass))
-            else
-                entries.addAll(doc.getElementsByTag(parser.entryTag))
+            if (parser.entryClass != null) entries.addAll(doc.getElementsByClass(parser.entryClass))
+            else entries.addAll(doc.getElementsByTag(parser.entryTag))
         }
 
         for (entry in entries) {
