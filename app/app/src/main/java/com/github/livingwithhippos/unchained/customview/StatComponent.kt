@@ -12,6 +12,10 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.github.livingwithhippos.unchained.R
+import com.google.android.flexbox.AlignItems
+import com.google.android.flexbox.FlexDirection
+import com.google.android.flexbox.FlexboxLayoutManager
+import com.google.android.flexbox.JustifyContent
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.divider.MaterialDividerItemDecoration
 
@@ -25,6 +29,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
     private val showLabel: Boolean
     private val showCaption: Boolean
     private val showIcon: Boolean
+    private val showDividers: Boolean
     private val direction: Int
     private val dividerItemDecoration: MaterialDividerItemDecoration
 
@@ -40,24 +45,31 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
                 radius = resources.getDimensionPixelSize(R.dimen.stat_card_elevation).toFloat()
                 strokeWidth = 0
 
-                showLabel = getBoolean(R.styleable.StatComponent_show_label, true)
-                showCaption = getBoolean(R.styleable.StatComponent_show_caption, true)
-                showIcon = getBoolean(R.styleable.StatComponent_show_icon, true)
+                showLabel = getBoolean(R.styleable.StatItemComponent_show_label, true)
+                showCaption = getBoolean(R.styleable.StatItemComponent_show_caption, true)
+                showIcon = getBoolean(R.styleable.StatItemComponent_show_icon, true)
+                showDividers = getBoolean(R.styleable.StatComponent_show_dividers, true)
                 direction = getInteger(R.styleable.StatComponent_statDirection, 0)
 
                 adapter = StatAdapter(showLabel, showCaption, showIcon)
                 recyclerView.adapter = adapter
 
-                val orientation =
-                    when (direction) {
-                        1 -> androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
-                        else -> androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
-                    }
-                recyclerView.layoutManager =
-                    androidx.recyclerview.widget.LinearLayoutManager(context, orientation, false)
+                val layoutManager: FlexboxLayoutManager = FlexboxLayoutManager(context)
+                layoutManager.flexDirection =
+                    if (direction == 1) FlexDirection.COLUMN else FlexDirection.ROW
+                layoutManager.justifyContent = JustifyContent.CENTER
+                layoutManager.alignItems = AlignItems.CENTER
+
                 dividerItemDecoration =
-                    MaterialDividerItemDecoration(recyclerView.context, orientation)
-                recyclerView.addItemDecoration(dividerItemDecoration)
+                    MaterialDividerItemDecoration(
+                        context,
+                        if (direction == 1) MaterialDividerItemDecoration.VERTICAL
+                        else MaterialDividerItemDecoration.HORIZONTAL)
+
+                if (showDividers) {
+                    recyclerView.addItemDecoration(dividerItemDecoration)
+                }
+                recyclerView.layoutManager = layoutManager
             } finally {
                 recycle()
             }

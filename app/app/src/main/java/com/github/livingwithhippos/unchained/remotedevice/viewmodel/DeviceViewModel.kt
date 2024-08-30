@@ -32,8 +32,9 @@ class DeviceViewModel @Inject constructor(private val deviceRepository: RemoteDe
 
     fun updateDevice(device: RemoteDevice) {
         viewModelScope.launch {
-            val insertedRow = deviceRepository.insertDevice(device)
+            val insertedRow = deviceRepository.upsertDevice(device)
             val deviceID = deviceRepository.getDeviceIDByRow(insertedRow)
+            // if the default device is updated, remove the old preference
             if (deviceID != null) {
                 if (device.isDefault) {
                     deviceRepository.setDefaultDevice(deviceID)
@@ -67,10 +68,17 @@ class DeviceViewModel @Inject constructor(private val deviceRepository: RemoteDe
         }
     }
 
-    fun deleteDeviceServices(deviceId: Int) {
+    fun deleteAllDeviceServices(deviceId: Int) {
         viewModelScope.launch {
-            deviceRepository.deleteDeviceServices(deviceId)
+            deviceRepository.deleteAllDeviceServices(deviceId)
             deviceLiveData.postValue(DeviceEvent.DeletedDeviceServices(deviceId))
+        }
+    }
+
+    fun deleteDevice(deviceId: Int) {
+        viewModelScope.launch {
+            deviceRepository.deleteDevice(deviceId)
+            deviceLiveData.postValue(DeviceEvent.DeletedDevice)
         }
     }
 
@@ -91,6 +99,8 @@ class DeviceViewModel @Inject constructor(private val deviceRepository: RemoteDe
 
 sealed class DeviceEvent {
     data object DeletedAll : DeviceEvent()
+
+    data object DeletedDevice : DeviceEvent()
 
     data class AllDevicesAndServices(val itemsMap: Map<RemoteDevice, List<RemoteService>>) :
         DeviceEvent()

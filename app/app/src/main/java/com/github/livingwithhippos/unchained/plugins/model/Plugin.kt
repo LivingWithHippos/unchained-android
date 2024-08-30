@@ -125,7 +125,8 @@ data class TableParser(
 data class DirectParser(
     @Json(name = "class") val className: String?,
     @Json(name = "id") val idName: String?,
-    @Json(name = "entry-class") val entryClass: String
+    @Json(name = "entry-class") val entryClass: String?,
+    @Json(name = "entry-tag") val entryTag: String?
 ) : Parcelable
 
 @JsonClass(generateAdapter = true)

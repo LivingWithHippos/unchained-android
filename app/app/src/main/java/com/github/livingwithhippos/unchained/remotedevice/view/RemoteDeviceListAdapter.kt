@@ -15,6 +15,7 @@ class RemoteDeviceListAdapter(listener: DeviceListListener) :
         override fun areContentsTheSame(oldItem: RemoteDevice, newItem: RemoteDevice): Boolean {
             return oldItem.isDefault == newItem.isDefault &&
                 oldItem.name == newItem.name &&
+                oldItem.services == newItem.services &&
                 oldItem.address == newItem.address
         }
     }

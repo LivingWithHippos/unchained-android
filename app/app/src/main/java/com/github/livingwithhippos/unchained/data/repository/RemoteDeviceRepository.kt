@@ -29,6 +29,8 @@ class RemoteDeviceRepository @Inject constructor(private val remoteDeviceDao: Re
 
     suspend fun insertDevice(device: RemoteDevice): Long = remoteDeviceDao.insertDevice(device)
 
+    suspend fun upsertDevice(device: RemoteDevice): Long = remoteDeviceDao.upsertDevice(device)
+
     suspend fun insertService(service: RemoteService): Long = remoteDeviceDao.insertService(service)
 
     suspend fun getDeviceIDByRow(rowId: Long): Int? = remoteDeviceDao.getDeviceIDByRow(rowId)
@@ -48,7 +50,10 @@ class RemoteDeviceRepository @Inject constructor(private val remoteDeviceDao: Re
 
     suspend fun deleteDevice(device: RemoteDevice) = remoteDeviceDao.deleteDevice(device)
 
-    suspend fun deleteDeviceServices(deviceID: Int) = remoteDeviceDao.removeDeviceServices(deviceID)
+    suspend fun deleteDevice(deviceID: Int) = remoteDeviceDao.deleteDevice(deviceID)
+
+    suspend fun deleteAllDeviceServices(deviceID: Int) =
+        remoteDeviceDao.removeDeviceServices(deviceID)
 
     suspend fun getDefaultDeviceWithServices() = remoteDeviceDao.getDefaultDeviceWithServices()
 }

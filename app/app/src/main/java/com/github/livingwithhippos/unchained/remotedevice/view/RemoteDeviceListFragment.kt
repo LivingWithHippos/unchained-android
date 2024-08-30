@@ -15,9 +15,7 @@ import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.selection.StorageStrategy
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
-import com.github.livingwithhippos.unchained.customview.StatItem
 import com.github.livingwithhippos.unchained.data.local.RemoteDevice
-import com.github.livingwithhippos.unchained.data.local.RemoteService
 import com.github.livingwithhippos.unchained.databinding.FragmentRemoteDeviceListBinding
 import com.github.livingwithhippos.unchained.remotedevice.viewmodel.DeviceEvent
 import com.github.livingwithhippos.unchained.remotedevice.viewmodel.DeviceViewModel
@@ -54,9 +52,26 @@ class RemoteDeviceListFragment : UnchainedFragment(), DeviceListListener {
         viewModel.deviceLiveData.observe(viewLifecycleOwner) {
             when (it) {
                 is DeviceEvent.AllDevicesAndServices -> {
-                    deviceAdapter.submitList(it.itemsMap.keys.toList())
-                    val stats = deviceToStats(it.itemsMap)
-                    binding.remoteDeviceStats.adapter.submitList(stats)
+                    // set the services number to the key.services value
+
+                    val newDevicesList =
+                        it.itemsMap
+                            .mapKeys { entry ->
+                                RemoteDevice(
+                                    entry.key.id,
+                                    entry.key.name,
+                                    entry.key.address,
+                                    entry.key.isDefault,
+                                    entry.value.size)
+                            }
+                            .keys
+                            .toList()
+
+                    deviceAdapter.submitList(newDevicesList)
+
+                    binding.devicesStat.setContent(it.itemsMap.size.toString())
+                    binding.servicesStat.setContent(
+                        it.itemsMap.values.sumOf { serv -> serv.size }.toString())
                 }
                 is DeviceEvent.AllDevices -> deviceAdapter.submitList(it.devices)
                 is DeviceEvent.DeletedAll -> viewModel.fetchRemoteDevices()
@@ -69,20 +84,6 @@ class RemoteDeviceListFragment : UnchainedFragment(), DeviceListListener {
         binding.fabDevicesAction.setOnClickListener { showMenu(it, R.menu.devices_list_action) }
 
         return binding.root
-    }
-
-    private fun deviceToStats(dataMap: Map<RemoteDevice, List<RemoteService>>): List<StatItem> {
-        return listOf(
-            StatItem(
-                label = getString(R.string.remote_devices),
-                content = dataMap.size.toString(),
-                caption = "",
-                icon = R.drawable.icon_devices),
-            StatItem(
-                label = getString(R.string.services),
-                content = dataMap.values.size.toString(),
-                caption = "",
-                icon = R.drawable.icon_service))
     }
 
     private fun showMenu(v: View, @MenuRes menuRes: Int) {

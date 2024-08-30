@@ -489,6 +489,10 @@
     <string name="service_deleted">Servicio suprimido</string>
     <string name="service">Servicio</string>
     <string name="services">Servicios</string>
+    <plurals name="services_format">
+        <item quantity="one">%d servicio</item>
+        <item quantity="other">%d servicios</item>
+    </plurals>
     <string name="dialog_confirm_action">¿Estás seguro de que quieres continuar?</string>
     <string name="browser">Navegador</string>
     <string name="pick_service">Elija servicio</string>
@@ -510,7 +514,7 @@
     <string name="default_service_format">Predeterminado: %s</string>
     <string name="added_date">Fecha</string>
     <string name="loading_size">Tamaño de carga</string>
-    <string name="summary_loading_size">Cuántos elementos deben cargarse a la vez desde las secciones de descargas y torrents. Más grande es más lento.</string>
+    <string name="summary_loading_size">¿Cuántos elementos se deben cargar a la vez desde las secciones de descargas y torrents? Un número mayor puede ralentizar la carga.</string>
     <string name="refresh">Actualizar</string>
     <string name="infringing_file">Archivo infractor bloqueado</string>
     <string name="api_token">API token</string>
@@ -522,4 +526,6 @@
     <string name="search_options">Opciones de búsqueda</string>
     <string name="too_many_requests">Demasiadas solicitudes</string>
     <string name="usage_limit_reached">Límite de uso alcanzado</string>
+    <string name="devices">Dispositivos</string>
+    <string name="remote_devices_services_description">Los dispositivos remotos son computadoras, televisores o teléfonos en los que se están ejecutando servicios como Kodi y VLC. Primero, crea un dispositivo para añadir uno o más servicios.</string>
 </resources>

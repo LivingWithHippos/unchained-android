@@ -654,8 +654,26 @@ class Parser(
     ): List<ScrapedItem> {
         val directItems = mutableListOf<ScrapedItem>()
 
+        if (parser.entryClass == null && parser.entryTag == null) {
+            Timber.e("Entry class or tag is required for direct parsing")
+            return directItems
+        }
+
         val doc: Document = Jsoup.parse(source)
-        val entries: Elements = doc.getElementsByClass(parser.entryClass)
+
+        val containerClass: Element? =
+            if (parser.className != null) doc.getElementsByClass(parser.className).firstOrNull()
+            else if (parser.idName != null) doc.getElementById(parser.idName) else null
+        val entries: Elements = Elements()
+        if (containerClass != null) {
+            if (parser.entryClass != null)
+                entries.addAll(containerClass.getElementsByClass(parser.entryClass))
+            else entries.addAll(containerClass.getElementsByTag(parser.entryTag))
+        } else {
+            if (parser.entryClass != null) entries.addAll(doc.getElementsByClass(parser.entryClass))
+            else entries.addAll(doc.getElementsByTag(parser.entryTag))
+        }
+
         for (entry in entries) {
             // val wholeText =  entry.wholeText()
             // val data =  entry.data()
@@ -736,8 +754,9 @@ class Parser(
          * - 2.3: added optional table index to table parsers (for tables with no specific class/id)
          * - 2.4: added more categories
          * - 2.5: parse added date
+         * - 2.6: added entry tag to direct parsing mode (this or entry class is required)
          */
-        const val PLUGIN_ENGINE_VERSION: Float = 2.5f
+        const val PLUGIN_ENGINE_VERSION: Float = 2.6f
     }
 }
 

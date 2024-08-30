@@ -5,12 +5,15 @@ import androidx.room.ColumnInfo
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Entity
+import androidx.room.Ignore
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.PrimaryKey
 import androidx.room.Query
+import androidx.room.Upsert
 import java.util.Objects
 import kotlinx.coroutines.flow.Flow
+import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -20,7 +23,15 @@ class RemoteDevice(
     @ColumnInfo(name = "name") val name: String,
     @ColumnInfo(name = "address") val address: String,
     @ColumnInfo(name = "is_default") val isDefault: Boolean = false,
+    @Ignore @IgnoredOnParcel val services: Int? = null
 ) : Parcelable {
+    constructor(
+        id: Int,
+        name: String,
+        address: String,
+        isDefault: Boolean
+    ) : this(id, name, address, isDefault, null)
+
     override fun equals(other: Any?): Boolean {
         if (other is RemoteDevice) {
             return other.id == id
@@ -36,12 +47,16 @@ interface RemoteDeviceDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertDevice(device: RemoteDevice): Long
 
+    @Upsert suspend fun upsertDevice(device: RemoteDevice): Long
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertService(service: RemoteService): Long
 
     @Delete suspend fun deleteService(service: RemoteService)
 
     @Delete suspend fun deleteDevice(device: RemoteDevice)
+
+    @Query("DELETE FROM remote_device WHERE id = :deviceID") suspend fun deleteDevice(deviceID: Int)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAllDevices(list: List<RemoteDevice>): List<Long>
@@ -50,17 +65,17 @@ interface RemoteDeviceDao {
     suspend fun insertAllServices(list: List<RemoteService>): List<Long>
 
     @Query(
-        "SELECT * FROM remote_device JOIN remote_service ON remote_device.id = remote_service.device_id")
+        "SELECT * FROM remote_device LEFT JOIN remote_service ON remote_device.id = remote_service.device_id")
     suspend fun getDevicesAndServices(): Map<RemoteDevice, List<RemoteService>>
 
     @Query(
-        "SELECT * FROM remote_device JOIN remote_service ON remote_device.id = remote_service.device_id WHERE remote_service.type IN (:types)")
+        "SELECT * FROM remote_device LEFT JOIN remote_service ON remote_device.id = remote_service.device_id WHERE remote_service.type IN (:types)")
     suspend fun getMediaPlayerDevicesAndServices(
         types: List<Int>
     ): Map<RemoteDevice, List<RemoteService>>
 
     @Query(
-        "SELECT * FROM remote_device JOIN remote_service ON remote_device.id = remote_service.device_id WHERE remote_service.type IN (:types)")
+        "SELECT * FROM remote_device LEFT JOIN remote_service ON remote_device.id = remote_service.device_id WHERE remote_service.type IN (:types)")
     fun getMediaPlayerDevicesAndServicesFlow(
         types: List<Int>
     ): Flow<Map<RemoteDevice, List<RemoteService>>>
@@ -99,7 +114,7 @@ interface RemoteDeviceDao {
     suspend fun getDefaultDevice(): RemoteDevice?
 
     @Query(
-        "SELECT * FROM remote_device JOIN remote_service ON remote_device.id = remote_service.device_id WHERE remote_device.is_default = 1 LIMIT 1")
+        "SELECT * FROM remote_device LEFT JOIN remote_service ON remote_device.id = remote_service.device_id WHERE remote_device.is_default = 1 LIMIT 1")
     suspend fun getDefaultDeviceWithServices(): Map<RemoteDevice, List<RemoteService>>
 
     @Query("UPDATE remote_device SET is_default = CASE WHEN id = :deviceId THEN 1  ELSE 0 END;")
