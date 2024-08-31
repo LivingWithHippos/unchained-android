@@ -34,41 +34,52 @@
         <item name="colorOnPrimary">@color/waves_two_md_theme_onPrimary</item>
         <item name="colorPrimaryContainer">@color/waves_two_md_theme_primaryContainer</item>
         <item name="colorOnPrimaryContainer">@color/waves_two_md_theme_onPrimaryContainer</item>
+
         <item name="colorSecondary">@color/waves_two_md_theme_secondary</item>
         <item name="colorOnSecondary">@color/waves_two_md_theme_onSecondary</item>
         <item name="colorSecondaryContainer">@color/waves_two_md_theme_secondaryContainer</item>
         <item name="colorOnSecondaryContainer">@color/waves_two_md_theme_onSecondaryContainer</item>
+
         <item name="colorTertiary">@color/waves_two_md_theme_tertiary</item>
         <item name="colorOnTertiary">@color/waves_two_md_theme_onTertiary</item>
         <item name="colorTertiaryContainer">@color/waves_two_md_theme_tertiaryContainer</item>
         <item name="colorOnTertiaryContainer">@color/waves_two_md_theme_onTertiaryContainer</item>
+
         <item name="colorError">@color/waves_two_md_theme_error</item>
         <item name="colorOnError">@color/waves_two_md_theme_onError</item>
         <item name="colorErrorContainer">@color/waves_two_md_theme_errorContainer</item>
         <item name="colorOnErrorContainer">@color/waves_two_md_theme_onErrorContainer</item>
+
         <item name="android:colorBackground">@color/waves_two_md_theme_background</item>
         <item name="colorOnBackground">@color/waves_two_md_theme_onBackground</item>
+
         <item name="colorSurface">@color/waves_two_md_theme_surface</item>
         <item name="colorOnSurface">@color/waves_two_md_theme_onSurface</item>
         <item name="colorSurfaceVariant">@color/waves_two_md_theme_surfaceVariant</item>
         <item name="colorOnSurfaceVariant">@color/waves_two_md_theme_onSurfaceVariant</item>
+
         <item name="colorOutline">@color/waves_two_md_theme_outline</item>
         <item name="colorOutlineVariant">@color/waves_two_md_theme_outlineVariant</item>
+
         <item name="colorSurfaceInverse">@color/waves_two_md_theme_inverseSurface</item>
         <item name="colorOnSurfaceInverse">@color/waves_two_md_theme_inverseOnSurface</item>
+
         <item name="colorPrimaryInverse">@color/waves_two_md_theme_inversePrimary</item>
         <item name="colorPrimaryFixed">@color/waves_two_md_theme_primaryFixed</item>
         <item name="colorOnPrimaryFixed">@color/waves_two_md_theme_onPrimaryFixed</item>
         <item name="colorPrimaryFixedDim">@color/waves_two_md_theme_primaryFixedDim</item>
         <item name="colorOnPrimaryFixedVariant">@color/waves_two_md_theme_onPrimaryFixedVariant</item>
+
         <item name="colorSecondaryFixed">@color/waves_two_md_theme_secondaryFixed</item>
         <item name="colorOnSecondaryFixed">@color/waves_two_md_theme_onSecondaryFixed</item>
         <item name="colorSecondaryFixedDim">@color/waves_two_md_theme_secondaryFixedDim</item>
         <item name="colorOnSecondaryFixedVariant">@color/waves_two_md_theme_onSecondaryFixedVariant</item>
+
         <item name="colorTertiaryFixed">@color/waves_two_md_theme_tertiaryFixed</item>
         <item name="colorOnTertiaryFixed">@color/waves_two_md_theme_onTertiaryFixed</item>
         <item name="colorTertiaryFixedDim">@color/waves_two_md_theme_tertiaryFixedDim</item>
         <item name="colorOnTertiaryFixedVariant">@color/waves_two_md_theme_onTertiaryFixedVariant</item>
+        
         <item name="colorSurfaceDim">@color/waves_two_md_theme_surfaceDim</item>
         <item name="colorSurfaceBright">@color/waves_two_md_theme_surfaceBright</item>
         <item name="colorSurfaceContainerLowest">@color/waves_two_md_theme_surfaceContainerLowest</item>
