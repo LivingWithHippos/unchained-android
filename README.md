@@ -67,7 +67,7 @@ This app is written in Kotlin and uses the following architectures/patterns/libr
 
 MVVM architectural pattern, Dagger-Hilt for dependency injection, Data Binding for managing ui-data relations, Navigation, Moshi, Retrofit, OkHTTP, Room, Coroutines, Flow, Livedata, Coil
 
-The app is available in English, Italian and French, you can contribute to those or add a new language [here](https://localization.professiona.li/engage/unchained-for-android/) (much appreciated!)
+The app is available in English, Italian, Spanish and French, ~~you can contribute to those or add a new language [here](https://localization.professiona.li/engage/unchained-for-android/) (much appreciated!)~~ (the service is currently down, you can still contribute by forking the project and adding the strings to the `strings.xml` file in the `values-xx` folders)
 
 #### Plugins
 
