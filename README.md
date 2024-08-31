@@ -75,6 +75,8 @@ Check out `PLUGINS.md`. There's also a work in progress [wiki page](https://gith
 
 ### Donate :coffee:
 
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/E1E412NFX7)
+
 You can use [my referral link](http://real-debrid.com/?id=78841) to get Real Debrid premium.
 
 Offer me coffee or a beer with [Ko-Fi](https://ko-fi.com/livingwithhippos), [Liberapay](https://liberapay.com/LivingWithHippos/donate) (set renewal to manual to avoid recurring donation) <noscript><a href="https://liberapay.com/LivingWithHippos/donate"><img alt="Donate using Liberapay" src="https://liberapay.com/assets/widgets/donate.svg"></a></noscript>
