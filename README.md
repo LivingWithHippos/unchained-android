@@ -53,10 +53,6 @@ You have multiple options to install Unchained for Android:
 
 ### Developing and Contributing :writing_hand:
 
-## [![Repography logo](https://images.repography.com/logo.svg)](https://repography.com) /
-[![Issue status graph](https://images.repography.com/28505435/LivingWithHippos/unchained-android/recent-activity/9be46c12746e55ef26535ea523c2bda5_issues.svg)](https://github.com/LivingWithHippos/unchained-android/issues)
-
-
 Contributions are welcome. You can use the [discussion tab](https://github.com/LivingWithHippos/unchained-android/discussions) to ask for help setting up the project. At the moment at least Android Studio 2021.1.1 is needed to build the project.
 
 The dev branch is the one where the development happens, it gets merged into master when a release is ready.
