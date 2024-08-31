@@ -48,6 +48,14 @@ import timber.log.Timber
 fun Context.getThemeList(): List<ThemeItem> {
     return listOf(
         ThemeItem(
+            R.style.Theme_Unchained_Material3_Waves_One,
+            "Waves 01",
+            ResourcesCompat.getColor(resources, R.color.radical_red, null)),
+        ThemeItem(
+            R.style.Theme_Unchained_Material3_Waves_Two,
+            "Waves 02",
+            ResourcesCompat.getColor(resources, R.color.radical_red, null)),
+        ThemeItem(
             R.style.Theme_Unchained_Material3_One,
             "Red 01",
             ResourcesCompat.getColor(resources, R.color.one_seed, null)),

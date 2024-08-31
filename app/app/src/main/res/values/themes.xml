@@ -26,6 +26,95 @@
 
     <!-- themes list -->
 
+
+    <style name="Theme.Unchained.Material3.Waves.One" parent="Theme.Unchained.Material3">
+        <item name="mainBackground">@drawable/bg_waves_01</item>
+
+        <item name="colorPrimary">@color/waves_two_md_theme_primary</item>
+        <item name="colorOnPrimary">@color/waves_two_md_theme_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/waves_two_md_theme_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/waves_two_md_theme_onPrimaryContainer</item>
+        <item name="colorSecondary">@color/waves_two_md_theme_secondary</item>
+        <item name="colorOnSecondary">@color/waves_two_md_theme_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/waves_two_md_theme_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/waves_two_md_theme_onSecondaryContainer</item>
+        <item name="colorTertiary">@color/waves_two_md_theme_tertiary</item>
+        <item name="colorOnTertiary">@color/waves_two_md_theme_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/waves_two_md_theme_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/waves_two_md_theme_onTertiaryContainer</item>
+        <item name="colorError">@color/waves_two_md_theme_error</item>
+        <item name="colorOnError">@color/waves_two_md_theme_onError</item>
+        <item name="colorErrorContainer">@color/waves_two_md_theme_errorContainer</item>
+        <item name="colorOnErrorContainer">@color/waves_two_md_theme_onErrorContainer</item>
+        <item name="android:colorBackground">@color/waves_two_md_theme_background</item>
+        <item name="colorOnBackground">@color/waves_two_md_theme_onBackground</item>
+        <item name="colorSurface">@color/waves_two_md_theme_surface</item>
+        <item name="colorOnSurface">@color/waves_two_md_theme_onSurface</item>
+        <item name="colorSurfaceVariant">@color/waves_two_md_theme_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/waves_two_md_theme_onSurfaceVariant</item>
+        <item name="colorOutline">@color/waves_two_md_theme_outline</item>
+        <item name="colorOutlineVariant">@color/waves_two_md_theme_outlineVariant</item>
+        <item name="colorSurfaceInverse">@color/waves_two_md_theme_inverseSurface</item>
+        <item name="colorOnSurfaceInverse">@color/waves_two_md_theme_inverseOnSurface</item>
+        <item name="colorPrimaryInverse">@color/waves_two_md_theme_inversePrimary</item>
+        <item name="colorPrimaryFixed">@color/waves_two_md_theme_primaryFixed</item>
+        <item name="colorOnPrimaryFixed">@color/waves_two_md_theme_onPrimaryFixed</item>
+        <item name="colorPrimaryFixedDim">@color/waves_two_md_theme_primaryFixedDim</item>
+        <item name="colorOnPrimaryFixedVariant">@color/waves_two_md_theme_onPrimaryFixedVariant</item>
+        <item name="colorSecondaryFixed">@color/waves_two_md_theme_secondaryFixed</item>
+        <item name="colorOnSecondaryFixed">@color/waves_two_md_theme_onSecondaryFixed</item>
+        <item name="colorSecondaryFixedDim">@color/waves_two_md_theme_secondaryFixedDim</item>
+        <item name="colorOnSecondaryFixedVariant">@color/waves_two_md_theme_onSecondaryFixedVariant</item>
+        <item name="colorTertiaryFixed">@color/waves_two_md_theme_tertiaryFixed</item>
+        <item name="colorOnTertiaryFixed">@color/waves_two_md_theme_onTertiaryFixed</item>
+        <item name="colorTertiaryFixedDim">@color/waves_two_md_theme_tertiaryFixedDim</item>
+        <item name="colorOnTertiaryFixedVariant">@color/waves_two_md_theme_onTertiaryFixedVariant</item>
+        <item name="colorSurfaceDim">@color/waves_two_md_theme_surfaceDim</item>
+        <item name="colorSurfaceBright">@color/waves_two_md_theme_surfaceBright</item>
+        <item name="colorSurfaceContainerLowest">@color/waves_two_md_theme_surfaceContainerLowest</item>
+        <item name="colorSurfaceContainerLow">@color/waves_two_md_theme_surfaceContainerLow</item>
+        <item name="colorSurfaceContainer">@color/waves_two_md_theme_surfaceContainer</item>
+        <item name="colorSurfaceContainerHigh">@color/waves_two_md_theme_surfaceContainerHigh</item>
+        <item name="colorSurfaceContainerHighest">@color/waves_two_md_theme_surfaceContainerHighest</item>
+    </style>
+
+    <style name="Theme.Unchained.Material3.Waves.Two" parent="Theme.Unchained.Material3">
+        <item name="mainBackground">@drawable/bg_waves_01</item>
+
+        <item name="colorPrimary">@color/radical_red</item>
+        <item name="colorOnPrimary">@color/one_md_theme_light_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/one_md_theme_light_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/one_md_theme_light_onPrimaryContainer</item>
+        <item name="colorPrimaryInverse">@color/one_md_theme_light_inversePrimary</item>
+
+        <item name="colorSecondary">@color/mortar</item>
+        <item name="colorOnSecondary">@color/one_md_theme_light_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/one_md_theme_light_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/one_md_theme_light_onSecondaryContainer</item>
+
+        <item name="colorTertiary">@color/one_md_theme_light_tertiary</item>
+        <item name="colorOnTertiary">@color/one_md_theme_light_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/one_md_theme_light_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/one_md_theme_light_onTertiaryContainer</item>
+
+        <item name="colorError">@color/one_md_theme_light_error</item>
+        <item name="colorOnError">@color/one_md_theme_light_onError</item>
+        <item name="colorErrorContainer">@color/one_md_theme_light_errorContainer</item>
+        <item name="colorOnErrorContainer">@color/one_md_theme_light_onErrorContainer</item>
+
+        <item name="colorOutline">@color/one_md_theme_light_outline</item>
+
+        <item name="android:colorBackground">@color/one_md_theme_light_background</item>
+        <item name="colorOnBackground">@color/one_md_theme_light_onBackground</item>
+
+        <item name="colorSurface">@color/one_md_theme_light_surface</item>
+        <item name="colorOnSurface">@color/one_md_theme_light_onSurface</item>
+        <item name="colorSurfaceVariant">@color/one_md_theme_light_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/one_md_theme_light_onSurfaceVariant</item>
+        <item name="colorSurfaceInverse">@color/one_md_theme_light_inverseSurface</item>
+        <item name="colorOnSurfaceInverse">@color/one_md_theme_light_inverseOnSurface</item>
+    </style>
+
     <style name="Theme.Unchained.Material3.One" parent="Theme.Unchained.Material3">
         <item name="colorPrimary">@color/one_md_theme_light_primary</item>
         <item name="colorOnPrimary">@color/one_md_theme_light_onPrimary</item>
