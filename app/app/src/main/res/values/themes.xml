@@ -36,6 +36,7 @@
 
         <item name="colorSecondary">@color/waves_one_theme_secondary</item>
         <item name="colorOnSecondary">@color/waves_one_theme_onSecondary</item>
+        <!-- selected navigation bar icon background -->
         <item name="colorSecondaryContainer">@color/waves_one_theme_secondaryContainer</item>
         <!-- bottom bar selected item icon color -->
         <item name="colorOnSecondaryContainer">@color/waves_one_theme_onSecondaryContainer</item>
@@ -53,11 +54,13 @@
         <item name="android:colorBackground">@color/waves_one_theme_background</item>
         <item name="colorOnBackground">@color/waves_one_theme_onBackground</item>
 
+        <!-- navigation bar background -->
         <item name="colorSurface">@color/waves_one_theme_surface</item>
         <!-- bottom bar selected item text color -->
         <item name="colorOnSurface">@color/waves_one_theme_onSurface</item>
         <item name="colorSurfaceVariant">@color/waves_one_theme_surfaceVariant</item>
         <!-- bottom bar unselected item text and icon color -->
+        <!-- also border color for input such as checkboxes, and their hint such as for text inputs -->
         <item name="colorOnSurfaceVariant">@color/waves_one_theme_onSurfaceVariant</item>
 
         <item name="colorOutline">@color/waves_one_theme_outline</item>
@@ -88,7 +91,7 @@
         <item name="colorSurfaceContainerLow">@color/waves_one_theme_surfaceContainerLow</item>
         <item name="colorSurfaceContainerLowest">@color/waves_one_theme_surfaceContainerLowest</item>
         <!-- bottom bar background color-->
-        <item name="colorSurfaceContainer">@color/radical_red</item>
+        <item name="colorSurfaceContainer">@color/waves_one_theme_secondaryContainer</item>
         <item name="colorSurfaceContainerHigh">@color/waves_one_theme_surfaceContainerHigh</item>
         <item name="colorSurfaceContainerHighest">@color/waves_one_theme_surfaceContainerHighest</item>
     </style>

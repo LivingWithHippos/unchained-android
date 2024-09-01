@@ -7,8 +7,8 @@
     <color name="waves_one_theme_onPrimaryContainer">#FFFFFF</color>
     <color name="waves_one_theme_secondary">#A23A49</color>
     <color name="waves_one_theme_onSecondary">#FFFFFF</color>
-    <color name="waves_one_theme_secondaryContainer">#FF939D</color>
-    <color name="waves_one_theme_onSecondaryContainer">#ffffff</color>
+    <color name="waves_one_theme_secondaryContainer">#fff8f7</color>
+    <color name="waves_one_theme_onSecondaryContainer">#64091e</color>
     <color name="waves_one_theme_tertiary">#823C00</color>
     <color name="waves_one_theme_onTertiary">#FFFFFF</color>
     <color name="waves_one_theme_tertiaryContainer">#BA5900</color>
@@ -19,10 +19,10 @@
     <color name="waves_one_theme_onErrorContainer">#410002</color>
     <color name="waves_one_theme_background">#FFF8F7</color>
     <color name="waves_one_theme_onBackground">#271718</color>
-    <color name="waves_one_theme_surface">#FFF8F7</color>
-    <color name="waves_one_theme_onSurface">#f9dbdc</color>
+    <color name="waves_one_theme_surface">#fff8f7</color>
+    <color name="waves_one_theme_onSurface">#271718</color>
     <color name="waves_one_theme_surfaceVariant">#FFDADB</color>
-    <color name="waves_one_theme_onSurfaceVariant">#e3bdbf</color>
+    <color name="waves_one_theme_onSurfaceVariant">#5b4041</color>
     <color name="waves_one_theme_outline">#8F6F71</color>
     <color name="waves_one_theme_outlineVariant">#E3BDBF</color>
     <color name="waves_one_theme_scrim">#000000</color>
@@ -44,7 +44,7 @@
     <color name="waves_one_theme_surfaceDim">#F1D3D4</color>
     <color name="waves_one_theme_surfaceBright">#FFF8F7</color>
     <color name="waves_one_theme_surfaceContainerLowest">#FFFFFF</color>
-    <color name="waves_one_theme_surfaceContainerLow">#ffdadb</color>
+    <color name="waves_one_theme_surfaceContainerLow">#dddacd</color>
     <color name="waves_one_theme_surfaceContainer">#FFE9E9</color>
     <color name="waves_one_theme_surfaceContainerHigh">#FFE1E2</color>
     <color name="waves_one_theme_surfaceContainerHighest">#F9DBDC</color>
