@@ -30,67 +30,67 @@
         <item name="mainBackground">@drawable/bg_waves_01</item>
 
         <item name="colorPrimary">@color/radical_red</item>
-        <item name="colorOnPrimary">@color/waves_one_md_theme_onPrimary</item>
-        <item name="colorPrimaryContainer">@color/waves_one_md_theme_primaryContainer</item>
-        <item name="colorOnPrimaryContainer">@color/waves_one_md_theme_onPrimaryContainer</item>
+        <item name="colorOnPrimary">@color/waves_one_theme_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/waves_one_theme_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/waves_one_theme_onPrimaryContainer</item>
 
-        <item name="colorSecondary">@color/waves_one_md_theme_secondary</item>
-        <item name="colorOnSecondary">@color/waves_one_md_theme_onSecondary</item>
-        <item name="colorSecondaryContainer">@color/waves_one_md_theme_secondaryContainer</item>
+        <item name="colorSecondary">@color/waves_one_theme_secondary</item>
+        <item name="colorOnSecondary">@color/waves_one_theme_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/waves_one_theme_secondaryContainer</item>
         <!-- bottom bar selected item icon color -->
-        <item name="colorOnSecondaryContainer">@color/waves_one_md_theme_onSecondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/waves_one_theme_onSecondaryContainer</item>
 
-        <item name="colorTertiary">@color/waves_one_md_theme_tertiary</item>
-        <item name="colorOnTertiary">@color/waves_one_md_theme_onTertiary</item>
-        <item name="colorTertiaryContainer">@color/waves_one_md_theme_tertiaryContainer</item>
-        <item name="colorOnTertiaryContainer">@color/waves_one_md_theme_onTertiaryContainer</item>
+        <item name="colorTertiary">@color/waves_one_theme_tertiary</item>
+        <item name="colorOnTertiary">@color/waves_one_theme_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/waves_one_theme_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/waves_one_theme_onTertiaryContainer</item>
 
-        <item name="colorError">@color/waves_one_md_theme_error</item>
-        <item name="colorOnError">@color/waves_one_md_theme_onError</item>
-        <item name="colorErrorContainer">@color/waves_one_md_theme_errorContainer</item>
-        <item name="colorOnErrorContainer">@color/waves_one_md_theme_onErrorContainer</item>
+        <item name="colorError">@color/waves_one_theme_error</item>
+        <item name="colorOnError">@color/waves_one_theme_onError</item>
+        <item name="colorErrorContainer">@color/waves_one_theme_errorContainer</item>
+        <item name="colorOnErrorContainer">@color/waves_one_theme_onErrorContainer</item>
 
-        <item name="android:colorBackground">@color/waves_one_md_theme_background</item>
-        <item name="colorOnBackground">@color/waves_one_md_theme_onBackground</item>
+        <item name="android:colorBackground">@color/waves_one_theme_background</item>
+        <item name="colorOnBackground">@color/waves_one_theme_onBackground</item>
 
-        <item name="colorSurface">@color/waves_one_md_theme_surface</item>
+        <item name="colorSurface">@color/waves_one_theme_surface</item>
         <!-- bottom bar selected item text color -->
-        <item name="colorOnSurface">@color/waves_one_md_theme_onSurface</item>
-        <item name="colorSurfaceVariant">@color/waves_one_md_theme_surfaceVariant</item>
+        <item name="colorOnSurface">@color/waves_one_theme_onSurface</item>
+        <item name="colorSurfaceVariant">@color/waves_one_theme_surfaceVariant</item>
         <!-- bottom bar unselected item text and icon color -->
-        <item name="colorOnSurfaceVariant">@color/waves_one_md_theme_onSurfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/waves_one_theme_onSurfaceVariant</item>
 
-        <item name="colorOutline">@color/waves_one_md_theme_outline</item>
-        <item name="colorOutlineVariant">@color/waves_one_md_theme_outlineVariant</item>
+        <item name="colorOutline">@color/waves_one_theme_outline</item>
+        <item name="colorOutlineVariant">@color/waves_one_theme_outlineVariant</item>
 
-        <item name="colorSurfaceInverse">@color/waves_one_md_theme_inverseSurface</item>
-        <item name="colorOnSurfaceInverse">@color/waves_one_md_theme_inverseOnSurface</item>
+        <item name="colorSurfaceInverse">@color/waves_one_theme_inverseSurface</item>
+        <item name="colorOnSurfaceInverse">@color/waves_one_theme_inverseOnSurface</item>
 
-        <item name="colorPrimaryInverse">@color/waves_one_md_theme_inversePrimary</item>
-        <item name="colorPrimaryFixed">@color/waves_one_md_theme_primaryFixed</item>
-        <item name="colorOnPrimaryFixed">@color/waves_one_md_theme_surfaceContainerLow</item>
-        <item name="colorPrimaryFixedDim">@color/waves_one_md_theme_primaryFixedDim</item>
-        <item name="colorOnPrimaryFixedVariant">@color/waves_one_md_theme_onPrimaryFixedVariant</item>
+        <item name="colorPrimaryInverse">@color/waves_one_theme_inversePrimary</item>
+        <item name="colorPrimaryFixed">@color/waves_one_theme_primaryFixed</item>
+        <item name="colorOnPrimaryFixed">@color/waves_one_theme_surfaceContainerLow</item>
+        <item name="colorPrimaryFixedDim">@color/waves_one_theme_primaryFixedDim</item>
+        <item name="colorOnPrimaryFixedVariant">@color/waves_one_theme_onPrimaryFixedVariant</item>
 
-        <item name="colorSecondaryFixed">@color/waves_one_md_theme_secondaryFixed</item>
-        <item name="colorOnSecondaryFixed">@color/waves_one_md_theme_surfaceContainerLow</item>
-        <item name="colorSecondaryFixedDim">@color/waves_one_md_theme_secondaryFixedDim</item>
-        <item name="colorOnSecondaryFixedVariant">@color/waves_one_md_theme_onSecondaryFixedVariant</item>
+        <item name="colorSecondaryFixed">@color/waves_one_theme_secondaryFixed</item>
+        <item name="colorOnSecondaryFixed">@color/waves_one_theme_surfaceContainerLow</item>
+        <item name="colorSecondaryFixedDim">@color/waves_one_theme_secondaryFixedDim</item>
+        <item name="colorOnSecondaryFixedVariant">@color/waves_one_theme_onSecondaryFixedVariant</item>
 
-        <item name="colorTertiaryFixed">@color/waves_one_md_theme_tertiaryFixed</item>
-        <item name="colorOnTertiaryFixed">@color/waves_one_md_theme_surfaceContainerLow</item>
-        <item name="colorTertiaryFixedDim">@color/waves_one_md_theme_tertiaryFixedDim</item>
-        <item name="colorOnTertiaryFixedVariant">@color/waves_one_md_theme_onTertiaryFixedVariant</item>
+        <item name="colorTertiaryFixed">@color/waves_one_theme_tertiaryFixed</item>
+        <item name="colorOnTertiaryFixed">@color/waves_one_theme_surfaceContainerLow</item>
+        <item name="colorTertiaryFixedDim">@color/waves_one_theme_tertiaryFixedDim</item>
+        <item name="colorOnTertiaryFixedVariant">@color/waves_one_theme_onTertiaryFixedVariant</item>
 
-        <item name="colorSurfaceDim">@color/waves_one_md_theme_surfaceDim</item>
-        <item name="colorSurfaceBright">@color/waves_one_md_theme_surfaceBright</item>
+        <item name="colorSurfaceDim">@color/waves_one_theme_surfaceDim</item>
+        <item name="colorSurfaceBright">@color/waves_one_theme_surfaceBright</item>
         <!-- card background color-->
-        <item name="colorSurfaceContainerLow">@color/waves_one_md_theme_surfaceContainerLow</item>
-        <item name="colorSurfaceContainerLowest">@color/waves_one_md_theme_surfaceContainerLowest</item>
+        <item name="colorSurfaceContainerLow">@color/waves_one_theme_surfaceContainerLow</item>
+        <item name="colorSurfaceContainerLowest">@color/waves_one_theme_surfaceContainerLowest</item>
         <!-- bottom bar background color-->
         <item name="colorSurfaceContainer">@color/radical_red</item>
-        <item name="colorSurfaceContainerHigh">@color/waves_one_md_theme_surfaceContainerHigh</item>
-        <item name="colorSurfaceContainerHighest">@color/waves_one_md_theme_surfaceContainerHighest</item>
+        <item name="colorSurfaceContainerHigh">@color/waves_one_theme_surfaceContainerHigh</item>
+        <item name="colorSurfaceContainerHighest">@color/waves_one_theme_surfaceContainerHighest</item>
     </style>
 
     <style name="Theme.Unchained.Material3.BnW.One" parent="Theme.Unchained.Material3">
@@ -242,52 +242,104 @@
 
     <style name="Theme.Unchained.Material3.Blue.One" parent="Theme.Unchained.Material3">
 
-        <item name="colorPrimary">@color/blue_one_md_theme_primary</item>
-        <item name="colorOnPrimary">@color/blue_one_md_theme_onPrimary</item>
-        <item name="colorPrimaryContainer">@color/blue_one_md_theme_primaryContainer</item>
-        <item name="colorOnPrimaryContainer">@color/blue_one_md_theme_onPrimaryContainer</item>
-        <item name="colorSecondary">@color/blue_one_md_theme_secondary</item>
-        <item name="colorOnSecondary">@color/blue_one_md_theme_onSecondary</item>
-        <item name="colorSecondaryContainer">@color/blue_one_md_theme_secondaryContainer</item>
-        <item name="colorOnSecondaryContainer">@color/blue_one_md_theme_onSecondaryContainer</item>
-        <item name="colorTertiary">@color/blue_one_md_theme_tertiary</item>
-        <item name="colorOnTertiary">@color/blue_one_md_theme_onTertiary</item>
-        <item name="colorTertiaryContainer">@color/blue_one_md_theme_tertiaryContainer</item>
-        <item name="colorOnTertiaryContainer">@color/blue_one_md_theme_onTertiaryContainer</item>
-        <item name="colorError">@color/blue_one_md_theme_error</item>
-        <item name="colorOnError">@color/blue_one_md_theme_onError</item>
-        <item name="colorErrorContainer">@color/blue_one_md_theme_errorContainer</item>
-        <item name="colorOnErrorContainer">@color/blue_one_md_theme_onErrorContainer</item>
-        <item name="android:colorBackground">@color/blue_one_md_theme_background</item>
-        <item name="colorOnBackground">@color/blue_one_md_theme_onBackground</item>
-        <item name="colorSurface">@color/blue_one_md_theme_surface</item>
-        <item name="colorOnSurface">@color/blue_one_md_theme_onSurface</item>
-        <item name="colorSurfaceVariant">@color/blue_one_md_theme_surfaceVariant</item>
-        <item name="colorOnSurfaceVariant">@color/blue_one_md_theme_onSurfaceVariant</item>
-        <item name="colorOutline">@color/blue_one_md_theme_outline</item>
-        <item name="colorOutlineVariant">@color/blue_one_md_theme_outlineVariant</item>
-        <item name="colorSurfaceInverse">@color/blue_one_md_theme_inverseSurface</item>
-        <item name="colorOnSurfaceInverse">@color/blue_one_md_theme_inverseOnSurface</item>
-        <item name="colorPrimaryInverse">@color/blue_one_md_theme_inversePrimary</item>
-        <item name="colorPrimaryFixed">@color/blue_one_md_theme_primaryFixed</item>
-        <item name="colorOnPrimaryFixed">@color/blue_one_md_theme_onPrimaryFixed</item>
-        <item name="colorPrimaryFixedDim">@color/blue_one_md_theme_primaryFixedDim</item>
-        <item name="colorOnPrimaryFixedVariant">@color/blue_one_md_theme_onPrimaryFixedVariant</item>
-        <item name="colorSecondaryFixed">@color/blue_one_md_theme_secondaryFixed</item>
-        <item name="colorOnSecondaryFixed">@color/blue_one_md_theme_onSecondaryFixed</item>
-        <item name="colorSecondaryFixedDim">@color/blue_one_md_theme_secondaryFixedDim</item>
-        <item name="colorOnSecondaryFixedVariant">@color/blue_one_md_theme_onSecondaryFixedVariant</item>
-        <item name="colorTertiaryFixed">@color/blue_one_md_theme_tertiaryFixed</item>
-        <item name="colorOnTertiaryFixed">@color/blue_one_md_theme_onTertiaryFixed</item>
-        <item name="colorTertiaryFixedDim">@color/blue_one_md_theme_tertiaryFixedDim</item>
-        <item name="colorOnTertiaryFixedVariant">@color/blue_one_md_theme_onTertiaryFixedVariant</item>
-        <item name="colorSurfaceDim">@color/blue_one_md_theme_surfaceDim</item>
-        <item name="colorSurfaceBright">@color/blue_one_md_theme_surfaceBright</item>
-        <item name="colorSurfaceContainerLowest">@color/blue_one_md_theme_surfaceContainerLowest</item>
-        <item name="colorSurfaceContainerLow">@color/blue_one_md_theme_surfaceContainerLow</item>
-        <item name="colorSurfaceContainer">@color/blue_one_md_theme_surfaceContainer</item>
-        <item name="colorSurfaceContainerHigh">@color/blue_one_md_theme_surfaceContainerHigh</item>
-        <item name="colorSurfaceContainerHighest">@color/blue_one_md_theme_surfaceContainerHighest</item>
+        <item name="colorPrimary">@color/blue_one_theme_primary</item>
+        <item name="colorOnPrimary">@color/blue_one_theme_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/blue_one_theme_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/blue_one_theme_onPrimaryContainer</item>
+        <item name="colorSecondary">@color/blue_one_theme_secondary</item>
+        <item name="colorOnSecondary">@color/blue_one_theme_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/blue_one_theme_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/blue_one_theme_onSecondaryContainer</item>
+        <item name="colorTertiary">@color/blue_one_theme_tertiary</item>
+        <item name="colorOnTertiary">@color/blue_one_theme_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/blue_one_theme_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/blue_one_theme_onTertiaryContainer</item>
+        <item name="colorError">@color/blue_one_theme_error</item>
+        <item name="colorOnError">@color/blue_one_theme_onError</item>
+        <item name="colorErrorContainer">@color/blue_one_theme_errorContainer</item>
+        <item name="colorOnErrorContainer">@color/blue_one_theme_onErrorContainer</item>
+        <item name="android:colorBackground">@color/blue_one_theme_background</item>
+        <item name="colorOnBackground">@color/blue_one_theme_onBackground</item>
+        <item name="colorSurface">@color/blue_one_theme_surface</item>
+        <item name="colorOnSurface">@color/blue_one_theme_onSurface</item>
+        <item name="colorSurfaceVariant">@color/blue_one_theme_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/blue_one_theme_onSurfaceVariant</item>
+        <item name="colorOutline">@color/blue_one_theme_outline</item>
+        <item name="colorOutlineVariant">@color/blue_one_theme_outlineVariant</item>
+        <item name="colorSurfaceInverse">@color/blue_one_theme_inverseSurface</item>
+        <item name="colorOnSurfaceInverse">@color/blue_one_theme_inverseOnSurface</item>
+        <item name="colorPrimaryInverse">@color/blue_one_theme_inversePrimary</item>
+        <item name="colorPrimaryFixed">@color/blue_one_theme_primaryFixed</item>
+        <item name="colorOnPrimaryFixed">@color/blue_one_theme_onPrimaryFixed</item>
+        <item name="colorPrimaryFixedDim">@color/blue_one_theme_primaryFixedDim</item>
+        <item name="colorOnPrimaryFixedVariant">@color/blue_one_theme_onPrimaryFixedVariant</item>
+        <item name="colorSecondaryFixed">@color/blue_one_theme_secondaryFixed</item>
+        <item name="colorOnSecondaryFixed">@color/blue_one_theme_onSecondaryFixed</item>
+        <item name="colorSecondaryFixedDim">@color/blue_one_theme_secondaryFixedDim</item>
+        <item name="colorOnSecondaryFixedVariant">@color/blue_one_theme_onSecondaryFixedVariant</item>
+        <item name="colorTertiaryFixed">@color/blue_one_theme_tertiaryFixed</item>
+        <item name="colorOnTertiaryFixed">@color/blue_one_theme_onTertiaryFixed</item>
+        <item name="colorTertiaryFixedDim">@color/blue_one_theme_tertiaryFixedDim</item>
+        <item name="colorOnTertiaryFixedVariant">@color/blue_one_theme_onTertiaryFixedVariant</item>
+        <item name="colorSurfaceDim">@color/blue_one_theme_surfaceDim</item>
+        <item name="colorSurfaceBright">@color/blue_one_theme_surfaceBright</item>
+        <item name="colorSurfaceContainerLowest">@color/blue_one_theme_surfaceContainerLowest</item>
+        <item name="colorSurfaceContainerLow">@color/blue_one_theme_surfaceContainerLow</item>
+        <item name="colorSurfaceContainer">@color/blue_one_theme_surfaceContainer</item>
+        <item name="colorSurfaceContainerHigh">@color/blue_one_theme_surfaceContainerHigh</item>
+        <item name="colorSurfaceContainerHighest">@color/blue_one_theme_surfaceContainerHighest</item>
+
+
+    </style>
+
+    <style name="Theme.Unchained.Material3.Yellow.One" parent="Theme.Unchained.Material3">
+
+        <item name="colorPrimary">@color/yellow_one_theme_primary</item>
+        <item name="colorOnPrimary">@color/yellow_one_theme_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/yellow_one_theme_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/yellow_one_theme_onPrimaryContainer</item>
+        <item name="colorSecondary">@color/yellow_one_theme_secondary</item>
+        <item name="colorOnSecondary">@color/yellow_one_theme_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/yellow_one_theme_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/yellow_one_theme_onSecondaryContainer</item>
+        <item name="colorTertiary">@color/yellow_one_theme_tertiary</item>
+        <item name="colorOnTertiary">@color/yellow_one_theme_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/yellow_one_theme_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/yellow_one_theme_onTertiaryContainer</item>
+        <item name="colorError">@color/yellow_one_theme_error</item>
+        <item name="colorOnError">@color/yellow_one_theme_onError</item>
+        <item name="colorErrorContainer">@color/yellow_one_theme_errorContainer</item>
+        <item name="colorOnErrorContainer">@color/yellow_one_theme_onErrorContainer</item>
+        <item name="android:colorBackground">@color/yellow_one_theme_background</item>
+        <item name="colorOnBackground">@color/yellow_one_theme_onBackground</item>
+        <item name="colorSurface">@color/yellow_one_theme_surface</item>
+        <item name="colorOnSurface">@color/yellow_one_theme_onSurface</item>
+        <item name="colorSurfaceVariant">@color/yellow_one_theme_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/yellow_one_theme_onSurfaceVariant</item>
+        <item name="colorOutline">@color/yellow_one_theme_outline</item>
+        <item name="colorOutlineVariant">@color/yellow_one_theme_outlineVariant</item>
+        <item name="colorSurfaceInverse">@color/yellow_one_theme_inverseSurface</item>
+        <item name="colorOnSurfaceInverse">@color/yellow_one_theme_inverseOnSurface</item>
+        <item name="colorPrimaryInverse">@color/yellow_one_theme_inversePrimary</item>
+        <item name="colorPrimaryFixed">@color/yellow_one_theme_primaryFixed</item>
+        <item name="colorOnPrimaryFixed">@color/yellow_one_theme_onPrimaryFixed</item>
+        <item name="colorPrimaryFixedDim">@color/yellow_one_theme_primaryFixedDim</item>
+        <item name="colorOnPrimaryFixedVariant">@color/yellow_one_theme_onPrimaryFixedVariant</item>
+        <item name="colorSecondaryFixed">@color/yellow_one_theme_secondaryFixed</item>
+        <item name="colorOnSecondaryFixed">@color/yellow_one_theme_onSecondaryFixed</item>
+        <item name="colorSecondaryFixedDim">@color/yellow_one_theme_secondaryFixedDim</item>
+        <item name="colorOnSecondaryFixedVariant">@color/yellow_one_theme_onSecondaryFixedVariant</item>
+        <item name="colorTertiaryFixed">@color/yellow_one_theme_tertiaryFixed</item>
+        <item name="colorOnTertiaryFixed">@color/yellow_one_theme_onTertiaryFixed</item>
+        <item name="colorTertiaryFixedDim">@color/yellow_one_theme_tertiaryFixedDim</item>
+        <item name="colorOnTertiaryFixedVariant">@color/yellow_one_theme_onTertiaryFixedVariant</item>
+        <item name="colorSurfaceDim">@color/yellow_one_theme_surfaceDim</item>
+        <item name="colorSurfaceBright">@color/yellow_one_theme_surfaceBright</item>
+        <item name="colorSurfaceContainerLowest">@color/yellow_one_theme_surfaceContainerLowest</item>
+        <item name="colorSurfaceContainerLow">@color/yellow_one_theme_surfaceContainerLow</item>
+        <item name="colorSurfaceContainer">@color/yellow_one_theme_surfaceContainer</item>
+        <item name="colorSurfaceContainerHigh">@color/yellow_one_theme_surfaceContainerHigh</item>
+        <item name="colorSurfaceContainerHighest">@color/yellow_one_theme_surfaceContainerHighest</item>
 
 
     </style>
