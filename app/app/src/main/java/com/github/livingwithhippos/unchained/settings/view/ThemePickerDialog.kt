@@ -3,6 +3,8 @@ package com.github.livingwithhippos.unchained.settings.view
 import android.app.Dialog
 import android.os.Bundle
 import android.widget.TextView
+import androidx.annotation.ColorInt
+import androidx.annotation.StyleRes
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.DiffUtil
@@ -36,7 +38,7 @@ class ThemePickerDialog : DialogFragment(), ThemePickListener {
             adapter.submitList(requireContext().getThemeList())
 
             val currentTheme =
-                requireContext().getThemeList().find { it.id == viewModel.getCurrentTheme() }
+                requireContext().getThemeList().find { it.themeID == viewModel.getCurrentTheme() }
             if (currentTheme != null) {
                 label.text = currentTheme.name
             }
@@ -61,13 +63,36 @@ class ThemePickerDialog : DialogFragment(), ThemePickListener {
     }
 }
 
-data class ThemeItem(val id: Int, val name: String, val seedColor: Int)
+/**
+ * Data class for describing an available theme
+ *
+ * @param name: The name of the theme, shown tp the user
+ * @param key: The key of the theme, used to save the default one in the preferences
+ * @param nightMode: support for night mode. "auto" (both), "night", "day"
+ * @param themeID: The themeID of the theme, used for resources
+ * @param primaryColorID: The primary color
+ * @param surfaceColorID: The surface color
+ * @param primaryContainerColorID: The primary container color
+ */
+data class ThemeItem(
+    val name: String,
+    val key: String,
+    val nightMode: String,
+    @StyleRes
+    val themeID: Int,
+    @ColorInt
+    val primaryColorID: Int,
+    @ColorInt
+    val surfaceColorID: Int,
+    @ColorInt
+    val primaryContainerColorID: Int
+)
 
 class ThemePickerAdapter(listener: ThemePickListener) :
     DataBindingAdapter<ThemeItem, ThemePickListener>(DiffCallback(), listener) {
     class DiffCallback : DiffUtil.ItemCallback<ThemeItem>() {
         override fun areItemsTheSame(oldItem: ThemeItem, newItem: ThemeItem): Boolean =
-            oldItem.id == newItem.id
+            oldItem.key == newItem.key
 
         override fun areContentsTheSame(oldItem: ThemeItem, newItem: ThemeItem): Boolean = true
     }

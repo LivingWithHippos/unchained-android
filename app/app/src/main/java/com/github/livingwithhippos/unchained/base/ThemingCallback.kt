@@ -11,6 +11,8 @@ import com.github.livingwithhippos.unchained.settings.view.SettingsFragment
 import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Companion.THEME_AUTO
 import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Companion.THEME_DAY
 import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Companion.THEME_NIGHT
+import com.github.livingwithhippos.unchained.settings.view.ThemeItem
+import com.github.livingwithhippos.unchained.utilities.extension.getThemeList
 
 class ThemingCallback(val preferences: SharedPreferences) : Application.ActivityLifecycleCallbacks {
 
@@ -18,7 +20,9 @@ class ThemingCallback(val preferences: SharedPreferences) : Application.Activity
         val themeRes =
             preferences.getInt(
                 SettingsFragment.KEY_THEME_NEW, R.style.Theme_Unchained_Material3_One)
-        setupNightMode()
+        val themesList = activity.applicationContext.getThemeList()
+        val currentTheme: ThemeItem = themesList.find { it.themeID == themeRes } ?: themesList[1]
+        setupNightMode(currentTheme.nightMode)
         if (activity is AppCompatActivity) setCustomTheme(activity, themeRes)
     }
 
@@ -43,12 +47,22 @@ class ThemingCallback(val preferences: SharedPreferences) : Application.Activity
 
     override fun onActivityDestroyed(activity: Activity) {}
 
-    private fun setupNightMode() {
-        when (preferences.getString(SettingsFragment.KEY_DAY_NIGHT, "auto")) {
-            THEME_AUTO ->
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+    /**
+     * Set the night mode depending on the user preferences and what the theme support
+     */
+    private fun setupNightMode(themeNightModeSupport: String) {
+        when (themeNightModeSupport) {
+            THEME_AUTO -> {
+                when (preferences.getString(SettingsFragment.KEY_DAY_NIGHT, "auto")) {
+                    THEME_AUTO ->
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+                    THEME_DAY -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                    THEME_NIGHT -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                }
+            }
             THEME_DAY -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             THEME_NIGHT -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
         }
+
     }
 }

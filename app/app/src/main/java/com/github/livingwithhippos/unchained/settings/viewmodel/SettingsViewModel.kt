@@ -75,7 +75,7 @@ constructor(
     fun applyTheme() {
         themeLiveData.value?.let {
             with(preferences.edit()) {
-                putInt(KEY_THEME_NEW, it.id)
+                putInt(KEY_THEME_NEW, it.themeID)
                 apply()
             }
         }
