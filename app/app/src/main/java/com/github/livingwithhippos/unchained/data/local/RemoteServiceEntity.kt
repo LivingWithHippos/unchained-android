@@ -2,6 +2,7 @@ package com.github.livingwithhippos.unchained.data.local
 
 import android.os.Parcelable
 import androidx.annotation.DrawableRes
+import androidx.annotation.Keep
 import androidx.annotation.StringRes
 import androidx.room.ColumnInfo
 import androidx.room.Entity
@@ -11,6 +12,7 @@ import com.github.livingwithhippos.unchained.R
 import java.util.Objects
 import kotlinx.parcelize.Parcelize
 
+@Keep
 @Parcelize
 @Entity(
     tableName = "remote_service",
