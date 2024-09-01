@@ -47,22 +47,22 @@ class ThemingCallback(val preferences: SharedPreferences) : Application.Activity
 
     override fun onActivityDestroyed(activity: Activity) {}
 
-    /**
-     * Set the night mode depending on the user preferences and what the theme support
-     */
+    /** Set the night mode depending on the user preferences and what the theme support */
     private fun setupNightMode(themeNightModeSupport: String) {
         when (themeNightModeSupport) {
             THEME_AUTO -> {
                 when (preferences.getString(SettingsFragment.KEY_DAY_NIGHT, "auto")) {
                     THEME_AUTO ->
-                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
-                    THEME_DAY -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                    THEME_NIGHT -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                        AppCompatDelegate.setDefaultNightMode(
+                            AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+                    THEME_DAY ->
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                    THEME_NIGHT ->
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
                 }
             }
             THEME_DAY -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             THEME_NIGHT -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
         }
-
     }
 }

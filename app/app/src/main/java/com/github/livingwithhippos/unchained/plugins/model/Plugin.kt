@@ -5,7 +5,6 @@ import com.github.livingwithhippos.unchained.plugins.Parser
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import kotlinx.parcelize.Parcelize
-import timber.log.Timber
 
 // todo: replace all the Parcelable with the kotlin library
 @JsonClass(generateAdapter = true)

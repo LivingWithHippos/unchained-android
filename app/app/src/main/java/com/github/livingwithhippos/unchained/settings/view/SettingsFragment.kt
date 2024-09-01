@@ -155,8 +155,10 @@ class SettingsFragment : PreferenceFragmentCompat() {
             openThemePickerDialog()
             true
         }
-        val themeRes = preferences.getInt(KEY_THEME_NEW, R.style.Theme_Unchained_Material3_Green_One)
-        val currentTheme: ThemeItem? = requireContext().getThemeList().find { it.themeID == themeRes }
+        val themeRes =
+            preferences.getInt(KEY_THEME_NEW, R.style.Theme_Unchained_Material3_Green_One)
+        val currentTheme: ThemeItem? =
+            requireContext().getThemeList().find { it.themeID == themeRes }
         findPreference<Preference>("selected_theme")?.summary = currentTheme?.name
     }
 
