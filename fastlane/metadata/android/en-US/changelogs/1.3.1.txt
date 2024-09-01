@@ -1,0 +1,8 @@
+What's new:
+- switched to material 3
+- fixed download to sd card on android 14
+- fixed sharing magnets and containers
+- support remote vlc
+- rewritten remote services management
+- support html tags to add more search plugins
+- updated README (added ko-fi)
