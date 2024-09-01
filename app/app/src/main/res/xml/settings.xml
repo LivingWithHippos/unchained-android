@@ -2,12 +2,6 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-
-    <Preference
-        android:key="user_logout"
-        app:title="@string/logout"
-        />
-
     <PreferenceCategory
         android:summary="@string/restart_to_apply"
         android:title="@string/title_aspect">
@@ -159,7 +153,7 @@
                 app:title="@string/loading_size"
                 app:key="paging_size"
                 app:summary="@string/summary_loading_size"
-                android:min="0"
+                android:min="50"
                 android:max="2500"
                 android:defaultValue="50"
                 app:showSeekBarValue="true"
@@ -208,6 +202,11 @@
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/title_various">
+
+        <Preference
+            android:key="user_logout"
+            app:title="@string/logout"
+            />
 
         <EditTextPreference
             android:defaultValue="10"

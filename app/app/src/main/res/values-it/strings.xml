@@ -531,4 +531,5 @@
     <string name="usage_limit_reached">Raggiunto limite di utilizzo</string>
     <string name="devices">Dispositivi</string>
     <string name="remote_devices_services_description">I dispositivi remoti sono computer, TV o telefoni su cui sono in esecuzione servizi come Kodi e VLC. Per prima cosa, crea un dispositivo per aggiungere uno o più servizi.</string>
+    <string name="no_credentials_found">Nessuna credenziale trovata</string>
 </resources>

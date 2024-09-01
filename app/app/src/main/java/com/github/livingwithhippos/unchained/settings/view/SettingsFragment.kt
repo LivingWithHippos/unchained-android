@@ -69,7 +69,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 when (newValue) {
                     THEME_AUTO ->
                         AppCompatDelegate.setDefaultNightMode(
-                            AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+                            AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+                        )
                     THEME_DAY ->
                         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
                     THEME_NIGHT ->
@@ -120,7 +121,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
 
         viewModel.kodiLiveData.observe(viewLifecycleOwner) {
@@ -140,6 +141,10 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 SettingEvent.Logout -> {
                     context?.showToast(R.string.user_logged_out)
                     activity?.finishAffinity()
+                }
+
+                SettingEvent.LogoutNoCredentials -> {
+                    context?.showToast(R.string.no_credentials_found)
                 }
                 null -> {
                     // do nothing
@@ -197,7 +202,9 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 context
                     ?.packageManager
                     ?.getPackageInfo(
-                        requireContext().packageName, PackageManager.PackageInfoFlags.of(0))
+                        requireContext().packageName,
+                        PackageManager.PackageInfoFlags.of(0),
+                    )
             } else {
                 context?.packageManager?.getPackageInfo(requireContext().packageName, 0)
             }
