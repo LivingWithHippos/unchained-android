@@ -70,7 +70,7 @@ constructor(
                 authRepository.getToken(
                     credentials.clientId,
                     credentials.clientSecret,
-                    credentials.deviceCode
+                    credentials.deviceCode,
                 )
             tokenLiveData.postEvent(tokenData)
         }
@@ -87,12 +87,11 @@ constructor(
         var calls = (expiresIn * 1000 / SECRET_CALLS_DELAY).toInt() - 10
         // remove 10% of the calls to account for the api calls
         calls -= calls / 10
-        savedStateHandle.set(SECRET_CALLS_MAX, calls)
-        savedStateHandle.set(SECRET_CALLS, 0)
+        savedStateHandle[SECRET_CALLS_MAX] = calls
+        savedStateHandle[SECRET_CALLS] = 0
     }
 
     companion object {
-        const val AUTH_STATE = "auth_state"
         const val SECRET_CALLS = "secret_calls"
         const val SECRET_CALLS_MAX = "max_secret_calls"
 
@@ -102,9 +101,9 @@ constructor(
 }
 
 sealed class SecretResult {
-    object Empty : SecretResult()
+    data object Empty : SecretResult()
 
-    object Expired : SecretResult()
+    data object Expired : SecretResult()
 
     data class Retrieved(val value: Secrets) : SecretResult()
 }

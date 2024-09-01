@@ -11,6 +11,7 @@ import com.github.livingwithhippos.unchained.data.remote.KodiApi
 import com.github.livingwithhippos.unchained.data.remote.KodiApiHelper
 import com.github.livingwithhippos.unchained.data.remote.KodiApiHelperImpl
 import com.github.livingwithhippos.unchained.di.ClassicClient
+import com.github.livingwithhippos.unchained.utilities.addHttpScheme
 import javax.inject.Inject
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -19,7 +20,7 @@ import timber.log.Timber
 
 class KodiRepository
 @Inject
-constructor(private val protoStore: ProtoStore, @ClassicClient private val client: OkHttpClient) :
+constructor(protoStore: ProtoStore, @ClassicClient private val client: OkHttpClient) :
     BaseRepository(protoStore) {
 
     // todo: conflict with other Retrofit with qualifiers?
@@ -36,18 +37,17 @@ constructor(private val protoStore: ProtoStore, @ClassicClient private val clien
     }
 
     private fun provideApiHelper(baseUrl: String): KodiApiHelper {
-        val apiHelper = KodiApiHelperImpl(provideApi(baseUrl))
-        return apiHelper
+        return KodiApiHelperImpl(provideApi(baseUrl))
     }
 
     suspend fun getVolume(
         baseUrl: String,
         port: Int,
         username: String? = null,
-        password: String? = null
+        password: String? = null,
     ): KodiGenericResponse? {
         try {
-            val kodiApiHelper: KodiApiHelper = provideApiHelper("http://$baseUrl:$port/")
+            val kodiApiHelper: KodiApiHelper = provideApiHelper("${addHttpScheme(baseUrl)}:$port/")
             val kodiResponse =
                 safeApiCall(
                     call = {
@@ -55,12 +55,12 @@ constructor(private val protoStore: ProtoStore, @ClassicClient private val clien
                             request =
                                 KodiRequest(
                                     method = "Application.GetProperties",
-                                    params = KodiParams(properties = listOf("volume"))
+                                    params = KodiParams(properties = listOf("volume")),
                                 ),
-                            auth = encodeAuthentication(username, password)
+                            auth = encodeAuthentication(username, password),
                         )
                     },
-                    errorMessage = "Error getting Kodi volume"
+                    errorMessage = "Error getting Kodi volume",
                 )
 
             return kodiResponse
@@ -75,11 +75,14 @@ constructor(private val protoStore: ProtoStore, @ClassicClient private val clien
         port: Int,
         url: String,
         username: String? = null,
-        password: String? = null
+        password: String? = null,
     ): KodiResponse? {
 
         try {
-            val kodiApiHelper: KodiApiHelper = provideApiHelper("http://$baseUrl:$port/")
+            val kodiApiHelper: KodiApiHelper =
+                if (baseUrl.startsWith("http", ignoreCase = true))
+                    provideApiHelper("$baseUrl:$port/")
+                else provideApiHelper("http://$baseUrl:$port/")
 
             val kodiResponse =
                 safeApiCall(
@@ -88,12 +91,12 @@ constructor(private val protoStore: ProtoStore, @ClassicClient private val clien
                             request =
                                 KodiRequest(
                                     method = "Player.Open",
-                                    params = KodiParams(item = KodiItem(fileUrl = url))
+                                    params = KodiParams(item = KodiItem(fileUrl = url)),
                                 ),
-                            auth = encodeAuthentication(username, password)
+                            auth = encodeAuthentication(username, password),
                         )
                     },
-                    errorMessage = "Error Sending url to Kodi"
+                    errorMessage = "Error Sending url to Kodi",
                 )
 
             return kodiResponse

@@ -6,6 +6,7 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.github.livingwithhippos.unchained.data.local.HostRegexDao
 import com.github.livingwithhippos.unchained.data.local.KodiDeviceDao
+import com.github.livingwithhippos.unchained.data.local.RemoteDeviceDao
 import com.github.livingwithhippos.unchained.data.local.RepositoryDataDao
 import com.github.livingwithhippos.unchained.data.local.UnchaineDB
 import com.github.livingwithhippos.unchained.data.model.REGEX_TYPE_HOST
@@ -40,14 +41,19 @@ object DatabaseModule {
     }
 
     @Provides
+    fun provideRemoteDeviceDao(database: UnchaineDB): RemoteDeviceDao {
+        return database.pluginRemoteDeviceDao()
+    }
+
+    @Provides
     fun providePluginRepositoryDao(database: UnchaineDB): RepositoryDataDao {
         return database.pluginRepositoryDao()
     }
 
     private val MIGRATION_1_2 =
         object : Migration(1, 2) {
-            override fun migrate(database: SupportSQLiteDatabase) {
-                database.execSQL(
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL(
                     "CREATE TABLE `host_regex` (`regex` TEXT NOT NULL, " + "PRIMARY KEY(`regex`))"
                 )
             }
@@ -55,8 +61,8 @@ object DatabaseModule {
 
     private val MIGRATION_2_3 =
         object : Migration(2, 3) {
-            override fun migrate(database: SupportSQLiteDatabase) {
-                database.execSQL(
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL(
                     "ALTER TABLE host_regex ADD COLUMN type INTEGER NOT NULL DEFAULT $REGEX_TYPE_HOST"
                 )
             }
@@ -64,8 +70,8 @@ object DatabaseModule {
 
     private val MIGRATION_3_4 =
         object : Migration(3, 4) {
-            override fun migrate(database: SupportSQLiteDatabase) {
-                database.execSQL("DROP TABLE credentials")
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("DROP TABLE credentials")
             }
         }
 }

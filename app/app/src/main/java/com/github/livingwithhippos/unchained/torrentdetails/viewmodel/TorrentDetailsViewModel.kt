@@ -28,7 +28,7 @@ class TorrentDetailsViewModel
 @Inject
 constructor(
     private val torrentsRepository: TorrentsRepository,
-    private val unrestrictRepository: UnrestrictRepository
+    private val unrestrictRepository: UnrestrictRepository,
 ) : ViewModel() {
 
     val torrentLiveData = MutableLiveData<Event<TorrentItem?>>()
@@ -62,10 +62,6 @@ constructor(
                 delay(2000)
             }
         }
-    }
-
-    fun stopPolling() {
-        job.cancelIfActive()
     }
 
     fun deleteTorrent(id: String) {

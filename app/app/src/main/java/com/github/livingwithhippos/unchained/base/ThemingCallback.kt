@@ -3,36 +3,38 @@ package com.github.livingwithhippos.unchained.base
 import android.app.Activity
 import android.app.Application
 import android.content.SharedPreferences
-import android.content.res.Resources
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.settings.view.SettingsFragment
-import com.github.livingwithhippos.unchained.utilities.extension.getThemeColor
+import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Companion.THEME_AUTO
+import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Companion.THEME_DAY
+import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Companion.THEME_NIGHT
+import com.github.livingwithhippos.unchained.settings.view.ThemeItem
+import com.github.livingwithhippos.unchained.utilities.extension.getThemeList
 
 class ThemingCallback(val preferences: SharedPreferences) : Application.ActivityLifecycleCallbacks {
 
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
-        preferences.getString(SettingsFragment.KEY_THEME, "waves_01")?.let {
-            setupNightMode(activity.resources, it)
-            if (activity is AppCompatActivity) setCustomTheme(activity, it)
-        }
+        val themeRes =
+            preferences.getInt(
+                SettingsFragment.KEY_THEME_NEW,
+                R.style.Theme_Unchained_Material3_Green_One,
+            )
+        val themesList = activity.applicationContext.getThemeList()
+        val currentTheme: ThemeItem = themesList.find { it.themeID == themeRes } ?: themesList[1]
+        setupNightMode(currentTheme.nightMode)
+        if (activity is AppCompatActivity) setCustomTheme(activity, themeRes)
     }
 
-    private fun setCustomTheme(activity: Activity, theme: String) {
-        val themeID =
-            when (theme) {
-                "original" -> R.style.Theme_Unchained
-                "tropical_sunset" -> R.style.Theme_TropicalSunset
-                "black_n_white" -> R.style.Theme_BlackAndWhite
-                "waves_01" -> R.style.Theme_Wave01
-                else -> R.style.Theme_Wave01
-            }
-        activity.setTheme(themeID)
+    private fun setCustomTheme(activity: Activity, themeRes: Int) {
+        activity.setTheme(themeRes)
+        /*
         // todo: check if this can be avoided, android:navigationBarColor in xml is not working
         activity.window.statusBarColor = activity.getThemeColor(R.attr.customStatusBarColor)
         activity.window.navigationBarColor = activity.getThemeColor(R.attr.customNavigationBarColor)
+         */
     }
 
     override fun onActivityStarted(activity: Activity) {}
@@ -47,35 +49,23 @@ class ThemingCallback(val preferences: SharedPreferences) : Application.Activity
 
     override fun onActivityDestroyed(activity: Activity) {}
 
-    private fun setupNightMode(resources: Resources, theme: String) {
-        // get night mode values
-        val nightModeArray = resources.getStringArray(R.array.night_mode_values)
-        val nightMode = preferences.getString(SettingsFragment.KEY_DAY_NIGHT, "auto")
-        // get current theme and check if it's has a night mode
-        if (theme in DAY_ONLY_THEMES) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-            // update the night mode if not the day one
-            if (nightMode != "day")
-                with(preferences.edit()) {
-                    putString(SettingsFragment.KEY_DAY_NIGHT, "day")
-                    apply()
+    /** Set the night mode depending on the user preferences and what the theme support */
+    private fun setupNightMode(themeNightModeSupport: String) {
+        when (themeNightModeSupport) {
+            THEME_AUTO -> {
+                when (preferences.getString(SettingsFragment.KEY_DAY_NIGHT, "auto")) {
+                    THEME_AUTO ->
+                        AppCompatDelegate.setDefaultNightMode(
+                            AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+                        )
+                    THEME_DAY ->
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                    THEME_NIGHT ->
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
                 }
-        } else {
-            // enable or disable night mode according with the preferences
-            when (nightMode) {
-                nightModeArray[0] ->
-                    AppCompatDelegate.setDefaultNightMode(
-                        AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-                    )
-                nightModeArray[1] ->
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                nightModeArray[2] ->
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             }
+            THEME_DAY -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            THEME_NIGHT -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
         }
-    }
-
-    companion object {
-        val DAY_ONLY_THEMES = arrayOf("tropical_sunset", "waves_01")
     }
 }

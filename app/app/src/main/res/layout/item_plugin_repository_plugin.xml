@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
         <import type="android.view.View" />
 
         <import type="com.github.livingwithhippos.unchained.repository.model.PluginStatus" />
@@ -22,8 +23,7 @@
         android:layout_marginBottom="5dp"
         android:paddingVertical="5dp"
         android:clickable="true"
-        android:focusable="false"
-        >
+        android:focusable="false">
 
         <ImageView
             android:id="@+id/ivStatus"
@@ -39,7 +39,7 @@
 
         <TextView
             android:id="@+id/tvName"
-            style="@style/TextAppearance.UnchainedTheme.Body1"
+            android:textAppearance="?attr/textAppearanceBodyMedium"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
@@ -63,49 +63,45 @@
             app:layout_constraintStart_toEndOf="@id/tvName"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:paddingEnd="10dp"
-            >
+            android:paddingEnd="10dp">
 
             <Button
                 android:id="@+id/bDownload"
-                android:layout_width="50dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:icon="@drawable/icon_download"
-                android:focusable="true"
                 android:visibility="@{item.status == PluginStatus.isNew ? View.VISIBLE : View.GONE}"
-                style="@style/Widget.MaterialComponents.Button.Icon"
-                android:onClick="@{() ->listener.onPluginDownloadClick(item)}"
-                />
+                style="?attr/materialIconButtonFilledStyle"
+                android:focusable="true"
+                android:onClick="@{() ->listener.onPluginDownloadClick(item)}" />
 
             <Button
                 android:id="@+id/bUpdate"
-                android:layout_width="50dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 app:icon="@drawable/icon_reload"
-                android:focusable="true"
                 android:visibility="@{item.status == PluginStatus.hasUpdate ? View.VISIBLE : View.GONE}"
-                style="@style/Widget.MaterialComponents.Button.Icon"
-                android:onClick="@{() ->listener.onPluginDownloadClick(item)}"
-                />
+                style="?attr/materialIconButtonFilledStyle"
+                android:focusable="true"
+                android:onClick="@{() ->listener.onPluginDownloadClick(item)}" />
 
             <Button
                 android:id="@+id/bDelete"
-                android:layout_width="50dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 app:icon="@drawable/icon_delete"
-                android:focusable="true"
                 android:visibility="@{item.status == PluginStatus.updated || item.status == PluginStatus.hasUpdate || item.status == PluginStatus.hasIncompatibleUpdate ? View.VISIBLE : View.GONE}"
-                style="@style/Widget.MaterialComponents.Button.Icon"
-                android:onClick="@{() ->listener.onPluginRemoveClick(item)}"
-                />
+                style="?attr/materialIconButtonFilledStyle"
+                android:focusable="true"
+                android:onClick="@{() ->listener.onPluginRemoveClick(item)}" />
 
         </com.google.android.flexbox.FlexboxLayout>
 
         <TextView
             android:id="@+id/tvVersion"
-            style="@style/TextAppearance.UnchainedTheme.Overline"
+            android:textAppearance="?attr/textAppearanceLabelMedium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@{item.version + ``, default=`1.02`}"
@@ -116,11 +112,12 @@
 
         <TextView
             android:id="@+id/tvStatus"
-            style="@style/TextAppearance.UnchainedTheme.Overline"
+            android:textAppearance="?attr/textAppearanceLabelMedium"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:text="@{item.statusTranslation, default=`new`}"
+            android:textAllCaps="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/tvVersion"

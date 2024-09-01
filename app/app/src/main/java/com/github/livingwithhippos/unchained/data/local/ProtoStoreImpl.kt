@@ -26,7 +26,7 @@ class ProtoStoreImpl @Inject constructor(@ApplicationContext private val context
         clientId: String?,
         clientSecret: String?,
         accessToken: String?,
-        refreshToken: String?
+        refreshToken: String?,
     ) {
         context.credentialsDataStore.updateData { credentials ->
             credentials
@@ -45,7 +45,7 @@ class ProtoStoreImpl @Inject constructor(@ApplicationContext private val context
         clientId: String?,
         clientSecret: String?,
         accessToken: String?,
-        refreshToken: String?
+        refreshToken: String?,
     ) {
         context.credentialsDataStore.updateData { credentials ->
             val builder = credentials.toBuilder()

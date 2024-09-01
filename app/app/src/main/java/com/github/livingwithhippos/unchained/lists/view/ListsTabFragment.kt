@@ -81,7 +81,7 @@ class ListsTabFragment : UnchainedFragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         val binding: FragmentTabListsBinding =
             FragmentTabListsBinding.inflate(inflater, container, false)
@@ -144,7 +144,7 @@ class ListsTabFragment : UnchainedFragment() {
                 }
             },
             viewLifecycleOwner,
-            Lifecycle.State.RESUMED
+            Lifecycle.State.RESUMED,
         )
 
         val listsAdapter = ListsAdapter(this)
@@ -181,7 +181,7 @@ class ListsTabFragment : UnchainedFragment() {
                         externalUri = uri
                     )
                 findNavController().navigate(action)
-            }
+            },
         )
 
         // a file has been downloaded, usually a torrent, and needs to be unrestricted
@@ -198,7 +198,7 @@ class ListsTabFragment : UnchainedFragment() {
                         )
                     findNavController().navigate(action)
                 }
-            }
+            },
         )
 
         // a notification has been clicked
@@ -207,7 +207,7 @@ class ListsTabFragment : UnchainedFragment() {
             EventObserver { torrentID ->
                 val action = ListsTabFragmentDirections.actionListsTabToTorrentDetails(torrentID)
                 findNavController().navigate(action)
-            }
+            },
         )
 
         viewModel.eventLiveData.observe(
@@ -239,7 +239,7 @@ class ListsTabFragment : UnchainedFragment() {
                                             .actionListTabsDestToFolderListFragment2(
                                                 folder = null,
                                                 torrent = event.item,
-                                                linkList = null
+                                                linkList = null,
                                             )
                                     findNavController().navigate(action)
                                 } else viewModel.unrestrictTorrent(event.item)
@@ -302,7 +302,7 @@ class ListsTabFragment : UnchainedFragment() {
                         findNavController().navigate(action)
                     }
                 }
-            }
+            },
         )
 
         viewModel.errorsLiveData.observe(
@@ -335,7 +335,7 @@ class ListsTabFragment : UnchainedFragment() {
                         }
                     }
                 }
-            }
+            },
         )
 
         return binding.root
@@ -395,7 +395,7 @@ class DownloadsListFragment : UnchainedFragment(), DownloadListListener {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         val binding = FragmentDownloadsListBinding.inflate(inflater, container, false)
 
@@ -411,7 +411,7 @@ class DownloadsListFragment : UnchainedFragment(), DownloadListListener {
                     binding.rvDownloadList,
                     DownloadKeyProvider(downloadAdapter),
                     DataBindingDetailsLookup(binding.rvDownloadList),
-                    StorageStrategy.createParcelableStorage(DownloadItem::class.java)
+                    StorageStrategy.createParcelableStorage(DownloadItem::class.java),
                 )
                 .withSelectionPredicate(SelectionPredicates.createSelectAnything())
                 .build()
@@ -455,7 +455,7 @@ class DownloadsListFragment : UnchainedFragment(), DownloadListListener {
                         if (downloads.size == 1) {
                             activityViewModel.enqueueDownload(
                                 downloads.first().download,
-                                downloads.first().filename
+                                downloads.first().filename,
                             )
                         } else {
                             activityViewModel.enqueueDownloads(downloads)
@@ -538,7 +538,7 @@ class DownloadsListFragment : UnchainedFragment(), DownloadListListener {
 
                     viewModel.postEventNotice(ListEvent.SetTab(DOWNLOADS_TAB))
                 }
-            }
+            },
         )
 
         activityViewModel.listStateLiveData.observe(
@@ -556,7 +556,7 @@ class DownloadsListFragment : UnchainedFragment(), DownloadListListener {
                     }
                     else -> {}
                 }
-            }
+            },
         )
 
         viewModel.deletedDownloadLiveData.observe(
@@ -589,7 +589,7 @@ class DownloadsListFragment : UnchainedFragment(), DownloadListListener {
                         downloadAdapter.refresh()
                     }
                 }
-            }
+            },
         )
 
         // starts the Transformations.switchMap(queryLiveData) which otherwise won't trigger the
@@ -613,7 +613,7 @@ class TorrentsListFragment : UnchainedFragment(), TorrentListListener {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         val binding = FragmentTorrentsListBinding.inflate(inflater, container, false)
 
@@ -628,7 +628,7 @@ class TorrentsListFragment : UnchainedFragment(), TorrentListListener {
                     binding.rvTorrentList,
                     TorrentKeyProvider(torrentAdapter),
                     DataBindingDetailsLookup(binding.rvTorrentList),
-                    StorageStrategy.createParcelableStorage(TorrentItem::class.java)
+                    StorageStrategy.createParcelableStorage(TorrentItem::class.java),
                 )
                 .withSelectionPredicate(SelectionPredicates.createSelectAnything())
                 .build()
@@ -766,7 +766,7 @@ class TorrentsListFragment : UnchainedFragment(), TorrentListListener {
                         torrentAdapter.refresh()
                     }
                 }
-            }
+            },
         )
 
         activityViewModel.listStateLiveData.observe(
@@ -784,7 +784,7 @@ class TorrentsListFragment : UnchainedFragment(), TorrentListListener {
                     }
                     else -> {}
                 }
-            }
+            },
         )
 
         return binding.root
@@ -809,7 +809,7 @@ class TorrentsListFragment : UnchainedFragment(), TorrentListListener {
                         ListsTabFragmentDirections.actionListTabsDestToFolderListFragment2(
                             folder = null,
                             torrent = item,
-                            linkList = null
+                            linkList = null,
                         )
                     if (controller.currentDestination?.id == R.id.list_tabs_dest)
                         controller.navigate(action)
@@ -848,8 +848,6 @@ sealed class ListState {
     data object UpdateTorrent : ListState()
 
     data object UpdateDownload : ListState()
-
-    data object Ready : ListState()
 }
 
 interface SelectedItemsButtonsListener {

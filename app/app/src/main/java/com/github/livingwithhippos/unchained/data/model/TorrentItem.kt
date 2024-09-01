@@ -49,7 +49,6 @@ import kotlinx.parcelize.Parcelize
  * the selected files one, while the /torrents one returns only the original file size (even if the
  * docs say otherwise)
  *
- * @constructor Create empty Torrent item
  * @property id
  * @property filename
  * @property originalFilename
@@ -66,6 +65,7 @@ import kotlinx.parcelize.Parcelize
  * @property ended
  * @property speed
  * @property seeders
+ * @constructor Create empty Torrent item
  */
 @JsonClass(generateAdapter = true)
 @Parcelize
@@ -85,7 +85,7 @@ data class TorrentItem(
     @Json(name = "links") val links: List<String>,
     @Json(name = "ended") val ended: String?,
     @Json(name = "speed") val speed: Int?,
-    @Json(name = "seeders") val seeders: Int?
+    @Json(name = "seeders") val seeders: Int?,
 ) : Parcelable
 
 @JsonClass(generateAdapter = true)
@@ -94,7 +94,7 @@ data class InnerTorrentFile(
     @Json(name = "id") val id: Int,
     @Json(name = "path") val path: String,
     @Json(name = "bytes") val bytes: Long,
-    @Json(name = "selected") val selected: Int
+    @Json(name = "selected") val selected: Int,
 ) : Parcelable
 
 @JsonClass(generateAdapter = true)
@@ -106,5 +106,5 @@ data class UploadedTorrent(@Json(name = "id") val id: String, @Json(name = "uri"
 @Parcelize
 data class AvailableHost(
     @Json(name = "host") val host: String,
-    @Json(name = "max_file_size") val maxFileSize: Int
+    @Json(name = "max_file_size") val maxFileSize: Int,
 ) : Parcelable

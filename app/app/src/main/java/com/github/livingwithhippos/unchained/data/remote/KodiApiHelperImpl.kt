@@ -11,6 +11,6 @@ class KodiApiHelperImpl(private val kodiApi: KodiApi) : KodiApiHelper {
 
     override suspend fun getVolume(
         request: KodiRequest,
-        auth: String?
+        auth: String?,
     ): Response<KodiGenericResponse> = kodiApi.getVolume(request, auth)
 }

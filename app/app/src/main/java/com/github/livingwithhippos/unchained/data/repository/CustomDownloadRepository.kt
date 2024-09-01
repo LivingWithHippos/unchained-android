@@ -27,7 +27,7 @@ constructor(protoStore: ProtoStore, private val customDownloadHelper: CustomDown
         url: String,
         fileName: String,
         cacheDir: File,
-        suffix: String? = null
+        suffix: String? = null,
     ): Flow<DownloadResult> = channelFlow {
         if (url.isWebUrl()) {
             // todo: use the FileWriter and Downloader helper classes
@@ -92,14 +92,14 @@ constructor(protoStore: ProtoStore, private val customDownloadHelper: CustomDown
 
         return eitherApiResult(
             call = { customDownloadHelper.getPluginsRepository(link) },
-            errorMessage = "Error Fetching plugins repository"
+            errorMessage = "Error Fetching plugins repository",
         )
     }
 
     suspend fun downloadPlugin(link: String): EitherResult<UnchainedNetworkException, Plugin> {
         return eitherApiResult(
             call = { customDownloadHelper.getPlugin(link) },
-            errorMessage = "Error fetching plugin"
+            errorMessage = "Error fetching plugin",
         )
     }
 
@@ -112,7 +112,7 @@ constructor(protoStore: ProtoStore, private val customDownloadHelper: CustomDown
     suspend fun downloadAsString(url: String): EitherResult<UnchainedNetworkException, String> {
         return eitherApiResult(
             call = { customDownloadHelper.getAsString(url) },
-            errorMessage = "Error fetching url as a string"
+            errorMessage = "Error fetching url as a string",
         )
     }
 }
@@ -120,9 +120,9 @@ constructor(protoStore: ProtoStore, private val customDownloadHelper: CustomDown
 sealed class DownloadResult {
     data class Progress(val percent: Int) : DownloadResult()
 
-    object WrongURL : DownloadResult()
+    data object WrongURL : DownloadResult()
 
     data class End(val fileName: String) : DownloadResult()
 
-    object Failure : DownloadResult()
+    data object Failure : DownloadResult()
 }

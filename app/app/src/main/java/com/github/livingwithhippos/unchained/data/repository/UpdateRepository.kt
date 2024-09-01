@@ -8,7 +8,7 @@ import javax.inject.Inject
 
 class UpdateRepository
 @Inject
-constructor(private val protoStore: ProtoStore, private val updateApiHelper: UpdateApiHelper) :
+constructor(protoStore: ProtoStore, private val updateApiHelper: UpdateApiHelper) :
     BaseRepository(protoStore) {
 
     suspend fun getUpdates(url: String = SIGNATURE.URL): Updates? {
@@ -16,7 +16,7 @@ constructor(private val protoStore: ProtoStore, private val updateApiHelper: Upd
         val response =
             safeApiCall(
                 call = { updateApiHelper.getUpdates(url) },
-                errorMessage = "Error getting updates"
+                errorMessage = "Error getting updates",
             )
 
         return response

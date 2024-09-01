@@ -52,7 +52,7 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         val torrentBinding = FragmentTorrentDetailsBinding.inflate(inflater, container, false)
 
@@ -87,7 +87,7 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
                 }
             },
             viewLifecycleOwner,
-            Lifecycle.State.RESUMED
+            Lifecycle.State.RESUMED,
         )
 
         val statusTranslation =
@@ -102,7 +102,7 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
                 "virus" to getString(R.string.virus),
                 "compressing" to getString(R.string.compressing),
                 "uploading" to getString(R.string.uploading),
-                "dead" to getString(R.string.dead)
+                "dead" to getString(R.string.dead),
             )
 
         torrentBinding.loadingStatusList = loadingStatusList
@@ -139,18 +139,18 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
                         }
                     }
                 }
-            }
+            },
         )
 
         viewModel.deletedTorrentLiveData.observe(
             viewLifecycleOwner,
             EventObserver {
                 // todo: check returned value (it)
-                activity?.baseContext?.showToast(R.string.torrent_removed)
-                // if deleted go back
-                activity?.onBackPressed()
+                context?.showToast(R.string.torrent_removed)
                 activityViewModel.setListState(ListState.UpdateTorrent)
-            }
+                // if deleted go back
+                findNavController().popBackStack()
+            },
         )
 
         setFragmentResultListener("deleteActionKey") { _, bundle ->
@@ -167,7 +167,7 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
                         )
                     findNavController().navigate(action)
                 }
-            }
+            },
         )
 
         viewModel.errorsLiveData.observe(
@@ -187,7 +187,7 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
                         }
                     }
                 }
-            }
+            },
         )
 
         torrentBinding.torrent = args.item
@@ -207,7 +207,7 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
                 TorrentDetailsFragmentDirections.actionTorrentDetailsToTorrentFolder(
                     folder = null,
                     torrent = item,
-                    linkList = null
+                    linkList = null,
                 )
             findNavController().navigate(action)
         } else {

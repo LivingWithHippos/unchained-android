@@ -3,13 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
         <variable
             name="item"
-            type="com.github.livingwithhippos.unchained.torrentdetails.model.TorrentFileItem"/>
+            type="com.github.livingwithhippos.unchained.torrentdetails.model.TorrentFileItem" />
 
         <variable
             name="listener"
-            type="com.github.livingwithhippos.unchained.torrentdetails.model.TorrentContentListener"/>
+            type="com.github.livingwithhippos.unchained.torrentdetails.model.TorrentContentListener" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -20,7 +21,6 @@
 
         <TextView
             android:id="@+id/tvFileID"
-            style="@style/TextAppearance.UnchainedTheme.Body2"
             android:layout_width="40dp"
             android:layout_height="0dp"
             android:text="@{item.id + ``, default=`1234`}"
@@ -30,12 +30,10 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/tvFileName"
-            />
+            app:layout_constraintEnd_toStartOf="@id/tvFileName" />
 
         <TextView
             android:id="@+id/tvFileName"
-            style="@style/TextAppearance.UnchainedTheme.Body2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
@@ -45,11 +43,10 @@
             app:layout_constraintStart_toEndOf="@id/tvFileID"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/tvFileSize"/>
+            app:layout_constraintBottom_toTopOf="@id/tvFileSize" />
 
         <TextView
             android:id="@+id/tvFileSize"
-            style="@style/TextAppearance.UnchainedTheme.Caption"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             fileSize="@{item.bytes}"
@@ -57,6 +54,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/tvFileName"
             app:layout_constraintTop_toBottomOf="@id/tvFileName"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintBottom_toBottomOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

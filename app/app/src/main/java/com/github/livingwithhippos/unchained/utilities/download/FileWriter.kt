@@ -31,7 +31,7 @@ class FileWriter(private val outputStream: OutputStream) : AutoCloseable {
                         DownloadStatus.Running(
                             length,
                             totalBytes,
-                            (totalBytes / length * 100).toInt()
+                            (totalBytes / length * 100).toInt(),
                         )
                     )
                 }
@@ -49,8 +49,4 @@ class FileWriter(private val outputStream: OutputStream) : AutoCloseable {
     companion object {
         private const val CHUNK_SIZE = 1024
     }
-}
-
-interface ProgressCallback {
-    fun onProgress(progress: Double)
 }

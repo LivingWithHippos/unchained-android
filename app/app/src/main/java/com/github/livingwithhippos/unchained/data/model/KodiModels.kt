@@ -16,13 +16,13 @@ data class KodiRequest(
     @Json(name = "jsonrpc") val jsonRPC: String = "2.0",
     @Json(name = "id") val id: Int = 616,
     @Json(name = "method") val method: String,
-    @Json(name = "params") val params: KodiParams
+    @Json(name = "params") val params: KodiParams,
 )
 
 @JsonClass(generateAdapter = true)
 data class KodiParams(
     @Json(name = "item") val item: KodiItem? = null,
-    @Json(name = "properties") val properties: List<String>? = null
+    @Json(name = "properties") val properties: List<String>? = null,
 )
 
 @JsonClass(generateAdapter = true) data class KodiItem(@Json(name = "file") val fileUrl: String)
@@ -31,24 +31,24 @@ data class KodiParams(
 data class KodiResponse(
     @Json(name = "id") val id: Int,
     @Json(name = "jsonrpc") val jsonrpc: String,
-    @Json(name = "result") val result: String
+    @Json(name = "result") val result: String,
 )
 
 @JsonClass(generateAdapter = true)
 data class KodiGenericResponse(
     @Json(name = "id") val id: Int,
     @Json(name = "jsonrpc") val jsonrpc: String,
-    @Json(name = "result") val result: Any
+    @Json(name = "result") val result: Any,
 )
 
 @JsonClass(generateAdapter = true)
 data class KodiError(
     @Json(name = "error") val error: KodiErrorData,
-    @Json(name = "id") val type: String?
+    @Json(name = "id") val type: String?,
 )
 
 @JsonClass(generateAdapter = true)
 data class KodiErrorData(
     @Json(name = "code") val code: Int,
-    @Json(name = "message") val message: String
+    @Json(name = "message") val message: String,
 )

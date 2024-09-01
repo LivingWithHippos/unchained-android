@@ -4,7 +4,7 @@
 
 # Unchained for Android
 
-[![License](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)   [![API](https://img.shields.io/badge/API-22%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=22)    [![Build Status](https://img.shields.io/github/workflow/status/LivingWithHippos/unchained-android/build.yaml)](https://github.com/LivingWithHippos/unchained-android/actions)    [![Play Store](https://img.shields.io/badge/play%20store-available-brightgreen)](https://play.google.com/store/apps/details?id=com.github.livingwithhippos.unchained)      [![F Droid](https://img.shields.io/f-droid/v/com.github.livingwithhippos.unchained)](https://f-droid.org/packages/com.github.livingwithhippos.unchained/) [![translated](https://localization.professiona.li/widgets/unchained-for-android/-/strings/svg-badge.svg)](https://localization.professiona.li/engage/unchained-for-android/)
+[![License](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)   [![API](https://img.shields.io/badge/API-22%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=22)    [![Build Status](https://img.shields.io/github/actions/workflow/status/LivingWithHippos/unchained-android/build.yaml?branch=master)](https://github.com/LivingWithHippos/unchained-android/actions)    [![Play Store](https://img.shields.io/badge/play%20store-available-brightgreen)](https://play.google.com/store/apps/details?id=com.github.livingwithhippos.unchained)      [![F Droid](https://img.shields.io/f-droid/v/com.github.livingwithhippos.unchained)](https://f-droid.org/packages/com.github.livingwithhippos.unchained/)
 
 
 <a href='https://f-droid.org/packages/com.github.livingwithhippos.unchained/'><img  alt='Get it on F Droid' src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" height="75"/></a>  <a href='https://play.google.com/store/apps/details?id=com.github.livingwithhippos.unchained'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png' height="75"/></a> 
@@ -53,10 +53,6 @@ You have multiple options to install Unchained for Android:
 
 ### Developing and Contributing :writing_hand:
 
-## [![Repography logo](https://images.repography.com/logo.svg)](https://repography.com) /
-[![Issue status graph](https://images.repography.com/28505435/LivingWithHippos/unchained-android/recent-activity/9be46c12746e55ef26535ea523c2bda5_issues.svg)](https://github.com/LivingWithHippos/unchained-android/issues)
-
-
 Contributions are welcome. You can use the [discussion tab](https://github.com/LivingWithHippos/unchained-android/discussions) to ask for help setting up the project. At the moment at least Android Studio 2021.1.1 is needed to build the project.
 
 The dev branch is the one where the development happens, it gets merged into master when a release is ready.
@@ -67,19 +63,21 @@ This app is written in Kotlin and uses the following architectures/patterns/libr
 
 MVVM architectural pattern, Dagger-Hilt for dependency injection, Data Binding for managing ui-data relations, Navigation, Moshi, Retrofit, OkHTTP, Room, Coroutines, Flow, Livedata, Coil
 
-The app is available in English, Italian and French, you can contribute to those or add a new language [here](https://localization.professiona.li/engage/unchained-for-android/) (much appreciated!)
+The app is available in English, Italian, Spanish and French, ~~you can contribute to those or add a new language [here](https://localization.professiona.li/engage/unchained-for-android/) (much appreciated!)~~ (the service is currently down, you can still contribute by forking the project and adding the strings to the `strings.xml` file in the `values-xx` folders)
 
-#### Plugins
+#### Search Plugins
 
-Check out `PLUGINS.md`. There's also a work in progress [wiki page](https://github.com/LivingWithHippos/unchained-android/wiki/Search-Engine) for creating search plugins.
+[Notice: plugins have been moved to another repository](https://gitlab.com/LivingWithHippos/unchained-plugins)
+
+It's possible to create new plugins with a bit of knowledge of html and regexes. There's also a work in progress [wiki page](https://github.com/LivingWithHippos/unchained-android/wiki/Search-Engine), hopefully there will be more documentation including a video in the future.
 
 ### Donate :coffee:
 
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/E1E412NFX7)
+
 You can use [my referral link](http://real-debrid.com/?id=78841) to get Real Debrid premium.
 
-Offer me coffee or a beer with Liberapay (set renewal to manual to avoid recurring donation) <noscript><a href="https://liberapay.com/LivingWithHippos/donate"><img alt="Donate using Liberapay" src="https://liberapay.com/assets/widgets/donate.svg"></a></noscript>
-
-Send a tip with [Brave.](https://brave.com/liv466)
+Offer me coffee or a beer with [Ko-Fi](https://ko-fi.com/livingwithhippos), [Liberapay](https://liberapay.com/LivingWithHippos/donate) (set renewal to manual to avoid recurring donation) <noscript><a href="https://liberapay.com/LivingWithHippos/donate"><img alt="Donate using Liberapay" src="https://liberapay.com/assets/widgets/donate.svg"></a></noscript>
 
 Send me a Bitcoin? Aha ha, just kidding… unless..?
 

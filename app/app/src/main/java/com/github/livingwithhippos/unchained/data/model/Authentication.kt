@@ -14,7 +14,7 @@ data class Authentication(
     @Json(name = "interval") val interval: Int,
     @Json(name = "expires_in") val expiresIn: Int,
     @Json(name = "verification_url") val verificationUrl: String,
-    @Json(name = "direct_verification_url") val directVerificationUrl: String
+    @Json(name = "direct_verification_url") val directVerificationUrl: String,
 )
 
 /**
@@ -24,7 +24,7 @@ data class Authentication(
 @JsonClass(generateAdapter = true)
 data class Secrets(
     @Json(name = "client_id") val clientId: String,
-    @Json(name = "client_secret") val clientSecret: String
+    @Json(name = "client_secret") val clientSecret: String,
 )
 
 /**
@@ -36,7 +36,7 @@ data class Token(
     @Json(name = "access_token") val accessToken: String,
     @Json(name = "expires_in") val expiresIn: Int,
     @Json(name = "token_type") val tokenType: String,
-    @Json(name = "refresh_token") val refreshToken: String
+    @Json(name = "refresh_token") val refreshToken: String,
 )
 
 enum class UserAction {
@@ -46,5 +46,5 @@ enum class UserAction {
     IP_NOT_ALLOWED,
     UNKNOWN,
     NETWORK_ERROR,
-    RETRY_LATER
+    RETRY_LATER,
 }

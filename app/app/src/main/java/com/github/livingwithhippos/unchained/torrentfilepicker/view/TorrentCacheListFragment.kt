@@ -11,7 +11,7 @@ import com.github.livingwithhippos.unchained.databinding.FragmentCacheBinding
 import com.github.livingwithhippos.unchained.torrentfilepicker.model.CacheFileAdapter
 import com.github.livingwithhippos.unchained.utilities.extension.setFileSize
 
-class TorrentCacheListFragment() : Fragment() {
+class TorrentCacheListFragment : Fragment() {
 
     private var cache: CachedAlternative? = null
 
@@ -31,7 +31,7 @@ class TorrentCacheListFragment() : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         val binding = FragmentCacheBinding.inflate(inflater, container, false)
 

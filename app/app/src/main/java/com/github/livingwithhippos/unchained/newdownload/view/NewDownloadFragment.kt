@@ -22,7 +22,6 @@ import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.data.model.APIError
 import com.github.livingwithhippos.unchained.data.model.EmptyBodyError
 import com.github.livingwithhippos.unchained.data.model.NetworkError
-import com.github.livingwithhippos.unchained.data.repository.DownloadResult
 import com.github.livingwithhippos.unchained.databinding.NewDownloadFragmentBinding
 import com.github.livingwithhippos.unchained.lists.view.ListState
 import com.github.livingwithhippos.unchained.newdownload.viewmodel.Link
@@ -45,10 +44,7 @@ import com.github.livingwithhippos.unchained.utilities.extension.isSimpleWebUrl
 import com.github.livingwithhippos.unchained.utilities.extension.isTorrent
 import com.github.livingwithhippos.unchained.utilities.extension.isWebUrl
 import dagger.hilt.android.AndroidEntryPoint
-import java.io.File
 import java.io.IOException
-import java.util.regex.Matcher
-import java.util.regex.Pattern
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -69,7 +65,7 @@ class NewDownloadFragment : UnchainedFragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         val binding = NewDownloadFragmentBinding.inflate(inflater, container, false)
 
@@ -92,7 +88,7 @@ class NewDownloadFragment : UnchainedFragment() {
                         linkDetails
                     )
                 findNavController().navigate(action)
-            }
+            },
         )
 
         viewModel.folderLiveData.observe(
@@ -104,10 +100,10 @@ class NewDownloadFragment : UnchainedFragment() {
                     NewDownloadFragmentDirections.actionNewDownloadDestToFolderListFragment(
                         folder = folder,
                         torrent = null,
-                        linkList = null
+                        linkList = null,
                     )
                 findNavController().navigate(action)
-            }
+            },
         )
 
         viewModel.linkLiveData.observe(
@@ -121,7 +117,7 @@ class NewDownloadFragment : UnchainedFragment() {
                             NewDownloadFragmentDirections.actionNewDownloadDestToFolderListFragment(
                                 linkList = link.links.toTypedArray(),
                                 folder = null,
-                                torrent = null
+                                torrent = null,
                             )
                         findNavController().navigate(action)
                     }
@@ -138,7 +134,7 @@ class NewDownloadFragment : UnchainedFragment() {
                     }
                     else -> {}
                 }
-            }
+            },
         )
 
         activityViewModel.downloadedFileLiveData.observe(
@@ -148,7 +144,7 @@ class NewDownloadFragment : UnchainedFragment() {
                 // no need to recheck the extension since it was checked on download
                 // if (uri?.path?.endsWith(".torrent") == true)
                 if (uri?.path != null) loadTorrent(binding, uri)
-            }
+            },
         )
 
         viewModel.networkExceptionLiveData.observe(
@@ -225,7 +221,7 @@ class NewDownloadFragment : UnchainedFragment() {
                         viewModel.postMessage(getString(R.string.network_error))
                     }
                 }
-            }
+            },
         )
 
         @SuppressLint("ShowToast")
@@ -243,7 +239,7 @@ class NewDownloadFragment : UnchainedFragment() {
                     currentToast.show()
                     lastToastTime = System.currentTimeMillis()
                 }
-            }
+            },
         )
     }
 
@@ -256,77 +252,111 @@ class NewDownloadFragment : UnchainedFragment() {
                     authState is FSMAuthenticationState.AuthenticatedOpenToken
             ) {
                 val link: String = binding.tiLink.text.toString().trim()
-                when {
-                    // this must be before the link.isWebUrl() check or it won't trigger
-                    link.isTorrent() -> {
-                        val action =
-                            NewDownloadFragmentDirections
-                                .actionNewDownloadFragmentToTorrentProcessingFragment(link = link)
-                        findNavController().navigate(action)
 
-                        // viewModel.postMessage(getString(R.string.loading_torrent))
-                        // enableButtons(binding, false)
-                        /**
-                         * DownloadManager does not support insecure (https) links anymore to add
-                         * support for it, follow these instructions
-                         * [https://stackoverflow.com/a/50834600] val secureLink = if
-                         * (link.startsWith("http://")) link.replaceFirst( "http:", "https:" ) else
-                         * link downloadTorrent(Uri.parse(secureLink))
-                         */
-                        // downloadTorrentToCache(binding, link)
-                    }
-                    link.isMagnet() -> {
-                        val action =
-                            NewDownloadFragmentDirections
-                                .actionNewDownloadFragmentToTorrentProcessingFragment(link = link)
-                        findNavController().navigate(action)
-                        // viewModel.postMessage(getString(R.string.loading_magnet_link))
-                        // enableButtons(binding, false)
-                        // viewModel.fetchAddedMagnet(link)
-                    }
-                    link.isWebUrl() || link.isSimpleWebUrl() -> {
-                        viewModel.postMessage(getString(R.string.loading_host_link))
-                        enableButtons(binding, false)
+                val splitLinks: List<String> =
+                    link
+                        .split("\n")
+                        .dropWhile { it.isBlank() }
+                        .map { it.trim() }
+                        .filter {
+                            it.length > 10 &&
+                                (it.isTorrent() ||
+                                    it.isMagnet() ||
+                                    it.isWebUrl() ||
+                                    it.isSimpleWebUrl() ||
+                                    it.isContainerWebLink())
+                        }
 
-                        var password: String? = binding.tePassword.text.toString()
-                        // we don't pass the password if it is blank.
-                        // N.B. it won't work if your password is made up of spaces but then again
-                        // you deserve
-                        // it
-                        if (password.isNullOrBlank()) password = null
-                        val remote: Int? =
-                            if (binding.switchRemote.isChecked) REMOTE_TRAFFIC_ON else null
-
-                        viewModel.fetchUnrestrictedLink(link, password, remote)
-                    }
-                    link.isBlank() -> {
-                        viewModel.postMessage(getString(R.string.please_insert_url))
-                    }
-                    link.isContainerWebLink() -> {
-                        viewModel.unrestrictContainer(link)
-                    }
-                    link.split("\n").firstOrNull()?.trim()?.isWebUrl() == true -> {
-                        // todo: support list of magnets/torrents
-                        val splitLinks: List<String> =
-                            link.split("\n").map { it.trim() }.filter { it.length > 10 }
-                        viewModel.postMessage(getString(R.string.loading))
-                        enableButtons(binding, false)
-
-                        // new folder list, alert the list fragment that it needs updating
-                        activityViewModel.setListState(ListState.UpdateDownload)
-                        val action =
-                            NewDownloadFragmentDirections.actionNewDownloadDestToFolderListFragment(
-                                folder = null,
-                                torrent = null,
-                                linkList = splitLinks.toTypedArray()
-                            )
-                        findNavController().navigate(action)
-                    }
-                    else -> {
-                        Timber.w("Invalid link: $link")
-                        viewModel.postMessage(getString(R.string.invalid_url))
-                    }
+                if (splitLinks.isEmpty()) {
+                    Timber.w("Invalid link: $link")
+                    viewModel.postMessage(getString(R.string.invalid_url))
+                    return@setOnClickListener
                 }
+
+                if (splitLinks.size == 1) {
+                    val link = splitLinks.first()
+
+                    when {
+                        // this must be before the link.isWebUrl() check or it won't trigger
+                        link.isTorrent() -> {
+                            val action =
+                                NewDownloadFragmentDirections
+                                    .actionNewDownloadFragmentToTorrentProcessingFragment(
+                                        link = link
+                                    )
+                            findNavController().navigate(action)
+
+                            // viewModel.postMessage(getString(R.string.loading_torrent))
+                            // enableButtons(binding, false)
+                            /**
+                             * DownloadManager does not support insecure (https) links anymore to
+                             * add support for it, follow these instructions
+                             * [https://stackoverflow.com/a/50834600] val secureLink = if
+                             * (link.startsWith("http://")) link.replaceFirst( "http:", "https:" )
+                             * else link downloadTorrent(Uri.parse(secureLink))
+                             */
+                            // downloadTorrentToCache(binding, link)
+                        }
+                        link.isMagnet() -> {
+                            // this one must stay above link.isWebUrl() || link.isSimpleWebUrl()
+                            // because some magnets have http in their link, getting recognized as
+                            // urls
+                            val action =
+                                NewDownloadFragmentDirections
+                                    .actionNewDownloadFragmentToTorrentProcessingFragment(
+                                        link = link
+                                    )
+                            findNavController().navigate(action)
+                        }
+                        // put this above the web url checks since this is a web link too
+                        link.isContainerWebLink() -> {
+                            viewModel.unrestrictContainer(link)
+                        }
+                        link.isWebUrl() || link.isSimpleWebUrl() -> {
+                            viewModel.postMessage(getString(R.string.loading_host_link))
+                            enableButtons(binding, false)
+
+                            var password: String? = binding.tePassword.text.toString()
+                            // we don't pass the password if it is blank.
+                            // N.B. it won't work if your password is made up of spaces but then
+                            // again
+                            // you deserve it
+                            if (password.isNullOrBlank()) password = null
+                            val remote: Int? =
+                                if (binding.switchRemote.isChecked) REMOTE_TRAFFIC_ON else null
+
+                            viewModel.fetchUnrestrictedLink(link, password, remote)
+                        }
+                        else -> {
+                            Timber.w("Invalid link: $link")
+                            viewModel.postMessage(getString(R.string.invalid_url))
+                        }
+                    }
+
+                    return@setOnClickListener
+                }
+
+                val multipleLinks: List<String> =
+                    splitLinks.filter { it.isWebUrl() || it.isSimpleWebUrl() }
+
+                if (multipleLinks.isEmpty()) {
+                    Timber.w("Invalid link: $link")
+                    viewModel.postMessage(getString(R.string.invalid_url))
+                    return@setOnClickListener
+                }
+
+                viewModel.postMessage(getString(R.string.loading))
+                enableButtons(binding, false)
+
+                // new folder list, alert the list fragment that it needs updating
+                activityViewModel.setListState(ListState.UpdateDownload)
+                val action =
+                    NewDownloadFragmentDirections.actionNewDownloadDestToFolderListFragment(
+                        folder = null,
+                        torrent = null,
+                        linkList = multipleLinks.toTypedArray(),
+                    )
+                findNavController().navigate(action)
             } else viewModel.postMessage(getString(R.string.premium_needed))
         }
 
@@ -408,7 +438,7 @@ class NewDownloadFragment : UnchainedFragment() {
                             arrayOf(MediaStore.MediaColumns.DISPLAY_NAME),
                             null,
                             null,
-                            null
+                            null,
                         )
                         ?.use { metaCursor ->
                             if (metaCursor.moveToFirst()) {
@@ -460,39 +490,6 @@ class NewDownloadFragment : UnchainedFragment() {
                     )
                 }
             }
-        }
-    }
-
-    private fun loadCachedTorrent(
-        binding: NewDownloadFragmentBinding,
-        cacheDir: File,
-        fileName: String
-    ) {
-        try {
-            viewModel.postMessage(getString(R.string.loading_torrent_file))
-            val cacheFile = File(cacheDir, fileName)
-            cacheFile.inputStream().use { inputStream ->
-                val buffer: ByteArray = inputStream.readBytes()
-                viewModel.fetchUploadedTorrent(buffer)
-            }
-        } catch (exception: Exception) {
-            when (exception) {
-                is java.io.FileNotFoundException -> {
-                    Timber.e("Torrent conversion: file not found: ${exception.message}")
-                }
-                is IOException -> {
-                    Timber.e(
-                        "Torrent conversion: IOException error getting the file: ${exception.message}"
-                    )
-                }
-                else -> {
-                    Timber.e(
-                        "Torrent conversion: Other error getting the file: ${exception.message}"
-                    )
-                }
-            }
-            enableButtons(binding, true)
-            viewModel.postMessage(getString(R.string.error_loading_torrent))
         }
     }
 
@@ -555,39 +552,6 @@ class NewDownloadFragment : UnchainedFragment() {
             }
             enableButtons(binding, true)
             viewModel.postMessage(getString(R.string.error_loading_file))
-        }
-    }
-
-    private fun downloadTorrentToCache(binding: NewDownloadFragmentBinding, link: String) {
-        val nameRegex = "/([^/]+\\.torrent)\$"
-        val m: Matcher = Pattern.compile(nameRegex).matcher(link)
-        val torrentName = if (m.find()) m.group(1) else null
-        val cacheDir = context?.cacheDir
-        if (!torrentName.isNullOrBlank() && cacheDir != null) {
-            lifecycleScope.launch {
-                activityViewModel.downloadFileToCache(link, torrentName, cacheDir).observe(
-                    viewLifecycleOwner
-                ) {
-                    when (it) {
-                        is DownloadResult.End -> {
-                            loadCachedTorrent(binding, cacheDir, it.fileName)
-                        }
-                        DownloadResult.Failure -> {
-                            viewModel.postMessage(
-                                getString(R.string.download_not_started_format, torrentName)
-                            )
-                        }
-                        is DownloadResult.Progress -> {
-                            Timber.d("$torrentName progress: ${it.percent}")
-                        }
-                        DownloadResult.WrongURL -> {
-                            viewModel.postMessage(
-                                getString(R.string.download_not_started_format, torrentName)
-                            )
-                        }
-                    }
-                }
-            }
         }
     }
 }

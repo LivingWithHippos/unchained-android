@@ -27,14 +27,12 @@
             android:layout_height="wrap_content"
             android:indeterminate="false"
             app:trackThickness="7dp"
-            app:indicatorColor="?attr/colorPrimary"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/tvTitle"
-            style="@style/TextAppearance.UnchainedTheme.Headline6"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:ellipsize="end"
@@ -45,11 +43,10 @@
             app:layout_constraintTop_toBottomOf="@id/progressIndicator"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/tfFilter"/>
+            app:layout_constraintBottom_toTopOf="@id/tfFilter" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tfFilter"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
@@ -144,15 +141,13 @@
                 android:nextFocusUp="@id/cbFilterSize"
                 android:nextFocusRight="@id/bDeleteSelected"
                 android:nextFocusLeft="@id/cbFilterType"
-                android:nextFocusDown="@id/rvFolderList"
-                />
+                android:nextFocusDown="@id/rvFolderList" />
 
             <Button
                 android:id="@+id/bDeleteSelected"
-                style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:paddingStart="13dp"
+                style="?attr/materialIconButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:contentDescription="@string/delete"
                 android:onClick="@{() -> listener.deleteSelectedItems()}"
                 app:icon="@drawable/icon_delete"
@@ -160,15 +155,13 @@
                 android:nextFocusUp="@id/cbFilterSize"
                 android:nextFocusRight="@id/bDownloadSelected"
                 android:nextFocusLeft="@id/cbSelectAll"
-                android:nextFocusDown="@id/rvFolderList"
-                />
+                android:nextFocusDown="@id/rvFolderList" />
 
             <Button
                 android:id="@+id/bDownloadSelected"
-                style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:paddingStart="13dp"
+                style="?attr/materialIconButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:contentDescription="@string/download"
                 android:onClick="@{() -> listener.downloadSelectedItems()}"
                 app:icon="@drawable/icon_download"
@@ -176,15 +169,13 @@
                 android:nextFocusUp="@id/cbFilterSize"
                 android:nextFocusRight="@id/bShareSelected"
                 android:nextFocusLeft="@id/bDeleteSelected"
-                android:nextFocusDown="@id/rvFolderList"
-                />
+                android:nextFocusDown="@id/rvFolderList" />
 
             <Button
                 android:id="@+id/bShareSelected"
-                style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:paddingStart="13dp"
+                style="?attr/materialIconButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:contentDescription="@string/share"
                 android:onClick="@{() -> listener.shareSelectedItems()}"
                 app:icon="@drawable/icon_share"
@@ -192,8 +183,7 @@
                 android:nextFocusUp="@id/cbFilterSize"
                 android:nextFocusRight="@id/rvFolderList"
                 android:nextFocusLeft="@id/bDownloadSelected"
-                android:nextFocusDown="@id/rvFolderList"
-                />
+                android:nextFocusDown="@id/rvFolderList" />
         </LinearLayout>
 
         <LinearLayout
@@ -208,7 +198,6 @@
 
             <TextView
                 android:id="@+id/tvError"
-                style="@style/TextAppearance.UnchainedTheme.Overline"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"

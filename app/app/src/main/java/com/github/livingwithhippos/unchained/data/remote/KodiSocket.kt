@@ -51,15 +51,15 @@ class KodiSocket @Inject constructor(private val client: OkHttpClient) {
                     super.onClosed(webSocket, code, reason)
                     trySend(WebSocketEvents.ConnectionClosed)
                 }
-            }
+            },
         )
     }
 }
 
 sealed class WebSocketEvents {
-    object ConnectionOpened : WebSocketEvents()
+    data object ConnectionOpened : WebSocketEvents()
 
-    object ConnectionClosed : WebSocketEvents()
+    data object ConnectionClosed : WebSocketEvents()
 
     data class ConnectionError(val error: String) : WebSocketEvents()
 

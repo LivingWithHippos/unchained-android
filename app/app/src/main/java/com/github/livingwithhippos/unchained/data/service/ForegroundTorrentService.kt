@@ -5,13 +5,12 @@ import android.app.Notification
 import android.app.PendingIntent
 import android.content.Intent
 import android.content.SharedPreferences
-import android.content.pm.ServiceInfo
+import android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
 import android.os.Binder
 import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.core.app.ServiceCompat
 import androidx.core.app.TaskStackBuilder
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.MutableLiveData
@@ -124,16 +123,11 @@ class ForegroundTorrentService : LifecycleService() {
             if (shouldVibrate && finishedTorrents.isNotEmpty()) applicationContext.vibrate()
         }
 
-        ServiceCompat.startForeground(
-            this,
-            SUMMARY_ID,
-            summaryBuilder.build(),
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
-            } else {
-                0
-            }
-        )
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            startForeground(SUMMARY_ID, summaryBuilder.build())
+        } else {
+            startForeground(SUMMARY_ID, summaryBuilder.build(), FOREGROUND_SERVICE_TYPE_DATA_SYNC)
+        }
 
         preferences.registerOnSharedPreferenceChangeListener(preferenceListener)
     }
@@ -176,11 +170,7 @@ class ForegroundTorrentService : LifecycleService() {
                 torrentBuilder
                     .setProgress(100, torrent.progress.toInt(), false)
                     .setContentTitle(
-                        getString(
-                            R.string.torrent_in_progress_format,
-                            torrent.progress.toInt(),
-                            speedMBs
-                        )
+                        getString(R.string.torrent_in_progress_format, torrent.progress, speedMBs)
                     )
                     .setOngoing(true)
             } else {
@@ -208,7 +198,7 @@ class ForegroundTorrentService : LifecycleService() {
                         torrent.id.hashCode(),
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
                             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-                        else PendingIntent.FLAG_UPDATE_CURRENT
+                        else PendingIntent.FLAG_UPDATE_CURRENT,
                     )
                 }
 
@@ -243,7 +233,7 @@ class ForegroundTorrentService : LifecycleService() {
                     item.id.hashCode(),
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
                         PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-                    else PendingIntent.FLAG_UPDATE_CURRENT
+                    else PendingIntent.FLAG_UPDATE_CURRENT,
                 )
             }
 

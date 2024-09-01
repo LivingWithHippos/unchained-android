@@ -16,7 +16,7 @@ interface TorrentApiHelper {
     suspend fun addTorrent(
         token: String,
         binaryTorrent: RequestBody,
-        host: String
+        host: String,
     ): Response<UploadedTorrent>
 
     suspend fun addMagnet(token: String, magnet: String, host: String): Response<UploadedTorrent>
@@ -26,7 +26,7 @@ interface TorrentApiHelper {
         offset: Int?,
         page: Int?,
         limit: Int?,
-        filter: String?
+        filter: String?,
     ): Response<List<TorrentItem>>
 
     suspend fun selectFiles(token: String, id: String, files: String): Response<Unit>

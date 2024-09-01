@@ -6,10 +6,13 @@ import android.net.Uri
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.local.ProtoStore
 import com.github.livingwithhippos.unchained.data.repository.HostsRepository
 import com.github.livingwithhippos.unchained.data.repository.KodiRepository
 import com.github.livingwithhippos.unchained.data.repository.PluginRepository
+import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Companion.KEY_THEME_NEW
+import com.github.livingwithhippos.unchained.settings.view.ThemeItem
 import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewModel.Companion.KEY_DOWNLOAD_FOLDER
 import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.postEvent
@@ -25,12 +28,14 @@ constructor(
     private val pluginRepository: PluginRepository,
     private val kodiRepository: KodiRepository,
     private val protoStore: ProtoStore,
-    private val preferences: SharedPreferences
+    private val preferences: SharedPreferences,
 ) : ViewModel() {
 
     val kodiLiveData = MutableLiveData<Event<Boolean>>()
 
     val eventLiveData = MutableLiveData<Event<SettingEvent>>()
+
+    val themeLiveData = MutableLiveData<Event<ThemeItem>>()
 
     fun updateRegexps() {
         viewModelScope.launch {
@@ -46,6 +51,10 @@ constructor(
             val response = kodiRepository.getVolume(ip, port, username, password)
             kodiLiveData.postEvent(response != null)
         }
+    }
+
+    fun selectTheme(theme: ThemeItem) {
+        themeLiveData.postEvent(theme)
     }
 
     fun setDownloadFolder(uri: Uri) {
@@ -66,6 +75,20 @@ constructor(
                 eventLiveData.postEvent(SettingEvent.Logout)
             }
         }
+    }
+
+    fun applyTheme() {
+        val selectedTheme: ThemeItem? = themeLiveData.value?.peekContent()
+        selectedTheme?.let {
+            with(preferences.edit()) {
+                putInt(KEY_THEME_NEW, it.themeID)
+                apply()
+            }
+        }
+    }
+
+    fun getCurrentTheme(): Int {
+        return preferences.getInt(KEY_THEME_NEW, R.style.Theme_Unchained_Material3_Green_One)
     }
 }
 

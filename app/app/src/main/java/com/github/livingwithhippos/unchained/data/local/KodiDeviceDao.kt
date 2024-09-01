@@ -45,6 +45,6 @@ interface KodiDeviceDao {
         username: String?,
         password: String?,
         isDefault: Int,
-        oldDeviceName: String
+        oldDeviceName: String,
     )
 }

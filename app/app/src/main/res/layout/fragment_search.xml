@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <import type="android.view.View" />
     </data>
 
@@ -17,10 +18,10 @@
 
         <Button
             android:id="@+id/bManagePlugins"
-            style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
+            style="@style/Widget.Material3.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:contentDescription="@string/reload"
+            android:contentDescription="@string/manage_plugins"
             app:icon="@drawable/icon_settings"
             android:text="@string/manage_plugins"
             android:nextFocusDown="@id/tfSearch"
@@ -35,7 +36,7 @@
 
         <Button
             android:id="@+id/bSorting"
-            style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
+            style="@style/Widget.Material3.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/reload"
@@ -44,8 +45,8 @@
             android:nextFocusDown="@id/tfSearch"
             android:nextFocusRight="@id/tfSearch"
             app:layout_constraintStart_toEndOf="@id/bManagePlugins"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/tfSearch"
+            app:layout_constraintTop_toTopOf="@+id/bManagePlugins"
+            app:layout_constraintBottom_toBottomOf="@+id/bManagePlugins"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintHorizontal_chainStyle="spread"
@@ -53,7 +54,6 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tfSearch"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
@@ -67,7 +67,7 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/bManagePlugins"
             app:layout_constraintVertical_chainStyle="packed">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -89,7 +89,6 @@
             android:indeterminate="false"
             android:progress="100"
             android:focusable="false"
-            app:indicatorColor="?attr/colorOnBackground"
             app:trackCornerRadius="20dp"
             app:layout_constraintBottom_toBottomOf="@id/tfSearch"
             app:layout_constraintEnd_toEndOf="parent"
@@ -99,7 +98,7 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/pluginPicker"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
@@ -119,7 +118,7 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/categoryPicker"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
@@ -149,7 +148,6 @@
 
             <TextView
                 android:id="@+id/tvError"
-                style="@style/TextAppearance.UnchainedTheme.Overline"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"

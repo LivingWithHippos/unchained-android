@@ -17,11 +17,11 @@ data class HostStatus(
     @Json(name = "supported") val supported: String,
     @Json(name = "status") val status: String,
     @Json(name = "check_time") val checkTime: String,
-    @Json(name = "competitors_status") val competitorsStatus: Map<String, Competitor>
+    @Json(name = "competitors_status") val competitorsStatus: Map<String, Competitor>,
 )
 
 @JsonClass(generateAdapter = true)
 data class Competitor(
     @Json(name = "status") val status: String,
-    @Json(name = "check_time") val checkTime: String
+    @Json(name = "check_time") val checkTime: String,
 )

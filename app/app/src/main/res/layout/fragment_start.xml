@@ -32,26 +32,25 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:visibility="invisible" >
+                android:visibility="invisible">
 
-            <Button
-                android:id="@+id/bRetry"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:minWidth="170dp"
-                android:minLines="2"
-                android:text="@string/retry_login" />
+                <Button
+                    android:id="@+id/bRetry"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:minWidth="170dp"
+                    android:minLines="2"
+                    android:text="@string/retry_login" />
 
-            <Button
-                android:id="@+id/bReset"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:minWidth="170dp"
-                android:minLines="2"
-                android:text="@string/reset_login"
-                />
+                <Button
+                    android:id="@+id/bReset"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:minWidth="170dp"
+                    android:minLines="2"
+                    android:text="@string/reset_login" />
             </LinearLayout>
 
             <com.google.android.material.progressindicator.CircularProgressIndicator
@@ -61,7 +60,6 @@
                 android:layout_height="50dp"
                 android:layout_gravity="center"
                 android:indeterminate="true"
-                app:indicatorColor="?attr/colorPrimary"
                 app:trackCornerRadius="20dp" />
         </FrameLayout>
 
@@ -74,7 +72,6 @@
 
         <TextView
             android:id="@+id/tvErrorMessage"
-            style="@style/TextAppearance.UnchainedTheme.Body1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/loading"

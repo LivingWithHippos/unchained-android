@@ -8,6 +8,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.livingwithhippos.unchained.data.model.cache.InstantAvailability
+import com.github.livingwithhippos.unchained.data.repository.DatabasePluginRepository
 import com.github.livingwithhippos.unchained.data.repository.PluginRepository
 import com.github.livingwithhippos.unchained.folderlist.view.FolderListFragment
 import com.github.livingwithhippos.unchained.folderlist.viewmodel.FolderListViewModel
@@ -23,6 +24,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @HiltViewModel
 class SearchViewModel
@@ -31,7 +33,8 @@ constructor(
     private val savedStateHandle: SavedStateHandle,
     private val preferences: SharedPreferences,
     private val pluginRepository: PluginRepository,
-    private val parser: Parser
+    private val databasePluginsRepository: DatabasePluginRepository,
+    private val parser: Parser,
 ) : ViewModel() {
 
     // used to simulate a debounce effect while typing on the search bar
@@ -44,7 +47,7 @@ constructor(
         query: String,
         pluginName: String,
         category: String? = null,
-        page: Int = 1
+        page: Int = 1,
     ): LiveData<ParserResult> {
 
         val plugin = pluginLiveData.value?.first?.firstOrNull { it.name == pluginName }
@@ -182,8 +185,99 @@ constructor(
     fun getListSortPreference(): String {
         return preferences.getString(
             FolderListViewModel.KEY_LIST_SORTING,
-            FolderListFragment.TAG_DEFAULT_SORT
+            FolderListFragment.TAG_DEFAULT_SORT,
         ) ?: FolderListFragment.TAG_DEFAULT_SORT
+    }
+
+    fun saveSearchCategory(category: String) {
+        with(preferences.edit()) {
+            putString(KEY_CATEGORY, category)
+            apply()
+        }
+    }
+
+    fun getSearchCategory(): String {
+        return preferences.getString(KEY_CATEGORY, "all") ?: "all"
+    }
+
+    fun pluginSearchWithSettings(
+        query: String,
+        category: String? = null,
+        page: Int = 1,
+    ): LiveData<ParserResult> {
+        // get category if selected
+        // get all selected plugins
+        // retrieve plugins from disk if needed
+        // search for each one and publish
+        job?.cancelIfActive()
+
+        job =
+            viewModelScope.launch {
+                // get category if selected
+                // get all selected plugins
+                // retrieve plugins from disk if needed
+                // search for each one and publish
+
+                // todo: repo + plugin name?
+                val enabledPlugins: List<Plugin> =
+                    databasePluginsRepository.getEnabledPlugins().values.flatten().mapNotNull {
+                        repoPlugin ->
+                        pluginLiveData.value?.first?.firstOrNull { it.name == repoPlugin.name }
+                    }
+                if (enabledPlugins.isEmpty()) {
+                    parsingLiveData.postValue(ParserResult.NoEnabledPlugins)
+                    return@launch
+                }
+
+                parsingLiveData.postValue(ParserResult.SearchStarted(-1))
+
+                // todo: launch search, parallel if possible and post results on live data
+
+                val results = mutableListOf<ScrapedItem>()
+
+                setCacheResults(null)
+                clearSearchResults()
+
+                enabledPlugins.forEach { plugin ->
+                    Timber.d("Starting search for plugin ${plugin.name}")
+                    parser
+                        .completeSearch(plugin, query, category, page)
+                        .onEach {
+                            when (it) {
+                                is ParserResult.SingleResult -> {
+                                    results.add(it.value)
+                                    parsingLiveData.value = ParserResult.Results(results)
+                                    setSearchResults(results)
+                                }
+                                is ParserResult.Results -> {
+                                    // here I have all the results at once
+                                    parsingLiveData.value = it
+                                    results.addAll(it.values)
+                                    setSearchResults(results)
+                                }
+                                is ParserResult.SearchStarted -> {
+                                    // results.clear()
+                                    parsingLiveData.value = it
+                                }
+                                is ParserResult.SearchFinished -> {
+                                    parsingLiveData.value = it
+                                }
+                                else -> {
+                                    // todo: check if we are stopping on the fragment side, with
+                                    // parallel search it's ok to continue if a single one fails
+                                    parsingLiveData.value = it
+                                }
+                            }
+                        }
+                        .launchIn(viewModelScope)
+                }
+            }
+
+        return parsingLiveData
+    }
+
+    fun setPluginEnabled(name: String, checked: Boolean) {
+        viewModelScope.launch { databasePluginsRepository.enablePlugin(name, checked) }
     }
 
     companion object {
@@ -192,6 +286,7 @@ constructor(
         const val KEY_RESULTS = "search_results_key"
         const val KEY_CACHE = "search_cache_key"
         const val KEY_PLUGINS = "plugins_key"
+        const val KEY_CATEGORY = "category_key"
         const val KEY_LAST_SELECTED_PLUGIN = "plugin_last_selected_key"
         const val KEY_PLUGIN_DIALOG_NEEDED = "plugin_dialog_needed_key"
         const val KEY_DOH_DIALOG_NEEDED = "doh_dialog_needed_key"

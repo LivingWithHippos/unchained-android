@@ -25,7 +25,7 @@ class PluginRepository @Inject constructor() {
 
     suspend fun getPlugins(
         context: Context,
-        manuallyInstalledOnly: Boolean = false
+        manuallyInstalledOnly: Boolean = false,
     ): Pair<List<Plugin>, Int> =
         withContext(Dispatchers.IO) {
             val pluginFiles = mutableListOf<File>()
@@ -136,11 +136,11 @@ class PluginRepository @Inject constructor() {
             LocalPlugins(pluginsData, errors)
         }
 
-    suspend fun removePlugin(
+    private suspend fun removePlugin(
         context: Context,
         repository: String,
         author: String?,
-        name: String
+        name: String,
     ): Boolean =
         withContext(Dispatchers.IO) {
             val pluginFolder = context.getDir("plugins", Context.MODE_PRIVATE)
@@ -247,7 +247,7 @@ class PluginRepository @Inject constructor() {
             return@withContext true
         }
 
-    suspend fun readPassedPlugin(context: Context, data: Uri): Plugin? =
+    private suspend fun readPassedPlugin(context: Context, data: Uri): Plugin? =
         withContext(Dispatchers.IO) {
             val filename = data.path?.split("/")?.last()
             if (filename != null) {
@@ -258,7 +258,7 @@ class PluginRepository @Inject constructor() {
                         return@withContext getPluginFromJSON(json)
                     }
                 } catch (exception: Exception) {
-                    Timber.e("Error adding the plugin $filename: ${exception.message}")
+                    Timber.e(exception, "Error adding the plugin $filename: ${exception.message}")
                 }
             }
 
@@ -281,7 +281,7 @@ class PluginRepository @Inject constructor() {
     suspend fun savePlugin(
         context: Context,
         plugin: Plugin,
-        repositoryURL: String?
+        repositoryURL: String?,
     ): InstallResult =
         withContext(Dispatchers.IO) {
             // we use the repo link hash as folder name for all the plugins from that repo
@@ -343,11 +343,11 @@ class PluginRepository @Inject constructor() {
 }
 
 sealed class InstallResult {
-    object Installed : InstallResult()
+    data object Installed : InstallResult()
 
     data class Error(val exception: Exception) : InstallResult()
 
-    object Incompatible : InstallResult()
+    data object Incompatible : InstallResult()
 }
 
 data class LocalPlugins(val pluginsData: Map<String, List<Plugin>>, val errors: Int)

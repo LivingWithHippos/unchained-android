@@ -708,6 +708,10 @@
     <string name="service_deleted">Service deleted</string>
     <string name="service">Service</string>
     <string name="services">Services</string>
+    <plurals name="services_format">
+        <item quantity="one">%d service</item>
+        <item quantity="other">%d services</item>
+    </plurals>
     <string name="dialog_confirm_action">Are you sure you want to proceed?</string>
     <string name="pick_service">Pick Service</string>
     <string name="default_service">Default Service</string>
@@ -731,7 +735,7 @@
     <string name="default_service_format">Default: %s</string>
     <string name="added_date">Date</string>
     <string name="loading_size">Loading size</string>
-    <string name="summary_loading_size">How many items should be loaded at once from the downloads and torrents sections. Bigger is slower.</string>
+    <string name="summary_loading_size">How many items should be loaded at once from the downloads and torrents sections? Larger numbers may result in slower loading.</string>
     <string name="refresh">Refresh</string>
     <string name="api_token">API token</string>
     <string name="pick_search_type">Pick a search type</string>
@@ -740,5 +744,10 @@
     <string name="services_search_description">Use services such as Jackett, Prowlarr or any Torznab app.</string>
     <string name="all">all</string>
     <string name="search_options">Search Options</string>
+    <string name="infringing_file">Infringing file locked</string>
+    <string name="too_many_requests">Too many requests</string>
+    <string name="usage_limit_reached">Usage limit reached</string>
+    <string name="devices">Devices</string>
+    <string name="remote_devices_services_description">Remote devices are computers, TVs, or phones on which services like Kodi and VLC are running. First, create a device to add one or more services.</string>
     <string name="no_credentials_found">No credentials found</string>
 </resources>

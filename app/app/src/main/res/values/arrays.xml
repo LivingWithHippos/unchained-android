@@ -29,6 +29,8 @@
     <string name="tropical_sunset" translatable="false">Tropical Sunset</string>
     <string name="player_mpv" translatable="false">MPV</string>
     <string name="player_web_video_cast" translatable="false">Web Video Cast</string>
+    <string name="player_just_video" translatable="false">Just (Video) Player </string>
+    <string name="play_it" translatable="false">PLAYit</string>
     <string name="download_manager_okhttp" translatable="false">OkHttp</string>
 
     <string-array name="main_screen" >
@@ -46,6 +48,8 @@
         <item>@string/player_vlc</item>
         <item>@string/player_mx</item>
         <item>@string/player_mpv</item>
+        <item>@string/player_just_video</item>
+        <item>@string/play_it</item>
         <item>@string/player_web_video_cast</item>
         <item>@string/custom_media_player</item>
     </string-array>
@@ -53,6 +57,8 @@
         <item>vlc</item>
         <item>mx_player</item>
         <item>mpv</item>
+        <item>player_just_video</item>
+        <item>play_it</item>
         <item>web_video_cast</item>
         <item>custom_player</item>
     </string-array>
@@ -64,4 +70,58 @@
         <item>download_manager_system</item>
         <item>download_manager_okhttp</item>
     </string-array>
+    <string-array name="service_types">
+        <item>@string/kodi</item>
+        <item>@string/player_vlc</item>
+        <!-- item>@string/jackett</item -->
+    </string-array>
+    <string-array name="search_categories">
+        <item>@string/category_all</item>
+        <item>@string/category_anime</item>
+        <item>@string/category_art</item>
+        <item>@string/category_books</item>
+        <item>@string/category_doujinshi</item>
+        <item>@string/category_games</item>
+        <item>@string/category_manga</item>
+        <item>@string/category_movies</item>
+        <item>@string/category_music</item>
+        <item>@string/category_pictures</item>
+        <item>@string/category_software</item>
+        <item>@string/category_tv</item>
+        <item>@string/category_videos</item>
+    </string-array>
+    <string-array name="search_sorting">
+        <item>@string/default_string</item>
+        <item>@string/seeders</item>
+        <item>@string/sort_by_size_asc</item>
+        <item>@string/sort_by_size_desc</item>
+        <item>@string/sort_by_az</item>
+        <item>@string/sort_by_za</item>
+        <item>@string/added_date</item>
+    </string-array>
+
+    <declare-styleable name="StatComponent">
+        <attr name="show_dividers" format="boolean" />
+        <attr name="statDirection" format="enum">
+            <enum name="horizontal" value="0"/>
+            <enum name="vertical" value="1"/>
+        </attr>
+    </declare-styleable>
+
+    <declare-styleable name="StatItemComponent">
+        <attr name="label" format="string" />
+        <attr name="caption" format="string" />
+        <attr name="item_content" format="string" />
+        <attr name="show_label" format="boolean" />
+        <attr name="show_caption" format="boolean" />
+        <attr name="show_icon" format="boolean" />
+        <attr name="item_icon" format="reference" />
+    </declare-styleable>
+
+    <declare-styleable name="ThemeColorsCircle">
+        <attr name="topColor" format="color" />
+        <attr name="bottomLeftColor" format="color" />
+        <attr name="bottomRightColor" format="color" />
+    </declare-styleable>
+
 </resources>

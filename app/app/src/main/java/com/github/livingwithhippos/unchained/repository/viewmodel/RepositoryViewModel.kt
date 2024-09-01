@@ -254,16 +254,16 @@ sealed class PluginRepositoryEvent {
 
     data class MultipleInstallation(
         val downloadErrors: Int,
-        val installResults: List<InstallResult>
+        val installResults: List<InstallResult>,
     ) : PluginRepositoryEvent()
 
     data class Uninstalled(val quantity: Int) : PluginRepositoryEvent()
 
-    object Updated : PluginRepositoryEvent()
+    data object Updated : PluginRepositoryEvent()
 
     data class FullData(
         val dbData: Map<RepositoryInfo, Map<RepositoryPlugin, List<PluginVersion>>>,
-        val installedData: LocalPlugins
+        val installedData: LocalPlugins,
     ) : PluginRepositoryEvent()
 
     data class InvalidRepositoryLink(val reason: InvalidLinkReason) : PluginRepositoryEvent()
@@ -272,9 +272,9 @@ sealed class PluginRepositoryEvent {
 }
 
 sealed class InvalidLinkReason {
-    object NotAnUrl : InvalidLinkReason()
+    data object NotAnUrl : InvalidLinkReason()
 
-    object ConnectionError : InvalidLinkReason()
+    data object ConnectionError : InvalidLinkReason()
 
-    object ParsingError : InvalidLinkReason()
+    data object ParsingError : InvalidLinkReason()
 }

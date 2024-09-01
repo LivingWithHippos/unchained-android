@@ -38,61 +38,47 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="false"
-                android:nextFocusDown="@id/rvDownloadList"
+                android:tooltipText="@string/select_deselect_all"
                 android:text="@{selectedDownloads.toString(), default=`2`}"
-                android:tooltipText="@string/select_deselect_all" />
+                android:nextFocusDown="@id/rvDownloadList" />
 
-            <ImageView
+            <Button
                 android:id="@+id/bDeleteSelected"
-                android:layout_width="70dp"
+                style="?attr/materialIconButtonStyle"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/delete"
-                android:nextFocusRight="@id/bDownloadSelected"
-                android:nextFocusDown="@id/rvDownloadList"
                 android:onClick="@{() -> listener.deleteSelectedItems()}"
-                android:paddingVertical="12dp"
-                android:src="@drawable/icon_delete"
-                android:tooltipText="@string/delete"
-                app:tint="?attr/colorPrimary" />
+                app:icon="@drawable/icon_delete"
+                app:iconSize="25dp"
+                android:tooltipText="@string/delete_selected"
+                android:nextFocusDown="@id/rvDownloadList" />
 
-            <ImageView
+            <Button
                 android:id="@+id/bDownloadSelected"
-                android:layout_width="70dp"
+                style="?attr/materialIconButtonStyle"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/download"
-                android:nextFocusRight="@id/bShareSelected"
-                android:nextFocusDown="@id/rvDownloadList"
                 android:onClick="@{() -> listener.downloadSelectedItems()}"
-                android:paddingVertical="12dp"
-                android:src="@drawable/icon_download"
-                android:tooltipText="@string/download"
-                app:tint="?attr/colorPrimary" />
+                app:icon="@drawable/icon_download"
+                app:iconSize="25dp"
+                android:tooltipText="@string/download_selected"
+                android:nextFocusDown="@id/rvDownloadList" />
 
-            <ImageView
+
+            <Button
                 android:id="@+id/bShareSelected"
-                android:layout_width="70dp"
+                style="?attr/materialIconButtonStyle"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/share"
-                android:nextFocusRight="@id/bRefresh"
-                android:nextFocusDown="@id/rvDownloadList"
                 android:onClick="@{() -> listener.shareSelectedItems()}"
-                android:paddingVertical="12dp"
-                android:src="@drawable/icon_share"
-                android:tooltipText="@string/share"
-                app:tint="?attr/colorPrimary" />
-
-            <ImageView
-                android:id="@+id/bRefresh"
-                android:layout_width="70dp"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/refresh"
-                android:nextFocusRight="@id/rvDownloadList"
+                app:icon="@drawable/icon_share"
+                app:iconSize="25dp"
+                android:tooltipText="@string/share_selected"
                 android:nextFocusDown="@id/rvDownloadList"
-                android:onClick="@{() -> listener.refreshList()}"
-                android:paddingVertical="12dp"
-                android:src="@drawable/icon_reload"
-                android:tooltipText="@string/refresh"
-                app:tint="?attr/colorPrimary" />
+                android:nextFocusRight="@id/rvDownloadList" />
 
         </LinearLayout>
 
@@ -112,7 +98,6 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:scrollbars="vertical"
-                android:visibility="visible"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:listitem="@layout/item_list_download" />
 

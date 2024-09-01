@@ -4,7 +4,9 @@ import android.Manifest
 import android.app.Notification
 import android.content.Context
 import android.content.pm.PackageManager
+import android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
 import android.net.Uri
+import android.os.Build
 import android.webkit.MimeTypeMap
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
@@ -36,7 +38,7 @@ class DownloadWorker(private val appContext: Context, workerParams: WorkerParame
 
     private var job = Job()
     private val scope = CoroutineScope(Dispatchers.IO + job)
-    var shutdown = false
+    private var shutdown = false
     private val preferences = PreferenceManager.getDefaultSharedPreferences(appContext)
 
     override suspend fun doWork(): Result {
@@ -44,20 +46,26 @@ class DownloadWorker(private val appContext: Context, workerParams: WorkerParame
         if (
             ActivityCompat.checkSelfPermission(
                 appContext,
-                Manifest.permission.POST_NOTIFICATIONS
+                Manifest.permission.POST_NOTIFICATIONS,
             ) != PackageManager.PERMISSION_GRANTED
         ) {
             appContext.showToast(R.string.notifications_permission_denied)
             return Result.failure()
         }
 
-        val sourceUrl: String =
-            inputData.getString(MainActivityViewModel.KEY_DOWNLOAD_SOURCE)
-                ?: return Result.failure()
-        val fileName: String =
-            inputData.getString(MainActivityViewModel.KEY_DOWNLOAD_NAME) ?: return Result.failure()
+        val sourceUrl: String? = inputData.getString(MainActivityViewModel.KEY_DOWNLOAD_SOURCE)
+        val fileName: String? = inputData.getString(MainActivityViewModel.KEY_DOWNLOAD_NAME)
+        val folderSetting: String? = inputData.getString(MainActivityViewModel.KEY_FOLDER_URI)
 
-        val folderUri: Uri = Uri.parse(inputData.getString(MainActivityViewModel.KEY_FOLDER_URI)!!)
+        if (sourceUrl == null || fileName == null || folderSetting == null) {
+            Timber.e(
+                "Error getting download source ${sourceUrl == null}, name ${fileName==null} or destination ${folderSetting == null}"
+            )
+            showToast(R.string.download_queued_error)
+            return Result.failure()
+        }
+
+        val folderUri: Uri = Uri.parse(folderSetting)
 
         val newFile: DocumentFile? =
             try {
@@ -115,7 +123,7 @@ class DownloadWorker(private val appContext: Context, workerParams: WorkerParame
                                         applicationContext.getString(R.string.error),
                                         applicationContext,
                                         onGoing = false,
-                                        stopAction = false
+                                        stopAction = false,
                                     )
                                 NotificationManagerCompat.from(applicationContext)
                                     .notify(externalNotificationID, notification)
@@ -127,7 +135,7 @@ class DownloadWorker(private val appContext: Context, workerParams: WorkerParame
                                         notificationID,
                                         fileName,
                                         applicationContext.getString(R.string.paused),
-                                        applicationContext
+                                        applicationContext,
                                     )
                                 )
                             }
@@ -138,7 +146,7 @@ class DownloadWorker(private val appContext: Context, workerParams: WorkerParame
                                         notificationID,
                                         fileName,
                                         applicationContext.getString(R.string.queued),
-                                        applicationContext
+                                        applicationContext,
                                     )
                                 )
                             }
@@ -150,7 +158,7 @@ class DownloadWorker(private val appContext: Context, workerParams: WorkerParame
                                         applicationContext.getString(R.string.stopped),
                                         applicationContext,
                                         onGoing = false,
-                                        stopAction = false
+                                        stopAction = false,
                                     )
                                 NotificationManagerCompat.from(applicationContext)
                                     .notify(externalNotificationID, notification)
@@ -171,7 +179,7 @@ class DownloadWorker(private val appContext: Context, workerParams: WorkerParame
                                             notificationID,
                                             fileName,
                                             it.percent,
-                                            applicationContext
+                                            applicationContext,
                                         )
                                     )
                                 }
@@ -206,7 +214,7 @@ class DownloadWorker(private val appContext: Context, workerParams: WorkerParame
                         applicationContext.getString(R.string.download_complete),
                         applicationContext,
                         onGoing = false,
-                        stopAction = false
+                        stopAction = false,
                     )
                 NotificationManagerCompat.from(applicationContext)
                     .notify(externalNotificationID, notification)
@@ -237,7 +245,7 @@ class DownloadWorker(private val appContext: Context, workerParams: WorkerParame
     private fun getFileDocument(
         sourceUrl: String,
         destinationFolder: Uri,
-        fileName: String
+        fileName: String,
     ): DocumentFile? {
 
         val folderUri: DocumentFile? =
@@ -277,7 +285,7 @@ fun makeStatusNotification(
     title: String,
     context: Context,
     onGoing: Boolean = true,
-    stopAction: Boolean = true
+    stopAction: Boolean = true,
 ): Notification {
 
     // Create the notification
@@ -312,10 +320,14 @@ fun makeStatusForegroundInfo(
     filename: String,
     title: String,
     context: Context,
-    onGoing: Boolean = true
+    onGoing: Boolean = true,
 ): ForegroundInfo {
     val notification = makeStatusNotification(workerId, filename, title, context, onGoing)
-    return ForegroundInfo(id, notification)
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        ForegroundInfo(id, notification, FOREGROUND_SERVICE_TYPE_DATA_SYNC)
+    } else {
+        ForegroundInfo(id, notification)
+    }
 }
 
 fun makeProgressStatusNotification(
@@ -323,7 +335,7 @@ fun makeProgressStatusNotification(
     filename: String,
     progress: Int,
     context: Context,
-    stopAction: Boolean = true
+    stopAction: Boolean = true,
 ): Notification {
     val title = context.getString(R.string.download_in_progress_format, progress)
     // Create the notification
@@ -355,38 +367,39 @@ fun makeProgressForegroundInfo(
     id: Int,
     filename: String,
     progress: Int,
-    context: Context
+    context: Context,
 ): ForegroundInfo {
     val notification = makeProgressStatusNotification(workerId, filename, progress, context)
-    return ForegroundInfo(id, notification)
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        ForegroundInfo(id, notification, FOREGROUND_SERVICE_TYPE_DATA_SYNC)
+    } else {
+        ForegroundInfo(id, notification)
+    }
 }
 
 sealed class DownloadStatus {
-    object Queued : DownloadStatus()
+    data object Queued : DownloadStatus()
 
-    object Stopped : DownloadStatus()
+    data object Stopped : DownloadStatus()
 
-    object Paused : DownloadStatus()
+    data object Paused : DownloadStatus()
 
-    object Completed : DownloadStatus()
+    data object Completed : DownloadStatus()
 
-    data class Running(
-        val totalSize: Double,
-        val downloadedSize: Long,
-        val percent: Int,
-    ) : DownloadStatus()
+    data class Running(val totalSize: Double, val downloadedSize: Long, val percent: Int) :
+        DownloadStatus()
 
     data class Error(val type: DownloadErrorType) : DownloadStatus()
 }
 
 sealed class DownloadErrorType {
-    object ResponseError : DownloadErrorType()
+    data object ResponseError : DownloadErrorType()
 
-    object Interrupted : DownloadErrorType()
+    data object Interrupted : DownloadErrorType()
 
-    object EmptyBody : DownloadErrorType()
+    data object EmptyBody : DownloadErrorType()
 
-    object ServerUnavailable : DownloadErrorType()
+    data object ServerUnavailable : DownloadErrorType()
 
-    object IPBanned : DownloadErrorType()
+    data object IPBanned : DownloadErrorType()
 }

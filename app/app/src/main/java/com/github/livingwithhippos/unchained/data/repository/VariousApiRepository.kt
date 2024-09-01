@@ -6,7 +6,7 @@ import javax.inject.Inject
 
 class VariousApiRepository
 @Inject
-constructor(private val protoStore: ProtoStore, private val variousApiHelper: VariousApiHelper) :
+constructor(protoStore: ProtoStore, private val variousApiHelper: VariousApiHelper) :
     BaseRepository(protoStore) {
 
     suspend fun disableToken(): Unit? {
@@ -14,7 +14,7 @@ constructor(private val protoStore: ProtoStore, private val variousApiHelper: Va
         val response =
             safeApiCall(
                 call = { variousApiHelper.disableToken(token = "Bearer ${getToken()}") },
-                errorMessage = "Error disabling token"
+                errorMessage = "Error disabling token",
             )
 
         return response

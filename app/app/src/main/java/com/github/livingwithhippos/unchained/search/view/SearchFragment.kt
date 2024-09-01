@@ -47,7 +47,7 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         val binding = FragmentSearchBinding.inflate(inflater, container, false)
 
@@ -76,7 +76,7 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
                         resources.getQuantityString(
                             R.plurals.plugins_version_old_format,
                             parsedPlugins.second,
-                            parsedPlugins.second
+                            parsedPlugins.second,
                         )
                     )
 
@@ -94,7 +94,7 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
                 // todo: record the item used in the preferences and reselect it at setup time
                 (binding.pluginPicker.editText as? AutoCompleteTextView)?.setText(
                     selectedPlugin.name,
-                    false
+                    false,
                 )
                 setupCategory(categoryPickerView, plugins.first())
             }
@@ -158,7 +158,7 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
         v: View,
         @MenuRes menuRes: Int,
         searchAdapter: SearchItemAdapter,
-        searchList: RecyclerView
+        searchList: RecyclerView,
     ) {
 
         val popup = PopupMenu(requireContext(), v)
@@ -212,7 +212,7 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
                 query = binding.tiSearch.text.toString(),
                 // fixme: this will break with same-name plugins
                 pluginName = binding.pluginPicker.editText?.text.toString(),
-                category = getSelectedCategory(binding.categoryPicker.editText?.text.toString())
+                category = getSelectedCategory(binding.categoryPicker.editText?.text.toString()),
             )
             .observe(viewLifecycleOwner) { result ->
                 when (result) {
@@ -270,8 +270,8 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
                 FolderListFragment.TAG_DEFAULT_SORT -> R.string.default_string
                 FolderListFragment.TAG_SORT_AZ -> R.string.sort_by_az
                 FolderListFragment.TAG_SORT_ZA -> R.string.sort_by_za
-                FolderListFragment.TAG_SORT_SIZE_DESC -> R.string.sort_by_size_asc
-                FolderListFragment.TAG_SORT_SIZE_ASC -> R.string.sort_by_size_desc
+                FolderListFragment.TAG_SORT_SIZE_ASC -> R.string.sort_by_size_asc
+                FolderListFragment.TAG_SORT_SIZE_DESC -> R.string.sort_by_size_desc
                 FolderListFragment.TAG_SORT_SEEDERS -> R.string.seeders
                 FolderListFragment.TAG_SORT_ADDED -> R.string.added_date
                 else -> R.string.default_string

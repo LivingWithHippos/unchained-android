@@ -38,64 +38,41 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="false"
-                android:nextFocusRight="@id/bDeleteSelected"
-                android:nextFocusDown="@id/rvTorrentList"
-                android:text="@{selectedTorrents.toString(), default=`2`}"
-                android:tooltipText="@string/select_deselect_all" />
+                android:tooltipText="@string/select_deselect_all"
+                android:text="@{selectedTorrents.toString(), default=`2`}" />
 
-            <ImageView
+            <Button
                 android:id="@+id/bDeleteSelected"
-                android:layout_width="70dp"
+                style="?attr/materialIconButtonStyle"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/delete"
-                android:nextFocusRight="@id/bDownloadSelected"
-                android:nextFocusDown="@id/rvTorrentList"
                 android:onClick="@{() -> listener.deleteSelectedItems()}"
-                android:paddingVertical="12dp"
-                android:src="@drawable/icon_delete"
-                android:tooltipText="@string/delete"
-                app:tint="?attr/colorPrimary" />
+                app:icon="@drawable/icon_delete"
+                app:iconSize="25dp"
+                android:tooltipText="@string/delete_selected" />
 
-
-            <ImageView
+            <Button
                 android:id="@+id/bDownloadSelected"
-                android:layout_width="70dp"
+                style="?attr/materialIconButtonStyle"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/download"
-                android:nextFocusRight="@id/bDetailsSelected"
-                android:nextFocusDown="@id/rvTorrentList"
                 android:onClick="@{() -> listener.downloadSelectedItems()}"
-                android:paddingVertical="12dp"
-                android:src="@drawable/icon_download"
-                android:tooltipText="@string/download"
-                app:tint="?attr/colorPrimary" />
+                app:icon="@drawable/icon_download"
+                app:iconSize="25dp"
+                android:tooltipText="@string/download_selected" />
 
-
-            <ImageView
+            <Button
                 android:id="@+id/bDetailsSelected"
-                android:layout_width="70dp"
+                style="?attr/materialIconButtonStyle"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/torrent_details"
-                android:nextFocusRight="@id/bRefresh"
-                android:nextFocusDown="@id/rvTorrentList"
+                app:icon="@drawable/icon_info"
+                app:iconSize="25dp"
                 android:onClick="@{() -> listener.openSelectedDetails()}"
-                android:paddingVertical="12dp"
-                android:src="@drawable/icon_info"
-                android:tooltipText="@string/torrent_details"
-                app:tint="?attr/colorPrimary" />
-
-            <ImageView
-                android:id="@+id/bRefresh"
-                android:layout_width="70dp"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/refresh"
-                android:nextFocusRight="@id/rvTorrentList"
-                android:nextFocusDown="@id/rvTorrentList"
-                android:onClick="@{() -> listener.refreshList()}"
-                android:paddingVertical="12dp"
-                android:src="@drawable/icon_reload"
-                android:tooltipText="@string/refresh"
-                app:tint="?attr/colorPrimary" />
+                android:tooltipText="@string/torrent_details" />
 
         </LinearLayout>
 

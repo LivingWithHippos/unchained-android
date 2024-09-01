@@ -18,7 +18,7 @@ data class Plugin(
     @Json(name = "author") val author: String?,
     @Json(name = "supported_categories") val supportedCategories: SupportedCategories,
     @Json(name = "search") val search: PluginSearch,
-    @Json(name = "download") val download: PluginDownload
+    @Json(name = "download") val download: PluginDownload,
 ) : Parcelable {
     fun isCompatible(): Boolean {
         return engineVersion.toInt() == Parser.PLUGIN_ENGINE_VERSION.toInt() &&
@@ -26,7 +26,7 @@ data class Plugin(
     }
 }
 
-fun isCompatible(engineVersion: Double): Boolean {
+fun isCompatible(engineVersion: Float): Boolean {
     return engineVersion.toInt() == Parser.PLUGIN_ENGINE_VERSION.toInt() &&
         Parser.PLUGIN_ENGINE_VERSION >= engineVersion
 }
@@ -46,7 +46,7 @@ data class SupportedCategories(
     @Json(name = "videos") val videos: String?,
     @Json(name = "music") val music: String?,
     @Json(name = "tv") val tv: String?,
-    @Json(name = "books") val books: String?
+    @Json(name = "books") val books: String?,
 ) : Parcelable
 
 @JsonClass(generateAdapter = true)
@@ -84,14 +84,14 @@ data class PluginDownload(
     @Json(name = "direct") val directParser: DirectParser?,
     @Json(name = "table_direct") val tableLink: TableParser?,
     @Json(name = "table_indirect") val indirectTableLink: TableParser?,
-    @Json(name = "regexes") val regexes: PluginRegexes
+    @Json(name = "regexes") val regexes: PluginRegexes,
 ) : Parcelable
 
 @JsonClass(generateAdapter = true)
 @Parcelize
 data class RegexpsGroup(
     @Json(name = "regex_use") val regexUse: String = "first",
-    @Json(name = "regexps") val regexps: List<CustomRegex>
+    @Json(name = "regexps") val regexps: List<CustomRegex>,
 ) : Parcelable
 
 @JsonClass(generateAdapter = true)
@@ -100,7 +100,7 @@ data class CustomRegex(
     @Json(name = "regex") val regex: String,
     @Json(name = "group") val group: Int = 1,
     @Json(name = "slug_type") val slugType: String = "complete",
-    @Json(name = "other") val other: String?
+    @Json(name = "other") val other: String?,
 ) : Parcelable
 
 @JsonClass(generateAdapter = true)
@@ -117,7 +117,7 @@ data class TableParser(
     @Json(name = "class") val className: String?,
     @Json(name = "id") val idName: String?,
     @Json(name = "index") val index: Int?,
-    @Json(name = "columns") val columns: Columns
+    @Json(name = "columns") val columns: Columns,
 ) : Parcelable
 
 @JsonClass(generateAdapter = true)
@@ -125,7 +125,8 @@ data class TableParser(
 data class DirectParser(
     @Json(name = "class") val className: String?,
     @Json(name = "id") val idName: String?,
-    @Json(name = "entry-class") val entryClass: String
+    @Json(name = "entry-class") val entryClass: String?,
+    @Json(name = "entry-tag") val entryTag: String?,
 ) : Parcelable
 
 @JsonClass(generateAdapter = true)
@@ -139,7 +140,7 @@ data class PluginRegexes(
     @Json(name = "magnet") val magnetRegex: RegexpsGroup?,
     @Json(name = "torrents") val torrentRegexes: RegexpsGroup?,
     @Json(name = "hosting") val hostingRegexes: RegexpsGroup?,
-    @Json(name = "details") val detailsRegex: RegexpsGroup?
+    @Json(name = "details") val detailsRegex: RegexpsGroup?,
 ) : Parcelable
 
 @JsonClass(generateAdapter = true)
@@ -153,5 +154,5 @@ data class Columns(
     @Json(name = "magnet_column") val magnetColumn: Int?,
     @Json(name = "torrent_column") val torrentColumn: Int?,
     @Json(name = "details_column") val detailsColumn: Int?,
-    @Json(name = "hosting_column") val hostingColumn: Int?
+    @Json(name = "hosting_column") val hostingColumn: Int?,
 ) : Parcelable

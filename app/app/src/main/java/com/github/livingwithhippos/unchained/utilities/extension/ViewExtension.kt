@@ -2,6 +2,7 @@ package com.github.livingwithhippos.unchained.utilities.extension
 
 import android.content.Context
 import android.content.res.Resources
+import android.graphics.Rect
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.ClipDrawable
 import android.graphics.drawable.Drawable
@@ -15,6 +16,7 @@ import android.os.Build
 import android.text.SpannableStringBuilder
 import android.util.TypedValue
 import android.view.View
+import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
@@ -26,6 +28,7 @@ import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.github.livingwithhippos.unchained.R
+import com.github.livingwithhippos.unchained.data.local.RemoteServiceType
 import com.github.livingwithhippos.unchained.repository.model.PluginStatus
 import com.github.livingwithhippos.unchained.utilities.extensionIconMap
 import com.google.android.material.progressindicator.BaseProgressIndicator
@@ -223,7 +226,7 @@ fun TextView.setFileSize(size: Long) {
             size < 9999999999999 ->
                 this.context.getString(
                     R.string.file_size_format_gb,
-                    size.toFloat() / 1024 / 1024 / 1024
+                    size.toFloat() / 1024 / 1024 / 1024,
                 )
             // todo: shorten this
             else -> this.context.getString(R.string.size_error)
@@ -254,7 +257,7 @@ fun View.runRippleAnimation(delay: Long = 300) {
                 background.state =
                     intArrayOf(android.R.attr.state_pressed, android.R.attr.state_enabled)
             },
-            delay
+            delay,
         )
     }
 }
@@ -269,7 +272,7 @@ fun View.runRippleAnimation(delay: Long = 300) {
 fun RecyclerView.LayoutManager.verticalScrollToPosition(
     context: Context,
     position: Int = 0,
-    snapType: Int = LinearSmoothScroller.SNAP_TO_START
+    snapType: Int = LinearSmoothScroller.SNAP_TO_START,
 ) {
 
     val smoothScroller =
@@ -312,7 +315,7 @@ fun View.showSnackBar(
     length: Int = Snackbar.LENGTH_SHORT,
     action: (() -> Unit)? = null,
     actionText: Int? = null,
-    anchor: View? = null
+    anchor: View? = null,
 ) {
     Snackbar.make(this, messageResource, length)
         .also {
@@ -367,6 +370,16 @@ fun ImageView.setDrawableByPluginStatus(status: String) {
     }
 }
 
+@BindingAdapter("mapServiceTypeDrawable")
+fun ImageView.setDrawableByServiceType(type: Int) {
+    return when (type) {
+        RemoteServiceType.KODI.value -> this.setImageResource(R.drawable.icon_kodi)
+        RemoteServiceType.VLC.value -> this.setImageResource(R.drawable.icon_vlc)
+        RemoteServiceType.JACKETT.value -> this.setImageResource(R.drawable.icon_jackett)
+        else -> this.setImageResource(R.drawable.icon_play_outline)
+    }
+}
+
 /** hides the keyboard when called on a View */
 fun View.hideKeyboard() {
     context?.let {
@@ -374,4 +387,28 @@ fun View.hideKeyboard() {
             it.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
         inputMethodManager?.hideSoftInputFromWindow(this.windowToken, 0)
     }
+}
+
+/**
+ * This function returns the available space around a view Order is top, right, bottom, left
+ * Multiscreen will return sizes against the screen, not the app window
+ */
+fun getAvailableSpace(view: View): List<Int> {
+    val screenRect = Rect()
+    val windowManager = view.context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+    windowManager.defaultDisplay.getRectSize(screenRect)
+
+    val parentViewRect = Rect()
+    val locationOnScreen = IntArray(2)
+
+    view.getLocationOnScreen(locationOnScreen)
+    view.getDrawingRect(parentViewRect)
+
+    val leftSpace = locationOnScreen[0]
+    val rightSpace = screenRect.width() - (leftSpace + parentViewRect.width())
+
+    val topSpace = locationOnScreen[1]
+    val bottomSpace = screenRect.height() - (topSpace + parentViewRect.width())
+
+    return listOf(topSpace, rightSpace, bottomSpace, leftSpace)
 }

@@ -28,7 +28,7 @@ import timber.log.Timber
 class Parser(
     private val preferences: SharedPreferences,
     private val classicClient: OkHttpClient,
-    private val dohClient: OkHttpClient
+    private val dohClient: OkHttpClient,
 ) {
 
     private fun getClient(): OkHttpClient {
@@ -59,7 +59,7 @@ class Parser(
                             url = plugin.url,
                             query = currentQuery,
                             category = currentCategory,
-                            page = page
+                            page = page,
                         )
 
                     emit(ParserResult.SearchStarted(-1))
@@ -94,7 +94,7 @@ class Parser(
                                                     plugin.download.regexes,
                                                     s,
                                                     link,
-                                                    plugin.url
+                                                    plugin.url,
                                                 )
                                             emit(ParserResult.SingleResult(scrapedItem))
                                         } else {
@@ -113,7 +113,7 @@ class Parser(
                                             plugin.download.directParser,
                                             plugin.download.regexes,
                                             source,
-                                            plugin.url
+                                            plugin.url,
                                         )
                                     )
                                 )
@@ -126,7 +126,7 @@ class Parser(
                                             plugin.download.tableLink,
                                             plugin.download.regexes,
                                             source,
-                                            plugin.url
+                                            plugin.url,
                                         )
                                     )
                                 )
@@ -139,7 +139,7 @@ class Parser(
                                         plugin.download.indirectTableLink,
                                         plugin.download.regexes,
                                         source,
-                                        plugin.url
+                                        plugin.url,
                                     )
                                 emit(ParserResult.SearchStarted(links.size))
                                 links.forEach {
@@ -150,7 +150,7 @@ class Parser(
                                                 plugin.download.regexes,
                                                 itemSource,
                                                 it,
-                                                plugin.url
+                                                plugin.url,
                                             )
                                         emit(ParserResult.SingleResult(scrapedItem))
                                     } else {
@@ -170,7 +170,7 @@ class Parser(
         tableParser: TableParser,
         regexes: PluginRegexes,
         source: String,
-        baseUrl: String
+        baseUrl: String,
     ): List<String> {
         val tableLinks = mutableListOf<String>()
         val doc: Document = Jsoup.parse(source)
@@ -210,7 +210,7 @@ class Parser(
                                 parseSingle(
                                     it,
                                     columns[tableParser.columns.detailsColumn].html(),
-                                    baseUrl
+                                    baseUrl,
                                 )
                             if (details != null) tableLinks.add(details)
 
@@ -234,7 +234,7 @@ class Parser(
         regexes: PluginRegexes,
         source: String,
         link: String,
-        baseUrl: String
+        baseUrl: String,
     ): ScrapedItem {
 
         var name = ""
@@ -333,7 +333,7 @@ class Parser(
             magnets = magnets.toList(),
             torrents = torrents.toList(),
             hosting = hosting.toList(),
-            isCached = false
+            isCached = false,
         )
     }
 
@@ -390,7 +390,7 @@ class Parser(
                                 parseSingle(
                                     regexes.nameRegex,
                                     columns[tableLink.columns.nameColumn].html(),
-                                    baseUrl
+                                    baseUrl,
                                 ) ?: ""
                             )
 
@@ -399,35 +399,35 @@ class Parser(
                             parseSingle(
                                 regexes.detailsRegex,
                                 columns[tableLink.columns.detailsColumn].html(),
-                                baseUrl
+                                baseUrl,
                             )
                     if (tableLink.columns.seedersColumn != null)
                         seeders =
                             parseSingle(
                                 regexes.seedersRegex,
                                 columns[tableLink.columns.seedersColumn].html(),
-                                baseUrl
+                                baseUrl,
                             )
                     if (tableLink.columns.addedDateColumn != null)
                         addedDate =
                             parseSingle(
                                 regexes.dateAddedRegex,
                                 columns[tableLink.columns.addedDateColumn].html(),
-                                baseUrl
+                                baseUrl,
                             )
                     if (tableLink.columns.leechersColumn != null)
                         leechers =
                             parseSingle(
                                 regexes.leechersRegex,
                                 columns[tableLink.columns.leechersColumn].html(),
-                                baseUrl
+                                baseUrl,
                             )
                     if (tableLink.columns.sizeColumn != null)
                         size =
                             parseSingle(
                                 regexes.sizeRegex,
                                 columns[tableLink.columns.sizeColumn].html(),
-                                baseUrl
+                                baseUrl,
                             )
                     if (tableLink.columns.magnetColumn != null)
                         magnets.addAll(
@@ -437,7 +437,7 @@ class Parser(
                                     .html()
                                     .removeWebFormatting(),
                                 baseUrl,
-                                toLowerCase = true
+                                toLowerCase = true,
                             )
                         )
                     if (tableLink.columns.torrentColumn != null)
@@ -445,7 +445,7 @@ class Parser(
                             parseList(
                                 regexes.torrentRegexes,
                                 columns[tableLink.columns.torrentColumn].html(),
-                                baseUrl
+                                baseUrl,
                             )
                         )
                     if (tableLink.columns.hostingColumn != null)
@@ -453,7 +453,7 @@ class Parser(
                             parseList(
                                 regexes.hostingRegexes,
                                 columns[tableLink.columns.hostingColumn].html(),
-                                baseUrl
+                                baseUrl,
                             )
                         )
                 } catch (e: IndexOutOfBoundsException) {
@@ -475,7 +475,7 @@ class Parser(
                             magnets = magnets.toList(),
                             torrents = torrents.toList(),
                             hosting = hosting.toList(),
-                            isCached = false
+                            isCached = false,
                         )
                     )
             }
@@ -492,7 +492,7 @@ class Parser(
                     .url(url)
                     .header(
                         "User-Agent",
-                        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36"
+                        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36",
                     )
                     .build()
 
@@ -595,7 +595,7 @@ class Parser(
         customRegexes: List<CustomRegex>?,
         source: String,
         url: String,
-        toLowerCase: Boolean = false
+        toLowerCase: Boolean = false,
     ): List<String> {
         if (customRegexes.isNullOrEmpty()) return emptyList()
         val results = mutableSetOf<String>()
@@ -633,7 +633,7 @@ class Parser(
         regexpsGroup: RegexpsGroup?,
         source: String,
         url: String,
-        toLowerCase: Boolean = false
+        toLowerCase: Boolean = false,
     ): List<String> {
         if (regexpsGroup == null || regexpsGroup.regexps.isEmpty()) return emptyList()
 
@@ -680,7 +680,7 @@ class Parser(
         customRegex: CustomRegex?,
         source: String,
         url: String,
-        toLowerCase: Boolean = false
+        toLowerCase: Boolean = false,
     ): List<String> {
         return if (customRegex != null) parseList(listOf(customRegex), source, url, toLowerCase)
         else emptyList()
@@ -690,12 +690,30 @@ class Parser(
         parser: DirectParser,
         regexes: PluginRegexes,
         source: String,
-        url: String
+        url: String,
     ): List<ScrapedItem> {
         val directItems = mutableListOf<ScrapedItem>()
 
+        if (parser.entryClass == null && parser.entryTag == null) {
+            Timber.e("Entry class or tag is required for direct parsing")
+            return directItems
+        }
+
         val doc: Document = Jsoup.parse(source)
-        val entries: Elements = doc.getElementsByClass(parser.entryClass)
+
+        val containerClass: Element? =
+            if (parser.className != null) doc.getElementsByClass(parser.className).firstOrNull()
+            else if (parser.idName != null) doc.getElementById(parser.idName) else null
+        val entries: Elements = Elements()
+        if (containerClass != null) {
+            if (parser.entryClass != null)
+                entries.addAll(containerClass.getElementsByClass(parser.entryClass))
+            else entries.addAll(containerClass.getElementsByTag(parser.entryTag))
+        } else {
+            if (parser.entryClass != null) entries.addAll(doc.getElementsByClass(parser.entryClass))
+            else entries.addAll(doc.getElementsByTag(parser.entryTag))
+        }
+
         for (entry in entries) {
             // val wholeText =  entry.wholeText()
             // val data =  entry.data()
@@ -729,7 +747,7 @@ class Parser(
                         magnets = magnets,
                         torrents = torrents,
                         hosting = hosting,
-                        isCached = false
+                        isCached = false,
                     )
                 )
             }
@@ -780,8 +798,9 @@ class Parser(
          * - 2.3: added optional table index to table parsers (for tables with no specific class/id)
          * - 2.4: added more categories
          * - 2.5: parse added date
+         * - 2.6: added entry tag to direct parsing mode (this or entry class is required)
          */
-        const val PLUGIN_ENGINE_VERSION: Float = 2.5f
+        const val PLUGIN_ENGINE_VERSION: Float = 2.6f
     }
 }
 
@@ -795,13 +814,9 @@ sealed class ParserResult {
 
     data object MissingQuery : ParserResult()
 
-    data object MissingCategory : ParserResult()
-
     data object NetworkBodyError : ParserResult()
 
     data object EmptyInnerLinks : ParserResult()
-
-    data object PluginBuildError : ParserResult()
 
     data object MissingImplementationError : ParserResult()
 

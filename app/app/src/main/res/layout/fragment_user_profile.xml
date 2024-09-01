@@ -26,6 +26,7 @@
 
             <TextView
                 android:id="@+id/tvName"
+                android:textAppearance="?attr/textAppearanceTitleLarge"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
@@ -34,13 +35,13 @@
                 android:maxLines="2"
                 android:text="@{user.username, default=`User Name`}"
                 android:textAlignment="viewStart"
-                android:textAppearance="?attr/textAppearanceHeadline5"
                 app:layout_constraintEnd_toStartOf="@id/ivProfilePic"
                 app:layout_constraintStart_toStartOf="@id/cvPremium"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/tvMail"
+                android:textAppearance="?attr/textAppearanceLabelMedium"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="20dp"
@@ -49,7 +50,6 @@
                 android:focusable="false"
                 android:text="@{user.email, default=`Email@Address`}"
                 android:textAlignment="viewStart"
-                android:textAppearance="?attr/textAppearanceOverline"
                 app:layout_constraintEnd_toStartOf="@id/ivProfilePic"
                 app:layout_constraintStart_toStartOf="@id/tvName"
                 app:layout_constraintTop_toBottomOf="@id/tvName" />
@@ -66,6 +66,7 @@
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cvPremium"
+                style="?attr/materialCardViewElevatedStyle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
@@ -75,8 +76,6 @@
                 android:clickable="false"
                 android:focusable="false"
                 android:padding="10dp"
-                app:cardCornerRadius="10dp"
-                app:cardElevation="5dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/ivProfilePic"
@@ -88,29 +87,20 @@
                     android:padding="20dp">
 
                     <TextView
-                        android:id="@+id/tvStatus"
-                        style="@style/TextAppearance.UnchainedTheme.Overline"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/status"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <TextView
                         android:id="@+id/tvPremium"
-                        style="@style/TextAppearance.UnchainedTheme.Headline5"
+                        android:textAppearance="?attr/textAppearanceBodyLarge"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:text="@{user.premium > 0 ? @string/premium : @string/not_premium, default=`Premium`}"
                         android:textAllCaps="true"
                         android:textStyle="bold"
-                        app:layout_constraintStart_toStartOf="@id/tvStatus"
-                        app:layout_constraintTop_toBottomOf="@id/tvStatus" />
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
                         android:id="@+id/tvPremiumDays"
-                        style="@style/TextAppearance.AppCompat.Body1"
+                        android:textAppearance="?attr/textAppearanceLabelSmall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -120,16 +110,14 @@
 
                     <com.google.android.material.progressindicator.LinearProgressIndicator
                         android:id="@+id/pointsBar"
-                        style="@style/Widget.MaterialComponents.LinearProgressIndicator"
                         progressCompat="@{user.points}"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
+                        android:layout_marginTop="10dp"
                         android:indeterminate="false"
                         android:max="1000"
-                        app:indicatorColor="?attr/colorPrimary"
                         app:indicatorSize="25dp"
-                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintBottom_toTopOf="@+id/tvPoints"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/tvPremiumDays"
                         app:trackCornerRadius="20dp"
@@ -137,15 +125,16 @@
 
                     <TextView
                         android:id="@+id/tvPoints"
-                        android:layout_width="wrap_content"
+                        android:textAppearance="?attr/textAppearanceLabelMedium"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:textAlignment="center"
                         android:text="@{@string/premium_points_format(user.points), default=`Premium Points: 750/1000`}"
-                        android:textAppearance="?attr/textAppearanceBody2"
-                        android:textColor="?attr/colorOnPrimary"
-                        app:layout_constraintBottom_toBottomOf="@id/pointsBar"
-                        app:layout_constraintEnd_toEndOf="@id/pointsBar"
-                        app:layout_constraintStart_toStartOf="@id/pointsBar"
-                        app:layout_constraintTop_toTopOf="@id/pointsBar" />
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/pointsBar" />
 
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -154,7 +143,7 @@
 
             <TextView
                 android:id="@+id/tvLoginDescription"
-                style="@style/TextAppearance.UnchainedTheme.Body2"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
@@ -168,22 +157,19 @@
                 app:layout_constraintStart_toStartOf="@id/cvPremium"
                 app:layout_constraintTop_toBottomOf="@id/cvPremium" />
 
-            <View
+            <com.google.android.material.divider.MaterialDivider
                 android:id="@+id/divider"
-                style="@style/Divider"
-                android:layout_width="300dp"
-                android:layout_marginStart="20dp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:layout_marginEnd="20dp"
                 app:layout_constraintBottom_toTopOf="@+id/tvDescription"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="@id/cvPremium"
+                app:layout_constraintStart_toStartOf="@id/cvPremium"
                 app:layout_constraintTop_toBottomOf="@+id/tvLoginDescription" />
 
             <TextView
                 android:id="@+id/tvDescription"
-                style="@style/TextAppearance.UnchainedTheme.Body2"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
@@ -198,21 +184,25 @@
 
             <Button
                 android:id="@+id/bAccount"
+                style="@style/Widget.Material3.Button"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="20dp"
                 android:text="@string/account_page"
+                android:nextFocusRight="@id/bSettings"
                 app:layout_constraintEnd_toStartOf="@+id/bSettings"
                 app:layout_constraintStart_toStartOf="@id/cvPremium"
                 app:layout_constraintTop_toBottomOf="@id/tvDescription" />
 
             <Button
                 android:id="@+id/bSettings"
+                style="@style/Widget.Material3.Button"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_marginStart="20dp"
                 android:text="@string/settings"
+                android:nextFocusLeft="@id/bAccount"
                 app:layout_constraintBottom_toBottomOf="@id/bAccount"
                 app:layout_constraintEnd_toEndOf="@id/cvPremium"
                 app:layout_constraintStart_toEndOf="@+id/bAccount"

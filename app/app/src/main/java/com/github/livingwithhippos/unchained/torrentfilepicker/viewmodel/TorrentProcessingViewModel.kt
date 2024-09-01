@@ -20,8 +20,6 @@ import com.github.livingwithhippos.unchained.utilities.beforeSelectionStatusList
 import com.github.livingwithhippos.unchained.utilities.extension.cancelIfActive
 import com.github.livingwithhippos.unchained.utilities.postEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
-import java.util.Timer
-import java.util.TimerTask
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -36,7 +34,7 @@ class TorrentProcessingViewModel
 @Inject
 constructor(
     private val savedStateHandle: SavedStateHandle,
-    private val torrentsRepository: TorrentsRepository
+    private val torrentsRepository: TorrentsRepository,
 ) : ViewModel() {
 
     val networkExceptionLiveData = MutableLiveData<Event<UnchainedNetworkException>>()
@@ -54,6 +52,7 @@ constructor(
                 val addedMagnet = torrentsRepository.addMagnet(magnet, availableHosts.first().host)
                 when (addedMagnet) {
                     is EitherResult.Failure -> {
+                        Timber.e("Error adding magnet: ${addedMagnet.failure}")
                         networkExceptionLiveData.postEvent(addedMagnet.failure)
                     }
                     is EitherResult.Success -> {
@@ -105,10 +104,6 @@ constructor(
         } else {
             torrentLiveData.postEvent(TorrentEvent.CacheMiss)
         }
-    }
-
-    fun getTorrentDetails(): TorrentItem? {
-        return savedStateHandle[KEY_CURRENT_TORRENT]
     }
 
     private fun setTorrentDetails(item: TorrentItem) {
@@ -183,23 +178,9 @@ constructor(
                         }
                     }
                 }
-                delay(1000)
+                delay(1500)
             }
         }
-    }
-
-    fun pollTorrentStatus() {
-        Timer()
-            .scheduleAtFixedRate(
-                object : TimerTask() {
-                    override fun run() {
-                        // check if it goes into select files
-                        // todo: create a service to do this, check the download one
-                    }
-                },
-                0,
-                1000
-            )
     }
 
     fun triggerTorrentEvent(event: TorrentEvent) {
@@ -232,7 +213,6 @@ constructor(
         const val KEY_CACHE = "cache_key"
         const val KEY_CURRENT_TORRENT = "current_torrent_key"
         const val KEY_CURRENT_TORRENT_ID = "current_torrent_id_key"
-        const val KEY_CURRENT_TORRENT_STRUCTURE = "current_torrent_structure_key"
     }
 }
 
@@ -243,19 +223,19 @@ sealed class TorrentEvent {
 
     data class CacheHit(val cache: CachedTorrent) : TorrentEvent()
 
-    object CacheMiss : TorrentEvent()
+    data object CacheMiss : TorrentEvent()
 
     data class FilesSelected(val torrent: TorrentItem) : TorrentEvent()
 
-    object DownloadAll : TorrentEvent()
+    data object DownloadAll : TorrentEvent()
 
     data class DownloadCache(val position: Int, val files: Int) : TorrentEvent()
 
     data class DownloadSelection(val filesNumber: Int) : TorrentEvent()
 
-    object DownloadedFileSuccess : TorrentEvent()
+    data object DownloadedFileSuccess : TorrentEvent()
 
-    object DownloadedFileFailure : TorrentEvent()
+    data object DownloadedFileFailure : TorrentEvent()
 
     data class DownloadedFileProgress(val progress: Int) : TorrentEvent()
 }

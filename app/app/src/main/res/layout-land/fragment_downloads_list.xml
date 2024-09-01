@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="selectedDownloads"
+            type="Integer" />
+
+        <variable
+            name="listener"
+            type="com.github.livingwithhippos.unchained.lists.view.SelectedItemsButtonsListener" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/llMultiSelection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingStart="10dp"
+            android:paddingTop="5dp"
+            android:paddingEnd="10dp"
+            app:layout_constraintBottom_toTopOf="@id/srLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+
+            <Button
+                android:id="@+id/bAddNew"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:text="@string/add"
+                android:onClick="@{() -> listener.openNewDownload()}"
+                app:icon="@drawable/icon_add"
+                />
+
+            <CheckBox
+                android:id="@+id/cbSelectAll"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:tooltipText="@string/select_deselect_all"
+                android:text="@{selectedDownloads.toString(), default=`2`}"
+                android:nextFocusDown="@id/rvDownloadList"
+                />
+
+            <Button
+                android:id="@+id/bDeleteSelected"
+                style="?attr/materialIconButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/delete"
+                android:onClick="@{() -> listener.deleteSelectedItems()}"
+                app:icon="@drawable/icon_delete"
+                app:iconSize="25dp"
+                android:tooltipText="@string/delete_selected"
+                android:nextFocusDown="@id/rvDownloadList"
+                />
+
+            <Button
+                android:id="@+id/bDownloadSelected"
+                style="?attr/materialIconButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/download"
+                android:onClick="@{() -> listener.downloadSelectedItems()}"
+                app:icon="@drawable/icon_download"
+                app:iconSize="25dp"
+                android:tooltipText="@string/download_selected"
+                android:nextFocusDown="@id/rvDownloadList"
+                />
+
+
+            <Button
+                android:id="@+id/bShareSelected"
+                style="?attr/materialIconButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/share"
+                android:onClick="@{() -> listener.shareSelectedItems()}"
+                app:icon="@drawable/icon_share"
+                app:iconSize="25dp"
+                android:tooltipText="@string/share_selected"
+                android:nextFocusDown="@id/rvDownloadList"
+                android:nextFocusRight="@id/bRefresh"
+                />
+
+            <Button
+                android:id="@+id/bRefresh"
+                style="?attr/materialIconButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/refresh"
+                android:onClick="@{() -> listener.refreshList()}"
+                app:icon="@drawable/icon_reload"
+                app:iconSize="25dp"
+                android:tooltipText="@string/refresh"
+                android:nextFocusDown="@id/rvDownloadList"
+                android:nextFocusRight="@id/rvDownloadList"
+                />
+
+        </LinearLayout>
+
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/srLayout"
+            refreshColorTheme="@{true}"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/llMultiSelection">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvDownloadList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:scrollbars="vertical"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_list_download" />
+
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <import type="android.view.View" />
 
         <variable
@@ -17,6 +18,7 @@
     </data>
 
     <com.google.android.material.card.MaterialCardView
+        style="?attr/materialCardViewElevatedStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -32,8 +34,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvName"
-        >
+        app:layout_constraintTop_toBottomOf="@id/tvName">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -42,38 +43,36 @@
 
             <TextView
                 android:id="@+id/type"
-                style="@style/TextAppearance.UnchainedTheme.Overline"
+                android:textAppearance="?attr/textAppearanceLabelMedium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="parent"
                 android:text="@{item.type, default=`Torrent`}"
                 app:layout_constraintBottom_toTopOf="@id/link"
-                app:layout_constraintTop_toTopOf="parent"
-                />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/cached"
-                style="@style/TextAppearance.UnchainedTheme.Overline"
+                android:textAppearance="?attr/textAppearanceLabelMedium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
                 app:layout_constraintStart_toEndOf="@id/type"
                 android:text="@string/cached"
+                android:textAllCaps="true"
                 app:layout_constraintTop_toTopOf="parent"
-                android:visibility="@{item.cached == false ? View.GONE : View.VISIBLE}"
-                />
+                android:visibility="@{item.cached == false ? View.GONE : View.VISIBLE}" />
 
             <TextView
                 android:id="@+id/link"
-                style="@style/TextAppearance.UnchainedTheme.Body1"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:maxLines="4"
                 android:text="@{item.name, default=`https://verylonglinkbecauseihavetotestthislinkinmylayoutpreview.com/randomfileletterstomakeitevenmorelong:234gyu234gyu`}"
                 app:layout_constraintStart_toStartOf="@id/type"
                 app:layout_constraintTop_toBottomOf="@id/type"
-                app:layout_constraintBottom_toBottomOf="parent"
-                />
+                app:layout_constraintBottom_toBottomOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>

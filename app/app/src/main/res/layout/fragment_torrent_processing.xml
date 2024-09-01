@@ -2,8 +2,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <data>
-    </data>
+    <data></data>
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -16,7 +15,6 @@
 
             <TextView
                 android:id="@+id/tvLoadingTorrent"
-                style="@style/TextAppearance.UnchainedTheme.Body2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="20dp"
@@ -37,7 +35,6 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="20dp"
                 android:indeterminate="true"
-                app:indicatorColor="?attr/colorPrimary"
                 app:layout_constraintBottom_toTopOf="@id/tvStatus"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -47,7 +44,6 @@
 
             <TextView
                 android:id="@+id/tvStatus"
-                style="@style/TextAppearance.UnchainedTheme.Body2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="20dp"
@@ -66,8 +62,7 @@
             android:id="@+id/loadedLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="invisible"
-            >
+            android:visibility="invisible">
 
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/pickerTabs"

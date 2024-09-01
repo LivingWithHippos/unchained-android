@@ -43,7 +43,7 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
 
         val authBinding = FragmentAuthenticationBinding.inflate(inflater, container, false)
@@ -115,7 +115,7 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
                     // set up values for calling the secrets endpoint
                     viewModel.setupSecretLoop(auth.expiresIn)
                 }
-            }
+            },
         )
 
         // 2. start checking for user confirmation
@@ -151,7 +151,7 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
                                 // update the currently saved credentials
                                 activityViewModel.updateCredentials(
                                     clientId = secrets.value.clientId,
-                                    clientSecret = secrets.value.clientSecret
+                                    clientSecret = secrets.value.clientSecret,
                                 )
                                 // start the next auth step
                                 activityViewModel.transitionAuthenticationMachine(
@@ -161,7 +161,7 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
                         }
                     }
                 }
-            }
+            },
         )
 
         // 3. start checking for the authentication token
@@ -178,7 +178,7 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
                         FSMAuthenticationEvent.OnOpenTokenLoaded
                     )
                 }
-            }
+            },
         )
 
         return authBinding.root
@@ -197,7 +197,7 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
             ForegroundColorSpan(colorSecondary),
             0,
             link.length,
-            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE,
         )
         sb.append(link)
 
@@ -219,7 +219,7 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
                 clientId = PRIVATE_TOKEN,
                 clientSecret = PRIVATE_TOKEN,
                 deviceCode = PRIVATE_TOKEN,
-                refreshToken = PRIVATE_TOKEN
+                refreshToken = PRIVATE_TOKEN,
             )
             activityViewModel.transitionAuthenticationMachine(FSMAuthenticationEvent.OnPrivateToken)
         }

@@ -14,7 +14,7 @@ sealed class RepositoryListItem {
         val name: String,
         val version: Double,
         val description: String,
-        val author: String
+        val author: String,
     ) : RepositoryListItem(), Parcelable
 
     data class Plugin(
@@ -26,7 +26,7 @@ sealed class RepositoryListItem {
         val author: String?,
         // see PluginStatus
         var status: String,
-        var statusTranslation: String
+        var statusTranslation: String,
     ) : RepositoryListItem()
 }
 
@@ -64,7 +64,7 @@ class PluginRepositoryAdapter(listener: PluginListener) :
     class DiffCallback : DiffUtil.ItemCallback<RepositoryListItem>() {
         override fun areItemsTheSame(
             oldItem: RepositoryListItem,
-            newItem: RepositoryListItem
+            newItem: RepositoryListItem,
         ): Boolean {
             // trick for smart casting
             if (
@@ -81,7 +81,7 @@ class PluginRepositoryAdapter(listener: PluginListener) :
 
         override fun areContentsTheSame(
             oldItem: RepositoryListItem,
-            newItem: RepositoryListItem
+            newItem: RepositoryListItem,
         ): Boolean {
             // trick for smart casting
             if (

@@ -29,14 +29,14 @@ interface TorrentsApi {
     @GET("torrents/info/{id}")
     suspend fun getTorrentInfo(
         @Header("Authorization") token: String,
-        @Path("id") id: String
+        @Path("id") id: String,
     ): Response<TorrentItem>
 
     @PUT("torrents/addTorrent")
     suspend fun addTorrent(
         @Header("Authorization") token: String,
         @Body binaryTorrent: RequestBody,
-        @Query("host") host: String
+        @Query("host") host: String,
     ): Response<UploadedTorrent>
 
     @FormUrlEncoded
@@ -44,7 +44,7 @@ interface TorrentsApi {
     suspend fun addMagnet(
         @Header("Authorization") token: String,
         @Field("magnet") magnet: String,
-        @Field("host") host: String
+        @Field("host") host: String,
     ): Response<UploadedTorrent>
 
     /**
@@ -63,7 +63,7 @@ interface TorrentsApi {
         @Query("offset") offset: Int? = 0,
         @Query("page") page: Int? = 1,
         @Query("limit") limit: Int? = 10,
-        @Query("filter") filter: String?
+        @Query("filter") filter: String?,
     ): Response<List<TorrentItem>>
 
     /**
@@ -78,7 +78,7 @@ interface TorrentsApi {
     suspend fun selectFiles(
         @Header("Authorization") token: String,
         @Path("id") id: String,
-        @Field("files") files: String = "all"
+        @Field("files") files: String = "all",
     ): Response<Unit>
 
     /**
@@ -102,6 +102,6 @@ interface TorrentsApi {
     @GET
     suspend fun getInstantAvailability(
         @Header("Authorization") token: String,
-        @Url url: String
+        @Url url: String,
     ): Response<InstantAvailability>
 }

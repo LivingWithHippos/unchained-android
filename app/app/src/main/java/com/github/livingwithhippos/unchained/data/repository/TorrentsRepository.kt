@@ -16,7 +16,7 @@ import timber.log.Timber
 
 class TorrentsRepository
 @Inject
-constructor(private val protoStore: ProtoStore, private val torrentApiHelper: TorrentApiHelper) :
+constructor(protoStore: ProtoStore, private val torrentApiHelper: TorrentApiHelper) :
     BaseRepository(protoStore) {
 
     suspend fun getAvailableHosts(): List<AvailableHost>? {
@@ -24,7 +24,7 @@ constructor(private val protoStore: ProtoStore, private val torrentApiHelper: To
         val hostResponse: List<AvailableHost>? =
             safeApiCall(
                 call = { torrentApiHelper.getAvailableHosts(token = "Bearer $token") },
-                errorMessage = "Error Retrieving Available Hosts"
+                errorMessage = "Error Retrieving Available Hosts",
             )
 
         return hostResponse
@@ -35,7 +35,7 @@ constructor(private val protoStore: ProtoStore, private val torrentApiHelper: To
         val torrentResponse: TorrentItem? =
             safeApiCall(
                 call = { torrentApiHelper.getTorrentInfo(token = "Bearer $token", id = id) },
-                errorMessage = "Error Retrieving Torrent Info"
+                errorMessage = "Error Retrieving Torrent Info",
             )
 
         return torrentResponse
@@ -43,7 +43,7 @@ constructor(private val protoStore: ProtoStore, private val torrentApiHelper: To
 
     suspend fun addTorrent(
         binaryTorrent: ByteArray,
-        host: String
+        host: String,
     ): EitherResult<UnchainedNetworkException, UploadedTorrent> {
         val token = getToken()
 
@@ -51,7 +51,7 @@ constructor(private val protoStore: ProtoStore, private val torrentApiHelper: To
             binaryTorrent.toRequestBody(
                 "application/octet-stream".toMediaTypeOrNull(),
                 0,
-                binaryTorrent.size
+                binaryTorrent.size,
             )
 
         val addTorrentResponse =
@@ -60,10 +60,10 @@ constructor(private val protoStore: ProtoStore, private val torrentApiHelper: To
                     torrentApiHelper.addTorrent(
                         token = "Bearer $token",
                         binaryTorrent = requestBody,
-                        host = host
+                        host = host,
                     )
                 },
-                errorMessage = "Error Uploading Torrent"
+                errorMessage = "Error Uploading Torrent",
             )
 
         return addTorrentResponse
@@ -71,7 +71,7 @@ constructor(private val protoStore: ProtoStore, private val torrentApiHelper: To
 
     suspend fun addMagnet(
         magnet: String,
-        host: String
+        host: String,
     ): EitherResult<UnchainedNetworkException, UploadedTorrent> {
         val token = getToken()
         val torrentResponse =
@@ -80,10 +80,10 @@ constructor(private val protoStore: ProtoStore, private val torrentApiHelper: To
                     torrentApiHelper.addMagnet(
                         token = "Bearer $token",
                         magnet = magnet,
-                        host = host
+                        host = host,
                     )
                 },
-                errorMessage = "Error Uploading Torrent From Magnet"
+                errorMessage = "Error Uploading Torrent From Magnet",
             )
 
         return torrentResponse
@@ -93,7 +93,7 @@ constructor(private val protoStore: ProtoStore, private val torrentApiHelper: To
         offset: Int? = null,
         page: Int? = 1,
         limit: Int? = 50,
-        filter: String? = null
+        filter: String? = null,
     ): List<TorrentItem> {
         val token = getToken()
 
@@ -105,10 +105,10 @@ constructor(private val protoStore: ProtoStore, private val torrentApiHelper: To
                         offset = offset,
                         page = page,
                         limit = limit,
-                        filter = filter
+                        filter = filter,
                     )
                 },
-                errorMessage = "Error retrieving the torrents List, or list empty"
+                errorMessage = "Error retrieving the torrents List, or list empty",
             )
 
         return torrentsResponse ?: emptyList()
@@ -116,7 +116,7 @@ constructor(private val protoStore: ProtoStore, private val torrentApiHelper: To
 
     suspend fun selectFiles(
         id: String,
-        files: String = "all"
+        files: String = "all",
     ): EitherResult<UnchainedNetworkException, Unit> {
         val token = getToken()
 
@@ -127,7 +127,7 @@ constructor(private val protoStore: ProtoStore, private val torrentApiHelper: To
                 call = {
                     torrentApiHelper.selectFiles(token = "Bearer $token", id = id, files = files)
                 },
-                errorMessage = "Error Selecting Torrent Files"
+                errorMessage = "Error Selecting Torrent Files",
             )
 
         return response
@@ -139,7 +139,7 @@ constructor(private val protoStore: ProtoStore, private val torrentApiHelper: To
         val response =
             eitherApiResult(
                 call = { torrentApiHelper.deleteTorrent(token = "Bearer $token", id = id) },
-                errorMessage = "Error deleting Torrent"
+                errorMessage = "Error deleting Torrent",
             )
 
         return response
@@ -155,7 +155,7 @@ constructor(private val protoStore: ProtoStore, private val torrentApiHelper: To
                 call = {
                     torrentApiHelper.getInstantAvailability(token = "Bearer $token", url = url)
                 },
-                errorMessage = "Error getting cached torrent files"
+                errorMessage = "Error getting cached torrent files",
             )
 
         return response

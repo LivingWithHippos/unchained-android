@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="item"
+            type="com.github.livingwithhippos.unchained.settings.view.ThemeItem" />
+
+        <variable
+            name="listener"
+            type="com.github.livingwithhippos.unchained.settings.view.ThemePickListener" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="@{() -> listener.onThemeClick(item)}"
+        android:padding="10dp">
+
+        <com.github.livingwithhippos.unchained.customview.ThemeColorsCircle
+            android:id="@+id/theme_color"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginEnd="16dp"
+            android:clickable="false"
+            app:topColor="@{item.primaryColorID}"
+            app:bottomLeftColor="@{item.surfaceColorID}"
+            app:bottomRightColor="@{item.primaryContainerColorID}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/theme_name"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+        </com.github.livingwithhippos.unchained.customview.ThemeColorsCircle>
+
+        <TextView
+            android:id="@+id/theme_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:maxLines="2"
+            android:text="@{item.name, default=`Theme #X`}"
+            android:textAppearance="?attr/textAppearanceTitleLarge"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/theme_color"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -32,7 +32,7 @@ class AssetsManager @Inject constructor(@ApplicationContext private val appConte
     fun searchFiles(
         fileType: String,
         folder: String,
-        skipSystemFolders: Boolean = true
+        skipSystemFolders: Boolean = true,
     ): List<String> {
         val results: MutableList<String> = mutableListOf()
         val pathList = getAssetsPath(folder)

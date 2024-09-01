@@ -13,7 +13,7 @@ data class TorrentFileItem(
     val absolutePath: String,
     val bytes: Long,
     var selected: Boolean,
-    val name: String
+    val name: String,
 ) {
     override fun equals(other: Any?): Boolean {
         return if (other is TorrentFileItem)
@@ -38,7 +38,7 @@ data class TorrentFileItem(
 fun getFilesNodes(
     item: TorrentItem,
     selectedOnly: Boolean = false,
-    flattenFolders: Boolean = false
+    flattenFolders: Boolean = false,
 ): Node<TorrentFileItem> {
     val rootFolder = Node(TorrentFileItem(TYPE_FOLDER, "", 0, selected = false, "/"))
 
@@ -58,7 +58,7 @@ fun getFilesNodes(
                                 paths.dropLast(1).joinToString("/"),
                                 file.bytes,
                                 selected = file.selected == 1,
-                                value
+                                value,
                             )
                         )
                     )
@@ -74,7 +74,7 @@ fun getFilesNodes(
                                         paths.subList(0, index + 1).joinToString("/"),
                                         0,
                                         selected = false,
-                                        value
+                                        value,
                                     )
                                 )
                             )
@@ -107,7 +107,7 @@ class TorrentContentFilesAdapter : DataBindingStaticAdapter<TorrentFileItem>(Dif
 
         override fun areContentsTheSame(
             oldItem: TorrentFileItem,
-            newItem: TorrentFileItem
+            newItem: TorrentFileItem,
         ): Boolean {
             // content is not dynamic unless selected is added
             return true
@@ -133,7 +133,7 @@ class TorrentContentFilesSelectionAdapter(listener: TorrentContentListener) :
 
         override fun areContentsTheSame(
             oldItem: TorrentFileItem,
-            newItem: TorrentFileItem
+            newItem: TorrentFileItem,
         ): Boolean {
             return oldItem.selected == newItem.selected
         }

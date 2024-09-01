@@ -6,13 +6,9 @@
         android:summary="@string/restart_to_apply"
         android:title="@string/title_aspect">
 
-        <DropDownPreference
-            android:defaultValue="waves_01"
-            android:entries="@array/themes"
-            android:entryValues="@array/theme_values"
-            android:key="current_theme"
-            android:title="@string/title_theme_preference"
-            app:useSimpleSummaryProvider="true" />
+        <Preference
+            app:key="selected_theme"
+            app:title="@string/title_theme_preference" />
 
         <DropDownPreference
             android:defaultValue="auto"
@@ -25,15 +21,6 @@
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/download">
-
-        <SeekBarPreference
-            android:defaultValue="50"
-            android:max="2500"
-            android:min="50"
-            app:key="paging_size"
-            app:showSeekBarValue="true"
-            app:summary="@string/summary_loading_size"
-            app:title="@string/loading_size" />
 
         <DropDownPreference
             android:defaultValue="download_manager_system"
@@ -66,60 +53,20 @@
 
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="@string/notifications">
-
-        <SwitchPreference
-            android:defaultValue="false"
-            app:key="notification_torrent_key"
-            app:summary="@string/torrent_monitoring_description"
-            app:title="@string/enable_torrent_monitoring_title" />
-
-    </PreferenceCategory>
-
-    <PreferenceCategory android:title="@string/search_plugins">
-
-        <Preference
-            app:key="install_plugins_instructions"
-            app:summary="@string/install_plugins_summary"
-            app:title="@string/install_plugins" />
-
-        <Preference
-            app:key="delete_external_plugins"
-            app:summary="@string/delete_plugins_summary"
-            app:title="@string/delete_plugins" />
-
-        <SwitchPreference
-            android:defaultValue="false"
-            app:key="use_doh_key"
-            app:summary="@string/uses_google_dns"
-            app:title="@string/enable_doh" />
-
-    </PreferenceCategory>
-
     <PreferenceCategory
-        android:title="@string/external_apps"
+        android:title="@string/remote_devices"
         app:allowDividerBelow="false">
 
-        <PreferenceCategory
-            android:title="@string/kodi"
-            app:allowDividerBelow="false">
-            <Preference
-                app:key="kodi_remote_control_info"
-                app:summary="@string/enable_kodi_control"
-                app:title="@string/kodi_remote_control" />
+        <Preference
+            app:key="manage_remote_devices"
+            app:summary="@string/remote_devices_summary"
+            app:title="@string/manage_remote_devices" />
 
-            <Preference
-                app:key="kodi_list_editor"
-                app:summary="@string/kodi_manage_list_summary"
-                app:title="@string/kodi_manage_list" />
+        <Preference
+            app:key="kodi_remote_control_info"
+            app:summary="@string/enable_kodi_control"
+            app:title="@string/kodi_remote_control" />
 
-            <SwitchPreference
-                android:defaultValue="false"
-                app:key="select_kodi_on_play"
-                app:summary="@string/kodi_picker_description"
-                app:title="@string/kodi_picker" />
-
-        </PreferenceCategory>
         <PreferenceCategory
             android:title="@string/default_media_player"
             app:allowDividerAbove="false"
@@ -144,6 +91,36 @@
         </PreferenceCategory>
     </PreferenceCategory>
 
+    <PreferenceCategory android:title="@string/notifications">
+
+        <SwitchPreference
+            android:defaultValue="false"
+            app:key="notification_torrent_key"
+            app:summary="@string/torrent_monitoring_description"
+            app:title="@string/enable_torrent_monitoring_title" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/search">
+
+        <Preference
+            app:key="install_plugins_instructions"
+            app:summary="@string/install_plugins_summary"
+            app:title="@string/install_plugins" />
+
+        <Preference
+            app:key="delete_external_plugins"
+            app:summary="@string/delete_plugins_summary"
+            app:title="@string/delete_plugins" />
+
+        <SwitchPreference
+            android:defaultValue="false"
+            app:key="use_doh_key"
+            app:summary="@string/uses_google_dns"
+            app:title="@string/enable_doh" />
+
+    </PreferenceCategory>
+
     <PreferenceCategory android:title="@string/ui_settings">
 
         <Preference app:summary="@string/ui_settings_summary" />
@@ -166,6 +143,15 @@
             app:title="@string/show_folder_filters" />
 
         <PreferenceCategory android:title="@string/download_details">
+
+            <SeekBarPreference
+                android:defaultValue="50"
+                android:max="2500"
+                android:min="50"
+                app:key="paging_size"
+                app:showSeekBarValue="true"
+                app:summary="@string/summary_loading_size"
+                app:title="@string/loading_size" />
 
             <Preference app:summary="@string/download_details_button_choice" />
 
@@ -197,18 +183,13 @@
 
             <SwitchPreference
                 android:defaultValue="true"
-                android:key="show_kodi"
-                android:title="@string/show_kodi" />
+                android:key="show_streaming"
+                android:title="@string/show_streaming" />
 
             <SwitchPreference
                 android:defaultValue="true"
                 android:key="show_load_stream_button"
                 android:title="@string/show_load_stream_button" />
-
-            <SwitchPreference
-                android:defaultValue="true"
-                android:key="show_stream_browser_button"
-                android:title="@string/show_stream_browser_button" />
 
         </PreferenceCategory>
 

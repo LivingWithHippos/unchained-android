@@ -21,13 +21,13 @@ interface AuthenticationApi {
     @GET("device/code")
     suspend fun getAuthentication(
         @Query("client_id") id: String = OPEN_SOURCE_CLIENT_ID,
-        @Query("new_credentials") newCredentials: String = "yes"
+        @Query("new_credentials") newCredentials: String = "yes",
     ): Response<Authentication>
 
     @GET("device/credentials")
     suspend fun getSecrets(
         @Query("client_id") id: String = OPEN_SOURCE_CLIENT_ID,
-        @Query("code") deviceCode: String
+        @Query("code") deviceCode: String,
     ): Response<Secrets>
 
     /** This is also used to refresh the token. */
@@ -37,6 +37,6 @@ interface AuthenticationApi {
         @Field("client_id") clientId: String,
         @Field("client_secret") clientSecret: String,
         @Field("code") code: String,
-        @Field("grant_type") grantType: String = OPEN_SOURCE_GRANT_TYPE
+        @Field("grant_type") grantType: String = OPEN_SOURCE_GRANT_TYPE,
     ): Response<Token>
 }

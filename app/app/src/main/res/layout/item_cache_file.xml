@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
         <variable
             name="item"
             type="com.github.livingwithhippos.unchained.data.model.cache.CachedFile" />
@@ -10,14 +11,15 @@
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/cvCachedItem"
+        style="?attr/materialCardViewElevatedStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginStart="10dp"
         android:layout_marginBottom="12dp"
         android:layout_marginEnd="10dp"
-        android:padding="10dp"
         android:focusable="true"
+        android:padding="10dp"
         app:cardCornerRadius="10dp"
         app:cardElevation="3dp">
 
@@ -39,7 +41,6 @@
 
             <TextView
                 android:id="@+id/tvName"
-                style="@style/TextAppearance.UnchainedTheme.Body1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
@@ -52,7 +53,6 @@
 
             <TextView
                 android:id="@+id/tvSize"
-                style="@style/TextAppearance.UnchainedTheme.Overline"
                 fileSize="@{item.fileSize}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

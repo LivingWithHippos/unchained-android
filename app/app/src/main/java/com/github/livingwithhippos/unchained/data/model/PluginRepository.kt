@@ -17,7 +17,7 @@ data class Repository(@PrimaryKey @ColumnInfo(name = "link") val link: String)
                 entity = Repository::class,
                 parentColumns = ["link"],
                 childColumns = ["link"],
-                onDelete = CASCADE
+                onDelete = CASCADE,
             )
         ],
 )
@@ -26,7 +26,7 @@ data class RepositoryInfo(
     @ColumnInfo(name = "version") val version: Double,
     @ColumnInfo(name = "name") val name: String,
     @ColumnInfo(name = "description") val description: String,
-    @ColumnInfo(name = "author") val author: String
+    @ColumnInfo(name = "author") val author: String,
 )
 
 @Entity(
@@ -37,14 +37,15 @@ data class RepositoryInfo(
                 entity = RepositoryInfo::class,
                 parentColumns = ["link"],
                 childColumns = ["repository"],
-                onDelete = CASCADE
+                onDelete = CASCADE,
             )
         ],
-    primaryKeys = ["repository", "plugin_name"]
+    primaryKeys = ["repository", "plugin_name"],
 )
 data class RepositoryPlugin(
     @ColumnInfo(name = "repository") val repository: String,
-    @ColumnInfo(name = "plugin_name") val name: String
+    @ColumnInfo(name = "plugin_name") val name: String,
+    @ColumnInfo(name = "search_enabled") val searchEnabled: Boolean? = null,
 )
 
 @Entity(
@@ -55,15 +56,15 @@ data class RepositoryPlugin(
                 entity = RepositoryPlugin::class,
                 parentColumns = ["repository", "plugin_name"],
                 childColumns = ["plugin_repository", "plugin"],
-                onDelete = CASCADE
+                onDelete = CASCADE,
             )
         ],
-    primaryKeys = ["plugin_repository", "plugin", "version"]
+    primaryKeys = ["plugin_repository", "plugin", "version"],
 )
 data class PluginVersion(
     @ColumnInfo(name = "plugin_repository") val repository: String,
     @ColumnInfo(name = "plugin") val plugin: String,
     @ColumnInfo(name = "version") val version: Float,
-    @ColumnInfo(name = "engine") val engine: Double,
-    @ColumnInfo(name = "plugin_link") val link: String
+    @ColumnInfo(name = "engine") val engine: Float,
+    @ColumnInfo(name = "plugin_link") val link: String,
 )

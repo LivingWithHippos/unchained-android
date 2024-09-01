@@ -43,7 +43,7 @@ interface UnrestrictApi {
         @Header("Authorization") token: String,
         @Field("link") link: String,
         @Field("password") password: String? = null,
-        @Field("remote") remote: Int? = null
+        @Field("remote") remote: Int? = null,
     ): Response<DownloadItem>
 
     /**
@@ -57,7 +57,7 @@ interface UnrestrictApi {
     @POST("unrestrict/folder")
     suspend fun getUnrestrictedFolder(
         @Header("Authorization") token: String,
-        @Field("link") link: String
+        @Field("link") link: String,
     ): Response<List<String>>
 
     /**
@@ -70,7 +70,7 @@ interface UnrestrictApi {
     @PUT("unrestrict/containerFile")
     suspend fun uploadContainer(
         @Header("Authorization") token: String,
-        @Body container: RequestBody
+        @Body container: RequestBody,
     ): Response<List<String>>
 
     /**
@@ -84,6 +84,6 @@ interface UnrestrictApi {
     @POST("unrestrict/folder")
     suspend fun getContainerLinks(
         @Header("Authorization") token: String,
-        @Field("link") link: String
+        @Field("link") link: String,
     ): Response<List<String>>
 }

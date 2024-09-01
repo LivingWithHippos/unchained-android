@@ -48,7 +48,7 @@ open class BaseRepository(private val protoStore: ProtoStore) {
 
     private suspend fun <T : Any> safeApiResult(
         call: suspend () -> Response<T>,
-        errorMessage: String
+        errorMessage: String,
     ): NetworkResponse<T> {
         try {
             val response: Response<T> = call.invoke()
@@ -68,7 +68,7 @@ open class BaseRepository(private val protoStore: ProtoStore) {
 
     suspend fun <T : Any> eitherApiResult(
         call: suspend () -> Response<T>,
-        errorMessage: String
+        errorMessage: String,
     ): EitherResult<UnchainedNetworkException, T> =
         withContext(Dispatchers.IO) {
             val response: Response<T> =

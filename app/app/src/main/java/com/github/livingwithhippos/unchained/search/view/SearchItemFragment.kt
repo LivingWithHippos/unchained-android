@@ -28,7 +28,7 @@ class SearchItemFragment : UnchainedFragment(), LinkItemListener {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         val binding = FragmentSearchItemBinding.inflate(inflater, container, false)
 

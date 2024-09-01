@@ -207,7 +207,6 @@
     <plurals name="seeders_format">
         <item quantity="one">%d seeder</item>
         <item quantity="other">%d seeders</item>
-        <item quantity="many">%d seeders</item>
     </plurals>
     <string name="seeders_string_format">seeder/s: %s</string>
     <string name="torrent_in_progress_format">%1$d%% - %2$.2f MB/s</string>
@@ -270,22 +269,18 @@
     <plurals name="magnet_format">
         <item quantity="one">%d magnet</item>
         <item quantity="other">%d magnets</item>
-        <item quantity="many">%d magnets</item>
     </plurals>
     <plurals name="torrent_format">
         <item quantity="one">%d torrent</item>
         <item quantity="other">%d torrents</item>
-        <item quantity="many">%d torrents</item>
     </plurals>
     <plurals name="links_format">
         <item quantity="one">1 link</item>
         <item quantity="other">%d links</item>
-        <item quantity="many">%d links</item>
     </plurals>
     <plurals name="plugins_version_old_format">
         <item quantity="one">1 plugin ha bisogno di un aggiornamento. Controlla se ha una nuova versione</item>
         <item quantity="other">%d plugin hanno bisogno di un aggiornamento. Controlla se hanno una nuova versione</item>
-        <item quantity="many">%d plugin hanno bisogno di un aggiornamento. Controlla se hanno una nuova versione</item>
     </plurals>
     <string name="n_plugins_installed">%d plugins installati. Riavvia l\'app per poterli utilizzare</string>
     <string name="size_format">dimensione: %s</string>
@@ -458,7 +453,7 @@
     <string name="update">Aggiorna</string>
     <string name="new_word">Nuovo</string>
     <string name="not_compatible">Non compatibile</string>
-    <string name="checking_plugins">Controllo plugins…</string>
+    <string name="checking_plugins">Controllo plugins...</string>
     <string name="manage_plugins">Gestione plugin</string>
     <string name="repository">Repository</string>
     <string name="updated">Aggiornato</string>
@@ -494,6 +489,10 @@
     <string name="remote_device">Dispositivo remoto</string>
     <string name="service_deleted">Servizio eliminato</string>
     <string name="service">Servizio</string>
+    <plurals name="services_format">
+        <item quantity="one">%d servizio</item>
+        <item quantity="other">%d servizi</item>
+    </plurals>
     <string name="dialog_confirm_action">Confermi di voler procedere?</string>
     <string name="browser">Browser</string>
     <string name="pick_service">Seleziona servizio</string>
@@ -520,12 +519,17 @@
     <string name="loading_size">Dimensione caricamento</string>
     <string name="summary_loading_size">Quanti elementi devono essere caricati contemporaneamente dalle sezioni download e torrent. Più grande è più lento.</string>
     <string name="refresh">Aggiorna</string>
-    <string name="api_token">Codice API</string>
-    <string name="pick_search_type">Scegli tipo ricerca</string>
-    <string name="plugin_search_description">Utilizza plugins creati dalla community per Unchained (default).</string>
+    <string name="infringing_file">File illecito bloccato</string>
+    <string name="api_token">API token</string>
+    <string name="pick_search_type">Scegli tipo di ricerca</string>
+    <string name="plugin_search_description">Utilizza plugins creati dalla community per Unchained. Opzione di default se non sai cosa scegliere</string>
     <string name="plugins">Plugins</string>
-    <string name="services_search_description">Utilizza servizi come Jackett, Prowlarr o qualunque server Torznab.</string>
+    <string name="services_search_description">Utilizza servizi come Jackett, Prowlarr o altre app Torznab</string>
     <string name="all">tutti</string>
-    <string name="search_options">Opzioni ricerca</string>
+    <string name="search_options">Opzioni di ricerca</string>
+    <string name="too_many_requests">Troppe richieste</string>
+    <string name="usage_limit_reached">Raggiunto limite di utilizzo</string>
+    <string name="devices">Dispositivi</string>
+    <string name="remote_devices_services_description">I dispositivi remoti sono computer, TV o telefoni su cui sono in esecuzione servizi come Kodi e VLC. Per prima cosa, crea un dispositivo per aggiungere uno o più servizi.</string>
     <string name="no_credentials_found">Nessuna credenziale trovata</string>
 </resources>

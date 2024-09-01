@@ -19,7 +19,7 @@ constructor(private val protoStore: ProtoStore, private val apiHelper: AuthApiHe
         val authResponse =
             safeApiCall(
                 call = { apiHelper.getAuthentication() },
-                errorMessage = "Error Fetching Authentication Info"
+                errorMessage = "Error Fetching Authentication Info",
             )
 
         return authResponse
@@ -30,7 +30,7 @@ constructor(private val protoStore: ProtoStore, private val apiHelper: AuthApiHe
         val secretResponse =
             safeApiCall(
                 call = { apiHelper.getSecrets(deviceCode = code) },
-                errorMessage = "Error Fetching Secrets"
+                errorMessage = "Error Fetching Secrets",
             )
 
         return secretResponse
@@ -44,19 +44,19 @@ constructor(private val protoStore: ProtoStore, private val apiHelper: AuthApiHe
                     apiHelper.getToken(
                         clientId = clientId,
                         clientSecret = clientSecret,
-                        code = code
+                        code = code,
                     )
                 },
-                errorMessage = "Error Fetching Token"
+                errorMessage = "Error Fetching Token",
             )
 
         return tokenResponse
     }
 
-    suspend fun getTokenOrError(
+    private suspend fun getTokenOrError(
         clientId: String,
         clientSecret: String,
-        code: String
+        code: String,
     ): EitherResult<UnchainedNetworkException, Token> {
 
         val tokenResponse =
@@ -65,10 +65,10 @@ constructor(private val protoStore: ProtoStore, private val apiHelper: AuthApiHe
                     apiHelper.getToken(
                         clientId = clientId,
                         clientSecret = clientSecret,
-                        code = code
+                        code = code,
                     )
                 },
-                errorMessage = "Error Fetching Token"
+                errorMessage = "Error Fetching Token",
             )
 
         return tokenResponse
@@ -85,17 +85,12 @@ constructor(private val protoStore: ProtoStore, private val apiHelper: AuthApiHe
     suspend fun refreshToken(clientId: String, clientSecret: String, refreshToken: String): Token? =
         getToken(clientId, clientSecret, refreshToken)
 
-    suspend fun refreshToken(
-        credentials: com.github.livingwithhippos.unchained.data.local.Credentials.CurrentCredential
-    ): Token? =
-        refreshToken(credentials.clientId!!, credentials.clientSecret!!, credentials.refreshToken!!)
-
     suspend fun refreshTokenWithError(
         credentials: com.github.livingwithhippos.unchained.data.local.Credentials.CurrentCredential
     ): EitherResult<UnchainedNetworkException, Token> =
         getTokenOrError(
             credentials.clientId!!,
             credentials.clientSecret!!,
-            credentials.refreshToken!!
+            credentials.refreshToken!!,
         )
 }

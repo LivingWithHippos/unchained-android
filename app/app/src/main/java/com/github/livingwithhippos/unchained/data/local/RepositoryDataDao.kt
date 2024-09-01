@@ -17,7 +17,9 @@ interface RepositoryDataDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE) suspend fun insert(repository: Repository)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE) suspend fun insert(plugin: RepositoryPlugin)
+    // since the repository plugin has only the search enabled column that can be changed and it's a
+    // user setting we can safely skip inserting on conflicts
+    @Insert(onConflict = OnConflictStrategy.IGNORE) suspend fun insert(plugin: RepositoryPlugin)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE) suspend fun insert(repository: RepositoryInfo)
 
@@ -46,10 +48,13 @@ interface RepositoryDataDao {
 
     @Delete suspend fun delete(repository: Repository)
 
-    @Query(
-        "SELECT * FROM repository_info JOIN " + "plugin ON plugin.repository = repository_info.link"
-    )
+    @Query("SELECT * FROM repository_info JOIN plugin ON plugin.repository = repository_info.link")
     suspend fun getPlugins(): Map<RepositoryInfo, List<RepositoryPlugin>>
+
+    @Query(
+        "SELECT * FROM repository_info JOIN plugin ON plugin.repository = repository_info.link WHERE plugin.search_enabled = 1"
+    )
+    suspend fun getEnabledPlugins(): Map<RepositoryInfo, List<RepositoryPlugin>>
 
     @Query(
         "SELECT * FROM repository_info JOIN " +
@@ -90,6 +95,9 @@ interface RepositoryDataDao {
     )
     suspend fun getRepositoryPluginsVersions(repositoryUrl: String): List<PluginVersion>
 
+    @Query("UPDATE plugin SET search_enabled = :enabled WHERE plugin_name = :name")
+    suspend fun enablePlugin(name: String, enabled: Boolean)
+
     /*
     @Query(
         "SELECT * FROM repository_info " +
@@ -105,5 +113,5 @@ interface RepositoryDataDao {
 
 data class LatestPluginVersion(
     @ColumnInfo(name = "plugin_link") val link: String,
-    @ColumnInfo(name = "version") val version: Float
+    @ColumnInfo(name = "version") val version: Float,
 )

@@ -38,7 +38,7 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         val binding = FragmentRepositoryBinding.inflate(inflater, container, false)
 
@@ -107,7 +107,7 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
                                 getString(
                                     R.string.plugins_install_results_format,
                                     failures,
-                                    success
+                                    success,
                                 )
                             )
                         }
@@ -117,7 +117,7 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
                         // do nothing, these are for dialogs
                     }
                 }
-            }
+            },
         )
 
         binding.progressBar.isIndeterminate = true
@@ -142,7 +142,7 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
     private fun updateList(
         adapter: PluginRepositoryAdapter,
         data: Map<RepositoryInfo, Map<RepositoryPlugin, List<PluginVersion>>>,
-        installedData: LocalPlugins
+        installedData: LocalPlugins,
     ) {
         // todo: accept only https links when adding repositories
         val plugins = mutableListOf<RepositoryListItem>()
@@ -173,8 +173,8 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
                                 PluginVersion(
                                     repository = repository.key.link,
                                     plugin = plug.key.name,
-                                    version = 0F,
-                                    engine = 0.0,
+                                    version = 0f,
+                                    engine = 0.0f,
                                     link = repository.key.link,
                                 )
                         } else {
@@ -188,7 +188,7 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
                         val pickedStatus =
                             when {
                                 isCompatible(pickedVersion.engine) -> PluginStatus.isNew
-                                pickedVersion.engine == 0.0 -> PluginStatus.unknown
+                                pickedVersion.engine == 0.0f -> PluginStatus.unknown
                                 else -> PluginStatus.incompatible
                             }
 
@@ -222,8 +222,8 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
                                     PluginVersion(
                                         repository = repository.key.link,
                                         plugin = onlinePlugin.key.name,
-                                        version = 0F,
-                                        engine = 0.0,
+                                        version = 0f,
+                                        engine = 0.0f,
                                         link = repository.key.link,
                                     )
                                 } else {
@@ -234,7 +234,7 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
                                         repository = repository.key.link,
                                         plugin = onlinePlugin.key.name,
                                         version = installedPlugin.version,
-                                        engine = 0.0,
+                                        engine = 0.0f,
                                         link = repository.key.link,
                                     )
                                 }
@@ -242,13 +242,13 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
                             val pickedStatus =
                                 when {
                                     isCompatible(pickedVersion.engine) -> PluginStatus.isNew
-                                    pickedVersion.engine == 0.0 -> PluginStatus.unknown
+                                    pickedVersion.engine == 0.0f -> PluginStatus.unknown
                                     else -> PluginStatus.incompatible
                                 }
                             getPluginItemFromVersion(
                                 pickedVersion,
                                 pickedStatus,
-                                repository.key.author
+                                repository.key.author,
                             )
                         } else {
                             // at least a version from the repo is available, check compatibility
@@ -262,14 +262,14 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
                                     getPluginItemFromVersion(
                                         latestVersion,
                                         PluginStatus.incompatible,
-                                        null
+                                        null,
                                     )
                                 } else {
                                     // latest compatible version
                                     getPluginItemFromVersion(
                                         latestCompatibleVersion,
                                         PluginStatus.isNew,
-                                        repository.key.author
+                                        repository.key.author,
                                     )
                                 }
                             } else {
@@ -281,20 +281,20 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
                                     getPluginItemFromVersion(
                                         latestVersion,
                                         PluginStatus.hasIncompatibleUpdate,
-                                        repository.key.author
+                                        repository.key.author,
                                     )
                                 } else {
                                     if (latestCompatibleVersion.version > installedPlugin.version) {
                                         getPluginItemFromVersion(
                                             latestCompatibleVersion,
                                             PluginStatus.hasUpdate,
-                                            repository.key.author
+                                            repository.key.author,
                                         )
                                     } else {
                                         getPluginItemFromVersion(
                                             latestCompatibleVersion,
                                             PluginStatus.updated,
-                                            repository.key.author
+                                            repository.key.author,
                                         )
                                     }
                                 }
@@ -328,7 +328,7 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
                             link = MANUAL_PLUGINS_REPOSITORY_NAME,
                             author = it.author,
                             status = currentStatus,
-                            statusTranslation = getStatusTranslation(currentStatus)
+                            statusTranslation = getStatusTranslation(currentStatus),
                         )
                     }
                 )
@@ -342,7 +342,7 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
     private fun getPluginItemFromVersion(
         pluginVersion: PluginVersion,
         pluginStatus: String,
-        author: String?
+        author: String?,
     ): RepositoryListItem.Plugin {
         return RepositoryListItem.Plugin(
             repository = pluginVersion.repository,
@@ -351,7 +351,7 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
             link = pluginVersion.link,
             author = author,
             status = pluginStatus,
-            statusTranslation = getStatusTranslation(pluginStatus)
+            statusTranslation = getStatusTranslation(pluginStatus),
         )
     }
 

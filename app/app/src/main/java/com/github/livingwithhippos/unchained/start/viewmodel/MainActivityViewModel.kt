@@ -23,11 +23,13 @@ import androidx.work.WorkManager
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.local.Credentials
 import com.github.livingwithhippos.unchained.data.local.ProtoStore
+import com.github.livingwithhippos.unchained.data.local.RemoteDevice
+import com.github.livingwithhippos.unchained.data.local.RemoteService
+import com.github.livingwithhippos.unchained.data.local.RemoteServiceType
 import com.github.livingwithhippos.unchained.data.model.APIError
 import com.github.livingwithhippos.unchained.data.model.ApiConversionError
 import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.data.model.EmptyBodyError
-import com.github.livingwithhippos.unchained.data.model.KodiDevice
 import com.github.livingwithhippos.unchained.data.model.NetworkError
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkException
@@ -41,6 +43,7 @@ import com.github.livingwithhippos.unchained.data.repository.InstallResult
 import com.github.livingwithhippos.unchained.data.repository.KodiDeviceRepository
 import com.github.livingwithhippos.unchained.data.repository.PluginRepository
 import com.github.livingwithhippos.unchained.data.repository.PluginRepository.Companion.TYPE_UNCHAINED
+import com.github.livingwithhippos.unchained.data.repository.RemoteDeviceRepository
 import com.github.livingwithhippos.unchained.data.repository.TorrentsRepository
 import com.github.livingwithhippos.unchained.data.repository.UpdateRepository
 import com.github.livingwithhippos.unchained.data.repository.UserRepository
@@ -58,7 +61,6 @@ import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.INSTANT_AVAILABILITY_ENDPOINT
 import com.github.livingwithhippos.unchained.utilities.MAGNET_PATTERN
-import com.github.livingwithhippos.unchained.utilities.PLUGINS_PACK_FOLDER
 import com.github.livingwithhippos.unchained.utilities.PRIVATE_TOKEN
 import com.github.livingwithhippos.unchained.utilities.PreferenceKeys
 import com.github.livingwithhippos.unchained.utilities.SIGNATURE
@@ -100,13 +102,13 @@ constructor(
     private val customDownloadRepository: CustomDownloadRepository,
     private val torrentsRepository: TorrentsRepository,
     private val updateRepository: UpdateRepository,
-    @ApplicationContext applicationContext: Context
+    private val remoteDeviceRepository: RemoteDeviceRepository,
+    @ApplicationContext applicationContext: Context,
 ) : ViewModel() {
 
     private val magnetPattern = Regex(MAGNET_PATTERN, RegexOption.IGNORE_CASE)
 
     val fsmAuthenticationState = MutableLiveData<Event<FSMAuthenticationState>?>()
-    private val credentialsFlow = protoStore.credentialsFlow
 
     val externalLinkLiveData = MutableLiveData<Event<Uri>>()
 
@@ -143,13 +145,13 @@ constructor(
                 on<FSMAuthenticationEvent.OnAvailableCredentials> {
                     transitionTo(
                         FSMAuthenticationState.CheckCredentials,
-                        FSMAuthenticationSideEffect.CheckingCredentials
+                        FSMAuthenticationSideEffect.CheckingCredentials,
                     )
                 }
                 on<FSMAuthenticationEvent.OnMissingCredentials> {
                     transitionTo(
                         FSMAuthenticationState.StartNewLogin,
-                        FSMAuthenticationSideEffect.PostNewLogin
+                        FSMAuthenticationSideEffect.PostNewLogin,
                     )
                 }
             }
@@ -158,31 +160,31 @@ constructor(
                 on<FSMAuthenticationEvent.OnWorkingOpenToken> {
                     transitionTo(
                         FSMAuthenticationState.AuthenticatedOpenToken,
-                        FSMAuthenticationSideEffect.PostAuthenticatedOpen
+                        FSMAuthenticationSideEffect.PostAuthenticatedOpen,
                     )
                 }
                 on<FSMAuthenticationEvent.OnExpiredOpenToken> {
                     transitionTo(
                         FSMAuthenticationState.RefreshingOpenToken,
-                        FSMAuthenticationSideEffect.PostRefreshingToken
+                        FSMAuthenticationSideEffect.PostRefreshingToken,
                     )
                 }
                 on<FSMAuthenticationEvent.OnWorkingPrivateToken> {
                     transitionTo(
                         FSMAuthenticationState.AuthenticatedPrivateToken,
-                        FSMAuthenticationSideEffect.PostAuthenticatedPrivate
+                        FSMAuthenticationSideEffect.PostAuthenticatedPrivate,
                     )
                 }
                 on<FSMAuthenticationEvent.OnNotWorking> {
                     transitionTo(
                         FSMAuthenticationState.StartNewLogin,
-                        FSMAuthenticationSideEffect.ResetAuthentication
+                        FSMAuthenticationSideEffect.ResetAuthentication,
                     )
                 }
                 on<FSMAuthenticationEvent.OnUserActionNeeded> {
                     transitionTo(
                         FSMAuthenticationState.WaitingUserAction(null),
-                        FSMAuthenticationSideEffect.PostActionNeeded
+                        FSMAuthenticationSideEffect.PostActionNeeded,
                     )
                 }
             }
@@ -191,13 +193,13 @@ constructor(
                 on<FSMAuthenticationEvent.OnUserActionRetry> {
                     transitionTo(
                         FSMAuthenticationState.CheckCredentials,
-                        FSMAuthenticationSideEffect.CheckingCredentials
+                        FSMAuthenticationSideEffect.CheckingCredentials,
                     )
                 }
                 on<FSMAuthenticationEvent.OnUserActionReset> {
                     transitionTo(
                         FSMAuthenticationState.StartNewLogin,
-                        FSMAuthenticationSideEffect.ResetAuthentication
+                        FSMAuthenticationSideEffect.ResetAuthentication,
                     )
                 }
             }
@@ -206,14 +208,14 @@ constructor(
                 on<FSMAuthenticationEvent.OnAuthLoaded> {
                     transitionTo(
                         FSMAuthenticationState.WaitingUserConfirmation,
-                        FSMAuthenticationSideEffect.PostWaitUserConfirmation
+                        FSMAuthenticationSideEffect.PostWaitUserConfirmation,
                     )
                 }
                 // I can get a private token on this state too
                 on<FSMAuthenticationEvent.OnPrivateToken> {
                     transitionTo(
                         FSMAuthenticationState.CheckCredentials,
-                        FSMAuthenticationSideEffect.CheckingCredentials
+                        FSMAuthenticationSideEffect.CheckingCredentials,
                     )
                 }
             }
@@ -222,26 +224,26 @@ constructor(
                 on<FSMAuthenticationEvent.OnUserConfirmationExpired> {
                     transitionTo(
                         FSMAuthenticationState.StartNewLogin,
-                        FSMAuthenticationSideEffect.PostNewLogin
+                        FSMAuthenticationSideEffect.PostNewLogin,
                     )
                 }
                 on<FSMAuthenticationEvent.OnUserConfirmationLoaded> {
                     transitionTo(
                         FSMAuthenticationState.WaitingToken,
-                        FSMAuthenticationSideEffect.PostWaitToken
+                        FSMAuthenticationSideEffect.PostWaitToken,
                     )
                 }
                 on<FSMAuthenticationEvent.OnUserConfirmationMissing> {
                     transitionTo(
                         FSMAuthenticationState.WaitingUserConfirmation,
-                        FSMAuthenticationSideEffect.PostWaitUserConfirmation
+                        FSMAuthenticationSideEffect.PostWaitUserConfirmation,
                     )
                 }
                 // I can get a private token on this state too
                 on<FSMAuthenticationEvent.OnPrivateToken> {
                     transitionTo(
                         FSMAuthenticationState.CheckCredentials,
-                        FSMAuthenticationSideEffect.CheckingCredentials
+                        FSMAuthenticationSideEffect.CheckingCredentials,
                     )
                 }
             }
@@ -250,14 +252,14 @@ constructor(
                 on<FSMAuthenticationEvent.OnOpenTokenLoaded> {
                     transitionTo(
                         FSMAuthenticationState.CheckCredentials,
-                        FSMAuthenticationSideEffect.CheckingCredentials
+                        FSMAuthenticationSideEffect.CheckingCredentials,
                     )
                 }
                 // I can get a private token on this state too
                 on<FSMAuthenticationEvent.OnPrivateToken> {
                     transitionTo(
                         FSMAuthenticationState.CheckCredentials,
-                        FSMAuthenticationSideEffect.CheckingCredentials
+                        FSMAuthenticationSideEffect.CheckingCredentials,
                     )
                 }
             }
@@ -266,19 +268,19 @@ constructor(
                 on<FSMAuthenticationEvent.OnExpiredOpenToken> {
                     transitionTo(
                         FSMAuthenticationState.RefreshingOpenToken,
-                        FSMAuthenticationSideEffect.PostRefreshingToken
+                        FSMAuthenticationSideEffect.PostRefreshingToken,
                     )
                 }
                 on<FSMAuthenticationEvent.OnAuthenticationError> {
                     transitionTo(
                         FSMAuthenticationState.WaitingUserAction(null),
-                        FSMAuthenticationSideEffect.PostActionNeeded
+                        FSMAuthenticationSideEffect.PostActionNeeded,
                     )
                 }
                 on<FSMAuthenticationEvent.OnLogout> {
                     transitionTo(
                         FSMAuthenticationState.StartNewLogin,
-                        FSMAuthenticationSideEffect.PostNewLogin
+                        FSMAuthenticationSideEffect.PostNewLogin,
                     )
                 }
             }
@@ -287,25 +289,25 @@ constructor(
                 on<FSMAuthenticationEvent.OnRefreshed> {
                     transitionTo(
                         FSMAuthenticationState.AuthenticatedOpenToken,
-                        FSMAuthenticationSideEffect.PostAuthenticatedOpen
+                        FSMAuthenticationSideEffect.PostAuthenticatedOpen,
                     )
                 }
                 on<FSMAuthenticationEvent.OnLogout> {
                     transitionTo(
                         FSMAuthenticationState.StartNewLogin,
-                        FSMAuthenticationSideEffect.PostNewLogin
+                        FSMAuthenticationSideEffect.PostNewLogin,
                     )
                 }
                 on<FSMAuthenticationEvent.OnAuthenticationError> {
                     transitionTo(
                         FSMAuthenticationState.WaitingUserAction(null),
-                        FSMAuthenticationSideEffect.PostActionNeeded
+                        FSMAuthenticationSideEffect.PostActionNeeded,
                     )
                 }
                 on<FSMAuthenticationEvent.OnNotWorking> {
                     transitionTo(
                         FSMAuthenticationState.StartNewLogin,
-                        FSMAuthenticationSideEffect.ResetAuthentication
+                        FSMAuthenticationSideEffect.ResetAuthentication,
                     )
                 }
             }
@@ -314,13 +316,13 @@ constructor(
                 on<FSMAuthenticationEvent.OnLogout> {
                     transitionTo(
                         FSMAuthenticationState.StartNewLogin,
-                        FSMAuthenticationSideEffect.PostNewLogin
+                        FSMAuthenticationSideEffect.PostNewLogin,
                     )
                 }
                 on<FSMAuthenticationEvent.OnAuthenticationError> {
                     transitionTo(
                         FSMAuthenticationState.WaitingUserAction(null),
-                        FSMAuthenticationSideEffect.PostActionNeeded
+                        FSMAuthenticationSideEffect.PostActionNeeded,
                     )
                 }
             }
@@ -474,7 +476,7 @@ constructor(
 
     private fun parseUserResult(
         user: EitherResult<UnchainedNetworkException, User>,
-        isPrivateToken: Boolean
+        isPrivateToken: Boolean,
     ) {
         when (user) {
             is EitherResult.Success -> {
@@ -492,13 +494,6 @@ constructor(
                 // check errors, either ask for a retry or go to login
                 onParseCallFailure(user.failure, isPrivateToken)
             }
-        }
-    }
-
-    fun logout() {
-        viewModelScope.launch {
-            protoStore.deleteCredentials()
-            recheckAuthenticationStatus()
         }
     }
 
@@ -549,7 +544,7 @@ constructor(
                             clientId = credentials.clientId,
                             clientSecret = credentials.clientSecret,
                             accessToken = newToken.success.accessToken,
-                            refreshToken = newToken.success.refreshToken
+                            refreshToken = newToken.success.refreshToken,
                         )
 
                         // program the refresh of the token
@@ -566,7 +561,7 @@ constructor(
                     is EitherResult.Failure -> {
                         onParseCallFailure(
                             newToken.failure,
-                            credentials.deviceCode == PRIVATE_TOKEN
+                            credentials.deviceCode == PRIVATE_TOKEN,
                         )
                     }
                 }
@@ -685,7 +680,7 @@ constructor(
     }
 
     fun setLastBackPress(time: Long) {
-        savedStateHandle.set(KEY_LAST_BACK_PRESS, time)
+        savedStateHandle[KEY_LAST_BACK_PRESS] = time
     }
 
     private fun programTokenRefresh(secondsDelay: Int) {
@@ -798,7 +793,7 @@ constructor(
             override fun onLost(network: Network) {
                 Timber.e(
                     "The application no longer has a default network. The last default network was %s",
-                    network
+                    network,
                 )
                 // currentNetworkLiveData.postValue(null)
                 connectivityLiveData.postValue(false)
@@ -849,7 +844,7 @@ constructor(
         clientId: String? = null,
         clientSecret: String? = null,
         accessToken: String? = null,
-        refreshToken: String? = null
+        refreshToken: String? = null,
     ) {
         viewModelScope.launch {
             protoStore.updateCredentials(
@@ -857,21 +852,13 @@ constructor(
                 clientId,
                 clientSecret,
                 accessToken,
-                refreshToken
+                refreshToken,
             )
         }
     }
 
     fun updateCredentialsDeviceCode(deviceCode: String) {
         viewModelScope.launch { protoStore.updateDeviceCode(deviceCode) }
-    }
-
-    fun updateCredentialsClientId(clientId: String) {
-        viewModelScope.launch { protoStore.updateClientId(clientId) }
-    }
-
-    fun updateCredentialsClientSecret(clientSecret: String) {
-        viewModelScope.launch { protoStore.updateClientSecret(clientSecret) }
     }
 
     fun updateCredentialsAccessToken(accessToken: String) {
@@ -882,18 +869,6 @@ constructor(
         viewModelScope.launch { protoStore.updateRefreshToken(refreshToken) }
     }
 
-    suspend fun getCredentials(): Credentials.CurrentCredential {
-        // todo: find a better way to get the first valid value
-        val credentials =
-            credentialsFlow.firstOrNull {
-                it.clientId.isNotBlank() ||
-                    it.refreshToken.isNotBlank() ||
-                    it.deviceCode.isNotBlank() ||
-                    it.accessToken.isNotBlank() ||
-                    it.clientSecret.isNotBlank()
-            }
-        if (credentials == null) return protoStore.getCredentials() else return credentials
-    }
     /**
      * ***********************
      * AUTH MACHINE FUNCTIONS *
@@ -946,27 +921,55 @@ constructor(
     }
 
     /** Loads the old saved kodi preference into the new db one and then deletes it */
-    fun updateOldKodiPreferences() {
+    fun migrateKodiPreferences() {
+        viewModelScope.launch {
+            // there was another migration from the old preferences but it's been out a lot so we
+            // removed it
 
-        val address: String? = preferences.getString("kodi_ip_address", null)
-        val port: Int? = preferences.getString("kodi_port", null)?.toIntOrNull()
+            val oldKodiDevices = kodiDeviceRepository.getDevices()
 
-        if (!address.isNullOrBlank() && port != null) {
-            val user: String? = preferences.getString("kodi_username", null)
-            val password: String? = preferences.getString("kodi_password", null)
+            var migratedCounter = 0
 
-            viewModelScope.launch {
-                kodiDeviceRepository.add(
-                    KodiDevice("Imported Kodi Device", address, port, user, password, true)
-                )
+            if (oldKodiDevices.isNotEmpty()) {
+                for (kodi in oldKodiDevices) {
+                    // since we delete them and the user won't be able to create new ones
+                    // we don't need to check if they already are in the RemoteDevice table
 
-                with(preferences.edit()) {
-                    remove("kodi_ip_address")
-                    remove("kodi_port")
-                    remove("kodi_username")
-                    remove("kodi_password")
-                    apply()
+                    val newDevice =
+                        RemoteDevice(
+                            // id = 0 should be fine since it's autoincrement
+                            id = 0,
+                            name = kodi.name,
+                            address = kodi.address,
+                            isDefault = false,
+                        )
+
+                    val insertedRow = remoteDeviceRepository.insertDevice(newDevice)
+                    val deviceID = remoteDeviceRepository.getDeviceIDByRow(insertedRow)
+
+                    if (deviceID == null) {
+                        Timber.e("Error inserting remote device $newDevice")
+                        continue
+                    }
+
+                    val newService =
+                        RemoteService(
+                            id = 0,
+                            device = deviceID,
+                            name = "Kodi",
+                            port = kodi.port,
+                            username = kodi.username,
+                            password = kodi.password,
+                            type = RemoteServiceType.KODI.value,
+                        )
+
+                    remoteDeviceRepository.insertService(newService)
+
+                    migratedCounter += 1
                 }
+
+                kodiDeviceRepository.deleteAll()
+                Timber.i("Migrated $migratedCounter kodi devices out of ${oldKodiDevices.size}")
             }
         }
     }
@@ -975,35 +978,8 @@ constructor(
         link: String,
         fileName: String,
         cacheDir: File,
-        suffix: String? = null
+        suffix: String? = null,
     ) = customDownloadRepository.downloadToCache(link, fileName, cacheDir, suffix).asLiveData()
-
-    private suspend fun installPluginsPack(cacheDir: File, pluginsDir: File) {
-        val pluginsFolder = File(cacheDir, PLUGINS_PACK_FOLDER)
-        var installedPlugins = 0
-        if (pluginsFolder.exists() && pluginsFolder.isDirectory) {
-            pluginsFolder.walk().forEach { pluginFile ->
-                if (pluginFile.path.endsWith(".unchained")) {
-                    val plugin = pluginRepository.readPluginFile(pluginFile)
-                    if (plugin != null) {
-                        val installed = pluginRepository.addExternalPlugin(pluginsDir, pluginFile)
-                        if (installed) {
-                            Timber.d("Installed plugin ${pluginFile.name}")
-                            installedPlugins++
-                        } else Timber.d("Error installing plugin ${pluginFile.name}")
-                    } else {
-                        Timber.d("Error parsing plugin ${pluginFile.name}")
-                    }
-                } else {
-                    // this also gets triggered by the plugins own folder which is traversed by walk
-                    Timber.d(
-                        "Skipping unrecognized file into the plugin folder: ${pluginFile.name}"
-                    )
-                }
-            }
-        }
-        messageLiveData.postValue(Event(MainActivityMessage.InstalledPlugins(installedPlugins)))
-    }
 
     fun clearCache(cacheDir: File) {
         cacheDir.listFiles()?.forEach { if (it.name != "image_cache") it.deleteRecursively() }
@@ -1013,7 +989,7 @@ constructor(
         localVersion: Int,
         remoteVersion: Int?,
         lastVersionChecked: Int,
-        signature: String
+        signature: String,
     ) {
         if (remoteVersion != null) {
             if (remoteVersion > localVersion && remoteVersion > lastVersionChecked) {
@@ -1040,7 +1016,7 @@ constructor(
                                 versionCode,
                                 updates.fDroid?.versionCode,
                                 lastVersionChecked,
-                                upperSignature
+                                upperSignature,
                             )
                             break
                         }
@@ -1049,7 +1025,7 @@ constructor(
                                 versionCode,
                                 updates.github?.versionCode,
                                 lastVersionChecked,
-                                upperSignature
+                                upperSignature,
                             )
                             break
                         }
@@ -1058,13 +1034,12 @@ constructor(
                                 versionCode,
                                 updates.playStore?.versionCode,
                                 lastVersionChecked,
-                                upperSignature
+                                upperSignature,
                             )
                             break
                         }
                         else -> {
-                            // report to countly?
-                            Timber.e("Unknown apk signature, may be debugging: $upperSignature")
+                            Timber.w("Unknown apk signature, may be debugging: $upperSignature")
                         }
                     }
                 }
@@ -1112,7 +1087,7 @@ constructor(
     fun getDownloadManagerPreference(): String {
         return preferences.getString(
             PreferenceKeys.DownloadManager.KEY,
-            PreferenceKeys.DownloadManager.SYSTEM
+            PreferenceKeys.DownloadManager.SYSTEM,
         ) ?: PreferenceKeys.DownloadManager.SYSTEM
     }
 
@@ -1235,7 +1210,6 @@ constructor(
     companion object {
         const val KEY_DOWNLOAD_FOLDER = "download_folder_key"
         const val KEY_TORRENT_DOWNLOAD_ID = "torrent_download_id_key"
-        const val KEY_PLUGIN_DOWNLOAD_ID = "plugin_download_id_key"
         const val KEY_LAST_BACK_PRESS = "last_back_press_key"
         const val KEY_LAST_UPDATE_VERSION_CHECKED = "last_update_version_checked_key"
 
@@ -1252,11 +1226,11 @@ sealed class MainActivityMessage {
 
     data class UpdateFound(val signature: String) : MainActivityMessage()
 
-    object RequireDownloadFolder : MainActivityMessage()
+    data object RequireDownloadFolder : MainActivityMessage()
 
-    object RequireDownloadPermissions : MainActivityMessage()
+    data object RequireDownloadPermissions : MainActivityMessage()
 
-    object RequireNotificationPermissions : MainActivityMessage()
+    data object RequireNotificationPermissions : MainActivityMessage()
 
     data class DownloadEnqueued(val source: String, val fileName: String) : MainActivityMessage()
 

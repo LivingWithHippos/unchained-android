@@ -6,81 +6,75 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    tools:ignore="HardcodedText"
-    >
+    tools:ignore="HardcodedText">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="wrap_content"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minWidth="300dp">
+
+        <TextView
+            android:id="@+id/tvTitle"
+            android:textAppearance="?attr/textAppearanceTitleMedium"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:minWidth="300dp"
-            >
+            android:text="@string/repository"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="5dp"
+            android:textAlignment="center"
+            android:background="?attr/colorPrimary"
+            android:textColor="?attr/colorOnPrimary"
+            app:layout_constraintBottom_toTopOf="@id/progressBar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/tvTitle"
-                style="@style/TextAppearance.UnchainedTheme.Headline6"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="@string/repository"
-                android:paddingHorizontal="10dp"
-                android:paddingVertical="5dp"
-                android:textAlignment="center"
-                android:background="?attr/colorPrimary"
-                android:textColor="?attr/colorOnPrimary"
-                app:layout_constraintBottom_toTopOf="@id/progressBar"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+        <com.google.android.material.progressindicator.LinearProgressIndicator
+            android:id="@+id/progressBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:indeterminate="false"
+            android:progress="0"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvTitle"
+            app:layout_constraintBottom_toTopOf="@id/tfAdd" />
 
-            <com.google.android.material.progressindicator.LinearProgressIndicator
-                android:id="@+id/progressBar"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tfAdd"
+            style="?attr/textInputFilledStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginHorizontal="10dp"
+            android:hint="@string/link"
+            android:importantForAutofill="no"
+            app:endIconMode="clear_text"
+            app:layout_constraintTop_toBottomOf="@id/progressBar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/bTestRepoLink">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tiAdd"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:indeterminate="false"
-                android:progress="0"
-                app:indicatorColor="?attr/colorPrimary"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvTitle"
-                app:layout_constraintBottom_toTopOf="@id/tfAdd"
-                />
+                android:imeOptions="actionDone"
+                android:singleLine="true" />
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/tfAdd"
-                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginHorizontal="10dp"
-                android:hint="@string/link"
-                android:importantForAutofill="no"
-                app:endIconMode="clear_text"
-                app:layout_constraintTop_toBottomOf="@id/progressBar"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toTopOf="@id/bTestRepoLink"
-                >
+        </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/tiAdd"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:imeOptions="actionDone"
-                    android:singleLine="true" />
+        <Button
+            android:id="@+id/bTestRepoLink"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:minWidth="150dp"
+            android:text="@string/test"
+            app:icon="@drawable/icon_cloud_done"
+            app:layout_constraintTop_toBottomOf="@id/tfAdd"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <Button
-                android:id="@+id/bTestRepoLink"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:minWidth="150dp"
-                android:text="@string/test"
-                app:icon="@drawable/icon_cloud_done"
-                app:layout_constraintTop_toBottomOf="@id/tfAdd"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </LinearLayout>
