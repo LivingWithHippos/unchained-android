@@ -49,8 +49,9 @@ fun waitForView(viewId: Int, timeout: Long): ViewAction {
                 // has
                 // passed and the queue is in an idle state again.
                 uiController.loopMainThreadForAtLeast(100)
-            } while (System.currentTimeMillis() <
-                endTime) // in case of a timeout we throw an exception -&gt; test fails
+            } while (
+                System.currentTimeMillis() < endTime
+            ) // in case of a timeout we throw an exception -&gt; test fails
             throw PerformException.Builder()
                 .withCause(TimeoutException())
                 .withActionDescription(this.description)

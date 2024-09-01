@@ -14,7 +14,8 @@ constructor(protoStore: ProtoStore, private val variousApiHelper: VariousApiHelp
         val response =
             safeApiCall(
                 call = { variousApiHelper.disableToken(token = "Bearer ${getToken()}") },
-                errorMessage = "Error disabling token")
+                errorMessage = "Error disabling token",
+            )
 
         return response
     }

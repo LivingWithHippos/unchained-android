@@ -24,7 +24,7 @@ class JackettRepository @Inject constructor(@ClassicClient private val client: O
         port: Int = 9117,
         apiKey: String,
         indexersFilter: String = "all",
-        useSecureHttp: Boolean = false
+        useSecureHttp: Boolean = false,
     ): Uri.Builder? {
         var existingUri: Uri =
             try {
@@ -34,8 +34,10 @@ class JackettRepository @Inject constructor(@ClassicClient private val client: O
                 return null
             }
 
-        if (!(existingUri.scheme.equals("http", ignoreCase = true) ||
-            existingUri.scheme.equals("https", ignoreCase = true))) {
+        if (
+            !(existingUri.scheme.equals("http", ignoreCase = true) ||
+                existingUri.scheme.equals("https", ignoreCase = true))
+        ) {
             existingUri = Uri.parse("${if (useSecureHttp) "https" else "http"}://$baseUrl:$port")
         }
         val baseBuilder: Uri.Builder =
@@ -86,7 +88,8 @@ class JackettRepository @Inject constructor(@ClassicClient private val client: O
             val builder =
                 getBasicBuilder(baseUrl, port, apiKey, indexer)
                     ?: return@withContext EitherResult.Failure(
-                        IllegalArgumentException("Impossible to parse url"))
+                        IllegalArgumentException("Impossible to parse url")
+                    )
 
             if (mediaType == null) builder.appendQueryParameter("t", "search")
             else builder.appendQueryParameter("t", mediaType.value)
@@ -126,11 +129,13 @@ class JackettRepository @Inject constructor(@ClassicClient private val client: O
             client.newCall(request).execute().use { response ->
                 if (!response.isSuccessful)
                     return@withContext EitherResult.Failure(
-                        IOException("Unexpected http code $response"))
+                        IOException("Unexpected http code $response")
+                    )
                 val body: String =
                     response.body?.string()
                         ?: return@withContext EitherResult.Failure(
-                            IOException("Unexpected empty body"))
+                            IOException("Unexpected empty body")
+                        )
                 try {
                     val search = xmlMapper.readValue<SearchRSS>(body)
                     return@withContext EitherResult.Success(search)
@@ -146,13 +151,14 @@ class JackettRepository @Inject constructor(@ClassicClient private val client: O
         baseUrl: String,
         port: Int = 9117,
         apiKey: String,
-        indexer: String = "all"
+        indexer: String = "all",
     ): EitherResult<Exception, Capabilities> =
         withContext(Dispatchers.IO) {
             val builder =
                 getBasicBuilder(baseUrl, port, apiKey, indexer)
                     ?: return@withContext EitherResult.Failure(
-                        IllegalArgumentException("Impossible to parse url"))
+                        IllegalArgumentException("Impossible to parse url")
+                    )
             builder.appendQueryParameter("t", "caps")
 
             val request = Request.Builder().url(builder.build().toString()).build()
@@ -160,11 +166,13 @@ class JackettRepository @Inject constructor(@ClassicClient private val client: O
             client.newCall(request).execute().use { response ->
                 if (!response.isSuccessful)
                     return@withContext EitherResult.Failure(
-                        IOException("Unexpected http code $response"))
+                        IOException("Unexpected http code $response")
+                    )
                 val body: String =
                     response.body?.string()
                         ?: return@withContext EitherResult.Failure(
-                            IOException("Unexpected empty body"))
+                            IOException("Unexpected empty body")
+                        )
                 try {
                     val capabilities = xmlMapper.readValue<Capabilities>(body)
                     return@withContext EitherResult.Success(capabilities)
@@ -173,7 +181,8 @@ class JackettRepository @Inject constructor(@ClassicClient private val client: O
                 }
 
                 return@withContext EitherResult.Failure(
-                    IOException("Unexpected capabilities failure"))
+                    IOException("Unexpected capabilities failure")
+                )
             }
         }
 
@@ -187,9 +196,14 @@ class JackettRepository @Inject constructor(@ClassicClient private val client: O
             try {
                 val builder =
                     getBasicBuilder(
-                        baseUrl, port, apiKey, indexersFilter = "!status:failing,test:passed")
+                        baseUrl,
+                        port,
+                        apiKey,
+                        indexersFilter = "!status:failing,test:passed",
+                    )
                         ?: return@withContext EitherResult.Failure(
-                            IllegalArgumentException("Impossible to parse url"))
+                            IllegalArgumentException("Impossible to parse url")
+                        )
                 builder.appendQueryParameter("t", "indexers")
 
                 if (configured) builder.appendQueryParameter("configured", "true")
@@ -200,11 +214,13 @@ class JackettRepository @Inject constructor(@ClassicClient private val client: O
                 client.newCall(request).execute().use { response ->
                     if (!response.isSuccessful)
                         return@withContext EitherResult.Failure(
-                            IOException("Unexpected http code $response"))
+                            IOException("Unexpected http code $response")
+                        )
                     val body: String =
                         response.body?.string()
                             ?: return@withContext EitherResult.Failure(
-                                IOException("Unexpected empty body"))
+                                IOException("Unexpected empty body")
+                            )
                     try {
                         val indexers = xmlMapper.readValue<Indexers>(body)
                         return@withContext EitherResult.Success(indexers)
@@ -213,7 +229,8 @@ class JackettRepository @Inject constructor(@ClassicClient private val client: O
                     }
 
                     return@withContext EitherResult.Failure(
-                        IOException("Unexpected indexers failure"))
+                        IOException("Unexpected indexers failure")
+                    )
                 }
             } catch (ex: Exception) {
                 Timber.e(ex, "Error getting indexers")
@@ -227,7 +244,7 @@ enum class JackettMediaType(val value: String) {
     MOVIE("movie"),
     TV("tvsearch"),
     MUSIC("music"),
-    BOOK("book")
+    BOOK("book"),
 }
 
 enum class JackettGenre(val value: String) {

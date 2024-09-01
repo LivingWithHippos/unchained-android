@@ -17,7 +17,8 @@ constructor(protoStore: ProtoStore, private val userApiHelper: UserApiHelper) :
         val userResponse =
             safeApiCall(
                 call = { userApiHelper.getUser("Bearer $token") },
-                errorMessage = "Error Fetching User Info")
+                errorMessage = "Error Fetching User Info",
+            )
 
         return userResponse
     }
@@ -27,7 +28,8 @@ constructor(protoStore: ProtoStore, private val userApiHelper: UserApiHelper) :
         val userResponse =
             eitherApiResult(
                 call = { userApiHelper.getUser("Bearer $token") },
-                errorMessage = "Error Fetching User Info")
+                errorMessage = "Error Fetching User Info",
+            )
 
         return userResponse
     }

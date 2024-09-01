@@ -27,15 +27,18 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
                 topColor =
                     getColor(
                         R.styleable.ThemeColorsCircle_topColor,
-                        ContextCompat.getColor(context, R.color.green_one_theme_primary))
+                        ContextCompat.getColor(context, R.color.green_one_theme_primary),
+                    )
                 bottomLeftColor =
                     getColor(
                         R.styleable.ThemeColorsCircle_bottomLeftColor,
-                        ContextCompat.getColor(context, R.color.green_one_theme_surface))
+                        ContextCompat.getColor(context, R.color.green_one_theme_surface),
+                    )
                 bottomRightColor =
                     getColor(
                         R.styleable.ThemeColorsCircle_bottomRightColor,
-                        ContextCompat.getColor(context, R.color.green_one_theme_primaryContainer))
+                        ContextCompat.getColor(context, R.color.green_one_theme_primaryContainer),
+                    )
             } finally {
                 recycle()
             }
@@ -62,7 +65,8 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
             180f,
             180f,
             true,
-            paint)
+            paint,
+        )
 
         // Draw bottom left quarter circle
         paint.color = bottomLeftColor
@@ -74,7 +78,8 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
             0f,
             90f,
             true,
-            paint)
+            paint,
+        )
 
         // Draw bottom right quarter circle
         paint.color = bottomRightColor
@@ -86,6 +91,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
             90f,
             90f,
             true,
-            paint)
+            paint,
+        )
     }
 }

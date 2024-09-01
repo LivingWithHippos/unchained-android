@@ -25,7 +25,7 @@ class PluginRepository @Inject constructor() {
 
     suspend fun getPlugins(
         context: Context,
-        manuallyInstalledOnly: Boolean = false
+        manuallyInstalledOnly: Boolean = false,
     ): Pair<List<Plugin>, Int> =
         withContext(Dispatchers.IO) {
             val pluginFiles = mutableListOf<File>()
@@ -92,8 +92,10 @@ class PluginRepository @Inject constructor() {
                             }
                             repoFolder = currentFile.name
                             Timber.d("Found folder $repoFolder")
-                        } else if (currentFile.isFile &&
-                            currentFile.name.endsWith(TYPE_UNCHAINED, ignoreCase = true)) {
+                        } else if (
+                            currentFile.isFile &&
+                                currentFile.name.endsWith(TYPE_UNCHAINED, ignoreCase = true)
+                        ) {
                             Timber.d("Found plugin ${currentFile.name}")
                             files.add(currentFile)
                         } else {
@@ -138,7 +140,7 @@ class PluginRepository @Inject constructor() {
         context: Context,
         repository: String,
         author: String?,
-        name: String
+        name: String,
     ): Boolean =
         withContext(Dispatchers.IO) {
             val pluginFolder = context.getDir("plugins", Context.MODE_PRIVATE)
@@ -202,7 +204,8 @@ class PluginRepository @Inject constructor() {
             }
             val deleted = pluginFolder.deleteRecursively()
             Timber.d(
-                "Found $pluginCounter plugins, deleted $deleteCounter plugins. Main directory deleted: $deleted")
+                "Found $pluginCounter plugins, deleted $deleteCounter plugins. Main directory deleted: $deleted"
+            )
             deleteCounter
         } catch (e: SecurityException) {
             Timber.d("Security exception deleting plugins files: ${e.message}")
@@ -278,7 +281,7 @@ class PluginRepository @Inject constructor() {
     suspend fun savePlugin(
         context: Context,
         plugin: Plugin,
-        repositoryURL: String?
+        repositoryURL: String?,
     ): InstallResult =
         withContext(Dispatchers.IO) {
             // we use the repo link hash as folder name for all the plugins from that repo

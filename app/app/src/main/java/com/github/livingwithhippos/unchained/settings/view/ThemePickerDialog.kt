@@ -83,7 +83,7 @@ data class ThemeItem(
     @StyleRes val themeID: Int,
     @ColorInt val primaryColorID: Int,
     @ColorInt val surfaceColorID: Int,
-    @ColorInt val primaryContainerColorID: Int
+    @ColorInt val primaryContainerColorID: Int,
 )
 
 class ThemePickerAdapter(listener: ThemePickListener) :

@@ -27,7 +27,7 @@ constructor(
     private val savedStateHandle: SavedStateHandle,
     private val preferences: SharedPreferences,
     private val unrestrictRepository: UnrestrictRepository,
-    private val downloadRepository: DownloadRepository
+    private val downloadRepository: DownloadRepository,
 ) : ViewModel() {
 
     val folderLiveData = MutableLiveData<Event<List<DownloadItem>>>()

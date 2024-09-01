@@ -15,7 +15,7 @@ import timber.log.Timber
 data class CachedTorrent(
     val btih: String,
     // i may have a list of providers, for now I always see only "rd"
-    val cachedAlternatives: List<CachedAlternative>
+    val cachedAlternatives: List<CachedAlternative>,
 ) : Parcelable
 
 @Parcelize data class CachedAlternative(val cachedFiles: List<CachedFile>) : Parcelable

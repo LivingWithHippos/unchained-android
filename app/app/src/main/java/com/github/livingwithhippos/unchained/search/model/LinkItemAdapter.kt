@@ -28,5 +28,5 @@ data class LinkItem(
     val type: String,
     val name: String,
     val link: String,
-    var cached: Boolean = false
+    var cached: Boolean = false,
 )

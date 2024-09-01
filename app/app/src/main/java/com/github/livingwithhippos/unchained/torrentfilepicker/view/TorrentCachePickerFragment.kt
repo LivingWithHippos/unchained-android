@@ -41,7 +41,7 @@ class TorrentCachePickerFragment : UnchainedFragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         val binding = FragmentTorrentCachePickerBinding.inflate(inflater, container, false)
 
@@ -56,7 +56,8 @@ class TorrentCachePickerFragment : UnchainedFragment() {
                 override fun onTabUnselected(tab: TabLayout.Tab?) {}
 
                 override fun onTabReselected(tab: TabLayout.Tab?) {}
-            })
+            }
+        )
 
         return binding.root
     }

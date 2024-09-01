@@ -31,7 +31,7 @@ class RemoteServiceFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         val binding = FragmentRemoteServiceBinding.inflate(inflater, container, false)
 
@@ -50,7 +50,8 @@ class RemoteServiceFragment : Fragment() {
             ArrayAdapter(
                 requireContext(),
                 R.layout.basic_dropdown_list_item,
-                resources.getStringArray(R.array.service_types))
+                resources.getStringArray(R.array.service_types),
+            )
         serviceTypeView.setAdapter(serviceTypeAdapter)
 
         if (item == null) {
@@ -148,7 +149,9 @@ class RemoteServiceFragment : Fragment() {
                     if (args.item == null) {
                         val action =
                             RemoteServiceFragmentDirections.actionRemoteServiceFragmentSelf(
-                                item = it.service, deviceID = args.deviceID)
+                                item = it.service,
+                                deviceID = args.deviceID,
+                            )
                         findNavController().navigate(action)
                     } else {
                         context?.showToast(R.string.updated)
@@ -186,7 +189,7 @@ class RemoteServiceFragment : Fragment() {
     private fun setupServiceType(
         binding: FragmentRemoteServiceBinding,
         type: Int,
-        serviceDropdown: AutoCompleteTextView? = null
+        serviceDropdown: AutoCompleteTextView? = null,
     ) {
         if (args.item == null) {
             binding.bDeleteService.isEnabled = false

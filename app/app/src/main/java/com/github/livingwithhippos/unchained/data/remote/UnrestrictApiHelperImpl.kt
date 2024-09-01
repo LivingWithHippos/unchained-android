@@ -11,17 +11,17 @@ class UnrestrictApiHelperImpl @Inject constructor(private val unrestrictApi: Unr
         token: String,
         link: String,
         password: String?,
-        remote: Int?
+        remote: Int?,
     ): Response<DownloadItem> = unrestrictApi.getUnrestrictedLink(token, link, password, remote)
 
     override suspend fun getUnrestrictedFolder(
         token: String,
-        link: String
+        link: String,
     ): Response<List<String>> = unrestrictApi.getUnrestrictedFolder(token, link)
 
     override suspend fun uploadContainer(
         token: String,
-        container: RequestBody
+        container: RequestBody,
     ): Response<List<String>> = unrestrictApi.uploadContainer(token, container)
 
     override suspend fun getContainerLinks(token: String, link: String): Response<List<String>> =

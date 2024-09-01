@@ -42,7 +42,8 @@ class AddRepositoryDialogFragment : DialogFragment() {
             view.findViewById<Button>(R.id.bTestRepoLink).setOnClickListener {
                 progressBar.isIndeterminate = true
                 viewModel.checkRepositoryLink(
-                    view.findViewById<TextInputEditText>(R.id.tiAdd).text.toString())
+                    view.findViewById<TextInputEditText>(R.id.tiAdd).text.toString()
+                )
             }
 
             builder
@@ -53,7 +54,8 @@ class AddRepositoryDialogFragment : DialogFragment() {
                         view.findViewById<TextInputEditText>(R.id.tiAdd).text.toString().trim()
                     if (url.isWebUrl()) {
                         viewModel.addRepository(
-                            view.findViewById<TextInputEditText>(R.id.tiAdd).text.toString())
+                            view.findViewById<TextInputEditText>(R.id.tiAdd).text.toString()
+                        )
                     } else context?.showToast(R.string.invalid_url)
                     dialog.cancel()
                 }
@@ -65,7 +67,7 @@ class AddRepositoryDialogFragment : DialogFragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
 
         viewModel.pluginsRepositoryLiveData.observe(this) {

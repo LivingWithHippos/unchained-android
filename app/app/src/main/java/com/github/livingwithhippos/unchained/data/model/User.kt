@@ -13,5 +13,5 @@ data class User(
     @Json(name = "avatar") val avatar: String,
     @Json(name = "type") val type: String,
     @Json(name = "premium") val premium: Int,
-    @Json(name = "expiration") val expiration: String
+    @Json(name = "expiration") val expiration: String,
 )

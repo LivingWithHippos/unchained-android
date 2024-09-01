@@ -9,7 +9,7 @@ import timber.log.Timber
 data class APIError(
     @Json(name = "error") val error: String,
     @Json(name = "error_details") val errorDetails: String?,
-    @Json(name = "error_code") val errorCode: Int?
+    @Json(name = "error_code") val errorCode: Int?,
 ) : UnchainedNetworkException
 
 // todo: this has been resolved by adding an interceptor, change class name at least

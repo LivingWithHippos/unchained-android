@@ -70,7 +70,8 @@ val errorMap =
         30 to "Torrent file invalid",
         31 to "Action already done",
         32 to "Image resolution error",
-        33 to "Torrent already active")
+        33 to "Torrent already active",
+    )
 
 // Torrent status list
 // possible status are magnet_error, magnet_conversion, waiting_files_selection,
@@ -87,14 +88,11 @@ val loadingStatusList =
         "waiting_files_selection",
         "queued",
         "compressing",
-        "uploading")
+        "uploading",
+    )
 
 /** Statuses where the torrent hasn't had its file selected yet */
-val beforeSelectionStatusList =
-    listOf(
-        "magnet_conversion",
-        "waiting_files_selection",
-    )
+val beforeSelectionStatusList = listOf("magnet_conversion", "waiting_files_selection")
 
 const val DOWNLOADS_TAB = 0
 const val TORRENTS_TAB = 1

@@ -15,7 +15,7 @@ class HostsRepository
 constructor(
     protoStore: ProtoStore,
     private val hostsApiHelper: HostsApiHelper,
-    private val hostRegexDao: HostRegexDao
+    private val hostRegexDao: HostRegexDao,
 ) : BaseRepository(protoStore) {
 
     /**
@@ -29,7 +29,8 @@ constructor(
         val hostResponse =
             safeApiCall(
                 call = { hostsApiHelper.getHostsRegex() },
-                errorMessage = "Error Fetching Hosts Regex")
+                errorMessage = "Error Fetching Hosts Regex",
+            )
         val list = mutableListOf<HostRegex>()
         // add the regexps from the network
         hostResponse?.forEach {
@@ -49,7 +50,8 @@ constructor(
         val hostResponse =
             safeApiCall(
                 call = { hostsApiHelper.getHostsFoldersRegex() },
-                errorMessage = "Error Fetching Hosts Folders Regex")
+                errorMessage = "Error Fetching Hosts Folders Regex",
+            )
         val list = mutableListOf<HostRegex>()
         // add the regexps from the network
         hostResponse?.forEach {
@@ -164,7 +166,8 @@ constructor(
                 "^(https?://)?(www?\\d?\\.)?katfile\\.com/\\w+/[^\\s]+\$",
                 "^(https?://)?(www?\\d?\\.)?clicknupload\\.cc/\\w+/[^\\s]+\$",
                 "^(https?://)?(www?\\d?\\.)?fastclick\\.to/\\w+/[^\\s]+\$",
-                "^(https?://)?(www?\\d?\\.)?drop\\.download/\\w+/[^\\s]+\$")
+                "^(https?://)?(www?\\d?\\.)?drop\\.download/\\w+/[^\\s]+\$",
+            )
 
         // if any of the converted folder regexps are wrong, we can add these to the db manually
         val CUSTOM_FOLDER_REGEXPS = emptyArray<String>()

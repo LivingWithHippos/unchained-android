@@ -5,9 +5,9 @@ package com.github.livingwithhippos.unchained.utilities
  * [article](https://medium.com/swlh/tree-traversals-in-kotlin-7ff1940af7fa)
  *
  * @param T
- * @constructor Create empty Node
  * @property value
  * @property children
+ * @constructor Create empty Node
  */
 class Node<T>(var value: T, var children: MutableList<Node<T>> = mutableListOf()) {
 

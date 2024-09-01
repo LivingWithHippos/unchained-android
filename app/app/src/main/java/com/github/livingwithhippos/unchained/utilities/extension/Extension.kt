@@ -56,7 +56,8 @@ fun Context.getThemeList(): List<ThemeItem> {
             R.style.Theme_Unchained_Material3_Waves_One,
             ResourcesCompat.getColor(resources, R.color.radical_red, null),
             ResourcesCompat.getColor(resources, R.color.waves_one_theme_surface, null),
-            ResourcesCompat.getColor(resources, R.color.waves_one_theme_primaryContainer, null)),
+            ResourcesCompat.getColor(resources, R.color.waves_one_theme_primaryContainer, null),
+        ),
         ThemeItem(
             "Black and White",
             "bnw_01",
@@ -64,7 +65,8 @@ fun Context.getThemeList(): List<ThemeItem> {
             R.style.Theme_Unchained_Material3_BnW_One,
             ResourcesCompat.getColor(resources, R.color.bnw_one_theme_primary, null),
             ResourcesCompat.getColor(resources, R.color.bnw_one_theme_surface, null),
-            ResourcesCompat.getColor(resources, R.color.bnw_one_theme_primaryContainer, null)),
+            ResourcesCompat.getColor(resources, R.color.bnw_one_theme_primaryContainer, null),
+        ),
         ThemeItem(
             "Red",
             "red_01",
@@ -72,7 +74,8 @@ fun Context.getThemeList(): List<ThemeItem> {
             R.style.Theme_Unchained_Material3_Red_One,
             ResourcesCompat.getColor(resources, R.color.red_one_theme_primary, null),
             ResourcesCompat.getColor(resources, R.color.red_one_theme_surface, null),
-            ResourcesCompat.getColor(resources, R.color.red_one_theme_primaryContainer, null)),
+            ResourcesCompat.getColor(resources, R.color.red_one_theme_primaryContainer, null),
+        ),
         ThemeItem(
             "Orange",
             "orange_01",
@@ -80,7 +83,8 @@ fun Context.getThemeList(): List<ThemeItem> {
             R.style.Theme_Unchained_Material3_Orange_One,
             ResourcesCompat.getColor(resources, R.color.orange_one_theme_primary, null),
             ResourcesCompat.getColor(resources, R.color.orange_one_theme_surface, null),
-            ResourcesCompat.getColor(resources, R.color.orange_one_theme_primaryContainer, null)),
+            ResourcesCompat.getColor(resources, R.color.orange_one_theme_primaryContainer, null),
+        ),
         ThemeItem(
             "Yellow",
             "yellow_01",
@@ -88,7 +92,8 @@ fun Context.getThemeList(): List<ThemeItem> {
             R.style.Theme_Unchained_Material3_Yellow_One,
             ResourcesCompat.getColor(resources, R.color.yellow_one_theme_primary, null),
             ResourcesCompat.getColor(resources, R.color.yellow_one_theme_surface, null),
-            ResourcesCompat.getColor(resources, R.color.yellow_one_theme_primaryContainer, null)),
+            ResourcesCompat.getColor(resources, R.color.yellow_one_theme_primaryContainer, null),
+        ),
         ThemeItem(
             "Purple",
             "purple_01",
@@ -96,7 +101,8 @@ fun Context.getThemeList(): List<ThemeItem> {
             R.style.Theme_Unchained_Material3_Purple_One,
             ResourcesCompat.getColor(resources, R.color.purple_one_theme_primary, null),
             ResourcesCompat.getColor(resources, R.color.purple_one_theme_surface, null),
-            ResourcesCompat.getColor(resources, R.color.purple_one_theme_primaryContainer, null)),
+            ResourcesCompat.getColor(resources, R.color.purple_one_theme_primaryContainer, null),
+        ),
         ThemeItem(
             "Green",
             "green_01",
@@ -104,7 +110,8 @@ fun Context.getThemeList(): List<ThemeItem> {
             R.style.Theme_Unchained_Material3_Green_One,
             ResourcesCompat.getColor(resources, R.color.green_one_theme_primary, null),
             ResourcesCompat.getColor(resources, R.color.green_one_theme_surface, null),
-            ResourcesCompat.getColor(resources, R.color.green_one_theme_primaryContainer, null)),
+            ResourcesCompat.getColor(resources, R.color.green_one_theme_primaryContainer, null),
+        ),
         ThemeItem(
             "Blue",
             "blue_01",
@@ -112,7 +119,8 @@ fun Context.getThemeList(): List<ThemeItem> {
             R.style.Theme_Unchained_Material3_Blue_One,
             ResourcesCompat.getColor(resources, R.color.blue_one_theme_primary, null),
             ResourcesCompat.getColor(resources, R.color.blue_one_theme_surface, null),
-            ResourcesCompat.getColor(resources, R.color.blue_one_theme_primaryContainer, null)),
+            ResourcesCompat.getColor(resources, R.color.blue_one_theme_primaryContainer, null),
+        ),
         ThemeItem(
             "Grey",
             "grey_01",
@@ -120,7 +128,8 @@ fun Context.getThemeList(): List<ThemeItem> {
             R.style.Theme_Unchained_Material3_Grey_One,
             ResourcesCompat.getColor(resources, R.color.grey_one_theme_primary, null),
             ResourcesCompat.getColor(resources, R.color.grey_one_theme_surface, null),
-            ResourcesCompat.getColor(resources, R.color.grey_one_theme_primaryContainer, null)),
+            ResourcesCompat.getColor(resources, R.color.grey_one_theme_primaryContainer, null),
+        ),
     )
 }
 
@@ -192,14 +201,17 @@ fun Fragment.copyToClipboard(label: String, text: String) {
 fun Fragment.getClipboardText(): String {
     val clipboard = requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
     var text = ""
-    if (clipboard.hasPrimaryClip() &&
-        (clipboard.primaryClipDescription?.hasMimeType(MIMETYPE_TEXT_PLAIN) == true ||
-            clipboard.primaryClipDescription?.hasMimeType(MIMETYPE_TEXT_HTML) == true)) {
+    if (
+        clipboard.hasPrimaryClip() &&
+            (clipboard.primaryClipDescription?.hasMimeType(MIMETYPE_TEXT_PLAIN) == true ||
+                clipboard.primaryClipDescription?.hasMimeType(MIMETYPE_TEXT_HTML) == true)
+    ) {
         val item = clipboard.primaryClip!!.getItemAt(0)
         text = item.text.toString()
     } else {
         Timber.d(
-            "Clipboard was empty or did not contain any text mime type: ${clipboard.primaryClipDescription}")
+            "Clipboard was empty or did not contain any text mime type: ${clipboard.primaryClipDescription}"
+        )
     }
     return text
 }
@@ -220,7 +232,7 @@ fun DownloadManager.downloadFileInStandardFolder(
     source: Uri,
     title: String,
     description: String,
-    fileName: String = title
+    fileName: String = title,
 ): EitherResult<Exception, Long> {
     val request: DownloadManager.Request =
         DownloadManager.Request(source)
@@ -243,7 +255,7 @@ fun DownloadManager.downloadFileInCustomFolder(
     title: String,
     description: String,
     fileName: String = title,
-    folder: Uri
+    folder: Uri,
 ): EitherResult<Exception, Long> {
     // https://issuetracker.google.com/issues/134858946
     val destination = Uri.withAppendedPath(folder, fileName)
@@ -260,7 +272,8 @@ fun DownloadManager.downloadFileInCustomFolder(
         EitherResult.Success(downloadID)
     } catch (e: Exception) {
         Timber.e(
-            "Error starting download in custom folder $destination of ${source.path}, exception ${e.message}")
+            "Error starting download in custom folder $destination of ${source.path}, exception ${e.message}"
+        )
         e.printStackTrace()
         EitherResult.Failure(e)
     }
@@ -280,7 +293,8 @@ fun Context.getDownloadedFileUri(id: Long): Uri? {
         val columnIndex: Int = cursor.getColumnIndex(DownloadManager.COLUMN_STATUS)
         if (cursor.getInt(columnIndex) == DownloadManager.STATUS_SUCCESSFUL)
             return Uri.parse(
-                cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI)))
+                cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI))
+            )
     }
     cursor.close()
     return null
@@ -376,7 +390,7 @@ fun <T, K> zipLiveData(t: LiveData<T>, k: LiveData<K>): LiveData<Pair<T, K>> {
 fun <T> LiveData<T>.observeOnce(
     lifecycleOwner: LifecycleOwner,
     observer: Observer<T>,
-    untilNotNull: Boolean = false
+    untilNotNull: Boolean = false,
 ) {
     observe(
         lifecycleOwner,
@@ -387,7 +401,8 @@ fun <T> LiveData<T>.observeOnce(
                     if (value != null) removeObserver(this)
                 } else removeObserver(this)
             }
-        })
+        },
+    )
 }
 
 fun AppCompatActivity.setNavigationBarColor(color: Int, alpha: Int = 0) {
@@ -403,7 +418,8 @@ fun AppCompatActivity.setNavigationBarColor(color: Int, alpha: Int = 0) {
                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> {
                     window.insetsController?.setSystemBarsAppearance(
                         WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS,
-                        WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS)
+                        WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS,
+                    )
                 }
                 Build.VERSION.SDK_INT in Build.VERSION_CODES.O..Build.VERSION_CODES.Q -> {
                     // the check above is not recognized

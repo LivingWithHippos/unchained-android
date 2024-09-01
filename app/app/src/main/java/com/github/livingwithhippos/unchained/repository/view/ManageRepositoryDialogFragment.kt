@@ -86,7 +86,7 @@ class ManageRepositoryDialogFragment : DialogFragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
 
         viewModel.pluginsRepositoryLiveData.observe(this) {

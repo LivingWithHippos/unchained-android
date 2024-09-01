@@ -66,7 +66,7 @@ class TorrentProcessingFragment : UnchainedFragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         val binding = FragmentTorrentProcessingBinding.inflate(inflater, container, false)
 
@@ -82,8 +82,10 @@ class TorrentProcessingFragment : UnchainedFragment() {
                     // fragment
                 }
                 is TorrentEvent.TorrentInfo -> {
-                    if (content.item.files?.size == 1 &&
-                        "waiting_files_selection".equals(content.item.status, ignoreCase = true)) {
+                    if (
+                        content.item.files?.size == 1 &&
+                            "waiting_files_selection".equals(content.item.status, ignoreCase = true)
+                    ) {
                         // todo: make this configurable in settings
                         context?.showToast(R.string.single_torrent_file_available)
                         viewModel.triggerTorrentEvent(TorrentEvent.DownloadAll)
@@ -91,8 +93,9 @@ class TorrentProcessingFragment : UnchainedFragment() {
                     } else {
                         torrentHash = content.item.hash
                         // torrent loaded
-                        if (activityViewModel.getCurrentTorrentCachePick()?.first !=
-                            content.item.id) {
+                        if (
+                            activityViewModel.getCurrentTorrentCachePick()?.first != content.item.id
+                        ) {
                             // clear up old cache
                             activityViewModel.clearCurrentTorrentCachePick()
                         }
@@ -101,7 +104,8 @@ class TorrentProcessingFragment : UnchainedFragment() {
                             val action =
                                 TorrentProcessingFragmentDirections
                                     .actionTorrentProcessingFragmentToTorrentDetailsDest(
-                                        item = content.item)
+                                        item = content.item
+                                    )
                             findNavController().navigate(action)
                         } else {
                             binding.tvStatus.text = getString(R.string.checking_cache)
@@ -156,7 +160,8 @@ class TorrentProcessingFragment : UnchainedFragment() {
                     val action =
                         TorrentProcessingFragmentDirections
                             .actionTorrentProcessingFragmentToTorrentDetailsDest(
-                                item = content.torrent)
+                                item = content.torrent
+                            )
                     findNavController().navigate(action)
                 }
                 TorrentEvent.DownloadAll -> {
@@ -208,10 +213,13 @@ class TorrentProcessingFragment : UnchainedFragment() {
                 is APIError -> {
                     Timber.e("API error: ${response.errorCode}")
                     if (response.errorCode == 8) {
-                        if (activityViewModel.getAuthenticationMachineState()
-                            is FSMAuthenticationState.AuthenticatedOpenToken)
+                        if (
+                            activityViewModel.getAuthenticationMachineState()
+                                is FSMAuthenticationState.AuthenticatedOpenToken
+                        )
                             activityViewModel.transitionAuthenticationMachine(
-                                FSMAuthenticationEvent.OnExpiredOpenToken)
+                                FSMAuthenticationEvent.OnExpiredOpenToken
+                            )
                         context?.showToast(R.string.refreshing_token)
                     } else {
                         context?.let { c -> c.showToast(c.getApiErrorMessage(response.errorCode)) }
@@ -291,7 +299,8 @@ class TorrentProcessingFragment : UnchainedFragment() {
             }
         } else {
             throw IllegalArgumentException(
-                "No torrent link or torrent id was passed to TorrentProcessingFragment")
+                "No torrent link or torrent id was passed to TorrentProcessingFragment"
+            )
         }
 
         val adapter = TorrentFilePagerAdapter(this, viewModel)
@@ -323,7 +332,10 @@ class TorrentProcessingFragment : UnchainedFragment() {
                         if (pickedCache != null) {
                             viewModel.triggerTorrentEvent(
                                 TorrentEvent.DownloadCache(
-                                    pick.second + 1, pickedCache.cachedFiles.count()))
+                                    pick.second + 1,
+                                    pickedCache.cachedFiles.count(),
+                                )
+                            )
                             val selectedFiles =
                                 pickedCache.cachedFiles.joinToString(separator = ",") {
                                     it.id.toString()
@@ -398,24 +410,26 @@ class TorrentProcessingFragment : UnchainedFragment() {
         val cacheDir = context?.cacheDir
         if (!torrentName.isNullOrBlank() && cacheDir != null) {
             activityViewModel.downloadFileToCache(link, torrentName, cacheDir).observe(
-                viewLifecycleOwner) {
-                    when (it) {
-                        is DownloadResult.End -> {
-                            viewModel.triggerTorrentEvent(TorrentEvent.DownloadedFileSuccess)
-                            loadCachedTorrent(cacheDir, it.fileName)
-                        }
-                        DownloadResult.Failure -> {
-                            viewModel.triggerTorrentEvent(TorrentEvent.DownloadedFileFailure)
-                        }
-                        is DownloadResult.Progress -> {
-                            viewModel.triggerTorrentEvent(
-                                TorrentEvent.DownloadedFileProgress(it.percent))
-                        }
-                        DownloadResult.WrongURL -> {
-                            viewModel.triggerTorrentEvent(TorrentEvent.DownloadedFileFailure)
-                        }
+                viewLifecycleOwner
+            ) {
+                when (it) {
+                    is DownloadResult.End -> {
+                        viewModel.triggerTorrentEvent(TorrentEvent.DownloadedFileSuccess)
+                        loadCachedTorrent(cacheDir, it.fileName)
+                    }
+                    DownloadResult.Failure -> {
+                        viewModel.triggerTorrentEvent(TorrentEvent.DownloadedFileFailure)
+                    }
+                    is DownloadResult.Progress -> {
+                        viewModel.triggerTorrentEvent(
+                            TorrentEvent.DownloadedFileProgress(it.percent)
+                        )
+                    }
+                    DownloadResult.WrongURL -> {
+                        viewModel.triggerTorrentEvent(TorrentEvent.DownloadedFileFailure)
                     }
                 }
+            }
         }
     }
 
@@ -434,11 +448,13 @@ class TorrentProcessingFragment : UnchainedFragment() {
                 }
                 is IOException -> {
                     Timber.e(
-                        "Torrent conversion: IOException error getting the file: ${exception.message}")
+                        "Torrent conversion: IOException error getting the file: ${exception.message}"
+                    )
                 }
                 else -> {
                     Timber.e(
-                        "Torrent conversion: Other error getting the file: ${exception.message}")
+                        "Torrent conversion: Other error getting the file: ${exception.message}"
+                    )
                 }
             }
         }
@@ -452,7 +468,7 @@ class TorrentProcessingFragment : UnchainedFragment() {
 
 class TorrentFilePagerAdapter(
     fragment: Fragment,
-    private val viewModel: TorrentProcessingViewModel
+    private val viewModel: TorrentProcessingViewModel,
 ) : FragmentStateAdapter(fragment) {
     override fun getItemCount(): Int = 2
 

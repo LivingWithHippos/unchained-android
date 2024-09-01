@@ -26,7 +26,7 @@ class ProtoStoreImpl @Inject constructor(@ApplicationContext private val context
         clientId: String?,
         clientSecret: String?,
         accessToken: String?,
-        refreshToken: String?
+        refreshToken: String?,
     ) {
         context.credentialsDataStore.updateData { credentials ->
             credentials
@@ -45,7 +45,7 @@ class ProtoStoreImpl @Inject constructor(@ApplicationContext private val context
         clientId: String?,
         clientSecret: String?,
         accessToken: String?,
-        refreshToken: String?
+        refreshToken: String?,
     ) {
         context.credentialsDataStore.updateData { credentials ->
             val builder = credentials.toBuilder()
@@ -94,11 +94,13 @@ class ProtoStoreImpl @Inject constructor(@ApplicationContext private val context
 
     override suspend fun deleteIncompleteCredentials() {
         val credentials = getCredentials()
-        if (credentials.deviceCode.isNullOrBlank() ||
-            credentials.accessToken.isNullOrBlank() ||
-            credentials.clientId.isNullOrBlank() ||
-            credentials.clientSecret.isNullOrBlank() ||
-            credentials.refreshToken.isNullOrBlank()) {
+        if (
+            credentials.deviceCode.isNullOrBlank() ||
+                credentials.accessToken.isNullOrBlank() ||
+                credentials.clientId.isNullOrBlank() ||
+                credentials.clientSecret.isNullOrBlank() ||
+                credentials.refreshToken.isNullOrBlank()
+        ) {
             context.credentialsDataStore.updateData { it.toBuilder().clear().build() }
         }
     }

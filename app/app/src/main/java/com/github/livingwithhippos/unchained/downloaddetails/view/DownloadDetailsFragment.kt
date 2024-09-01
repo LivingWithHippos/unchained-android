@@ -74,7 +74,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         val detailsBinding = FragmentDownloadDetailsBinding.inflate(inflater, container, false)
 
@@ -103,7 +103,8 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                 }
             },
             viewLifecycleOwner,
-            Lifecycle.State.RESUMED)
+            Lifecycle.State.RESUMED,
+        )
 
         detailsBinding.details = args.details
         detailsBinding.listener = this
@@ -144,19 +145,30 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                         "h264WebM",
                         it.h264WebM.link,
                         getString(R.string.streaming),
-                        "h264 WebM"))
+                        "h264 WebM",
+                    )
+                )
                 streams.add(
                     Alternative(
                         "liveMP4",
                         "liveMP4",
                         it.liveMP4.link,
                         getString(R.string.streaming),
-                        "mp4"))
+                        "mp4",
+                    )
+                )
                 streams.add(
                     Alternative(
-                        "apple", "m3u8", it.apple.link, getString(R.string.streaming), "m3u8"))
+                        "apple",
+                        "m3u8",
+                        it.apple.link,
+                        getString(R.string.streaming),
+                        "m3u8",
+                    )
+                )
                 streams.add(
-                    Alternative("dash", "mpd", it.dash.link, getString(R.string.streaming), "mpd"))
+                    Alternative("dash", "mpd", it.dash.link, getString(R.string.streaming), "mpd")
+                )
 
                 if (!args.details.alternative.isNullOrEmpty())
                     streams.addAll(args.details.alternative!!)
@@ -173,7 +185,8 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                 activityViewModel.setListState(ListState.UpdateDownload)
                 // if deleted go back
                 findNavController().popBackStack()
-            })
+            },
+        )
 
         setFragmentResultListener("deleteActionKey") { _, bundle ->
             // the delete operation is observed from the viewModel
@@ -239,9 +252,9 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         val popup = PopupMenu(requireContext(), v)
         popup.menuInflater.inflate(R.menu.basic_streaming_popup, popup.menu)
 
-        if (recentService == -1 ||
-            recentService == defaultService?.id ||
-            recentServiceItem == null) {
+        if (
+            recentService == -1 || recentService == defaultService?.id || recentServiceItem == null
+        ) {
             popup.menu.findItem(R.id.recent_service).isVisible = false
         } else {
             val serviceName = getString(serviceTypeMap[recentServiceItem.type]!!.nameRes)
@@ -280,7 +293,8 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                             url ?: args.details.download,
                             recentDeviceItem,
                             recentServiceItem,
-                            serviceType)
+                            serviceType,
+                        )
                     }
                 }
                 R.id.default_service -> {
@@ -290,7 +304,8 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                             url ?: args.details.download,
                             defaultDevice.key,
                             defaultService,
-                            serviceType)
+                            serviceType,
+                        )
                     }
                 }
                 R.id.pick_service -> {
@@ -354,7 +369,8 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                         url ?: args.details.download,
                         defaultDevice.key,
                         defaultService,
-                        serviceType)
+                        serviceType,
+                    )
                 }
             } else {
                 defaultLayout.visibility = View.GONE
@@ -390,7 +406,8 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                             url ?: args.details.download,
                             recentDeviceItem,
                             recentServiceItem,
-                            serviceType)
+                            serviceType,
+                        )
                     }
                 } else {
                     recentLayout.visibility = View.GONE
@@ -406,12 +423,16 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         val servicesNumber = deviceServiceMap.values.sumOf { it.size }
         pickerLayout.findViewById<TextView>(R.id.servicesNumber).text =
             resources.getQuantityString(
-                R.plurals.service_number_format, servicesNumber, servicesNumber)
+                R.plurals.service_number_format,
+                servicesNumber,
+                servicesNumber,
+            )
         pickerLayout.findViewById<TextView>(R.id.devicesNumber).text =
             resources.getQuantityString(
                 R.plurals.device_number_format,
                 deviceServiceMap.keys.size,
-                deviceServiceMap.keys.size)
+                deviceServiceMap.keys.size,
+            )
         pickerLayout.setOnClickListener {
             if (popup.isShowing) popup.dismiss()
 
@@ -440,7 +461,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         link: String,
         device: RemoteDevice,
         service: RemoteService,
-        serviceType: RemoteServiceType
+        serviceType: RemoteServiceType,
     ) {
         when (serviceType) {
             RemoteServiceType.KODI -> {
@@ -467,7 +488,8 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                         inflater.inflate(R.layout.popup_streaming_window, null).apply {
                             measure(
                                 View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
-                                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
+                                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                            )
                         }
                 }
                 .also { popupWindow ->
@@ -478,12 +500,14 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                         val size =
                             Size(
                                 popupWindow.contentView.measuredWidth,
-                                popupWindow.contentView.measuredHeight)
+                                popupWindow.contentView.measuredHeight,
+                            )
                         popupWindow.showAtLocation(
                             parentView,
                             Gravity.TOP or Gravity.START,
                             location[0] - (size.width - parentView.width) / 2,
-                            location[1] - (size.height / 2))
+                            location[1] - (size.height / 2),
+                        )
                     } else {
                         popupWindow.showAsDropDown(parentView)
                     }
@@ -545,7 +569,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         appPackage: String,
         url: String,
         component: ComponentName? = null,
-        dataType: String = "video/*"
+        dataType: String = "video/*",
     ): Intent {
 
         val uri = Uri.parse(url)

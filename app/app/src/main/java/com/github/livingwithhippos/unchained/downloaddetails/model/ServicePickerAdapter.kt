@@ -11,12 +11,12 @@ class ServicePickerAdapter(listener: ServicePickerListener) :
     class DiffCallback : DiffUtil.ItemCallback<RemoteServiceDetails>() {
         override fun areItemsTheSame(
             oldItem: RemoteServiceDetails,
-            newItem: RemoteServiceDetails
+            newItem: RemoteServiceDetails,
         ): Boolean = oldItem.service.id == newItem.service.id
 
         override fun areContentsTheSame(
             oldItem: RemoteServiceDetails,
-            newItem: RemoteServiceDetails
+            newItem: RemoteServiceDetails,
         ): Boolean {
             // content does not change on update
             return true

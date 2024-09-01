@@ -14,13 +14,13 @@ interface KodiApi {
     suspend fun openUrl(
         @Body body: KodiRequest,
         @Header("Authorization") auth: String? = null,
-        @Header("Content-Type") contentType: String = "application/json"
+        @Header("Content-Type") contentType: String = "application/json",
     ): Response<KodiResponse>
 
     @POST("jsonrpc")
     suspend fun getVolume(
         @Body body: KodiRequest,
         @Header("Authorization") auth: String? = null,
-        @Header("Content-Type") contentType: String = "application/json"
+        @Header("Content-Type") contentType: String = "application/json",
     ): Response<KodiGenericResponse>
 }

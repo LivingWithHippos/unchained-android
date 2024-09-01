@@ -42,14 +42,17 @@ class KodiSocket @Inject constructor(private val client: OkHttpClient) {
                         WebSocketEvents.ConnectionError(
                             t.message
                                 ?: response?.message
-                                ?: "Failure using the websocket for url $url"))
+                                ?: "Failure using the websocket for url $url"
+                        )
+                    )
                 }
 
                 override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
                     super.onClosed(webSocket, code, reason)
                     trySend(WebSocketEvents.ConnectionClosed)
                 }
-            })
+            },
+        )
     }
 }
 

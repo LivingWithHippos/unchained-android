@@ -19,13 +19,13 @@ class TorrentApiHelperImpl @Inject constructor(private val torrentsApi: Torrents
     override suspend fun addTorrent(
         token: String,
         binaryTorrent: RequestBody,
-        host: String
+        host: String,
     ): Response<UploadedTorrent> = torrentsApi.addTorrent(token, binaryTorrent, host)
 
     override suspend fun addMagnet(
         token: String,
         magnet: String,
-        host: String
+        host: String,
     ): Response<UploadedTorrent> = torrentsApi.addMagnet(token, magnet, host)
 
     override suspend fun getTorrentsList(
@@ -33,7 +33,7 @@ class TorrentApiHelperImpl @Inject constructor(private val torrentsApi: Torrents
         offset: Int?,
         page: Int?,
         limit: Int?,
-        filter: String?
+        filter: String?,
     ): Response<List<TorrentItem>> = torrentsApi.getTorrentsList(token, offset, page, limit, filter)
 
     override suspend fun selectFiles(token: String, id: String, files: String) =
@@ -44,6 +44,6 @@ class TorrentApiHelperImpl @Inject constructor(private val torrentsApi: Torrents
 
     override suspend fun getInstantAvailability(
         token: String,
-        url: String
+        url: String,
     ): Response<InstantAvailability> = torrentsApi.getInstantAvailability(token, url)
 }

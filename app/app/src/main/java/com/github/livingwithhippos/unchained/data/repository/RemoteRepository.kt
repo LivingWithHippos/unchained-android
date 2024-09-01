@@ -19,7 +19,7 @@ class RemoteRepository @Inject constructor(@ClassicClient private val client: Ok
         port: Int = 9090,
         url: String,
         username: String? = null,
-        password: String? = null
+        password: String? = null,
     ): EitherResult<Exception, Boolean> =
         withContext(Dispatchers.IO) {
             // https://wiki.videolan.org/Documentation:Modules/http_intf/#VLC_2.0.0_and_later
@@ -32,14 +32,16 @@ class RemoteRepository @Inject constructor(@ClassicClient private val client: Ok
             val request =
                 Request.Builder()
                     .url(
-                        "${addHttpScheme(baseUrl)}:$port/requests/status.xml?command=in_play&input=$url")
+                        "${addHttpScheme(baseUrl)}:$port/requests/status.xml?command=in_play&input=$url"
+                    )
                     .header("Authorization", credential)
                     .build()
 
             client.newCall(request).execute().use { response ->
                 if (!response.isSuccessful)
                     return@withContext EitherResult.Failure(
-                        IOException("Unexpected http code $response"))
+                        IOException("Unexpected http code $response")
+                    )
 
                 Timber.d(response.body!!.string())
                 return@withContext EitherResult.Success(true)

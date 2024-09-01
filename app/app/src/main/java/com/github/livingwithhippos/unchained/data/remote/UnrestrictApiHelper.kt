@@ -10,7 +10,7 @@ interface UnrestrictApiHelper {
         token: String,
         link: String,
         password: String? = null,
-        remote: Int? = null
+        remote: Int? = null,
     ): Response<DownloadItem>
 
     suspend fun getUnrestrictedFolder(token: String, link: String): Response<List<String>>

@@ -20,7 +20,9 @@ import kotlinx.parcelize.Parcelize
                 entity = RemoteDevice::class,
                 parentColumns = ["id"],
                 childColumns = ["device_id"],
-                onDelete = ForeignKey.CASCADE)],
+                onDelete = ForeignKey.CASCADE,
+            )
+        ],
 )
 class RemoteService(
     @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id") val id: Int,
@@ -39,7 +41,7 @@ class RemoteService(
     @ColumnInfo(name = "api_token") val apiToken: String = "",
     @ColumnInfo(name = "field_1") val fieldOne: String = "",
     @ColumnInfo(name = "field_2") val fieldTwo: String = "",
-    @ColumnInfo(name = "field_3") val fieldThree: String = ""
+    @ColumnInfo(name = "field_3") val fieldThree: String = "",
 ) : Parcelable {
     override fun equals(other: Any?): Boolean {
         if (other is RemoteService) {
@@ -55,7 +57,7 @@ sealed class RemoteServiceType(
     val value: Int,
     val isMediaPlayer: Boolean,
     @StringRes val nameRes: Int,
-    @DrawableRes val iconRes: Int
+    @DrawableRes val iconRes: Int,
 ) {
     data object KODI : RemoteServiceType(0, true, R.string.kodi, R.drawable.icon_kodi)
 
@@ -68,11 +70,12 @@ val serviceTypeMap =
     mapOf(
         RemoteServiceType.KODI.value to RemoteServiceType.KODI,
         RemoteServiceType.VLC.value to RemoteServiceType.VLC,
-        RemoteServiceType.JACKETT.value to RemoteServiceType.JACKETT)
+        RemoteServiceType.JACKETT.value to RemoteServiceType.JACKETT,
+    )
 
 /** Helper class to have all the service details together */
 data class RemoteServiceDetails(
     val service: RemoteService,
     val device: RemoteDevice,
-    val type: RemoteServiceType
+    val type: RemoteServiceType,
 )

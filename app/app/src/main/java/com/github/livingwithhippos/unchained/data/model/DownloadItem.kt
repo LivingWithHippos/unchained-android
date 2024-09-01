@@ -56,7 +56,7 @@ data class DownloadItem(
     /** jsonDate */
     @Json(name = "generated") val generated: String?,
     @Json(name = "type") val type: String?,
-    @Json(name = "alternative") val alternative: List<Alternative>?
+    @Json(name = "alternative") val alternative: List<Alternative>?,
 ) : Parcelable
 
 @JsonClass(generateAdapter = true)
@@ -66,5 +66,5 @@ data class Alternative(
     @Json(name = "filename") val filename: String,
     @Json(name = "download") val download: String,
     @Json(name = "mimeType") val mimeType: String?,
-    @Json(name = "quality") val quality: String?
+    @Json(name = "quality") val quality: String?,
 ) : Parcelable

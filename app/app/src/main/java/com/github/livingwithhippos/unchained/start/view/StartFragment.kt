@@ -25,7 +25,7 @@ class StartFragment : UnchainedFragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         val binding = FragmentStartBinding.inflate(inflater, container, false)
 
@@ -81,14 +81,16 @@ class StartFragment : UnchainedFragment() {
 
         binding.bRetry.setOnClickListener {
             activityViewModel.transitionAuthenticationMachine(
-                FSMAuthenticationEvent.OnUserActionRetry)
+                FSMAuthenticationEvent.OnUserActionRetry
+            )
             binding.loadingCircle.visibility = View.VISIBLE
             binding.buttonsLayout.visibility = View.INVISIBLE
         }
 
         binding.bReset.setOnClickListener {
             activityViewModel.transitionAuthenticationMachine(
-                FSMAuthenticationEvent.OnUserActionReset)
+                FSMAuthenticationEvent.OnUserActionReset
+            )
             binding.loadingCircle.visibility = View.VISIBLE
             binding.buttonsLayout.visibility = View.INVISIBLE
         }

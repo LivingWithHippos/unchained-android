@@ -5,9 +5,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement
 
 @JacksonXmlRootElement(localName = "rss")
-data class SearchRSS(
-    @JacksonXmlProperty(localName = "channel") val channel: Channel,
-)
+data class SearchRSS(@JacksonXmlProperty(localName = "channel") val channel: Channel)
 
 data class Channel(
     @JacksonXmlProperty(localName = "title") val title: String,
@@ -15,7 +13,7 @@ data class Channel(
     @JacksonXmlProperty(localName = "link") val link: String,
     @JacksonXmlProperty(localName = "language") val language: String,
     @JacksonXmlProperty(localName = "category") val category: String,
-    @JacksonXmlProperty(localName = "item") val items: List<Item>
+    @JacksonXmlProperty(localName = "item") val items: List<Item>,
 )
 
 data class Item(
@@ -32,16 +30,16 @@ data class Item(
     // todo: check what happens with empty responses, nullable? default emptyList()?
     @JacksonXmlElementWrapper(useWrapping = false)
     @JacksonXmlProperty(namespace = "torznab", localName = "attr")
-    val torznabAttributes: List<TorznabAttribute>
+    val torznabAttributes: List<TorznabAttribute>,
 )
 
 data class Enclosure(
     @JacksonXmlProperty(isAttribute = true, localName = "url") val url: String,
     @JacksonXmlProperty(isAttribute = true, localName = "length") val length: String,
-    @JacksonXmlProperty(isAttribute = true, localName = "type") val type: String
+    @JacksonXmlProperty(isAttribute = true, localName = "type") val type: String,
 )
 
 data class TorznabAttribute(
     @JacksonXmlProperty(isAttribute = true, localName = "name") val name: String,
-    @JacksonXmlProperty(isAttribute = true, localName = "value") val value: String
+    @JacksonXmlProperty(isAttribute = true, localName = "value") val value: String,
 )

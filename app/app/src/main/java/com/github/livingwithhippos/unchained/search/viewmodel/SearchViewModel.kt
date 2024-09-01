@@ -34,7 +34,7 @@ constructor(
     private val preferences: SharedPreferences,
     private val pluginRepository: PluginRepository,
     private val databasePluginsRepository: DatabasePluginRepository,
-    private val parser: Parser
+    private val parser: Parser,
 ) : ViewModel() {
 
     // used to simulate a debounce effect while typing on the search bar
@@ -47,7 +47,7 @@ constructor(
         query: String,
         pluginName: String,
         category: String? = null,
-        page: Int = 1
+        page: Int = 1,
     ): LiveData<ParserResult> {
 
         val plugin = pluginLiveData.value?.first?.firstOrNull { it.name == pluginName }
@@ -184,8 +184,9 @@ constructor(
 
     fun getListSortPreference(): String {
         return preferences.getString(
-            FolderListViewModel.KEY_LIST_SORTING, FolderListFragment.TAG_DEFAULT_SORT)
-            ?: FolderListFragment.TAG_DEFAULT_SORT
+            FolderListViewModel.KEY_LIST_SORTING,
+            FolderListFragment.TAG_DEFAULT_SORT,
+        ) ?: FolderListFragment.TAG_DEFAULT_SORT
     }
 
     fun saveSearchCategory(category: String) {
@@ -202,7 +203,7 @@ constructor(
     fun pluginSearchWithSettings(
         query: String,
         category: String? = null,
-        page: Int = 1
+        page: Int = 1,
     ): LiveData<ParserResult> {
         // get category if selected
         // get all selected plugins

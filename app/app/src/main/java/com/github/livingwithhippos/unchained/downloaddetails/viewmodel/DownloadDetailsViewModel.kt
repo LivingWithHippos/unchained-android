@@ -34,7 +34,7 @@ constructor(
     private val downloadRepository: DownloadRepository,
     private val kodiRepository: KodiRepository,
     private val remoteServiceRepository: RemoteRepository,
-    private val remoteDeviceRepository: RemoteDeviceRepository
+    private val remoteDeviceRepository: RemoteDeviceRepository,
 ) : ViewModel() {
 
     val streamLiveData = MutableLiveData<Stream?>()
@@ -66,7 +66,8 @@ constructor(
                         kodiService.port,
                         mediaURL,
                         kodiService.username,
-                        kodiService.password)
+                        kodiService.password,
+                    )
                 if (response != null) messageLiveData.postEvent(DownloadDetailsMessage.KodiSuccess)
                 else messageLiveData.postEvent(DownloadDetailsMessage.KodiError)
             } catch (e: Exception) {
@@ -86,7 +87,8 @@ constructor(
                         vlcService.port,
                         mediaURL,
                         vlcService.username,
-                        vlcService.password)
+                        vlcService.password,
+                    )
                 // todo: use a single message valid for all players
                 if (response is EitherResult.Failure)
                     messageLiveData.postEvent(DownloadDetailsMessage.KodiError)

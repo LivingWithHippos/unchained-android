@@ -34,7 +34,7 @@ class TorrentProcessingViewModel
 @Inject
 constructor(
     private val savedStateHandle: SavedStateHandle,
-    private val torrentsRepository: TorrentsRepository
+    private val torrentsRepository: TorrentsRepository,
 ) : ViewModel() {
 
     val networkExceptionLiveData = MutableLiveData<Event<UnchainedNetworkException>>()
@@ -153,11 +153,13 @@ constructor(
                         is EitherResult.Failure -> {
                             if (selectResponse.failure is EmptyBodyError) {
                                 Timber.d(
-                                    "Select torrent files success returned ${selectResponse.failure.returnCode}")
+                                    "Select torrent files success returned ${selectResponse.failure.returnCode}"
+                                )
                                 selected = true
                             } else {
                                 Timber.e(
-                                    "Exception during torrent files selection call: ${selectResponse.failure}")
+                                    "Exception during torrent files selection call: ${selectResponse.failure}"
+                                )
                             }
                         }
                         is EitherResult.Success -> {

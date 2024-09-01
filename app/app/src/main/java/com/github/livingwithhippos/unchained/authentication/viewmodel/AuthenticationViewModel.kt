@@ -68,7 +68,10 @@ constructor(
             val credentials = protoStore.credentialsFlow.first { it.clientSecret.isNotBlank() }
             val tokenData =
                 authRepository.getToken(
-                    credentials.clientId, credentials.clientSecret, credentials.deviceCode)
+                    credentials.clientId,
+                    credentials.clientSecret,
+                    credentials.deviceCode,
+                )
             tokenLiveData.postEvent(tokenData)
         }
     }

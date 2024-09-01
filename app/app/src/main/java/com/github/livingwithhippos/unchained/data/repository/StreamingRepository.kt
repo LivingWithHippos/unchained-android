@@ -15,7 +15,8 @@ constructor(protoStore: ProtoStore, private val streamingApiHelper: StreamingApi
         val streamResponse =
             safeApiCall(
                 call = { streamingApiHelper.getStreams("Bearer ${getToken()}", id) },
-                errorMessage = "Error Fetching Streaming Info")
+                errorMessage = "Error Fetching Streaming Info",
+            )
 
         return streamResponse
     }

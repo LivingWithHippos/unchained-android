@@ -16,6 +16,6 @@ interface StreamingApi {
     @GET("streaming/transcode/{id}")
     suspend fun getStreams(
         @Header("Authorization") token: String,
-        @Path("id") id: String
+        @Path("id") id: String,
     ): Response<Stream>
 }

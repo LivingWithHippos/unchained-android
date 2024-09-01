@@ -52,7 +52,7 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         val torrentBinding = FragmentTorrentDetailsBinding.inflate(inflater, container, false)
 
@@ -77,7 +77,8 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
                             val action =
                                 TorrentDetailsFragmentDirections
                                     .actionTorrentDetailsDestToTorrentProcessingFragment(
-                                        link = link)
+                                        link = link
+                                    )
                             findNavController().navigate(action)
                             true
                         }
@@ -86,7 +87,8 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
                 }
             },
             viewLifecycleOwner,
-            Lifecycle.State.RESUMED)
+            Lifecycle.State.RESUMED,
+        )
 
         val statusTranslation =
             mapOf(
@@ -100,7 +102,8 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
                 "virus" to getString(R.string.virus),
                 "compressing" to getString(R.string.compressing),
                 "uploading" to getString(R.string.uploading),
-                "dead" to getString(R.string.dead))
+                "dead" to getString(R.string.dead),
+            )
 
         torrentBinding.loadingStatusList = loadingStatusList
         torrentBinding.statusTranslation = statusTranslation
@@ -136,7 +139,8 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
                         }
                     }
                 }
-            })
+            },
+        )
 
         viewModel.deletedTorrentLiveData.observe(
             viewLifecycleOwner,
@@ -146,7 +150,8 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
                 activityViewModel.setListState(ListState.UpdateTorrent)
                 // if deleted go back
                 findNavController().popBackStack()
-            })
+            },
+        )
 
         setFragmentResultListener("deleteActionKey") { _, bundle ->
             if (bundle.getBoolean("deleteConfirmation")) viewModel.deleteTorrent(args.item.id)
@@ -158,10 +163,12 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
                 it?.let { download ->
                     val action =
                         TorrentDetailsFragmentDirections.actionTorrentDetailsToDownloadDetailsDest(
-                            download)
+                            download
+                        )
                     findNavController().navigate(action)
                 }
-            })
+            },
+        )
 
         viewModel.errorsLiveData.observe(
             viewLifecycleOwner,
@@ -180,7 +187,8 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
                         }
                     }
                 }
-            })
+            },
+        )
 
         torrentBinding.torrent = args.item
 
@@ -197,7 +205,10 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
         if (item.links.size > 1) {
             val action =
                 TorrentDetailsFragmentDirections.actionTorrentDetailsToTorrentFolder(
-                    folder = null, torrent = item, linkList = null)
+                    folder = null,
+                    torrent = item,
+                    linkList = null,
+                )
             findNavController().navigate(action)
         } else {
             viewModel.downloadTorrent(item)

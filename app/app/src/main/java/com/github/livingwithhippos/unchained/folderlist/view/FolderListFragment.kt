@@ -93,7 +93,7 @@ class FolderListFragment : UnchainedFragment(), DownloadListListener {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         val binding = FragmentFolderListBinding.inflate(inflater, container, false)
 
@@ -126,7 +126,8 @@ class FolderListFragment : UnchainedFragment(), DownloadListListener {
                 }
             },
             viewLifecycleOwner,
-            Lifecycle.State.RESUMED)
+            Lifecycle.State.RESUMED,
+        )
 
         return binding.root
     }
@@ -159,7 +160,8 @@ class FolderListFragment : UnchainedFragment(), DownloadListListener {
                     binding.rvFolderList,
                     FolderKeyProvider(adapter),
                     DataBindingDetailsLookup(binding.rvFolderList),
-                    StorageStrategy.createParcelableStorage(DownloadItem::class.java))
+                    StorageStrategy.createParcelableStorage(DownloadItem::class.java),
+                )
                 .withSelectionPredicate(SelectionPredicates.createSelectAnything())
                 .build()
 
@@ -171,7 +173,8 @@ class FolderListFragment : UnchainedFragment(), DownloadListListener {
                     super.onSelectionChanged()
                     binding.selectedLinks = linkTracker.selection.size()
                 }
-            })
+            }
+        )
 
         binding.listener =
             object : SelectedItemsButtonsListener {
@@ -188,7 +191,8 @@ class FolderListFragment : UnchainedFragment(), DownloadListListener {
                         val shareLinks = linkTracker.selection.joinToString("\n") { it.download }
                         shareIntent.putExtra(Intent.EXTRA_TEXT, shareLinks)
                         startActivity(
-                            Intent.createChooser(shareIntent, getString(R.string.share_with)))
+                            Intent.createChooser(shareIntent, getString(R.string.share_with))
+                        )
                     } else context?.showToast(R.string.select_one_item)
                 }
 
@@ -197,7 +201,9 @@ class FolderListFragment : UnchainedFragment(), DownloadListListener {
                     if (downloads.isNotEmpty()) {
                         if (downloads.size == 1) {
                             activityViewModel.enqueueDownload(
-                                downloads.first().download, downloads.first().filename)
+                                downloads.first().download,
+                                downloads.first().filename,
+                            )
                         } else {
                             activityViewModel.enqueueDownloads(downloads)
                         }
@@ -321,7 +327,7 @@ class FolderListFragment : UnchainedFragment(), DownloadListListener {
         v: View,
         @MenuRes menuRes: Int,
         folderAdapter: FolderItemAdapter,
-        folderList: RecyclerView
+        folderList: RecyclerView,
     ) {
 
         val popup = PopupMenu(requireContext(), v)

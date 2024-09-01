@@ -47,7 +47,7 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         val binding = FragmentSearchBinding.inflate(inflater, container, false)
 
@@ -76,7 +76,9 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
                         resources.getQuantityString(
                             R.plurals.plugins_version_old_format,
                             parsedPlugins.second,
-                            parsedPlugins.second))
+                            parsedPlugins.second,
+                        )
+                    )
 
             pluginAdapter.clear()
             pluginAdapter.addAll(plugins.map { it.name })
@@ -91,7 +93,9 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
 
                 // todo: record the item used in the preferences and reselect it at setup time
                 (binding.pluginPicker.editText as? AutoCompleteTextView)?.setText(
-                    selectedPlugin.name, false)
+                    selectedPlugin.name,
+                    false,
+                )
                 setupCategory(categoryPickerView, plugins.first())
             }
 
@@ -154,7 +158,7 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
         v: View,
         @MenuRes menuRes: Int,
         searchAdapter: SearchItemAdapter,
-        searchList: RecyclerView
+        searchList: RecyclerView,
     ) {
 
         val popup = PopupMenu(requireContext(), v)
@@ -208,7 +212,8 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
                 query = binding.tiSearch.text.toString(),
                 // fixme: this will break with same-name plugins
                 pluginName = binding.pluginPicker.editText?.text.toString(),
-                category = getSelectedCategory(binding.categoryPicker.editText?.text.toString()))
+                category = getSelectedCategory(binding.categoryPicker.editText?.text.toString()),
+            )
             .observe(viewLifecycleOwner) { result ->
                 when (result) {
                     is ParserResult.SingleResult -> {
@@ -325,7 +330,8 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
                         if (item.seeders != null) {
                             digitRegex.find(item.seeders)?.value?.toInt()
                         } else null
-                    })
+                    }
+                )
             }
             FolderListFragment.TAG_SORT_ADDED -> {
                 adapter.submitList(
@@ -337,7 +343,8 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
                                 null
                             }
                         } else null
-                    })
+                    }
+                )
             }
             else -> {
                 adapter.submitList(items)

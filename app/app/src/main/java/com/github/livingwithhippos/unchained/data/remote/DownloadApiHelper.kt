@@ -8,11 +8,8 @@ interface DownloadApiHelper {
         token: String,
         offset: Int?,
         page: Int,
-        limit: Int
+        limit: Int,
     ): Response<List<DownloadItem>>
 
-    suspend fun deleteDownload(
-        token: String,
-        id: String,
-    ): Response<Unit>
+    suspend fun deleteDownload(token: String, id: String): Response<Unit>
 }

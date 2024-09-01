@@ -41,7 +41,7 @@ constructor(
     private val preferences: SharedPreferences,
     private val downloadRepository: DownloadRepository,
     private val torrentsRepository: TorrentsRepository,
-    private val unrestrictRepository: UnrestrictRepository
+    private val unrestrictRepository: UnrestrictRepository,
 ) : ViewModel() {
 
     private val MAX_PAGE_SIZE = 2500

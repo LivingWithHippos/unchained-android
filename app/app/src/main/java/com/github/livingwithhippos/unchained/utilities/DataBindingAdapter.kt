@@ -21,7 +21,7 @@ import com.github.livingwithhippos.unchained.BR
  */
 abstract class DataBindingAdapter<T, U>(
     diffCallback: DiffUtil.ItemCallback<T>,
-    val listener: U? = null
+    val listener: U? = null,
 ) : ListAdapter<T, DataBindingViewHolder<T, U>>(diffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DataBindingViewHolder<T, U> {
@@ -43,14 +43,14 @@ abstract class DataBindingAdapter<T, U>(
  */
 abstract class DataBindingTrackedAdapter<T : Any, U>(
     diffCallback: DiffUtil.ItemCallback<T>,
-    val listener: U? = null
+    val listener: U? = null,
 ) : ListAdapter<T, DataBindingTrackedViewHolder<T, U>>(diffCallback) {
 
     var tracker: SelectionTracker<T>? = null
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
-        viewType: Int
+        viewType: Int,
     ): DataBindingTrackedViewHolder<T, U> {
         val layoutInflater = LayoutInflater.from(parent.context)
         val binding =
@@ -84,7 +84,7 @@ abstract class DataBindingStaticAdapter<T>(diffCallback: DiffUtil.ItemCallback<T
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
-        viewType: Int
+        viewType: Int,
     ): DataBindingStaticViewHolder<T> {
         val layoutInflater = LayoutInflater.from(parent.context)
         val binding =
@@ -112,7 +112,7 @@ class DataBindingStaticViewHolder<T>(private val binding: ViewDataBinding) :
  */
 abstract class DataBindingPagingAdapter<T : Any, U>(
     diffCallback: DiffUtil.ItemCallback<T>,
-    val listener: U? = null
+    val listener: U? = null,
 ) : PagingDataAdapter<T, DataBindingViewHolder<T, U>>(diffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DataBindingViewHolder<T, U> {
@@ -136,14 +136,14 @@ abstract class DataBindingPagingAdapter<T : Any, U>(
  */
 abstract class DataBindingPagingTrackedAdapter<T : Any, U>(
     diffCallback: DiffUtil.ItemCallback<T>,
-    val listener: U? = null
+    val listener: U? = null,
 ) : PagingDataAdapter<T, DataBindingTrackedViewHolder<T, U>>(diffCallback) {
 
     var tracker: SelectionTracker<T>? = null
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
-        viewType: Int
+        viewType: Int,
     ): DataBindingTrackedViewHolder<T, U> {
         val layoutInflater = LayoutInflater.from(parent.context)
         val binding =

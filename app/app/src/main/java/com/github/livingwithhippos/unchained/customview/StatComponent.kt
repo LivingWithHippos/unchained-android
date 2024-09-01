@@ -64,7 +64,8 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
                     MaterialDividerItemDecoration(
                         context,
                         if (direction == 1) MaterialDividerItemDecoration.VERTICAL
-                        else MaterialDividerItemDecoration.HORIZONTAL)
+                        else MaterialDividerItemDecoration.HORIZONTAL,
+                    )
 
                 if (showDividers) {
                     recyclerView.addItemDecoration(dividerItemDecoration)
@@ -81,13 +82,13 @@ data class StatItem(
     val content: String,
     val label: String,
     val caption: String,
-    @DrawableRes val icon: Int
+    @DrawableRes val icon: Int,
 )
 
 class StatAdapter(
     private val showLabel: Boolean,
     private val showCaption: Boolean,
-    private val showIcon: Boolean
+    private val showIcon: Boolean,
 ) : ListAdapter<StatItem, StatAdapter.ViewHolder>(DiffCallback()) {
 
     class DiffCallback : DiffUtil.ItemCallback<StatItem>() {

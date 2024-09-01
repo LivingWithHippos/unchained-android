@@ -103,7 +103,7 @@ constructor(
     private val torrentsRepository: TorrentsRepository,
     private val updateRepository: UpdateRepository,
     private val remoteDeviceRepository: RemoteDeviceRepository,
-    @ApplicationContext applicationContext: Context
+    @ApplicationContext applicationContext: Context,
 ) : ViewModel() {
 
     private val magnetPattern = Regex(MAGNET_PATTERN, RegexOption.IGNORE_CASE)
@@ -145,12 +145,14 @@ constructor(
                 on<FSMAuthenticationEvent.OnAvailableCredentials> {
                     transitionTo(
                         FSMAuthenticationState.CheckCredentials,
-                        FSMAuthenticationSideEffect.CheckingCredentials)
+                        FSMAuthenticationSideEffect.CheckingCredentials,
+                    )
                 }
                 on<FSMAuthenticationEvent.OnMissingCredentials> {
                     transitionTo(
                         FSMAuthenticationState.StartNewLogin,
-                        FSMAuthenticationSideEffect.PostNewLogin)
+                        FSMAuthenticationSideEffect.PostNewLogin,
+                    )
                 }
             }
 
@@ -158,27 +160,32 @@ constructor(
                 on<FSMAuthenticationEvent.OnWorkingOpenToken> {
                     transitionTo(
                         FSMAuthenticationState.AuthenticatedOpenToken,
-                        FSMAuthenticationSideEffect.PostAuthenticatedOpen)
+                        FSMAuthenticationSideEffect.PostAuthenticatedOpen,
+                    )
                 }
                 on<FSMAuthenticationEvent.OnExpiredOpenToken> {
                     transitionTo(
                         FSMAuthenticationState.RefreshingOpenToken,
-                        FSMAuthenticationSideEffect.PostRefreshingToken)
+                        FSMAuthenticationSideEffect.PostRefreshingToken,
+                    )
                 }
                 on<FSMAuthenticationEvent.OnWorkingPrivateToken> {
                     transitionTo(
                         FSMAuthenticationState.AuthenticatedPrivateToken,
-                        FSMAuthenticationSideEffect.PostAuthenticatedPrivate)
+                        FSMAuthenticationSideEffect.PostAuthenticatedPrivate,
+                    )
                 }
                 on<FSMAuthenticationEvent.OnNotWorking> {
                     transitionTo(
                         FSMAuthenticationState.StartNewLogin,
-                        FSMAuthenticationSideEffect.ResetAuthentication)
+                        FSMAuthenticationSideEffect.ResetAuthentication,
+                    )
                 }
                 on<FSMAuthenticationEvent.OnUserActionNeeded> {
                     transitionTo(
                         FSMAuthenticationState.WaitingUserAction(null),
-                        FSMAuthenticationSideEffect.PostActionNeeded)
+                        FSMAuthenticationSideEffect.PostActionNeeded,
+                    )
                 }
             }
 
@@ -186,12 +193,14 @@ constructor(
                 on<FSMAuthenticationEvent.OnUserActionRetry> {
                     transitionTo(
                         FSMAuthenticationState.CheckCredentials,
-                        FSMAuthenticationSideEffect.CheckingCredentials)
+                        FSMAuthenticationSideEffect.CheckingCredentials,
+                    )
                 }
                 on<FSMAuthenticationEvent.OnUserActionReset> {
                     transitionTo(
                         FSMAuthenticationState.StartNewLogin,
-                        FSMAuthenticationSideEffect.ResetAuthentication)
+                        FSMAuthenticationSideEffect.ResetAuthentication,
+                    )
                 }
             }
 
@@ -199,13 +208,15 @@ constructor(
                 on<FSMAuthenticationEvent.OnAuthLoaded> {
                     transitionTo(
                         FSMAuthenticationState.WaitingUserConfirmation,
-                        FSMAuthenticationSideEffect.PostWaitUserConfirmation)
+                        FSMAuthenticationSideEffect.PostWaitUserConfirmation,
+                    )
                 }
                 // I can get a private token on this state too
                 on<FSMAuthenticationEvent.OnPrivateToken> {
                     transitionTo(
                         FSMAuthenticationState.CheckCredentials,
-                        FSMAuthenticationSideEffect.CheckingCredentials)
+                        FSMAuthenticationSideEffect.CheckingCredentials,
+                    )
                 }
             }
 
@@ -213,23 +224,27 @@ constructor(
                 on<FSMAuthenticationEvent.OnUserConfirmationExpired> {
                     transitionTo(
                         FSMAuthenticationState.StartNewLogin,
-                        FSMAuthenticationSideEffect.PostNewLogin)
+                        FSMAuthenticationSideEffect.PostNewLogin,
+                    )
                 }
                 on<FSMAuthenticationEvent.OnUserConfirmationLoaded> {
                     transitionTo(
                         FSMAuthenticationState.WaitingToken,
-                        FSMAuthenticationSideEffect.PostWaitToken)
+                        FSMAuthenticationSideEffect.PostWaitToken,
+                    )
                 }
                 on<FSMAuthenticationEvent.OnUserConfirmationMissing> {
                     transitionTo(
                         FSMAuthenticationState.WaitingUserConfirmation,
-                        FSMAuthenticationSideEffect.PostWaitUserConfirmation)
+                        FSMAuthenticationSideEffect.PostWaitUserConfirmation,
+                    )
                 }
                 // I can get a private token on this state too
                 on<FSMAuthenticationEvent.OnPrivateToken> {
                     transitionTo(
                         FSMAuthenticationState.CheckCredentials,
-                        FSMAuthenticationSideEffect.CheckingCredentials)
+                        FSMAuthenticationSideEffect.CheckingCredentials,
+                    )
                 }
             }
 
@@ -237,13 +252,15 @@ constructor(
                 on<FSMAuthenticationEvent.OnOpenTokenLoaded> {
                     transitionTo(
                         FSMAuthenticationState.CheckCredentials,
-                        FSMAuthenticationSideEffect.CheckingCredentials)
+                        FSMAuthenticationSideEffect.CheckingCredentials,
+                    )
                 }
                 // I can get a private token on this state too
                 on<FSMAuthenticationEvent.OnPrivateToken> {
                     transitionTo(
                         FSMAuthenticationState.CheckCredentials,
-                        FSMAuthenticationSideEffect.CheckingCredentials)
+                        FSMAuthenticationSideEffect.CheckingCredentials,
+                    )
                 }
             }
 
@@ -251,17 +268,20 @@ constructor(
                 on<FSMAuthenticationEvent.OnExpiredOpenToken> {
                     transitionTo(
                         FSMAuthenticationState.RefreshingOpenToken,
-                        FSMAuthenticationSideEffect.PostRefreshingToken)
+                        FSMAuthenticationSideEffect.PostRefreshingToken,
+                    )
                 }
                 on<FSMAuthenticationEvent.OnAuthenticationError> {
                     transitionTo(
                         FSMAuthenticationState.WaitingUserAction(null),
-                        FSMAuthenticationSideEffect.PostActionNeeded)
+                        FSMAuthenticationSideEffect.PostActionNeeded,
+                    )
                 }
                 on<FSMAuthenticationEvent.OnLogout> {
                     transitionTo(
                         FSMAuthenticationState.StartNewLogin,
-                        FSMAuthenticationSideEffect.PostNewLogin)
+                        FSMAuthenticationSideEffect.PostNewLogin,
+                    )
                 }
             }
 
@@ -269,22 +289,26 @@ constructor(
                 on<FSMAuthenticationEvent.OnRefreshed> {
                     transitionTo(
                         FSMAuthenticationState.AuthenticatedOpenToken,
-                        FSMAuthenticationSideEffect.PostAuthenticatedOpen)
+                        FSMAuthenticationSideEffect.PostAuthenticatedOpen,
+                    )
                 }
                 on<FSMAuthenticationEvent.OnLogout> {
                     transitionTo(
                         FSMAuthenticationState.StartNewLogin,
-                        FSMAuthenticationSideEffect.PostNewLogin)
+                        FSMAuthenticationSideEffect.PostNewLogin,
+                    )
                 }
                 on<FSMAuthenticationEvent.OnAuthenticationError> {
                     transitionTo(
                         FSMAuthenticationState.WaitingUserAction(null),
-                        FSMAuthenticationSideEffect.PostActionNeeded)
+                        FSMAuthenticationSideEffect.PostActionNeeded,
+                    )
                 }
                 on<FSMAuthenticationEvent.OnNotWorking> {
                     transitionTo(
                         FSMAuthenticationState.StartNewLogin,
-                        FSMAuthenticationSideEffect.ResetAuthentication)
+                        FSMAuthenticationSideEffect.ResetAuthentication,
+                    )
                 }
             }
 
@@ -292,12 +316,14 @@ constructor(
                 on<FSMAuthenticationEvent.OnLogout> {
                     transitionTo(
                         FSMAuthenticationState.StartNewLogin,
-                        FSMAuthenticationSideEffect.PostNewLogin)
+                        FSMAuthenticationSideEffect.PostNewLogin,
+                    )
                 }
                 on<FSMAuthenticationEvent.OnAuthenticationError> {
                     transitionTo(
                         FSMAuthenticationState.WaitingUserAction(null),
-                        FSMAuthenticationSideEffect.PostActionNeeded)
+                        FSMAuthenticationSideEffect.PostActionNeeded,
+                    )
                 }
             }
 
@@ -312,30 +338,36 @@ constructor(
                     }
                     is FSMAuthenticationSideEffect.CheckingCredentials -> {
                         fsmAuthenticationState.postValue(
-                            Event(FSMAuthenticationState.CheckCredentials))
+                            Event(FSMAuthenticationState.CheckCredentials)
+                        )
                     }
                     FSMAuthenticationSideEffect.PostNewLogin -> {
                         fsmAuthenticationState.postValue(
-                            Event(FSMAuthenticationState.StartNewLogin))
+                            Event(FSMAuthenticationState.StartNewLogin)
+                        )
                     }
                     FSMAuthenticationSideEffect.PostAuthenticatedOpen -> {
                         fsmAuthenticationState.postValue(
-                            Event(FSMAuthenticationState.AuthenticatedOpenToken))
+                            Event(FSMAuthenticationState.AuthenticatedOpenToken)
+                        )
                     }
                     FSMAuthenticationSideEffect.PostRefreshingToken -> {
                         fsmAuthenticationState.postValue(
-                            Event(FSMAuthenticationState.RefreshingOpenToken))
+                            Event(FSMAuthenticationState.RefreshingOpenToken)
+                        )
                     }
                     FSMAuthenticationSideEffect.PostAuthenticatedPrivate -> {
                         fsmAuthenticationState.postValue(
-                            Event(FSMAuthenticationState.AuthenticatedPrivateToken))
+                            Event(FSMAuthenticationState.AuthenticatedPrivateToken)
+                        )
                     }
                     FSMAuthenticationSideEffect.PostWaitToken -> {
                         fsmAuthenticationState.postValue(Event(FSMAuthenticationState.WaitingToken))
                     }
                     FSMAuthenticationSideEffect.PostWaitUserConfirmation -> {
                         fsmAuthenticationState.postValue(
-                            Event(FSMAuthenticationState.WaitingUserConfirmation))
+                            Event(FSMAuthenticationState.WaitingUserConfirmation)
+                        )
                     }
                     FSMAuthenticationSideEffect.PostActionNeeded -> {
                         when (it.event) {
@@ -344,11 +376,13 @@ constructor(
                                     (it.event as FSMAuthenticationEvent.OnUserActionNeeded).action
 
                                 fsmAuthenticationState.postValue(
-                                    Event(FSMAuthenticationState.WaitingUserAction(action)))
+                                    Event(FSMAuthenticationState.WaitingUserAction(action))
+                                )
                             }
                             is FSMAuthenticationEvent.OnAuthenticationError -> {
                                 fsmAuthenticationState.postValue(
-                                    Event(FSMAuthenticationState.WaitingUserAction(null)))
+                                    Event(FSMAuthenticationState.WaitingUserAction(null))
+                                )
                             }
                             else -> {
                                 Timber.e("Wrong PostActionNeeded event: ${it.event}")
@@ -360,7 +394,8 @@ constructor(
                         viewModelScope.launch {
                             protoStore.deleteCredentials()
                             fsmAuthenticationState.postValue(
-                                Event(FSMAuthenticationState.StartNewLogin))
+                                Event(FSMAuthenticationState.StartNewLogin)
+                            )
                         }
                     }
                 }
@@ -441,7 +476,7 @@ constructor(
 
     private fun parseUserResult(
         user: EitherResult<UnchainedNetworkException, User>,
-        isPrivateToken: Boolean
+        isPrivateToken: Boolean,
     ) {
         when (user) {
             is EitherResult.Success -> {
@@ -471,7 +506,8 @@ constructor(
             }
             else -> {
                 Timber.e(
-                    "Asked for logout while in a wrong state: ${getAuthenticationMachineState()}")
+                    "Asked for logout while in a wrong state: ${getAuthenticationMachineState()}"
+                )
             }
         }
     }
@@ -496,8 +532,10 @@ constructor(
 
         viewModelScope.launch {
             val credentials = protoStore.getCredentials()
-            if (!credentials.refreshToken.isNullOrBlank() &&
-                credentials.refreshToken != PRIVATE_TOKEN) {
+            if (
+                !credentials.refreshToken.isNullOrBlank() &&
+                    credentials.refreshToken != PRIVATE_TOKEN
+            ) {
                 // todo: add EitherResult to check for errors and retry eventually
                 when (val newToken = authRepository.refreshTokenWithError(credentials)) {
                     is EitherResult.Success -> {
@@ -506,20 +544,25 @@ constructor(
                             clientId = credentials.clientId,
                             clientSecret = credentials.clientSecret,
                             accessToken = newToken.success.accessToken,
-                            refreshToken = newToken.success.refreshToken)
+                            refreshToken = newToken.success.refreshToken,
+                        )
 
                         // program the refresh of the token
                         programTokenRefresh(newToken.success.expiresIn)
 
-                        if (getAuthenticationMachineState()
-                            is FSMAuthenticationState.RefreshingOpenToken)
+                        if (
+                            getAuthenticationMachineState()
+                                is FSMAuthenticationState.RefreshingOpenToken
+                        )
                             transitionAuthenticationMachine(FSMAuthenticationEvent.OnRefreshed)
                         // else I'm just refreshing before it expires
                         // todo: just set it to refreshing at the start of this function
                     }
                     is EitherResult.Failure -> {
                         onParseCallFailure(
-                            newToken.failure, credentials.deviceCode == PRIVATE_TOKEN)
+                            newToken.failure,
+                            credentials.deviceCode == PRIVATE_TOKEN,
+                        )
                     }
                 }
             }
@@ -535,15 +578,18 @@ constructor(
                             FSMAuthenticationState.AuthenticatedOpenToken -> {
                                 // refresh token
                                 transitionAuthenticationMachine(
-                                    FSMAuthenticationEvent.OnExpiredOpenToken)
+                                    FSMAuthenticationEvent.OnExpiredOpenToken
+                                )
                             }
                             FSMAuthenticationState.CheckCredentials -> {
                                 if (isPrivateToken)
                                     transitionAuthenticationMachine(
-                                        FSMAuthenticationEvent.OnNotWorking)
+                                        FSMAuthenticationEvent.OnNotWorking
+                                    )
                                 else
                                     transitionAuthenticationMachine(
-                                        FSMAuthenticationEvent.OnExpiredOpenToken)
+                                        FSMAuthenticationEvent.OnExpiredOpenToken
+                                    )
                             }
                             FSMAuthenticationState.AuthenticatedPrivateToken -> {
                                 // a private token was incorrect
@@ -564,11 +610,13 @@ constructor(
                     }
                     10 -> {
                         transitionAuthenticationMachine(
-                            FSMAuthenticationEvent.OnUserActionNeeded(UserAction.TFA_NEEDED))
+                            FSMAuthenticationEvent.OnUserActionNeeded(UserAction.TFA_NEEDED)
+                        )
                     }
                     11 -> {
                         transitionAuthenticationMachine(
-                            FSMAuthenticationEvent.OnUserActionNeeded(UserAction.TFA_PENDING))
+                            FSMAuthenticationEvent.OnUserActionNeeded(UserAction.TFA_PENDING)
+                        )
                     }
                     12 -> {
                         transitionAuthenticationMachine(FSMAuthenticationEvent.OnNotWorking)
@@ -584,26 +632,31 @@ constructor(
                     }
                     22 -> {
                         transitionAuthenticationMachine(
-                            FSMAuthenticationEvent.OnUserActionNeeded(UserAction.IP_NOT_ALLOWED))
+                            FSMAuthenticationEvent.OnUserActionNeeded(UserAction.IP_NOT_ALLOWED)
+                        )
                     }
                     else -> {
                         transitionAuthenticationMachine(
-                            FSMAuthenticationEvent.OnUserActionNeeded(UserAction.UNKNOWN))
+                            FSMAuthenticationEvent.OnUserActionNeeded(UserAction.UNKNOWN)
+                        )
                     }
                 }
             }
             is EmptyBodyError -> {
                 // should not happen
                 transitionAuthenticationMachine(
-                    FSMAuthenticationEvent.OnUserActionNeeded(UserAction.UNKNOWN))
+                    FSMAuthenticationEvent.OnUserActionNeeded(UserAction.UNKNOWN)
+                )
             }
             is NetworkError -> {
                 transitionAuthenticationMachine(
-                    FSMAuthenticationEvent.OnUserActionNeeded(UserAction.NETWORK_ERROR))
+                    FSMAuthenticationEvent.OnUserActionNeeded(UserAction.NETWORK_ERROR)
+                )
             }
             is ApiConversionError -> {
                 transitionAuthenticationMachine(
-                    FSMAuthenticationEvent.OnUserActionNeeded(UserAction.RETRY_LATER))
+                    FSMAuthenticationEvent.OnUserActionNeeded(UserAction.RETRY_LATER)
+                )
             }
         }
     }
@@ -651,7 +704,8 @@ constructor(
                     if (newLink != null) linkLiveData.postValue(Event(newLink))
                     else
                         messageLiveData.postValue(
-                            Event(MainActivityMessage.StringID(R.string.invalid_url)))
+                            Event(MainActivityMessage.StringID(R.string.invalid_url))
+                        )
                 }
                 else -> {
                     var matchFound = false
@@ -677,7 +731,8 @@ constructor(
                     }
                     if (!matchFound)
                         messageLiveData.postValue(
-                            Event(MainActivityMessage.StringID(R.string.host_match_not_found)))
+                            Event(MainActivityMessage.StringID(R.string.host_match_not_found))
+                        )
                 }
             }
         }
@@ -717,7 +772,8 @@ constructor(
             if (torrent != null) notificationTorrentLiveData.postEvent(torrent)
             else
                 Timber.e(
-                    "Could not retrieve torrent data from click on notification, id $torrentID")
+                    "Could not retrieve torrent data from click on notification, id $torrentID"
+                )
         }
     }
 
@@ -737,7 +793,8 @@ constructor(
             override fun onLost(network: Network) {
                 Timber.e(
                     "The application no longer has a default network. The last default network was %s",
-                    network)
+                    network,
+                )
                 // currentNetworkLiveData.postValue(null)
                 connectivityLiveData.postValue(false)
             }
@@ -770,8 +827,10 @@ constructor(
             val networks = connectivityManager.allNetworks
             for (net in networks) {
                 val netInfo = connectivityManager.getNetworkCapabilities(net)
-                if (netInfo != null &&
-                    netInfo.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)) {
+                if (
+                    netInfo != null &&
+                        netInfo.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+                ) {
                     isConnected = true
                     break
                 }
@@ -785,11 +844,16 @@ constructor(
         clientId: String? = null,
         clientSecret: String? = null,
         accessToken: String? = null,
-        refreshToken: String? = null
+        refreshToken: String? = null,
     ) {
         viewModelScope.launch {
             protoStore.updateCredentials(
-                deviceCode, clientId, clientSecret, accessToken, refreshToken)
+                deviceCode,
+                clientId,
+                clientSecret,
+                accessToken,
+                refreshToken,
+            )
         }
     }
 
@@ -877,7 +941,8 @@ constructor(
                             id = 0,
                             name = kodi.name,
                             address = kodi.address,
-                            isDefault = false)
+                            isDefault = false,
+                        )
 
                     val insertedRow = remoteDeviceRepository.insertDevice(newDevice)
                     val deviceID = remoteDeviceRepository.getDeviceIDByRow(insertedRow)
@@ -895,7 +960,8 @@ constructor(
                             port = kodi.port,
                             username = kodi.username,
                             password = kodi.password,
-                            type = RemoteServiceType.KODI.value)
+                            type = RemoteServiceType.KODI.value,
+                        )
 
                     remoteDeviceRepository.insertService(newService)
 
@@ -912,7 +978,7 @@ constructor(
         link: String,
         fileName: String,
         cacheDir: File,
-        suffix: String? = null
+        suffix: String? = null,
     ) = customDownloadRepository.downloadToCache(link, fileName, cacheDir, suffix).asLiveData()
 
     fun clearCache(cacheDir: File) {
@@ -923,7 +989,7 @@ constructor(
         localVersion: Int,
         remoteVersion: Int?,
         lastVersionChecked: Int,
-        signature: String
+        signature: String,
     ) {
         if (remoteVersion != null) {
             if (remoteVersion > localVersion && remoteVersion > lastVersionChecked) {
@@ -950,7 +1016,8 @@ constructor(
                                 versionCode,
                                 updates.fDroid?.versionCode,
                                 lastVersionChecked,
-                                upperSignature)
+                                upperSignature,
+                            )
                             break
                         }
                         SIGNATURE.GITHUB -> {
@@ -958,7 +1025,8 @@ constructor(
                                 versionCode,
                                 updates.github?.versionCode,
                                 lastVersionChecked,
-                                upperSignature)
+                                upperSignature,
+                            )
                             break
                         }
                         SIGNATURE.PLAY_STORE -> {
@@ -966,7 +1034,8 @@ constructor(
                                 versionCode,
                                 updates.playStore?.versionCode,
                                 lastVersionChecked,
-                                upperSignature)
+                                upperSignature,
+                            )
                             break
                         }
                         else -> {
@@ -1017,8 +1086,9 @@ constructor(
 
     fun getDownloadManagerPreference(): String {
         return preferences.getString(
-            PreferenceKeys.DownloadManager.KEY, PreferenceKeys.DownloadManager.SYSTEM)
-            ?: PreferenceKeys.DownloadManager.SYSTEM
+            PreferenceKeys.DownloadManager.KEY,
+            PreferenceKeys.DownloadManager.SYSTEM,
+        ) ?: PreferenceKeys.DownloadManager.SYSTEM
     }
 
     fun startDownloadWorker(content: MainActivityMessage.DownloadEnqueued, folder: Uri) {
@@ -1124,13 +1194,16 @@ constructor(
         when (result) {
             is InstallResult.Error ->
                 messageLiveData.postValue(
-                    Event(MainActivityMessage.StringID(R.string.plugin_install_not_installed)))
+                    Event(MainActivityMessage.StringID(R.string.plugin_install_not_installed))
+                )
             InstallResult.Incompatible ->
                 messageLiveData.postValue(
-                    Event(MainActivityMessage.StringID(R.string.plugin_install_incompatible)))
+                    Event(MainActivityMessage.StringID(R.string.plugin_install_incompatible))
+                )
             InstallResult.Installed ->
                 messageLiveData.postValue(
-                    Event(MainActivityMessage.StringID(R.string.plugin_install_installed)))
+                    Event(MainActivityMessage.StringID(R.string.plugin_install_installed))
+                )
         }
     }
 

@@ -30,7 +30,7 @@ class RemoteDeviceListFragment : UnchainedFragment(), DeviceListListener {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         val binding = FragmentRemoteDeviceListBinding.inflate(inflater, container, false)
 
@@ -43,7 +43,8 @@ class RemoteDeviceListFragment : UnchainedFragment(), DeviceListListener {
                     binding.rvDeviceList,
                     DeviceKeyProvider(deviceAdapter),
                     DataBindingDetailsLookup(binding.rvDeviceList),
-                    StorageStrategy.createParcelableStorage(RemoteDevice::class.java))
+                    StorageStrategy.createParcelableStorage(RemoteDevice::class.java),
+                )
                 .withSelectionPredicate(SelectionPredicates.createSelectAnything())
                 .build()
 
@@ -62,7 +63,8 @@ class RemoteDeviceListFragment : UnchainedFragment(), DeviceListListener {
                                     entry.key.name,
                                     entry.key.address,
                                     entry.key.isDefault,
-                                    entry.value.size)
+                                    entry.value.size,
+                                )
                             }
                             .keys
                             .toList()
@@ -71,7 +73,8 @@ class RemoteDeviceListFragment : UnchainedFragment(), DeviceListListener {
 
                     binding.devicesStat.setContent(it.itemsMap.size.toString())
                     binding.servicesStat.setContent(
-                        it.itemsMap.values.sumOf { serv -> serv.size }.toString())
+                        it.itemsMap.values.sumOf { serv -> serv.size }.toString()
+                    )
                 }
                 is DeviceEvent.AllDevices -> deviceAdapter.submitList(it.devices)
                 is DeviceEvent.DeletedAll -> viewModel.fetchRemoteDevices()
@@ -131,7 +134,8 @@ class RemoteDeviceListFragment : UnchainedFragment(), DeviceListListener {
     override fun onDeviceClick(item: RemoteDevice) {
         val action =
             RemoteDeviceListFragmentDirections.actionRemoteDeviceListFragmentToRemoteDeviceFragment(
-                item)
+                item
+            )
         findNavController().navigate(action)
     }
 }

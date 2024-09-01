@@ -46,7 +46,9 @@ class HtmlDialogFragment : DialogFragment {
             view.findViewById<TextView>(R.id.tvHeader).text = getString(title ?: R.string.error)
             view.findViewById<TextView>(R.id.tvMessage).text =
                 HtmlCompat.fromHtml(
-                    getString(message ?: R.string.error_loading_dialog), FROM_HTML_MODE_COMPACT)
+                    getString(message ?: R.string.error_loading_dialog),
+                    FROM_HTML_MODE_COMPACT,
+                )
 
             builder.setView(view).setNeutralButton(getString(R.string.close)) { dialog, _ ->
                 dialog.cancel()

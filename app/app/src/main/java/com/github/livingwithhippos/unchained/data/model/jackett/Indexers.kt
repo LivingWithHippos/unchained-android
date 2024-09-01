@@ -19,5 +19,5 @@ data class Indexer(
     @JacksonXmlProperty(localName = "description") val description: String,
     @JacksonXmlProperty(localName = "link") val link: String,
     @JacksonXmlProperty(localName = "type") val type: String,
-    @JacksonXmlProperty(localName = "caps") val capabilities: Capabilities
+    @JacksonXmlProperty(localName = "caps") val capabilities: Capabilities,
 )

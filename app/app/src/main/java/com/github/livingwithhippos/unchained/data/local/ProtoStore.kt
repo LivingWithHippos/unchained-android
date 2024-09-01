@@ -11,7 +11,7 @@ interface ProtoStore {
         clientId: String? = null,
         clientSecret: String? = null,
         accessToken: String? = null,
-        refreshToken: String? = null
+        refreshToken: String? = null,
     )
 
     suspend fun updateCredentials(
@@ -19,7 +19,7 @@ interface ProtoStore {
         clientId: String? = null,
         clientSecret: String? = null,
         accessToken: String? = null,
-        refreshToken: String? = null
+        refreshToken: String? = null,
     )
 
     suspend fun updateDeviceCode(deviceCode: String)

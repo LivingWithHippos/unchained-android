@@ -14,7 +14,7 @@ sealed class RepositoryListItem {
         val name: String,
         val version: Double,
         val description: String,
-        val author: String
+        val author: String,
     ) : RepositoryListItem(), Parcelable
 
     data class Plugin(
@@ -26,7 +26,7 @@ sealed class RepositoryListItem {
         val author: String?,
         // see PluginStatus
         var status: String,
-        var statusTranslation: String
+        var statusTranslation: String,
     ) : RepositoryListItem()
 }
 
@@ -64,14 +64,16 @@ class PluginRepositoryAdapter(listener: PluginListener) :
     class DiffCallback : DiffUtil.ItemCallback<RepositoryListItem>() {
         override fun areItemsTheSame(
             oldItem: RepositoryListItem,
-            newItem: RepositoryListItem
+            newItem: RepositoryListItem,
         ): Boolean {
             // trick for smart casting
-            if (oldItem is RepositoryListItem.Repository &&
-                newItem is RepositoryListItem.Repository) {
+            if (
+                oldItem is RepositoryListItem.Repository && newItem is RepositoryListItem.Repository
+            ) {
                 return oldItem.link.equals(newItem.link, ignoreCase = true)
-            } else if (oldItem is RepositoryListItem.Plugin &&
-                newItem is RepositoryListItem.Plugin) {
+            } else if (
+                oldItem is RepositoryListItem.Plugin && newItem is RepositoryListItem.Plugin
+            ) {
                 return oldItem.repository.equals(newItem.repository, ignoreCase = true) &&
                     oldItem.link.equals(newItem.link, ignoreCase = true)
             } else return false
@@ -79,16 +81,18 @@ class PluginRepositoryAdapter(listener: PluginListener) :
 
         override fun areContentsTheSame(
             oldItem: RepositoryListItem,
-            newItem: RepositoryListItem
+            newItem: RepositoryListItem,
         ): Boolean {
             // trick for smart casting
-            if (oldItem is RepositoryListItem.Repository &&
-                newItem is RepositoryListItem.Repository) {
+            if (
+                oldItem is RepositoryListItem.Repository && newItem is RepositoryListItem.Repository
+            ) {
                 return oldItem.version == newItem.version &&
                     oldItem.name == newItem.name &&
                     oldItem.description == newItem.description
-            } else if (oldItem is RepositoryListItem.Plugin &&
-                newItem is RepositoryListItem.Plugin) {
+            } else if (
+                oldItem is RepositoryListItem.Plugin && newItem is RepositoryListItem.Plugin
+            ) {
                 return oldItem.name == newItem.name &&
                     oldItem.version == newItem.version &&
                     oldItem.status == newItem.status

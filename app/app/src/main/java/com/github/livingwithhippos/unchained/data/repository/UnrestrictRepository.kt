@@ -19,7 +19,7 @@ constructor(protoStore: ProtoStore, private val unrestrictApiHelper: UnrestrictA
     suspend fun getEitherUnrestrictedLink(
         link: String,
         password: String? = null,
-        remote: Int? = null
+        remote: Int? = null,
     ): EitherResult<UnchainedNetworkException, DownloadItem> {
         val token = getToken()
 
@@ -27,9 +27,14 @@ constructor(protoStore: ProtoStore, private val unrestrictApiHelper: UnrestrictA
             eitherApiResult(
                 call = {
                     unrestrictApiHelper.getUnrestrictedLink(
-                        token = "Bearer $token", link = link, password = password, remote = remote)
+                        token = "Bearer $token",
+                        link = link,
+                        password = password,
+                        remote = remote,
+                    )
                 },
-                errorMessage = "Error Fetching Unrestricted Link Info")
+                errorMessage = "Error Fetching Unrestricted Link Info",
+            )
 
         return linkResponse
     }
@@ -38,7 +43,7 @@ constructor(protoStore: ProtoStore, private val unrestrictApiHelper: UnrestrictA
         linksList: List<String>,
         password: String? = null,
         remote: Int? = null,
-        callDelay: Long = 100
+        callDelay: Long = 100,
     ): List<EitherResult<UnchainedNetworkException, DownloadItem>> {
         val unrestrictedLinks =
             mutableListOf<EitherResult<UnchainedNetworkException, DownloadItem>>()
@@ -60,7 +65,8 @@ constructor(protoStore: ProtoStore, private val unrestrictApiHelper: UnrestrictA
                 call = {
                     unrestrictApiHelper.getUnrestrictedFolder(token = "Bearer $token", link = link)
                 },
-                errorMessage = "Error Fetching Unrestricted Folders Info")
+                errorMessage = "Error Fetching Unrestricted Folders Info",
+            )
 
         return folderResponse
     }
@@ -72,15 +78,21 @@ constructor(protoStore: ProtoStore, private val unrestrictApiHelper: UnrestrictA
 
         val requestBody: RequestBody =
             container.toRequestBody(
-                "application/octet-stream".toMediaTypeOrNull(), 0, container.size)
+                "application/octet-stream".toMediaTypeOrNull(),
+                0,
+                container.size,
+            )
 
         val uploadResponse =
             eitherApiResult(
                 call = {
                     unrestrictApiHelper.uploadContainer(
-                        token = "Bearer $token", container = requestBody)
+                        token = "Bearer $token",
+                        container = requestBody,
+                    )
                 },
-                errorMessage = "Error Uploading Container")
+                errorMessage = "Error Uploading Container",
+            )
 
         return uploadResponse
     }
@@ -93,7 +105,8 @@ constructor(protoStore: ProtoStore, private val unrestrictApiHelper: UnrestrictA
                 call = {
                     unrestrictApiHelper.getContainerLinks(token = "Bearer $token", link = link)
                 },
-                errorMessage = "Error getting container files")
+                errorMessage = "Error getting container files",
+            )
 
         return containerResponse
     }

@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "host_regex")
 class HostRegex(
     @PrimaryKey @ColumnInfo(name = "regex") val regex: String,
-    @ColumnInfo(name = "type") val type: Int = REGEX_TYPE_HOST
+    @ColumnInfo(name = "type") val type: Int = REGEX_TYPE_HOST,
 )
 
 const val REGEX_TYPE_HOST = 0

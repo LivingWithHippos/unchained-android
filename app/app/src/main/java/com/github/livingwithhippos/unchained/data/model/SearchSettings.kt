@@ -13,7 +13,7 @@ enum class Category(val id: Int) {
     VIDEOS(9),
     MUSIC(10),
     TV(11),
-    BOOKS(12)
+    BOOKS(12),
 }
 
 enum class Sorting(val id: Int) {
@@ -23,5 +23,5 @@ enum class Sorting(val id: Int) {
     SIZE_DESC(3),
     AZ(4),
     ZA(5),
-    DATE(6)
+    DATE(6),
 }
