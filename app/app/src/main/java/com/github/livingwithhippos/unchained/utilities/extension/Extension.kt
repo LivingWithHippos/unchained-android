@@ -86,13 +86,13 @@ fun Context.getThemeList(): List<ThemeItem> {
             ResourcesCompat.getColor(resources, R.color.three_md_theme_light_primaryContainer, null)
         ),
         ThemeItem(
-            "Black and White 01",
+            "Black and White",
             "bnw_01",
             THEME_AUTO,
             R.style.Theme_Unchained_Material3_Four,
-            ResourcesCompat.getColor(resources, R.color.four_md_theme_light_primary, null),
-            ResourcesCompat.getColor(resources, R.color.four_md_theme_light_surface, null),
-            ResourcesCompat.getColor(resources, R.color.four_md_theme_light_primaryContainer, null)
+            ResourcesCompat.getColor(resources, R.color.bnw_one_theme_primary, null),
+            ResourcesCompat.getColor(resources, R.color.bnw_one_theme_surface, null),
+            ResourcesCompat.getColor(resources, R.color.bnw_one_theme_primaryContainer, null)
         ),
     )
 }
