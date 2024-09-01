@@ -26,7 +26,7 @@ data class Plugin(
     }
 }
 
-fun isCompatible(engineVersion: Double): Boolean {
+fun isCompatible(engineVersion: Float): Boolean {
     return engineVersion.toInt() == Parser.PLUGIN_ENGINE_VERSION.toInt() &&
         Parser.PLUGIN_ENGINE_VERSION >= engineVersion
 }

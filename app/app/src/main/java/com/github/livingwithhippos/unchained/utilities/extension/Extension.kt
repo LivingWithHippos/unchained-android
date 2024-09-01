@@ -36,6 +36,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Observer
 import com.github.livingwithhippos.unchained.R
+import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Companion.THEME_AUTO
+import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Companion.THEME_DAY
 import com.github.livingwithhippos.unchained.settings.view.ThemeItem
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import java.util.Locale
@@ -48,21 +50,77 @@ import timber.log.Timber
 fun Context.getThemeList(): List<ThemeItem> {
     return listOf(
         ThemeItem(
-            R.style.Theme_Unchained_Material3_One,
-            "Red 01",
-            ResourcesCompat.getColor(resources, R.color.one_seed, null)),
+            "Waves",
+            "waves_01",
+            THEME_DAY,
+            R.style.Theme_Unchained_Material3_Waves_One,
+            ResourcesCompat.getColor(resources, R.color.radical_red, null),
+            ResourcesCompat.getColor(resources, R.color.waves_one_theme_surface, null),
+            ResourcesCompat.getColor(resources, R.color.waves_one_theme_primaryContainer, null)),
         ThemeItem(
-            R.style.Theme_Unchained_Material3_Two,
-            "Green 01",
-            ResourcesCompat.getColor(resources, R.color.two_seed, null)),
+            "Black and White",
+            "bnw_01",
+            THEME_AUTO,
+            R.style.Theme_Unchained_Material3_BnW_One,
+            ResourcesCompat.getColor(resources, R.color.bnw_one_theme_primary, null),
+            ResourcesCompat.getColor(resources, R.color.bnw_one_theme_surface, null),
+            ResourcesCompat.getColor(resources, R.color.bnw_one_theme_primaryContainer, null)),
         ThemeItem(
-            R.style.Theme_Unchained_Material3_Three,
-            "Blue 01",
-            ResourcesCompat.getColor(resources, R.color.three_seed, null)),
+            "Red",
+            "red_01",
+            THEME_AUTO,
+            R.style.Theme_Unchained_Material3_Red_One,
+            ResourcesCompat.getColor(resources, R.color.red_one_theme_primary, null),
+            ResourcesCompat.getColor(resources, R.color.red_one_theme_surface, null),
+            ResourcesCompat.getColor(resources, R.color.red_one_theme_primaryContainer, null)),
         ThemeItem(
-            R.style.Theme_Unchained_Material3_Four,
-            "Black and White 01",
-            ResourcesCompat.getColor(resources, R.color.four_seed, null)),
+            "Orange",
+            "orange_01",
+            THEME_AUTO,
+            R.style.Theme_Unchained_Material3_Orange_One,
+            ResourcesCompat.getColor(resources, R.color.orange_one_theme_primary, null),
+            ResourcesCompat.getColor(resources, R.color.orange_one_theme_surface, null),
+            ResourcesCompat.getColor(resources, R.color.orange_one_theme_primaryContainer, null)),
+        ThemeItem(
+            "Yellow",
+            "yellow_01",
+            THEME_AUTO,
+            R.style.Theme_Unchained_Material3_Yellow_One,
+            ResourcesCompat.getColor(resources, R.color.yellow_one_theme_primary, null),
+            ResourcesCompat.getColor(resources, R.color.yellow_one_theme_surface, null),
+            ResourcesCompat.getColor(resources, R.color.yellow_one_theme_primaryContainer, null)),
+        ThemeItem(
+            "Purple",
+            "purple_01",
+            THEME_AUTO,
+            R.style.Theme_Unchained_Material3_Purple_One,
+            ResourcesCompat.getColor(resources, R.color.purple_one_theme_primary, null),
+            ResourcesCompat.getColor(resources, R.color.purple_one_theme_surface, null),
+            ResourcesCompat.getColor(resources, R.color.purple_one_theme_primaryContainer, null)),
+        ThemeItem(
+            "Green",
+            "green_01",
+            THEME_AUTO,
+            R.style.Theme_Unchained_Material3_Green_One,
+            ResourcesCompat.getColor(resources, R.color.green_one_theme_primary, null),
+            ResourcesCompat.getColor(resources, R.color.green_one_theme_surface, null),
+            ResourcesCompat.getColor(resources, R.color.green_one_theme_primaryContainer, null)),
+        ThemeItem(
+            "Blue",
+            "blue_01",
+            THEME_AUTO,
+            R.style.Theme_Unchained_Material3_Blue_One,
+            ResourcesCompat.getColor(resources, R.color.blue_one_theme_primary, null),
+            ResourcesCompat.getColor(resources, R.color.blue_one_theme_surface, null),
+            ResourcesCompat.getColor(resources, R.color.blue_one_theme_primaryContainer, null)),
+        ThemeItem(
+            "Grey",
+            "grey_01",
+            THEME_AUTO,
+            R.style.Theme_Unchained_Material3_Grey_One,
+            ResourcesCompat.getColor(resources, R.color.grey_one_theme_primary, null),
+            ResourcesCompat.getColor(resources, R.color.grey_one_theme_surface, null),
+            ResourcesCompat.getColor(resources, R.color.grey_one_theme_primaryContainer, null)),
     )
 }
 

@@ -18,19 +18,22 @@
         android:onClick="@{() -> listener.onThemeClick(item)}"
         android:padding="10dp">
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
+        <com.github.livingwithhippos.unchained.customview.ThemeColorsCircle
             android:id="@+id/theme_color"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_marginEnd="16dp"
             android:clickable="false"
-            android:backgroundTint="@{item.seedColor}"
+            app:topColor="@{item.primaryColorID}"
+            app:bottomLeftColor="@{item.surfaceColorID}"
+            app:bottomRightColor="@{item.primaryContainerColorID}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/theme_name"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            >
 
-        </com.google.android.material.floatingactionbutton.FloatingActionButton>
+        </com.github.livingwithhippos.unchained.customview.ThemeColorsCircle>
 
         <TextView
             android:id="@+id/theme_name"

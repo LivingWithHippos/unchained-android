@@ -29,7 +29,7 @@
         android:networkSecurityConfig="@xml/network_security_config"
         android:roundIcon="@mipmap/icon_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Unchained.Material3.Two"
+        android:theme="@style/Theme.Unchained.Material3.Green.One"
         >
 
         <activity

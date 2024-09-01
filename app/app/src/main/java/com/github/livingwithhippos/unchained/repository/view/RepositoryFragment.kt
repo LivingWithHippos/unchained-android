@@ -165,8 +165,8 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
                                 PluginVersion(
                                     repository = repository.key.link,
                                     plugin = plug.key.name,
-                                    version = 0F,
-                                    engine = 0.0,
+                                    version = 0f,
+                                    engine = 0.0f,
                                     link = repository.key.link,
                                 )
                         } else {
@@ -180,7 +180,7 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
                         val pickedStatus =
                             when {
                                 isCompatible(pickedVersion.engine) -> PluginStatus.isNew
-                                pickedVersion.engine == 0.0 -> PluginStatus.unknown
+                                pickedVersion.engine == 0.0f -> PluginStatus.unknown
                                 else -> PluginStatus.incompatible
                             }
 
@@ -212,8 +212,8 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
                                     PluginVersion(
                                         repository = repository.key.link,
                                         plugin = onlinePlugin.key.name,
-                                        version = 0F,
-                                        engine = 0.0,
+                                        version = 0f,
+                                        engine = 0.0f,
                                         link = repository.key.link,
                                     )
                                 } else {
@@ -223,7 +223,7 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
                                         repository = repository.key.link,
                                         plugin = onlinePlugin.key.name,
                                         version = installedPlugin.version,
-                                        engine = 0.0,
+                                        engine = 0.0f,
                                         link = repository.key.link,
                                     )
                                 }
@@ -231,7 +231,7 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
                             val pickedStatus =
                                 when {
                                     isCompatible(pickedVersion.engine) -> PluginStatus.isNew
-                                    pickedVersion.engine == 0.0 -> PluginStatus.unknown
+                                    pickedVersion.engine == 0.0f -> PluginStatus.unknown
                                     else -> PluginStatus.incompatible
                                 }
                             getPluginItemFromVersion(

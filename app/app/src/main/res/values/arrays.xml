@@ -112,4 +112,10 @@
         <attr name="item_icon" format="reference" />
     </declare-styleable>
 
+    <declare-styleable name="ThemeColorsCircle">
+        <attr name="topColor" format="color" />
+        <attr name="bottomLeftColor" format="color" />
+        <attr name="bottomRightColor" format="color" />
+    </declare-styleable>
+
 </resources>

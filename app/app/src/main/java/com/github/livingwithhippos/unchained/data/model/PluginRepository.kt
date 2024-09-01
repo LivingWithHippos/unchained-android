@@ -57,6 +57,6 @@ data class PluginVersion(
     @ColumnInfo(name = "plugin_repository") val repository: String,
     @ColumnInfo(name = "plugin") val plugin: String,
     @ColumnInfo(name = "version") val version: Float,
-    @ColumnInfo(name = "engine") val engine: Double,
+    @ColumnInfo(name = "engine") val engine: Float,
     @ColumnInfo(name = "plugin_link") val link: String
 )
