@@ -60,7 +60,7 @@ android {
         applicationId = "com.github.livingwithhippos.unchained"
         minSdk = 22
         targetSdk = 34
-        versionCode = 42
+        versionCode = 44
         versionName = "1.3.0"
 
         javaCompileOptions {
