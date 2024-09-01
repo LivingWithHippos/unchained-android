@@ -55,41 +55,41 @@ fun Context.getThemeList(): List<ThemeItem> {
             THEME_DAY,
             R.style.Theme_Unchained_Material3_Waves_One,
             ResourcesCompat.getColor(resources, R.color.radical_red, null),
-            ResourcesCompat.getColor(resources, R.color.one_md_theme_light_surface, null),
-            ResourcesCompat.getColor(resources, R.color.one_md_theme_light_primaryContainer, null)
+            ResourcesCompat.getColor(resources, R.color.waves_one_md_theme_surface, null),
+            ResourcesCompat.getColor(resources, R.color.waves_one_md_theme_primaryContainer, null)
         ),
         ThemeItem(
             "Red 01",
             "red_01",
             THEME_AUTO,
-            R.style.Theme_Unchained_Material3_One,
-            ResourcesCompat.getColor(resources, R.color.one_md_theme_light_primary, null),
-            ResourcesCompat.getColor(resources, R.color.one_md_theme_light_surface, null),
-            ResourcesCompat.getColor(resources, R.color.one_md_theme_light_primaryContainer, null)
+            R.style.Theme_Unchained_Material3_Red_One,
+            ResourcesCompat.getColor(resources, R.color.red_one_theme_primary, null),
+            ResourcesCompat.getColor(resources, R.color.red_one_theme_surface, null),
+            ResourcesCompat.getColor(resources, R.color.red_one_theme_primaryContainer, null)
         ),
         ThemeItem(
             "Green 01",
             "green_01",
             THEME_AUTO,
-            R.style.Theme_Unchained_Material3_Two,
-            ResourcesCompat.getColor(resources, R.color.two_md_theme_light_primary, null),
-            ResourcesCompat.getColor(resources, R.color.two_md_theme_light_surface, null),
-            ResourcesCompat.getColor(resources, R.color.two_md_theme_light_primaryContainer, null)
+            R.style.Theme_Unchained_Material3_Green_One,
+            ResourcesCompat.getColor(resources, R.color.green_one_theme_primary, null),
+            ResourcesCompat.getColor(resources, R.color.green_one_theme_surface, null),
+            ResourcesCompat.getColor(resources, R.color.green_one_theme_primaryContainer, null)
         ),
         ThemeItem(
             "Blue 01",
             "blue_01",
             THEME_AUTO,
-            R.style.Theme_Unchained_Material3_Three,
-            ResourcesCompat.getColor(resources, R.color.three_md_theme_light_primary, null),
-            ResourcesCompat.getColor(resources, R.color.three_md_theme_light_surface, null),
-            ResourcesCompat.getColor(resources, R.color.three_md_theme_light_primaryContainer, null)
+            R.style.Theme_Unchained_Material3_Blue_One,
+            ResourcesCompat.getColor(resources, R.color.blue_one_md_theme_primary, null),
+            ResourcesCompat.getColor(resources, R.color.blue_one_md_theme_surface, null),
+            ResourcesCompat.getColor(resources, R.color.blue_one_md_theme_primaryContainer, null)
         ),
         ThemeItem(
             "Black and White",
             "bnw_01",
             THEME_AUTO,
-            R.style.Theme_Unchained_Material3_Four,
+            R.style.Theme_Unchained_Material3_BnW_One,
             ResourcesCompat.getColor(resources, R.color.bnw_one_theme_primary, null),
             ResourcesCompat.getColor(resources, R.color.bnw_one_theme_surface, null),
             ResourcesCompat.getColor(resources, R.color.bnw_one_theme_primaryContainer, null)

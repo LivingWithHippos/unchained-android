@@ -26,9 +26,9 @@ class ThemeColorsCircle @JvmOverloads constructor(
         context.theme.obtainStyledAttributes(attrs, R.styleable.ThemeColorsCircle, 0, 0).apply {
             try {
 
-                topColor = getColor(R.styleable.ThemeColorsCircle_topColor, ContextCompat.getColor(context, R.color.one_md_theme_light_primary))
-                bottomLeftColor = getColor(R.styleable.ThemeColorsCircle_bottomLeftColor, ContextCompat.getColor(context, R.color.one_md_theme_light_surface))
-                bottomRightColor = getColor(R.styleable.ThemeColorsCircle_bottomRightColor, ContextCompat.getColor(context, R.color.one_md_theme_light_primaryContainer))
+                topColor = getColor(R.styleable.ThemeColorsCircle_topColor, ContextCompat.getColor(context, R.color.green_one_theme_primary))
+                bottomLeftColor = getColor(R.styleable.ThemeColorsCircle_bottomLeftColor, ContextCompat.getColor(context, R.color.green_one_theme_surface))
+                bottomRightColor = getColor(R.styleable.ThemeColorsCircle_bottomRightColor, ContextCompat.getColor(context, R.color.green_one_theme_primaryContainer))
 
             } finally {
                 recycle()

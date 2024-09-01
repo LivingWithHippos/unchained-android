@@ -82,7 +82,7 @@ constructor(
     }
 
     fun getCurrentTheme(): Int {
-        return preferences.getInt(KEY_THEME_NEW, R.style.Theme_Unchained_Material3_One)
+        return preferences.getInt(KEY_THEME_NEW, R.style.Theme_Unchained_Material3_Green_One)
     }
 }
 

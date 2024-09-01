@@ -93,95 +93,7 @@
         <item name="colorSurfaceContainerHighest">@color/waves_one_md_theme_surfaceContainerHighest</item>
     </style>
 
-    <style name="Theme.Unchained.Material3.One" parent="Theme.Unchained.Material3">
-        <item name="colorPrimary">@color/one_md_theme_light_primary</item>
-        <item name="colorOnPrimary">@color/one_md_theme_light_onPrimary</item>
-        <item name="colorPrimaryContainer">@color/one_md_theme_light_primaryContainer</item>
-        <item name="colorOnPrimaryContainer">@color/one_md_theme_light_onPrimaryContainer</item>
-        <item name="colorSecondary">@color/one_md_theme_light_secondary</item>
-        <item name="colorOnSecondary">@color/one_md_theme_light_onSecondary</item>
-        <item name="colorSecondaryContainer">@color/one_md_theme_light_secondaryContainer</item>
-        <item name="colorOnSecondaryContainer">@color/one_md_theme_light_onSecondaryContainer</item>
-        <item name="colorTertiary">@color/one_md_theme_light_tertiary</item>
-        <item name="colorOnTertiary">@color/one_md_theme_light_onTertiary</item>
-        <item name="colorTertiaryContainer">@color/one_md_theme_light_tertiaryContainer</item>
-        <item name="colorOnTertiaryContainer">@color/one_md_theme_light_onTertiaryContainer</item>
-        <item name="colorError">@color/one_md_theme_light_error</item>
-        <item name="colorOnError">@color/one_md_theme_light_onError</item>
-        <item name="colorErrorContainer">@color/one_md_theme_light_errorContainer</item>
-        <item name="colorOnErrorContainer">@color/one_md_theme_light_onErrorContainer</item>
-        <item name="colorOutline">@color/one_md_theme_light_outline</item>
-        <item name="android:colorBackground">@color/one_md_theme_light_background</item>
-        <item name="colorOnBackground">@color/one_md_theme_light_onBackground</item>
-        <item name="colorSurface">@color/one_md_theme_light_surface</item>
-        <item name="colorOnSurface">@color/one_md_theme_light_onSurface</item>
-        <item name="colorSurfaceVariant">@color/one_md_theme_light_surfaceVariant</item>
-        <item name="colorOnSurfaceVariant">@color/one_md_theme_light_onSurfaceVariant</item>
-        <item name="colorSurfaceInverse">@color/one_md_theme_light_inverseSurface</item>
-        <item name="colorOnSurfaceInverse">@color/one_md_theme_light_inverseOnSurface</item>
-        <item name="colorPrimaryInverse">@color/one_md_theme_light_inversePrimary</item>
-    </style>
-
-    <style name="Theme.Unchained.Material3.Two" parent="Theme.Unchained.Material3">
-        <item name="colorPrimary">@color/two_md_theme_light_primary</item>
-        <item name="colorOnPrimary">@color/two_md_theme_light_onPrimary</item>
-        <item name="colorPrimaryContainer">@color/two_md_theme_light_primaryContainer</item>
-        <item name="colorOnPrimaryContainer">@color/two_md_theme_light_onPrimaryContainer</item>
-        <item name="colorSecondary">@color/two_md_theme_light_secondary</item>
-        <item name="colorOnSecondary">@color/two_md_theme_light_onSecondary</item>
-        <item name="colorSecondaryContainer">@color/two_md_theme_light_secondaryContainer</item>
-        <item name="colorOnSecondaryContainer">@color/two_md_theme_light_onSecondaryContainer</item>
-        <item name="colorTertiary">@color/two_md_theme_light_tertiary</item>
-        <item name="colorOnTertiary">@color/two_md_theme_light_onTertiary</item>
-        <item name="colorTertiaryContainer">@color/two_md_theme_light_tertiaryContainer</item>
-        <item name="colorOnTertiaryContainer">@color/two_md_theme_light_onTertiaryContainer</item>
-        <item name="colorError">@color/two_md_theme_light_error</item>
-        <item name="colorOnError">@color/two_md_theme_light_onError</item>
-        <item name="colorErrorContainer">@color/two_md_theme_light_errorContainer</item>
-        <item name="colorOnErrorContainer">@color/two_md_theme_light_onErrorContainer</item>
-        <item name="colorOutline">@color/two_md_theme_light_outline</item>
-        <item name="android:colorBackground">@color/two_md_theme_light_background</item>
-        <item name="colorOnBackground">@color/two_md_theme_light_onBackground</item>
-        <item name="colorSurface">@color/two_md_theme_light_surface</item>
-        <item name="colorOnSurface">@color/two_md_theme_light_onSurface</item>
-        <item name="colorSurfaceVariant">@color/two_md_theme_light_surfaceVariant</item>
-        <item name="colorOnSurfaceVariant">@color/two_md_theme_light_onSurfaceVariant</item>
-        <item name="colorSurfaceInverse">@color/two_md_theme_light_inverseSurface</item>
-        <item name="colorOnSurfaceInverse">@color/two_md_theme_light_inverseOnSurface</item>
-        <item name="colorPrimaryInverse">@color/two_md_theme_light_inversePrimary</item>
-    </style>
-
-
-    <style name="Theme.Unchained.Material3.Three" parent="Theme.Unchained.Material3">
-        <item name="colorPrimary">@color/three_md_theme_light_primary</item>
-        <item name="colorOnPrimary">@color/three_md_theme_light_onPrimary</item>
-        <item name="colorPrimaryContainer">@color/three_md_theme_light_primaryContainer</item>
-        <item name="colorOnPrimaryContainer">@color/three_md_theme_light_onPrimaryContainer</item>
-        <item name="colorSecondary">@color/three_md_theme_light_secondary</item>
-        <item name="colorOnSecondary">@color/three_md_theme_light_onSecondary</item>
-        <item name="colorSecondaryContainer">@color/three_md_theme_light_secondaryContainer</item>
-        <item name="colorOnSecondaryContainer">@color/three_md_theme_light_onSecondaryContainer</item>
-        <item name="colorTertiary">@color/three_md_theme_light_tertiary</item>
-        <item name="colorOnTertiary">@color/three_md_theme_light_onTertiary</item>
-        <item name="colorTertiaryContainer">@color/three_md_theme_light_tertiaryContainer</item>
-        <item name="colorOnTertiaryContainer">@color/three_md_theme_light_onTertiaryContainer</item>
-        <item name="colorError">@color/three_md_theme_light_error</item>
-        <item name="colorOnError">@color/three_md_theme_light_onError</item>
-        <item name="colorErrorContainer">@color/three_md_theme_light_errorContainer</item>
-        <item name="colorOnErrorContainer">@color/three_md_theme_light_onErrorContainer</item>
-        <item name="colorOutline">@color/three_md_theme_light_outline</item>
-        <item name="android:colorBackground">@color/three_md_theme_light_background</item>
-        <item name="colorOnBackground">@color/three_md_theme_light_onBackground</item>
-        <item name="colorSurface">@color/three_md_theme_light_surface</item>
-        <item name="colorOnSurface">@color/three_md_theme_light_onSurface</item>
-        <item name="colorSurfaceVariant">@color/three_md_theme_light_surfaceVariant</item>
-        <item name="colorOnSurfaceVariant">@color/three_md_theme_light_onSurfaceVariant</item>
-        <item name="colorSurfaceInverse">@color/three_md_theme_light_inverseSurface</item>
-        <item name="colorOnSurfaceInverse">@color/three_md_theme_light_inverseOnSurface</item>
-        <item name="colorPrimaryInverse">@color/three_md_theme_light_inversePrimary</item>
-    </style>
-
-    <style name="Theme.Unchained.Material3.Four" parent="Theme.Unchained.Material3">
+    <style name="Theme.Unchained.Material3.BnW.One" parent="Theme.Unchained.Material3">
         <item name="colorPrimary">@color/bnw_one_theme_primary</item>
         <item name="colorOnPrimary">@color/bnw_one_theme_onPrimary</item>
         <item name="colorPrimaryContainer">@color/bnw_one_theme_primaryContainer</item>
@@ -229,4 +141,155 @@
         <item name="colorSurfaceContainerHigh">@color/bnw_one_theme_surfaceContainerHigh</item>
         <item name="colorSurfaceContainerHighest">@color/bnw_one_theme_surfaceContainerHighest</item>
     </style>
+
+    <style name="Theme.Unchained.Material3.Red.One" parent="Theme.Unchained.Material3">
+        <item name="colorPrimary">@color/red_one_theme_primary</item>
+        <item name="colorOnPrimary">@color/red_one_theme_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/red_one_theme_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/red_one_theme_onPrimaryContainer</item>
+        <item name="colorSecondary">@color/red_one_theme_secondary</item>
+        <item name="colorOnSecondary">@color/red_one_theme_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/red_one_theme_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/red_one_theme_onSecondaryContainer</item>
+        <item name="colorTertiary">@color/red_one_theme_tertiary</item>
+        <item name="colorOnTertiary">@color/red_one_theme_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/red_one_theme_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/red_one_theme_onTertiaryContainer</item>
+        <item name="colorError">@color/red_one_theme_error</item>
+        <item name="colorOnError">@color/red_one_theme_onError</item>
+        <item name="colorErrorContainer">@color/red_one_theme_errorContainer</item>
+        <item name="colorOnErrorContainer">@color/red_one_theme_onErrorContainer</item>
+        <item name="android:colorBackground">@color/red_one_theme_background</item>
+        <item name="colorOnBackground">@color/red_one_theme_onBackground</item>
+        <item name="colorSurface">@color/red_one_theme_surface</item>
+        <item name="colorOnSurface">@color/red_one_theme_onSurface</item>
+        <item name="colorSurfaceVariant">@color/red_one_theme_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/red_one_theme_onSurfaceVariant</item>
+        <item name="colorOutline">@color/red_one_theme_outline</item>
+        <item name="colorOutlineVariant">@color/red_one_theme_outlineVariant</item>
+        <item name="colorSurfaceInverse">@color/red_one_theme_inverseSurface</item>
+        <item name="colorOnSurfaceInverse">@color/red_one_theme_inverseOnSurface</item>
+        <item name="colorPrimaryInverse">@color/red_one_theme_inversePrimary</item>
+        <item name="colorPrimaryFixed">@color/red_one_theme_primaryFixed</item>
+        <item name="colorOnPrimaryFixed">@color/red_one_theme_onPrimaryFixed</item>
+        <item name="colorPrimaryFixedDim">@color/red_one_theme_primaryFixedDim</item>
+        <item name="colorOnPrimaryFixedVariant">@color/red_one_theme_onPrimaryFixedVariant</item>
+        <item name="colorSecondaryFixed">@color/red_one_theme_secondaryFixed</item>
+        <item name="colorOnSecondaryFixed">@color/red_one_theme_onSecondaryFixed</item>
+        <item name="colorSecondaryFixedDim">@color/red_one_theme_secondaryFixedDim</item>
+        <item name="colorOnSecondaryFixedVariant">@color/red_one_theme_onSecondaryFixedVariant</item>
+        <item name="colorTertiaryFixed">@color/red_one_theme_tertiaryFixed</item>
+        <item name="colorOnTertiaryFixed">@color/red_one_theme_onTertiaryFixed</item>
+        <item name="colorTertiaryFixedDim">@color/red_one_theme_tertiaryFixedDim</item>
+        <item name="colorOnTertiaryFixedVariant">@color/red_one_theme_onTertiaryFixedVariant</item>
+        <item name="colorSurfaceDim">@color/red_one_theme_surfaceDim</item>
+        <item name="colorSurfaceBright">@color/red_one_theme_surfaceBright</item>
+        <item name="colorSurfaceContainerLowest">@color/red_one_theme_surfaceContainerLowest</item>
+        <item name="colorSurfaceContainerLow">@color/red_one_theme_surfaceContainerLow</item>
+        <item name="colorSurfaceContainer">@color/red_one_theme_surfaceContainer</item>
+        <item name="colorSurfaceContainerHigh">@color/red_one_theme_surfaceContainerHigh</item>
+        <item name="colorSurfaceContainerHighest">@color/red_one_theme_surfaceContainerHighest</item>
+    </style>
+
+    <style name="Theme.Unchained.Material3.Green.One" parent="Theme.Unchained.Material3">
+        <item name="colorPrimary">@color/green_one_theme_primary</item>
+        <item name="colorOnPrimary">@color/green_one_theme_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/green_one_theme_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/green_one_theme_onPrimaryContainer</item>
+        <item name="colorSecondary">@color/green_one_theme_secondary</item>
+        <item name="colorOnSecondary">@color/green_one_theme_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/green_one_theme_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/green_one_theme_onSecondaryContainer</item>
+        <item name="colorTertiary">@color/green_one_theme_tertiary</item>
+        <item name="colorOnTertiary">@color/green_one_theme_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/green_one_theme_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/green_one_theme_onTertiaryContainer</item>
+        <item name="colorError">@color/green_one_theme_error</item>
+        <item name="colorOnError">@color/green_one_theme_onError</item>
+        <item name="colorErrorContainer">@color/green_one_theme_errorContainer</item>
+        <item name="colorOnErrorContainer">@color/green_one_theme_onErrorContainer</item>
+        <item name="android:colorBackground">@color/green_one_theme_background</item>
+        <item name="colorOnBackground">@color/green_one_theme_onBackground</item>
+        <item name="colorSurface">@color/green_one_theme_surface</item>
+        <item name="colorOnSurface">@color/green_one_theme_onSurface</item>
+        <item name="colorSurfaceVariant">@color/green_one_theme_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/green_one_theme_onSurfaceVariant</item>
+        <item name="colorOutline">@color/green_one_theme_outline</item>
+        <item name="colorOutlineVariant">@color/green_one_theme_outlineVariant</item>
+        <item name="colorSurfaceInverse">@color/green_one_theme_inverseSurface</item>
+        <item name="colorOnSurfaceInverse">@color/green_one_theme_inverseOnSurface</item>
+        <item name="colorPrimaryInverse">@color/green_one_theme_inversePrimary</item>
+        <item name="colorPrimaryFixed">@color/green_one_theme_primaryFixed</item>
+        <item name="colorOnPrimaryFixed">@color/green_one_theme_onPrimaryFixed</item>
+        <item name="colorPrimaryFixedDim">@color/green_one_theme_primaryFixedDim</item>
+        <item name="colorOnPrimaryFixedVariant">@color/green_one_theme_onPrimaryFixedVariant</item>
+        <item name="colorSecondaryFixed">@color/green_one_theme_secondaryFixed</item>
+        <item name="colorOnSecondaryFixed">@color/green_one_theme_onSecondaryFixed</item>
+        <item name="colorSecondaryFixedDim">@color/green_one_theme_secondaryFixedDim</item>
+        <item name="colorOnSecondaryFixedVariant">@color/green_one_theme_onSecondaryFixedVariant</item>
+        <item name="colorTertiaryFixed">@color/green_one_theme_tertiaryFixed</item>
+        <item name="colorOnTertiaryFixed">@color/green_one_theme_onTertiaryFixed</item>
+        <item name="colorTertiaryFixedDim">@color/green_one_theme_tertiaryFixedDim</item>
+        <item name="colorOnTertiaryFixedVariant">@color/green_one_theme_onTertiaryFixedVariant</item>
+        <item name="colorSurfaceDim">@color/green_one_theme_surfaceDim</item>
+        <item name="colorSurfaceBright">@color/green_one_theme_surfaceBright</item>
+        <item name="colorSurfaceContainerLowest">@color/green_one_theme_surfaceContainerLowest</item>
+        <item name="colorSurfaceContainerLow">@color/green_one_theme_surfaceContainerLow</item>
+        <item name="colorSurfaceContainer">@color/green_one_theme_surfaceContainer</item>
+        <item name="colorSurfaceContainerHigh">@color/green_one_theme_surfaceContainerHigh</item>
+        <item name="colorSurfaceContainerHighest">@color/green_one_theme_surfaceContainerHighest</item>
+    </style>
+
+    <style name="Theme.Unchained.Material3.Blue.One" parent="Theme.Unchained.Material3">
+
+        <item name="colorPrimary">@color/blue_one_md_theme_primary</item>
+        <item name="colorOnPrimary">@color/blue_one_md_theme_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/blue_one_md_theme_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/blue_one_md_theme_onPrimaryContainer</item>
+        <item name="colorSecondary">@color/blue_one_md_theme_secondary</item>
+        <item name="colorOnSecondary">@color/blue_one_md_theme_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/blue_one_md_theme_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/blue_one_md_theme_onSecondaryContainer</item>
+        <item name="colorTertiary">@color/blue_one_md_theme_tertiary</item>
+        <item name="colorOnTertiary">@color/blue_one_md_theme_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/blue_one_md_theme_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/blue_one_md_theme_onTertiaryContainer</item>
+        <item name="colorError">@color/blue_one_md_theme_error</item>
+        <item name="colorOnError">@color/blue_one_md_theme_onError</item>
+        <item name="colorErrorContainer">@color/blue_one_md_theme_errorContainer</item>
+        <item name="colorOnErrorContainer">@color/blue_one_md_theme_onErrorContainer</item>
+        <item name="android:colorBackground">@color/blue_one_md_theme_background</item>
+        <item name="colorOnBackground">@color/blue_one_md_theme_onBackground</item>
+        <item name="colorSurface">@color/blue_one_md_theme_surface</item>
+        <item name="colorOnSurface">@color/blue_one_md_theme_onSurface</item>
+        <item name="colorSurfaceVariant">@color/blue_one_md_theme_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/blue_one_md_theme_onSurfaceVariant</item>
+        <item name="colorOutline">@color/blue_one_md_theme_outline</item>
+        <item name="colorOutlineVariant">@color/blue_one_md_theme_outlineVariant</item>
+        <item name="colorSurfaceInverse">@color/blue_one_md_theme_inverseSurface</item>
+        <item name="colorOnSurfaceInverse">@color/blue_one_md_theme_inverseOnSurface</item>
+        <item name="colorPrimaryInverse">@color/blue_one_md_theme_inversePrimary</item>
+        <item name="colorPrimaryFixed">@color/blue_one_md_theme_primaryFixed</item>
+        <item name="colorOnPrimaryFixed">@color/blue_one_md_theme_onPrimaryFixed</item>
+        <item name="colorPrimaryFixedDim">@color/blue_one_md_theme_primaryFixedDim</item>
+        <item name="colorOnPrimaryFixedVariant">@color/blue_one_md_theme_onPrimaryFixedVariant</item>
+        <item name="colorSecondaryFixed">@color/blue_one_md_theme_secondaryFixed</item>
+        <item name="colorOnSecondaryFixed">@color/blue_one_md_theme_onSecondaryFixed</item>
+        <item name="colorSecondaryFixedDim">@color/blue_one_md_theme_secondaryFixedDim</item>
+        <item name="colorOnSecondaryFixedVariant">@color/blue_one_md_theme_onSecondaryFixedVariant</item>
+        <item name="colorTertiaryFixed">@color/blue_one_md_theme_tertiaryFixed</item>
+        <item name="colorOnTertiaryFixed">@color/blue_one_md_theme_onTertiaryFixed</item>
+        <item name="colorTertiaryFixedDim">@color/blue_one_md_theme_tertiaryFixedDim</item>
+        <item name="colorOnTertiaryFixedVariant">@color/blue_one_md_theme_onTertiaryFixedVariant</item>
+        <item name="colorSurfaceDim">@color/blue_one_md_theme_surfaceDim</item>
+        <item name="colorSurfaceBright">@color/blue_one_md_theme_surfaceBright</item>
+        <item name="colorSurfaceContainerLowest">@color/blue_one_md_theme_surfaceContainerLowest</item>
+        <item name="colorSurfaceContainerLow">@color/blue_one_md_theme_surfaceContainerLow</item>
+        <item name="colorSurfaceContainer">@color/blue_one_md_theme_surfaceContainer</item>
+        <item name="colorSurfaceContainerHigh">@color/blue_one_md_theme_surfaceContainerHigh</item>
+        <item name="colorSurfaceContainerHighest">@color/blue_one_md_theme_surfaceContainerHighest</item>
+
+
+    </style>
+
 </resources>

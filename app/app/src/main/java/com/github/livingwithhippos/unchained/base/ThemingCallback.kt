@@ -19,7 +19,7 @@ class ThemingCallback(val preferences: SharedPreferences) : Application.Activity
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
         val themeRes =
             preferences.getInt(
-                SettingsFragment.KEY_THEME_NEW, R.style.Theme_Unchained_Material3_One)
+                SettingsFragment.KEY_THEME_NEW, R.style.Theme_Unchained_Material3_Green_One)
         val themesList = activity.applicationContext.getThemeList()
         val currentTheme: ThemeItem = themesList.find { it.themeID == themeRes } ?: themesList[1]
         setupNightMode(currentTheme.nightMode)
