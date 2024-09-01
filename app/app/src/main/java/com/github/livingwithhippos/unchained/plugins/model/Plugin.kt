@@ -5,6 +5,7 @@ import com.github.livingwithhippos.unchained.plugins.Parser
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import kotlinx.parcelize.Parcelize
+import timber.log.Timber
 
 // todo: replace all the Parcelable with the kotlin library
 @JsonClass(generateAdapter = true)
@@ -26,7 +27,7 @@ data class Plugin(
     }
 }
 
-fun isCompatible(engineVersion: Double): Boolean {
+fun isCompatible(engineVersion: Float): Boolean {
     return engineVersion.toInt() == Parser.PLUGIN_ENGINE_VERSION.toInt() &&
         Parser.PLUGIN_ENGINE_VERSION >= engineVersion
 }
