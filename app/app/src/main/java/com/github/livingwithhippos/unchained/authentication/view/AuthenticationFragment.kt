@@ -24,6 +24,7 @@ import com.github.livingwithhippos.unchained.utilities.EventObserver
 import com.github.livingwithhippos.unchained.utilities.PRIVATE_TOKEN
 import com.github.livingwithhippos.unchained.utilities.extension.getClipboardText
 import com.github.livingwithhippos.unchained.utilities.extension.getThemeColor
+import com.github.livingwithhippos.unchained.utilities.extension.hideKeyboard
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.google.android.material.textfield.TextInputEditText
@@ -51,6 +52,12 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
 
         authBinding.loginMessageDirect = getLoginMessage(LOGIN_TYPE_DIRECT)
         authBinding.loginMessageIndirect = getLoginMessage(LOGIN_TYPE_INDIRECT)
+
+        authBinding.tiPrivateCode.setOnFocusChangeListener { v, hasFocus ->
+            if (!hasFocus) {
+                v.hideKeyboard()
+            }
+        }
 
         activityViewModel.fsmAuthenticationState.observe(viewLifecycleOwner) {
             if (it != null) {
@@ -203,6 +210,7 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
     override fun onPasteCodeClick(codeInputField: TextInputEditText) {
         val pasteText = getClipboardText()
         codeInputField.setText(pasteText, TextView.BufferType.EDITABLE)
+        codeInputField.hideKeyboard()
     }
 
     override fun onOpenLinkClick(url: String) {
