@@ -104,8 +104,7 @@
             <!-- todo: decide max height, change to fill available height on horizontal. Also decide max width for sheet -->
             <androidx.core.widget.NestedScrollView
                 android:layout_width="match_parent"
-                android:layout_height="110dp"
-                >
+                android:layout_height="110dp">
 
                 <com.google.android.material.chip.ChipGroup
                     android:id="@+id/pluginsChipGroup"

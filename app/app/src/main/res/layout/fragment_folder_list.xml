@@ -43,7 +43,7 @@
             app:layout_constraintTop_toBottomOf="@id/progressIndicator"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/tfFilter"/>
+            app:layout_constraintBottom_toTopOf="@id/tfFilter" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tfFilter"
@@ -141,8 +141,7 @@
                 android:nextFocusUp="@id/cbFilterSize"
                 android:nextFocusRight="@id/bDeleteSelected"
                 android:nextFocusLeft="@id/cbFilterType"
-                android:nextFocusDown="@id/rvFolderList"
-                />
+                android:nextFocusDown="@id/rvFolderList" />
 
             <Button
                 android:id="@+id/bDeleteSelected"
@@ -156,8 +155,7 @@
                 android:nextFocusUp="@id/cbFilterSize"
                 android:nextFocusRight="@id/bDownloadSelected"
                 android:nextFocusLeft="@id/cbSelectAll"
-                android:nextFocusDown="@id/rvFolderList"
-                />
+                android:nextFocusDown="@id/rvFolderList" />
 
             <Button
                 android:id="@+id/bDownloadSelected"
@@ -171,8 +169,7 @@
                 android:nextFocusUp="@id/cbFilterSize"
                 android:nextFocusRight="@id/bShareSelected"
                 android:nextFocusLeft="@id/bDeleteSelected"
-                android:nextFocusDown="@id/rvFolderList"
-                />
+                android:nextFocusDown="@id/rvFolderList" />
 
             <Button
                 android:id="@+id/bShareSelected"
@@ -186,8 +183,7 @@
                 android:nextFocusUp="@id/cbFilterSize"
                 android:nextFocusRight="@id/rvFolderList"
                 android:nextFocusLeft="@id/bDownloadSelected"
-                android:nextFocusDown="@id/rvFolderList"
-                />
+                android:nextFocusDown="@id/rvFolderList" />
         </LinearLayout>
 
         <LinearLayout

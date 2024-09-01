@@ -4,196 +4,132 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <import type="android.view.View" />
 
         <variable
             name="item"
             type="com.github.livingwithhippos.unchained.data.local.RemoteDevice" />
     </data>
+
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cvService"
-            style="?attr/materialCardViewElevatedStyle"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:checkable="false"
-            android:focusable="true"
-            android:clickable="true"
-            android:layout_marginHorizontal="10dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginBottom="3dp"
-            android:padding="3dp"
-            app:cardCornerRadius="10dp"
-            app:cardElevation="3dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            >
+            android:layout_height="match_parent">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cvService"
+                style="?attr/materialCardViewElevatedStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="20dp"
-                >
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/serviceTypePicker"
-                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintBottom_toTopOf="@+id/tfName"
+                android:layout_gravity="center_horizontal"
+                android:checkable="false"
+                android:focusable="true"
+                android:clickable="true"
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="3dp"
+                android:padding="3dp"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="3dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent">
 
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" >
-
-                    <AutoCompleteTextView
-                        android:id="@+id/servicePickerText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="none"
-                        app:simpleItems="@array/service_types"
-                        />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tfName"
-                    style="?attr/textInputFilledStyle"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:hint="@string/name_required"
-                    android:importantForAutofill="no"
-                    app:layout_constraintBottom_toTopOf="@+id/tfPort"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/serviceTypePicker"
-                    >
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/tiName"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:imeOptions="actionNext"
-                        android:singleLine="true" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tfPort"
-                    style="?attr/textInputFilledStyle"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:hint="@string/port_required"
-                    android:importantForAutofill="no"
-                    app:endIconMode="clear_text"
-                    app:layout_constraintBottom_toTopOf="@+id/tfUsername"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tfName"
-                    >
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/tiPort"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:imeOptions="actionNext"
-                        android:inputType="number"
-                        android:singleLine="true" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tfUsername"
-                    style="?attr/textInputFilledStyle"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:hint="@string/username"
-                    android:importantForAutofill="no"
-                    app:endIconMode="clear_text"
-                    app:layout_constraintTop_toBottomOf="@+id/tfPort"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintBottom_toTopOf="@+id/tfPassword"
-                    >
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/tiUsername"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:imeOptions="actionNext"
-                        android:inputType="text"
-                        android:singleLine="true" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tfPassword"
-                    style="?attr/textInputFilledStyle"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:hint="@string/password"
-                    android:importantForAutofill="no"
-                    app:endIconMode="password_toggle"
-                    app:layout_constraintTop_toBottomOf="@+id/tfUsername"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintBottom_toTopOf="@+id/customServiceLayout"
-                    >
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/tiPassword"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:imeOptions="actionNext"
-                        android:inputType="textPassword"
-                        android:singleLine="true" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <LinearLayout
-                    android:id="@+id/customServiceLayout"
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingVertical="5dp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tfPassword"
-                    app:layout_constraintBottom_toTopOf="@+id/switchDefault"
-                    android:orientation="vertical">
+                    android:padding="20dp">
 
                     <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/tfApiToken"
+                        android:id="@+id/serviceTypePicker"
+                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintBottom_toTopOf="@+id/tfName"
+
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <AutoCompleteTextView
+                            android:id="@+id/servicePickerText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="none"
+                            app:simpleItems="@array/service_types" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tfName"
                         style="?attr/textInputFilledStyle"
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        android:hint="@string/api_token"
+                        android:hint="@string/name_required"
+                        android:importantForAutofill="no"
+                        app:layout_constraintBottom_toTopOf="@+id/tfPort"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/serviceTypePicker">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/tiName"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:imeOptions="actionNext"
+                            android:singleLine="true" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tfPort"
+                        style="?attr/textInputFilledStyle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:hint="@string/port_required"
+                        android:importantForAutofill="no"
+                        app:endIconMode="clear_text"
+                        app:layout_constraintBottom_toTopOf="@+id/tfUsername"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/tfName">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/tiPort"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:imeOptions="actionNext"
+                            android:inputType="number"
+                            android:singleLine="true" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tfUsername"
+                        style="?attr/textInputFilledStyle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:hint="@string/username"
                         android:importantForAutofill="no"
                         app:endIconMode="clear_text"
                         app:layout_constraintTop_toBottomOf="@+id/tfPort"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintBottom_toTopOf="@+id/tfPassword"
-                        >
+                        app:layout_constraintBottom_toTopOf="@+id/tfPassword">
 
                         <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/tiApiToken"
+                            android:id="@+id/tiUsername"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:imeOptions="actionNext"
@@ -202,53 +138,109 @@
 
                     </com.google.android.material.textfield.TextInputLayout>
 
-                </LinearLayout>
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tfPassword"
+                        style="?attr/textInputFilledStyle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:hint="@string/password"
+                        android:importantForAutofill="no"
+                        app:endIconMode="password_toggle"
+                        app:layout_constraintTop_toBottomOf="@+id/tfUsername"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintBottom_toTopOf="@+id/customServiceLayout">
 
-                <com.google.android.material.materialswitch.MaterialSwitch
-                    android:id="@+id/switchDefault"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:text="@string/set_as_default"
-                    android:focusable="true"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/customServiceLayout"
-                    app:layout_constraintBottom_toTopOf="@+id/bSaveService"
-                    />
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/tiPassword"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:imeOptions="actionNext"
+                            android:inputType="textPassword"
+                            android:singleLine="true" />
 
-                <Button
-                    android:id="@+id/bDeleteService"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:text="@string/remove"
-                    android:backgroundTint="?attr/colorError"
-                    android:textColor="?attr/colorOnError"
-                    android:contentDescription="@string/remove"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/switchDefault"
-                    app:layout_constraintEnd_toStartOf="@+id/bSaveService"
-                    />
+                    </com.google.android.material.textfield.TextInputLayout>
 
-                <Button
-                    android:id="@+id/bSaveService"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:text="@string/save"
-                    android:contentDescription="@string/save"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/bDeleteService"
-                    app:layout_constraintTop_toBottomOf="@+id/switchDefault"
-                    />
+                    <LinearLayout
+                        android:id="@+id/customServiceLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingVertical="5dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tfPassword"
+                        app:layout_constraintBottom_toTopOf="@+id/switchDefault"
+                        android:orientation="vertical">
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/tfApiToken"
+                            style="?attr/textInputFilledStyle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:hint="@string/api_token"
+                            android:importantForAutofill="no"
+                            app:endIconMode="clear_text"
+                            app:layout_constraintTop_toBottomOf="@+id/tfPort"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintBottom_toTopOf="@+id/tfPassword">
 
-        </com.google.android.material.card.MaterialCardView>
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/tiApiToken"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:imeOptions="actionNext"
+                                android:inputType="text"
+                                android:singleLine="true" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                    </LinearLayout>
+
+                    <com.google.android.material.materialswitch.MaterialSwitch
+                        android:id="@+id/switchDefault"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="@string/set_as_default"
+                        android:focusable="true"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/customServiceLayout"
+                        app:layout_constraintBottom_toTopOf="@+id/bSaveService" />
+
+                    <Button
+                        android:id="@+id/bDeleteService"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="@string/remove"
+                        android:backgroundTint="?attr/colorError"
+                        android:textColor="?attr/colorOnError"
+                        android:contentDescription="@string/remove"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/switchDefault"
+                        app:layout_constraintEnd_toStartOf="@+id/bSaveService" />
+
+                    <Button
+                        android:id="@+id/bSaveService"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="@string/save"
+                        android:contentDescription="@string/save"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/bDeleteService"
+                        app:layout_constraintTop_toBottomOf="@+id/switchDefault" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.core.widget.NestedScrollView>
 </layout>

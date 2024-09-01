@@ -39,8 +39,7 @@
                 android:layout_height="wrap_content"
                 android:checked="false"
                 android:tooltipText="@string/select_deselect_all"
-                android:text="@{selectedTorrents.toString(), default=`2`}"
-                />
+                android:text="@{selectedTorrents.toString(), default=`2`}" />
 
             <Button
                 android:id="@+id/bDeleteSelected"
@@ -51,8 +50,7 @@
                 android:onClick="@{() -> listener.deleteSelectedItems()}"
                 app:icon="@drawable/icon_delete"
                 app:iconSize="25dp"
-                android:tooltipText="@string/delete_selected"
-                />
+                android:tooltipText="@string/delete_selected" />
 
             <Button
                 android:id="@+id/bDownloadSelected"
@@ -63,8 +61,7 @@
                 android:onClick="@{() -> listener.downloadSelectedItems()}"
                 app:icon="@drawable/icon_download"
                 app:iconSize="25dp"
-                android:tooltipText="@string/download_selected"
-                />
+                android:tooltipText="@string/download_selected" />
 
             <Button
                 android:id="@+id/bDetailsSelected"

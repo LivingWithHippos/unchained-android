@@ -423,23 +423,24 @@
                     android:layout_height="match_parent"
                     android:padding="10dp"
                     android:orientation="vertical">
-                <TextView
-                    android:textAppearance="?attr/textAppearanceTitleSmall"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:text="@string/selected_files"
-                    android:textAlignment="center" />
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rvFileList"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="15dp"
-                    android:scrollbars="vertical"
-                    tools:listitem="@layout/item_list_torrent_file"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+                    <TextView
+                        android:textAppearance="?attr/textAppearanceTitleSmall"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="@string/selected_files"
+                        android:textAlignment="center" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rvFileList"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="15dp"
+                        android:scrollbars="vertical"
+                        tools:listitem="@layout/item_list_torrent_file"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
         </LinearLayout>

@@ -40,8 +40,7 @@
                 android:checked="false"
                 android:tooltipText="@string/select_deselect_all"
                 android:text="@{selectedDownloads.toString(), default=`2`}"
-                android:nextFocusDown="@id/rvDownloadList"
-                />
+                android:nextFocusDown="@id/rvDownloadList" />
 
             <Button
                 android:id="@+id/bDeleteSelected"
@@ -53,8 +52,7 @@
                 app:icon="@drawable/icon_delete"
                 app:iconSize="25dp"
                 android:tooltipText="@string/delete_selected"
-                android:nextFocusDown="@id/rvDownloadList"
-                />
+                android:nextFocusDown="@id/rvDownloadList" />
 
             <Button
                 android:id="@+id/bDownloadSelected"
@@ -66,8 +64,7 @@
                 app:icon="@drawable/icon_download"
                 app:iconSize="25dp"
                 android:tooltipText="@string/download_selected"
-                android:nextFocusDown="@id/rvDownloadList"
-                />
+                android:nextFocusDown="@id/rvDownloadList" />
 
 
             <Button
@@ -81,8 +78,7 @@
                 app:iconSize="25dp"
                 android:tooltipText="@string/share_selected"
                 android:nextFocusDown="@id/rvDownloadList"
-                android:nextFocusRight="@id/rvDownloadList"
-                />
+                android:nextFocusRight="@id/rvDownloadList" />
 
         </LinearLayout>
 
