@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
         <variable
             name="item"
             type="com.github.livingwithhippos.unchained.repository.model.RepositoryListItem.Repository" />
@@ -16,8 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clickable="true"
-        android:focusable="false"
-        >
+        android:focusable="false">
 
         <com.google.android.material.divider.MaterialDivider
             android:id="@+id/divider"
@@ -26,8 +26,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/tvName"
-             />
+            app:layout_constraintBottom_toTopOf="@id/tvName" />
 
         <ImageView
             android:id="@+id/ivStatus"
@@ -53,8 +52,7 @@
             app:layout_constraintBottom_toTopOf="@+id/tvAuthor"
             app:layout_constraintEnd_toStartOf="@id/bManage"
             app:layout_constraintStart_toEndOf="@id/ivStatus"
-            app:layout_constraintTop_toBottomOf="@id/divider"
-            />
+            app:layout_constraintTop_toBottomOf="@id/divider" />
 
         <Button
             android:id="@+id/bManage"
@@ -69,8 +67,7 @@
             app:layout_constraintStart_toEndOf="@id/tvName"
             app:layout_constraintTop_toTopOf="@id/tvName"
             app:layout_constraintBottom_toBottomOf="@id/tvAuthor"
-            app:layout_constraintEnd_toEndOf="parent"
-            />
+            app:layout_constraintEnd_toEndOf="parent" />
 
 
         <TextView

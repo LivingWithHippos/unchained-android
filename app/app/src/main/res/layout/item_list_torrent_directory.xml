@@ -4,14 +4,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
         <variable
             name="item"
-            type="com.github.livingwithhippos.unchained.torrentdetails.model.TorrentFileItem"/>
+            type="com.github.livingwithhippos.unchained.torrentdetails.model.TorrentFileItem" />
 
 
         <variable
             name="listener"
-            type="com.github.livingwithhippos.unchained.torrentdetails.model.TorrentContentListener"/>
+            type="com.github.livingwithhippos.unchained.torrentdetails.model.TorrentContentListener" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -30,8 +31,7 @@
             app:layout_constraintStart_toEndOf="@id/ivIcon"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            />
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <ImageView
             android:id="@+id/ivIcon"
@@ -41,7 +41,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/tvDirectoryName"
-            />
+            app:layout_constraintEnd_toStartOf="@id/tvDirectoryName" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

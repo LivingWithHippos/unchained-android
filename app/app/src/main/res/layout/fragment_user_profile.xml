@@ -165,8 +165,7 @@
                 app:layout_constraintBottom_toTopOf="@+id/tvDescription"
                 app:layout_constraintEnd_toEndOf="@id/cvPremium"
                 app:layout_constraintStart_toStartOf="@id/cvPremium"
-                app:layout_constraintTop_toBottomOf="@+id/tvLoginDescription"
-                />
+                app:layout_constraintTop_toBottomOf="@+id/tvLoginDescription" />
 
             <TextView
                 android:id="@+id/tvDescription"

@@ -60,8 +60,7 @@
         <Preference
             app:key="manage_remote_devices"
             app:summary="@string/remote_devices_summary"
-            app:title="@string/manage_remote_devices"
-            />
+            app:title="@string/manage_remote_devices" />
 
         <Preference
             app:key="kodi_remote_control_info"
@@ -80,9 +79,7 @@
                 android:title="@string/default_media_player"
                 app:useSimpleSummaryProvider="true" />
 
-            <Preference
-                android:summary="@string/custom_media_player_summary"
-                />
+            <Preference android:summary="@string/custom_media_player_summary" />
 
             <EditTextPreference
                 android:defaultValue=""
@@ -90,8 +87,7 @@
                 android:selectAllOnFocus="true"
                 android:singleLine="true"
                 android:title="@string/custom_media_player"
-                app:useSimpleSummaryProvider="true"
-                />
+                app:useSimpleSummaryProvider="true" />
         </PreferenceCategory>
     </PreferenceCategory>
 
@@ -110,8 +106,7 @@
         <Preference
             app:key="install_plugins_instructions"
             app:summary="@string/install_plugins_summary"
-            app:title="@string/install_plugins"
-            />
+            app:title="@string/install_plugins" />
 
         <Preference
             app:key="delete_external_plugins"
@@ -150,14 +145,13 @@
         <PreferenceCategory android:title="@string/download_details">
 
             <SeekBarPreference
-                app:title="@string/loading_size"
-                app:key="paging_size"
-                app:summary="@string/summary_loading_size"
-                android:min="50"
-                android:max="2500"
                 android:defaultValue="50"
+                android:max="2500"
+                android:min="50"
+                app:key="paging_size"
                 app:showSeekBarValue="true"
-                />
+                app:summary="@string/summary_loading_size"
+                app:title="@string/loading_size" />
 
             <Preference app:summary="@string/download_details_button_choice" />
 
@@ -205,8 +199,7 @@
 
         <Preference
             android:key="user_logout"
-            app:title="@string/logout"
-            />
+            app:title="@string/logout" />
 
         <EditTextPreference
             android:defaultValue="10"

@@ -1,19 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     style="?attr/materialCardViewElevatedStyle"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     app:cardCornerRadius="5dp"
-    app:cardElevation="3dp"
-    >
+    app:cardElevation="3dp">
 
     <LinearLayout
         android:layout_width="250dp"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        >
+        android:orientation="vertical">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/defaultServiceLayout"
@@ -24,8 +21,7 @@
             android:focusable="true"
             android:paddingHorizontal="15dp"
             android:paddingBottom="10dp"
-            android:paddingTop="15dp"
-            >
+            android:paddingTop="15dp">
 
             <TextView
                 android:id="@+id/serviceType"
@@ -39,8 +35,7 @@
                 app:layout_constraintBottom_toTopOf="@id/serviceName"
                 app:layout_constraintEnd_toStartOf="@id/serviceIcon"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
                 android:id="@+id/serviceIcon"
@@ -92,8 +87,7 @@
             android:paddingBottom="10dp"
             android:paddingTop="7dp"
             android:clickable="true"
-            android:focusable="true"
-            >
+            android:focusable="true">
 
             <TextView
                 android:id="@+id/recentServiceType"
@@ -107,8 +101,7 @@
                 app:layout_constraintBottom_toTopOf="@+id/recentServiceName"
                 app:layout_constraintEnd_toStartOf="@id/recentServiceIcon"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
                 android:id="@+id/recentServiceIcon"
@@ -174,7 +167,7 @@
                 app:layout_constraintBottom_toTopOf="@id/pickServiceTitle"
                 app:layout_constraintEnd_toStartOf="@id/servicesNumber"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/servicesNumber"
@@ -188,8 +181,7 @@
                 app:layout_constraintBottom_toBottomOf="@id/devicesNumber"
                 app:layout_constraintEnd_toStartOf="@id/pickServiceIcon"
                 app:layout_constraintStart_toEndOf="@id/devicesNumber"
-                app:layout_constraintTop_toTopOf="@id/devicesNumber"
-                />
+                app:layout_constraintTop_toTopOf="@id/devicesNumber" />
 
             <ImageView
                 android:id="@+id/pickServiceIcon"
@@ -214,8 +206,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/pickServiceIcon"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/devicesNumber"
-                />
+                app:layout_constraintTop_toBottomOf="@+id/devicesNumber" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -227,8 +218,7 @@
             android:paddingBottom="15dp"
             android:paddingTop="7dp"
             android:clickable="true"
-            android:focusable="true"
-            >
+            android:focusable="true">
 
             <TextView
                 android:id="@+id/streamBrowserType"
@@ -242,8 +232,7 @@
                 app:layout_constraintEnd_toStartOf="@id/streamBrowserIcon"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toTopOf="@id/streamBrowserTitle"
-                />
+                app:layout_constraintBottom_toTopOf="@id/streamBrowserTitle" />
 
             <ImageView
                 android:id="@+id/streamBrowserIcon"
@@ -268,8 +257,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/streamBrowserIcon"
-                app:layout_constraintTop_toBottomOf="@id/streamBrowserType"
-                />
+                app:layout_constraintTop_toBottomOf="@id/streamBrowserType" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>

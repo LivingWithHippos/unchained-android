@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
         <import type="android.view.View" />
     </data>
 
@@ -51,7 +52,6 @@
             android:text="@string/search"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tfSearch"
-            />
+            app:layout_constraintTop_toBottomOf="@id/tfSearch" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

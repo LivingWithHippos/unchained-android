@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <import type="android.view.View" />
 
         <variable
@@ -14,127 +15,121 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginHorizontal="10dp"
-        >
+        android:layout_marginHorizontal="10dp">
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/cvDevice"
-        style="?attr/materialCardViewElevatedStyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:checkable="false"
-        android:focusable="false"
-        android:clickable="false"
-        android:layout_marginTop="12dp"
-        android:layout_marginBottom="3dp"
-        android:padding="3dp"
-        app:cardCornerRadius="10dp"
-        app:cardElevation="3dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/tvListTitle"
-        >
-
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cvDevice"
+            style="?attr/materialCardViewElevatedStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="20dp"
-            >
+            android:layout_gravity="center_horizontal"
+            android:checkable="false"
+            android:focusable="false"
+            android:clickable="false"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="3dp"
+            android:padding="3dp"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="3dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/tvListTitle">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/tfName"
-                style="?attr/textInputFilledStyle"
-                android:layout_width="0dp"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:hint="@string/name_required"
-                android:importantForAutofill="no"
-                app:endIconMode="clear_text"
-                app:layout_constraintBottom_toTopOf="@+id/tfAddress"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" >
+                android:padding="20dp">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/tiName"
-                    android:layout_width="match_parent"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tfName"
+                    style="?attr/textInputFilledStyle"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:imeOptions="actionDone"
-                    android:singleLine="true">
-                    <requestFocus />
-                </com.google.android.material.textfield.TextInputEditText>
+                    android:layout_marginTop="10dp"
+                    android:hint="@string/name_required"
+                    android:importantForAutofill="no"
+                    app:endIconMode="clear_text"
+                    app:layout_constraintBottom_toTopOf="@+id/tfAddress"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
 
-            </com.google.android.material.textfield.TextInputLayout>
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/tiName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:imeOptions="actionDone"
+                        android:singleLine="true">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/tfAddress"
-                style="?attr/textInputFilledStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:hint="@string/address_required"
-                android:importantForAutofill="no"
-                app:endIconMode="clear_text"
-                app:layout_constraintBottom_toTopOf="@+id/switchDefault"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tfName"
-                >
+                        <requestFocus />
+                    </com.google.android.material.textfield.TextInputEditText>
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/tiAddress"
-                    android:layout_width="match_parent"
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tfAddress"
+                    style="?attr/textInputFilledStyle"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:imeOptions="actionDone"
-                    android:singleLine="true" />
+                    android:layout_marginTop="10dp"
+                    android:hint="@string/address_required"
+                    android:importantForAutofill="no"
+                    app:endIconMode="clear_text"
+                    app:layout_constraintBottom_toTopOf="@+id/switchDefault"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tfName">
 
-            </com.google.android.material.textfield.TextInputLayout>
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/tiAddress"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:imeOptions="actionDone"
+                        android:singleLine="true" />
 
-            <com.google.android.material.materialswitch.MaterialSwitch
-                android:id="@+id/switchDefault"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:text="@string/set_as_default"
-                android:nextFocusDown="@id/bSaveDevice"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tfAddress"
-                app:layout_constraintBottom_toTopOf="@+id/bSaveDevice"
-                />
+                </com.google.android.material.textfield.TextInputLayout>
 
-            <Button
-                android:id="@+id/bDeleteDevice"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:text="@string/remove"
-                android:backgroundTint="?attr/colorError"
-                android:textColor="?attr/colorOnError"
-                android:contentDescription="@string/remove"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/switchDefault"
-                app:layout_constraintEnd_toStartOf="@+id/bSaveDevice"
-                />
+                <com.google.android.material.materialswitch.MaterialSwitch
+                    android:id="@+id/switchDefault"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/set_as_default"
+                    android:nextFocusDown="@id/bSaveDevice"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tfAddress"
+                    app:layout_constraintBottom_toTopOf="@+id/bSaveDevice" />
 
-            <Button
-                android:id="@+id/bSaveDevice"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:text="@string/save"
-                android:contentDescription="@string/save"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/bDeleteDevice"
-                app:layout_constraintTop_toBottomOf="@+id/switchDefault"
-                />
+                <Button
+                    android:id="@+id/bDeleteDevice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/remove"
+                    android:backgroundTint="?attr/colorError"
+                    android:textColor="?attr/colorOnError"
+                    android:contentDescription="@string/remove"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/switchDefault"
+                    app:layout_constraintEnd_toStartOf="@+id/bSaveDevice" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                <Button
+                    android:id="@+id/bSaveDevice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/save"
+                    android:contentDescription="@string/save"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/bDeleteDevice"
+                    app:layout_constraintTop_toBottomOf="@+id/switchDefault" />
 
-    </com.google.android.material.card.MaterialCardView>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </com.google.android.material.card.MaterialCardView>
 
 
         <TextView
@@ -150,20 +145,20 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/cvDevice" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvServiceList"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginBottom="20dp"
-        android:layout_gravity="center_horizontal"
-        android:scrollbars="vertical"
-        android:visibility="visible"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/item_list_remote_service"
-        app:layout_constraintBottom_toTopOf="@+id/fabDeviceAction"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvListTitle" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvServiceList"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginBottom="20dp"
+            android:layout_gravity="center_horizontal"
+            android:scrollbars="vertical"
+            android:visibility="visible"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/item_list_remote_service"
+            app:layout_constraintBottom_toTopOf="@+id/fabDeviceAction"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvListTitle" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fabDeviceAction"
@@ -175,9 +170,7 @@
             android:focusable="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:srcCompat="@drawable/icon_more"
-            >
-        </com.google.android.material.floatingactionbutton.FloatingActionButton>
+            app:srcCompat="@drawable/icon_more"></com.google.android.material.floatingactionbutton.FloatingActionButton>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

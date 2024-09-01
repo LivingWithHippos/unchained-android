@@ -23,8 +23,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toTopOf="@id/rvPluginsList"
-            app:layout_constraintEnd_toStartOf="@id/fabAddRepository"
-            >
+            app:layout_constraintEnd_toStartOf="@id/fabAddRepository">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/tiSearch"
@@ -46,8 +45,7 @@
             app:layout_constraintTop_toTopOf="@id/tfSearch"
             app:layout_constraintBottom_toBottomOf="@id/progressBar"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/tfSearch"
-            />
+            app:layout_constraintStart_toEndOf="@id/tfSearch" />
 
         <com.google.android.material.progressindicator.LinearProgressIndicator
             android:id="@+id/progressBar"
@@ -58,8 +56,7 @@
             app:layout_constraintTop_toBottomOf="@id/tfSearch"
             app:layout_constraintStart_toStartOf="@id/tfSearch"
             app:layout_constraintEnd_toEndOf="@id/tfSearch"
-            app:layout_constraintBottom_toTopOf="@id/rvPluginsList"
-            />
+            app:layout_constraintBottom_toTopOf="@id/rvPluginsList" />
 
 
         <androidx.recyclerview.widget.RecyclerView
@@ -72,8 +69,7 @@
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/item_plugin_repository_plugin"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/progressBar"
-            />
+            app:layout_constraintTop_toBottomOf="@id/progressBar" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

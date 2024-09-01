@@ -79,8 +79,7 @@
                     android:contentDescription="@string/content_description_share_download"
                     android:onClick="@{()->listener.onShareClick(item.download)}"
                     android:paddingStart="13dp"
-                    app:icon="@drawable/icon_share"
-                    />
+                    app:icon="@drawable/icon_share" />
 
                 <Button
                     android:id="@+id/bOpen"
@@ -91,8 +90,7 @@
                     android:contentDescription="@{@string/open_link_format(item.mimeType)}"
                     android:onClick="@{()->listener.onOpenClick(item.download)}"
                     android:paddingStart="13dp"
-                    app:icon="@drawable/icon_open_external"
-                    />
+                    app:icon="@drawable/icon_open_external" />
 
                 <Button
                     android:id="@+id/bCopy"
@@ -103,8 +101,7 @@
                     android:contentDescription="@{@string/copy_link_format(item.mimeType)}"
                     android:onClick="@{()->listener.onCopyClick(item.download)}"
                     android:paddingStart="13dp"
-                    app:icon="@drawable/icon_copy"
-                    />
+                    app:icon="@drawable/icon_copy" />
 
                 <Button
                     android:id="@+id/bStream"
@@ -115,8 +112,7 @@
                     android:contentDescription="@{@string/open_with_format(item.mimeType)}"
                     android:onClick="@{(view)->listener.onOpenTranscodedStream(view, item.download)}"
                     android:paddingStart="13dp"
-                    app:icon="@drawable/icon_remote"
-                    />
+                    app:icon="@drawable/icon_remote" />
 
             </com.google.android.flexbox.FlexboxLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>

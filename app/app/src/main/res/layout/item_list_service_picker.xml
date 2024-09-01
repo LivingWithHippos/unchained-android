@@ -34,8 +34,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="10dp"
-            >
+            android:padding="10dp">
 
             <TextView
                 android:id="@+id/serviceType"
@@ -60,8 +59,7 @@
                 app:layout_constraintBottom_toTopOf="@id/serviceName"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                mapServiceTypeDrawable="@{item.service.type}"
-                />
+                mapServiceTypeDrawable="@{item.service.type}" />
 
             <TextView
                 android:id="@+id/serviceName"

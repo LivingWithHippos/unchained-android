@@ -19,6 +19,7 @@
             name="listener"
             type="com.github.livingwithhippos.unchained.lists.view.DownloadListListener" />
     </data>
+
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/cvDownload"
         style="?attr/materialCardViewElevatedStyle"
@@ -33,7 +34,7 @@
         android:onClick="@{() -> listener.onClick(item)}"
         android:layout_gravity="center_horizontal"
         app:cardCornerRadius="10dp"
-        app:cardElevation="3dp" >
+        app:cardElevation="3dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -41,9 +42,9 @@
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
             android:paddingEnd="10dp"
-            android:paddingStart="0dp" >
+            android:paddingStart="0dp">
 
-        <View
+            <View
                 android:id="@+id/selectionIndicator"
                 android:layout_width="10dp"
                 android:layout_height="0dp"
@@ -55,7 +56,7 @@
                 app:layout_constraintEnd_toStartOf="@id/tvTitle"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+                app:layout_constraintBottom_toBottomOf="parent" />
 
             <TextView
                 android:id="@+id/tvTitle"
