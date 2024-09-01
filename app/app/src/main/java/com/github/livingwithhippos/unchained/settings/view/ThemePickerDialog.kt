@@ -43,16 +43,18 @@ class ThemePickerDialog : DialogFragment(), ThemePickListener {
                 label.text = currentTheme.name
             }
 
-            viewModel.themeLiveData.observe(this) { label.text = it.name }
+            viewModel.themeLiveData.observe(this) {
+                it.getContentIfNotHandled()?.let { theme ->
+                    label.text = theme.name
+                    viewModel.applyTheme()
+                    context?.showToast(R.string.restart_to_apply)
+                    dialog?.cancel()
+                }
+            }
 
             builder
                 .setView(view)
                 .setNeutralButton(getString(R.string.close)) { dialog, _ -> dialog.cancel() }
-                .setPositiveButton(getString(R.string.apply)) { dialog, _ ->
-                    viewModel.applyTheme()
-                    context?.showToast(R.string.restart_to_apply)
-                    dialog.cancel()
-                }
                 .setTitle(getString(R.string.themes))
             return builder.create()
         } else throw IllegalStateException("Activity for theme picker cannot be null")

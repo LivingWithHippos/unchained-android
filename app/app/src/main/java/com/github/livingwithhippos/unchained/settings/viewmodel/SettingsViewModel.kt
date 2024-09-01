@@ -35,7 +35,7 @@ constructor(
 
     val eventLiveData = MutableLiveData<Event<SettingEvent>>()
 
-    val themeLiveData = MutableLiveData<ThemeItem>()
+    val themeLiveData = MutableLiveData<Event<ThemeItem>>()
 
     fun updateRegexps() {
         viewModelScope.launch {
@@ -54,7 +54,7 @@ constructor(
     }
 
     fun selectTheme(theme: ThemeItem) {
-        themeLiveData.postValue(theme)
+        themeLiveData.postEvent(theme)
     }
 
     fun setDownloadFolder(uri: Uri) {
@@ -73,7 +73,8 @@ constructor(
     }
 
     fun applyTheme() {
-        themeLiveData.value?.let {
+        val selectedTheme: ThemeItem? = themeLiveData.value?.peekContent()
+        selectedTheme?.let {
             with(preferences.edit()) {
                 putInt(KEY_THEME_NEW, it.themeID)
                 apply()

@@ -4,12 +4,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="5dp">
 
     <TextView
         android:id="@+id/selectedLabel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="5dp"
         android:text="@string/selected_theme"
         android:textAlignment="center"
         android:textAppearance="?attr/textAppearanceBodyLarge"
@@ -22,11 +25,13 @@
         android:id="@+id/selectedTheme"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
         android:textAlignment="center"
         android:textAppearance="?attr/textAppearanceBodyLarge"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/selectedLabel"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@id/selectedLabel"
+        app:layout_constraintBottom_toBottomOf="@id/selectedLabel"
         />
 
     <androidx.recyclerview.widget.RecyclerView
