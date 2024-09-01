@@ -344,4 +344,160 @@
 
     </style>
 
+    <style name="Theme.Unchained.Material3.Grey.One" parent="Theme.Unchained.Material3">
+
+        <item name="colorPrimary">@color/grey_one_theme_primary</item>
+        <item name="colorOnPrimary">@color/grey_one_theme_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/grey_one_theme_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/grey_one_theme_onPrimaryContainer</item>
+        <item name="colorSecondary">@color/grey_one_theme_secondary</item>
+        <item name="colorOnSecondary">@color/grey_one_theme_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/grey_one_theme_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/grey_one_theme_onSecondaryContainer</item>
+        <item name="colorTertiary">@color/grey_one_theme_tertiary</item>
+        <item name="colorOnTertiary">@color/grey_one_theme_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/grey_one_theme_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/grey_one_theme_onTertiaryContainer</item>
+        <item name="colorError">@color/grey_one_theme_error</item>
+        <item name="colorOnError">@color/grey_one_theme_onError</item>
+        <item name="colorErrorContainer">@color/grey_one_theme_errorContainer</item>
+        <item name="colorOnErrorContainer">@color/grey_one_theme_onErrorContainer</item>
+        <item name="android:colorBackground">@color/grey_one_theme_background</item>
+        <item name="colorOnBackground">@color/grey_one_theme_onBackground</item>
+        <item name="colorSurface">@color/grey_one_theme_surface</item>
+        <item name="colorOnSurface">@color/grey_one_theme_onSurface</item>
+        <item name="colorSurfaceVariant">@color/grey_one_theme_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/grey_one_theme_onSurfaceVariant</item>
+        <item name="colorOutline">@color/grey_one_theme_outline</item>
+        <item name="colorOutlineVariant">@color/grey_one_theme_outlineVariant</item>
+        <item name="colorSurfaceInverse">@color/grey_one_theme_inverseSurface</item>
+        <item name="colorOnSurfaceInverse">@color/grey_one_theme_inverseOnSurface</item>
+        <item name="colorPrimaryInverse">@color/grey_one_theme_inversePrimary</item>
+        <item name="colorPrimaryFixed">@color/grey_one_theme_primaryFixed</item>
+        <item name="colorOnPrimaryFixed">@color/grey_one_theme_onPrimaryFixed</item>
+        <item name="colorPrimaryFixedDim">@color/grey_one_theme_primaryFixedDim</item>
+        <item name="colorOnPrimaryFixedVariant">@color/grey_one_theme_onPrimaryFixedVariant</item>
+        <item name="colorSecondaryFixed">@color/grey_one_theme_secondaryFixed</item>
+        <item name="colorOnSecondaryFixed">@color/grey_one_theme_onSecondaryFixed</item>
+        <item name="colorSecondaryFixedDim">@color/grey_one_theme_secondaryFixedDim</item>
+        <item name="colorOnSecondaryFixedVariant">@color/grey_one_theme_onSecondaryFixedVariant</item>
+        <item name="colorTertiaryFixed">@color/grey_one_theme_tertiaryFixed</item>
+        <item name="colorOnTertiaryFixed">@color/grey_one_theme_onTertiaryFixed</item>
+        <item name="colorTertiaryFixedDim">@color/grey_one_theme_tertiaryFixedDim</item>
+        <item name="colorOnTertiaryFixedVariant">@color/grey_one_theme_onTertiaryFixedVariant</item>
+        <item name="colorSurfaceDim">@color/grey_one_theme_surfaceDim</item>
+        <item name="colorSurfaceBright">@color/grey_one_theme_surfaceBright</item>
+        <item name="colorSurfaceContainerLowest">@color/grey_one_theme_surfaceContainerLowest</item>
+        <item name="colorSurfaceContainerLow">@color/grey_one_theme_surfaceContainerLow</item>
+        <item name="colorSurfaceContainer">@color/grey_one_theme_surfaceContainer</item>
+        <item name="colorSurfaceContainerHigh">@color/grey_one_theme_surfaceContainerHigh</item>
+        <item name="colorSurfaceContainerHighest">@color/grey_one_theme_surfaceContainerHighest</item>
+
+
+    </style>
+
+    <style name="Theme.Unchained.Material3.Orange.One" parent="Theme.Unchained.Material3">
+
+        <item name="colorPrimary">@color/orange_one_theme_primary</item>
+        <item name="colorOnPrimary">@color/orange_one_theme_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/orange_one_theme_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/orange_one_theme_onPrimaryContainer</item>
+        <item name="colorSecondary">@color/orange_one_theme_secondary</item>
+        <item name="colorOnSecondary">@color/orange_one_theme_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/orange_one_theme_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/orange_one_theme_onSecondaryContainer</item>
+        <item name="colorTertiary">@color/orange_one_theme_tertiary</item>
+        <item name="colorOnTertiary">@color/orange_one_theme_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/orange_one_theme_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/orange_one_theme_onTertiaryContainer</item>
+        <item name="colorError">@color/orange_one_theme_error</item>
+        <item name="colorOnError">@color/orange_one_theme_onError</item>
+        <item name="colorErrorContainer">@color/orange_one_theme_errorContainer</item>
+        <item name="colorOnErrorContainer">@color/orange_one_theme_onErrorContainer</item>
+        <item name="android:colorBackground">@color/orange_one_theme_background</item>
+        <item name="colorOnBackground">@color/orange_one_theme_onBackground</item>
+        <item name="colorSurface">@color/orange_one_theme_surface</item>
+        <item name="colorOnSurface">@color/orange_one_theme_onSurface</item>
+        <item name="colorSurfaceVariant">@color/orange_one_theme_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/orange_one_theme_onSurfaceVariant</item>
+        <item name="colorOutline">@color/orange_one_theme_outline</item>
+        <item name="colorOutlineVariant">@color/orange_one_theme_outlineVariant</item>
+        <item name="colorSurfaceInverse">@color/orange_one_theme_inverseSurface</item>
+        <item name="colorOnSurfaceInverse">@color/orange_one_theme_inverseOnSurface</item>
+        <item name="colorPrimaryInverse">@color/orange_one_theme_inversePrimary</item>
+        <item name="colorPrimaryFixed">@color/orange_one_theme_primaryFixed</item>
+        <item name="colorOnPrimaryFixed">@color/orange_one_theme_onPrimaryFixed</item>
+        <item name="colorPrimaryFixedDim">@color/orange_one_theme_primaryFixedDim</item>
+        <item name="colorOnPrimaryFixedVariant">@color/orange_one_theme_onPrimaryFixedVariant</item>
+        <item name="colorSecondaryFixed">@color/orange_one_theme_secondaryFixed</item>
+        <item name="colorOnSecondaryFixed">@color/orange_one_theme_onSecondaryFixed</item>
+        <item name="colorSecondaryFixedDim">@color/orange_one_theme_secondaryFixedDim</item>
+        <item name="colorOnSecondaryFixedVariant">@color/orange_one_theme_onSecondaryFixedVariant</item>
+        <item name="colorTertiaryFixed">@color/orange_one_theme_tertiaryFixed</item>
+        <item name="colorOnTertiaryFixed">@color/orange_one_theme_onTertiaryFixed</item>
+        <item name="colorTertiaryFixedDim">@color/orange_one_theme_tertiaryFixedDim</item>
+        <item name="colorOnTertiaryFixedVariant">@color/orange_one_theme_onTertiaryFixedVariant</item>
+        <item name="colorSurfaceDim">@color/orange_one_theme_surfaceDim</item>
+        <item name="colorSurfaceBright">@color/orange_one_theme_surfaceBright</item>
+        <item name="colorSurfaceContainerLowest">@color/orange_one_theme_surfaceContainerLowest</item>
+        <item name="colorSurfaceContainerLow">@color/orange_one_theme_surfaceContainerLow</item>
+        <item name="colorSurfaceContainer">@color/orange_one_theme_surfaceContainer</item>
+        <item name="colorSurfaceContainerHigh">@color/orange_one_theme_surfaceContainerHigh</item>
+        <item name="colorSurfaceContainerHighest">@color/orange_one_theme_surfaceContainerHighest</item>
+
+
+    </style>
+
+    <style name="Theme.Unchained.Material3.Purple.One" parent="Theme.Unchained.Material3">
+
+        <item name="colorPrimary">@color/purple_one_theme_primary</item>
+        <item name="colorOnPrimary">@color/purple_one_theme_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/purple_one_theme_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/purple_one_theme_onPrimaryContainer</item>
+        <item name="colorSecondary">@color/purple_one_theme_secondary</item>
+        <item name="colorOnSecondary">@color/purple_one_theme_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/purple_one_theme_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/purple_one_theme_onSecondaryContainer</item>
+        <item name="colorTertiary">@color/purple_one_theme_tertiary</item>
+        <item name="colorOnTertiary">@color/purple_one_theme_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/purple_one_theme_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/purple_one_theme_onTertiaryContainer</item>
+        <item name="colorError">@color/purple_one_theme_error</item>
+        <item name="colorOnError">@color/purple_one_theme_onError</item>
+        <item name="colorErrorContainer">@color/purple_one_theme_errorContainer</item>
+        <item name="colorOnErrorContainer">@color/purple_one_theme_onErrorContainer</item>
+        <item name="android:colorBackground">@color/purple_one_theme_background</item>
+        <item name="colorOnBackground">@color/purple_one_theme_onBackground</item>
+        <item name="colorSurface">@color/purple_one_theme_surface</item>
+        <item name="colorOnSurface">@color/purple_one_theme_onSurface</item>
+        <item name="colorSurfaceVariant">@color/purple_one_theme_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/purple_one_theme_onSurfaceVariant</item>
+        <item name="colorOutline">@color/purple_one_theme_outline</item>
+        <item name="colorOutlineVariant">@color/purple_one_theme_outlineVariant</item>
+        <item name="colorSurfaceInverse">@color/purple_one_theme_inverseSurface</item>
+        <item name="colorOnSurfaceInverse">@color/purple_one_theme_inverseOnSurface</item>
+        <item name="colorPrimaryInverse">@color/purple_one_theme_inversePrimary</item>
+        <item name="colorPrimaryFixed">@color/purple_one_theme_primaryFixed</item>
+        <item name="colorOnPrimaryFixed">@color/purple_one_theme_onPrimaryFixed</item>
+        <item name="colorPrimaryFixedDim">@color/purple_one_theme_primaryFixedDim</item>
+        <item name="colorOnPrimaryFixedVariant">@color/purple_one_theme_onPrimaryFixedVariant</item>
+        <item name="colorSecondaryFixed">@color/purple_one_theme_secondaryFixed</item>
+        <item name="colorOnSecondaryFixed">@color/purple_one_theme_onSecondaryFixed</item>
+        <item name="colorSecondaryFixedDim">@color/purple_one_theme_secondaryFixedDim</item>
+        <item name="colorOnSecondaryFixedVariant">@color/purple_one_theme_onSecondaryFixedVariant</item>
+        <item name="colorTertiaryFixed">@color/purple_one_theme_tertiaryFixed</item>
+        <item name="colorOnTertiaryFixed">@color/purple_one_theme_onTertiaryFixed</item>
+        <item name="colorTertiaryFixedDim">@color/purple_one_theme_tertiaryFixedDim</item>
+        <item name="colorOnTertiaryFixedVariant">@color/purple_one_theme_onTertiaryFixedVariant</item>
+        <item name="colorSurfaceDim">@color/purple_one_theme_surfaceDim</item>
+        <item name="colorSurfaceBright">@color/purple_one_theme_surfaceBright</item>
+        <item name="colorSurfaceContainerLowest">@color/purple_one_theme_surfaceContainerLowest</item>
+        <item name="colorSurfaceContainerLow">@color/purple_one_theme_surfaceContainerLow</item>
+        <item name="colorSurfaceContainer">@color/purple_one_theme_surfaceContainer</item>
+        <item name="colorSurfaceContainerHigh">@color/purple_one_theme_surfaceContainerHigh</item>
+        <item name="colorSurfaceContainerHighest">@color/purple_one_theme_surfaceContainerHighest</item>
+
+
+    </style>
+
 </resources>

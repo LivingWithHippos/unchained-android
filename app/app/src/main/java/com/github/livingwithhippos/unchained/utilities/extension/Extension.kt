@@ -77,6 +77,15 @@ fun Context.getThemeList(): List<ThemeItem> {
             ResourcesCompat.getColor(resources, R.color.red_one_theme_primaryContainer, null)
         ),
         ThemeItem(
+            "Orange",
+            "orange_01",
+            THEME_AUTO,
+            R.style.Theme_Unchained_Material3_Orange_One,
+            ResourcesCompat.getColor(resources, R.color.orange_one_theme_primary, null),
+            ResourcesCompat.getColor(resources, R.color.orange_one_theme_surface, null),
+            ResourcesCompat.getColor(resources, R.color.orange_one_theme_primaryContainer, null)
+        ),
+        ThemeItem(
             "Yellow",
             "yellow_01",
             THEME_AUTO,
@@ -84,6 +93,15 @@ fun Context.getThemeList(): List<ThemeItem> {
             ResourcesCompat.getColor(resources, R.color.yellow_one_theme_primary, null),
             ResourcesCompat.getColor(resources, R.color.yellow_one_theme_surface, null),
             ResourcesCompat.getColor(resources, R.color.yellow_one_theme_primaryContainer, null)
+        ),
+        ThemeItem(
+            "Purple",
+            "purple_01",
+            THEME_AUTO,
+            R.style.Theme_Unchained_Material3_Purple_One,
+            ResourcesCompat.getColor(resources, R.color.purple_one_theme_primary, null),
+            ResourcesCompat.getColor(resources, R.color.purple_one_theme_surface, null),
+            ResourcesCompat.getColor(resources, R.color.purple_one_theme_primaryContainer, null)
         ),
         ThemeItem(
             "Green",
@@ -102,6 +120,15 @@ fun Context.getThemeList(): List<ThemeItem> {
             ResourcesCompat.getColor(resources, R.color.blue_one_theme_primary, null),
             ResourcesCompat.getColor(resources, R.color.blue_one_theme_surface, null),
             ResourcesCompat.getColor(resources, R.color.blue_one_theme_primaryContainer, null)
+        ),
+        ThemeItem(
+            "Grey",
+            "grey_01",
+            THEME_AUTO,
+            R.style.Theme_Unchained_Material3_Grey_One,
+            ResourcesCompat.getColor(resources, R.color.grey_one_theme_primary, null),
+            ResourcesCompat.getColor(resources, R.color.grey_one_theme_surface, null),
+            ResourcesCompat.getColor(resources, R.color.grey_one_theme_primaryContainer, null)
         ),
     )
 }
