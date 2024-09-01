@@ -1,6 +1,7 @@
 package com.github.livingwithhippos.unchained.data.local
 
 import android.os.Parcelable
+import androidx.annotation.Keep
 import androidx.room.ColumnInfo
 import androidx.room.Dao
 import androidx.room.Delete
@@ -16,6 +17,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
+@Keep
 @Parcelize
 @Entity(tableName = "remote_device")
 class RemoteDevice(
