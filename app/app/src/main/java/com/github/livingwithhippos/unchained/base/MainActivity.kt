@@ -696,6 +696,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun processExternalRequestOnAuthentication(uri: Uri) {
         lifecycleScope.launch {
+            // avoid some issues with the authentication state machine being too late
+            delay(AUTH_DELAY)
             delayLoop@ for (loop in 1..5) {
                 when (viewModel.getCurrentAuthenticationStatus()) {
                     CurrentFSMAuthentication.Authenticated -> {
