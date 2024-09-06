@@ -906,6 +906,7 @@ constructor(
         when (getAuthenticationMachineState()) {
             FSMAuthenticationState.AuthenticatedPrivateToken,
             FSMAuthenticationState.AuthenticatedOpenToken -> CurrentFSMAuthentication.Authenticated
+            FSMAuthenticationState.Start,
             FSMAuthenticationState.CheckCredentials,
             FSMAuthenticationState.RefreshingOpenToken -> CurrentFSMAuthentication.Waiting
             else -> CurrentFSMAuthentication.Unauthenticated
