@@ -697,8 +697,7 @@ class MainActivity : AppCompatActivity() {
     private fun processExternalRequestOnAuthentication(uri: Uri) {
         lifecycleScope.launch {
             // avoid some issues with the authentication state machine being too late
-            delay(AUTH_DELAY)
-            delayLoop@ for (loop in 1..5) {
+            delayLoop@ for (loop in 1..100) {
                 when (viewModel.getCurrentAuthenticationStatus()) {
                     CurrentFSMAuthentication.Authenticated -> {
                         // auth ok, process link and exit loop
@@ -712,7 +711,7 @@ class MainActivity : AppCompatActivity() {
                     }
                     CurrentFSMAuthentication.Waiting -> {
                         // auth may become ok, delay and continue loop
-                        delay(AUTH_DELAY)
+                        delay(100)
                     }
                 }
             }
@@ -880,6 +879,5 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         private const val EXIT_WAIT_TIME = 2000L
-        private const val AUTH_DELAY = 500L
     }
 }
