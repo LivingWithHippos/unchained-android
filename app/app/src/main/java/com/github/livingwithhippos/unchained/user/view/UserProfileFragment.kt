@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -19,8 +20,8 @@ import com.github.livingwithhippos.unchained.databinding.FragmentUserProfileBind
 import com.github.livingwithhippos.unchained.settings.view.SettingsActivity
 import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Companion.KEY_REFERRAL_ASKED
 import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Companion.KEY_REFERRAL_USE
+import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewModel
 import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationState
-import com.github.livingwithhippos.unchained.user.viewmodel.UserProfileViewModel
 import com.github.livingwithhippos.unchained.utilities.ACCOUNT_LINK
 import com.github.livingwithhippos.unchained.utilities.REFERRAL_LINK
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
@@ -33,8 +34,6 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class UserProfileFragment : UnchainedFragment() {
 
-    private val viewModel: UserProfileViewModel by viewModels()
-
     @Inject lateinit var preferences: SharedPreferences
 
     override fun onCreateView(
@@ -45,14 +44,20 @@ class UserProfileFragment : UnchainedFragment() {
         // Inflate the layout for this fragment
         val userBinding = FragmentUserProfileBinding.inflate(inflater, container, false)
 
-        viewModel.fetchUserInfo()
+        val user = activityViewModel.getCachedUser()
+        if (user == null) {
+            activityViewModel.fetchUser()
+        } else {
+            userBinding.user = user
+        }
+        lifecycleScope.launch {
+            userBinding.privateToken = activityViewModel.isTokenPrivate()
+        }
 
-        viewModel.userLiveData.observe(viewLifecycleOwner) {
-            if (it != null) {
-                userBinding.user = it
-                lifecycleScope.launch {
-                    userBinding.privateToken = activityViewModel.isTokenPrivate()
-                }
+        activityViewModel.userLiveData.observe(viewLifecycleOwner) {
+            userBinding.user = it.peekContent()
+            lifecycleScope.launch {
+                userBinding.privateToken = activityViewModel.isTokenPrivate()
             }
         }
 
