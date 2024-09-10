@@ -77,6 +77,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
+    private var checkedUpdate: Boolean = false
 
     // Countly crash reporter set up. Debug mode only
     override fun onStart() {
@@ -230,8 +231,7 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.fsmAuthenticationState.observe(this) {
             // do not inline this variable in the when, because getContentIfNotHandled() will change
-            // its
-            // value to null if checked again in WaitingUserAction
+            // its value to null if checked again in WaitingUserAction
             when (val authState: FSMAuthenticationState? = it?.getContentIfNotHandled()) {
                 null -> {
                     // do nothing
@@ -248,6 +248,10 @@ class MainActivity : AppCompatActivity() {
                 FSMAuthenticationState.AuthenticatedOpenToken -> {
                     // unlock the bottom menu
                     enableAllBottomNavItems()
+                    if (!checkedUpdate) {
+                        checkedUpdate = true
+                        viewModel.checkUpdates(BuildConfig.VERSION_CODE, getApplicationSignatures())
+                    }
                 }
                 FSMAuthenticationState.RefreshingOpenToken -> {
                     viewModel.refreshToken()
@@ -255,6 +259,10 @@ class MainActivity : AppCompatActivity() {
                 FSMAuthenticationState.AuthenticatedPrivateToken -> {
                     // unlock the bottom menu
                     enableAllBottomNavItems()
+                    if (!checkedUpdate) {
+                        checkedUpdate = true
+                        viewModel.checkUpdates(BuildConfig.VERSION_CODE, getApplicationSignatures())
+                    }
                 }
                 FSMAuthenticationState.WaitingToken -> {
                     // this state should be managed by the fragments directly
@@ -601,9 +609,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         viewModel.clearCache(applicationContext.cacheDir)
-
-        viewModel.checkUpdates(BuildConfig.VERSION_CODE, getApplicationSignatures())
-    }
+        }
 
     override fun onResume() {
         super.onResume()
