@@ -168,19 +168,17 @@ class ListsTabFragment : UnchainedFragment() {
         )
 
         binding.fabNewDownload.setOnClickListener {
-            val action = ListsTabFragmentDirections.actionListTabsDestToNewDownloadFragment()
-            findNavController().navigate(action)
+            findNavController().navigate(R.id.action_to_new_download_fragment)
         }
 
         // an external link has been shared with the app
         activityViewModel.externalLinkLiveData.observe(
             viewLifecycleOwner,
             EventObserver { uri ->
-                val action =
-                    ListsTabFragmentDirections.actionListTabsDestToNewDownloadFragment(
-                        externalUri = uri
-                    )
-                findNavController().navigate(action)
+                val actionArgs = Bundle().apply {
+                    putParcelable("externalUri", uri)
+                }
+                findNavController().navigate(R.id.action_to_new_download_fragment, actionArgs)
             },
         )
 
@@ -192,11 +190,10 @@ class ListsTabFragment : UnchainedFragment() {
                 // no need to recheck the extension since it was checked on download
                 // if (uri?.path?.endsWith(".torrent") == true)
                 if (uri?.path != null) {
-                    val action =
-                        ListsTabFragmentDirections.actionListTabsDestToNewDownloadFragment(
-                            externalUri = uri
-                        )
-                    findNavController().navigate(action)
+                    val actionArgs = Bundle().apply {
+                        putParcelable("externalUri", uri)
+                    }
+                    findNavController().navigate(R.id.action_to_new_download_fragment, actionArgs)
                 }
             },
         )
@@ -297,9 +294,7 @@ class ListsTabFragment : UnchainedFragment() {
                         }
                     }
                     ListEvent.NewDownload -> {
-                        val action =
-                            ListsTabFragmentDirections.actionListTabsDestToNewDownloadFragment()
-                        findNavController().navigate(action)
+                        findNavController().navigate(R.id.action_to_new_download_fragment)
                     }
                 }
             },

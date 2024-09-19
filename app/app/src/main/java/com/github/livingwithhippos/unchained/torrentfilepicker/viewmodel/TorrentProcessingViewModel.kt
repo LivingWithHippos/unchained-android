@@ -38,31 +38,8 @@ constructor(
 ) : ViewModel() {
 
     val networkExceptionLiveData = MutableLiveData<Event<UnchainedNetworkException>>()
-    val torrentLiveData = MutableLiveData<Event<TorrentEvent>>()
     val structureLiveData = MutableLiveData<Event<Node<TorrentFileItem>>>()
 
-    private var job = Job()
-
-    fun fetchAddedMagnet(magnet: String) {
-        viewModelScope.launch {
-            val availableHosts = torrentsRepository.getAvailableHosts()
-            if (availableHosts.isNullOrEmpty()) {
-                Timber.e("Error fetching available hosts")
-            } else {
-                val addedMagnet = torrentsRepository.addMagnet(magnet, availableHosts.first().host)
-                when (addedMagnet) {
-                    is EitherResult.Failure -> {
-                        Timber.e("Error adding magnet: ${addedMagnet.failure}")
-                        networkExceptionLiveData.postEvent(addedMagnet.failure)
-                    }
-                    is EitherResult.Success -> {
-                        setTorrentID(addedMagnet.success.id)
-                        torrentLiveData.postEvent(TorrentEvent.Uploaded(addedMagnet.success))
-                    }
-                }
-            }
-        }
-    }
 
     fun fetchTorrentDetails(torrentID: String) {
 
@@ -80,107 +57,12 @@ constructor(
         }
     }
 
-    fun checkTorrentCache(hash: String) {
-        viewModelScope.launch {
-            val builder = StringBuilder(BASE_URL)
-            builder.append(INSTANT_AVAILABILITY_ENDPOINT)
-            builder.append("/")
-            builder.append(hash)
-            when (val cache = torrentsRepository.getInstantAvailability(builder.toString())) {
-                is EitherResult.Failure -> {
-                    Timber.e("Failed getting cache for hash $hash ${cache.failure}")
-                }
-                is EitherResult.Success -> {
-                    triggerCacheResult(cache.success.cachedTorrents.firstOrNull())
-                }
-            }
-        }
-    }
-
-    fun triggerCacheResult(cache: CachedTorrent?) {
-        if (cache != null) {
-            setCache(cache)
-            torrentLiveData.postEvent(TorrentEvent.CacheHit(cache))
-        } else {
-            torrentLiveData.postEvent(TorrentEvent.CacheMiss)
-        }
-    }
-
     private fun setTorrentDetails(item: TorrentItem) {
         savedStateHandle[KEY_CURRENT_TORRENT] = item
     }
 
-    fun getTorrentID(): String? {
-        return savedStateHandle[KEY_CURRENT_TORRENT_ID]
-    }
-
-    private fun setTorrentID(id: String) {
-        savedStateHandle[KEY_CURRENT_TORRENT_ID] = id
-    }
-
-    fun getCache(): CachedTorrent? {
-        return savedStateHandle[KEY_CACHE]
-    }
-
-    private fun setCache(cache: CachedTorrent) {
-        savedStateHandle[KEY_CACHE] = cache
-    }
-
     fun updateTorrentStructure(structure: Node<TorrentFileItem>?) {
         if (structure != null) structureLiveData.postEvent(structure)
-    }
-
-    fun startSelectionLoop(files: String = "all") {
-
-        val id = getTorrentID()
-
-        if (id == null) {
-            Timber.e("Torrent files selection requested but torrent id was not ready")
-            return
-        }
-
-        job.cancelIfActive()
-        job = Job()
-
-        val scope = CoroutineScope(job + Dispatchers.IO)
-
-        scope.launch {
-            var selected = false
-            // / maybe job.isActive?
-            while (isActive) {
-                if (!selected) {
-                    when (val selectResponse = torrentsRepository.selectFiles(id, files)) {
-                        is EitherResult.Failure -> {
-                            if (selectResponse.failure is EmptyBodyError) {
-                                Timber.d(
-                                    "Select torrent files success returned ${selectResponse.failure.returnCode}"
-                                )
-                                selected = true
-                            } else {
-                                Timber.e(
-                                    "Exception during torrent files selection call: ${selectResponse.failure}"
-                                )
-                            }
-                        }
-                        is EitherResult.Success -> {
-                            Timber.d("Select torrent files success")
-                            selected = true
-                        }
-                    }
-                }
-
-                if (selected) {
-                    val torrentItem: TorrentItem? = torrentsRepository.getTorrentInfo(id)
-                    if (torrentItem != null) {
-                        if (!beforeSelectionStatusList.contains(torrentItem.status)) {
-                            job.cancelIfActive()
-                            torrentLiveData.postEvent(TorrentEvent.FilesSelected(torrentItem))
-                        }
-                    }
-                }
-                delay(1500)
-            }
-        }
     }
 
     fun triggerTorrentEvent(event: TorrentEvent) {

@@ -4,8 +4,6 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.DownloadManager
 import android.content.BroadcastReceiver
-import android.content.ContentResolver.SCHEME_CONTENT
-import android.content.ContentResolver.SCHEME_FILE
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
@@ -43,7 +41,7 @@ import com.github.livingwithhippos.unchained.data.service.ForegroundTorrentServi
 import com.github.livingwithhippos.unchained.databinding.ActivityMainBinding
 import com.github.livingwithhippos.unchained.settings.view.SettingsActivity
 import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Companion.KEY_TORRENT_NOTIFICATIONS
-import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityMessage
+import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityEvent
 import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewModel
 import com.github.livingwithhippos.unchained.statemachine.authentication.CurrentFSMAuthentication
 import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationState
@@ -51,25 +49,45 @@ import com.github.livingwithhippos.unchained.utilities.APP_LINK
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.EventObserver
 import com.github.livingwithhippos.unchained.utilities.PreferenceKeys
-import com.github.livingwithhippos.unchained.utilities.SCHEME_HTTP
-import com.github.livingwithhippos.unchained.utilities.SCHEME_HTTPS
-import com.github.livingwithhippos.unchained.utilities.SCHEME_MAGNET
 import com.github.livingwithhippos.unchained.utilities.SIGNATURE
 import com.github.livingwithhippos.unchained.utilities.TelemetryManager
+import com.github.livingwithhippos.unchained.utilities.UriType
 import com.github.livingwithhippos.unchained.utilities.extension.downloadFileInStandardFolder
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.github.livingwithhippos.unchained.utilities.extension.toHex
+import com.github.livingwithhippos.unchained.utilities.parseUriType
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.elevation.SurfaceColors
 import dagger.hilt.android.AndroidEntryPoint
-import java.lang.RuntimeException
-import java.security.MessageDigest
-import javax.inject.Inject
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.security.MessageDigest
+import javax.inject.Inject
+
+/**
+ * todo:
+ *   - MainActivity:
+ *   - remove unused functions
+ *   - check the TODOs and manage the other links from external URIs
+ *
+ *   - TorrentProcessingFragment:
+ *   - set up again torrent management
+ *   - remove downloading of torrents
+ *   - update new download fragment to directly download the torrent via mainactivity
+ *
+ *   - TorrentFilePickerFragment:
+ *   - linked to above ones
+ *
+ *   - New Download:
+ *   - use new functions
+ *
+ *   - remove partial nav graphs
+ *   - remove unnecessary actions if only globals are used
+ *   - test navigation actions
+ */
 
 /** A [AppCompatActivity] subclass. Shared between all the fragments except for the preferences. */
 @AndroidEntryPoint
@@ -339,8 +357,9 @@ class MainActivity : AppCompatActivity() {
                         viewModel.downloadPlugin(applicationContext, link, null)
                     }
                     else -> {
-                        // check the authentication
-                        processExternalRequestOnAuthentication(Uri.parse(link))
+                        // check the authentication and process the link when ready
+                        val uri = Uri.parse(link)
+                        processExternalRequestOnAuthentication(parseUriType(uri, applicationContext))
                     }
                 }
             }
@@ -383,7 +402,7 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.messageLiveData.observe(this) {
             when (val content = it?.getContentIfNotHandled()) {
-                is MainActivityMessage.InstalledPlugins -> {
+                is MainActivityEvent.InstalledPlugins -> {
                     lifecycleScope.launch {
                         currentToast.cancel()
                         // calling cancel stops the toast from showing on api 22 maybe others
@@ -396,18 +415,18 @@ class MainActivity : AppCompatActivity() {
                         currentToast.show()
                     }
                 }
-                is MainActivityMessage.StringID -> {
+                is MainActivityEvent.Message -> {
                     lifecycleScope.launch {
                         currentToast.cancel()
                         // calling cancel stops the toast from showing on api 22 maybe others
                         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M) {
                             delay(200)
                         }
-                        currentToast.setText(getString(content.id))
+                        currentToast.setText(getString(content.stringID))
                         currentToast.show()
                     }
                 }
-                is MainActivityMessage.UpdateFound -> {
+                is MainActivityEvent.UpdateFound -> {
                     when (content.signature) {
                         SIGNATURE.F_DROID -> {
                             showUpdateDialog(
@@ -430,22 +449,22 @@ class MainActivity : AppCompatActivity() {
                         else -> {}
                     }
                 }
-                MainActivityMessage.RequireDownloadFolder -> {
+                MainActivityEvent.RequireDownloadFolder -> {
                     pickDirectoryLauncher.launch(null)
                 }
-                MainActivityMessage.RequireDownloadPermissions -> {
+                MainActivityEvent.RequireDownloadPermissions -> {
                     requestDownloadPermissionLauncher.launch(
                         Manifest.permission.WRITE_EXTERNAL_STORAGE
                     )
                 }
-                MainActivityMessage.RequireNotificationPermissions -> {
+                MainActivityEvent.RequireNotificationPermissions -> {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                         requestNotificationPermissionLauncher.launch(
                             Manifest.permission.POST_NOTIFICATIONS
                         )
                     }
                 }
-                is MainActivityMessage.MultipleDownloadsEnqueued -> {
+                is MainActivityEvent.MultipleDownloadsEnqueued -> {
 
                     if (
                         Build.VERSION.SDK_INT in 23..28 &&
@@ -460,7 +479,7 @@ class MainActivity : AppCompatActivity() {
                         when (viewModel.getDownloadManagerPreference()) {
                             PreferenceKeys.DownloadManager.SYSTEM -> {
                                 val manager =
-                                    applicationContext.getSystemService(Context.DOWNLOAD_SERVICE)
+                                    applicationContext.getSystemService(DOWNLOAD_SERVICE)
                                         as DownloadManager
                                 var downloadsStarted = 0
                                 content.downloads.forEach { download ->
@@ -498,7 +517,7 @@ class MainActivity : AppCompatActivity() {
                                     if (viewModel.getDownloadOnUnmeteredOnlyPreference()) {
                                         val connectivityManager =
                                             applicationContext.getSystemService(
-                                                Context.CONNECTIVITY_SERVICE
+                                                CONNECTIVITY_SERVICE
                                             ) as ConnectivityManager
                                         if (connectivityManager.isActiveNetworkMetered) {
                                             applicationContext.showToast(
@@ -515,7 +534,7 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
                 }
-                is MainActivityMessage.DownloadEnqueued -> {
+                is MainActivityEvent.DownloadEnqueued -> {
 
                     if (
                         Build.VERSION.SDK_INT in 23..28 &&
@@ -530,7 +549,7 @@ class MainActivity : AppCompatActivity() {
                             PreferenceKeys.DownloadManager.SYSTEM -> {
 
                                 val manager =
-                                    applicationContext.getSystemService(Context.DOWNLOAD_SERVICE)
+                                    applicationContext.getSystemService(DOWNLOAD_SERVICE)
                                         as DownloadManager
 
                                 val queuedDownload =
@@ -562,7 +581,7 @@ class MainActivity : AppCompatActivity() {
                                     if (viewModel.getDownloadOnUnmeteredOnlyPreference()) {
                                         val connectivityManager =
                                             applicationContext.getSystemService(
-                                                Context.CONNECTIVITY_SERVICE
+                                                CONNECTIVITY_SERVICE
                                             ) as ConnectivityManager
                                         if (connectivityManager.isActiveNetworkMetered) {
                                             applicationContext.showToast(
@@ -579,6 +598,18 @@ class MainActivity : AppCompatActivity() {
                             }
                         }
                     }
+                }
+                is MainActivityEvent.ContainerDownloaded -> {
+                    val actionArgs = Bundle().apply {
+                        putStringArray("linkList", content.links.toTypedArray())
+                    }
+                    navController.navigate(R.id.action_to_folder_fragment, actionArgs)
+                }
+                is MainActivityEvent.TorrentUploaded -> {
+                    val actionArgs = Bundle().apply {
+                        putString("torrentID", content.torrent.id)
+                    }
+                    navController.navigate(R.id.action_to_torrent_processing_fragment, actionArgs)
                 }
                 null -> {}
             }
@@ -653,29 +684,14 @@ class MainActivity : AppCompatActivity() {
             Intent.ACTION_VIEW -> {
                 /* Implicit intent with path to torrent file or magnet link */
 
-                val data = intent.data
-                // check uri content
-                if (data != null) {
+                val data = intent.data ?: return
 
-                    when (data.scheme) {
-                        // clicked on a torrent file or a magnet link or .unchained file
-                        SCHEME_MAGNET,
-                        SCHEME_CONTENT,
-                        SCHEME_FILE -> {
-                            when {
-                                // check if it's a search plugin
-                                data.path?.endsWith(TYPE_UNCHAINED, ignoreCase = true) == true ->
-                                    viewModel.addPluginFromDisk(applicationContext, data)
-                                else -> {
-                                    // it's a magnet/torrent, check auth state before loading it
-                                    processExternalRequestOnAuthentication(data)
-                                }
-                            }
-                        }
-                        SCHEME_HTTP,
-                        SCHEME_HTTPS -> {
-                            processExternalRequestOnAuthentication(data)
-                        }
+                when(val parsedURI = parseUriType(data, applicationContext)) {
+                    is UriType.PluginFile -> {
+                        viewModel.addPluginFromDisk(applicationContext, data)
+                    }
+                    else -> {
+                        processExternalRequestOnAuthentication(parsedURI)
                     }
                 }
             }
@@ -700,14 +716,14 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun processExternalRequestOnAuthentication(uri: Uri) {
+    private fun processExternalRequestOnAuthentication(uriType: UriType) {
         lifecycleScope.launch {
             // avoid some issues with the authentication state machine being too late
             delayLoop@ for (loop in 1..100) {
                 when (viewModel.getCurrentAuthenticationStatus()) {
                     CurrentFSMAuthentication.Authenticated -> {
                         // auth ok, process link and exit loop
-                        processExternalRequest(uri)
+                        processExternalRequest(uriType)
                         break@delayLoop
                     }
                     CurrentFSMAuthentication.Unauthenticated -> {
@@ -740,10 +756,42 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun processExternalRequest(uri: Uri) {
-        lifecycleScope.launch {
-            doubleClickBottomItem(R.id.navigation_lists)
-            viewModel.addLink(uri)
+    private fun processExternalRequest(uriType: UriType) {
+        when(uriType) {
+            is UriType.MagnetLink -> {
+                // todo: directly request the link to real-debrid and send the ID to the fragment?
+                val actionArgs = Bundle().apply {
+                    putString("magnet", uriType.link)
+                }
+                navController.navigate(R.id.action_to_torrent_processing_fragment, actionArgs)
+            }
+            is UriType.TorrentFile -> {
+                TODO()
+            }
+            is UriType.PluginFile -> {
+                // todo: check if working
+                viewModel.downloadPlugin(applicationContext, uriType.uri.toString(), null)
+            }
+            is UriType.ContainerFile -> {
+                // todo: use a single toast to avoid spamming them on multiple events, see viewModel.postMessage on NewDownloadFragment
+                showToast(R.string.loading_container_file)
+                peekAvailableContext()?.let {
+                    viewModel.uploadContainer(it, uriType.uri)
+                }
+            }
+            is UriType.Url -> TODO()
+            is UriType.Unknown -> {
+                showToast(R.string.invalid_url)
+            }
+
+            is UriType.ContainerLink -> TODO()
+            is UriType.PluginLink -> TODO()
+            is UriType.TorrentLink -> {
+                showToast(R.string.downloading_torrent)
+                peekAvailableContext()?.let {
+                    viewModel.uploadTorrent(uriType.link, it.cacheDir)
+                }
+            }
         }
     }
 

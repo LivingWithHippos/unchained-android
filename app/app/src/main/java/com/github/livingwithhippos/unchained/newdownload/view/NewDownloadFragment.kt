@@ -1,11 +1,8 @@
 package com.github.livingwithhippos.unchained.newdownload.view
 
 import android.annotation.SuppressLint
-import android.content.ContentResolver.SCHEME_CONTENT
-import android.content.ContentResolver.SCHEME_FILE
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,9 +28,7 @@ import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuth
 import com.github.livingwithhippos.unchained.utilities.CONTAINER_EXTENSION_PATTERN
 import com.github.livingwithhippos.unchained.utilities.EventObserver
 import com.github.livingwithhippos.unchained.utilities.REMOTE_TRAFFIC_ON
-import com.github.livingwithhippos.unchained.utilities.SCHEME_HTTP
-import com.github.livingwithhippos.unchained.utilities.SCHEME_HTTPS
-import com.github.livingwithhippos.unchained.utilities.SCHEME_MAGNET
+import com.github.livingwithhippos.unchained.utilities.UriType
 import com.github.livingwithhippos.unchained.utilities.extension.getApiErrorMessage
 import com.github.livingwithhippos.unchained.utilities.extension.getClipboardText
 import com.github.livingwithhippos.unchained.utilities.extension.getDownloadedFileUri
@@ -43,6 +38,8 @@ import com.github.livingwithhippos.unchained.utilities.extension.isMagnet
 import com.github.livingwithhippos.unchained.utilities.extension.isSimpleWebUrl
 import com.github.livingwithhippos.unchained.utilities.extension.isTorrent
 import com.github.livingwithhippos.unchained.utilities.extension.isWebUrl
+import com.github.livingwithhippos.unchained.utilities.extension.showToast
+import com.github.livingwithhippos.unchained.utilities.parseUriType
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.IOException
 import kotlinx.coroutines.delay
@@ -224,6 +221,7 @@ class NewDownloadFragment : UnchainedFragment() {
             },
         )
 
+        // used to avoid spamming toasts
         @SuppressLint("ShowToast")
         val currentToast: Toast = Toast.makeText(requireContext(), "", Toast.LENGTH_SHORT)
         var lastToastTime = System.currentTimeMillis()
@@ -246,6 +244,7 @@ class NewDownloadFragment : UnchainedFragment() {
     private fun setupClickListeners(binding: NewDownloadFragmentBinding) {
         // add the unrestrict button listener
         binding.bUnrestrict.setOnClickListener {
+            // todo: move checks to util or whatever so we can go to a new download from other fragments
             val authState = activityViewModel.getAuthenticationMachineState()
             if (
                 authState is FSMAuthenticationState.AuthenticatedPrivateToken ||
@@ -268,7 +267,6 @@ class NewDownloadFragment : UnchainedFragment() {
                         }
 
                 if (splitLinks.isEmpty()) {
-                    Timber.w("Invalid link: $link")
                     viewModel.postMessage(getString(R.string.invalid_url))
                     return@setOnClickListener
                 }
@@ -417,78 +415,34 @@ class NewDownloadFragment : UnchainedFragment() {
 
     private fun setupArgs(binding: NewDownloadFragmentBinding) {
 
-        args.externalUri?.let { link ->
-            when (link.scheme) {
-                SCHEME_MAGNET -> {
+        args.externalUri?.let { uri ->
+            when(val parsedUri = parseUriType(uri, requireContext())) {
+                is UriType.ContainerFile -> loadContainer(binding, parsedUri.uri)
+                is UriType.MagnetLink -> {
                     viewModel.postMessage(getString(R.string.loading_magnet_link))
                     // set as text input text
-                    binding.tiLink.setText(link.toString(), TextView.BufferType.EDITABLE)
+                    binding.tiLink.setText(parsedUri.link, TextView.BufferType.EDITABLE)
                     // simulate button click
                     binding.bUnrestrict.performClick()
                 }
-                SCHEME_CONTENT,
-                SCHEME_FILE -> {
-
-                    var handled = false
-
-                    requireContext()
-                        .contentResolver
-                        .query(
-                            link,
-                            arrayOf(MediaStore.MediaColumns.DISPLAY_NAME),
-                            null,
-                            null,
-                            null,
-                        )
-                        ?.use { metaCursor ->
-                            if (metaCursor.moveToFirst()) {
-                                val fileName = metaCursor.getString(0)
-                                Timber.d("Torrent shared file found: $fileName")
-                                when {
-                                    // check if it's a container
-                                    CONTAINER_EXTENSION_PATTERN.toRegex().matches(fileName) -> {
-                                        handled = true
-                                        loadContainer(binding, link)
-                                    }
-                                    fileName.endsWith(".torrent", ignoreCase = true) -> {
-                                        handled = true
-                                        loadTorrent(binding, link)
-                                    }
-                                }
-                            }
-                        }
-
-                    if (!handled) {
-                        when {
-                            // check if it's a container
-                            CONTAINER_EXTENSION_PATTERN.toRegex().matches(link.path ?: "") -> {
-                                loadContainer(binding, link)
-                            }
-                            link.path?.endsWith(".torrent", ignoreCase = true) == true -> {
-                                loadTorrent(binding, link)
-                            }
-                            else ->
-                                Timber.e(
-                                    "Unsupported content/file passed to NewDownloadFragment: $link"
-                                )
-                        }
-                    } else {
-                        // do nothing
-                    }
+                is UriType.PluginFile -> {
+                    // should not happen
+                    Timber.e("Plugin link passed to NewDownloadFragment: ${parsedUri.uri}")
+                    context?.showToast(R.string.invalid_url)
                 }
-                SCHEME_HTTP,
-                SCHEME_HTTPS -> {
-                    // set as text input text
-                    binding.tiLink.setText(link.toString(), TextView.BufferType.EDITABLE)
-                    // simulate button click
+                is UriType.TorrentFile -> loadTorrent(binding, parsedUri.uri)
+                is UriType.Url -> {
+                    binding.tiLink.setText(parsedUri.link, TextView.BufferType.EDITABLE)
                     binding.bUnrestrict.performClick()
                 }
-                else -> {
-                    // shouldn't trigger
-                    Timber.e(
-                        "Unknown Uri shared to NewDownloadFragment: ${link.scheme} - ${link.path}"
-                    )
+                UriType.Unknown -> {
+                    Timber.d("Unknown uri type: $uri")
+                    context?.showToast(R.string.invalid_url)
                 }
+
+                is UriType.ContainerLink -> TODO()
+                is UriType.PluginLink -> TODO()
+                is UriType.TorrentLink -> TODO()
             }
         }
     }

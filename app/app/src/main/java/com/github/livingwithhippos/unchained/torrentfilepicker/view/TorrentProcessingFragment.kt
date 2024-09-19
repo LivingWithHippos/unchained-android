@@ -72,7 +72,7 @@ class TorrentProcessingFragment : UnchainedFragment() {
 
         setup(binding)
 
-        viewModel.torrentLiveData.observe(viewLifecycleOwner) {
+        activityViewModel.torrentLiveData.observe(viewLifecycleOwner) {
             when (val content = it.getContentIfNotHandled()) {
                 is TorrentEvent.Uploaded -> {
                     binding.tvStatus.text = getString(R.string.loading_torrent)
@@ -277,9 +277,14 @@ class TorrentProcessingFragment : UnchainedFragment() {
 
         binding.fabDownload.setOnClickListener { showMenu(it, R.menu.download_mode_picker) }
 
-        if (args.torrentID != null) {
+        val torrentID = args.torrentID
+        val magnet = args.magnet
+
+        if (torrentID != null) {
             // we are loading an already available torrent
-            args.torrentID?.let { viewModel.fetchTorrentDetails(it) }
+            viewModel.fetchTorrentDetails(torrentID)
+        } else if (magnet != null) {
+            activityViewModel.fetchMagnet(magnet)
         } else if (args.link != null) {
             // we are loading a new torrent
             args.link?.let {

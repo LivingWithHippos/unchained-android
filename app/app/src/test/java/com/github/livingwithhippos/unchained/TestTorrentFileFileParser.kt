@@ -9,7 +9,7 @@ import com.squareup.moshi.Moshi
 import org.junit.Test
 
 /** This file is used to avoid errors with `gradlew lint test` */
-class TestTorrentFileParser {
+class TestTorrentFileFileParser {
 
     private val moshi: Moshi = Moshi.Builder().build()
     private val jsonAdapter: JsonAdapter<TorrentItem> = moshi.adapter(TorrentItem::class.java)

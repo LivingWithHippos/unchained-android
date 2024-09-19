@@ -33,11 +33,14 @@ import com.github.livingwithhippos.unchained.data.model.EmptyBodyError
 import com.github.livingwithhippos.unchained.data.model.NetworkError
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkException
+import com.github.livingwithhippos.unchained.data.model.UploadedTorrent
 import com.github.livingwithhippos.unchained.data.model.User
 import com.github.livingwithhippos.unchained.data.model.UserAction
+import com.github.livingwithhippos.unchained.data.model.cache.CachedTorrent
 import com.github.livingwithhippos.unchained.data.model.cache.InstantAvailability
 import com.github.livingwithhippos.unchained.data.repository.AuthenticationRepository
 import com.github.livingwithhippos.unchained.data.repository.CustomDownloadRepository
+import com.github.livingwithhippos.unchained.data.repository.DownloadResult
 import com.github.livingwithhippos.unchained.data.repository.HostsRepository
 import com.github.livingwithhippos.unchained.data.repository.InstallResult
 import com.github.livingwithhippos.unchained.data.repository.KodiDeviceRepository
@@ -45,10 +48,12 @@ import com.github.livingwithhippos.unchained.data.repository.PluginRepository
 import com.github.livingwithhippos.unchained.data.repository.PluginRepository.Companion.TYPE_UNCHAINED
 import com.github.livingwithhippos.unchained.data.repository.RemoteDeviceRepository
 import com.github.livingwithhippos.unchained.data.repository.TorrentsRepository
+import com.github.livingwithhippos.unchained.data.repository.UnrestrictRepository
 import com.github.livingwithhippos.unchained.data.repository.UpdateRepository
 import com.github.livingwithhippos.unchained.data.repository.UserRepository
 import com.github.livingwithhippos.unchained.data.repository.VariousApiRepository
 import com.github.livingwithhippos.unchained.lists.view.ListState
+import com.github.livingwithhippos.unchained.newdownload.viewmodel.Link
 import com.github.livingwithhippos.unchained.plugins.model.ScrapedItem
 import com.github.livingwithhippos.unchained.search.viewmodel.SearchViewModel
 import com.github.livingwithhippos.unchained.statemachine.authentication.CurrentFSMAuthentication
@@ -56,6 +61,9 @@ import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuth
 import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationSideEffect
 import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationState
 import com.github.livingwithhippos.unchained.torrentfilepicker.view.TorrentCachePickerFragment.Companion.KEY_CACHE_INDEX
+import com.github.livingwithhippos.unchained.torrentfilepicker.viewmodel.TorrentEvent
+import com.github.livingwithhippos.unchained.torrentfilepicker.viewmodel.TorrentProcessingViewModel.Companion.KEY_CACHE
+import com.github.livingwithhippos.unchained.torrentfilepicker.viewmodel.TorrentProcessingViewModel.Companion.KEY_CURRENT_TORRENT_ID
 import com.github.livingwithhippos.unchained.utilities.BASE_URL
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.Event
@@ -64,13 +72,18 @@ import com.github.livingwithhippos.unchained.utilities.MAGNET_PATTERN
 import com.github.livingwithhippos.unchained.utilities.PRIVATE_TOKEN
 import com.github.livingwithhippos.unchained.utilities.PreferenceKeys
 import com.github.livingwithhippos.unchained.utilities.SIGNATURE
+import com.github.livingwithhippos.unchained.utilities.beforeSelectionStatusList
 import com.github.livingwithhippos.unchained.utilities.download.DownloadWorker
+import com.github.livingwithhippos.unchained.utilities.extension.cancelIfActive
 import com.github.livingwithhippos.unchained.utilities.extension.isMagnet
 import com.github.livingwithhippos.unchained.utilities.extension.isTorrent
+import com.github.livingwithhippos.unchained.utilities.getTorrentNameFromLink
 import com.github.livingwithhippos.unchained.utilities.postEvent
 import com.tinder.StateMachine
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import java.io.File
 import java.util.regex.Matcher
 import java.util.regex.Pattern
@@ -81,6 +94,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.io.IOException
 
 /**
  * a [ViewModel] subclass. Shared between the fragments to observe the authentication status and
@@ -103,12 +117,15 @@ constructor(
     private val torrentsRepository: TorrentsRepository,
     private val updateRepository: UpdateRepository,
     private val remoteDeviceRepository: RemoteDeviceRepository,
+    private val unrestrictRepository: UnrestrictRepository,
     @ApplicationContext applicationContext: Context,
 ) : ViewModel() {
 
+    private var torrentSelectionJob = Job()
+
     private val magnetPattern = Regex(MAGNET_PATTERN, RegexOption.IGNORE_CASE)
 
-    val fsmAuthenticationState = MutableLiveData<Event<FSMAuthenticationState>?>()
+    val fsmAuthenticationState = MutableLiveData<Event<FSMAuthenticationState>>()
 
     val userLiveData = MutableLiveData<Event<User>>()
 
@@ -117,6 +134,10 @@ constructor(
     val downloadedFileLiveData = MutableLiveData<Event<Long>>()
 
     val notificationTorrentLiveData = MutableLiveData<Event<TorrentItem>>()
+
+    val torrentLiveData = MutableLiveData<Event<TorrentEvent>>()
+
+    val networkExceptionLiveData = MutableLiveData<Event<UnchainedNetworkException>>()
 
     val listStateLiveData = MutableLiveData<Event<ListState>>()
 
@@ -128,7 +149,7 @@ constructor(
     // todo: use a better name to reflect the difference between this and externalLinkLiveData
     val linkLiveData = MutableLiveData<Event<String>?>()
 
-    val messageLiveData = MutableLiveData<Event<MainActivityMessage>?>()
+    val messageLiveData = MutableLiveData<Event<MainActivityEvent>>()
 
     // todo: use this with other livedatas
     private val _cacheLiveData = MutableLiveData<InstantAvailability>()
@@ -463,6 +484,122 @@ constructor(
         }
     }
 
+    fun fetchMagnet(magnet: String) {
+        viewModelScope.launch {
+            val availableHosts = torrentsRepository.getAvailableHosts()
+            if (availableHosts.isNullOrEmpty()) {
+                Timber.e("Error fetching available hosts")
+            } else {
+                val addedMagnet = torrentsRepository.addMagnet(magnet, availableHosts.first().host)
+                when (addedMagnet) {
+                    is EitherResult.Failure -> {
+                        Timber.e("Error adding magnet: ${addedMagnet.failure}")
+                        networkExceptionLiveData.postEvent(addedMagnet.failure)
+                    }
+                    is EitherResult.Success -> {
+                        setTorrentID(addedMagnet.success.id)
+                        torrentLiveData.postEvent(TorrentEvent.Uploaded(addedMagnet.success))
+                    }
+                }
+            }
+        }
+    }
+
+    fun triggerCacheResult(cache: CachedTorrent?) {
+        if (cache != null) {
+            setCache(cache)
+            torrentLiveData.postEvent(TorrentEvent.CacheHit(cache))
+        } else {
+            torrentLiveData.postEvent(TorrentEvent.CacheMiss)
+        }
+    }
+
+    fun getCache(): CachedTorrent? {
+        return savedStateHandle[KEY_CACHE]
+    }
+
+    private fun setCache(cache: CachedTorrent) {
+        savedStateHandle[KEY_CACHE] = cache
+    }
+
+    fun getTorrentID(): String? {
+        return savedStateHandle[KEY_CURRENT_TORRENT_ID]
+    }
+
+    private fun setTorrentID(id: String) {
+        savedStateHandle[KEY_CURRENT_TORRENT_ID] = id
+    }
+
+    fun startSelectionLoop(files: String = "all") {
+
+        val id = getTorrentID()
+
+        if (id == null) {
+            Timber.e("Torrent files selection requested but torrent id was not ready")
+            return
+        }
+
+        torrentSelectionJob.cancelIfActive()
+        torrentSelectionJob = Job()
+
+        val scope = CoroutineScope(torrentSelectionJob + Dispatchers.IO)
+
+        scope.launch {
+            var selected = false
+            // / maybe job.isActive?
+            while (isActive) {
+                if (!selected) {
+                    when (val selectResponse = torrentsRepository.selectFiles(id, files)) {
+                        is EitherResult.Failure -> {
+                            if (selectResponse.failure is EmptyBodyError) {
+                                Timber.d(
+                                    "Select torrent files success returned ${selectResponse.failure.returnCode}"
+                                )
+                                selected = true
+                            } else {
+                                Timber.e(
+                                    "Exception during torrent files selection call: ${selectResponse.failure}"
+                                )
+                            }
+                        }
+                        is EitherResult.Success -> {
+                            Timber.d("Select torrent files success")
+                            selected = true
+                        }
+                    }
+                }
+
+                if (selected) {
+                    val torrentItem: TorrentItem? = torrentsRepository.getTorrentInfo(id)
+                    if (torrentItem != null) {
+                        if (!beforeSelectionStatusList.contains(torrentItem.status)) {
+                            torrentSelectionJob.cancelIfActive()
+                            torrentLiveData.postEvent(TorrentEvent.FilesSelected(torrentItem))
+                        }
+                    }
+                }
+                delay(1500)
+            }
+        }
+    }
+
+    fun checkTorrentCache(hash: String) {
+        viewModelScope.launch {
+            val builder = StringBuilder(BASE_URL)
+            builder.append(INSTANT_AVAILABILITY_ENDPOINT)
+            builder.append("/")
+            builder.append(hash)
+            when (val cache = torrentsRepository.getInstantAvailability(builder.toString())) {
+                is EitherResult.Failure -> {
+                    Timber.e("Failed getting cache for hash $hash ${cache.failure}")
+                }
+                is EitherResult.Success -> {
+                    triggerCacheResult(cache.success.cachedTorrents.firstOrNull())
+                }
+            }
+        }
+    }
+
     /**
      * Set current torrent cache pick, see TorrentCachePicker
      *
@@ -726,7 +863,7 @@ constructor(
                     if (newLink != null) linkLiveData.postValue(Event(newLink))
                     else
                         messageLiveData.postValue(
-                            Event(MainActivityMessage.StringID(R.string.invalid_url))
+                            Event(MainActivityEvent.Message(R.string.invalid_url))
                         )
                 }
                 else -> {
@@ -753,7 +890,7 @@ constructor(
                     }
                     if (!matchFound)
                         messageLiveData.postValue(
-                            Event(MainActivityMessage.StringID(R.string.host_match_not_found))
+                            Event(MainActivityEvent.Message(R.string.host_match_not_found))
                         )
                 }
             }
@@ -1016,7 +1153,7 @@ constructor(
     ) {
         if (remoteVersion != null) {
             if (remoteVersion > localVersion && remoteVersion > lastVersionChecked) {
-                messageLiveData.postValue(Event(MainActivityMessage.UpdateFound(signature)))
+                messageLiveData.postValue(Event(MainActivityEvent.UpdateFound(signature)))
             }
             with(preferences.edit()) {
                 putInt(KEY_LAST_UPDATE_VERSION_CHECKED, remoteVersion)
@@ -1091,11 +1228,11 @@ constructor(
     }
 
     fun requireDownloadFolder() {
-        messageLiveData.postValue(Event(MainActivityMessage.RequireDownloadFolder))
+        messageLiveData.postValue(Event(MainActivityEvent.RequireDownloadFolder))
     }
 
     fun requireDownloadPermissions() {
-        messageLiveData.postValue(Event(MainActivityMessage.RequireDownloadPermissions))
+        messageLiveData.postValue(Event(MainActivityEvent.RequireDownloadPermissions))
     }
 
     fun requireNotificationPermissions(callDelay: Boolean = true) {
@@ -1103,7 +1240,7 @@ constructor(
             if (callDelay) {
                 delay(500)
             }
-            messageLiveData.postValue(Event(MainActivityMessage.RequireNotificationPermissions))
+            messageLiveData.postValue(Event(MainActivityEvent.RequireNotificationPermissions))
         }
     }
 
@@ -1114,7 +1251,7 @@ constructor(
         ) ?: PreferenceKeys.DownloadManager.SYSTEM
     }
 
-    fun startDownloadWorker(content: MainActivityMessage.DownloadEnqueued, folder: Uri) {
+    fun startDownloadWorker(content: MainActivityEvent.DownloadEnqueued, folder: Uri) {
 
         val unmeteredConnectionOnly =
             preferences.getBoolean(PreferenceKeys.DownloadManager.UNMETERED_ONLY_KEY, false)
@@ -1186,12 +1323,12 @@ constructor(
 
     fun enqueueDownload(sourceUrl: String, fileName: String) {
         // todo: folder should be nullable for the system download manager
-        messageLiveData.postValue(Event(MainActivityMessage.DownloadEnqueued(sourceUrl, fileName)))
+        messageLiveData.postValue(Event(MainActivityEvent.DownloadEnqueued(sourceUrl, fileName)))
     }
 
     fun enqueueDownloads(downloads: List<DownloadItem>) {
         // todo: folder should be nullable for the system download manager
-        messageLiveData.postValue(Event(MainActivityMessage.MultipleDownloadsEnqueued(downloads)))
+        messageLiveData.postValue(Event(MainActivityEvent.MultipleDownloadsEnqueued(downloads)))
     }
 
     fun getDownloadOnUnmeteredOnlyPreference(): Boolean {
@@ -1217,16 +1354,119 @@ constructor(
         when (result) {
             is InstallResult.Error ->
                 messageLiveData.postValue(
-                    Event(MainActivityMessage.StringID(R.string.plugin_install_not_installed))
+                    Event(MainActivityEvent.Message(R.string.plugin_install_not_installed))
                 )
             InstallResult.Incompatible ->
                 messageLiveData.postValue(
-                    Event(MainActivityMessage.StringID(R.string.plugin_install_incompatible))
+                    Event(MainActivityEvent.Message(R.string.plugin_install_incompatible))
                 )
             InstallResult.Installed ->
                 messageLiveData.postValue(
-                    Event(MainActivityMessage.StringID(R.string.plugin_install_installed))
+                    Event(MainActivityEvent.Message(R.string.plugin_install_installed))
                 )
+        }
+    }
+
+    fun uploadTorrent(link: String, cacheDir: File) {
+        val fileName = getTorrentNameFromLink(link) ?: "temp.torrent"
+        viewModelScope.launch {
+            try {
+                customDownloadRepository.downloadToCache(
+                    url = link,
+                    fileName = fileName,
+                    cacheDir = cacheDir,
+                    suffix = ".torrent"
+                ).collect { status ->
+                    when (status) {
+                        is DownloadResult.End -> {
+                            // upload to real-debrid
+                            messageLiveData.postEvent(MainActivityEvent.Message(R.string.uploading))
+
+                            try {
+                                val cacheFile = File(cacheDir, fileName)
+                                cacheFile.inputStream().use { inputStream ->
+                                    val buffer: ByteArray = inputStream.readBytes()
+
+                                    val availableHosts = torrentsRepository.getAvailableHosts()
+                                    if (availableHosts.isNullOrEmpty()) {
+                                        Timber.e("Error fetching available hosts")
+                                        messageLiveData.postEvent(MainActivityEvent.Message(R.string.upload_error))
+                                    } else {
+                                        val uploadedTorrent =
+                                            torrentsRepository.addTorrent(buffer, availableHosts.first().host)
+                                        when (uploadedTorrent) {
+                                            is EitherResult.Failure -> {
+                                                networkExceptionLiveData.postEvent(uploadedTorrent.failure)
+                                            }
+                                            is EitherResult.Success -> {
+                                                // todo: add checks for already chosen torrent/magnet (if possible),
+                                                //   otherwise we get multiple downloads
+                                                messageLiveData.postEvent(MainActivityEvent.TorrentUploaded(uploadedTorrent.success))
+                                            }
+                                        }
+                                    }
+                                }
+                            } catch (exception: Exception) {
+                                Timber.e(
+                                    "Error uploading torrent: ${exception.message}"
+                                )
+                                messageLiveData.postEvent(MainActivityEvent.Message(R.string.upload_error))
+                            }
+                        }
+                        DownloadResult.Failure -> {
+                            messageLiveData.postEvent(MainActivityEvent.Message(R.string.error_loading_torrent))
+                        }
+                        is DownloadResult.Progress -> {
+                            // torrents are small so ignore for now
+                        }
+                        DownloadResult.WrongURL ->
+                            messageLiveData.postEvent(MainActivityEvent.Message(R.string.invalid_url))
+                    }
+                }
+            } catch (exception: Exception) {
+                Timber.e(
+                    "Error downloading torrent to cache: ${exception.message}"
+                )
+                messageLiveData.postEvent(MainActivityEvent.Message(R.string.error_loading_torrent))
+            }
+        }
+    }
+
+    fun uploadContainer(context: Context, uri: Uri) {
+        viewModelScope.launch {
+            try {
+                context.contentResolver?.openInputStream(uri)?.use { inputStream ->
+                    val buffer: ByteArray = inputStream.readBytes()
+
+                    when (val fileList = unrestrictRepository.uploadContainer(buffer)) {
+                        is EitherResult.Failure -> {
+                            networkExceptionLiveData.postEvent(fileList.failure)
+                        }
+                        is EitherResult.Success -> {
+                            messageLiveData.postEvent(MainActivityEvent.ContainerDownloaded(fileList.success))
+                        }
+                    }
+                }
+            } catch (exception: Exception) {
+                when (exception) {
+                    is java.io.FileNotFoundException -> {
+                        Timber.e("Container conversion: file not found: ${exception.message}")
+                        messageLiveData.postEvent(MainActivityEvent.Message(R.string.error_loading_file))
+                    }
+                    is IOException -> {
+                        Timber.e(
+                            "Container conversion: IOException error getting the file: ${exception.message}"
+                        )
+                        messageLiveData.postEvent(MainActivityEvent.Message(R.string.error_parsing_container))
+                    }
+                    else -> {
+                        Timber.e(
+                            "Container conversion: Other error getting the file: ${exception.message}"
+                        )
+                        messageLiveData.postEvent(MainActivityEvent.Message(R.string.error_loading_file))
+                    }
+                }
+            }
         }
     }
 
@@ -1242,20 +1482,24 @@ constructor(
     }
 }
 
-sealed class MainActivityMessage {
-    data class StringID(val id: Int) : MainActivityMessage()
+sealed class MainActivityEvent {
+    data class Message(val stringID: Int) : MainActivityEvent()
 
-    data class InstalledPlugins(val number: Int) : MainActivityMessage()
+    data class InstalledPlugins(val number: Int) : MainActivityEvent()
 
-    data class UpdateFound(val signature: String) : MainActivityMessage()
+    data class UpdateFound(val signature: String) : MainActivityEvent()
 
-    data object RequireDownloadFolder : MainActivityMessage()
+    data object RequireDownloadFolder : MainActivityEvent()
 
-    data object RequireDownloadPermissions : MainActivityMessage()
+    data object RequireDownloadPermissions : MainActivityEvent()
 
-    data object RequireNotificationPermissions : MainActivityMessage()
+    data object RequireNotificationPermissions : MainActivityEvent()
 
-    data class DownloadEnqueued(val source: String, val fileName: String) : MainActivityMessage()
+    data class DownloadEnqueued(val source: String, val fileName: String) : MainActivityEvent()
 
-    data class MultipleDownloadsEnqueued(val downloads: List<DownloadItem>) : MainActivityMessage()
+    data class MultipleDownloadsEnqueued(val downloads: List<DownloadItem>) : MainActivityEvent()
+
+    data class ContainerDownloaded(val links: List<String>) : MainActivityEvent()
+
+    data class TorrentUploaded(val torrent: UploadedTorrent) : MainActivityEvent()
 }
