@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/full_nav_graph"
+    app:startDestination="@id/start_dest"
+    >
+
+    <!-- global actions -->
+
+    <action
+        android:id="@+id/action_to_new_download_fragment"
+        app:destination="@id/newDownloadFragment" />
+
+
+    <action
+        android:id="@+id/action_to_torrent_processing_fragment"
+        app:destination="@id/torrentProcessingFragment" />
+
+
+    <action
+        android:id="@+id/action_to_folder_fragment"
+        app:destination="@id/folderListFragment" />
+
+    <!-- home -->
+
+    <fragment
+        android:id="@+id/start_dest"
+        android:name="com.github.livingwithhippos.unchained.start.view.StartFragment"
+        tools:layout="@layout/fragment_start"
+        android:label="@string/loading">
+        <action
+            android:id="@+id/action_startFragment_to_authenticationFragment"
+            app:destination="@id/authentication_dest"
+            app:popUpTo="@id/start_dest"/>
+        <action
+            android:id="@+id/action_startFragment_to_userProfileFragment"
+            app:destination="@id/user_dest"
+            app:popUpTo="@id/start_dest" />
+    </fragment>
+    <fragment
+        android:id="@+id/authentication_dest"
+        android:name="com.github.livingwithhippos.unchained.authentication.view.AuthenticationFragment"
+        tools:layout="@layout/fragment_authentication"
+        android:label="@string/authenticate" >
+        <action
+            android:id="@+id/actionAuthenticationToUser"
+            app:destination="@id/user_dest"
+            app:popUpTo="@id/start_dest" />
+    </fragment>
+    <fragment
+        android:id="@+id/user_dest"
+        android:name="com.github.livingwithhippos.unchained.user.view.UserProfileFragment"
+        tools:layout="@layout/fragment_user_profile"
+        android:label="@string/user" >
+        <action
+            android:id="@+id/action_user_to_authentication_fragment"
+            app:destination="@id/authentication_dest"
+            app:popUpTo="@id/authentication_dest"/>
+        <action
+            android:id="@+id/action_user_to_start_fragment"
+            app:destination="@id/start_dest"
+            app:popUpTo="@id/start_dest"/>
+    </fragment>
+
+    <!-- downloads -->
+
+    <fragment
+        android:id="@+id/download_details_dest"
+        android:name="com.github.livingwithhippos.unchained.downloaddetails.view.DownloadDetailsFragment"
+        android:label="@string/details"
+        tools:layout="@layout/fragment_download_details">
+        <argument
+            android:name="details"
+            app:argType="com.github.livingwithhippos.unchained.data.model.DownloadItem" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/list_tabs_dest"
+        android:name="com.github.livingwithhippos.unchained.lists.view.ListsTabFragment"
+        android:label="@string/downloads"
+        tools:layout="@layout/fragment_tab_lists">
+        <action
+            android:id="@+id/action_listsTab_to_downloadDetails"
+            app:destination="@id/download_details_dest" />
+        <action
+            android:id="@+id/action_listsTab_to_torrentDetails"
+            app:destination="@id/torrent_details_dest" />
+        <action
+            android:id="@+id/action_list_tabs_dest_to_folderListFragment2"
+            app:destination="@id/folderListFragment" />
+        <action
+            android:id="@+id/action_list_tabs_dest_to_torrentProcessingFragment"
+            app:destination="@id/torrentProcessingFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/torrent_details_dest"
+        android:name="com.github.livingwithhippos.unchained.torrentdetails.view.TorrentDetailsFragment"
+        android:label="@string/torrent"
+        tools:layout="@layout/fragment_torrent_details">
+        <action
+            android:id="@+id/action_torrentDetails_to_download_details_dest"
+            app:destination="@id/download_details_dest"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"
+            app:popUpTo="@id/list_tabs_dest"
+            />
+        <action
+            android:id="@+id/action_torrent_details_to_torrent_folder"
+            app:destination="@id/folderListFragment"
+            app:popUpTo="@id/list_tabs_dest"
+            />
+        <argument
+            android:name="item"
+            app:argType="com.github.livingwithhippos.unchained.data.model.TorrentItem" />
+        <action
+            android:id="@+id/action_torrent_details_dest_to_torrentProcessingFragment"
+            app:destination="@id/torrentProcessingFragment"
+            app:popUpTo="@id/list_tabs_dest"
+            />
+    </fragment>
+    <fragment
+        android:id="@+id/folderListFragment"
+        android:name="com.github.livingwithhippos.unchained.folderlist.view.FolderListFragment"
+        android:label="@string/folder"
+        tools:layout="@layout/fragment_folder_list">
+        <argument
+            android:name="folder"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="torrent"
+            app:argType="com.github.livingwithhippos.unchained.data.model.TorrentItem"
+            app:nullable="true" />
+        <action
+            android:id="@+id/action_folderListFragment_to_download_details_dest"
+            app:destination="@id/download_details_dest" />
+        <argument
+            android:name="linkList"
+            app:argType="string[]"
+            app:nullable="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/newDownloadFragment"
+        android:name="com.github.livingwithhippos.unchained.newdownload.view.NewDownloadFragment"
+        android:label="@string/new_download"
+        tools:layout="@layout/new_download_fragment">
+        <action
+            android:id="@+id/action_new_download_dest_to_folderListFragment"
+            app:destination="@id/folderListFragment"
+            app:popUpTo="@id/list_tabs_dest"
+            />
+        <action
+            android:id="@+id/actionUnrestrictDownloadToDetailsFragment"
+            app:destination="@id/download_details_dest"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"
+            app:popUpTo="@id/list_tabs_dest"
+            />
+        <action
+            android:id="@+id/action_new_download_dest_to_torrentDetailsFragment"
+            app:destination="@id/torrent_details_dest"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"
+            app:popUpTo="@id/list_tabs_dest"
+            />
+        <argument
+            android:name="externalUri"
+            app:argType="android.net.Uri"
+            app:nullable="true"
+            android:defaultValue="@null" />
+        <action
+            android:id="@+id/action_newDownloadFragment_to_torrentProcessingFragment"
+            app:destination="@id/torrentProcessingFragment"
+            app:popUpTo="@id/list_tabs_dest"
+            />
+    </fragment>
+    <fragment
+        android:id="@+id/torrentProcessingFragment"
+        android:name="com.github.livingwithhippos.unchained.torrentfilepicker.view.TorrentProcessingFragment"
+        android:label="@string/torrent"
+        tools:layout="@layout/fragment_torrent_processing">
+        <argument
+            android:name="link"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="@null"
+            />
+        <argument
+            android:name="torrentID"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="@null"
+            />
+        <argument
+            android:name="magnet"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="@null"
+            />
+        <action
+            android:id="@+id/action_torrentProcessingFragment_to_torrent_details_dest"
+            app:destination="@id/torrent_details_dest"
+            app:popUpTo="@id/list_tabs_dest"
+            />
+    </fragment>
+
+    <!-- search -->
+
+    <fragment
+        android:id="@+id/search_dest"
+        android:label="@string/search_files"
+        android:name="com.github.livingwithhippos.unchained.search.view.SearchFragment"
+        tools:layout="@layout/fragment_search"
+        >
+        <action
+            android:id="@+id/action_search_dest_to_searchItemFragment"
+            app:destination="@id/searchItemFragment" />
+        <action
+            android:id="@+id/action_search_dest_to_repositoryFragment"
+            app:destination="@id/repositoryFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/searchItemFragment"
+        android:name="com.github.livingwithhippos.unchained.search.view.SearchItemFragment"
+        android:label="@string/links"
+        tools:layout="@layout/fragment_search_item">
+        <argument
+            android:name="item"
+            app:argType="com.github.livingwithhippos.unchained.plugins.model.ScrapedItem" />
+    </fragment>
+    <fragment
+        android:id="@+id/repositoryFragment"
+        android:name="com.github.livingwithhippos.unchained.repository.view.RepositoryFragment"
+        android:label="@string/manage_plugins"
+        tools:layout="@layout/fragment_repository"
+        />
+    <fragment
+        android:id="@+id/pluginSearchFragment"
+        android:label="@string/search_files"
+        android:name="com.github.livingwithhippos.unchained.search.view.PluginSearchFragment"
+        tools:layout="@layout/fragment_search_plugins_tab"
+        />
+</navigation>
