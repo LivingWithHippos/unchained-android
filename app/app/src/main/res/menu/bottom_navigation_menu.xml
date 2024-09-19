@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/navigation_home"
+        android:id="@+id/user_dest"
         android:enabled="true"
         android:icon="@drawable/icon_crown"
         android:contentDescription="@string/user"
         android:title="@string/user" />
     <item
-        android:id="@+id/navigation_lists"
+        android:id="@+id/list_tabs_dest"
         android:enabled="true"
         android:icon="@drawable/icon_lists"
         android:contentDescription="@string/downloads"
         android:title="@string/downloads" />
     <item
-        android:id="@+id/navigation_search"
+        android:id="@+id/search_dest"
         android:enabled="true"
         android:icon="@drawable/icon_search_symbol"
         android:contentDescription="@string/search"
