@@ -98,8 +98,7 @@ const val DOWNLOADS_TAB = 0
 const val TORRENTS_TAB = 1
 
 object SIGNATURE {
-    const val URL =
-        "https://gist.githubusercontent.com/LivingWithHippos/5525e73f0439d06c1c3ff4f9484e35dd/raw/f97b79e706aa67d729806039d49f80aba4042793/unchained_versions.json"
+    const val URL = "https://gist.githubusercontent.com/LivingWithHippos/5525e73f0439d06c1c3ff4f9484e35dd/raw/unchained_versions.json"
     const val PLAY_STORE = "31F17448AA3888B63ED04EB5F965E3F70C12592F"
     const val F_DROID = "412DABCABBDB75A82FF66F767C71EE045C02275B"
     const val GITHUB = "0E7BE3FA6B47C20394517C568570E10761A0A4FA"
