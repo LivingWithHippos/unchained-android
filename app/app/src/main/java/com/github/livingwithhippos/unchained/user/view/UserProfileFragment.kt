@@ -10,8 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker
-import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.github.livingwithhippos.unchained.R
@@ -20,7 +18,6 @@ import com.github.livingwithhippos.unchained.databinding.FragmentUserProfileBind
 import com.github.livingwithhippos.unchained.settings.view.SettingsActivity
 import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Companion.KEY_REFERRAL_ASKED
 import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Companion.KEY_REFERRAL_USE
-import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewModel
 import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationState
 import com.github.livingwithhippos.unchained.utilities.ACCOUNT_LINK
 import com.github.livingwithhippos.unchained.utilities.REFERRAL_LINK
@@ -50,15 +47,11 @@ class UserProfileFragment : UnchainedFragment() {
         } else {
             userBinding.user = user
         }
-        lifecycleScope.launch {
-            userBinding.privateToken = activityViewModel.isTokenPrivate()
-        }
+        lifecycleScope.launch { userBinding.privateToken = activityViewModel.isTokenPrivate() }
 
         activityViewModel.userLiveData.observe(viewLifecycleOwner) {
             userBinding.user = it.peekContent()
-            lifecycleScope.launch {
-                userBinding.privateToken = activityViewModel.isTokenPrivate()
-            }
+            lifecycleScope.launch { userBinding.privateToken = activityViewModel.isTokenPrivate() }
         }
 
         userBinding.bAccount.setOnClickListener {
