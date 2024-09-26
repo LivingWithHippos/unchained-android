@@ -60,8 +60,8 @@ android {
         applicationId = "com.github.livingwithhippos.unchained"
         minSdk = 22
         targetSdk = 34
-        versionCode = 46
-        versionName = "1.3.2"
+        versionCode = 47
+        versionName = "1.3.3"
 
         javaCompileOptions {
             annotationProcessorOptions {
@@ -96,7 +96,7 @@ android {
         // use local file if available or Environment variables (for CI)
         create("release") {
             if (keyPropertiesFile.exists()) {
-                storeFile = keyPropertiesFile
+                storeFile = file(keyProperties["store"] as String? ?: "release.pfk")
                 storePassword = keyProperties["releaseStorePassword"] as String
                 keyAlias = keyProperties["keyAlias"] as String
                 keyPassword = keyProperties["releaseStorePassword"] as String
@@ -148,6 +148,7 @@ android {
 
 
         release {
+            ndk.debugSymbolLevel = "FULL"
             signingConfig = signingConfigs.getByName("release")
             isDebuggable = false
             isMinifyEnabled = true

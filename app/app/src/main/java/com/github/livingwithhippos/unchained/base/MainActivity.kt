@@ -77,6 +77,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
+    private var checkedUpdate: Boolean = false
 
     // Countly crash reporter set up. Debug mode only
     override fun onStart() {
@@ -230,8 +231,7 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.fsmAuthenticationState.observe(this) {
             // do not inline this variable in the when, because getContentIfNotHandled() will change
-            // its
-            // value to null if checked again in WaitingUserAction
+            // its value to null if checked again in WaitingUserAction
             when (val authState: FSMAuthenticationState? = it?.getContentIfNotHandled()) {
                 null -> {
                     // do nothing
@@ -248,6 +248,10 @@ class MainActivity : AppCompatActivity() {
                 FSMAuthenticationState.AuthenticatedOpenToken -> {
                     // unlock the bottom menu
                     enableAllBottomNavItems()
+                    if (!checkedUpdate) {
+                        checkedUpdate = true
+                        viewModel.checkUpdates(BuildConfig.VERSION_CODE, getApplicationSignatures())
+                    }
                 }
                 FSMAuthenticationState.RefreshingOpenToken -> {
                     viewModel.refreshToken()
@@ -255,6 +259,10 @@ class MainActivity : AppCompatActivity() {
                 FSMAuthenticationState.AuthenticatedPrivateToken -> {
                     // unlock the bottom menu
                     enableAllBottomNavItems()
+                    if (!checkedUpdate) {
+                        checkedUpdate = true
+                        viewModel.checkUpdates(BuildConfig.VERSION_CODE, getApplicationSignatures())
+                    }
                 }
                 FSMAuthenticationState.WaitingToken -> {
                     // this state should be managed by the fragments directly
@@ -601,8 +609,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         viewModel.clearCache(applicationContext.cacheDir)
-
-        viewModel.checkUpdates(BuildConfig.VERSION_CODE, getApplicationSignatures())
     }
 
     override fun onResume() {
@@ -697,8 +703,7 @@ class MainActivity : AppCompatActivity() {
     private fun processExternalRequestOnAuthentication(uri: Uri) {
         lifecycleScope.launch {
             // avoid some issues with the authentication state machine being too late
-            delay(AUTH_DELAY)
-            delayLoop@ for (loop in 1..5) {
+            delayLoop@ for (loop in 1..100) {
                 when (viewModel.getCurrentAuthenticationStatus()) {
                     CurrentFSMAuthentication.Authenticated -> {
                         // auth ok, process link and exit loop
@@ -712,7 +717,7 @@ class MainActivity : AppCompatActivity() {
                     }
                     CurrentFSMAuthentication.Waiting -> {
                         // auth may become ok, delay and continue loop
-                        delay(AUTH_DELAY)
+                        delay(100)
                     }
                 }
             }
@@ -880,6 +885,5 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         private const val EXIT_WAIT_TIME = 2000L
-        private const val AUTH_DELAY = 500L
     }
 }

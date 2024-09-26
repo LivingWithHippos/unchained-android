@@ -110,6 +110,8 @@ constructor(
 
     val fsmAuthenticationState = MutableLiveData<Event<FSMAuthenticationState>?>()
 
+    val userLiveData = MutableLiveData<Event<User>>()
+
     val externalLinkLiveData = MutableLiveData<Event<Uri>>()
 
     val downloadedFileLiveData = MutableLiveData<Event<Long>>()
@@ -442,6 +444,25 @@ constructor(
         savedStateHandle[SearchViewModel.KEY_CACHE] = cache
     }
 
+    private fun setCachedUser(user: User?) {
+        savedStateHandle["current_user_key"] = user
+    }
+
+    fun getCachedUser(): User? {
+        return savedStateHandle["current_user_key"]
+    }
+
+    fun fetchUser() {
+        viewModelScope.launch {
+            val credentials = protoStore.getCredentials()
+            val user = userRepository.getUserInfo(credentials.accessToken)
+            if (user != null) {
+                setCachedUser(user)
+                userLiveData.postEvent(user)
+            }
+        }
+    }
+
     /**
      * Set current torrent cache pick, see TorrentCachePicker
      *
@@ -480,6 +501,7 @@ constructor(
     ) {
         when (user) {
             is EitherResult.Success -> {
+                setCachedUser(user.success)
                 if (isPrivateToken) {
                     transitionAuthenticationMachine(FSMAuthenticationEvent.OnWorkingPrivateToken)
                 } else {
