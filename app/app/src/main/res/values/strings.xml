@@ -419,7 +419,7 @@
         <item quantity="other">%d seeders</item>
     </plurals>
     <string name="seeders_string_format">seeder/s: %s</string>
-    <string name="torrent_in_progress_format">%1$d%% - %2$.2f MB/s</string>
+    <string name="torrent_in_progress_format">%1$.2f%% - %2$.2f MB/s</string>
     <string name="download_in_progress_format">Downloading - %1$d%%</string>
     <string name="download_complete">Download complete</string>
     <string name="unknown_status">Unknown Status</string>
