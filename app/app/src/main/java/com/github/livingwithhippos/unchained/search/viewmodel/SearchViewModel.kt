@@ -7,7 +7,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.livingwithhippos.unchained.data.model.cache.InstantAvailability
 import com.github.livingwithhippos.unchained.data.repository.DatabasePluginRepository
 import com.github.livingwithhippos.unchained.data.repository.PluginRepository
 import com.github.livingwithhippos.unchained.folderlist.view.FolderListFragment
@@ -72,7 +71,6 @@ constructor(
                                 setSearchResults(results)
                             }
                             is ParserResult.SearchStarted -> {
-                                setCacheResults(null)
                                 clearSearchResults()
                                 results.clear()
                                 parsingLiveData.value = it
@@ -109,18 +107,6 @@ constructor(
 
     private fun clearSearchResults() {
         savedStateHandle[KEY_RESULTS] = emptyList<ScrapedItem>()
-    }
-
-    private fun setCacheResults(cache: InstantAvailability?) {
-        savedStateHandle[KEY_CACHE] = cache
-    }
-
-    fun getCacheResults(): InstantAvailability? {
-        return try {
-            savedStateHandle.get<InstantAvailability>(KEY_CACHE)
-        } catch (e: java.lang.ClassCastException) {
-            null
-        }
     }
 
     fun getPlugins(): List<Plugin> {
@@ -235,7 +221,6 @@ constructor(
 
                 val results = mutableListOf<ScrapedItem>()
 
-                setCacheResults(null)
                 clearSearchResults()
 
                 enabledPlugins.forEach { plugin ->
@@ -284,7 +269,6 @@ constructor(
         // todo: these needs to be moved to a single object because if I reuse the same keys for two
         // objects I'll get the wrong result
         const val KEY_RESULTS = "search_results_key"
-        const val KEY_CACHE = "search_cache_key"
         const val KEY_PLUGINS = "plugins_key"
         const val KEY_CATEGORY = "category_key"
         const val KEY_LAST_SELECTED_PLUGIN = "plugin_last_selected_key"

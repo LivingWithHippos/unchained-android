@@ -58,33 +58,14 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <androidx.fragment.app.FragmentContainerView
             android:id="@+id/loadedLayout"
+            xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="invisible">
+            android:name="com.github.livingwithhippos.unchained.torrentfilepicker.view.TorrentFilePickerFragment"
+            android:visibility="invisible"/>
 
-            <com.google.android.material.tabs.TabLayout
-                android:id="@+id/pickerTabs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/pickerPager"
-                app:layout_constraintTop_toTopOf="parent"
-                app:tabMode="fixed">
-
-            </com.google.android.material.tabs.TabLayout>
-
-            <androidx.viewpager2.widget.ViewPager2
-                android:id="@+id/pickerPager"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/pickerTabs" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fabDownload"

@@ -17,7 +17,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
-import com.github.livingwithhippos.unchained.data.model.cache.InstantAvailability
 import com.github.livingwithhippos.unchained.databinding.FragmentSearchBinding
 import com.github.livingwithhippos.unchained.folderlist.view.FolderListFragment
 import com.github.livingwithhippos.unchained.plugins.ParserResult
@@ -148,10 +147,6 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
 
         // search button listener
         binding.tfSearch.setEndIconOnClickListener { performSearch(binding, adapter) }
-
-        activityViewModel.cacheLiveData.observe(viewLifecycleOwner) {
-            submitCachedList(it, adapter)
-        }
     }
 
     private fun showSortingPopup(
@@ -230,7 +225,6 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
                         binding.loadingCircle.isIndeterminate = true
                     }
                     is ParserResult.SearchFinished -> {
-                        activityViewModel.checkTorrentCache(searchAdapter.currentList)
                         binding.loadingCircle.isIndeterminate = false
                         binding.loadingCircle.progress = 100
                         // update the data with cached results
@@ -278,33 +272,6 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
             }
 
         return getString(res)
-    }
-
-    private fun submitCachedList(cache: InstantAvailability, adapter: SearchItemAdapter) {
-        // alternatively get results from the viewModel
-        val items: List<ScrapedItem> =
-            adapter.currentList.map {
-                it.apply {
-                    if (it.magnets.isNotEmpty()) {
-                        // parse all the magnets found
-                        for (magnet in it.magnets) {
-                            val btih = magnetPattern.find(magnet)?.groupValues?.getOrNull(1)
-                            for (torrent in cache.cachedTorrents) {
-                                if (torrent.btih.equals(btih, ignoreCase = true)) {
-                                    isCached = true
-                                    break
-                                }
-                            }
-                            // stopping at first cache hit
-                            if (isCached) {
-                                break
-                            }
-                        }
-                    }
-                }
-            }
-        submitSortedList(adapter, items)
-        adapter.notifyDataSetChanged()
     }
 
     private fun submitSortedList(adapter: SearchItemAdapter, items: List<ScrapedItem>) {

@@ -16,6 +16,5 @@ data class ScrapedItem(
     val parsedSize: Double? = null,
     val magnets: List<String>,
     val torrents: List<String>,
-    val hosting: List<String>,
-    var isCached: Boolean = false,
+    val hosting: List<String>
 ) : Parcelable

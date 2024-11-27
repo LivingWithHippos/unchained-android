@@ -35,7 +35,6 @@ import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkException
 import com.github.livingwithhippos.unchained.data.model.User
 import com.github.livingwithhippos.unchained.data.model.UserAction
-import com.github.livingwithhippos.unchained.data.model.cache.InstantAvailability
 import com.github.livingwithhippos.unchained.data.repository.AuthenticationRepository
 import com.github.livingwithhippos.unchained.data.repository.CustomDownloadRepository
 import com.github.livingwithhippos.unchained.data.repository.HostsRepository
@@ -55,11 +54,9 @@ import com.github.livingwithhippos.unchained.statemachine.authentication.Current
 import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationEvent
 import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationSideEffect
 import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationState
-import com.github.livingwithhippos.unchained.torrentfilepicker.view.TorrentCachePickerFragment.Companion.KEY_CACHE_INDEX
 import com.github.livingwithhippos.unchained.utilities.BASE_URL
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.Event
-import com.github.livingwithhippos.unchained.utilities.INSTANT_AVAILABILITY_ENDPOINT
 import com.github.livingwithhippos.unchained.utilities.MAGNET_PATTERN
 import com.github.livingwithhippos.unchained.utilities.PRIVATE_TOKEN
 import com.github.livingwithhippos.unchained.utilities.PreferenceKeys
@@ -129,10 +126,6 @@ constructor(
     val linkLiveData = MutableLiveData<Event<String>?>()
 
     val messageLiveData = MutableLiveData<Event<MainActivityMessage>?>()
-
-    // todo: use this with other livedatas
-    private val _cacheLiveData = MutableLiveData<InstantAvailability>()
-    val cacheLiveData: LiveData<InstantAvailability> = _cacheLiveData
 
     private val workManager = WorkManager.getInstance(applicationContext)
 
@@ -404,46 +397,6 @@ constructor(
             }
         }
 
-    fun checkTorrentCache(scrapedItems: List<ScrapedItem>) {
-        if (scrapedItems.isNotEmpty()) {
-            viewModelScope.launch {
-                val builder = StringBuilder(BASE_URL)
-                builder.append(INSTANT_AVAILABILITY_ENDPOINT)
-                scrapedItems.forEach { item ->
-                    item.magnets.forEach { magnet ->
-                        val btih = magnetPattern.find(magnet)?.groupValues?.get(1)
-                        if (!btih.isNullOrBlank()) {
-                            builder.append("/")
-                            builder.append(btih)
-                        }
-                    }
-                }
-                if (builder.length > (BASE_URL.length + INSTANT_AVAILABILITY_ENDPOINT.length)) {
-                    val cache = torrentsRepository.getInstantAvailability(builder.toString())
-                    if (cache is EitherResult.Success) {
-                        if (cache.success.cachedTorrents.isNotEmpty()) {
-                            _cacheLiveData.postValue(cache.success)
-                            setCacheResults(cache.success)
-                        } else {
-                            setCacheResults(null)
-                        }
-                    } else {
-                        setCacheResults(null)
-                    }
-                } else {
-                    Timber.d("Skipping empty cache query: $builder")
-                }
-            }
-        } else {
-            Timber.d("No search result found")
-            setCacheResults(null)
-        }
-    }
-
-    private fun setCacheResults(cache: InstantAvailability?) {
-        savedStateHandle[SearchViewModel.KEY_CACHE] = cache
-    }
-
     private fun setCachedUser(user: User?) {
         savedStateHandle["current_user_key"] = user
     }
@@ -461,24 +414,6 @@ constructor(
                 userLiveData.postEvent(user)
             }
         }
-    }
-
-    /**
-     * Set current torrent cache pick, see TorrentCachePicker
-     *
-     * @param id
-     * @param cacheIndex
-     */
-    fun setCurrentTorrentCachePick(id: String, cacheIndex: Int) {
-        savedStateHandle[KEY_CACHE_INDEX] = Pair(id, cacheIndex)
-    }
-
-    fun clearCurrentTorrentCachePick() {
-        savedStateHandle[KEY_CACHE_INDEX] = null
-    }
-
-    fun getCurrentTorrentCachePick(): Pair<String, Int>? {
-        return savedStateHandle[KEY_CACHE_INDEX]
     }
 
     fun checkCredentials() {

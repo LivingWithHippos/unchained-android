@@ -332,8 +332,7 @@ class Parser(
             addedDate = dateAdded,
             magnets = magnets.toList(),
             torrents = torrents.toList(),
-            hosting = hosting.toList(),
-            isCached = false,
+            hosting = hosting.toList()
         )
     }
 
@@ -474,8 +473,7 @@ class Parser(
                             parsedSize = parsedSize,
                             magnets = magnets.toList(),
                             torrents = torrents.toList(),
-                            hosting = hosting.toList(),
-                            isCached = false,
+                            hosting = hosting.toList()
                         )
                     )
             }
@@ -746,8 +744,7 @@ class Parser(
                         addedDate = addedDate,
                         magnets = magnets,
                         torrents = torrents,
-                        hosting = hosting,
-                        isCached = false,
+                        hosting = hosting
                     )
                 )
             }
