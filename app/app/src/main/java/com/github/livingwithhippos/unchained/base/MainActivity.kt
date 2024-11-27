@@ -100,39 +100,42 @@ class MainActivity : AppCompatActivity() {
     @Suppress("DEPRECATION")
     @SuppressLint("PackageManagerGetSignatures")
     private fun getApplicationSignatures(packageName: String = getPackageName()): List<String> {
-        val signatureList: List<String>
+        val signatureList: MutableList<String> = mutableListOf()
         try {
             val digest = MessageDigest.getInstance("SHA")
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                 // New signature
-                val sig =
-                    packageManager
-                        .getPackageInfo(packageName, PackageManager.GET_SIGNING_CERTIFICATES)
-                        .signingInfo
-                signatureList =
-                    if (sig.hasMultipleSigners()) {
-                        // Send all with apkContentsSigners
-                        sig.apkContentsSigners.map {
-                            digest.update(it.toByteArray())
-                            digest.digest().toHex()
-                        }
-                    } else {
-                        // Send one with signingCertificateHistory
-                        sig.signingCertificateHistory.map {
-                            digest.update(it.toByteArray())
-                            digest.digest().toHex()
-                        }
+                packageManager
+                    .getPackageInfo(packageName, PackageManager.GET_SIGNING_CERTIFICATES)
+                    .signingInfo?.let { sig ->
+                        signatureList.addAll(
+                            if (sig.hasMultipleSigners()) {
+                                // Send all with apkContentsSigners
+                                sig.apkContentsSigners.map {
+                                    digest.update(it.toByteArray())
+                                    digest.digest().toHex()
+                                }
+                            } else {
+                                // Send one with signingCertificateHistory
+                                sig.signingCertificateHistory.map {
+                                    digest.update(it.toByteArray())
+                                    digest.digest().toHex()
+                                }
+                            }
+                        )
                     }
             } else {
-                val sig =
-                    packageManager
-                        .getPackageInfo(packageName, PackageManager.GET_SIGNATURES)
-                        .signatures
-                signatureList =
-                    sig.map {
-                        digest.update(it.toByteArray())
-                        digest.digest().toHex()
+                packageManager
+                    .getPackageInfo(packageName, PackageManager.GET_SIGNATURES)
+                    .signatures?.let { sig ->
+                        signatureList.addAll(
+                            sig.map {
+                                digest.update(it.toByteArray())
+                                digest.digest().toHex()
+                            }
+                        )
                     }
+
             }
 
             return signatureList
@@ -146,7 +149,8 @@ class MainActivity : AppCompatActivity() {
 
     val viewModel: MainActivityViewModel by viewModels()
 
-    @Inject lateinit var preferences: SharedPreferences
+    @Inject
+    lateinit var preferences: SharedPreferences
 
     private val downloadReceiver: BroadcastReceiver =
         object : BroadcastReceiver() {
@@ -223,6 +227,7 @@ class MainActivity : AppCompatActivity() {
                             openSettings()
                             true
                         }
+
                         else -> false
                     }
                 }
@@ -236,15 +241,19 @@ class MainActivity : AppCompatActivity() {
                 null -> {
                     // do nothing
                 }
+
                 is FSMAuthenticationState.CheckCredentials -> {
                     viewModel.checkCredentials()
                 }
+
                 FSMAuthenticationState.Start -> {
                     // do nothing. This is our starting point. It should not be reached again
                 }
+
                 FSMAuthenticationState.StartNewLogin -> {
                     // this state should be managed by the fragments directly
                 }
+
                 FSMAuthenticationState.AuthenticatedOpenToken -> {
                     // unlock the bottom menu
                     enableAllBottomNavItems()
@@ -253,9 +262,11 @@ class MainActivity : AppCompatActivity() {
                         viewModel.checkUpdates(BuildConfig.VERSION_CODE, getApplicationSignatures())
                     }
                 }
+
                 FSMAuthenticationState.RefreshingOpenToken -> {
                     viewModel.refreshToken()
                 }
+
                 FSMAuthenticationState.AuthenticatedPrivateToken -> {
                     // unlock the bottom menu
                     enableAllBottomNavItems()
@@ -264,12 +275,15 @@ class MainActivity : AppCompatActivity() {
                         viewModel.checkUpdates(BuildConfig.VERSION_CODE, getApplicationSignatures())
                     }
                 }
+
                 FSMAuthenticationState.WaitingToken -> {
                     // this state should be managed by the fragments directly
                 }
+
                 FSMAuthenticationState.WaitingUserConfirmation -> {
                     // this state should be managed by the fragments directly
                 }
+
                 is FSMAuthenticationState.WaitingUserAction -> {
                     // go back to the user/start fragment and disable the buttons.
                     when (authState.action) {
@@ -305,9 +319,11 @@ class MainActivity : AppCompatActivity() {
                 // unlock the bottom menu
                 enableAllBottomNavItems()
             }
+
             is FSMAuthenticationState.CheckCredentials -> {
                 // avoid issues with restoring activity state
             }
+
             else -> {
                 // todo: decide if we need to check other possible values or reset the fsm to
                 // checkCredentials in these states and call startAuthenticationMachine
@@ -338,6 +354,7 @@ class MainActivity : AppCompatActivity() {
                     link.endsWith(TYPE_UNCHAINED, ignoreCase = true) -> {
                         viewModel.downloadPlugin(applicationContext, link, null)
                     }
+
                     else -> {
                         // check the authentication
                         processExternalRequestOnAuthentication(Uri.parse(link))
@@ -353,9 +370,11 @@ class MainActivity : AppCompatActivity() {
                     "user" -> {
                         // do nothing
                     }
+
                     "downloads" -> {
                         lifecycleScope.launch { doubleClickBottomItem(R.id.navigation_lists) }
                     }
+
                     "search" -> {
                         lifecycleScope.launch { doubleClickBottomItem(R.id.navigation_search) }
                     }
@@ -396,6 +415,7 @@ class MainActivity : AppCompatActivity() {
                         currentToast.show()
                     }
                 }
+
                 is MainActivityMessage.StringID -> {
                     lifecycleScope.launch {
                         currentToast.cancel()
@@ -407,6 +427,7 @@ class MainActivity : AppCompatActivity() {
                         currentToast.show()
                     }
                 }
+
                 is MainActivityMessage.UpdateFound -> {
                     when (content.signature) {
                         SIGNATURE.F_DROID -> {
@@ -415,29 +436,35 @@ class MainActivity : AppCompatActivity() {
                                 APP_LINK.F_DROID,
                             )
                         }
+
                         SIGNATURE.PLAY_STORE -> {
                             showUpdateDialog(
                                 getString(R.string.playstore_update_description),
                                 APP_LINK.PLAY_STORE,
                             )
                         }
+
                         SIGNATURE.GITHUB -> {
                             showUpdateDialog(
                                 getString(R.string.github_update_description),
                                 APP_LINK.GITHUB,
                             )
                         }
+
                         else -> {}
                     }
                 }
+
                 MainActivityMessage.RequireDownloadFolder -> {
                     pickDirectoryLauncher.launch(null)
                 }
+
                 MainActivityMessage.RequireDownloadPermissions -> {
                     requestDownloadPermissionLauncher.launch(
                         Manifest.permission.WRITE_EXTERNAL_STORAGE
                     )
                 }
+
                 MainActivityMessage.RequireNotificationPermissions -> {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                         requestNotificationPermissionLauncher.launch(
@@ -445,14 +472,15 @@ class MainActivity : AppCompatActivity() {
                         )
                     }
                 }
+
                 is MainActivityMessage.MultipleDownloadsEnqueued -> {
 
                     if (
                         Build.VERSION.SDK_INT in 23..28 &&
-                            ContextCompat.checkSelfPermission(
-                                applicationContext,
-                                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                            ) != PERMISSION_GRANTED
+                        ContextCompat.checkSelfPermission(
+                            applicationContext,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        ) != PERMISSION_GRANTED
                     ) {
                         viewModel.requireDownloadPermissions()
                     } else {
@@ -461,7 +489,7 @@ class MainActivity : AppCompatActivity() {
                             PreferenceKeys.DownloadManager.SYSTEM -> {
                                 val manager =
                                     applicationContext.getSystemService(Context.DOWNLOAD_SERVICE)
-                                        as DownloadManager
+                                            as DownloadManager
                                 var downloadsStarted = 0
                                 content.downloads.forEach { download ->
                                     val queuedDownload =
@@ -477,6 +505,7 @@ class MainActivity : AppCompatActivity() {
                                                 "Error queuing ${download.link}: ${queuedDownload.failure.message}"
                                             )
                                         }
+
                                         is EitherResult.Success -> {
                                             downloadsStarted++
                                         }
@@ -491,6 +520,7 @@ class MainActivity : AppCompatActivity() {
                                     )
                                 )
                             }
+
                             PreferenceKeys.DownloadManager.OKHTTP -> {
 
                                 val folder = viewModel.getDownloadFolder()
@@ -515,14 +545,15 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
                 }
+
                 is MainActivityMessage.DownloadEnqueued -> {
 
                     if (
                         Build.VERSION.SDK_INT in 23..28 &&
-                            ContextCompat.checkSelfPermission(
-                                applicationContext,
-                                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                            ) != PERMISSION_GRANTED
+                        ContextCompat.checkSelfPermission(
+                            applicationContext,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        ) != PERMISSION_GRANTED
                     ) {
                         viewModel.requireDownloadPermissions()
                     } else {
@@ -531,7 +562,7 @@ class MainActivity : AppCompatActivity() {
 
                                 val manager =
                                     applicationContext.getSystemService(Context.DOWNLOAD_SERVICE)
-                                        as DownloadManager
+                                            as DownloadManager
 
                                 val queuedDownload =
                                     manager.downloadFileInStandardFolder(
@@ -549,11 +580,13 @@ class MainActivity : AppCompatActivity() {
                                             )
                                         )
                                     }
+
                                     is EitherResult.Success -> {
                                         applicationContext.showToast(R.string.download_started)
                                     }
                                 }
                             }
+
                             PreferenceKeys.DownloadManager.OKHTTP -> {
 
                                 val folder = viewModel.getDownloadFolder()
@@ -574,12 +607,14 @@ class MainActivity : AppCompatActivity() {
                                     viewModel.startDownloadWorker(content, folder)
                                 } else viewModel.requireDownloadFolder()
                             }
+
                             else -> {
                                 Timber.e("Unrecognized download manager requested: $dm")
                             }
                         }
                     }
                 }
+
                 null -> {}
             }
         }
@@ -602,6 +637,7 @@ class MainActivity : AppCompatActivity() {
                     Timber.e("connection disabled")
                     applicationContext.showToast(R.string.no_network_connection)
                 }
+
                 null -> {
                     Timber.e("connection null")
                 }
@@ -636,13 +672,14 @@ class MainActivity : AppCompatActivity() {
                             viewModel.downloadSupportedLink(text)
                         }
                     }
+
                     "*/*" -> {
                         // replace with intent.getParcelableExtra(Intent.EXTRA_STREAM,
                         // Uri::class.java) when stabilized
                         (intent.getParcelableExtra<Parcelable>(Intent.EXTRA_STREAM) as? Uri)?.let {
                             if (
                                 it.lastPathSegment?.endsWith(TYPE_UNCHAINED, ignoreCase = true) ==
-                                    true
+                                true
                             )
                                 viewModel.addPluginFromDisk(applicationContext, it)
                         }
@@ -666,12 +703,14 @@ class MainActivity : AppCompatActivity() {
                                 // check if it's a search plugin
                                 data.path?.endsWith(TYPE_UNCHAINED, ignoreCase = true) == true ->
                                     viewModel.addPluginFromDisk(applicationContext, data)
+
                                 else -> {
                                     // it's a magnet/torrent, check auth state before loading it
                                     processExternalRequestOnAuthentication(data)
                                 }
                             }
                         }
+
                         SCHEME_HTTP,
                         SCHEME_HTTPS -> {
                             processExternalRequestOnAuthentication(data)
@@ -679,6 +718,7 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             }
+
             null -> {
                 // could be because of the tap on a notification
                 intent.getStringExtra(KEY_TORRENT_ID)?.let { id ->
@@ -687,15 +727,18 @@ class MainActivity : AppCompatActivity() {
                         FSMAuthenticationState.AuthenticatedPrivateToken -> {
                             processTorrentNotificationIntent(id)
                         }
+
                         FSMAuthenticationState.RefreshingOpenToken -> {
                             // todo: launch it after a delay
                         }
+
                         else -> {
                             // do nothing
                         }
                     }
                 }
             }
+
             else -> {}
         }
     }
@@ -710,11 +753,13 @@ class MainActivity : AppCompatActivity() {
                         processExternalRequest(uri)
                         break@delayLoop
                     }
+
                     CurrentFSMAuthentication.Unauthenticated -> {
                         // auth not ok, show error and exit loop
                         showToast(R.string.please_login)
                         break@delayLoop
                     }
+
                     CurrentFSMAuthentication.Waiting -> {
                         // auth may become ok, delay and continue loop
                         delay(100)
@@ -819,6 +864,7 @@ class MainActivity : AppCompatActivity() {
                             navController.popBackStack(R.id.list_tabs_dest, false)
                         }
                     }
+
                     R.id.navigation_search -> {
                         if (currentDestination?.id != R.id.search_dest) {
                             navController.popBackStack(R.id.search_dest, false)
@@ -844,10 +890,10 @@ class MainActivity : AppCompatActivity() {
                 // check the destination for the back action
                 if (
                     previousDestination == null ||
-                        previousDestination.destination.id == R.id.authentication_dest ||
-                        previousDestination.destination.id == R.id.start_dest ||
-                        previousDestination.destination.id == R.id.user_dest ||
-                        previousDestination.destination.id == R.id.search_dest
+                    previousDestination.destination.id == R.id.authentication_dest ||
+                    previousDestination.destination.id == R.id.start_dest ||
+                    previousDestination.destination.id == R.id.user_dest ||
+                    previousDestination.destination.id == R.id.search_dest
                 ) {
                     // check if it has been 2 seconds since the last time we pressed back
                     val pressedTime = System.currentTimeMillis()
@@ -863,6 +909,7 @@ class MainActivity : AppCompatActivity() {
                     super.onBackPressed()
                 }
             }
+
             else -> {
                 super.onBackPressed()
             }
