@@ -60,8 +60,8 @@ android {
         applicationId = "com.github.livingwithhippos.unchained"
         minSdk = 22
         targetSdk = 35
-        versionCode = 47
-        versionName = "1.3.3"
+        versionCode = 48
+        versionName = "1.3.4"
 
         javaCompileOptions {
             annotationProcessorOptions {
