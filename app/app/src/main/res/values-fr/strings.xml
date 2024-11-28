@@ -205,7 +205,9 @@
     <string name="torrent_channel_description">Canal de notification pour l’état du téléchargement des torrents</string>
     <string name="torrent_in_progress">Téléchargement du torrent en cours</string>
     <plurals name="seeders_format">
-        <item quantity="one">%d seeder</item>
+        <item quantity="zero">%d seeders</item>
+        <item quantity="one">%d seeder</item>>
+        <item quantity="other">%d seeders</item>
         <item quantity="many">%d seeders</item>
     </plurals>
     <string name="seeders_string_format">seeder/s: %s</string>
@@ -264,18 +266,26 @@
     <plurals name="magnet_format">
         <item quantity="one">%d magnet</item>
         <item quantity="many">%d magnets</item>
+        <item quantity="zero">%d magnets</item>
+        <item quantity="other">%d magnets</item>
     </plurals>
     <plurals name="torrent_format">
         <item quantity="one">%d torrent</item>
         <item quantity="many">%d torrents</item>
+        <item quantity="zero">%d torrents</item>
+        <item quantity="other">%d torrents</item>
     </plurals>
     <plurals name="links_format">
         <item quantity="one">%d lien</item>
         <item quantity="many">%d liens</item>
+        <item quantity="zero">%d liens</item>
+        <item quantity="other">%d liens</item>
     </plurals>
     <plurals name="plugins_version_old_format">
+        <item quantity="zero">%d plugins ont besoin d\'une mise à jour</item>
         <item quantity="one">%d plugin a besoin d\'une mise à jour. Vérifier si une nouvelle version est disponible</item>
         <item quantity="many">%d plugins ont besoin d\'une mise à jour. Vérifier une nouvelle version</item>
+        <item quantity="other">%d plugins ont besoin d\'une mise à jour. Vérifier une nouvelle version</item>
     </plurals>
     <string name="n_plugins_installed">%d plugins installés. Redémarrez l\'application pour les utiliser.</string>
     <string name="size_format">taille: %s</string>
@@ -482,8 +492,10 @@
     <string name="service">Service</string>
     <string name="services">Services</string>
     <plurals name="services_format">
+        <item quantity="zero">%d services</item>
         <item quantity="one">%d service</item>
         <item quantity="other">%d services</item>
+        <item quantity="many">%d services</item>
     </plurals>
     <string name="dialog_confirm_action">Êtes-vous sûr de vouloir continuer ?</string>
     <string name="browser">Navigateur</string>
@@ -492,12 +504,16 @@
     <string name="transcoding">Transcodage</string>
     <string name="recent">Récent</string>
     <plurals name="service_number_format">
-        <item quantity="one">%1$d service</item>
-        <item quantity="many">%1$d services</item>
+        <item quantity="zero">%d services</item>
+        <item quantity="one">%d service</item>
+        <item quantity="other">%d services</item>
+        <item quantity="many">%d services</item>
     </plurals>
     <plurals name="device_number_format">
-        <item quantity="one">%1$d dispositif</item>
-        <item quantity="many">%1$d dispositifs</item>
+        <item quantity="one">%d dispositif</item>
+        <item quantity="many">%d dispositifs</item>
+        <item quantity="zero">%d dispositifs</item>
+        <item quantity="other">%d dispositifs</item>
     </plurals>
     <string name="add">Ajouter</string>
     <string name="show_streaming">Afficher le bouton de streaming</string>
