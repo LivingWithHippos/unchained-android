@@ -107,7 +107,8 @@ class MainActivity : AppCompatActivity() {
                 // New signature
                 packageManager
                     .getPackageInfo(packageName, PackageManager.GET_SIGNING_CERTIFICATES)
-                    .signingInfo?.let { sig ->
+                    .signingInfo
+                    ?.let { sig ->
                         signatureList.addAll(
                             if (sig.hasMultipleSigners()) {
                                 // Send all with apkContentsSigners
@@ -127,7 +128,8 @@ class MainActivity : AppCompatActivity() {
             } else {
                 packageManager
                     .getPackageInfo(packageName, PackageManager.GET_SIGNATURES)
-                    .signatures?.let { sig ->
+                    .signatures
+                    ?.let { sig ->
                         signatureList.addAll(
                             sig.map {
                                 digest.update(it.toByteArray())
@@ -135,7 +137,6 @@ class MainActivity : AppCompatActivity() {
                             }
                         )
                     }
-
             }
 
             return signatureList
@@ -149,8 +150,7 @@ class MainActivity : AppCompatActivity() {
 
     val viewModel: MainActivityViewModel by viewModels()
 
-    @Inject
-    lateinit var preferences: SharedPreferences
+    @Inject lateinit var preferences: SharedPreferences
 
     private val downloadReceiver: BroadcastReceiver =
         object : BroadcastReceiver() {
@@ -477,10 +477,10 @@ class MainActivity : AppCompatActivity() {
 
                     if (
                         Build.VERSION.SDK_INT in 23..28 &&
-                        ContextCompat.checkSelfPermission(
-                            applicationContext,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                        ) != PERMISSION_GRANTED
+                            ContextCompat.checkSelfPermission(
+                                applicationContext,
+                                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                            ) != PERMISSION_GRANTED
                     ) {
                         viewModel.requireDownloadPermissions()
                     } else {
@@ -489,7 +489,7 @@ class MainActivity : AppCompatActivity() {
                             PreferenceKeys.DownloadManager.SYSTEM -> {
                                 val manager =
                                     applicationContext.getSystemService(Context.DOWNLOAD_SERVICE)
-                                            as DownloadManager
+                                        as DownloadManager
                                 var downloadsStarted = 0
                                 content.downloads.forEach { download ->
                                     val queuedDownload =
@@ -550,10 +550,10 @@ class MainActivity : AppCompatActivity() {
 
                     if (
                         Build.VERSION.SDK_INT in 23..28 &&
-                        ContextCompat.checkSelfPermission(
-                            applicationContext,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                        ) != PERMISSION_GRANTED
+                            ContextCompat.checkSelfPermission(
+                                applicationContext,
+                                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                            ) != PERMISSION_GRANTED
                     ) {
                         viewModel.requireDownloadPermissions()
                     } else {
@@ -562,7 +562,7 @@ class MainActivity : AppCompatActivity() {
 
                                 val manager =
                                     applicationContext.getSystemService(Context.DOWNLOAD_SERVICE)
-                                            as DownloadManager
+                                        as DownloadManager
 
                                 val queuedDownload =
                                     manager.downloadFileInStandardFolder(
@@ -679,7 +679,7 @@ class MainActivity : AppCompatActivity() {
                         (intent.getParcelableExtra<Parcelable>(Intent.EXTRA_STREAM) as? Uri)?.let {
                             if (
                                 it.lastPathSegment?.endsWith(TYPE_UNCHAINED, ignoreCase = true) ==
-                                true
+                                    true
                             )
                                 viewModel.addPluginFromDisk(applicationContext, it)
                         }
@@ -890,10 +890,10 @@ class MainActivity : AppCompatActivity() {
                 // check the destination for the back action
                 if (
                     previousDestination == null ||
-                    previousDestination.destination.id == R.id.authentication_dest ||
-                    previousDestination.destination.id == R.id.start_dest ||
-                    previousDestination.destination.id == R.id.user_dest ||
-                    previousDestination.destination.id == R.id.search_dest
+                        previousDestination.destination.id == R.id.authentication_dest ||
+                        previousDestination.destination.id == R.id.start_dest ||
+                        previousDestination.destination.id == R.id.user_dest ||
+                        previousDestination.destination.id == R.id.search_dest
                 ) {
                     // check if it has been 2 seconds since the last time we pressed back
                     val pressedTime = System.currentTimeMillis()

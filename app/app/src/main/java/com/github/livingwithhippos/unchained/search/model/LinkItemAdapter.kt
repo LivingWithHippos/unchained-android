@@ -24,8 +24,4 @@ interface LinkItemListener {
     fun onLongClick(item: LinkItem): Boolean
 }
 
-data class LinkItem(
-    val type: String,
-    val name: String,
-    val link: String
-)
+data class LinkItem(val type: String, val name: String, val link: String)
