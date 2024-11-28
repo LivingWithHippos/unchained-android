@@ -170,6 +170,12 @@ android {
         dataBinding = true
         buildConfig = true
     }
+
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+        }
+    }
 }
 
 dependencies {
@@ -261,5 +267,7 @@ dependencies {
     androidTestImplementation(libs.test.rules)
     androidTestImplementation(libs.test.junit)
     androidTestImplementation(libs.test.truth)
+    testImplementation(libs.test.core)
     testImplementation(libs.junit)
+    testImplementation(libs.robolectric)
 }
