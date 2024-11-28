@@ -3,7 +3,6 @@ package com.github.livingwithhippos.unchained.di
 import android.content.SharedPreferences
 import com.github.livingwithhippos.unchained.BuildConfig
 import com.github.livingwithhippos.unchained.data.model.EmptyBodyInterceptor
-import com.github.livingwithhippos.unchained.data.model.cache.CachedRequestAdapter
 import com.github.livingwithhippos.unchained.data.remote.AuthApiHelper
 import com.github.livingwithhippos.unchained.data.remote.AuthApiHelperImpl
 import com.github.livingwithhippos.unchained.data.remote.AuthenticationApi
@@ -37,8 +36,6 @@ import com.github.livingwithhippos.unchained.data.remote.VariousApiHelperImpl
 import com.github.livingwithhippos.unchained.plugins.Parser
 import com.github.livingwithhippos.unchained.utilities.BASE_AUTH_URL
 import com.github.livingwithhippos.unchained.utilities.BASE_URL
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -178,14 +175,11 @@ object ApiFactory {
     @Singleton
     @ApiRetrofit
     fun apiRetrofit(@ClassicClient okHttpClient: OkHttpClient): Retrofit {
-        val moshi =
-            Moshi.Builder().add(CachedRequestAdapter()).add(KotlinJsonAdapterFactory()).build()
-
         return Retrofit.Builder()
             .client(okHttpClient)
             .baseUrl(BASE_URL)
             .addConverterFactory(ScalarsConverterFactory.create())
-            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .addConverterFactory(MoshiConverterFactory.create())
             .build()
     }
 

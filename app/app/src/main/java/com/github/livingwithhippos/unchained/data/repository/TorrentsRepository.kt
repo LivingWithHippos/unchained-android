@@ -5,7 +5,6 @@ import com.github.livingwithhippos.unchained.data.model.AvailableHost
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkException
 import com.github.livingwithhippos.unchained.data.model.UploadedTorrent
-import com.github.livingwithhippos.unchained.data.model.cache.InstantAvailability
 import com.github.livingwithhippos.unchained.data.remote.TorrentApiHelper
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import javax.inject.Inject
@@ -140,22 +139,6 @@ constructor(protoStore: ProtoStore, private val torrentApiHelper: TorrentApiHelp
             eitherApiResult(
                 call = { torrentApiHelper.deleteTorrent(token = "Bearer $token", id = id) },
                 errorMessage = "Error deleting Torrent",
-            )
-
-        return response
-    }
-
-    suspend fun getInstantAvailability(
-        url: String
-    ): EitherResult<UnchainedNetworkException, InstantAvailability> {
-        val token = getToken()
-
-        val response =
-            eitherApiResult(
-                call = {
-                    torrentApiHelper.getInstantAvailability(token = "Bearer $token", url = url)
-                },
-                errorMessage = "Error getting cached torrent files",
             )
 
         return response

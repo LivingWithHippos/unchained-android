@@ -8,13 +8,10 @@ import com.github.livingwithhippos.unchained.data.model.EmptyBodyError
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkException
 import com.github.livingwithhippos.unchained.data.model.UploadedTorrent
-import com.github.livingwithhippos.unchained.data.model.cache.CachedTorrent
 import com.github.livingwithhippos.unchained.data.repository.TorrentsRepository
 import com.github.livingwithhippos.unchained.torrentdetails.model.TorrentFileItem
-import com.github.livingwithhippos.unchained.utilities.BASE_URL
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.Event
-import com.github.livingwithhippos.unchained.utilities.INSTANT_AVAILABILITY_ENDPOINT
 import com.github.livingwithhippos.unchained.utilities.Node
 import com.github.livingwithhippos.unchained.utilities.beforeSelectionStatusList
 import com.github.livingwithhippos.unchained.utilities.extension.cancelIfActive
@@ -80,32 +77,6 @@ constructor(
         }
     }
 
-    fun checkTorrentCache(hash: String) {
-        viewModelScope.launch {
-            val builder = StringBuilder(BASE_URL)
-            builder.append(INSTANT_AVAILABILITY_ENDPOINT)
-            builder.append("/")
-            builder.append(hash)
-            when (val cache = torrentsRepository.getInstantAvailability(builder.toString())) {
-                is EitherResult.Failure -> {
-                    Timber.e("Failed getting cache for hash $hash ${cache.failure}")
-                }
-                is EitherResult.Success -> {
-                    triggerCacheResult(cache.success.cachedTorrents.firstOrNull())
-                }
-            }
-        }
-    }
-
-    fun triggerCacheResult(cache: CachedTorrent?) {
-        if (cache != null) {
-            setCache(cache)
-            torrentLiveData.postEvent(TorrentEvent.CacheHit(cache))
-        } else {
-            torrentLiveData.postEvent(TorrentEvent.CacheMiss)
-        }
-    }
-
     private fun setTorrentDetails(item: TorrentItem) {
         savedStateHandle[KEY_CURRENT_TORRENT] = item
     }
@@ -116,14 +87,6 @@ constructor(
 
     private fun setTorrentID(id: String) {
         savedStateHandle[KEY_CURRENT_TORRENT_ID] = id
-    }
-
-    fun getCache(): CachedTorrent? {
-        return savedStateHandle[KEY_CACHE]
-    }
-
-    private fun setCache(cache: CachedTorrent) {
-        savedStateHandle[KEY_CACHE] = cache
     }
 
     fun updateTorrentStructure(structure: Node<TorrentFileItem>?) {
@@ -210,7 +173,6 @@ constructor(
     }
 
     companion object {
-        const val KEY_CACHE = "cache_key"
         const val KEY_CURRENT_TORRENT = "current_torrent_key"
         const val KEY_CURRENT_TORRENT_ID = "current_torrent_id_key"
     }
@@ -221,15 +183,9 @@ sealed class TorrentEvent {
 
     data class TorrentInfo(val item: TorrentItem) : TorrentEvent()
 
-    data class CacheHit(val cache: CachedTorrent) : TorrentEvent()
-
-    data object CacheMiss : TorrentEvent()
-
     data class FilesSelected(val torrent: TorrentItem) : TorrentEvent()
 
     data object DownloadAll : TorrentEvent()
-
-    data class DownloadCache(val position: Int, val files: Int) : TorrentEvent()
 
     data class DownloadSelection(val filesNumber: Int) : TorrentEvent()
 

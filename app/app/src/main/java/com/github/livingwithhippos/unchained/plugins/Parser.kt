@@ -333,7 +333,6 @@ class Parser(
             magnets = magnets.toList(),
             torrents = torrents.toList(),
             hosting = hosting.toList(),
-            isCached = false,
         )
     }
 
@@ -475,7 +474,6 @@ class Parser(
                             magnets = magnets.toList(),
                             torrents = torrents.toList(),
                             hosting = hosting.toList(),
-                            isCached = false,
                         )
                     )
             }
@@ -747,7 +745,6 @@ class Parser(
                         magnets = magnets,
                         torrents = torrents,
                         hosting = hosting,
-                        isCached = false,
                     )
                 )
             }

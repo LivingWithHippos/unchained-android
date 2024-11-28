@@ -38,16 +38,6 @@
             android:padding="20dp">
 
             <TextView
-                android:id="@+id/tvCached"
-                android:textAppearance="?attr/textAppearanceLabelSmall"
-                android:textAllCaps="true"
-                android:visibility="@{item.isCached ? View.VISIBLE : View.GONE}"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/cached" />
-
-
-            <TextView
                 android:id="@+id/tvName"
                 android:textAppearance="?attr/textAppearanceBodyMedium"
                 android:layout_width="match_parent"

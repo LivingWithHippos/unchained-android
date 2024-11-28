@@ -50,13 +50,8 @@ class SearchItemFragment : UnchainedFragment(), LinkItemListener {
 
         val links = mutableListOf<LinkItem>()
 
-        val cache: List<String> =
-            activityViewModel.cacheLiveData.value?.cachedTorrents?.map { it.btih } ?: emptyList()
         item.magnets.forEach {
-            val btih = magnetPattern.find(it)?.groupValues?.getOrNull(1)?.lowercase()
-            if (btih != null && cache.contains(btih))
-                links.add(LinkItem(getString(R.string.magnet), it.substringBefore("&"), it, true))
-            else links.add(LinkItem(getString(R.string.magnet), it.substringBefore("&"), it))
+            links.add(LinkItem(getString(R.string.magnet), it.substringBefore("&"), it))
         }
         item.torrents.forEach { links.add(LinkItem(getString(R.string.torrent), it, it)) }
         item.hosting.forEach { links.add(LinkItem(getString(R.string.hoster), it, it)) }

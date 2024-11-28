@@ -54,14 +54,14 @@ kapt {
 
 android {
     namespace = "com.github.livingwithhippos.unchained"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.github.livingwithhippos.unchained"
         minSdk = 22
-        targetSdk = 34
-        versionCode = 47
-        versionName = "1.3.3"
+        targetSdk = 35
+        versionCode = 48
+        versionName = "1.3.4"
 
         javaCompileOptions {
             annotationProcessorOptions {

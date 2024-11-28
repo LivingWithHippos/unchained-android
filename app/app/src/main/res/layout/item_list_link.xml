@@ -52,18 +52,6 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/cached"
-                android:textAppearance="?attr/textAppearanceLabelMedium"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                app:layout_constraintStart_toEndOf="@id/type"
-                android:text="@string/cached"
-                android:textAllCaps="true"
-                app:layout_constraintTop_toTopOf="parent"
-                android:visibility="@{item.cached == false ? View.GONE : View.VISIBLE}" />
-
-            <TextView
                 android:id="@+id/link"
                 android:textAppearance="?attr/textAppearanceBodyMedium"
                 android:layout_width="wrap_content"
