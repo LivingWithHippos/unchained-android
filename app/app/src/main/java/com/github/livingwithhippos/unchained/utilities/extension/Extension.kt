@@ -239,7 +239,9 @@ fun DownloadManager.downloadFileInStandardFolder(
             DownloadManager.Request(source)
                 .setTitle(title)
                 .setDescription(description)
-                .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                .setNotificationVisibility(
+                    DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED
+                )
                 .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName)
 
         val downloadID = this.enqueue(request)
@@ -336,7 +338,7 @@ fun Context.openExternalWebPage(url: String, showErrorToast: Boolean = true): Bo
         } catch (ex: android.content.ActivityNotFoundException) {
             Timber.e("Error opening externally a link ${ex.message}")
             showToast(R.string.browser_not_found, length = Toast.LENGTH_LONG)
-        }  catch (ex: SecurityException) {
+        } catch (ex: SecurityException) {
             // the default app has marked itself as available to open these links
             // but does not have exported=true in its manifest activity
             Timber.e("Bugged app cannot receive external links ${ex.message}")

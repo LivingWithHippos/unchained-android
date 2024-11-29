@@ -15,9 +15,12 @@ class StringResourceTest {
     fun testPluralResourcesIt() {
         val context = RuntimeEnvironment.getApplication()
 
-        val zeroServices = context.resources.getQuantityString(R.plurals.service_number_format, 0, 0)
-        val singularServices = context.resources.getQuantityString(R.plurals.service_number_format, 1, 1)
-        val pluralServices = context.resources.getQuantityString(R.plurals.service_number_format, 5, 5)
+        val zeroServices =
+            context.resources.getQuantityString(R.plurals.service_number_format, 0, 0)
+        val singularServices =
+            context.resources.getQuantityString(R.plurals.service_number_format, 1, 1)
+        val pluralServices =
+            context.resources.getQuantityString(R.plurals.service_number_format, 5, 5)
         assertEquals("0 servizi", zeroServices)
         assertEquals("1 servizio", singularServices)
         assertEquals("5 servizi", pluralServices)
