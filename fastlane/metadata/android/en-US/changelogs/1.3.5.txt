@@ -1,0 +1,4 @@
+What's new 1.3.5:
+- removed cache check support (removed by Real Debrid)
+- fixed a lot of crashes
+- updated libraries
