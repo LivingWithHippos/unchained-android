@@ -170,8 +170,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
     private fun setupKodi() {
 
         findPreference<Preference>("kodi_remote_control_info")?.setOnPreferenceClickListener {
-            context?.openExternalWebPage("https://kodi.wiki/view/Settings/Services/Control")
-                ?: false
+            context?.openExternalWebPage("https://kodi.wiki/view/Settings/Services/Control") == true
         }
         // todo: sistema per kodi
         val ipPreference = findPreference<EditTextPreference>("kodi_ip_address")

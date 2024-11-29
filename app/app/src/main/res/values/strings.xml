@@ -755,4 +755,5 @@
     <string name="devices">Devices</string>
     <string name="remote_devices_services_description">Remote devices are computers, TVs, or phones on which services like Kodi and VLC are running. First, create a device to add one or more services.</string>
     <string name="no_credentials_found">No credentials found</string>
+    <string name="invalid_player_found">The app that tried opening this link is bugged, install another player</string>
 </resources>

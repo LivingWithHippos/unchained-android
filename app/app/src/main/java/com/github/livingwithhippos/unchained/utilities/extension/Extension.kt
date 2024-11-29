@@ -334,7 +334,13 @@ fun Context.openExternalWebPage(url: String, showErrorToast: Boolean = true): Bo
                 Intent(Intent.ACTION_VIEW, Uri.parse(url)).addCategory(Intent.CATEGORY_BROWSABLE)
             startActivity(webIntent)
         } catch (ex: android.content.ActivityNotFoundException) {
-            showToast(R.string.browser_not_found)
+            Timber.e("Error opening externally a link ${ex.message}")
+            showToast(R.string.browser_not_found, length = Toast.LENGTH_LONG)
+        }  catch (ex: SecurityException) {
+            // the default app has marked itself as available to open these links
+            // but does not have exported=true in its manifest activity
+            Timber.e("Bugged app cannot receive external links ${ex.message}")
+            showToast(R.string.invalid_player_found, length = Toast.LENGTH_LONG)
         }
         return true
     } else if (showErrorToast) showToast(R.string.invalid_url)
