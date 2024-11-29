@@ -234,14 +234,14 @@ fun DownloadManager.downloadFileInStandardFolder(
     description: String,
     fileName: String = title,
 ): EitherResult<Exception, Long> {
-    val request: DownloadManager.Request =
-        DownloadManager.Request(source)
-            .setTitle(title)
-            .setDescription(description)
-            .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-            .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName)
-
     return try {
+        val request: DownloadManager.Request =
+            DownloadManager.Request(source)
+                .setTitle(title)
+                .setDescription(description)
+                .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName)
+
         val downloadID = this.enqueue(request)
         EitherResult.Success(downloadID)
     } catch (e: Exception) {
