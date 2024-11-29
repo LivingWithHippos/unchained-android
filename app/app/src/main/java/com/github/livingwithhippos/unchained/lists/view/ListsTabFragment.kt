@@ -147,9 +147,6 @@ class ListsTabFragment : UnchainedFragment() {
             Lifecycle.State.RESUMED,
         )
 
-        val listsAdapter = ListsAdapter(this)
-        binding.listPager.adapter = listsAdapter
-
         binding.tabs.addOnTabSelectedListener(
             object : TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
@@ -344,6 +341,9 @@ class ListsTabFragment : UnchainedFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val tabLayout: TabLayout = view.findViewById(R.id.tabs)
         val viewPager: ViewPager2 = view.findViewById(R.id.listPager)
+
+        viewPager.adapter = ListsAdapter(this)
+
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
                 if (position == DOWNLOADS_TAB) {
                     tab.text = getString(R.string.downloads)
