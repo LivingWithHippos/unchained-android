@@ -522,12 +522,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
     }
 
     override fun onOpenClick(url: String) {
-        try {
-            context?.openExternalWebPage(url)
-        } catch (e: ActivityNotFoundException) {
-            Timber.e("Error opening externally a link ${e.message}")
-            context?.showToast(R.string.no_supported_player_found)
-        }
+        context?.openExternalWebPage(url)
     }
 
     override fun onOpenTranscodedStream(view: View, url: String) {

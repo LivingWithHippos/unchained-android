@@ -1,0 +1,3 @@
+What's new 1.3.4:
+- removed cache check support
+- updated libraries

@@ -15,7 +15,7 @@ datastore = "1.1.1"
 flexbox = "3.0.0"
 fragment = "1.8.5"
 hilt_navigation = "1.2.0"
-jackson = "2.18.1"
+jackson = "2.18.2"
 jakarta_xml = "4.0.2"
 jsoup = "1.18.2"
 junit = "4.13.2"
@@ -35,6 +35,7 @@ preference = "1.2.1"
 recyclerview = "1.3.2"
 recyclerview_selection = "1.1.0"
 retrofit = "2.11.0"
+robolectric = "4.14.1"
 room = "2.6.1"
 statemachine = "0.2.0"
 stax = "1.0-2"
@@ -100,6 +101,7 @@ recyclerview_selection = { group = "androidx.recyclerview", name = "recyclerview
 retrofit_runtime = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 retrofit_moshi = { group = "com.squareup.retrofit2", name = "converter-moshi", version.ref = "retrofit" }
 retrofit_scalars = { group = "com.squareup.retrofit2", name = "converter-scalars", version.ref = "retrofit" }
+robolectric = { group = "org.robolectric", name = "robolectric", version.ref = "robolectric" }
 room_runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }

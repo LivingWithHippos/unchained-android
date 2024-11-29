@@ -234,14 +234,16 @@ fun DownloadManager.downloadFileInStandardFolder(
     description: String,
     fileName: String = title,
 ): EitherResult<Exception, Long> {
-    val request: DownloadManager.Request =
-        DownloadManager.Request(source)
-            .setTitle(title)
-            .setDescription(description)
-            .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-            .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName)
-
     return try {
+        val request: DownloadManager.Request =
+            DownloadManager.Request(source)
+                .setTitle(title)
+                .setDescription(description)
+                .setNotificationVisibility(
+                    DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED
+                )
+                .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName)
+
         val downloadID = this.enqueue(request)
         EitherResult.Success(downloadID)
     } catch (e: Exception) {
@@ -334,7 +336,13 @@ fun Context.openExternalWebPage(url: String, showErrorToast: Boolean = true): Bo
                 Intent(Intent.ACTION_VIEW, Uri.parse(url)).addCategory(Intent.CATEGORY_BROWSABLE)
             startActivity(webIntent)
         } catch (ex: android.content.ActivityNotFoundException) {
-            showToast(R.string.browser_not_found)
+            Timber.e("Error opening externally a link ${ex.message}")
+            showToast(R.string.browser_not_found, length = Toast.LENGTH_LONG)
+        } catch (ex: SecurityException) {
+            // the default app has marked itself as available to open these links
+            // but does not have exported=true in its manifest activity
+            Timber.e("Bugged app cannot receive external links ${ex.message}")
+            showToast(R.string.invalid_player_found, length = Toast.LENGTH_LONG)
         }
         return true
     } else if (showErrorToast) showToast(R.string.invalid_url)
