@@ -7,15 +7,12 @@ import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkExceptio
 import com.github.livingwithhippos.unchained.data.model.UploadedTorrent
 import com.github.livingwithhippos.unchained.data.remote.TorrentApiHelper
 import com.github.livingwithhippos.unchained.utilities.EitherResult
-import javax.inject.Inject
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import timber.log.Timber
 
-class TorrentsRepository
-@Inject
-constructor(protoStore: ProtoStore, private val torrentApiHelper: TorrentApiHelper) :
+class TorrentsRepository(protoStore: ProtoStore, private val torrentApiHelper: TorrentApiHelper) :
     BaseRepository(protoStore) {
 
     suspend fun getAvailableHosts(): List<AvailableHost>? {

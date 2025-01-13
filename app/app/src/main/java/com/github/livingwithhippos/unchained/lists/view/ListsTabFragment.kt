@@ -12,7 +12,6 @@ import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
@@ -59,21 +58,20 @@ import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import timber.log.Timber
 
 /**
  * A simple [UnchainedFragment] subclass. It is capable of showing a list of both [DownloadItem] and
  * [TorrentItem] switched with a tab layout.
  */
-@AndroidEntryPoint
 class ListsTabFragment : UnchainedFragment() {
 
-    private val viewModel: ListTabsViewModel by activityViewModels()
+    private val viewModel: ListTabsViewModel by activityViewModel()
 
     // used to simulate a debounce effect while typing on the search bar
     var queryJob: Job? = null
@@ -387,10 +385,10 @@ class ListsAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
     }
 }
 
-@AndroidEntryPoint
+
 class DownloadsListFragment : UnchainedFragment(), DownloadListListener {
 
-    private val viewModel: ListTabsViewModel by activityViewModels()
+    private val viewModel: ListTabsViewModel by activityViewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -605,10 +603,9 @@ class DownloadsListFragment : UnchainedFragment(), DownloadListListener {
     }
 }
 
-@AndroidEntryPoint
 class TorrentsListFragment : UnchainedFragment(), TorrentListListener {
 
-    private val viewModel: ListTabsViewModel by activityViewModels()
+    private val viewModel: ListTabsViewModel by activityViewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,

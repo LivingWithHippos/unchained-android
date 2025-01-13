@@ -6,13 +6,10 @@ import androidx.lifecycle.viewModelScope
 import com.github.livingwithhippos.unchained.data.local.RemoteDevice
 import com.github.livingwithhippos.unchained.data.local.RemoteService
 import com.github.livingwithhippos.unchained.data.repository.RemoteDeviceRepository
-import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-@HiltViewModel
-class DeviceViewModel @Inject constructor(private val deviceRepository: RemoteDeviceRepository) :
+class DeviceViewModel(private val deviceRepository: RemoteDeviceRepository) :
     ViewModel() {
 
     val deviceLiveData = MutableLiveData<DeviceEvent>()

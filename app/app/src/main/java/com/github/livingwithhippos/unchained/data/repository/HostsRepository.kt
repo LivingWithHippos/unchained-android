@@ -8,11 +8,8 @@ import com.github.livingwithhippos.unchained.data.model.REGEX_TYPE_HOST
 import com.github.livingwithhippos.unchained.data.remote.HostsApiHelper
 import java.util.regex.Pattern
 import java.util.regex.PatternSyntaxException
-import javax.inject.Inject
 
-class HostsRepository
-@Inject
-constructor(
+class HostsRepository(
     protoStore: ProtoStore,
     private val hostsApiHelper: HostsApiHelper,
     private val hostRegexDao: HostRegexDao,

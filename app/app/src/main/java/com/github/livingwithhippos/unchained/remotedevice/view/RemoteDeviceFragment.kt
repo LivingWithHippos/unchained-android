@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.annotation.MenuRes
 import androidx.appcompat.app.AlertDialog
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.selection.SelectionPredicates
@@ -23,14 +22,13 @@ import com.github.livingwithhippos.unchained.remotedevice.viewmodel.DeviceEvent
 import com.github.livingwithhippos.unchained.remotedevice.viewmodel.DeviceViewModel
 import com.github.livingwithhippos.unchained.utilities.DataBindingDetailsLookup
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
-import dagger.hilt.android.AndroidEntryPoint
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-@AndroidEntryPoint
 class RemoteDeviceFragment : UnchainedFragment(), ServiceListListener {
 
     private val args: RemoteDeviceFragmentArgs by navArgs()
 
-    private val viewModel: DeviceViewModel by viewModels()
+    private val viewModel: DeviceViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,

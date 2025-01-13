@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.databinding.FragmentTorrentFilePickerBinding
 import com.github.livingwithhippos.unchained.torrentdetails.model.TorrentContentFilesSelectionAdapter
@@ -16,13 +15,14 @@ import com.github.livingwithhippos.unchained.torrentdetails.model.getFilesNodes
 import com.github.livingwithhippos.unchained.torrentfilepicker.viewmodel.TorrentEvent
 import com.github.livingwithhippos.unchained.torrentfilepicker.viewmodel.TorrentProcessingViewModel
 import com.github.livingwithhippos.unchained.utilities.Node
+import org.koin.androidx.navigation.koinNavGraphViewModel
 import timber.log.Timber
 
 class TorrentFilePickerFragment : Fragment(), TorrentContentListener {
 
-    // https://developer.android.com/training/dependency-injection/hilt-jetpack#viewmodel-navigation
+    // https://insert-koin.io/docs/reference/koin-android/viewmodel#navigation-graph-viewmodel
     private val viewModel: TorrentProcessingViewModel by
-        hiltNavGraphViewModels(R.id.navigation_lists)
+    koinNavGraphViewModel(R.id.navigation_lists)
 
     private var currentStructure: Node<TorrentFileItem>? = null
 

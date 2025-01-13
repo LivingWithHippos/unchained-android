@@ -17,18 +17,14 @@ import com.github.livingwithhippos.unchained.plugins.model.Plugin
 import com.github.livingwithhippos.unchained.plugins.model.ScrapedItem
 import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Companion.KEY_USE_DOH
 import com.github.livingwithhippos.unchained.utilities.extension.cancelIfActive
-import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-@HiltViewModel
-class SearchViewModel
-@Inject
-constructor(
+
+class SearchViewModel(
     private val savedStateHandle: SavedStateHandle,
     private val preferences: SharedPreferences,
     private val pluginRepository: PluginRepository,

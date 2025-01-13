@@ -9,19 +9,13 @@ import com.github.livingwithhippos.unchained.utilities.getManualPluginFilename
 import com.github.livingwithhippos.unchained.utilities.getPluginFilename
 import com.github.livingwithhippos.unchained.utilities.getRepositoryString
 import com.squareup.moshi.JsonAdapter
-import com.squareup.moshi.Moshi
-import java.io.File
-import java.io.IOException
-import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+import java.io.File
+import java.io.IOException
 
-class PluginRepository @Inject constructor() {
-
-    // todo: inject
-    private val pluginAdapter: JsonAdapter<Plugin> =
-        Moshi.Builder().build().adapter(Plugin::class.java)
+class PluginRepository(private val pluginAdapter: JsonAdapter<Plugin>) {
 
     suspend fun getPlugins(
         context: Context,

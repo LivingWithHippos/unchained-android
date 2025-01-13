@@ -15,12 +15,11 @@ import com.github.livingwithhippos.unchained.utilities.DataBindingAdapter
 import com.github.livingwithhippos.unchained.utilities.extension.getThemeList
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import dagger.hilt.android.AndroidEntryPoint
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
-@AndroidEntryPoint
 class ThemePickerDialog : DialogFragment(), ThemePickListener {
 
-    private val viewModel: SettingsViewModel by activityViewModels()
+    private val viewModel: SettingsViewModel by activityViewModel()
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         if (activity != null) {

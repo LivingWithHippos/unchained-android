@@ -2,12 +2,10 @@ package com.github.livingwithhippos.unchained.data.local
 
 import android.content.Context
 import com.github.livingwithhippos.unchained.utilities.extension.smartList
-import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.FileInputStream
 import java.io.InputStream
-import javax.inject.Inject
 
-class AssetsManager @Inject constructor(@ApplicationContext private val appContext: Context) {
+class AssetsManager(private val appContext: Context) {
 
     private val SYSTEM_ASSETS_FOLDER = listOf("images", "webkit")
 

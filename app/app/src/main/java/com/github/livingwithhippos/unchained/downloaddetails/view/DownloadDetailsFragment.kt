@@ -26,7 +26,6 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.coroutineScope
@@ -54,17 +53,17 @@ import com.github.livingwithhippos.unchained.utilities.extension.copyToClipboard
 import com.github.livingwithhippos.unchained.utilities.extension.getAvailableSpace
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
 /**
  * A simple [UnchainedFragment] subclass. It is capable of showing the details of a [DownloadItem]
  */
-@AndroidEntryPoint
 class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
 
-    private val viewModel: DownloadDetailsViewModel by activityViewModels()
+    private val viewModel: DownloadDetailsViewModel by activityViewModel()
 
     private val args: DownloadDetailsFragmentArgs by navArgs()
 

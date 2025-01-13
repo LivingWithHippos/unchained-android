@@ -18,17 +18,12 @@ import com.github.livingwithhippos.unchained.data.repository.StreamingRepository
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.postEvent
-import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
 /** A [ViewModel] subclass. It offers LiveData to observe the calls to the streaming endpoint */
-@HiltViewModel
-class DownloadDetailsViewModel
-@Inject
-constructor(
+class DownloadDetailsViewModel(
     private val preferences: SharedPreferences,
     private val streamingRepository: StreamingRepository,
     private val downloadRepository: DownloadRepository,

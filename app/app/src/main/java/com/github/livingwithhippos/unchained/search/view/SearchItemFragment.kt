@@ -12,18 +12,14 @@ import com.github.livingwithhippos.unchained.plugins.model.ScrapedItem
 import com.github.livingwithhippos.unchained.search.model.LinkItem
 import com.github.livingwithhippos.unchained.search.model.LinkItemAdapter
 import com.github.livingwithhippos.unchained.search.model.LinkItemListener
-import com.github.livingwithhippos.unchained.utilities.MAGNET_PATTERN
 import com.github.livingwithhippos.unchained.utilities.extension.copyToClipboard
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
-import dagger.hilt.android.AndroidEntryPoint
 
-@AndroidEntryPoint
+
 class SearchItemFragment : UnchainedFragment(), LinkItemListener {
 
     private val args: SearchItemFragmentArgs by navArgs()
-
-    private val magnetPattern = Regex(MAGNET_PATTERN, RegexOption.IGNORE_CASE)
 
     override fun onCreateView(
         inflater: LayoutInflater,

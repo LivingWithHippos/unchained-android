@@ -24,17 +24,13 @@ import com.github.livingwithhippos.unchained.utilities.postEvent
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.JsonEncodingException
 import com.squareup.moshi.Moshi
-import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.json.JSONException
 import timber.log.Timber
 
-@HiltViewModel
-class RepositoryViewModel
-@Inject
-constructor(
+
+class RepositoryViewModel(
     private val databasePluginsRepository: DatabasePluginRepository,
     private val diskPluginsRepository: PluginRepository,
     private val downloadRepository: CustomDownloadRepository,

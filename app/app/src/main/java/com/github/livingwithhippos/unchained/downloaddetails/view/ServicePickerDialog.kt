@@ -14,13 +14,13 @@ import com.github.livingwithhippos.unchained.downloaddetails.viewmodel.DownloadD
 import com.github.livingwithhippos.unchained.downloaddetails.viewmodel.DownloadEvent
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import dagger.hilt.android.AndroidEntryPoint
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
-@AndroidEntryPoint
 class ServicePickerDialog : DialogFragment(), ServicePickerListener {
 
-    private val viewModel: DownloadDetailsViewModel by activityViewModels()
+    private val viewModel: DownloadDetailsViewModel by activityViewModel()
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let { activity ->

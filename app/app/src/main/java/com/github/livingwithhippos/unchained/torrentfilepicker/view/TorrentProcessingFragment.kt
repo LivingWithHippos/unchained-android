@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.annotation.MenuRes
-import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.github.livingwithhippos.unchained.R
@@ -33,22 +32,21 @@ import com.github.livingwithhippos.unchained.utilities.extension.getApiErrorMess
 import com.github.livingwithhippos.unchained.utilities.extension.isMagnet
 import com.github.livingwithhippos.unchained.utilities.extension.isTorrent
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
-import dagger.hilt.android.AndroidEntryPoint
+import org.koin.androidx.navigation.koinNavGraphViewModel
+import timber.log.Timber
 import java.io.File
 import java.io.IOException
 import java.util.regex.Matcher
 import java.util.regex.Pattern
-import timber.log.Timber
 
 /** This fragments is shown after a user uploads a torrent or a magnet. */
-@AndroidEntryPoint
 class TorrentProcessingFragment : UnchainedFragment() {
 
     private val args: TorrentProcessingFragmentArgs by navArgs()
 
     // https://developer.android.com/training/dependency-injection/hilt-jetpack#viewmodel-navigation
     private val viewModel: TorrentProcessingViewModel by
-        hiltNavGraphViewModels(R.id.navigation_lists)
+    koinNavGraphViewModel(R.id.navigation_lists)
 
     /** Save the torrent/magnet has when loaded */
     private var torrentHash: String? = null

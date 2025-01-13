@@ -7,20 +7,17 @@ import com.github.livingwithhippos.unchained.plugins.model.Plugin
 import com.github.livingwithhippos.unchained.repository.model.JsonPluginRepository
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.extension.isWebUrl
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
-import javax.inject.Inject
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.channelFlow
-import kotlinx.coroutines.withContext
 
-class CustomDownloadRepository
-@Inject
-constructor(protoStore: ProtoStore, private val customDownloadHelper: CustomDownloadHelper) :
+class CustomDownloadRepository(protoStore: ProtoStore, private val customDownloadHelper: CustomDownloadHelper) :
     BaseRepository(protoStore) {
 
     fun downloadToCache(

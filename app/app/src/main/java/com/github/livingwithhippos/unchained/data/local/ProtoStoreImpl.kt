@@ -1,15 +1,12 @@
 package com.github.livingwithhippos.unchained.data.local
 
 import android.content.Context
-import dagger.hilt.android.qualifiers.ApplicationContext
-import java.io.IOException
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
+import java.io.IOException
 
-class ProtoStoreImpl @Inject constructor(@ApplicationContext private val context: Context) :
-    ProtoStore {
+class ProtoStoreImpl(private val context: Context) : ProtoStore {
 
     override val credentialsFlow: Flow<Credentials.CurrentCredential> =
         context.credentialsDataStore.data.catch { exception ->
@@ -96,10 +93,10 @@ class ProtoStoreImpl @Inject constructor(@ApplicationContext private val context
         val credentials = getCredentials()
         if (
             credentials.deviceCode.isNullOrBlank() ||
-                credentials.accessToken.isNullOrBlank() ||
-                credentials.clientId.isNullOrBlank() ||
-                credentials.clientSecret.isNullOrBlank() ||
-                credentials.refreshToken.isNullOrBlank()
+            credentials.accessToken.isNullOrBlank() ||
+            credentials.clientId.isNullOrBlank() ||
+            credentials.clientSecret.isNullOrBlank() ||
+            credentials.refreshToken.isNullOrBlank()
         ) {
             context.credentialsDataStore.updateData { it.toBuilder().clear().build() }
         }

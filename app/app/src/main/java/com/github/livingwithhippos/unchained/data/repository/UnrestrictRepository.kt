@@ -5,15 +5,12 @@ import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkException
 import com.github.livingwithhippos.unchained.data.remote.UnrestrictApiHelper
 import com.github.livingwithhippos.unchained.utilities.EitherResult
-import javax.inject.Inject
 import kotlinx.coroutines.delay
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 
-class UnrestrictRepository
-@Inject
-constructor(protoStore: ProtoStore, private val unrestrictApiHelper: UnrestrictApiHelper) :
+class UnrestrictRepository(protoStore: ProtoStore, private val unrestrictApiHelper: UnrestrictApiHelper) :
     BaseRepository(protoStore) {
 
     suspend fun getEitherUnrestrictedLink(

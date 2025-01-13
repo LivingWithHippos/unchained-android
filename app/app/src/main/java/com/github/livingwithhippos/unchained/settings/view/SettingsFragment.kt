@@ -26,19 +26,18 @@ import com.github.livingwithhippos.unchained.utilities.extension.getThemeList
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.mikepenz.aboutlibraries.LibsBuilder
-import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
+import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import timber.log.Timber
 
 /**
  * A simple [PreferenceFragmentCompat] subclass. Manages the interactions with the items in the
  * preferences menu
  */
-@AndroidEntryPoint
 class SettingsFragment : PreferenceFragmentCompat() {
-    @Inject lateinit var preferences: SharedPreferences
+    val preferences: SharedPreferences by inject()
 
-    private val viewModel: SettingsViewModel by activityViewModels()
+    private val viewModel: SettingsViewModel by activityViewModel()
 
     private val pickDirectoryLauncher =
         registerForActivityResult(ActivityResultContracts.OpenDocumentTree()) {

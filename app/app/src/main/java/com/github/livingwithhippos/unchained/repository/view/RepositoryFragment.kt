@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.widget.addTextChangedListener
-import androidx.fragment.app.activityViewModels
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.data.model.PluginVersion
@@ -27,13 +26,12 @@ import com.github.livingwithhippos.unchained.utilities.EventObserver
 import com.github.livingwithhippos.unchained.utilities.MANUAL_PLUGINS_REPOSITORY_NAME
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.github.livingwithhippos.unchained.utilities.getRepositoryString
-import dagger.hilt.android.AndroidEntryPoint
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import timber.log.Timber
 
-@AndroidEntryPoint
 class RepositoryFragment : UnchainedFragment(), PluginListener {
 
-    private val viewModel: RepositoryViewModel by activityViewModels()
+    private val viewModel: RepositoryViewModel by activityViewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,

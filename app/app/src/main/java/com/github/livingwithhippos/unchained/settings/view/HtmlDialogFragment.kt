@@ -10,13 +10,12 @@ import androidx.fragment.app.viewModels
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.settings.viewmodel.HtmlDialogViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import dagger.hilt.android.AndroidEntryPoint
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /** A [DialogFragment] subclass. Parse the given text from html and displays it accordingly. */
-@AndroidEntryPoint
 class HtmlDialogFragment : DialogFragment {
 
-    private val viewModel: HtmlDialogViewModel by viewModels()
+    private val viewModel: HtmlDialogViewModel by viewModel()
 
     private var title: Int? = null
     private var message: Int? = null

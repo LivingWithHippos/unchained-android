@@ -10,35 +10,43 @@ import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.local.ProtoStore
 import com.github.livingwithhippos.unchained.data.local.RepositoryDataDao
 import com.github.livingwithhippos.unchained.data.model.Repository
+import com.github.livingwithhippos.unchained.di.appModule
+import com.github.livingwithhippos.unchained.di.databaseModule
+import com.github.livingwithhippos.unchained.di.datastoreModule
+import com.github.livingwithhippos.unchained.di.notificationModule
+import com.github.livingwithhippos.unchained.di.sharedPreferencesModule
 import com.github.livingwithhippos.unchained.utilities.DEFAULT_PLUGINS_REPOSITORY_LINK
 import com.github.livingwithhippos.unchained.utilities.TelemetryManager
-import dagger.hilt.android.HiltAndroidApp
-import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.context.startKoin
+import themingModule
 
 /**
  * Entry point for the Dagger-Hilt injection. Deletes incomplete credentials from the datastore on
  * start
  */
-@HiltAndroidApp
 class UnchainedApplication : Application() {
 
-    @Inject lateinit var preferences: SharedPreferences
-
-    @Inject lateinit var activityCallback: ThemingCallback
-
-    @Inject lateinit var protoStore: ProtoStore
-
-    @Inject lateinit var pluginRepositoryDataDao: RepositoryDataDao
+    val preferences: SharedPreferences by inject()
+    val activityCallback: ThemingCallback by inject()
+    val protoStore: ProtoStore by inject()
+    val pluginRepositoryDataDao: RepositoryDataDao by inject()
 
     private val job = Job()
     private val scope = CoroutineScope(Dispatchers.Default + job)
 
     override fun onCreate() {
         super.onCreate()
+
+        startKoin {
+            androidContext(this@UnchainedApplication)
+            modules(appModule, notificationModule, databaseModule, datastoreModule, sharedPreferencesModule, themingModule)
+        }
 
         registerActivityLifecycleCallbacks(activityCallback)
 

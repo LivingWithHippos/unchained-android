@@ -18,15 +18,14 @@ import com.github.livingwithhippos.unchained.databinding.FragmentRemoteServiceBi
 import com.github.livingwithhippos.unchained.remotedevice.viewmodel.DeviceEvent
 import com.github.livingwithhippos.unchained.remotedevice.viewmodel.DeviceViewModel
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
-import dagger.hilt.android.AndroidEntryPoint
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
-@AndroidEntryPoint
 class RemoteServiceFragment : Fragment() {
 
     private val args: RemoteServiceFragmentArgs by navArgs()
 
-    private val viewModel: DeviceViewModel by viewModels()
+    private val viewModel: DeviceViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,

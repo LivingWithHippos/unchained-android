@@ -62,27 +62,21 @@ import com.github.livingwithhippos.unchained.utilities.extension.isMagnet
 import com.github.livingwithhippos.unchained.utilities.extension.isTorrent
 import com.github.livingwithhippos.unchained.utilities.postEvent
 import com.tinder.StateMachine
-import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
-import java.io.File
-import java.util.regex.Matcher
-import java.util.regex.Pattern
-import javax.inject.Inject
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.io.File
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 
 /**
  * a [ViewModel] subclass. Shared between the fragments to observe the authentication status and
  * update it.
  */
-@HiltViewModel
-class MainActivityViewModel
-@Inject
-constructor(
+class MainActivityViewModel(
     private val savedStateHandle: SavedStateHandle,
     private val preferences: SharedPreferences,
     private val protoStore: ProtoStore,
@@ -96,7 +90,7 @@ constructor(
     private val torrentsRepository: TorrentsRepository,
     private val updateRepository: UpdateRepository,
     private val remoteDeviceRepository: RemoteDeviceRepository,
-    @ApplicationContext applicationContext: Context,
+    applicationContext: Context,
 ) : ViewModel() {
 
     private val magnetPattern = Regex(MAGNET_PATTERN, RegexOption.IGNORE_CASE)
@@ -644,6 +638,14 @@ constructor(
                 delay(secondsDelay * 950L)
                 if (isActive) refreshToken()
             }
+    }
+
+    /**
+     * Helper function to download a torrent file from a link which does not end with .torrent
+     * Does the same thing as downloadSupportedLink but with a torrent link
+     */
+    fun downloadTorrentLink(link: String) {
+        // todo: replace the type of linkLiveData so it can distinguish what is being requested
     }
 
     fun downloadSupportedLink(link: String) {

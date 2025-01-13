@@ -61,7 +61,7 @@ abstract class DataBindingTrackedAdapter<T : Any, U>(
     override fun onBindViewHolder(holder: DataBindingTrackedViewHolder<T, U>, position: Int) {
         val repoItem = getItem(position)
         if (repoItem != null) {
-            holder.bind(repoItem, tracker?.isSelected(repoItem) ?: false, listener)
+            holder.bind(repoItem, tracker?.isSelected(repoItem) == true, listener)
         }
     }
 }
@@ -154,7 +154,7 @@ abstract class DataBindingPagingTrackedAdapter<T : Any, U>(
     override fun onBindViewHolder(holder: DataBindingTrackedViewHolder<T, U>, position: Int) {
         val repoItem = getItem(position)
         if (repoItem != null) {
-            holder.bind(repoItem, tracker?.isSelected(repoItem) ?: false, listener)
+            holder.bind(repoItem, tracker?.isSelected(repoItem) == true, listener)
         }
     }
 }

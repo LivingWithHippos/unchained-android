@@ -10,17 +10,13 @@ import com.github.livingwithhippos.unchained.data.model.KodiResponse
 import com.github.livingwithhippos.unchained.data.remote.KodiApi
 import com.github.livingwithhippos.unchained.data.remote.KodiApiHelper
 import com.github.livingwithhippos.unchained.data.remote.KodiApiHelperImpl
-import com.github.livingwithhippos.unchained.di.ClassicClient
 import com.github.livingwithhippos.unchained.utilities.addHttpScheme
-import javax.inject.Inject
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import timber.log.Timber
 
-class KodiRepository
-@Inject
-constructor(protoStore: ProtoStore, @ClassicClient private val client: OkHttpClient) :
+class KodiRepository(protoStore: ProtoStore, private val client: OkHttpClient) :
     BaseRepository(protoStore) {
 
     // todo: conflict with other Retrofit with qualifiers?

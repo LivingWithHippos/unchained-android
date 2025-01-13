@@ -12,18 +12,13 @@ import com.github.livingwithhippos.unchained.data.repository.UnrestrictRepositor
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.postEvent
-import dagger.hilt.android.lifecycle.HiltViewModel
-import java.util.regex.Matcher
-import java.util.regex.Pattern
-import javax.inject.Inject
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 
 /** A [ViewModel] subclass. It offers LiveData to be observed while creating new downloads */
-@HiltViewModel
-class NewDownloadViewModel
-@Inject
-constructor(
+class NewDownloadViewModel(
     private val unrestrictRepository: UnrestrictRepository,
     private val torrentsRepository: TorrentsRepository,
     private val hostsRepository: HostsRepository,

@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.activityViewModels
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.repository.model.RepositoryListItem
 import com.github.livingwithhippos.unchained.repository.viewmodel.PluginRepositoryEvent
@@ -17,12 +16,11 @@ import com.github.livingwithhippos.unchained.utilities.DEFAULT_PLUGINS_REPOSITOR
 import com.github.livingwithhippos.unchained.utilities.MANUAL_PLUGINS_REPOSITORY_NAME
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.progressindicator.LinearProgressIndicator
-import dagger.hilt.android.AndroidEntryPoint
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
-@AndroidEntryPoint
 class ManageRepositoryDialogFragment : DialogFragment() {
 
-    private val viewModel: RepositoryViewModel by activityViewModels()
+    private val viewModel: RepositoryViewModel by activityViewModel()
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let { activity ->

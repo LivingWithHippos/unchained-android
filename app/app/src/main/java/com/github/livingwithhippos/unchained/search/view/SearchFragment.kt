@@ -11,7 +11,6 @@ import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import androidx.annotation.MenuRes
 import androidx.appcompat.widget.PopupMenu
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
@@ -31,15 +30,14 @@ import com.github.livingwithhippos.unchained.utilities.extension.getThemedDrawab
 import com.github.livingwithhippos.unchained.utilities.extension.hideKeyboard
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.google.android.material.button.MaterialButton
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import kotlinx.datetime.toInstant
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
-@AndroidEntryPoint
 class SearchFragment : UnchainedFragment(), SearchItemListener {
 
-    private val viewModel: SearchViewModel by viewModels()
+    private val viewModel: SearchViewModel by viewModel()
 
     private val magnetPattern = Regex(MAGNET_PATTERN, RegexOption.IGNORE_CASE)
 

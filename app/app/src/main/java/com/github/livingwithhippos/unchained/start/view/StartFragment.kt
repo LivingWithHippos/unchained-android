@@ -11,7 +11,6 @@ import com.github.livingwithhippos.unchained.data.model.UserAction
 import com.github.livingwithhippos.unchained.databinding.FragmentStartBinding
 import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationEvent
 import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationState
-import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
 /**
@@ -19,7 +18,6 @@ import timber.log.Timber
  * either the authentication process or the profile fragment, depending on the saved credentials
  * status.
  */
-@AndroidEntryPoint
 class StartFragment : UnchainedFragment() {
 
     override fun onCreateView(

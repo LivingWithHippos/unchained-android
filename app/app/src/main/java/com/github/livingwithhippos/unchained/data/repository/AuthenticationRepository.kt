@@ -7,12 +7,11 @@ import com.github.livingwithhippos.unchained.data.model.Token
 import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkException
 import com.github.livingwithhippos.unchained.data.remote.AuthApiHelper
 import com.github.livingwithhippos.unchained.utilities.EitherResult
-import javax.inject.Inject
 
-class AuthenticationRepository
-@Inject
-constructor(private val protoStore: ProtoStore, private val apiHelper: AuthApiHelper) :
-    BaseRepository(protoStore) {
+class AuthenticationRepository(
+    private val protoStore: ProtoStore,
+    private val apiHelper: AuthApiHelper
+) : BaseRepository(protoStore) {
 
     suspend fun getVerificationCode(): Authentication? {
 

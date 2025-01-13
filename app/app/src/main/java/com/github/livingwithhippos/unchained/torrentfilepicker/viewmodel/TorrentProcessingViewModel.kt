@@ -16,8 +16,6 @@ import com.github.livingwithhippos.unchained.utilities.Node
 import com.github.livingwithhippos.unchained.utilities.beforeSelectionStatusList
 import com.github.livingwithhippos.unchained.utilities.extension.cancelIfActive
 import com.github.livingwithhippos.unchained.utilities.postEvent
-import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -26,10 +24,7 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-@HiltViewModel
-class TorrentProcessingViewModel
-@Inject
-constructor(
+class TorrentProcessingViewModel(
     private val savedStateHandle: SavedStateHandle,
     private val torrentsRepository: TorrentsRepository,
 ) : ViewModel() {

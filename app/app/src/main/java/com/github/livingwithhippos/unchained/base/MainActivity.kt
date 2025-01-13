@@ -63,16 +63,16 @@ import com.github.livingwithhippos.unchained.utilities.extension.toHex
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.elevation.SurfaceColors
-import dagger.hilt.android.AndroidEntryPoint
 import java.lang.RuntimeException
 import java.security.MessageDigest
-import javax.inject.Inject
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
+import kotlin.getValue
 
 /** A [AppCompatActivity] subclass. Shared between all the fragments except for the preferences. */
-@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private lateinit var navController: NavController
@@ -148,9 +148,9 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
-    val viewModel: MainActivityViewModel by viewModels()
+    val viewModel: MainActivityViewModel by viewModel()
 
-    @Inject lateinit var preferences: SharedPreferences
+    val preferences: SharedPreferences by inject()
 
     private val downloadReceiver: BroadcastReceiver =
         object : BroadcastReceiver() {

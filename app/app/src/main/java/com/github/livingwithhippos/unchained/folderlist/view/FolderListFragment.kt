@@ -13,7 +13,6 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.core.widget.addTextChangedListener
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -41,14 +40,13 @@ import com.github.livingwithhippos.unchained.utilities.extension.delayedScrollin
 import com.github.livingwithhippos.unchained.utilities.extension.getThemedDrawable
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
-@AndroidEntryPoint
 class FolderListFragment : UnchainedFragment(), DownloadListListener {
 
-    private val viewModel: FolderListViewModel by viewModels()
+    private val viewModel: FolderListViewModel by viewModel()
     private val args: FolderListFragmentArgs by navArgs()
 
     private val mediaRegex =

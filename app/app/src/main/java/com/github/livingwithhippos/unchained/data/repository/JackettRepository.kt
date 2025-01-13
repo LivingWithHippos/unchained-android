@@ -5,19 +5,17 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import com.github.livingwithhippos.unchained.data.model.jackett.Indexers
 import com.github.livingwithhippos.unchained.data.model.torznab.Capabilities
 import com.github.livingwithhippos.unchained.data.model.torznab.SearchRSS
-import com.github.livingwithhippos.unchained.di.ClassicClient
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.xml.xmlMapper
-import java.io.IOException
-import java.net.URISyntaxException
-import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import timber.log.Timber
+import java.io.IOException
+import java.net.URISyntaxException
 
-class JackettRepository @Inject constructor(@ClassicClient private val client: OkHttpClient) {
+class JackettRepository(private val client: OkHttpClient) {
 
     private fun getBasicBuilder(
         baseUrl: String,

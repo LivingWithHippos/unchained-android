@@ -23,15 +23,13 @@ import com.github.livingwithhippos.unchained.utilities.ACCOUNT_LINK
 import com.github.livingwithhippos.unchained.utilities.REFERRAL_LINK
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
+import kotlin.getValue
 
 /** A simple [UnchainedFragment] subclass. Shows a user profile details. */
-@AndroidEntryPoint
 class UserProfileFragment : UnchainedFragment() {
-
-    @Inject lateinit var preferences: SharedPreferences
+    val preferences: SharedPreferences by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater,

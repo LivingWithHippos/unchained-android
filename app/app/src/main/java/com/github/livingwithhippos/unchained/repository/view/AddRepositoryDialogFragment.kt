@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.activityViewModels
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.repository.viewmodel.InvalidLinkReason
 import com.github.livingwithhippos.unchained.repository.viewmodel.PluginRepositoryEvent
@@ -17,12 +16,11 @@ import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.google.android.material.textfield.TextInputEditText
-import dagger.hilt.android.AndroidEntryPoint
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
-@AndroidEntryPoint
 class AddRepositoryDialogFragment : DialogFragment() {
 
-    private val viewModel: RepositoryViewModel by activityViewModels()
+    private val viewModel: RepositoryViewModel by activityViewModel()
 
     private lateinit var progressBar: LinearProgressIndicator
 

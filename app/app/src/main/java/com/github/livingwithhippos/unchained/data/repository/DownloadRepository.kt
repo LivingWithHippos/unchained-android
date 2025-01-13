@@ -3,11 +3,8 @@ package com.github.livingwithhippos.unchained.data.repository
 import com.github.livingwithhippos.unchained.data.local.ProtoStore
 import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.data.remote.DownloadApiHelper
-import javax.inject.Inject
 
-class DownloadRepository
-@Inject
-constructor(protoStore: ProtoStore, private val downloadApiHelper: DownloadApiHelper) :
+class DownloadRepository(protoStore: ProtoStore, private val downloadApiHelper: DownloadApiHelper) :
     BaseRepository(protoStore) {
     suspend fun getDownloads(offset: Int?, page: Int = 1, limit: Int = 50): List<DownloadItem> {
 

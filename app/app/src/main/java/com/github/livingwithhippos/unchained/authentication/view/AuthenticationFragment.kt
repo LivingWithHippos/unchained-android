@@ -10,7 +10,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.github.livingwithhippos.unchained.R
@@ -28,17 +27,16 @@ import com.github.livingwithhippos.unchained.utilities.extension.hideKeyboard
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.google.android.material.textfield.TextInputEditText
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
  * A simple [UnchainedFragment] subclass. It is capable of authenticating a user via either the
  * private API key or the OAUTH system
  */
-@AndroidEntryPoint
 class AuthenticationFragment : UnchainedFragment(), ButtonListener {
 
-    private val viewModel: AuthenticationViewModel by viewModels()
+    private val viewModel: AuthenticationViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,

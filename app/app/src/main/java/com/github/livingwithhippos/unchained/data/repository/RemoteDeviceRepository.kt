@@ -4,10 +4,9 @@ import com.github.livingwithhippos.unchained.data.local.RemoteDevice
 import com.github.livingwithhippos.unchained.data.local.RemoteDeviceDao
 import com.github.livingwithhippos.unchained.data.local.RemoteService
 import com.github.livingwithhippos.unchained.data.local.RemoteServiceType
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 
-class RemoteDeviceRepository @Inject constructor(private val remoteDeviceDao: RemoteDeviceDao) {
+class RemoteDeviceRepository(private val remoteDeviceDao: RemoteDeviceDao) {
     suspend fun getAllDevices() = remoteDeviceDao.getAllDevices()
 
     suspend fun deleteAll() = remoteDeviceDao.deleteAll()

@@ -12,7 +12,6 @@ import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -36,16 +35,15 @@ import com.github.livingwithhippos.unchained.utilities.extension.copyToClipboard
 import com.github.livingwithhippos.unchained.utilities.extension.getApiErrorMessage
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.github.livingwithhippos.unchained.utilities.loadingStatusList
-import dagger.hilt.android.AndroidEntryPoint
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
  * A simple [Fragment] subclass. It is capable of showing the details of a [TorrentItem] and
  * updating it.
  */
-@AndroidEntryPoint
 class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
 
-    private val viewModel: TorrentDetailsViewModel by viewModels()
+    private val viewModel: TorrentDetailsViewModel by viewModel()
 
     private val args: TorrentDetailsFragmentArgs by navArgs()
 

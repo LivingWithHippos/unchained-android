@@ -1,6 +1,5 @@
 package com.github.livingwithhippos.unchained.data.remote
 
-import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -12,7 +11,7 @@ import okhttp3.WebSocketListener
 import okio.ByteString
 
 @ExperimentalCoroutinesApi
-class KodiSocket @Inject constructor(private val client: OkHttpClient) {
+class KodiSocket (private val client: OkHttpClient) {
 
     fun openWebSocket(url: String): Flow<WebSocketEvents> = callbackFlow {
         val request = Request.Builder().url(url).build()

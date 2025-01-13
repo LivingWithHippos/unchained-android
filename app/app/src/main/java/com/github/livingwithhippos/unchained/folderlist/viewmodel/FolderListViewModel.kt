@@ -13,17 +13,12 @@ import com.github.livingwithhippos.unchained.folderlist.view.FolderListFragment
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.postEvent
-import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
-@HiltViewModel
-class FolderListViewModel
-@Inject
-constructor(
+class FolderListViewModel(
     private val savedStateHandle: SavedStateHandle,
     private val preferences: SharedPreferences,
     private val unrestrictRepository: UnrestrictRepository,

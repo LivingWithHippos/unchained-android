@@ -1,17 +1,15 @@
 package com.github.livingwithhippos.unchained.data.repository
 
-import com.github.livingwithhippos.unchained.di.ClassicClient
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.addHttpScheme
-import java.io.IOException
-import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import timber.log.Timber
+import java.io.IOException
 
-class RemoteRepository @Inject constructor(@ClassicClient private val client: OkHttpClient) {
+class RemoteRepository (private val client: OkHttpClient) {
     // todo: add https://mpv.io/manual/stable/#json-ipc
 
     suspend fun openUrl(

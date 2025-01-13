@@ -3,10 +3,9 @@ package com.github.livingwithhippos.unchained.data.remote
 import com.github.livingwithhippos.unchained.data.model.Authentication
 import com.github.livingwithhippos.unchained.data.model.Secrets
 import com.github.livingwithhippos.unchained.data.model.Token
-import javax.inject.Inject
 import retrofit2.Response
 
-class AuthApiHelperImpl @Inject constructor(private val authenticationApi: AuthenticationApi) :
+class AuthApiHelperImpl(private val authenticationApi: AuthenticationApi) :
     AuthApiHelper {
 
     override suspend fun getAuthentication(): Response<Authentication> =

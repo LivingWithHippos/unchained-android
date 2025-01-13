@@ -11,8 +11,6 @@ import com.github.livingwithhippos.unchained.data.model.Token
 import com.github.livingwithhippos.unchained.data.repository.AuthenticationRepository
 import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.postEvent
-import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -21,10 +19,7 @@ import kotlinx.coroutines.launch
  * A [ViewModel] subclass. It offers LiveData to be observed during the authentication process and
  * uses the [AuthenticationRepository] to manage its process.
  */
-@HiltViewModel
-class AuthenticationViewModel
-@Inject
-constructor(
+class AuthenticationViewModel (
     private val savedStateHandle: SavedStateHandle,
     private val authRepository: AuthenticationRepository,
     private val protoStore: ProtoStore,

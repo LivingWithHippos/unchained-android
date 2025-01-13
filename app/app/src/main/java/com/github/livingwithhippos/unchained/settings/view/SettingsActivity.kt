@@ -6,13 +6,11 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.github.livingwithhippos.unchained.R
-import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * A simple [AppCompatActivity] subclass. Used to navigate from any fragment to the settings screen
  * since the multiple backstack navigation makes it kind of complicated.
  */
-@AndroidEntryPoint
 class SettingsActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

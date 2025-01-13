@@ -16,14 +16,9 @@ import com.github.livingwithhippos.unchained.settings.view.ThemeItem
 import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewModel.Companion.KEY_DOWNLOAD_FOLDER
 import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.postEvent
-import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.launch
 
-@HiltViewModel
-class SettingsViewModel
-@Inject
-constructor(
+class SettingsViewModel(
     private val hostsRepository: HostsRepository,
     private val pluginRepository: PluginRepository,
     private val kodiRepository: KodiRepository,

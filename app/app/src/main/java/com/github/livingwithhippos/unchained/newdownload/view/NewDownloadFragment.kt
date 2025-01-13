@@ -43,22 +43,21 @@ import com.github.livingwithhippos.unchained.utilities.extension.isMagnet
 import com.github.livingwithhippos.unchained.utilities.extension.isSimpleWebUrl
 import com.github.livingwithhippos.unchained.utilities.extension.isTorrent
 import com.github.livingwithhippos.unchained.utilities.extension.isWebUrl
-import dagger.hilt.android.AndroidEntryPoint
-import java.io.IOException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
+import java.io.IOException
 
 /**
  * A simple [UnchainedFragment] subclass. Allow the user to create a new download from a link or a
  * torrent file.
  */
-@AndroidEntryPoint
 class NewDownloadFragment : UnchainedFragment() {
 
     // if we receive an intent and new download is already selected and showing a
     // DownloadDetailsFragment, it may not trigger the observers in this class
-    private val viewModel: NewDownloadViewModel by viewModels()
+    private val viewModel: NewDownloadViewModel by viewModel()
 
     private val args: NewDownloadFragmentArgs by navArgs()
 

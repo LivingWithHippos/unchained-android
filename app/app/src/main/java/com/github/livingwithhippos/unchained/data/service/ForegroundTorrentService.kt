@@ -19,35 +19,31 @@ import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.MainActivity
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.data.repository.TorrentsRepository
-import com.github.livingwithhippos.unchained.di.TorrentNotification
-import com.github.livingwithhippos.unchained.di.TorrentSummaryNotification
 import com.github.livingwithhippos.unchained.settings.view.SettingsFragment
 import com.github.livingwithhippos.unchained.utilities.PreferenceKeys
 import com.github.livingwithhippos.unchained.utilities.extension.getStatusTranslation
 import com.github.livingwithhippos.unchained.utilities.extension.vibrate
 import com.github.livingwithhippos.unchained.utilities.loadingStatusList
-import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
+import org.koin.core.qualifier.named
 
-@AndroidEntryPoint
-@SuppressLint("MissingPermission")
 class ForegroundTorrentService : LifecycleService() {
 
-    @Inject lateinit var torrentRepository: TorrentsRepository
+    val torrentRepository: TorrentsRepository by inject()
 
     private val torrentBinder = TorrentBinder()
 
     private val torrentsLiveData = MutableLiveData<List<TorrentItem>>()
 
-    @Inject @TorrentSummaryNotification lateinit var summaryBuilder: NotificationCompat.Builder
+    val summaryBuilder: NotificationCompat.Builder by inject(named("TorrentSummaryNotification"))
 
-    @Inject @TorrentNotification lateinit var torrentBuilder: NotificationCompat.Builder
+    val torrentBuilder: NotificationCompat.Builder by inject(named("TorrentNotification"))
 
-    @Inject lateinit var notificationManager: NotificationManagerCompat
+    val notificationManager: NotificationManagerCompat by inject()
 
-    @Inject lateinit var preferences: SharedPreferences
+    val preferences: SharedPreferences by inject()
 
     private var updateTiming = UPDATE_TIMING_SHORT
 
@@ -135,7 +131,7 @@ class ForegroundTorrentService : LifecycleService() {
     private val preferenceListener =
         SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
             if (key == SettingsFragment.KEY_TORRENT_NOTIFICATIONS) {
-                val enableTorrentNotifications = sharedPreferences?.getBoolean(key, false) ?: false
+                val enableTorrentNotifications = sharedPreferences?.getBoolean(key, false) == true
                 if (!enableTorrentNotifications) stopTorrentService()
             }
         }
@@ -158,6 +154,7 @@ class ForegroundTorrentService : LifecycleService() {
         return torrentRepository.getTorrentsList(limit = max)
     }
 
+    @SuppressLint("MissingPermission")
     private fun updateNotification(items: List<TorrentItem>) {
 
         val notifications: MutableMap<String, Notification> = mutableMapOf()
@@ -216,6 +213,7 @@ class ForegroundTorrentService : LifecycleService() {
         }
     }
 
+    @SuppressLint("MissingPermission")
     private fun completeNotification(item: TorrentItem) {
 
         val resultIntent =

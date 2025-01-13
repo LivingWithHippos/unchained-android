@@ -7,11 +7,8 @@ import com.github.livingwithhippos.unchained.data.model.RepositoryInfo
 import com.github.livingwithhippos.unchained.data.model.RepositoryPlugin
 import com.github.livingwithhippos.unchained.plugins.model.isCompatible
 import com.github.livingwithhippos.unchained.repository.model.JsonPluginRepository
-import javax.inject.Inject
 
-class DatabasePluginRepository
-@Inject
-constructor(private val repositoryDataDao: RepositoryDataDao) {
+class DatabasePluginRepository(private val repositoryDataDao: RepositoryDataDao) {
     suspend fun getFullRepositoriesData():
         Map<RepositoryInfo, Map<RepositoryPlugin, List<PluginVersion>>> {
         val pluginsByRepo: Map<RepositoryInfo, List<RepositoryPlugin>> =

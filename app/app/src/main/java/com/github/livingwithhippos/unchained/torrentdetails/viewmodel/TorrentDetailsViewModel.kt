@@ -13,8 +13,6 @@ import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.endedStatusList
 import com.github.livingwithhippos.unchained.utilities.extension.cancelIfActive
 import com.github.livingwithhippos.unchained.utilities.postEvent
-import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -23,10 +21,7 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 /** a [ViewModel] subclass. Retrieves a torrent's details */
-@HiltViewModel
-class TorrentDetailsViewModel
-@Inject
-constructor(
+class TorrentDetailsViewModel(
     private val torrentsRepository: TorrentsRepository,
     private val unrestrictRepository: UnrestrictRepository,
 ) : ViewModel() {

@@ -5,11 +5,8 @@ import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkExceptio
 import com.github.livingwithhippos.unchained.data.model.User
 import com.github.livingwithhippos.unchained.data.remote.UserApiHelper
 import com.github.livingwithhippos.unchained.utilities.EitherResult
-import javax.inject.Inject
 
-class UserRepository
-@Inject
-constructor(protoStore: ProtoStore, private val userApiHelper: UserApiHelper) :
+class UserRepository(protoStore: ProtoStore, private val userApiHelper: UserApiHelper) :
     BaseRepository(protoStore) {
 
     suspend fun getUserInfo(token: String): User? {
