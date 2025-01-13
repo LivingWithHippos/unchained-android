@@ -5,12 +5,12 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.parcelize")
-    id("dagger.hilt.android.plugin")
     id("androidx.navigation.safeargs.kotlin")
     id("com.mikepenz.aboutlibraries.plugin")
     alias(libs.plugins.protobuf)
     alias(libs.plugins.ktfmt)
-    kotlin("kapt")
+    alias(libs.plugins.room)
+    alias(libs.plugins.ksp)
 }
 
 fun readProperties(propertiesFile: File) = Properties().apply {
@@ -48,8 +48,9 @@ ktfmt {
     kotlinLangStyle()
 }
 
-kapt {
-    correctErrorTypes = true
+// Compile time check
+ksp {
+    arg("KOIN_CONFIG_CHECK","true")
 }
 
 android {
@@ -176,6 +177,10 @@ android {
             isIncludeAndroidResources = true
         }
     }
+
+    room {
+        schemaDirectory("$projectDir/schemas")
+    }
 }
 
 dependencies {
@@ -200,6 +205,9 @@ dependencies {
     implementation(libs.datastore.core)
     implementation(libs.datastore.prefs)
 
+    implementation(libs.koin.android)
+    implementation(libs.koin.navigation)
+
     implementation(libs.jackson.kotlin)
     implementation(libs.jackson.xml)
     implementation(libs.woodstox)
@@ -208,7 +216,7 @@ dependencies {
     // implementation(libs.stax)
     implementation(libs.jakarta.xmlapi)
 
-    kapt(libs.moshi.kapt)
+    ksp(libs.moshi.codegen)
     implementation(libs.moshi.runtime)
 
     implementation(libs.retrofit.runtime)
@@ -223,7 +231,7 @@ dependencies {
     implementation(libs.navigation.fragment)
     implementation(libs.navigation.ui)
 
-    kapt(libs.room.compiler)
+    ksp(libs.room.compiler)
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
 
@@ -239,10 +247,6 @@ dependencies {
     implementation(libs.lifecycle.java8)
 
     implementation(libs.coil)
-
-    kapt(libs.hilt.compiler)
-    implementation(libs.hilt.navigation)
-    implementation(libs.hilt.android)
 
     implementation(libs.paging.runtime)
 
