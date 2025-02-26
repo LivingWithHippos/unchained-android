@@ -7,7 +7,6 @@ plugins {
     id("org.jetbrains.kotlin.plugin.parcelize")
     id("dagger.hilt.android.plugin")
     id("androidx.navigation.safeargs.kotlin")
-    id("com.mikepenz.aboutlibraries.plugin")
     alias(libs.plugins.protobuf)
     alias(libs.plugins.ktfmt)
     kotlin("kapt")
@@ -257,9 +256,6 @@ dependencies {
     implementation(libs.countly)
 
     implementation(libs.protobuf.javaLite)
-
-    implementation(libs.about.core)
-    implementation(libs.about.ui)
 
     androidTestImplementation(libs.test.core)
     androidTestImplementation(libs.test.espresso)
