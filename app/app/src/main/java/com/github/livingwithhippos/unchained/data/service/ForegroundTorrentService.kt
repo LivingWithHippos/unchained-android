@@ -148,7 +148,10 @@ class ForegroundTorrentService : LifecycleService() {
             while (true) {
                 // right now on api >= 35 after 6 hours the service will crash
                 // because of system imposed limits
-                if (Build.VERSION.SDK_INT >= 35 && System.currentTimeMillis() - serviceStart > 5 * 60 * 60 * 1000) {
+                if (
+                    Build.VERSION.SDK_INT >= 35 &&
+                        System.currentTimeMillis() - serviceStart > 5 * 60 * 60 * 1000
+                ) {
                     Timber.w("Service has been running for too long, stopping it.")
                     break
                 }
