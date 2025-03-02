@@ -1,24 +1,20 @@
 import java.util.Properties
 
-
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.parcelize")
     id("dagger.hilt.android.plugin")
     id("androidx.navigation.safeargs.kotlin")
-    id("com.mikepenz.aboutlibraries.plugin")
     alias(libs.plugins.protobuf)
     alias(libs.plugins.ktfmt)
     kotlin("kapt")
 }
 
-fun readProperties(propertiesFile: File) = Properties().apply {
-    if (propertiesFile.exists())
-        propertiesFile.inputStream().use { fis ->
-            load(fis)
-        }
-}
+fun readProperties(propertiesFile: File) =
+    Properties().apply {
+        if (propertiesFile.exists()) propertiesFile.inputStream().use { fis -> load(fis) }
+    }
 
 val keyPropertiesFile: File = rootProject.file("signingkey.properties")
 val keyProperties = readProperties(keyPropertiesFile)
@@ -27,19 +23,9 @@ val apiPropertiesFile: File = rootProject.file("apikey.properties")
 val apiProperties = readProperties(apiPropertiesFile)
 
 protobuf {
-    protoc {
-        artifact = libs.protobuf.core.get().toString()
-    }
+    protoc { artifact = libs.protobuf.core.get().toString() }
     plugins {
-        generateProtoTasks {
-            all().forEach {
-                it.builtins {
-                    create("java") {
-                        option("lite")
-                    }
-                }
-            }
-        }
+        generateProtoTasks { all().forEach { it.builtins { create("java") { option("lite") } } } }
     }
 }
 
@@ -48,9 +34,7 @@ ktfmt {
     kotlinLangStyle()
 }
 
-kapt {
-    correctErrorTypes = true
-}
+kapt { correctErrorTypes = true }
 
 android {
     namespace = "com.github.livingwithhippos.unchained"
@@ -60,8 +44,8 @@ android {
         applicationId = "com.github.livingwithhippos.unchained"
         minSdk = 22
         targetSdk = 35
-        versionCode = 49
-        versionName = "1.3.5"
+        versionCode = 50
+        versionName = "1.3.6"
 
         javaCompileOptions {
             annotationProcessorOptions {
@@ -74,9 +58,7 @@ android {
     }
 
     packaging {
-        jniLibs {
-            excludes.addAll(listOf("META-INF/proguard/*"))
-        }
+        jniLibs { excludes.addAll(listOf("META-INF/proguard/*")) }
         resources {
             excludes.addAll(
                 listOf(
@@ -87,7 +69,7 @@ android {
                     "META-INF/proguard/*",
                     "/*.properties",
                     "fabric/*.properties",
-                    "META-INF/*.properties"
+                    "META-INF/*.properties",
                 )
             )
         }
@@ -111,11 +93,9 @@ android {
 
     buildTypes {
         applicationVariants.forEach { variant ->
-            variant.outputs.map {
-                it as com.android.build.gradle.internal.api.BaseVariantOutputImpl
-            }.forEach {
-                it.outputFileName = "${variant.name}-${variant.versionName}.apk"
-            }
+            variant.outputs
+                .map { it as com.android.build.gradle.internal.api.BaseVariantOutputImpl }
+                .forEach { it.outputFileName = "${variant.name}-${variant.versionName}.apk" }
         }
 
         debug {
@@ -129,10 +109,10 @@ android {
                 apiProperties.getOrDefault(
                     "COUNTLY_APP_KEY",
                     "\"" +
-                            (System.getenv("COUNTLY_APP_KEY")
-                                ?: "pDJz4WrY9XeBotXAaL9MYrraSwZNyDqfAPy8p38c")
-                            + "\""
-                ) as String
+                        (System.getenv("COUNTLY_APP_KEY")
+                            ?: "pDJz4WrY9XeBotXAaL9MYrraSwZNyDqfAPy8p38c") +
+                        "\"",
+                ) as String,
             )
 
             buildConfigField(
@@ -140,12 +120,10 @@ android {
                 "COUNTLY_URL",
                 apiProperties.getOrDefault(
                     "COUNTLY_URL",
-                    "\"" + (System.getenv("COUNTLY_URL") ?: "http://localhost") + "\""
-                ) as String
+                    "\"" + (System.getenv("COUNTLY_URL") ?: "http://localhost") + "\"",
+                ) as String,
             )
-
         }
-
 
         release {
             ndk.debugSymbolLevel = "FULL"
@@ -155,7 +133,7 @@ android {
             isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
     }
@@ -163,19 +141,13 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlinOptions {
-        jvmTarget = "17"
-    }
+    kotlinOptions { jvmTarget = "17" }
     buildFeatures {
         dataBinding = true
         buildConfig = true
     }
 
-    testOptions {
-        unitTests {
-            isIncludeAndroidResources = true
-        }
-    }
+    testOptions { unitTests { isIncludeAndroidResources = true } }
 }
 
 dependencies {
@@ -257,9 +229,6 @@ dependencies {
     implementation(libs.countly)
 
     implementation(libs.protobuf.javaLite)
-
-    implementation(libs.about.core)
-    implementation(libs.about.ui)
 
     androidTestImplementation(libs.test.core)
     androidTestImplementation(libs.test.espresso)

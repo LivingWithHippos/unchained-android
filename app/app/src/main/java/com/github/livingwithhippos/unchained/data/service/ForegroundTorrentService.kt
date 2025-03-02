@@ -30,6 +30,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @AndroidEntryPoint
 @SuppressLint("MissingPermission")
@@ -50,6 +51,8 @@ class ForegroundTorrentService : LifecycleService() {
     @Inject lateinit var preferences: SharedPreferences
 
     private var updateTiming = UPDATE_TIMING_SHORT
+
+    private var serviceStart = System.currentTimeMillis()
 
     override fun onBind(intent: Intent): IBinder {
         super.onBind(intent)
@@ -143,6 +146,15 @@ class ForegroundTorrentService : LifecycleService() {
     private fun startMonitoring() {
         lifecycleScope.launch {
             while (true) {
+                // right now on api >= 35 after 6 hours the service will crash
+                // because of system imposed limits
+                if (
+                    Build.VERSION.SDK_INT >= 35 &&
+                        System.currentTimeMillis() - serviceStart > 5 * 60 * 60 * 1000
+                ) {
+                    Timber.w("Service has been running for too long, stopping it.")
+                    break
+                }
                 try {
                     torrentsLiveData.postValue(getTorrentList())
                 } catch (ex: IllegalArgumentException) {
@@ -151,6 +163,7 @@ class ForegroundTorrentService : LifecycleService() {
                 // update notifications every 5 seconds
                 delay(updateTiming)
             }
+            stopSelf()
         }
     }
 
