@@ -226,11 +226,6 @@
             app:title="@string/feedback_title" />
 
         <Preference
-            app:key="about"
-            app:summary="@string/content_description_about"
-            app:title="@string/about" />
-
-        <Preference
             app:key="credits"
             app:title="@string/credits_title" />
 
