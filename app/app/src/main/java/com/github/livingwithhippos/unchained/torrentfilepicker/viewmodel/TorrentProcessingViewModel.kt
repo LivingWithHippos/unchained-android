@@ -89,8 +89,8 @@ constructor(
         savedStateHandle[KEY_CURRENT_TORRENT_ID] = id
     }
 
-    fun updateTorrentStructure(structure: Node<TorrentFileItem>?) {
-        if (structure != null) structureLiveData.postEvent(structure)
+    fun updateTorrentStructure() {
+        torrentLiveData.postEvent(TorrentEvent.SelectionUpdated)
     }
 
     fun startSelectionLoop(files: String = "all") {
@@ -184,6 +184,8 @@ sealed class TorrentEvent {
     data class TorrentInfo(val item: TorrentItem) : TorrentEvent()
 
     data class FilesSelected(val torrent: TorrentItem) : TorrentEvent()
+
+    data object SelectionUpdated : TorrentEvent()
 
     data object DownloadAll : TorrentEvent()
 
