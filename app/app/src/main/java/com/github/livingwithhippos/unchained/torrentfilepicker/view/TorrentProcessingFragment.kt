@@ -102,8 +102,12 @@ class TorrentProcessingFragment : UnchainedFragment(), TorrentContentListener {
                                 getFilesNodes(content.item, selectedOnly = false)
                             if (torrentStructure.children.isNotEmpty()) {
                                 currentStructure = torrentStructure
-                                Node.traverseDepthFirst(torrentStructure) { item -> filesList.add(item) }
-                                (binding.rvTorrentFilePicker.adapter as TorrentContentFilesSelectionAdapter).submitList(filesList)
+                                Node.traverseDepthFirst(torrentStructure) { item ->
+                                    filesList.add(item)
+                                }
+                                (binding.rvTorrentFilePicker.adapter
+                                        as TorrentContentFilesSelectionAdapter)
+                                    .submitList(filesList)
                                 binding.rvTorrentFilePicker.adapter?.notifyDataSetChanged()
                             }
 
@@ -154,10 +158,10 @@ class TorrentProcessingFragment : UnchainedFragment(), TorrentContentListener {
                     currentStructure?.let { structure ->
                         val filesList = mutableListOf<TorrentFileItem>()
                         Node.traverseDepthFirst(structure) { item -> filesList.add(item) }
-                        (binding.rvTorrentFilePicker.adapter as TorrentContentFilesSelectionAdapter).submitList(filesList)
+                        (binding.rvTorrentFilePicker.adapter as TorrentContentFilesSelectionAdapter)
+                            .submitList(filesList)
                         binding.rvTorrentFilePicker.adapter?.notifyDataSetChanged()
                     }
-
                 }
                 else -> {
                     Timber.d("Found unknown torrentLiveData event $content")
@@ -383,9 +387,9 @@ class TorrentProcessingFragment : UnchainedFragment(), TorrentContentListener {
             Node.traverseNodeDepthFirst(structure) {
                 if (
                     it.value.absolutePath == item.absolutePath &&
-                    it.value.name == item.name &&
-                    it.value.id == TYPE_FOLDER &&
-                    item.id == TYPE_FOLDER
+                        it.value.name == item.name &&
+                        it.value.id == TYPE_FOLDER &&
+                        item.id == TYPE_FOLDER
                 ) {
                     folderNode = it
                     return@traverseNodeDepthFirst
