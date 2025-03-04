@@ -1,5 +1,6 @@
 [versions]
 aboutlibraries = "11.2.3"
+# version 8.9 breaks something
 android_gradle_plugin = "8.7.2"
 appcompat = "1.7.0"
 constraint_layout = "2.2.1"
@@ -18,7 +19,7 @@ fragment = "1.8.6"
 hilt_navigation = "1.2.0"
 jackson = "2.18.3"
 jakarta_xml = "4.0.2"
-jsoup = "1.18.3"
+jsoup = "1.19.1"
 junit = "4.13.2"
 # 2.1.0 has some incompatibilities
 # kotlin = "2.1.0"
