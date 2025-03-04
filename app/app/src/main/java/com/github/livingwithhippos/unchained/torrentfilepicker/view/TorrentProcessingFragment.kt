@@ -22,8 +22,11 @@ import com.github.livingwithhippos.unchained.databinding.FragmentTorrentProcessi
 import com.github.livingwithhippos.unchained.lists.view.ListState
 import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationEvent
 import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationState
+import com.github.livingwithhippos.unchained.torrentdetails.model.TorrentContentFilesSelectionAdapter
+import com.github.livingwithhippos.unchained.torrentdetails.model.TorrentContentListener
 import com.github.livingwithhippos.unchained.torrentdetails.model.TorrentFileItem
 import com.github.livingwithhippos.unchained.torrentdetails.model.TorrentFileItem.Companion.TYPE_FOLDER
+import com.github.livingwithhippos.unchained.torrentdetails.model.getFilesNodes
 import com.github.livingwithhippos.unchained.torrentfilepicker.viewmodel.TorrentEvent
 import com.github.livingwithhippos.unchained.torrentfilepicker.viewmodel.TorrentProcessingViewModel
 import com.github.livingwithhippos.unchained.utilities.Node
@@ -42,7 +45,7 @@ import timber.log.Timber
 
 /** This fragments is shown after a user uploads a torrent or a magnet. */
 @AndroidEntryPoint
-class TorrentProcessingFragment : UnchainedFragment() {
+class TorrentProcessingFragment : UnchainedFragment(), TorrentContentListener {
 
     private val args: TorrentProcessingFragmentArgs by navArgs()
 
@@ -52,6 +55,8 @@ class TorrentProcessingFragment : UnchainedFragment() {
 
     /** Save the torrent/magnet has when loaded */
     private var torrentHash: String? = null
+
+    private var currentStructure: Node<TorrentFileItem>? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -92,6 +97,16 @@ class TorrentProcessingFragment : UnchainedFragment() {
                                     )
                             findNavController().navigate(action)
                         } else {
+                            val filesList = mutableListOf<TorrentFileItem>()
+                            val torrentStructure: Node<TorrentFileItem> =
+                                getFilesNodes(content.item, selectedOnly = false)
+                            if (torrentStructure.children.isNotEmpty()) {
+                                currentStructure = torrentStructure
+                                Node.traverseDepthFirst(torrentStructure) { item -> filesList.add(item) }
+                                (binding.rvTorrentFilePicker.adapter as TorrentContentFilesSelectionAdapter).submitList(filesList)
+                                binding.rvTorrentFilePicker.adapter?.notifyDataSetChanged()
+                            }
+
                             binding.loadingLayout.visibility = View.INVISIBLE
                             binding.loadedLayout.visibility = View.VISIBLE
                         }
@@ -134,6 +149,15 @@ class TorrentProcessingFragment : UnchainedFragment() {
                 }
                 TorrentEvent.DownloadedFileSuccess -> {
                     // do nothing
+                }
+                is TorrentEvent.SelectionUpdated -> {
+                    currentStructure?.let { structure ->
+                        val filesList = mutableListOf<TorrentFileItem>()
+                        Node.traverseDepthFirst(structure) { item -> filesList.add(item) }
+                        (binding.rvTorrentFilePicker.adapter as TorrentContentFilesSelectionAdapter).submitList(filesList)
+                        binding.rvTorrentFilePicker.adapter?.notifyDataSetChanged()
+                    }
+
                 }
                 else -> {
                     Timber.d("Found unknown torrentLiveData event $content")
@@ -185,6 +209,9 @@ class TorrentProcessingFragment : UnchainedFragment() {
 
     private fun setup(binding: FragmentTorrentProcessingBinding) {
 
+        val adapter = TorrentContentFilesSelectionAdapter(this)
+        binding.rvTorrentFilePicker.adapter = adapter
+
         binding.fabDownload.setOnClickListener { showMenu(it, R.menu.download_mode_picker) }
 
         if (args.torrentID != null) {
@@ -218,8 +245,7 @@ class TorrentProcessingFragment : UnchainedFragment() {
         val popup = PopupMenu(requireContext(), v)
         popup.menuInflater.inflate(menuRes, popup.menu)
 
-        val lastSelection: Node<TorrentFileItem>? = viewModel.structureLiveData.value?.peekContent()
-        if (lastSelection == null) popup.menu.findItem(R.id.manual_pick).isEnabled = false
+        if (currentStructure == null) popup.menu.findItem(R.id.manual_pick).isEnabled = false
 
         if (torrentHash == null) {
             popup.menu.findItem(R.id.copy_magnet).isVisible = false
@@ -235,10 +261,10 @@ class TorrentProcessingFragment : UnchainedFragment() {
                 }
                 R.id.manual_pick -> {
 
-                    if (lastSelection != null) {
+                    currentStructure?.let { structure ->
                         var counter = 0
                         val selectedFiles = StringBuffer()
-                        Node.traverseBreadthFirst(lastSelection) {
+                        Node.traverseBreadthFirst(structure) {
                             if (it.selected && it.id != TYPE_FOLDER) {
                                 selectedFiles.append(it.id)
                                 selectedFiles.append(",")
@@ -255,8 +281,6 @@ class TorrentProcessingFragment : UnchainedFragment() {
                             viewModel.triggerTorrentEvent(TorrentEvent.DownloadSelection(counter))
                             viewModel.startSelectionLoop(selectedFiles.toString())
                         }
-                    } else {
-                        Timber.e("Last files selection should not have been null")
                     }
                 }
                 R.id.copy_magnet -> {
@@ -338,5 +362,43 @@ class TorrentProcessingFragment : UnchainedFragment() {
                 }
             }
         }
+    }
+
+    override fun onSelectedFile(item: TorrentFileItem) {
+        Timber.d("selected file $item was ${item.selected}")
+        currentStructure?.let { structure ->
+            Node.traverseDepthFirst(structure) {
+                if (it.id == item.id) {
+                    it.selected = !it.selected
+                }
+            }
+        }
+        viewModel.updateTorrentStructure()
+    }
+
+    override fun onSelectedFolder(item: TorrentFileItem) {
+        Timber.d("selected folder $item")
+        currentStructure?.let { structure ->
+            var folderNode: Node<TorrentFileItem>? = null
+            Node.traverseNodeDepthFirst(structure) {
+                if (
+                    it.value.absolutePath == item.absolutePath &&
+                    it.value.name == item.name &&
+                    it.value.id == TYPE_FOLDER &&
+                    item.id == TYPE_FOLDER
+                ) {
+                    folderNode = it
+                    return@traverseNodeDepthFirst
+                }
+            }
+
+            folderNode?.let {
+                val newSelected = !it.value.selected
+                it.value.selected = newSelected
+                Node.traverseDepthFirst(it) { item -> item.selected = newSelected }
+            }
+        }
+
+        viewModel.updateTorrentStructure()
     }
 }
