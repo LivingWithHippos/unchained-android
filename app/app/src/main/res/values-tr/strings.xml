@@ -206,12 +206,6 @@
     <string name="network_error">Ağ hatası</string>
     <string name="torrent_channel_description">Torrent indirme durumu için bildirim kanalı</string>
     <string name="torrent_in_progress">Torrent indirme devam ediyor</string>
-    <string name="seeders_format">
-        <item quantity="zero">% tohumlayıcı</item>
-        <item quantity="one">%d tohumlayıcı</item>
-        <item quantity="other">%d tohumlayıcı</item>
-        <item quantity="many">%d tohumlayıcı</item>
-    </string>
     <string name="seeders_string_format">Tohumlayıcı(lar): %s</string>
     <string name="torrent_in_progress_format">%1$.2f%% - %2$.2f MB/s</string>
     <string name="download_in_progress_format">İndiriliyor - %1$d%%</string>
