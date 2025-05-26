@@ -206,7 +206,13 @@
     <string name="network_error">Ağ hatası</string>
     <string name="torrent_channel_description">Torrent indirme durumu için bildirim kanalı</string>
     <string name="torrent_in_progress">Torrent indirme devam ediyor</string>
-    <string name="seeders_string_format">Tohumlayıcı(lar): %s</string>
+    <plurals name="seeders_format">
+        <item quantity="zero">% seed</item>
+        <item quantity="one">%d seed</item>
+        <item quantity="other">%d seed</item>
+        <item quantity="many">%d seed</item>
+    </plurals>
+    <string name="seeders_string_format">Seed(ler): %s</string>
     <string name="torrent_in_progress_format">%1$.2f%% - %2$.2f MB/s</string>
     <string name="download_in_progress_format">İndiriliyor - %1$d%%</string>
     <string name="download_complete">İndirme tamamlandı</string>
@@ -400,7 +406,7 @@
     <string name="playstore_update_description">Play Store\'da daha yeni bir uygulama sürümü bulundu</string>
     <string name="github_update_description">Github\'da yeni bir uygulama sürümü bulundu</string>
     <string name="new_update">Güncelleme mevcut</string>
-    <string name="seeders">Tohumlayıcılar</string>
+    <string name="seeders">Seed</string>
     <string name="no_supported_player_found">Bu medyayı destekleyen bir uygulama bulunamadı. Paylaş düğmesini deneyin.</string>
     <string name="browser_not_found">Tarayıcı uygulaması bulunamadı</string>
     <string name="directory_picked">Dizin kaydedildi. İndirmeyi tekrar başlatın.</string>
