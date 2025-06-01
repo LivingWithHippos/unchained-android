@@ -1,12 +1,10 @@
 [versions]
 aboutlibraries = "11.2.3"
-# version 8.9 breaks something
 android_gradle_plugin = "8.10.0"
 appcompat = "1.7.0"
 constraint_layout = "2.2.1"
 coil = "2.7.0"
 core_ktx = "1.16.0"
-# version 1.10 is crashing room
 coroutines = "1.10.2"
 # non compliant with new Play Store but it's not used in production
 countly = "25.1.1"
