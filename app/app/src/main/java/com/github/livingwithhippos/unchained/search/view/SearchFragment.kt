@@ -29,6 +29,7 @@ import com.github.livingwithhippos.unchained.utilities.MAGNET_PATTERN
 import com.github.livingwithhippos.unchained.utilities.extension.delayedScrolling
 import com.github.livingwithhippos.unchained.utilities.extension.getThemedDrawable
 import com.github.livingwithhippos.unchained.utilities.extension.hideKeyboard
+import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.google.android.material.button.MaterialButton
 import dagger.hilt.android.AndroidEntryPoint
@@ -231,6 +232,12 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
                     }
                     is ParserResult.EmptyInnerLinks -> {
                         context?.showToast(R.string.no_links)
+                        searchAdapter.submitList(emptyList())
+                        binding.loadingCircle.isIndeterminate = false
+                        binding.loadingCircle.progress = 100
+                    }
+                    is ParserResult.ScrapeProtectionError -> {
+                        context?.showToast(R.string.connection_error)
                         searchAdapter.submitList(emptyList())
                         binding.loadingCircle.isIndeterminate = false
                         binding.loadingCircle.progress = 100

@@ -25,6 +25,13 @@ import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
 import timber.log.Timber
 
+sealed class WebResponse {
+    data class Success(val source: String) : WebResponse()
+    data object EmptyBodyError : WebResponse()
+    data class ExceptionError(val e: Exception) : WebResponse()
+    data class StatusError(val code: Int) : WebResponse()
+}
+
 class Parser(
     private val preferences: SharedPreferences,
     private val classicClient: OkHttpClient,
@@ -63,37 +70,110 @@ class Parser(
                         )
 
                     emit(ParserResult.SearchStarted(-1))
-                    val source = getSource(queryUrl)
-                    if (source.length < 10) emit(ParserResult.NetworkBodyError)
-                    else {
-                        /** Parsing data with the internal link mechanism */
-                        when {
-                            plugin.download.internalParser != null -> {
-                                emit(ParserResult.SearchStarted(-1))
-                                val innerSource = mutableListOf<String>()
+                    val response = getSourceResult(queryUrl)
+                    when (response) {
+                        is WebResponse.EmptyBodyError -> emit(ParserResult.NetworkBodyError)
+                        is WebResponse.ExceptionError -> emit(
+                            ParserResult.SourceError
+                        )
+                        is WebResponse.StatusError -> {
+                            if (response.code == 403) {
+                                emit(
+                                    ParserResult.ScrapeProtectionError(queryUrl)
+                                )
+                            } else {
+                                emit(
+                                    ParserResult.SourceError
+                                )
+                            }
+                        }
 
-                                plugin.download.internalParser.link.regexps.forEach {
-                                    val linksFound = parseList(it, source, plugin.url)
-                                    innerSource.addAll(linksFound)
-                                    if (plugin.download.internalParser.link.regexUse == "first") {
-                                        // if I wanted to get only the first matches I can exit the
-                                        // loop if I have
-                                        // results
-                                        if (linksFound.isNotEmpty()) return@forEach
+                        is WebResponse.Success -> {
+                            /** Parsing data with the internal link mechanism */
+                            val source = response.source
+                            when {
+                                plugin.download.internalParser != null -> {
+                                    emit(ParserResult.SearchStarted(-1))
+                                    val innerSource = mutableListOf<String>()
+
+                                    plugin.download.internalParser.link.regexps.forEach {
+                                        val linksFound = parseList(it, source, plugin.url)
+                                        innerSource.addAll(linksFound)
+                                        if (plugin.download.internalParser.link.regexUse == "first") {
+                                            // if I wanted to get only the first matches I can exit the
+                                            // loop if I have
+                                            // results
+                                            if (linksFound.isNotEmpty()) return@forEach
+                                        }
+                                    }
+
+                                    emit(ParserResult.SearchStarted(innerSource.size))
+                                    if (innerSource.isNotEmpty()) {
+                                        for (link in innerSource) {
+                                            // parse every page linked to the results
+                                            val s = getSource(link)
+                                            if (s.isNotBlank()) {
+                                                val scrapedItem =
+                                                    parseInnerLink(
+                                                        plugin.download.regexes,
+                                                        s,
+                                                        link,
+                                                        plugin.url,
+                                                    )
+                                                emit(ParserResult.SingleResult(scrapedItem))
+                                            } else {
+                                                emit(ParserResult.SourceError)
+                                            }
+                                        }
+                                        emit(ParserResult.SearchFinished)
+                                    } else {
+                                        emit(ParserResult.EmptyInnerLinks)
                                     }
                                 }
-
-                                emit(ParserResult.SearchStarted(innerSource.size))
-                                if (innerSource.isNotEmpty()) {
-                                    for (link in innerSource) {
-                                        // parse every page linked to the results
-                                        val s = getSource(link)
-                                        if (s.isNotBlank()) {
+                                plugin.download.directParser != null -> {
+                                    emit(
+                                        ParserResult.Results(
+                                            parseDirect(
+                                                plugin.download.directParser,
+                                                plugin.download.regexes,
+                                                source,
+                                                plugin.url,
+                                            )
+                                        )
+                                    )
+                                    emit(ParserResult.SearchFinished)
+                                }
+                                plugin.download.tableLink != null -> {
+                                    emit(
+                                        ParserResult.Results(
+                                            parseTable(
+                                                plugin.download.tableLink,
+                                                plugin.download.regexes,
+                                                source,
+                                                plugin.url,
+                                            )
+                                        )
+                                    )
+                                    emit(ParserResult.SearchFinished)
+                                }
+                                plugin.download.indirectTableLink != null -> {
+                                    emit(ParserResult.SearchStarted(-1))
+                                    val links =
+                                        parseIndirectTable(
+                                            plugin.download.indirectTableLink,
+                                            plugin.download.regexes,
+                                            source,
+                                            plugin.url,
+                                        )
+                                    emit(ParserResult.SearchStarted(links.size))
+                                    links.forEach {
+                                        val itemSource = getSource(it)
+                                        if (itemSource.isNotBlank()) {
                                             val scrapedItem =
                                                 parseInnerLink(
                                                     plugin.download.regexes,
-                                                    s,
-                                                    link,
+                                                    itemSource,
+                                                    it,
                                                     plugin.url,
                                                 )
                                             emit(ParserResult.SingleResult(scrapedItem))
@@ -102,64 +182,9 @@ class Parser(
                                         }
                                     }
                                     emit(ParserResult.SearchFinished)
-                                } else {
-                                    emit(ParserResult.EmptyInnerLinks)
                                 }
+                                else -> emit(ParserResult.MissingImplementationError)
                             }
-                            plugin.download.directParser != null -> {
-                                emit(
-                                    ParserResult.Results(
-                                        parseDirect(
-                                            plugin.download.directParser,
-                                            plugin.download.regexes,
-                                            source,
-                                            plugin.url,
-                                        )
-                                    )
-                                )
-                                emit(ParserResult.SearchFinished)
-                            }
-                            plugin.download.tableLink != null -> {
-                                emit(
-                                    ParserResult.Results(
-                                        parseTable(
-                                            plugin.download.tableLink,
-                                            plugin.download.regexes,
-                                            source,
-                                            plugin.url,
-                                        )
-                                    )
-                                )
-                                emit(ParserResult.SearchFinished)
-                            }
-                            plugin.download.indirectTableLink != null -> {
-                                emit(ParserResult.SearchStarted(-1))
-                                val links =
-                                    parseIndirectTable(
-                                        plugin.download.indirectTableLink,
-                                        plugin.download.regexes,
-                                        source,
-                                        plugin.url,
-                                    )
-                                emit(ParserResult.SearchStarted(links.size))
-                                links.forEach {
-                                    val itemSource = getSource(it)
-                                    if (itemSource.isNotBlank()) {
-                                        val scrapedItem =
-                                            parseInnerLink(
-                                                plugin.download.regexes,
-                                                itemSource,
-                                                it,
-                                                plugin.url,
-                                            )
-                                        emit(ParserResult.SingleResult(scrapedItem))
-                                    } else {
-                                        emit(ParserResult.SourceError)
-                                    }
-                                }
-                                emit(ParserResult.SearchFinished)
-                            }
-                            else -> emit(ParserResult.MissingImplementationError)
                         }
                     }
                 }
@@ -507,6 +532,35 @@ class Parser(
             }
         }
 
+    private suspend fun getSourceResult(url: String): WebResponse =
+        withContext(Dispatchers.IO) {
+            val request: Request =
+                Request.Builder()
+                    .url(url)
+                    .header(
+                        "User-Agent",
+                        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36",
+                    )
+                    .build()
+
+            try {
+                val response = getClient().newCall(request).execute()
+                if (response.isSuccessful) {
+                    val text = response.body?.string()
+                    if (text.isNullOrBlank()) {
+                        return@withContext WebResponse.EmptyBodyError
+                    }
+                    return@withContext WebResponse.Success(text)
+                } else {
+                    return@withContext WebResponse.StatusError(response.code)
+                }
+            } catch (e: Exception) {
+                // todo: checking different exceptions can help debugging the issue
+                Timber.e("Error getting source while parsing link: ${e.message} ")
+                return@withContext WebResponse.ExceptionError(e)
+            }
+        }
+
     private fun replaceData(
         oldUrl: String,
         url: String,
@@ -812,6 +866,8 @@ sealed class ParserResult {
     data object MissingQuery : ParserResult()
 
     data object NetworkBodyError : ParserResult()
+
+    data class ScrapeProtectionError(val url: String) : ParserResult()
 
     data object EmptyInnerLinks : ParserResult()
 
