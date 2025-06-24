@@ -1,6 +1,6 @@
 [versions]
 aboutlibraries = "11.2.3"
-android_gradle_plugin = "8.10.1"
+android_gradle_plugin = "8.11.0"
 appcompat = "1.7.1"
 constraint_layout = "2.2.1"
 coil = "2.7.0"
