@@ -130,7 +130,11 @@ class ForegroundTorrentService : LifecycleService() {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
                 startForeground(SUMMARY_ID, summaryBuilder.build())
             } else {
-                startForeground(SUMMARY_ID, summaryBuilder.build(), FOREGROUND_SERVICE_TYPE_DATA_SYNC)
+                startForeground(
+                    SUMMARY_ID,
+                    summaryBuilder.build(),
+                    FOREGROUND_SERVICE_TYPE_DATA_SYNC,
+                )
             }
         } catch (ex: Exception) {
             Timber.e("Error starting foreground service: ${ex.message}")

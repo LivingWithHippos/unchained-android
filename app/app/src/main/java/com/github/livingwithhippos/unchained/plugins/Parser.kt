@@ -27,8 +27,11 @@ import timber.log.Timber
 
 sealed class WebResponse {
     data class Success(val source: String) : WebResponse()
+
     data object EmptyBodyError : WebResponse()
+
     data class ExceptionError(val e: Exception) : WebResponse()
+
     data class StatusError(val code: Int) : WebResponse()
 }
 
@@ -73,18 +76,12 @@ class Parser(
                     val response = getSourceResult(queryUrl)
                     when (response) {
                         is WebResponse.EmptyBodyError -> emit(ParserResult.NetworkBodyError)
-                        is WebResponse.ExceptionError -> emit(
-                            ParserResult.SourceError
-                        )
+                        is WebResponse.ExceptionError -> emit(ParserResult.SourceError)
                         is WebResponse.StatusError -> {
                             if (response.code == 403) {
-                                emit(
-                                    ParserResult.ScrapeProtectionError(queryUrl)
-                                )
+                                emit(ParserResult.ScrapeProtectionError(queryUrl))
                             } else {
-                                emit(
-                                    ParserResult.SourceError
-                                )
+                                emit(ParserResult.SourceError)
                             }
                         }
 
@@ -99,8 +96,11 @@ class Parser(
                                     plugin.download.internalParser.link.regexps.forEach {
                                         val linksFound = parseList(it, source, plugin.url)
                                         innerSource.addAll(linksFound)
-                                        if (plugin.download.internalParser.link.regexUse == "first") {
-                                            // if I wanted to get only the first matches I can exit the
+                                        if (
+                                            plugin.download.internalParser.link.regexUse == "first"
+                                        ) {
+                                            // if I wanted to get only the first matches I can exit
+                                            // the
                                             // loop if I have
                                             // results
                                             if (linksFound.isNotEmpty()) return@forEach
