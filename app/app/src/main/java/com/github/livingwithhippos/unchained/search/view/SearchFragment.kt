@@ -235,6 +235,12 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
                         binding.loadingCircle.isIndeterminate = false
                         binding.loadingCircle.progress = 100
                     }
+                    is ParserResult.ScrapeProtectionError -> {
+                        context?.showToast(R.string.connection_error)
+                        searchAdapter.submitList(emptyList())
+                        binding.loadingCircle.isIndeterminate = false
+                        binding.loadingCircle.progress = 100
+                    }
                     else -> {
                         Timber.d("Unexpected result: $result")
                         searchAdapter.submitList(emptyList())
