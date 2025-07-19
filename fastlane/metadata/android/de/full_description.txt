@@ -1,0 +1,18 @@
+<i>Unchained für Android</i> ist eine kostenlose Open-Source-App, die mit Real Debrid APIs verbunden ist. Vergessen Sie Ihren Computer und entfesseln Sie die Leistungsfähigkeit von Real Debrid auf dem Handy! Melden Sie sich einfach bei Ihrem Konto an, und Sie sind bereit.
+
+<b>Warum Unchained verwenden?</b>
+
+* Download von allen verfügbaren Hostern
+* Torrent-Dateien und Magnetlinks hinzufügen
+* Behalte dein Abonnement unter Kontrolle
+* Dateien suchen
+* Medien an Kodi . senden
+* kostenlos und ohne Werbung
+
+<b>Hinweis:</b> Diese App erfordert ein bezahltes Real Debrid-Konto, um zu funktionieren.
+
+<b>Erläuterung der Berechtigungen:</b>
+
+* Netzwerk, Netzwerkstatus: mit Real-Debrid interagieren, Dateien suchen
+* Vordergrunddienst, Vibration: Torrent-Statusbenachrichtigung
+* Zugriff auf den Speicher (nur einige Geräte): Laden Sie Dateien direkt aus der App herunter
