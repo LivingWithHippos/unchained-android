@@ -20,13 +20,3 @@ data class NetworkError(val error: Int, val message: String) : UnchainedNetworkE
 data class ApiConversionError(val error: Int) : UnchainedNetworkException
 
 interface UnchainedNetworkException
-
-/** Helper function to quickly debug network errors. Will output them using Timber. */
-fun UnchainedNetworkException.printError() {
-    when (this) {
-        is APIError -> Timber.d(errorMap[this.errorCode ?: -1])
-        is EmptyBodyError -> Timber.d("Empty Body error, return code: ${this.returnCode}")
-        is NetworkError -> Timber.d("Network error, message: ${this.message}")
-        is ApiConversionError -> Timber.d("Api Conversion error, error: ${this.error}")
-    }
-}
