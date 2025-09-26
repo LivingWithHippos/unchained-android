@@ -187,9 +187,9 @@ dependencies {
     implementation(libs.retrofit.moshi)
     implementation(libs.retrofit.scalars)
 
-    implementation(libs.okhttp3.runtime)
-    implementation(libs.okhttp3.logging)
-    implementation(libs.okhttp3.doh)
+    implementation(libs.okhttp.runtime)
+    implementation(libs.okhttp.logging)
+    implementation(libs.okhttp.doh)
 
     implementation(libs.navigation.runtime)
     implementation(libs.navigation.fragment)
