@@ -38,12 +38,12 @@ kapt { correctErrorTypes = true }
 
 android {
     namespace = "com.github.livingwithhippos.unchained"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.github.livingwithhippos.unchained"
-        minSdk = 22
-        targetSdk = 35
+        minSdk = 23
+        targetSdk = 36
         versionCode = 52
         versionName = "1.3.8"
 
