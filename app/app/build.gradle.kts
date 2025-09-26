@@ -42,7 +42,7 @@ android {
 
     defaultConfig {
         applicationId = "com.github.livingwithhippos.unchained"
-        minSdk = 23
+        minSdk = 27
         targetSdk = 36
         versionCode = 52
         versionName = "1.3.8"
