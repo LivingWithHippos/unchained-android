@@ -1,5 +1,6 @@
 package com.github.livingwithhippos.unchained.utilities.extension
 
+import android.R.attr.colorPrimary
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.Rect
@@ -340,7 +341,7 @@ fun SwipeRefreshLayout.setRefreshThemeColor(themed: Boolean) {
         val arrowColor = typedValue.data
         // this function accept a number of colors, the refresh indicator will rotate between them.
         setColorSchemeColors(arrowColor)
-        theme.resolveAttribute(com.google.android.material.R.attr.colorPrimary, typedValue, true)
+        theme.resolveAttribute(colorPrimary, typedValue, true)
         // background color
         val backgroundColor = typedValue.data
         setProgressBackgroundColorSchemeColor(backgroundColor)

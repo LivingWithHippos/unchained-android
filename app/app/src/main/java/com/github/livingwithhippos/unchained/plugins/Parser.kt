@@ -760,10 +760,10 @@ class Parser(
         if (containerClass != null) {
             if (parser.entryClass != null)
                 entries.addAll(containerClass.getElementsByClass(parser.entryClass))
-            else entries.addAll(containerClass.getElementsByTag(parser.entryTag))
+            else if (parser.entryTag != null) entries.addAll(containerClass.getElementsByTag(parser.entryTag))
         } else {
             if (parser.entryClass != null) entries.addAll(doc.getElementsByClass(parser.entryClass))
-            else entries.addAll(doc.getElementsByTag(parser.entryTag))
+            else if (parser.entryTag != null) entries.addAll(doc.getElementsByTag(parser.entryTag))
         }
 
         for (entry in entries) {

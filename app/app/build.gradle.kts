@@ -109,9 +109,9 @@ android {
                 apiProperties.getOrDefault(
                     "COUNTLY_APP_KEY",
                     "\"" +
-                        (System.getenv("COUNTLY_APP_KEY")
-                            ?: "pDJz4WrY9XeBotXAaL9MYrraSwZNyDqfAPy8p38c") +
-                        "\"",
+                            (System.getenv("COUNTLY_APP_KEY")
+                                ?: "pDJz4WrY9XeBotXAaL9MYrraSwZNyDqfAPy8p38c") +
+                            "\"",
                 ) as String,
             )
 
@@ -126,7 +126,6 @@ android {
         }
 
         release {
-            ndk.debugSymbolLevel = "FULL"
             signingConfig = signingConfigs.getByName("release")
             isDebuggable = false
             isMinifyEnabled = true
@@ -138,10 +137,12 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
-    kotlinOptions { jvmTarget = "17" }
+    kotlinOptions {
+        jvmTarget = "11"
+    }
     buildFeatures {
         dataBinding = true
         buildConfig = true
@@ -179,6 +180,7 @@ dependencies {
     // https://github.com/FasterXML/jackson-modules-base
     // implementation(libs.stax)
     implementation(libs.jakarta.xmlapi)
+    implementation(libs.documentfile)
 
     kapt(libs.moshi.kapt)
     implementation(libs.moshi.runtime)
