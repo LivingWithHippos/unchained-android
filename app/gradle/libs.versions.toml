@@ -1,6 +1,5 @@
 [versions]
-aboutlibraries = "11.2.3"
-android_gradle_plugin = "8.11.0"
+android_gradle_plugin = "8.13.0"
 appcompat = "1.7.1"
 constraint_layout = "2.2.1"
 coil = "2.7.0"
@@ -27,6 +26,7 @@ lifecycle = "2.9.1"
 material_three = "1.12.0"
 moshi = "1.15.2"
 navigation = "2.9.0"
+# 5.1.0 has some issues
 okhttp = "4.12.0"
 paging = "3.3.6"
 protobuf = "4.31.1"
@@ -52,8 +52,6 @@ work = "2.10.1"
 [libraries]
 protobuf_core = { group = "com.google.protobuf", name = "protoc", version.ref = "protobuf" }
 protobuf_javaLite = { group = "com.google.protobuf", name = "protobuf-javalite", version.ref = "protobuf" }
-about_core = { group = "com.mikepenz", name = "aboutlibraries-core", version.ref = "aboutlibraries" }
-about_ui = { group = "com.mikepenz", name = "aboutlibraries", version.ref = "aboutlibraries" }
 android_appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 coil = { group = "io.coil-kt", name = "coil", version.ref = "coil" }
 android_constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraint_layout" }
