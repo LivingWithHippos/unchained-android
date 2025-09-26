@@ -1,9 +1,7 @@
 package com.github.livingwithhippos.unchained.data.model
 
-import com.github.livingwithhippos.unchained.utilities.errorMap
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import timber.log.Timber
 
 @JsonClass(generateAdapter = true)
 data class APIError(
