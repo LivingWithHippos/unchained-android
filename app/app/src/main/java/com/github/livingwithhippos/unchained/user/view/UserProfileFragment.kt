@@ -14,6 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
+import com.github.livingwithhippos.unchained.data.model.User
 import com.github.livingwithhippos.unchained.databinding.FragmentUserProfileBinding
 import com.github.livingwithhippos.unchained.settings.view.SettingsActivity
 import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Companion.KEY_REFERRAL_ASKED
@@ -21,6 +22,7 @@ import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Comp
 import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationState
 import com.github.livingwithhippos.unchained.utilities.ACCOUNT_LINK
 import com.github.livingwithhippos.unchained.utilities.REFERRAL_LINK
+import com.github.livingwithhippos.unchained.utilities.extension.loadImage
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
@@ -33,28 +35,45 @@ class UserProfileFragment : UnchainedFragment() {
 
     @Inject lateinit var preferences: SharedPreferences
 
+    private var _binding: FragmentUserProfileBinding? = null
+    // This property is only valid between onCreateView and onDestroyView.
+    private val binding get() = _binding!!
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
         // Inflate the layout for this fragment
-        val userBinding = FragmentUserProfileBinding.inflate(inflater, container, false)
+        _binding = FragmentUserProfileBinding.inflate(inflater, container, false)
+        val view = binding.root
 
-        val user = activityViewModel.getCachedUser()
+        val user: User? = activityViewModel.getCachedUser()
         if (user == null) {
             activityViewModel.fetchUser()
         } else {
-            userBinding.user = user
+            populateUserView(user)
         }
-        lifecycleScope.launch { userBinding.privateToken = activityViewModel.isTokenPrivate() }
+        lifecycleScope.launch {
+            if(activityViewModel.isTokenPrivate()) {
+                binding.tvLoginDescription.text = getString(R.string.login_type_private)
+            } else {
+                binding.tvLoginDescription.text = getString(R.string.login_type_open)
+            }
+        }
 
         activityViewModel.userLiveData.observe(viewLifecycleOwner) {
-            userBinding.user = it.peekContent()
-            lifecycleScope.launch { userBinding.privateToken = activityViewModel.isTokenPrivate() }
+            populateUserView(it.peekContent())
+            lifecycleScope.launch {
+                if(activityViewModel.isTokenPrivate()) {
+                    binding.tvLoginDescription.text = getString(R.string.login_type_private)
+                } else {
+                    binding.tvLoginDescription.text = getString(R.string.login_type_open)
+                }
+            }
         }
 
-        userBinding.bAccount.setOnClickListener {
+        binding.bAccount.setOnClickListener {
             // if we never asked, show a dialog
             if (!preferences.getBoolean(KEY_REFERRAL_ASKED, false)) {
                 // set asked as true
@@ -119,7 +138,7 @@ class UserProfileFragment : UnchainedFragment() {
             }
         }
 
-        userBinding.bSettings.setOnClickListener {
+        binding.bSettings.setOnClickListener {
             val intent = Intent(requireContext(), SettingsActivity::class.java)
             startActivity(intent)
         }
@@ -134,6 +153,22 @@ class UserProfileFragment : UnchainedFragment() {
             activityViewModel.requireNotificationPermissions()
         }
 
-        return userBinding.root
+        return view
+    }
+
+    fun populateUserView(user: User?) {
+        user?.let {
+            binding.tvName.text = it.username
+            binding.tvMail.text = it.email
+            binding.ivProfilePic.loadImage(it.avatar)
+            if (it.premium > 0) {
+                binding.tvPremium.text = getString(R.string.premium)
+            } else {
+                binding.tvPremium.text = getString(R.string.not_premium)
+            }
+            binding.tvPremiumDays.text = getString(R.string.premium_days_format, it.premium / 60 / 60 / 24)
+            binding.tvPoints.text = getString(R.string.premium_points_format, it.points)
+            binding.pointsBar.setProgressCompat(it.points, true)
+        }
     }
 }

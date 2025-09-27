@@ -2,17 +2,6 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <data>
-
-        <variable
-            name="user"
-            type="com.github.livingwithhippos.unchained.data.model.User" />
-
-        <variable
-            name="privateToken"
-            type="Boolean" />
-    </data>
-
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -33,7 +22,6 @@
                 android:layout_marginEnd="20dp"
                 android:ellipsize="end"
                 android:maxLines="2"
-                android:text="@{user.username, default=`User Name`}"
                 android:textAlignment="viewStart"
                 app:layout_constraintEnd_toStartOf="@id/ivProfilePic"
                 app:layout_constraintStart_toStartOf="@id/cvPremium"
@@ -48,7 +36,6 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:focusable="false"
-                android:text="@{user.email, default=`Email@Address`}"
                 android:textAlignment="viewStart"
                 app:layout_constraintEnd_toStartOf="@id/ivProfilePic"
                 app:layout_constraintStart_toStartOf="@id/tvName"
@@ -60,7 +47,6 @@
                 android:layout_height="70dp"
                 android:contentDescription="@string/user_avatar"
                 android:src="@drawable/icon_arrows"
-                app:imageURL="@{user.avatar}"
                 app:layout_constraintEnd_toEndOf="@id/cvPremium"
                 app:layout_constraintTop_toTopOf="@id/tvName" />
 
@@ -92,7 +78,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:text="@{user.premium > 0 ? @string/premium : @string/not_premium, default=`Premium`}"
                         android:textAllCaps="true"
                         android:textStyle="bold"
                         app:layout_constraintStart_toStartOf="parent"
@@ -104,13 +89,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:text="@{@string/premium_days_format(user.premium/60/60/24), default=`Remaining days: 23`}"
                         app:layout_constraintStart_toStartOf="@id/tvPremium"
                         app:layout_constraintTop_toBottomOf="@id/tvPremium" />
 
                     <com.google.android.material.progressindicator.LinearProgressIndicator
                         android:id="@+id/pointsBar"
-                        progressCompat="@{user.points}"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
@@ -130,7 +113,6 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
                         android:textAlignment="center"
-                        android:text="@{@string/premium_points_format(user.points), default=`Premium Points: 750/1000`}"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -150,7 +132,6 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="10dp"
                 android:autoLink="web"
-                android:text="@{privateToken == true ? @string/login_type_private : @string/login_type_open, default=@string/login_type_private }"
                 android:textAlignment="center"
                 app:layout_constraintBottom_toTopOf="@+id/divider"
                 app:layout_constraintEnd_toEndOf="@id/cvPremium"
