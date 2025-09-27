@@ -53,6 +53,10 @@ class TorrentProcessingFragment : UnchainedFragment(), TorrentContentListener {
     private val viewModel: TorrentProcessingViewModel by
         hiltNavGraphViewModels(R.id.navigation_lists)
 
+    private var _binding: FragmentTorrentProcessingBinding? = null
+    // This property is only valid between onCreateView and onDestroyView.
+    private val binding get() = _binding!!
+
     /** Save the torrent/magnet has when loaded */
     private var torrentHash: String? = null
 
@@ -63,7 +67,7 @@ class TorrentProcessingFragment : UnchainedFragment(), TorrentContentListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        val binding = FragmentTorrentProcessingBinding.inflate(inflater, container, false)
+        _binding = FragmentTorrentProcessingBinding.inflate(inflater, container, false)
 
         setup(binding)
 
