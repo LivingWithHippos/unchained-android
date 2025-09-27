@@ -3,32 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <data>
-
-        <import type="android.view.View" />
-
-        <import type="java.util.List" />
-
-        <import type="java.util.Map" />
-
-        <variable
-            name="loadingStatusList"
-            type="List&lt;String>" />
-
-        <variable
-            name="statusTranslation"
-            type="Map&lt;String, String>" />
-
-        <variable
-            name="torrent"
-            type="com.github.livingwithhippos.unchained.data.model.TorrentItem" />
-
-        <variable
-            name="listener"
-            type="com.github.livingwithhippos.unchained.torrentdetails.view.TorrentDetailsListener" />
-
-    </data>
-
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -52,7 +26,7 @@
                 android:textStyle="bold"
                 android:ellipsize="end"
                 android:maxLines="3"
-                android:text="@{torrent.filename, default=`File Name`}" />
+                />
 
 
             <com.google.android.flexbox.FlexboxLayout
@@ -76,7 +50,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:contentDescription="@string/share_magnet"
-                        android:onClick="@{() -> listener.onShareMagnetClick()}"
                         app:srcCompat="@drawable/icon_share" />
 
                     <TextView
@@ -101,7 +74,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:contentDescription="@string/copy_magnet"
-                        android:onClick="@{() -> listener.onCopyMagnetClick()}"
                         app:srcCompat="@drawable/icon_open_external" />
 
                     <TextView
@@ -179,30 +151,29 @@
                         android:orientation="horizontal">
 
                         <TextView
+                            android:id="@+id/tvStatus"
                             android:textAppearance="?attr/textAppearanceBodyMedium"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="@{statusTranslation[torrent.status], default=`Queued`}"
                             android:textAlignment="center"
                             android:textStyle="bold" />
 
                         <TextView
+                            android:id="@+id/tvProgressPercent"
                             android:textAppearance="?attr/textAppearanceBodyMedium"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="@{@string/percent_format(String.valueOf(torrent.progress)), default=`75 %`}"
                             android:textAlignment="center"
                             android:textStyle="bold" />
 
                         <TextView
+                            android:id="@+id/tvFileSize"
                             android:textAppearance="?attr/textAppearanceBodyMedium"
-                            fileSize="@{torrent.originalBytes}"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="12215,84 MB"
                             android:textAlignment="center"
                             android:textStyle="bold" />
                     </LinearLayout>
@@ -259,12 +230,11 @@
                         android:orientation="horizontal">
 
                         <TextView
+                            android:id="@+id/tvBytes"
                             android:textAppearance="?attr/textAppearanceBodyMedium"
-                            fileSize="@{torrent.bytes}"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="123 MB"
                             android:textAlignment="center"
                             android:textStyle="bold" />
 
@@ -274,7 +244,6 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="14"
                             android:textAlignment="center"
                             android:textStyle="bold" />
 
@@ -284,7 +253,6 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="3"
                             android:textAlignment="center"
                             android:textStyle="bold" />
                     </LinearLayout>
@@ -301,7 +269,6 @@
                 android:layout_margin="20dp"
                 android:checkable="false"
                 android:clickable="false"
-                android:visibility="@{torrent.status.equalsIgnoreCase(`downloading`) ? View.VISIBLE : View.GONE}"
                 app:cardCornerRadius="10dp"
                 app:cardElevation="5dp"
                 app:layout_constraintWidth_max="400dp">
@@ -327,15 +294,12 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="5dp"
-                        android:text="@{@string/percent_format(String.valueOf(torrent.progress)), default=`90%`}"
-                        android:visibility="@{torrent.progress >=0 &amp;&amp; torrent.progress &lt;100 ? View.VISIBLE : View.GONE, default=visible}"
                         app:layout_constraintBottom_toBottomOf="@+id/tvDownloadOverline"
                         app:layout_constraintStart_toEndOf="@id/tvDownloadOverline" />
 
                     <TextView
                         android:id="@+id/tvSpeed"
                         android:textAppearance="?attr/textAppearanceBodyMedium"
-                        downloadSpeed="@{torrent.speed}"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:text="%1$d kb/s"
@@ -353,8 +317,6 @@
                         android:textAppearance="?attr/textAppearanceLabelSmall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@{torrent.seeders == null ? `` : @plurals/seeders_format(torrent.seeders, torrent.seeders), default=`%1$d seeders`}"
-                        android:visibility="@{torrent.seeders == null ? View.GONE : View.VISIBLE}"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="@id/tvSpeed"
                         app:layout_constraintTop_toBottomOf="@+id/tvSpeed" />
@@ -375,7 +337,6 @@
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="10dp"
                             android:indeterminate="false"
-                            floatProgress="@{torrent.progress, default=60}"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
@@ -395,10 +356,8 @@
                 android:layout_marginBottom="20dp"
                 android:minWidth="150dp"
                 android:minLines="3"
-                android:onClick="@{() -> listener.onDownloadClick(torrent)}"
                 android:text="@string/pass_to_download"
                 android:textAllCaps="true"
-                android:visibility="@{torrent.status.equalsIgnoreCase(`downloaded`) ? View.VISIBLE : View.GONE}"
                 app:icon="@drawable/icon_open_external"
                 app:layout_constraintEnd_toStartOf="@id/bCopy"
                 app:layout_constraintStart_toStartOf="@id/cvDetails"

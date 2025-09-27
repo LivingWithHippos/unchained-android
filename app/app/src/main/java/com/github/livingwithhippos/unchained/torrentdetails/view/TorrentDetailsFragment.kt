@@ -34,6 +34,7 @@ import com.github.livingwithhippos.unchained.utilities.EventObserver
 import com.github.livingwithhippos.unchained.utilities.Node
 import com.github.livingwithhippos.unchained.utilities.extension.copyToClipboard
 import com.github.livingwithhippos.unchained.utilities.extension.getApiErrorMessage
+import com.github.livingwithhippos.unchained.utilities.extension.getFileSizeString
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.github.livingwithhippos.unchained.utilities.loadingStatusList
 import dagger.hilt.android.AndroidEntryPoint
@@ -43,18 +44,23 @@ import dagger.hilt.android.AndroidEntryPoint
  * updating it.
  */
 @AndroidEntryPoint
-class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
+class TorrentDetailsFragment : UnchainedFragment() {
 
     private val viewModel: TorrentDetailsViewModel by viewModels()
 
     private val args: TorrentDetailsFragmentArgs by navArgs()
+
+    private var _binding: FragmentTorrentDetailsBinding? = null
+
+    // This property is only valid between onCreateView and onDestroyView.
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        val torrentBinding = FragmentTorrentDetailsBinding.inflate(inflater, container, false)
+        _binding = FragmentTorrentDetailsBinding.inflate(inflater, container, false)
 
         val menuHost: MenuHost = requireActivity()
 
@@ -72,6 +78,7 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
                             dialog.show(parentFragmentManager, "DeleteDialogFragment")
                             true
                         }
+
                         R.id.reselect -> {
                             val link = "magnet:?xt=urn:btih:${args.item.hash}"
                             val action =
@@ -82,6 +89,7 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
                             findNavController().navigate(action)
                             true
                         }
+
                         else -> false
                     }
                 }
@@ -105,22 +113,64 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
                 "dead" to getString(R.string.dead),
             )
 
-        torrentBinding.loadingStatusList = loadingStatusList
-        torrentBinding.statusTranslation = statusTranslation
-        torrentBinding.listener = this
+        binding.tvStatus.text = statusTranslation[args.item.status] ?: args.item.status
+        binding.fabShareMagnet.setOnClickListener { onShareMagnetClick() }
+        binding.fabCopyMagnet.setOnClickListener { onCopyMagnetClick() }
+        binding.bDownload.setOnClickListener { onDownloadClick(args.item) }
 
         val adapter = TorrentContentFilesAdapter()
-        torrentBinding.rvFileList.adapter = adapter
+        binding.rvFileList.adapter = adapter
 
         viewModel.torrentLiveData.observe(
             viewLifecycleOwner,
             EventObserver {
                 it?.let { torrent ->
-                    torrentBinding.torrent = torrent
                     val selectedFiles: Int =
                         torrent.files?.count { file -> file.selected == 1 } ?: 0
-                    torrentBinding.tvSelectedFilesNumber.text = selectedFiles.toString()
-                    torrentBinding.tvTotalFiles.text = (torrent.files?.count() ?: 0).toString()
+                    binding.tvSelectedFilesNumber.text = selectedFiles.toString()
+                    binding.tvTotalFiles.text = (torrent.files?.count() ?: 0).toString()
+                    binding.tvName.text = torrent.filename
+                    binding.tvProgressPercent.text =
+                        getString(R.string.percent_format, torrent.progress)
+                    binding.tvProgress.text = getString(R.string.percent_format, torrent.progress)
+                    if (torrent.progress >= 0 && torrent.progress < 100) {
+                        binding.tvProgress.visibility = View.VISIBLE
+                    } else {
+                        binding.tvProgress.visibility = View.GONE
+                    }
+                    if (torrent.speed == null) {
+                        binding.tvSpeed.text = ""
+                    } else {
+                        binding.tvSpeed.text = when (torrent.speed.toString().length) {
+                            in 0..3 -> getString(R.string.speed_format_b, torrent.speed)
+                            in 4..6 -> getString(R.string.speed_format_kb, torrent.speed / 1000)
+                            in 7..15 -> getString(R.string.speed_format_mb, torrent.speed / 1000000)
+                            else -> getString(R.string.speed_error)
+                        }
+                    }
+                    if (torrent.seeders == null) {
+                        binding.tvSeeders.visibility = View.GONE
+                    } else {
+                        binding.tvSeeders.text = resources.getQuantityString(
+                            R.plurals.seeders_format,
+                            torrent.seeders,
+                            torrent.seeders
+                        )
+                        binding.tvSeeders.visibility = View.VISIBLE
+                    }
+                    binding.pbDownload.setProgressCompat(torrent.progress.toInt(), true)
+                    if (torrent.status.equals("downloaded", true)) {
+                        binding.bDownload.visibility = View.VISIBLE
+                    } else {
+                        binding.bDownload.visibility = View.GONE
+                    }
+                    context?.let { ctx ->
+                        torrent.originalBytes?.let { size ->
+                            binding.tvFileSize.text = getFileSizeString(ctx, size)
+                        }
+                        binding.tvFileSize.text = getFileSizeString(ctx, torrent.bytes)
+                    }
+                    binding.cvDownloadDetails.visibility = if (torrent.status.equals("downloading", true)) View.VISIBLE else View.GONE
 
                     // Data should not change between updates so we should just populate it once
                     if (adapter.itemCount == 0) {
@@ -135,7 +185,7 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
                                 if (!skippedFirst) skippedFirst = true else filesList.add(item)
                             }
                             adapter.submitList(filesList)
-                            torrentBinding.cvSelectedTorrentFiles.visibility = View.VISIBLE
+                            binding.cvSelectedTorrentFiles.visibility = View.VISIBLE
                         }
                     }
                 }
@@ -178,10 +228,12 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
                         is APIError -> {
                             context?.let { c -> c.showToast(c.getApiErrorMessage(error.errorCode)) }
                         }
+
                         is EmptyBodyError -> {}
                         is NetworkError -> {
                             context?.showToast(R.string.network_error)
                         }
+
                         is ApiConversionError -> {
                             context?.showToast(R.string.parsing_error)
                         }
@@ -190,18 +242,16 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
             },
         )
 
-        torrentBinding.torrent = args.item
-
         // maybe load and save the latest retrieved one in the view-model?
         if (loadingStatusList.contains(args.item.status)) viewModel.pollTorrentStatus(args.item.id)
         else {
             viewModel.getFullTorrentInfo(args.item.id)
         }
 
-        return torrentBinding.root
+        return binding.root
     }
 
-    override fun onDownloadClick(item: TorrentItem) {
+    fun onDownloadClick(item: TorrentItem) {
         if (item.links.size > 1) {
             val action =
                 TorrentDetailsFragmentDirections.actionTorrentDetailsToTorrentFolder(
@@ -215,29 +265,19 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentDetailsListener {
         }
     }
 
-    override fun onDeleteClick(id: String) {
+    fun onDeleteClick(id: String) {
         viewModel.deleteTorrent(id)
     }
 
-    override fun onShareMagnetClick() {
+    fun onShareMagnetClick() {
         val shareIntent = Intent(Intent.ACTION_SEND)
         shareIntent.type = "text/plain"
         shareIntent.putExtra(Intent.EXTRA_TEXT, "magnet:?xt=urn:btih:${args.item.hash}")
         startActivity(Intent.createChooser(shareIntent, getString(R.string.share_with)))
     }
 
-    override fun onCopyMagnetClick() {
+    fun onCopyMagnetClick() {
         copyToClipboard("Real-Debrid Magnet", "magnet:?xt=urn:btih:${args.item.hash}")
         context?.showToast(R.string.link_copied)
     }
-}
-
-interface TorrentDetailsListener {
-    fun onDownloadClick(item: TorrentItem)
-
-    fun onDeleteClick(id: String)
-
-    fun onShareMagnetClick()
-
-    fun onCopyMagnetClick()
 }

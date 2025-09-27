@@ -234,6 +234,24 @@ fun TextView.setFileSize(size: Long) {
         }
 }
 
+fun getFileSizeString(context: Context, size: Long): String {
+    return when {
+            size < 1048575 ->
+                context.getString(R.string.file_size_format_kb, size.toFloat() / 1024)
+            size < 1073741823 ->
+                context.getString(R.string.file_size_format_mb, size.toFloat() / 1024 / 1024)
+            // ~9 TB, for now it's more probable that a wrong value is being passed if it's over
+            // this
+            // value
+            size < 9999999999999 ->
+                context.getString(
+                    R.string.file_size_format_gb,
+                    size.toFloat() / 1024 / 1024 / 1024,
+                )
+            // todo: shorten this
+            else -> context.getString(R.string.size_error)
+        }
+    }
 /**
  * This function sets a SpannableStringBuilder as the TextView text.
  *
