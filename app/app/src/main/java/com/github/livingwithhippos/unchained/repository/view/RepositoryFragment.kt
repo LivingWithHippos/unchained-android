@@ -36,7 +36,8 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
     private val viewModel: RepositoryViewModel by activityViewModels()
 
     private var _binding: FragmentRepositoryBinding? = null
-    private val binding get() = _binding!!
+    private val binding
+        get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -102,9 +103,9 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
                     is PluginRepositoryEvent.MultipleInstallation -> {
                         val failures =
                             it.downloadErrors +
-                                    it.installResults.count { result ->
-                                        (result is InstallResult.Installed).not()
-                                    }
+                                it.installResults.count { result ->
+                                    (result is InstallResult.Installed).not()
+                                }
                         val success =
                             it.installResults.count { result -> result is InstallResult.Installed }
                         if (failures == 0) {

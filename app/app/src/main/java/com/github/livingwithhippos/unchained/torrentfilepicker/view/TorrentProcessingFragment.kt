@@ -51,12 +51,13 @@ class TorrentProcessingFragment : UnchainedFragment(), TorrentContentListener {
 
     // https://developer.android.com/training/dependency-injection/hilt-jetpack#viewmodel-navigation
     private val viewModel: TorrentProcessingViewModel by
-    hiltNavGraphViewModels(R.id.navigation_lists)
+        hiltNavGraphViewModels(R.id.navigation_lists)
 
     private var _binding: FragmentTorrentProcessingBinding? = null
 
     // This property is only valid between onCreateView and onDestroyView.
-    private val binding get() = _binding!!
+    private val binding
+        get() = _binding!!
 
     /** Save the torrent/magnet has when loaded */
     private var torrentHash: String? = null
@@ -85,7 +86,7 @@ class TorrentProcessingFragment : UnchainedFragment(), TorrentContentListener {
                 is TorrentEvent.TorrentInfo -> {
                     if (
                         content.item.files?.size == 1 &&
-                        "waiting_files_selection".equals(content.item.status, ignoreCase = true)
+                            "waiting_files_selection".equals(content.item.status, ignoreCase = true)
                     ) {
                         // todo: make this configurable in settings
                         context?.showToast(R.string.single_torrent_file_available)
@@ -192,7 +193,7 @@ class TorrentProcessingFragment : UnchainedFragment(), TorrentContentListener {
                     if (response.errorCode == 8) {
                         if (
                             activityViewModel.getAuthenticationMachineState()
-                                    is FSMAuthenticationState.AuthenticatedOpenToken
+                                is FSMAuthenticationState.AuthenticatedOpenToken
                         )
                             activityViewModel.transitionAuthenticationMachine(
                                 FSMAuthenticationEvent.OnExpiredOpenToken
@@ -223,7 +224,6 @@ class TorrentProcessingFragment : UnchainedFragment(), TorrentContentListener {
 
         return binding.root
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -417,9 +417,9 @@ class TorrentProcessingFragment : UnchainedFragment(), TorrentContentListener {
             Node.traverseNodeDepthFirst(structure) {
                 if (
                     it.value.absolutePath == item.absolutePath &&
-                    it.value.name == item.name &&
-                    it.value.id == TYPE_FOLDER &&
-                    item.id == TYPE_FOLDER
+                        it.value.name == item.name &&
+                        it.value.id == TYPE_FOLDER &&
+                        item.id == TYPE_FOLDER
                 ) {
                     folderNode = it
                     return@traverseNodeDepthFirst

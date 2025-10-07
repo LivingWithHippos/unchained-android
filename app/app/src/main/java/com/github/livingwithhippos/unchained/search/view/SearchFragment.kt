@@ -18,7 +18,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.databinding.FragmentSearchBinding
-import com.github.livingwithhippos.unchained.databinding.FragmentTorrentProcessingBinding
 import com.github.livingwithhippos.unchained.folderlist.view.FolderListFragment
 import com.github.livingwithhippos.unchained.plugins.ParserResult
 import com.github.livingwithhippos.unchained.plugins.model.Plugin
@@ -33,10 +32,10 @@ import com.github.livingwithhippos.unchained.utilities.extension.hideKeyboard
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.google.android.material.button.MaterialButton
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
-import timber.log.Timber
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
+import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @AndroidEntryPoint
 class SearchFragment : UnchainedFragment(), SearchItemListener {
@@ -46,7 +45,8 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
     private val magnetPattern = Regex(MAGNET_PATTERN, RegexOption.IGNORE_CASE)
 
     private var _binding: FragmentSearchBinding? = null
-    private val binding get() = _binding!!
+    private val binding
+        get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -59,6 +59,7 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
 
         return binding.root
     }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

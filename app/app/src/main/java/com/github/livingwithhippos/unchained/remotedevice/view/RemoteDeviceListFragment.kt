@@ -28,7 +28,8 @@ class RemoteDeviceListFragment : UnchainedFragment(), DeviceListListener {
     private val viewModel: DeviceViewModel by viewModels()
 
     private var _binding: FragmentRemoteDeviceListBinding? = null
-    private val binding get() = _binding!!
+    private val binding
+        get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -42,12 +43,12 @@ class RemoteDeviceListFragment : UnchainedFragment(), DeviceListListener {
 
         val deviceTracker: SelectionTracker<RemoteDevice> =
             SelectionTracker.Builder(
-                "deviceListSelection",
-                binding.rvDeviceList,
-                DeviceKeyProvider(deviceAdapter),
-                DataBindingDetailsLookup(binding.rvDeviceList),
-                StorageStrategy.createParcelableStorage(RemoteDevice::class.java),
-            )
+                    "deviceListSelection",
+                    binding.rvDeviceList,
+                    DeviceKeyProvider(deviceAdapter),
+                    DataBindingDetailsLookup(binding.rvDeviceList),
+                    StorageStrategy.createParcelableStorage(RemoteDevice::class.java),
+                )
                 .withSelectionPredicate(SelectionPredicates.createSelectAnything())
                 .build()
 

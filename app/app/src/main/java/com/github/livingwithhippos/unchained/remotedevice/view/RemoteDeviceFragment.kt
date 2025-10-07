@@ -32,7 +32,8 @@ class RemoteDeviceFragment : UnchainedFragment(), ServiceListListener {
 
     private val viewModel: DeviceViewModel by viewModels()
     private var _binding: FragmentRemoteDeviceBinding? = null
-    private val binding get() = _binding!!
+    private val binding
+        get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,

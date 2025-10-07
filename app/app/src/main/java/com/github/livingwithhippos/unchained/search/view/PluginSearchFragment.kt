@@ -30,7 +30,8 @@ class PluginSearchFragment : UnchainedFragment() {
     private val pluginsList: MutableList<Plugin> = mutableListOf()
 
     private var _binding: FragmentSearchPluginsTabBinding? = null
-    private val binding get() = _binding!!
+    private val binding
+        get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,

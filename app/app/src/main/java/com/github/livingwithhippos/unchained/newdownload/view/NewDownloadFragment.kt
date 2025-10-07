@@ -62,7 +62,8 @@ class NewDownloadFragment : UnchainedFragment() {
 
     private val args: NewDownloadFragmentArgs by navArgs()
     private var _binding: NewDownloadFragmentBinding? = null
-    private val binding get() = _binding!!
+    private val binding
+        get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -184,7 +185,7 @@ class NewDownloadFragment : UnchainedFragment() {
                                 // try refreshing the token
                                 if (
                                     activityViewModel.getAuthenticationMachineState()
-                                            is FSMAuthenticationState.AuthenticatedOpenToken
+                                        is FSMAuthenticationState.AuthenticatedOpenToken
                                 )
                                     activityViewModel.transitionAuthenticationMachine(
                                         FSMAuthenticationEvent.OnExpiredOpenToken
@@ -265,7 +266,7 @@ class NewDownloadFragment : UnchainedFragment() {
             val authState = activityViewModel.getAuthenticationMachineState()
             if (
                 authState is FSMAuthenticationState.AuthenticatedPrivateToken ||
-                authState is FSMAuthenticationState.AuthenticatedOpenToken
+                    authState is FSMAuthenticationState.AuthenticatedOpenToken
             ) {
                 val link: String = binding.tiLink.text.toString().trim()
 
@@ -276,11 +277,11 @@ class NewDownloadFragment : UnchainedFragment() {
                         .map { it.trim() }
                         .filter {
                             it.length > 10 &&
-                                    (it.isTorrent() ||
-                                            it.isMagnet() ||
-                                            it.isWebUrl() ||
-                                            it.isSimpleWebUrl() ||
-                                            it.isContainerWebLink())
+                                (it.isTorrent() ||
+                                    it.isMagnet() ||
+                                    it.isWebUrl() ||
+                                    it.isSimpleWebUrl() ||
+                                    it.isContainerWebLink())
                         }
 
                 if (splitLinks.isEmpty()) {
@@ -384,10 +385,10 @@ class NewDownloadFragment : UnchainedFragment() {
 
             if (
                 pasteText.isWebUrl() ||
-                pasteText.isSimpleWebUrl() ||
-                pasteText.isMagnet() ||
-                pasteText.isTorrent() ||
-                pasteText.split("\n").firstOrNull()?.trim()?.isWebUrl() == true
+                    pasteText.isSimpleWebUrl() ||
+                    pasteText.isMagnet() ||
+                    pasteText.isTorrent() ||
+                    pasteText.split("\n").firstOrNull()?.trim()?.isWebUrl() == true
             )
                 binding.tiLink.setText(pasteText, TextView.BufferType.EDITABLE)
             else {

@@ -25,11 +25,11 @@ class SearchItemFragment : UnchainedFragment(), LinkItemListener {
 
     private val magnetPattern = Regex(MAGNET_PATTERN, RegexOption.IGNORE_CASE)
 
-
     private var _binding: FragmentSearchItemBinding? = null
 
     // This property is only valid between onCreateView and onDestroyView.
-    private val binding get() = _binding!!
+    private val binding
+        get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,7 +46,6 @@ class SearchItemFragment : UnchainedFragment(), LinkItemListener {
         super.onDestroyView()
         _binding = null
     }
-
 
     private fun setup(binding: FragmentSearchItemBinding) {
         val item: ScrapedItem = args.item

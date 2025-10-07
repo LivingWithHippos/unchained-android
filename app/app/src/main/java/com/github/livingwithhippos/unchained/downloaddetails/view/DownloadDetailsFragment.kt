@@ -22,6 +22,8 @@ import android.widget.PopupWindow
 import android.widget.TextView
 import androidx.appcompat.widget.PopupMenu
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.graphics.drawable.toDrawable
+import androidx.core.net.toUri
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.activityViewModels
@@ -57,8 +59,6 @@ import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import androidx.core.graphics.drawable.toDrawable
-import androidx.core.net.toUri
 
 /**
  * A simple [UnchainedFragment] subclass. It is capable of showing the details of a [DownloadItem]
@@ -72,7 +72,8 @@ class DownloadDetailsFragment : UnchainedFragment() {
 
     private val deviceServiceMap: MutableMap<RemoteDevice, List<RemoteService>> = mutableMapOf()
     private var _binding: FragmentDownloadDetailsBinding? = null
-    private val binding get() = _binding!!
+    private val binding
+        get() = _binding!!
 
     @SuppressLint("SetTextI18n")
     override fun onCreateView(
@@ -114,9 +115,7 @@ class DownloadDetailsFragment : UnchainedFragment() {
         binding.tvName.text = args.details.filename
         binding.tvDownloadId.text = getString(R.string.file_id_format, args.details.id)
         binding.ivHosterPic.load(args.details.hostIcon) { crossfade(true) }
-        context?.let {
-            binding.tvSize.text = getFileSizeString(it, args.details.fileSize)
-        }
+        context?.let { binding.tvSize.text = getFileSizeString(it, args.details.fileSize) }
         if (args.details.mimeType == null) {
             binding.tvMimeType.visibility = View.GONE
         } else {
@@ -145,9 +144,7 @@ class DownloadDetailsFragment : UnchainedFragment() {
         binding.fabDownloadLink.setOnClickListener {
             activityViewModel.enqueueDownload(args.details.download, args.details.filename)
         }
-        binding.fabSendToPlayer.setOnClickListener {
-            onSendToPlayer(args.details.download)
-        }
+        binding.fabSendToPlayer.setOnClickListener { onSendToPlayer(args.details.download) }
         if (!args.details.alternative.isNullOrEmpty()) {
             binding.rvAlternativeList.visibility = View.VISIBLE
         } else {
@@ -189,19 +186,15 @@ class DownloadDetailsFragment : UnchainedFragment() {
         if (args.details.streamable == 1) {
             if (viewModel.getButtonVisibilityPreference(SHOW_MEDIA_BUTTON))
                 binding.llFabSendToPlayer.visibility = View.VISIBLE
-                        else
-                binding.llFabSendToPlayer.visibility = View.GONE
+            else binding.llFabSendToPlayer.visibility = View.GONE
 
             if (viewModel.getButtonVisibilityPreference(SHOW_STREAMING_BUTTON))
                 binding.llFabPickStreaming.visibility = View.VISIBLE
-                        else
-                binding.llFabPickStreaming.visibility = View.GONE
+            else binding.llFabPickStreaming.visibility = View.GONE
 
             if (viewModel.getButtonVisibilityPreference(SHOW_TRANSCODING_BUTTON))
                 binding.llFabLoadStreams.visibility = View.VISIBLE
-                        else
-                binding.llFabLoadStreams.visibility = View.GONE
-
+            else binding.llFabLoadStreams.visibility = View.GONE
         } else {
             binding.llFabSendToPlayer.visibility = View.GONE
             binding.llFabPickStreaming.visibility = View.GONE
@@ -220,9 +213,7 @@ class DownloadDetailsFragment : UnchainedFragment() {
             binding.fabLoadStreams.isEnabled = false
         }
 
-        binding.fabPickStreaming.setOnClickListener { popView ->
-            manageStreamingPopup(popView)
-        }
+        binding.fabPickStreaming.setOnClickListener { popView -> manageStreamingPopup(popView) }
 
         viewModel.streamLiveData.observe(viewLifecycleOwner) {
             if (it != null) {

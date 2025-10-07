@@ -53,7 +53,8 @@ class TorrentDetailsFragment : UnchainedFragment() {
     private var _binding: FragmentTorrentDetailsBinding? = null
 
     // This property is only valid between onCreateView and onDestroyView.
-    private val binding get() = _binding!!
+    private val binding
+        get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -141,21 +142,24 @@ class TorrentDetailsFragment : UnchainedFragment() {
                     if (torrent.speed == null) {
                         binding.tvSpeed.text = ""
                     } else {
-                        binding.tvSpeed.text = when (torrent.speed.toString().length) {
-                            in 0..3 -> getString(R.string.speed_format_b, torrent.speed)
-                            in 4..6 -> getString(R.string.speed_format_kb, torrent.speed / 1000)
-                            in 7..15 -> getString(R.string.speed_format_mb, torrent.speed / 1000000)
-                            else -> getString(R.string.speed_error)
-                        }
+                        binding.tvSpeed.text =
+                            when (torrent.speed.toString().length) {
+                                in 0..3 -> getString(R.string.speed_format_b, torrent.speed)
+                                in 4..6 -> getString(R.string.speed_format_kb, torrent.speed / 1000)
+                                in 7..15 ->
+                                    getString(R.string.speed_format_mb, torrent.speed / 1000000)
+                                else -> getString(R.string.speed_error)
+                            }
                     }
                     if (torrent.seeders == null) {
                         binding.tvSeeders.visibility = View.GONE
                     } else {
-                        binding.tvSeeders.text = resources.getQuantityString(
-                            R.plurals.seeders_format,
-                            torrent.seeders,
-                            torrent.seeders
-                        )
+                        binding.tvSeeders.text =
+                            resources.getQuantityString(
+                                R.plurals.seeders_format,
+                                torrent.seeders,
+                                torrent.seeders,
+                            )
                         binding.tvSeeders.visibility = View.VISIBLE
                     }
                     binding.pbDownload.setProgressCompat(torrent.progress.toInt(), true)
@@ -251,7 +255,6 @@ class TorrentDetailsFragment : UnchainedFragment() {
 
         return binding.root
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()

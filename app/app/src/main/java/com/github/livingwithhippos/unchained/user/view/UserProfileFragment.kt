@@ -33,13 +33,13 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class UserProfileFragment : UnchainedFragment() {
 
-    @Inject
-    lateinit var preferences: SharedPreferences
+    @Inject lateinit var preferences: SharedPreferences
 
     private var _binding: FragmentUserProfileBinding? = null
 
     // This property is only valid between onCreateView and onDestroyView.
-    private val binding get() = _binding!!
+    private val binding
+        get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -151,17 +151,16 @@ class UserProfileFragment : UnchainedFragment() {
 
         if (
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
-            ContextCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.POST_NOTIFICATIONS,
-            ) != PermissionChecker.PERMISSION_GRANTED
+                ContextCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.POST_NOTIFICATIONS,
+                ) != PermissionChecker.PERMISSION_GRANTED
         ) {
             activityViewModel.requireNotificationPermissions()
         }
 
         return view
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()

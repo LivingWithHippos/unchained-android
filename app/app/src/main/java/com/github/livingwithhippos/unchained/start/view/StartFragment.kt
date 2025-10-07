@@ -9,7 +9,6 @@ import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.data.model.UserAction
 import com.github.livingwithhippos.unchained.databinding.FragmentStartBinding
-import com.github.livingwithhippos.unchained.databinding.FragmentUserProfileBinding
 import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationEvent
 import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationState
 import dagger.hilt.android.AndroidEntryPoint
@@ -25,7 +24,8 @@ class StartFragment : UnchainedFragment() {
 
     private var _binding: FragmentStartBinding? = null
     // This property is only valid between onCreateView and onDestroyView.
-    private val binding get() = _binding!!
+    private val binding
+        get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,

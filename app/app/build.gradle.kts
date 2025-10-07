@@ -109,9 +109,9 @@ android {
                 apiProperties.getOrDefault(
                     "COUNTLY_APP_KEY",
                     "\"" +
-                            (System.getenv("COUNTLY_APP_KEY")
-                                ?: "pDJz4WrY9XeBotXAaL9MYrraSwZNyDqfAPy8p38c") +
-                            "\"",
+                        (System.getenv("COUNTLY_APP_KEY")
+                            ?: "pDJz4WrY9XeBotXAaL9MYrraSwZNyDqfAPy8p38c") +
+                        "\"",
                 ) as String,
             )
 
@@ -140,9 +140,7 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-    kotlinOptions {
-        jvmTarget = "11"
-    }
+    kotlinOptions { jvmTarget = "11" }
     buildFeatures {
         dataBinding = true
         viewBinding = true

@@ -54,8 +54,8 @@ class FolderListFragment : UnchainedFragment(), DownloadListListener {
         "\\.(webm|avi|mkv|ogg|MTS|M2TS|TS|mov|wmv|mp4|m4p|m4v|mp2|mpe|mpv|mpg|mpeg|m2v|3gp)$"
             .toRegex()
     private var _binding: FragmentFolderListBinding? = null
-    private val binding get() = _binding!!
-
+    private val binding
+        get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -164,12 +164,12 @@ class FolderListFragment : UnchainedFragment(), DownloadListListener {
 
         val linkTracker: SelectionTracker<DownloadItem> =
             SelectionTracker.Builder(
-                "folderListSelection",
-                binding.rvFolderList,
-                FolderKeyProvider(adapter),
-                DataBindingDetailsLookup(binding.rvFolderList),
-                StorageStrategy.createParcelableStorage(DownloadItem::class.java),
-            )
+                    "folderListSelection",
+                    binding.rvFolderList,
+                    FolderKeyProvider(adapter),
+                    DataBindingDetailsLookup(binding.rvFolderList),
+                    StorageStrategy.createParcelableStorage(DownloadItem::class.java),
+                )
                 .withSelectionPredicate(SelectionPredicates.createSelectAnything())
                 .build()
 
@@ -185,7 +185,6 @@ class FolderListFragment : UnchainedFragment(), DownloadListListener {
         )
 
         binding.bDeleteSelected.setOnClickListener {
-
             if (linkTracker.selection.toList().isNotEmpty()) {
                 viewModel.deleteDownloadList(linkTracker.selection.toList())
             } else context?.showToast(R.string.select_one_item)
@@ -211,9 +210,7 @@ class FolderListFragment : UnchainedFragment(), DownloadListListener {
                 shareIntent.type = "text/plain"
                 val shareLinks = linkTracker.selection.joinToString("\n") { it.download }
                 shareIntent.putExtra(Intent.EXTRA_TEXT, shareLinks)
-                startActivity(
-                    Intent.createChooser(shareIntent, getString(R.string.share_with))
-                )
+                startActivity(Intent.createChooser(shareIntent, getString(R.string.share_with)))
             } else context?.showToast(R.string.select_one_item)
         }
 

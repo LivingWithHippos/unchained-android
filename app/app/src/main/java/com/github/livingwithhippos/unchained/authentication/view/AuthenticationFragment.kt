@@ -18,7 +18,6 @@ import com.github.livingwithhippos.unchained.authentication.viewmodel.Authentica
 import com.github.livingwithhippos.unchained.authentication.viewmodel.SecretResult
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.databinding.FragmentAuthenticationBinding
-import com.github.livingwithhippos.unchained.databinding.FragmentDownloadsListBinding
 import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationEvent
 import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationState
 import com.github.livingwithhippos.unchained.utilities.EventObserver
@@ -26,7 +25,6 @@ import com.github.livingwithhippos.unchained.utilities.PRIVATE_TOKEN
 import com.github.livingwithhippos.unchained.utilities.extension.getClipboardText
 import com.github.livingwithhippos.unchained.utilities.extension.getThemeColor
 import com.github.livingwithhippos.unchained.utilities.extension.hideKeyboard
-import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.google.android.material.textfield.TextInputEditText
 import dagger.hilt.android.AndroidEntryPoint
@@ -41,7 +39,8 @@ class AuthenticationFragment : UnchainedFragment() {
 
     private val viewModel: AuthenticationViewModel by viewModels()
     private var _binding: FragmentAuthenticationBinding? = null
-    private val binding get() = _binding!!
+    private val binding
+        get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -69,7 +68,9 @@ class AuthenticationFragment : UnchainedFragment() {
                     deviceCode = PRIVATE_TOKEN,
                     refreshToken = PRIVATE_TOKEN,
                 )
-                activityViewModel.transitionAuthenticationMachine(FSMAuthenticationEvent.OnPrivateToken)
+                activityViewModel.transitionAuthenticationMachine(
+                    FSMAuthenticationEvent.OnPrivateToken
+                )
             }
         }
 

@@ -32,7 +32,6 @@ import com.github.livingwithhippos.unchained.data.model.EmptyBodyError
 import com.github.livingwithhippos.unchained.data.model.NetworkError
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.databinding.FragmentDownloadsListBinding
-import com.github.livingwithhippos.unchained.databinding.FragmentSearchBinding
 import com.github.livingwithhippos.unchained.databinding.FragmentTabListsBinding
 import com.github.livingwithhippos.unchained.databinding.FragmentTorrentsListBinding
 import com.github.livingwithhippos.unchained.lists.viewmodel.ListEvent
@@ -81,7 +80,8 @@ class ListsTabFragment : UnchainedFragment() {
     var queryJob: Job? = null
 
     private var _binding: FragmentTabListsBinding? = null
-    private val binding get() = _binding!!
+    private val binding
+        get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -226,7 +226,7 @@ class ListsTabFragment : UnchainedFragment() {
                         lifecycleScope.launch {
                             while (
                                 loop++ < 20 &&
-                                controller.currentDestination?.id != R.id.list_tabs_dest
+                                    controller.currentDestination?.id != R.id.list_tabs_dest
                             ) {
                                 delay(100)
                             }
@@ -261,7 +261,7 @@ class ListsTabFragment : UnchainedFragment() {
                                 lifecycleScope.launch {
                                     while (
                                         loop++ < 20 &&
-                                        controller.currentDestination?.id != R.id.list_tabs_dest
+                                            controller.currentDestination?.id != R.id.list_tabs_dest
                                     ) {
                                         delay(100)
                                     }
@@ -284,7 +284,7 @@ class ListsTabFragment : UnchainedFragment() {
                         lifecycleScope.launch {
                             while (
                                 loop++ < 20 &&
-                                controller.currentDestination?.id != R.id.list_tabs_dest
+                                    controller.currentDestination?.id != R.id.list_tabs_dest
                             ) {
                                 delay(100)
                             }
@@ -325,7 +325,7 @@ class ListsTabFragment : UnchainedFragment() {
                                     // bad token, try refreshing it
                                     if (
                                         activityViewModel.getAuthenticationMachineState()
-                                                is FSMAuthenticationState.AuthenticatedOpenToken
+                                            is FSMAuthenticationState.AuthenticatedOpenToken
                                     )
                                         activityViewModel.transitionAuthenticationMachine(
                                             FSMAuthenticationEvent.OnExpiredOpenToken
@@ -363,14 +363,14 @@ class ListsTabFragment : UnchainedFragment() {
         viewPager.adapter = ListsAdapter(this)
 
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
-            if (position == DOWNLOADS_TAB) {
-                tab.text = getString(R.string.downloads)
-                tab.icon = requireContext().getThemedDrawable(R.drawable.icon_cloud_done)
-            } else {
-                tab.text = getString(R.string.torrents)
-                tab.icon = requireContext().getThemedDrawable(R.drawable.icon_torrent_logo)
+                if (position == DOWNLOADS_TAB) {
+                    tab.text = getString(R.string.downloads)
+                    tab.icon = requireContext().getThemedDrawable(R.drawable.icon_cloud_done)
+                } else {
+                    tab.text = getString(R.string.torrents)
+                    tab.icon = requireContext().getThemedDrawable(R.drawable.icon_torrent_logo)
+                }
             }
-        }
             .attach()
 
         super.onViewCreated(view, savedInstanceState)
@@ -411,7 +411,8 @@ class DownloadsListFragment : UnchainedFragment(), DownloadListListener {
     private val viewModel: ListTabsViewModel by activityViewModels()
 
     private var _binding: FragmentDownloadsListBinding? = null
-    private val binding get() = _binding!!
+    private val binding
+        get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -428,12 +429,12 @@ class DownloadsListFragment : UnchainedFragment(), DownloadListListener {
         // download list selection  tracker
         val downloadTracker: SelectionTracker<DownloadItem> =
             SelectionTracker.Builder(
-                "downloadListSelection",
-                binding.rvDownloadList,
-                DownloadKeyProvider(downloadAdapter),
-                DataBindingDetailsLookup(binding.rvDownloadList),
-                StorageStrategy.createParcelableStorage(DownloadItem::class.java),
-            )
+                    "downloadListSelection",
+                    binding.rvDownloadList,
+                    DownloadKeyProvider(downloadAdapter),
+                    DataBindingDetailsLookup(binding.rvDownloadList),
+                    StorageStrategy.createParcelableStorage(DownloadItem::class.java),
+                )
                 .withSelectionPredicate(SelectionPredicates.createSelectAnything())
                 .build()
 
@@ -471,12 +472,9 @@ class DownloadsListFragment : UnchainedFragment(), DownloadListListener {
             if (downloadTracker.selection.toList().isNotEmpty()) {
                 val shareIntent = Intent(Intent.ACTION_SEND)
                 shareIntent.type = "text/plain"
-                val shareLinks =
-                    downloadTracker.selection.joinToString("\n") { it.download }
+                val shareLinks = downloadTracker.selection.joinToString("\n") { it.download }
                 shareIntent.putExtra(Intent.EXTRA_TEXT, shareLinks)
-                startActivity(
-                    Intent.createChooser(shareIntent, getString(R.string.share_with))
-                )
+                startActivity(Intent.createChooser(shareIntent, getString(R.string.share_with)))
             } else context?.showToast(R.string.select_one_item)
         }
         binding.bAddNew?.setOnClickListener {
@@ -633,7 +631,8 @@ class TorrentsListFragment : UnchainedFragment(), TorrentListListener {
 
     private val viewModel: ListTabsViewModel by activityViewModels()
     private var _binding: FragmentTorrentsListBinding? = null
-    private val binding get() = _binding!!
+    private val binding
+        get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -648,12 +647,12 @@ class TorrentsListFragment : UnchainedFragment(), TorrentListListener {
         // torrent list selection  tracker
         val torrentTracker: SelectionTracker<TorrentItem> =
             SelectionTracker.Builder(
-                "torrentListSelection",
-                binding.rvTorrentList,
-                TorrentKeyProvider(torrentAdapter),
-                DataBindingDetailsLookup(binding.rvTorrentList),
-                StorageStrategy.createParcelableStorage(TorrentItem::class.java),
-            )
+                    "torrentListSelection",
+                    binding.rvTorrentList,
+                    TorrentKeyProvider(torrentAdapter),
+                    DataBindingDetailsLookup(binding.rvTorrentList),
+                    StorageStrategy.createParcelableStorage(TorrentItem::class.java),
+                )
                 .withSelectionPredicate(SelectionPredicates.createSelectAnything())
                 .build()
 
@@ -696,10 +695,9 @@ class TorrentsListFragment : UnchainedFragment(), TorrentListListener {
                 val item: TorrentItem = torrentTracker.selection.toList().first()
                 val action =
                     if (beforeSelectionStatusList.contains(item.status))
-                        ListsTabFragmentDirections
-                            .actionListTabsDestToTorrentProcessingFragment(
-                                torrentID = item.id
-                            )
+                        ListsTabFragmentDirections.actionListTabsDestToTorrentProcessingFragment(
+                            torrentID = item.id
+                        )
                     else ListsTabFragmentDirections.actionListsTabToTorrentDetails(item)
                 findNavController().navigate(action)
             } else
@@ -710,7 +708,6 @@ class TorrentsListFragment : UnchainedFragment(), TorrentListListener {
         binding.bAddNew?.setOnClickListener {
             // landscape only
             viewModel.postEventNotice(ListEvent.NewDownload)
-
         }
         binding.bRefresh?.setOnClickListener {
             if (!binding.srLayout.isRefreshing) {

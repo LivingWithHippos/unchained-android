@@ -29,7 +29,8 @@ class RemoteServiceFragment : Fragment() {
     private val viewModel: DeviceViewModel by viewModels()
 
     private var _binding: FragmentRemoteServiceBinding? = null
-    private val binding get() = _binding!!
+    private val binding
+        get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -176,7 +177,6 @@ class RemoteServiceFragment : Fragment() {
 
         return binding.root
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()
