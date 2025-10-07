@@ -3,18 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <data>
-
-        <variable
-            name="selectedDownloads"
-            type="Integer" />
-
-        <variable
-            name="listener"
-            type="com.github.livingwithhippos.unchained.lists.view.SelectedItemsButtonsListener" />
-
-    </data>
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -40,7 +28,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="10dp"
                 android:text="@string/add"
-                android:onClick="@{() -> listener.openNewDownload()}"
                 app:icon="@drawable/icon_add"
                 />
 
@@ -50,7 +37,6 @@
                 android:layout_height="wrap_content"
                 android:checked="false"
                 android:tooltipText="@string/select_deselect_all"
-                android:text="@{selectedDownloads.toString(), default=`2`}"
                 android:nextFocusDown="@id/rvDownloadList"
                 />
 
@@ -60,7 +46,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/delete"
-                android:onClick="@{() -> listener.deleteSelectedItems()}"
                 app:icon="@drawable/icon_delete"
                 app:iconSize="25dp"
                 android:tooltipText="@string/delete_selected"
@@ -73,7 +58,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/download"
-                android:onClick="@{() -> listener.downloadSelectedItems()}"
                 app:icon="@drawable/icon_download"
                 app:iconSize="25dp"
                 android:tooltipText="@string/download_selected"
@@ -87,7 +71,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/share"
-                android:onClick="@{() -> listener.shareSelectedItems()}"
                 app:icon="@drawable/icon_share"
                 app:iconSize="25dp"
                 android:tooltipText="@string/share_selected"
@@ -101,7 +84,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/refresh"
-                android:onClick="@{() -> listener.refreshList()}"
                 app:icon="@drawable/icon_reload"
                 app:iconSize="25dp"
                 android:tooltipText="@string/refresh"

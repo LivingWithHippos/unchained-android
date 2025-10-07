@@ -3,18 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <data>
-
-        <variable
-            name="selectedTorrents"
-            type="Integer" />
-
-        <variable
-            name="listener"
-            type="com.github.livingwithhippos.unchained.lists.view.SelectedItemsButtonsListener" />
-
-    </data>
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -39,7 +27,7 @@
                 android:layout_height="wrap_content"
                 android:checked="false"
                 android:tooltipText="@string/select_deselect_all"
-                android:text="@{selectedTorrents.toString(), default=`2`}" />
+                android:text="0" />
 
             <Button
                 android:id="@+id/bDeleteSelected"
@@ -47,7 +35,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/delete"
-                android:onClick="@{() -> listener.deleteSelectedItems()}"
                 app:icon="@drawable/icon_delete"
                 app:iconSize="25dp"
                 android:tooltipText="@string/delete_selected" />
@@ -58,7 +45,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/download"
-                android:onClick="@{() -> listener.downloadSelectedItems()}"
                 app:icon="@drawable/icon_download"
                 app:iconSize="25dp"
                 android:tooltipText="@string/download_selected" />
@@ -71,14 +57,12 @@
                 android:contentDescription="@string/torrent_details"
                 app:icon="@drawable/icon_info"
                 app:iconSize="25dp"
-                android:onClick="@{() -> listener.openSelectedDetails()}"
                 android:tooltipText="@string/torrent_details" />
 
         </LinearLayout>
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/srLayout"
-            refreshColorTheme="@{true}"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"

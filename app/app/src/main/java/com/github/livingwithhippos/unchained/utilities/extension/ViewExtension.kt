@@ -24,6 +24,7 @@ import android.widget.AutoCompleteTextView
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.annotation.AttrRes
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
@@ -364,6 +365,14 @@ fun SwipeRefreshLayout.setRefreshThemeColor(themed: Boolean) {
         val backgroundColor = typedValue.data
         setProgressBackgroundColorSchemeColor(backgroundColor)
     }
+}
+
+fun getThemeColor(context: Context, @AttrRes resId: Int): Int {
+    // get a reference to the current theme
+    val typedValue = TypedValue()
+    val theme: Resources.Theme = context.theme
+    theme.resolveAttribute(resId, typedValue, true)
+    return typedValue.data
 }
 
 @BindingAdapter("mapExtensionDrawable")
