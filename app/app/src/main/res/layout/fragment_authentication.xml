@@ -2,35 +2,6 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <data>
-
-        <import type="android.view.View" />
-
-        <variable
-            name="listener"
-            type="com.github.livingwithhippos.unchained.authentication.view.ButtonListener" />
-
-        <variable
-            name="auth"
-            type="com.github.livingwithhippos.unchained.data.model.Authentication" />
-
-        <variable
-            name="secrets"
-            type="com.github.livingwithhippos.unchained.data.model.Secrets" />
-
-        <variable
-            name="token"
-            type="com.github.livingwithhippos.unchained.data.model.Token" />
-
-        <variable
-            name="loginMessageDirect"
-            type="android.text.SpannableStringBuilder" />
-
-        <variable
-            name="loginMessageIndirect"
-            type="android.text.SpannableStringBuilder" />
-    </data>
-
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -44,7 +15,6 @@
             <TextView
                 android:id="@+id/tvLoginMessage"
                 android:text="@string/login_message_placeholder"
-                android:visibility="@{secrets.clientSecret == null ? View.VISIBLE : View.GONE}"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="30dp"
@@ -60,8 +30,7 @@
 
             <TextView
                 android:id="@+id/tvAuthenticationLink"
-                android:text="@{auth.directVerificationUrl, default=`https://www.real-debrid.com/ABCD1234DEFGH`}"
-                android:visibility="@{auth.directVerificationUrl != null ? View.VISIBLE : View.GONE}"
+                android:visibility="gone"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="30dp"
@@ -86,10 +55,10 @@
                 android:id="@+id/cbLink"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:checked="@{auth.userCode == null ? false : true, default=true}"
+                android:checked="false"
                 android:clickable="false"
                 android:focusable="false"
-                android:text="@{auth.userCode == null ? @string/waiting_link : @string/link_loaded, default=@string/link_loaded}"
+                android:text="@string/waiting_link"
                 app:layout_constraintBottom_toTopOf="@+id/cbSecret"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -100,10 +69,9 @@
                 android:id="@+id/cbSecret"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:checked="@{secrets.clientSecret == null ? false : true}"
                 android:clickable="false"
                 android:focusable="false"
-                android:text="@{secrets.clientSecret == null ? @string/waiting_user_auth : @string/obtained_user_auth, default=@string/waiting_user_auth}"
+                android:text="@string/waiting_user_auth"
                 app:layout_constraintBottom_toTopOf="@+id/cbToken"
                 app:layout_constraintStart_toStartOf="@+id/cbLink"
                 app:layout_constraintTop_toBottomOf="@+id/cbLink" />
@@ -112,10 +80,10 @@
                 android:id="@+id/cbToken"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:checked="@{token.accessToken == null ? false : true}"
+                android:checked="false"
                 android:clickable="false"
                 android:focusable="false"
-                android:text="@{token.accessToken == null ? @string/waiting_token : @string/obtained_token, default=@string/waiting_token}"
+                android:text="@string/waiting_token"
                 app:layout_constraintBottom_toTopOf="@+id/tvUsePrivateToken"
                 app:layout_constraintStart_toStartOf="@+id/cbSecret"
                 app:layout_constraintTop_toBottomOf="@+id/cbSecret" />
@@ -174,7 +142,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:onClick="@{() -> listener.onPasteCodeClick(tiPrivateCode)}"
                 android:text="@string/paste"
                 app:icon="@drawable/icon_paste"
                 android:nextFocusLeft="@id/tfPrivateCode"
@@ -192,7 +159,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:nextFocusUp="@id/tfPrivateCode"
-                android:onClick="@{() -> listener.onSaveCodeClick(tiPrivateCode)}"
                 android:text="@string/save"
                 android:nextFocusLeft="@id/tfPrivateCode"
                 app:layout_constraintBottom_toBottomOf="parent"
