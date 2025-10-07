@@ -25,21 +25,36 @@ class SearchItemFragment : UnchainedFragment(), LinkItemListener {
 
     private val magnetPattern = Regex(MAGNET_PATTERN, RegexOption.IGNORE_CASE)
 
+
+    private var _binding: FragmentSearchItemBinding? = null
+
+    // This property is only valid between onCreateView and onDestroyView.
+    private val binding get() = _binding!!
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        val binding = FragmentSearchItemBinding.inflate(inflater, container, false)
+        _binding = FragmentSearchItemBinding.inflate(inflater, container, false)
 
         setup(binding)
         return binding.root
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+
     private fun setup(binding: FragmentSearchItemBinding) {
         val item: ScrapedItem = args.item
 
-        binding.item = item
+        binding.tvName.text = item.name
+        binding.size.text = item.size ?: "-"
+        binding.seeders.text = item.seeders ?: "-"
+        binding.leechers.text = item.leechers ?: "-"
 
         binding.linkCaption.setOnClickListener {
             if (item.link != null) context?.openExternalWebPage(item.link)
