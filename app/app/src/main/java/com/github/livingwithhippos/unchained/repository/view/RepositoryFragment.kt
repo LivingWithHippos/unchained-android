@@ -35,12 +35,15 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
 
     private val viewModel: RepositoryViewModel by activityViewModels()
 
+    private var _binding: FragmentRepositoryBinding? = null
+    private val binding get() = _binding!!
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        val binding = FragmentRepositoryBinding.inflate(inflater, container, false)
+        _binding = FragmentRepositoryBinding.inflate(inflater, container, false)
 
         val adapter = PluginRepositoryAdapter(this)
         binding.rvPluginsList.adapter = adapter
@@ -58,19 +61,23 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
                         // load data from the database
                         viewModel.retrieveDatabaseRepositories(requireContext())
                     }
+
                     is PluginRepositoryEvent.FullData -> {
                         // data loaded from db, load into UI
                         updateList(adapter, it.dbData, it.installedData)
                         binding.progressBar.isIndeterminate = false
                     }
+
                     is PluginRepositoryEvent.Installation -> {
                         when (it.result) {
                             is InstallResult.Error -> {
                                 context?.showToast(R.string.plugin_install_not_installed)
                             }
+
                             InstallResult.Incompatible -> {
                                 context?.showToast(R.string.plugin_install_incompatible)
                             }
+
                             InstallResult.Installed -> {
                                 // todo: better way to update a single value? Or check against local
                                 // only without
@@ -80,6 +87,7 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
                             }
                         }
                     }
+
                     is PluginRepositoryEvent.Uninstalled -> {
                         if (it.quantity >= 0) {
                             context?.showToast(getString(R.string.plugin_removed, it.quantity))
@@ -90,12 +98,13 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
                             viewModel.checkCurrentRepositories()
                         } else context?.showToast(R.string.plugin_removal_failed)
                     }
+
                     is PluginRepositoryEvent.MultipleInstallation -> {
                         val failures =
                             it.downloadErrors +
-                                it.installResults.count { result ->
-                                    (result is InstallResult.Installed).not()
-                                }
+                                    it.installResults.count { result ->
+                                        (result is InstallResult.Installed).not()
+                                    }
                         val success =
                             it.installResults.count { result -> result is InstallResult.Installed }
                         if (failures == 0) {
@@ -112,6 +121,7 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
                             )
                         }
                     }
+
                     is PluginRepositoryEvent.InvalidRepositoryLink,
                     is PluginRepositoryEvent.ValidRepositoryLink -> {
                         // do nothing, these are for dialogs
@@ -129,6 +139,11 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
         }
 
         return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     /**
@@ -374,6 +389,7 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
                 context?.showToast(R.string.downloading)
                 viewModel.downloadPlugin(plugin.link, plugin.repository, requireContext())
             }
+
             PluginStatus.isNew -> {
                 context?.showToast(R.string.downloading)
                 viewModel.downloadPlugin(plugin.link, plugin.repository, requireContext())
