@@ -31,13 +31,15 @@ class RemoteDeviceFragment : UnchainedFragment(), ServiceListListener {
     private val args: RemoteDeviceFragmentArgs by navArgs()
 
     private val viewModel: DeviceViewModel by viewModels()
+    private var _binding: FragmentRemoteDeviceBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        val binding = FragmentRemoteDeviceBinding.inflate(inflater, container, false)
+        _binding = FragmentRemoteDeviceBinding.inflate(inflater, container, false)
 
         val serviceAdapter = RemoteServiceListAdapter(this)
         binding.rvServiceList.adapter = serviceAdapter
@@ -128,6 +130,11 @@ class RemoteDeviceFragment : UnchainedFragment(), ServiceListListener {
         }
 
         return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     private fun showMenu(v: View, @MenuRes menuRes: Int) {
