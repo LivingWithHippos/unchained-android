@@ -3,19 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <data>
-
-        <import type="android.view.View" />
-
-        <variable
-            name="selectedLinks"
-            type="Integer" />
-
-        <variable
-            name="listener"
-            type="com.github.livingwithhippos.unchained.lists.view.SelectedItemsButtonsListener" />
-    </data>
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -137,7 +124,7 @@
                 android:layout_height="wrap_content"
                 android:checked="false"
                 android:tooltipText="@string/select_deselect_all"
-                android:text="@{selectedLinks.toString(), default=`2`}"
+                android:text="0"
                 android:nextFocusUp="@id/cbFilterSize"
                 android:nextFocusRight="@id/bDeleteSelected"
                 android:nextFocusLeft="@id/cbFilterType"
@@ -149,7 +136,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/delete"
-                android:onClick="@{() -> listener.deleteSelectedItems()}"
                 app:icon="@drawable/icon_delete"
                 android:tooltipText="@string/delete_selected"
                 android:nextFocusUp="@id/cbFilterSize"
@@ -163,7 +149,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/download"
-                android:onClick="@{() -> listener.downloadSelectedItems()}"
                 app:icon="@drawable/icon_download"
                 android:tooltipText="@string/download_selected"
                 android:nextFocusUp="@id/cbFilterSize"
@@ -177,7 +162,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/share"
-                android:onClick="@{() -> listener.shareSelectedItems()}"
                 app:icon="@drawable/icon_share"
                 android:tooltipText="@string/share_selected"
                 android:nextFocusUp="@id/cbFilterSize"

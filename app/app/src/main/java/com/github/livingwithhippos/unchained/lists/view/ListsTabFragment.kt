@@ -882,17 +882,3 @@ sealed class ListState {
 
     data object UpdateDownload : ListState()
 }
-
-interface SelectedItemsButtonsListener {
-    fun deleteSelectedItems()
-
-    fun shareSelectedItems()
-
-    fun downloadSelectedItems()
-
-    fun openSelectedDetails()
-
-    fun openNewDownload()
-
-    fun refreshList()
-}

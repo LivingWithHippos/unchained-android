@@ -34,7 +34,6 @@ import com.github.livingwithhippos.unchained.folderlist.model.FolderItemAdapter
 import com.github.livingwithhippos.unchained.folderlist.model.FolderKeyProvider
 import com.github.livingwithhippos.unchained.folderlist.viewmodel.FolderListViewModel
 import com.github.livingwithhippos.unchained.lists.view.DownloadListListener
-import com.github.livingwithhippos.unchained.lists.view.SelectedItemsButtonsListener
 import com.github.livingwithhippos.unchained.utilities.DataBindingDetailsLookup
 import com.github.livingwithhippos.unchained.utilities.extension.copyToClipboard
 import com.github.livingwithhippos.unchained.utilities.extension.delayedScrolling
@@ -54,6 +53,59 @@ class FolderListFragment : UnchainedFragment(), DownloadListListener {
     private val mediaRegex =
         "\\.(webm|avi|mkv|ogg|MTS|M2TS|TS|mov|wmv|mp4|m4p|m4v|mp2|mpe|mpv|mpg|mpeg|m2v|3gp)$"
             .toRegex()
+    private var _binding: FragmentFolderListBinding? = null
+    private val binding get() = _binding!!
+
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
+    ): View {
+        _binding = FragmentFolderListBinding.inflate(inflater, container, false)
+
+        setup(binding)
+
+        val menuHost: MenuHost = requireActivity()
+
+        menuHost.addMenuProvider(
+            object : MenuProvider {
+                override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                    menuInflater.inflate(R.menu.folder_bar, menu)
+                }
+
+                override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                    return when (menuItem.itemId) {
+                        R.id.download_all -> {
+                            downloadAll()
+                            true
+                        }
+
+                        R.id.share_all -> {
+                            shareAll()
+                            true
+                        }
+
+                        R.id.copy_all -> {
+                            copyAll()
+                            true
+                        }
+
+                        else -> false
+                    }
+                }
+            },
+            viewLifecycleOwner,
+            Lifecycle.State.RESUMED,
+        )
+
+        return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 
     private fun shareAll() {
         val downloads: List<DownloadItem>? = viewModel.folderLiveData.value?.peekContent()
@@ -90,51 +142,7 @@ class FolderListFragment : UnchainedFragment(), DownloadListListener {
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View {
-        val binding = FragmentFolderListBinding.inflate(inflater, container, false)
-
-        setup(binding)
-
-        val menuHost: MenuHost = requireActivity()
-
-        menuHost.addMenuProvider(
-            object : MenuProvider {
-                override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                    menuInflater.inflate(R.menu.folder_bar, menu)
-                }
-
-                override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                    return when (menuItem.itemId) {
-                        R.id.download_all -> {
-                            downloadAll()
-                            true
-                        }
-                        R.id.share_all -> {
-                            shareAll()
-                            true
-                        }
-                        R.id.copy_all -> {
-                            copyAll()
-                            true
-                        }
-                        else -> false
-                    }
-                }
-            },
-            viewLifecycleOwner,
-            Lifecycle.State.RESUMED,
-        )
-
-        return binding.root
-    }
-
     private fun setup(binding: FragmentFolderListBinding) {
-
-        binding.selectedLinks = 0
 
         if (viewModel.shouldShowFilters()) {
             binding.cbFilterSize.visibility = View.VISIBLE
@@ -156,12 +164,12 @@ class FolderListFragment : UnchainedFragment(), DownloadListListener {
 
         val linkTracker: SelectionTracker<DownloadItem> =
             SelectionTracker.Builder(
-                    "folderListSelection",
-                    binding.rvFolderList,
-                    FolderKeyProvider(adapter),
-                    DataBindingDetailsLookup(binding.rvFolderList),
-                    StorageStrategy.createParcelableStorage(DownloadItem::class.java),
-                )
+                "folderListSelection",
+                binding.rvFolderList,
+                FolderKeyProvider(adapter),
+                DataBindingDetailsLookup(binding.rvFolderList),
+                StorageStrategy.createParcelableStorage(DownloadItem::class.java),
+            )
                 .withSelectionPredicate(SelectionPredicates.createSelectAnything())
                 .build()
 
@@ -171,57 +179,43 @@ class FolderListFragment : UnchainedFragment(), DownloadListListener {
             object : SelectionTracker.SelectionObserver<DownloadItem>() {
                 override fun onSelectionChanged() {
                     super.onSelectionChanged()
-                    binding.selectedLinks = linkTracker.selection.size()
+                    binding.cbSelectAll.text = linkTracker.selection.size().toString()
                 }
             }
         )
 
-        binding.listener =
-            object : SelectedItemsButtonsListener {
-                override fun deleteSelectedItems() {
-                    if (linkTracker.selection.toList().isNotEmpty()) {
-                        viewModel.deleteDownloadList(linkTracker.selection.toList())
-                    } else context?.showToast(R.string.select_one_item)
-                }
+        binding.bDeleteSelected.setOnClickListener {
 
-                override fun shareSelectedItems() {
-                    if (linkTracker.selection.toList().isNotEmpty()) {
-                        val shareIntent = Intent(Intent.ACTION_SEND)
-                        shareIntent.type = "text/plain"
-                        val shareLinks = linkTracker.selection.joinToString("\n") { it.download }
-                        shareIntent.putExtra(Intent.EXTRA_TEXT, shareLinks)
-                        startActivity(
-                            Intent.createChooser(shareIntent, getString(R.string.share_with))
-                        )
-                    } else context?.showToast(R.string.select_one_item)
-                }
+            if (linkTracker.selection.toList().isNotEmpty()) {
+                viewModel.deleteDownloadList(linkTracker.selection.toList())
+            } else context?.showToast(R.string.select_one_item)
+        }
 
-                override fun downloadSelectedItems() {
-                    val downloads: List<DownloadItem> = linkTracker.selection.toList()
-                    if (downloads.isNotEmpty()) {
-                        if (downloads.size == 1) {
-                            activityViewModel.enqueueDownload(
-                                downloads.first().download,
-                                downloads.first().filename,
-                            )
-                        } else {
-                            activityViewModel.enqueueDownloads(downloads)
-                        }
-                    } else context?.showToast(R.string.select_one_item)
+        binding.bDownloadSelected.setOnClickListener {
+            val downloads: List<DownloadItem> = linkTracker.selection.toList()
+            if (downloads.isNotEmpty()) {
+                if (downloads.size == 1) {
+                    activityViewModel.enqueueDownload(
+                        downloads.first().download,
+                        downloads.first().filename,
+                    )
+                } else {
+                    activityViewModel.enqueueDownloads(downloads)
                 }
+            } else context?.showToast(R.string.select_one_item)
+        }
 
-                override fun openSelectedDetails() {
-                    // not implemented at the moment
-                }
-
-                override fun openNewDownload() {
-                    // only for the download and torrent lists
-                }
-
-                override fun refreshList() {
-                    // only for the download and torrent lists
-                }
-            }
+        binding.bShareSelected.setOnClickListener {
+            if (linkTracker.selection.toList().isNotEmpty()) {
+                val shareIntent = Intent(Intent.ACTION_SEND)
+                shareIntent.type = "text/plain"
+                val shareLinks = linkTracker.selection.joinToString("\n") { it.download }
+                shareIntent.putExtra(Intent.EXTRA_TEXT, shareLinks)
+                startActivity(
+                    Intent.createChooser(shareIntent, getString(R.string.share_with))
+                )
+            } else context?.showToast(R.string.select_one_item)
+        }
 
         binding.cbSelectAll.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
@@ -265,8 +259,10 @@ class FolderListFragment : UnchainedFragment(), DownloadListListener {
                         // requireContext().showToast(error)
                         binding.tvError.visibility = View.VISIBLE
                     }
+
                     is EmptyBodyError ->
                         Timber.d("Empty Body error, return code: ${exception.returnCode}")
+
                     is NetworkError -> Timber.d("Network error, message: ${exception.message}")
                     is ApiConversionError ->
                         Timber.d("Api Conversion error, error: ${exception.error}")
@@ -312,6 +308,7 @@ class FolderListFragment : UnchainedFragment(), DownloadListListener {
                 binding.tvTitle.text = args.torrent!!.filename
                 viewModel.retrieveFiles(args.torrent!!.links)
             }
+
             args.linkList != null -> {
                 viewModel.retrieveFiles(args.linkList!!.toList())
             }
@@ -344,15 +341,19 @@ class FolderListFragment : UnchainedFragment(), DownloadListListener {
                 R.id.sortByDefault -> {
                     viewModel.setListSortPreference(TAG_DEFAULT_SORT)
                 }
+
                 R.id.sortByAZ -> {
                     viewModel.setListSortPreference(TAG_SORT_AZ)
                 }
+
                 R.id.sortByZA -> {
                     viewModel.setListSortPreference(TAG_SORT_ZA)
                 }
+
                 R.id.sortBySizeAsc -> {
                     viewModel.setListSortPreference(TAG_SORT_SIZE_ASC)
                 }
+
                 R.id.sortBySizeDesc -> {
                     viewModel.setListSortPreference(TAG_SORT_SIZE_DESC)
                 }
@@ -412,18 +413,23 @@ class FolderListFragment : UnchainedFragment(), DownloadListListener {
             TAG_DEFAULT_SORT -> {
                 adapter.submitList(customizedList)
             }
+
             TAG_SORT_AZ -> {
                 adapter.submitList(customizedList.sortedBy { item -> item.filename })
             }
+
             TAG_SORT_ZA -> {
                 adapter.submitList(customizedList.sortedByDescending { item -> item.filename })
             }
+
             TAG_SORT_SIZE_DESC -> {
                 adapter.submitList(customizedList.sortedByDescending { item -> item.fileSize })
             }
+
             TAG_SORT_SIZE_ASC -> {
                 adapter.submitList(customizedList.sortedBy { item -> item.fileSize })
             }
+
             else -> {
                 adapter.submitList(customizedList)
             }
