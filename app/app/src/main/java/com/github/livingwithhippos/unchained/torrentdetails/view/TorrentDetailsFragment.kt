@@ -170,7 +170,8 @@ class TorrentDetailsFragment : UnchainedFragment() {
                         }
                         binding.tvFileSize.text = getFileSizeString(ctx, torrent.bytes)
                     }
-                    binding.cvDownloadDetails.visibility = if (torrent.status.equals("downloading", true)) View.VISIBLE else View.GONE
+                    binding.cvDownloadDetails.visibility =
+                        if (torrent.status.equals("downloading", true)) View.VISIBLE else View.GONE
 
                     // Data should not change between updates so we should just populate it once
                     if (adapter.itemCount == 0) {
@@ -249,6 +250,12 @@ class TorrentDetailsFragment : UnchainedFragment() {
         }
 
         return binding.root
+    }
+
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     fun onDownloadClick(item: TorrentItem) {

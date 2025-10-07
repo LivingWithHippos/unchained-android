@@ -33,9 +33,11 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class UserProfileFragment : UnchainedFragment() {
 
-    @Inject lateinit var preferences: SharedPreferences
+    @Inject
+    lateinit var preferences: SharedPreferences
 
     private var _binding: FragmentUserProfileBinding? = null
+
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
 
@@ -55,7 +57,7 @@ class UserProfileFragment : UnchainedFragment() {
             populateUserView(user)
         }
         lifecycleScope.launch {
-            if(activityViewModel.isTokenPrivate()) {
+            if (activityViewModel.isTokenPrivate()) {
                 binding.tvLoginDescription.text = getString(R.string.login_type_private)
             } else {
                 binding.tvLoginDescription.text = getString(R.string.login_type_open)
@@ -65,7 +67,7 @@ class UserProfileFragment : UnchainedFragment() {
         activityViewModel.userLiveData.observe(viewLifecycleOwner) {
             populateUserView(it.peekContent())
             lifecycleScope.launch {
-                if(activityViewModel.isTokenPrivate()) {
+                if (activityViewModel.isTokenPrivate()) {
                     binding.tvLoginDescription.text = getString(R.string.login_type_private)
                 } else {
                     binding.tvLoginDescription.text = getString(R.string.login_type_open)
@@ -115,20 +117,24 @@ class UserProfileFragment : UnchainedFragment() {
                         val action = UserProfileFragmentDirections.actionUserToStartFragment()
                         findNavController().navigate(action)
                     }
+
                     FSMAuthenticationState.StartNewLogin -> {
                         // the user reset the login, go to the auth fragment
                         val action =
                             UserProfileFragmentDirections.actionUserToAuthenticationFragment()
                         findNavController().navigate(action)
                     }
+
                     FSMAuthenticationState.AuthenticatedOpenToken,
                     FSMAuthenticationState.AuthenticatedPrivateToken,
                     FSMAuthenticationState.RefreshingOpenToken -> {
                         // managed by activity
                     }
+
                     FSMAuthenticationState.CheckCredentials -> {
                         // shouldn't matter
                     }
+
                     FSMAuthenticationState.Start,
                     FSMAuthenticationState.WaitingToken,
                     FSMAuthenticationState.WaitingUserConfirmation -> {
@@ -145,15 +151,21 @@ class UserProfileFragment : UnchainedFragment() {
 
         if (
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
-                ContextCompat.checkSelfPermission(
-                    requireContext(),
-                    Manifest.permission.POST_NOTIFICATIONS,
-                ) != PermissionChecker.PERMISSION_GRANTED
+            ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.POST_NOTIFICATIONS,
+            ) != PermissionChecker.PERMISSION_GRANTED
         ) {
             activityViewModel.requireNotificationPermissions()
         }
 
         return view
+    }
+
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     fun populateUserView(user: User?) {
@@ -166,7 +178,8 @@ class UserProfileFragment : UnchainedFragment() {
             } else {
                 binding.tvPremium.text = getString(R.string.not_premium)
             }
-            binding.tvPremiumDays.text = getString(R.string.premium_days_format, it.premium / 60 / 60 / 24)
+            binding.tvPremiumDays.text =
+                getString(R.string.premium_days_format, it.premium / 60 / 60 / 24)
             binding.tvPoints.text = getString(R.string.premium_points_format, it.points)
             binding.pointsBar.setProgressCompat(it.points, true)
         }
