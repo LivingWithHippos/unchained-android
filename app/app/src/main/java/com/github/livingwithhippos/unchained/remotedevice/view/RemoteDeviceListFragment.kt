@@ -27,24 +27,27 @@ class RemoteDeviceListFragment : UnchainedFragment(), DeviceListListener {
 
     private val viewModel: DeviceViewModel by viewModels()
 
+    private var _binding: FragmentRemoteDeviceListBinding? = null
+    private val binding get() = _binding!!
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        val binding = FragmentRemoteDeviceListBinding.inflate(inflater, container, false)
+        _binding = FragmentRemoteDeviceListBinding.inflate(inflater, container, false)
 
         val deviceAdapter = RemoteDeviceListAdapter(this)
         binding.rvDeviceList.adapter = deviceAdapter
 
         val deviceTracker: SelectionTracker<RemoteDevice> =
             SelectionTracker.Builder(
-                    "deviceListSelection",
-                    binding.rvDeviceList,
-                    DeviceKeyProvider(deviceAdapter),
-                    DataBindingDetailsLookup(binding.rvDeviceList),
-                    StorageStrategy.createParcelableStorage(RemoteDevice::class.java),
-                )
+                "deviceListSelection",
+                binding.rvDeviceList,
+                DeviceKeyProvider(deviceAdapter),
+                DataBindingDetailsLookup(binding.rvDeviceList),
+                StorageStrategy.createParcelableStorage(RemoteDevice::class.java),
+            )
                 .withSelectionPredicate(SelectionPredicates.createSelectAnything())
                 .build()
 
@@ -76,6 +79,7 @@ class RemoteDeviceListFragment : UnchainedFragment(), DeviceListListener {
                         it.itemsMap.values.sumOf { serv -> serv.size }.toString()
                     )
                 }
+
                 is DeviceEvent.AllDevices -> deviceAdapter.submitList(it.devices)
                 is DeviceEvent.DeletedAll -> viewModel.fetchRemoteDevices()
                 else -> {}
@@ -87,6 +91,11 @@ class RemoteDeviceListFragment : UnchainedFragment(), DeviceListListener {
         binding.fabDevicesAction.setOnClickListener { showMenu(it, R.menu.devices_list_action) }
 
         return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     private fun showMenu(v: View, @MenuRes menuRes: Int) {
@@ -103,10 +112,12 @@ class RemoteDeviceListFragment : UnchainedFragment(), DeviceListListener {
                     findNavController().navigate(action)
                     true
                 }
+
                 R.id.delete_all_devices -> {
                     showConfirmationDialog()
                     true
                 }
+
                 else -> {
                     false
                 }
