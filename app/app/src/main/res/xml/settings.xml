@@ -116,8 +116,15 @@
         <SwitchPreference
             android:defaultValue="false"
             app:key="use_doh_key"
-            app:summary="@string/uses_google_dns"
             app:title="@string/enable_doh" />
+
+        <DropDownPreference
+            android:defaultValue="cloudflare"
+            android:entries="@array/doh_provider"
+            android:entryValues="@array/doh_provider_values"
+            android:key="doh_provider"
+            android:title="@string/pick_doh_provider"
+            app:useSimpleSummaryProvider="true" />
 
     </PreferenceCategory>
 

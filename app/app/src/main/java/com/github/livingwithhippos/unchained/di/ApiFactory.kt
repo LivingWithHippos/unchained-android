@@ -108,7 +108,9 @@ object ApiFactory {
     @Provides
     @Singleton
     @DOHClient
-    fun provideDOHClient(): OkHttpClient {
+    fun provideDOHClient(
+        preferences: SharedPreferences
+        ): OkHttpClient {
 
         val bootstrapClient: OkHttpClient =
             if (BuildConfig.DEBUG) {
@@ -148,15 +150,26 @@ object ApiFactory {
                     .build()
             }
 
-        val dns =
-            DnsOverHttps.Builder()
+        val dohProvider = preferences.getString("doh_provider", "cloudflare") ?: "cloudflare"
+
+        val dns = when(dohProvider) {
+            "cloudflare" -> DnsOverHttps.Builder()
+                .client(bootstrapClient)
+                .url("https://cloudflare-dns.com/dns-query".toHttpUrl())
+                .bootstrapDnsHosts(
+                    InetAddress.getByName("1.1.1.1")
+                )
+                .build()
+            else -> DnsOverHttps.Builder()
                 .client(bootstrapClient)
                 .url("https://dns.google/dns-query".toHttpUrl())
                 .bootstrapDnsHosts(
                     InetAddress.getByName("8.8.8.8"),
-                    InetAddress.getByName("8.8.4.4"),
+                    InetAddress.getByName("8.8.4.4")
                 )
                 .build()
+        }
+
 
         return bootstrapClient.newBuilder().dns(dns).build()
     }
