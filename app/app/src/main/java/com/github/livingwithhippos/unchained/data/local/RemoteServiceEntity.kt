@@ -58,8 +58,8 @@ class RemoteService(
 sealed class RemoteServiceType(
     val value: Int,
     val isMediaPlayer: Boolean,
-    @StringRes val nameRes: Int,
-    @DrawableRes val iconRes: Int,
+    @param:StringRes val nameRes: Int,
+    @param:DrawableRes val iconRes: Int,
 ) {
     data object KODI : RemoteServiceType(0, true, R.string.kodi, R.drawable.icon_kodi)
 

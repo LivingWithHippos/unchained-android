@@ -4,9 +4,8 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import android.net.Network
-import android.net.NetworkCapabilities
 import android.net.Uri
-import android.os.Build
+import androidx.core.net.toUri
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -754,42 +753,15 @@ constructor(
         }
 
     fun addConnectivityCheck(context: Context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            val connectivityManager =
-                context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-            connectivityManager.registerDefaultNetworkCallback(networkCallback)
-        } else {
-            checkConnectivity(context)
-        }
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        connectivityManager.registerDefaultNetworkCallback(networkCallback)
     }
 
     fun removeConnectivityCheck(context: Context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            val connectivityManager =
-                context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-            connectivityManager.unregisterNetworkCallback(networkCallback)
-        }
-    }
-
-    @Suppress("DEPRECATION")
-    private fun checkConnectivity(context: Context) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
-            val connectivityManager =
-                context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-            var isConnected = false
-            val networks = connectivityManager.allNetworks
-            for (net in networks) {
-                val netInfo = connectivityManager.getNetworkCapabilities(net)
-                if (
-                    netInfo != null &&
-                        netInfo.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-                ) {
-                    isConnected = true
-                    break
-                }
-            }
-            connectivityLiveData.postValue(isConnected)
-        }
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        connectivityManager.unregisterNetworkCallback(networkCallback)
     }
 
     fun updateCredentials(
@@ -1013,7 +985,7 @@ constructor(
         val folder = preferences.getString(KEY_DOWNLOAD_FOLDER, null)
         if (folder != null) {
             try {
-                return Uri.parse(folder)
+                return folder.toUri()
             } catch (e: Exception) {
                 Timber.e("Error parsing the saved folder Uri $folder")
             }

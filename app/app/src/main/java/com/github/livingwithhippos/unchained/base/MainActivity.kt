@@ -25,6 +25,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker.PERMISSION_GRANTED
+import androidx.core.net.toUri
 import androidx.core.view.MenuProvider
 import androidx.core.view.forEach
 import androidx.lifecycle.lifecycleScope
@@ -357,7 +358,7 @@ class MainActivity : AppCompatActivity() {
 
                     else -> {
                         // check the authentication
-                        processExternalRequestOnAuthentication(Uri.parse(link))
+                        processExternalRequestOnAuthentication(link.toUri())
                     }
                 }
             }
@@ -406,9 +407,6 @@ class MainActivity : AppCompatActivity() {
                     lifecycleScope.launch {
                         currentToast.cancel()
                         // calling cancel stops the toast from showing on api 22 maybe others
-                        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M) {
-                            delay(200)
-                        }
                         currentToast.setText(
                             getString(R.string.n_plugins_installed, content.number)
                         )
@@ -420,9 +418,6 @@ class MainActivity : AppCompatActivity() {
                     lifecycleScope.launch {
                         currentToast.cancel()
                         // calling cancel stops the toast from showing on api 22 maybe others
-                        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M) {
-                            delay(200)
-                        }
                         currentToast.setText(getString(content.id))
                         currentToast.show()
                     }
@@ -494,7 +489,7 @@ class MainActivity : AppCompatActivity() {
                                 content.downloads.forEach { download ->
                                     val queuedDownload =
                                         manager.downloadFileInStandardFolder(
-                                            source = Uri.parse(download.download),
+                                            source = download.download.toUri(),
                                             title = download.filename,
                                             description = getString(R.string.app_name),
                                             fileName = download.filename,
@@ -566,7 +561,7 @@ class MainActivity : AppCompatActivity() {
 
                                 val queuedDownload =
                                     manager.downloadFileInStandardFolder(
-                                        source = Uri.parse(content.source),
+                                        source = content.source.toUri(),
                                         title = content.fileName,
                                         description = getString(R.string.app_name),
                                         fileName = content.fileName,
