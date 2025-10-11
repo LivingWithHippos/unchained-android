@@ -2,21 +2,10 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <data>
-
-        <variable
-            name="item"
-            type="com.github.livingwithhippos.unchained.settings.view.ThemeItem" />
-
-        <variable
-            name="listener"
-            type="com.github.livingwithhippos.unchained.settings.view.ThemePickListener" />
-    </data>
-
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clItemTheme"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="@{() -> listener.onThemeClick(item)}"
         android:padding="10dp">
 
         <com.github.livingwithhippos.unchained.customview.ThemeColorsCircle
@@ -25,9 +14,6 @@
             android:layout_height="30dp"
             android:layout_marginEnd="16dp"
             android:clickable="false"
-            app:topColor="@{item.primaryColorID}"
-            app:bottomLeftColor="@{item.surfaceColorID}"
-            app:bottomRightColor="@{item.primaryContainerColorID}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/theme_name"
             app:layout_constraintStart_toStartOf="parent"
@@ -40,7 +26,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:maxLines="2"
-            android:text="@{item.name, default=`Theme #X`}"
             android:textAppearance="?attr/textAppearanceTitleLarge"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
