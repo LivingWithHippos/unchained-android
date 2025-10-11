@@ -416,6 +416,7 @@ fun ImageView.setDrawableByServiceType(type: Int) {
         else -> this.setImageResource(R.drawable.icon_play_outline)
     }
 }
+
 fun setDrawableByServiceType(view: ImageView, type: Int) {
     return when (type) {
         RemoteServiceType.KODI.value -> view.setImageResource(R.drawable.icon_kodi)

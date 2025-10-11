@@ -135,9 +135,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
             shareIntent.putExtra(Intent.EXTRA_TEXT, args.details.download)
             startActivity(Intent.createChooser(shareIntent, getString(R.string.share_with)))
         }
-        binding.fabOpenLink.setOnClickListener {
-            onOpenClick(args.details.download)
-        }
+        binding.fabOpenLink.setOnClickListener { onOpenClick(args.details.download) }
         binding.fabCopyLink.setOnClickListener {
             copyToClipboard("Real-Debrid Download Link", args.details.download)
             context?.showToast(R.string.link_copied)
@@ -202,9 +200,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
             binding.llFabLoadStreams.visibility = View.GONE
         }
 
-        binding.fabLoadStreams.setOnClickListener {
-            onLoadStreamsClick(args.details.id)
-        }
+        binding.fabLoadStreams.setOnClickListener { onLoadStreamsClick(args.details.id) }
 
         if (args.details.alternative.isNullOrEmpty()) {
             binding.fabLoadStreams.isEnabled = false

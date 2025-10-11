@@ -14,7 +14,6 @@ import com.github.livingwithhippos.unchained.utilities.extension.setDrawableBySe
 class ServicePickerAdapter(private val listener: ServicePickerListener) :
     ListAdapter<RemoteServiceDetails, RemoteServiceViewHolder>(DiffCallback()) {
 
-
     class DiffCallback : DiffUtil.ItemCallback<RemoteServiceDetails>() {
         override fun areItemsTheSame(
             oldItem: RemoteServiceDetails,
@@ -24,7 +23,7 @@ class ServicePickerAdapter(private val listener: ServicePickerListener) :
         // content does not change on update
         override fun areContentsTheSame(
             oldItem: RemoteServiceDetails,
-            newItem: RemoteServiceDetails
+            newItem: RemoteServiceDetails,
         ): Boolean = true
     }
 
@@ -44,7 +43,7 @@ class ServicePickerAdapter(private val listener: ServicePickerListener) :
 
 class RemoteServiceViewHolder(
     private val binding: ItemListServicePickerBinding,
-    private val listener: ServicePickerListener
+    private val listener: ServicePickerListener,
 ) : RecyclerView.ViewHolder(binding.root) {
 
     @SuppressLint("SetTextI18n")

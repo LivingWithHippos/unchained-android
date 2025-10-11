@@ -13,15 +13,13 @@ import com.github.livingwithhippos.unchained.plugins.model.ScrapedItem
 class SearchItemAdapter(private val listener: SearchItemListener) :
     ListAdapter<ScrapedItem, SearchItemViewHolder>(DiffCallback()) {
 
-
     class DiffCallback : DiffUtil.ItemCallback<ScrapedItem>() {
         override fun areItemsTheSame(oldItem: ScrapedItem, newItem: ScrapedItem): Boolean =
             oldItem.link == newItem.link
 
-
         override fun areContentsTheSame(oldItem: ScrapedItem, newItem: ScrapedItem): Boolean {
             return oldItem.magnets.size == newItem.magnets.size &&
-                    oldItem.torrents.size == newItem.torrents.size
+                oldItem.torrents.size == newItem.torrents.size
         }
     }
 
@@ -41,26 +39,30 @@ class SearchItemAdapter(private val listener: SearchItemListener) :
 
 class SearchItemViewHolder(
     private val binding: ItemListSearchBinding,
-    private val listener: SearchItemListener
+    private val listener: SearchItemListener,
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun bindCell(item: ScrapedItem) {
         binding.tvName.text = item.name.trim()
 
         val linksCount = item.magnets.size + item.torrents.size + item.hosting.size
-        binding.tvLinks.text = itemView.context.resources.getQuantityString(
-            R.plurals.links_format, linksCount, linksCount
-        )
-        binding.tvLinks.visibility = if (item.magnets.isEmpty() && item.hosting.isEmpty()) View.GONE else View.VISIBLE
+        binding.tvLinks.text =
+            itemView.context.resources.getQuantityString(
+                R.plurals.links_format,
+                linksCount,
+                linksCount,
+            )
+        binding.tvLinks.visibility =
+            if (item.magnets.isEmpty() && item.hosting.isEmpty()) View.GONE else View.VISIBLE
 
-        binding.tvSeeders.text = item.seeders?.let {
-            itemView.context.getString(R.string.seeders_short_format, it)
-        } ?: ""
+        binding.tvSeeders.text =
+            item.seeders?.let { itemView.context.getString(R.string.seeders_short_format, it) }
+                ?: ""
         binding.tvSeeders.visibility = if (item.seeders == null) View.GONE else View.VISIBLE
 
-        binding.tvLeechers.text = item.leechers?.let {
-            itemView.context.getString(R.string.leechers_short_format, it)
-        } ?: ""
+        binding.tvLeechers.text =
+            item.leechers?.let { itemView.context.getString(R.string.leechers_short_format, it) }
+                ?: ""
         binding.tvLeechers.visibility = if (item.leechers == null) View.GONE else View.VISIBLE
 
         binding.tvSize.text = item.size ?: ""

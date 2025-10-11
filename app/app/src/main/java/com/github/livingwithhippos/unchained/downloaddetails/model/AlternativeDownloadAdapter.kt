@@ -10,10 +10,8 @@ import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.model.Alternative
 import com.github.livingwithhippos.unchained.databinding.ItemAlternativeDownloadBinding
 
-
 class AlternativeDownloadAdapter(private val listener: DownloadDetailsListener) :
     ListAdapter<Alternative, AlternativeDownloadViewHolder>(DiffCallback()) {
-
 
     class DiffCallback : DiffUtil.ItemCallback<Alternative>() {
         override fun areItemsTheSame(oldItem: Alternative, newItem: Alternative): Boolean =
@@ -25,13 +23,14 @@ class AlternativeDownloadAdapter(private val listener: DownloadDetailsListener) 
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
-        viewType: Int
+        viewType: Int,
     ): AlternativeDownloadViewHolder {
-        val binding = ItemAlternativeDownloadBinding.inflate(
-            LayoutInflater.from(parent.context),
-            parent,
-            false
-        )
+        val binding =
+            ItemAlternativeDownloadBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false,
+            )
         return AlternativeDownloadViewHolder(binding, listener)
     }
 
@@ -45,7 +44,7 @@ class AlternativeDownloadAdapter(private val listener: DownloadDetailsListener) 
 
 class AlternativeDownloadViewHolder(
     private val binding: ItemAlternativeDownloadBinding,
-    private val listener: DownloadDetailsListener
+    private val listener: DownloadDetailsListener,
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun bindCell(item: Alternative) {
@@ -68,11 +67,18 @@ class AlternativeDownloadViewHolder(
 
 interface DownloadDetailsListener {
     fun onCopyClick(text: String)
+
     fun onOpenClick(url: String)
+
     fun onOpenTranscodedStream(view: View, url: String)
+
     fun onLoadStreamsClick(id: String)
+
     fun onBrowserStreamsClick(id: String)
+
     fun onDownloadClick(link: String, fileName: String)
+
     fun onShareClick(url: String)
+
     fun onSendToPlayer(url: String)
 }

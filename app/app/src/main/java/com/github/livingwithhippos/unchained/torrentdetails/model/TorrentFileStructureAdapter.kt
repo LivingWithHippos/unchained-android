@@ -21,8 +21,8 @@ data class TorrentFileItem(
     override fun equals(other: Any?): Boolean {
         return if (other is TorrentFileItem)
             this.id == other.id &&
-                    this.absolutePath == other.absolutePath &&
-                    this.name == other.name
+                this.absolutePath == other.absolutePath &&
+                this.name == other.name
         else super.equals(other)
     }
 
@@ -99,15 +99,14 @@ interface TorrentContentListener {
     fun onSelectedFolder(item: TorrentFileItem)
 }
 
-class TorrentContentFilesAdapter(
-    private val listener: TorrentContentListener
-) : ListAdapter<TorrentFileItem, RecyclerView.ViewHolder>(DiffCallback()) {
+class TorrentContentFilesAdapter(private val listener: TorrentContentListener) :
+    ListAdapter<TorrentFileItem, RecyclerView.ViewHolder>(DiffCallback()) {
 
     class DiffCallback : DiffUtil.ItemCallback<TorrentFileItem>() {
         override fun areItemsTheSame(oldItem: TorrentFileItem, newItem: TorrentFileItem): Boolean {
             return oldItem.absolutePath == newItem.absolutePath &&
-                    oldItem.name == newItem.name &&
-                    oldItem.id == newItem.id
+                oldItem.name == newItem.name &&
+                oldItem.id == newItem.id
         }
 
         override fun areContentsTheSame(
@@ -120,27 +119,25 @@ class TorrentContentFilesAdapter(
 
     override fun getItemViewType(position: Int): Int {
         val item = getItem(position)
-        return if (item.id == TYPE_FOLDER)
-            R.layout.item_list_torrent_selection_directory
-        else
-            R.layout.item_list_torrent_selection_file
+        return if (item.id == TYPE_FOLDER) R.layout.item_list_torrent_selection_directory
+        else R.layout.item_list_torrent_selection_file
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             R.layout.item_list_torrent_selection_directory -> {
                 val binding =
-                    com.github.livingwithhippos.unchained.databinding.ItemListTorrentSelectionDirectoryBinding.inflate(
-                        LayoutInflater.from(parent.context), parent, false
-                    )
+                    com.github.livingwithhippos.unchained.databinding
+                        .ItemListTorrentSelectionDirectoryBinding
+                        .inflate(LayoutInflater.from(parent.context), parent, false)
                 DirectoryViewHolder(binding, listener)
             }
 
             R.layout.item_list_torrent_selection_file -> {
                 val binding =
-                    com.github.livingwithhippos.unchained.databinding.ItemListTorrentSelectionFileBinding.inflate(
-                        LayoutInflater.from(parent.context), parent, false
-                    )
+                    com.github.livingwithhippos.unchained.databinding
+                        .ItemListTorrentSelectionFileBinding
+                        .inflate(LayoutInflater.from(parent.context), parent, false)
                 FileViewHolder(binding, listener)
             }
 
@@ -157,8 +154,9 @@ class TorrentContentFilesAdapter(
     }
 
     class DirectoryViewHolder(
-        private val binding: com.github.livingwithhippos.unchained.databinding.ItemListTorrentSelectionDirectoryBinding,
-        private val listener: TorrentContentListener
+        private val binding:
+            com.github.livingwithhippos.unchained.databinding.ItemListTorrentSelectionDirectoryBinding,
+        private val listener: TorrentContentListener,
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bindCell(item: TorrentFileItem) {
             binding.tvDirectoryName.text = item.name
@@ -168,8 +166,9 @@ class TorrentContentFilesAdapter(
     }
 
     class FileViewHolder(
-        private val binding: com.github.livingwithhippos.unchained.databinding.ItemListTorrentSelectionFileBinding,
-        private val listener: TorrentContentListener
+        private val binding:
+            com.github.livingwithhippos.unchained.databinding.ItemListTorrentSelectionFileBinding,
+        private val listener: TorrentContentListener,
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bindCell(item: TorrentFileItem) {
             binding.tvFileName.text = item.name

@@ -89,20 +89,15 @@ data class ThemeItem(
     @ColorInt val primaryContainerColorID: Int,
 )
 
-
 class ThemePickerAdapter(private val listener: ThemePickListener) :
     ListAdapter<ThemeItem, ThemeViewHolder>(DiffCallback()) {
-
 
     class DiffCallback : DiffUtil.ItemCallback<ThemeItem>() {
         override fun areItemsTheSame(oldItem: ThemeItem, newItem: ThemeItem): Boolean =
             oldItem.key == newItem.key
 
         // content does not change on update
-        override fun areContentsTheSame(
-            oldItem: ThemeItem,
-            newItem: ThemeItem
-        ): Boolean = true
+        override fun areContentsTheSame(oldItem: ThemeItem, newItem: ThemeItem): Boolean = true
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ThemeViewHolder {
@@ -121,7 +116,7 @@ class ThemePickerAdapter(private val listener: ThemePickListener) :
 
 class ThemeViewHolder(
     private val binding: ItemThemeListBinding,
-    private val listener: ThemePickListener
+    private val listener: ThemePickListener,
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun bindCell(item: ThemeItem) {

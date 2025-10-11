@@ -8,20 +8,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.databinding.ItemListLinkBinding
 
-
 class LinkItemAdapter(private val listener: LinkItemListener) :
     ListAdapter<LinkItem, ItemLinkViewHolder>(DiffCallback()) {
-
 
     class DiffCallback : DiffUtil.ItemCallback<LinkItem>() {
         override fun areItemsTheSame(oldItem: LinkItem, newItem: LinkItem): Boolean =
             oldItem.link == newItem.link
 
         // content does not change on update
-        override fun areContentsTheSame(
-            oldItem: LinkItem,
-            newItem: LinkItem
-        ): Boolean = true
+        override fun areContentsTheSame(oldItem: LinkItem, newItem: LinkItem): Boolean = true
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemLinkViewHolder {
@@ -40,7 +35,7 @@ class LinkItemAdapter(private val listener: LinkItemListener) :
 
 class ItemLinkViewHolder(
     private val binding: ItemListLinkBinding,
-    private val listener: LinkItemListener
+    private val listener: LinkItemListener,
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun bindCell(item: LinkItem) {

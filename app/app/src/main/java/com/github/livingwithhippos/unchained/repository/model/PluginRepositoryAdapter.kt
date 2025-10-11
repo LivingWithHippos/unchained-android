@@ -13,12 +13,10 @@ import com.github.livingwithhippos.unchained.databinding.ItemPluginRepositoryRep
 import com.github.livingwithhippos.unchained.utilities.extension.setDrawableByPluginStatus
 import kotlinx.parcelize.Parcelize
 
-
 class PluginRepositoryAdapter(private val listener: PluginListener) :
     ListAdapter<RepositoryListItem, RecyclerView.ViewHolder>(DiffCallback()) {
 
-    class DiffCallback :
-        DiffUtil.ItemCallback<RepositoryListItem>() {
+    class DiffCallback : DiffUtil.ItemCallback<RepositoryListItem>() {
         override fun areItemsTheSame(
             oldItem: RepositoryListItem,
             newItem: RepositoryListItem,
@@ -32,7 +30,7 @@ class PluginRepositoryAdapter(private val listener: PluginListener) :
                 oldItem is RepositoryListItem.Plugin && newItem is RepositoryListItem.Plugin
             ) {
                 return oldItem.repository.equals(newItem.repository, ignoreCase = true) &&
-                        oldItem.link.equals(newItem.link, ignoreCase = true)
+                    oldItem.link.equals(newItem.link, ignoreCase = true)
             } else return false
         }
 
@@ -45,14 +43,14 @@ class PluginRepositoryAdapter(private val listener: PluginListener) :
                 oldItem is RepositoryListItem.Repository && newItem is RepositoryListItem.Repository
             ) {
                 return oldItem.version == newItem.version &&
-                        oldItem.name == newItem.name &&
-                        oldItem.description == newItem.description
+                    oldItem.name == newItem.name &&
+                    oldItem.description == newItem.description
             } else if (
                 oldItem is RepositoryListItem.Plugin && newItem is RepositoryListItem.Plugin
             ) {
                 return oldItem.name == newItem.name &&
-                        oldItem.version == newItem.version &&
-                        oldItem.status == newItem.status
+                    oldItem.version == newItem.version &&
+                    oldItem.status == newItem.status
             }
             return false
         }
@@ -62,16 +60,22 @@ class PluginRepositoryAdapter(private val listener: PluginListener) :
 
         return when (viewType) {
             R.layout.item_plugin_repository_repo -> {
-                val binding = ItemPluginRepositoryRepoBinding.inflate(
-                    LayoutInflater.from(parent.context), parent, false
-                )
+                val binding =
+                    ItemPluginRepositoryRepoBinding.inflate(
+                        LayoutInflater.from(parent.context),
+                        parent,
+                        false,
+                    )
                 RepositoryViewHolder(binding, listener)
             }
 
             R.layout.item_plugin_repository_plugin -> {
-                val binding = ItemPluginRepositoryPluginBinding.inflate(
-                    LayoutInflater.from(parent.context), parent, false
-                )
+                val binding =
+                    ItemPluginRepositoryPluginBinding.inflate(
+                        LayoutInflater.from(parent.context),
+                        parent,
+                        false,
+                    )
                 PluginViewHolder(binding, listener)
             }
 
@@ -97,7 +101,7 @@ class PluginRepositoryAdapter(private val listener: PluginListener) :
 
 class PluginViewHolder(
     private val binding: ItemPluginRepositoryPluginBinding,
-    private val listener: PluginListener
+    private val listener: PluginListener,
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun bindCell(item: RepositoryListItem.Plugin) {
@@ -105,22 +109,21 @@ class PluginViewHolder(
         setDrawableByPluginStatus(binding.ivStatus, item.status)
         binding.tvName.text = item.name
 
-        if (item.status == PluginStatus.isNew)
-            binding.bDownload.visibility = View.VISIBLE
-        else
-            binding.bDownload.visibility = View.GONE
+        if (item.status == PluginStatus.isNew) binding.bDownload.visibility = View.VISIBLE
+        else binding.bDownload.visibility = View.GONE
         binding.bDownload.setOnClickListener { listener.onPluginDownloadClick(item) }
 
-        if (item.status == PluginStatus.hasUpdate)
-            binding.bUpdate.visibility = View.VISIBLE
-        else
-            binding.bUpdate.visibility = View.GONE
+        if (item.status == PluginStatus.hasUpdate) binding.bUpdate.visibility = View.VISIBLE
+        else binding.bUpdate.visibility = View.GONE
         binding.bUpdate.setOnClickListener { listener.onPluginDownloadClick(item) }
 
-        if (item.status == PluginStatus.updated || item.status == PluginStatus.hasUpdate || item.status == PluginStatus.hasIncompatibleUpdate)
+        if (
+            item.status == PluginStatus.updated ||
+                item.status == PluginStatus.hasUpdate ||
+                item.status == PluginStatus.hasIncompatibleUpdate
+        )
             binding.bDelete.visibility = View.VISIBLE
-        else
-            binding.bDelete.visibility = View.GONE
+        else binding.bDelete.visibility = View.GONE
         binding.bDelete.setOnClickListener { listener.onPluginRemoveClick(item) }
 
         binding.tvVersion.text = item.version.toString()
@@ -130,7 +133,7 @@ class PluginViewHolder(
 
 class RepositoryViewHolder(
     private val binding: ItemPluginRepositoryRepoBinding,
-    private val listener: PluginListener
+    private val listener: PluginListener,
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun bindCell(item: RepositoryListItem.Repository) {

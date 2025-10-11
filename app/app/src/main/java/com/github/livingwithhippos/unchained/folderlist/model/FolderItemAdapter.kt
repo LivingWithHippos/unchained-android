@@ -26,10 +26,8 @@ class FolderItemAdapter(private val listener: DownloadListListener) :
             oldItem.link == newItem.link
 
         // content does not change on update
-        override fun areContentsTheSame(
-            oldItem: DownloadItem,
-            newItem: DownloadItem
-        ): Boolean = true
+        override fun areContentsTheSame(oldItem: DownloadItem, newItem: DownloadItem): Boolean =
+            true
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemFolderViewHolder {
@@ -55,7 +53,7 @@ class FolderItemAdapter(private val listener: DownloadListListener) :
 
 class ItemFolderViewHolder(
     private val binding: ItemListDownloadBinding,
-    private val listener: DownloadListListener
+    private val listener: DownloadListListener,
 ) : RecyclerView.ViewHolder(binding.root) {
 
     var mItem: DownloadItem? = null
@@ -64,9 +62,8 @@ class ItemFolderViewHolder(
         mItem = item
         binding.selectionIndicator.visibility = if (selected) View.VISIBLE else View.GONE
         binding.tvTitle.text =
-            if (item.streamable == 1) itemView.context.getString(R.string.streaming) else itemView.context.getString(
-                R.string.download
-            )
+            if (item.streamable == 1) itemView.context.getString(R.string.streaming)
+            else itemView.context.getString(R.string.download)
         binding.tvName.text = item.filename
         binding.tvSize.text = getFileSizeString(itemView.context, item.fileSize)
         binding.cvDownload.setOnClickListener { listener.onClick(item) }
@@ -85,8 +82,7 @@ class FolderDetailsLookup(private val recyclerView: RecyclerView) :
     override fun getItemDetails(event: MotionEvent): ItemDetails<DownloadItem>? {
         val view = recyclerView.findChildViewUnder(event.x, event.y)
         if (view != null) {
-            return (recyclerView.getChildViewHolder(view) as ItemFolderViewHolder)
-                .getItemDetails()
+            return (recyclerView.getChildViewHolder(view) as ItemFolderViewHolder).getItemDetails()
         }
         return null
     }
