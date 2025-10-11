@@ -1,6 +1,5 @@
 package com.github.livingwithhippos.unchained.repository.model
 
-import android.annotation.SuppressLint
 import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
@@ -9,14 +8,9 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.github.livingwithhippos.unchained.R
-import com.github.livingwithhippos.unchained.data.local.RemoteServiceDetails
-import com.github.livingwithhippos.unchained.databinding.ItemListServicePickerBinding
 import com.github.livingwithhippos.unchained.databinding.ItemPluginRepositoryPluginBinding
 import com.github.livingwithhippos.unchained.databinding.ItemPluginRepositoryRepoBinding
-import com.github.livingwithhippos.unchained.downloaddetails.model.ServicePickerListener
-import com.github.livingwithhippos.unchained.utilities.DataBindingAdapter
 import com.github.livingwithhippos.unchained.utilities.extension.setDrawableByPluginStatus
-import com.github.livingwithhippos.unchained.utilities.extension.setDrawableByServiceType
 import kotlinx.parcelize.Parcelize
 
 

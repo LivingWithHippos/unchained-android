@@ -1,24 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
-
-    <data>
-
-        <import type="android.view.View" />
-
-        <variable
-            name="item"
-            type="com.github.livingwithhippos.unchained.search.model.LinkItem" />
-
-        <variable
-            name="listener"
-            type="com.github.livingwithhippos.unchained.search.model.LinkItemListener" />
-
-    </data>
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.google.android.material.card.MaterialCardView
         style="?attr/materialCardViewElevatedStyle"
+        android:id="@+id/cvListLink"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -29,8 +15,6 @@
         android:focusable="true"
         app:cardCornerRadius="10dp"
         app:cardElevation="5dp"
-        android:onClick="@{() -> listener.onClick(item)}"
-        android:onLongClick="@{() -> listener.onLongClick(item)}"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -47,7 +31,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="parent"
-                android:text="@{item.type, default=`Torrent`}"
                 app:layout_constraintBottom_toTopOf="@id/link"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -57,7 +40,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:maxLines="4"
-                android:text="@{item.name, default=`https://verylonglinkbecauseihavetotestthislinkinmylayoutpreview.com/randomfileletterstomakeitevenmorelong:234gyu234gyu`}"
                 app:layout_constraintStart_toStartOf="@id/type"
                 app:layout_constraintTop_toBottomOf="@id/type"
                 app:layout_constraintBottom_toBottomOf="parent" />
