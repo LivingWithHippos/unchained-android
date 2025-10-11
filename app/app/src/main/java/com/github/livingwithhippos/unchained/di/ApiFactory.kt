@@ -150,9 +150,17 @@ object ApiFactory {
                     .build()
             }
 
-        val dohProvider = preferences.getString("doh_provider", "cloudflare") ?: "cloudflare"
+        val dohProvider = preferences.getString("doh_provider", "quad9") ?: "quad9"
 
         val dns = when(dohProvider) {
+            "google" -> DnsOverHttps.Builder()
+                .client(bootstrapClient)
+                .url("https://dns.google/dns-query".toHttpUrl())
+                .bootstrapDnsHosts(
+                    InetAddress.getByName("8.8.8.8"),
+                    InetAddress.getByName("8.8.4.4")
+                )
+                .build()
             "cloudflare" -> DnsOverHttps.Builder()
                 .client(bootstrapClient)
                 .url("https://cloudflare-dns.com/dns-query".toHttpUrl())
@@ -160,12 +168,27 @@ object ApiFactory {
                     InetAddress.getByName("1.1.1.1")
                 )
                 .build()
+            "quad9" -> DnsOverHttps.Builder()
+                .client(bootstrapClient)
+                .url("https://dns.quad9.net/dns-query".toHttpUrl())
+                .bootstrapDnsHosts(
+                    InetAddress.getByName("9.9.9.9"),
+                    InetAddress.getByName("149.112.112.112")
+                )
+                .build()
+            "mullvad" -> DnsOverHttps.Builder()
+                .client(bootstrapClient)
+                .url("https://dns.mullvad.net/dns-query".toHttpUrl())
+                .bootstrapDnsHosts(
+                    InetAddress.getByName("194.242.2.2")
+                )
+                .build()
             else -> DnsOverHttps.Builder()
                 .client(bootstrapClient)
-                .url("https://dns.google/dns-query".toHttpUrl())
+                .url("https://dns.quad9.net/dns-query".toHttpUrl())
                 .bootstrapDnsHosts(
-                    InetAddress.getByName("8.8.8.8"),
-                    InetAddress.getByName("8.8.4.4")
+                    InetAddress.getByName("9.9.9.9"),
+                    InetAddress.getByName("149.112.112.112")
                 )
                 .build()
         }

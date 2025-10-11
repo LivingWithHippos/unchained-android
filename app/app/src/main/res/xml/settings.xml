@@ -119,7 +119,7 @@
             app:title="@string/enable_doh" />
 
         <DropDownPreference
-            android:defaultValue="cloudflare"
+            android:defaultValue="quad9"
             android:entries="@array/doh_provider"
             android:entryValues="@array/doh_provider_values"
             android:key="doh_provider"

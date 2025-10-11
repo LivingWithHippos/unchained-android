@@ -2,6 +2,8 @@
     <string name="app_name" translatable="false">Unchained</string>
     <string name="google" translatable="false">Google</string>
     <string name="cloudflare" translatable="false">Cloudflare</string>
+    <string name="quad9" translatable="false">Quad9</string>
+    <string name="mullvad" translatable="false">Mullvad</string>
     <string name="loading_auth_link">Loading Authentication…</string>
     <string name="please_visit">Please visit\u0020</string>
     <string name="link">Link</string>
