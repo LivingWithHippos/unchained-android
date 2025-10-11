@@ -2,19 +2,6 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <data>
-
-        <import type="android.view.View" />
-
-        <variable
-            name="item"
-            type="com.github.livingwithhippos.unchained.data.model.Alternative" />
-
-        <variable
-            name="listener"
-            type="com.github.livingwithhippos.unchained.downloaddetails.view.DownloadDetailsListener" />
-    </data>
-
     <com.google.android.material.card.MaterialCardView
         style="?attr/materialCardViewElevatedStyle"
         android:layout_width="match_parent"
@@ -38,7 +25,6 @@
                 android:textAppearance="?attr/textAppearanceBodyLarge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{item.quality!= null ? item.quality : @string/alternative_link, default=`240p`}"
                 android:textAllCaps="true"
                 app:layout_constraintBottom_toTopOf="@+id/tvTitle"
                 app:layout_constraintStart_toStartOf="parent"
@@ -50,7 +36,6 @@
                 android:textAppearance="?attr/textAppearanceLabelMedium"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@{item.mimeType, default=`video mp4`}"
                 app:layout_constraintBottom_toTopOf="@id/iconsLayout"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -77,7 +62,6 @@
                     android:layout_height="wrap_content"
                     android:focusable="true"
                     android:contentDescription="@string/content_description_share_download"
-                    android:onClick="@{()->listener.onShareClick(item.download)}"
                     android:paddingStart="13dp"
                     app:icon="@drawable/icon_share" />
 
@@ -87,8 +71,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:focusable="true"
-                    android:contentDescription="@{@string/open_link_format(item.mimeType)}"
-                    android:onClick="@{()->listener.onOpenClick(item.download)}"
                     android:paddingStart="13dp"
                     app:icon="@drawable/icon_open_external" />
 
@@ -98,8 +80,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:focusable="true"
-                    android:contentDescription="@{@string/copy_link_format(item.mimeType)}"
-                    android:onClick="@{()->listener.onCopyClick(item.download)}"
                     android:paddingStart="13dp"
                     app:icon="@drawable/icon_copy" />
 
@@ -109,8 +89,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:focusable="true"
-                    android:contentDescription="@{@string/open_with_format(item.mimeType)}"
-                    android:onClick="@{(view)->listener.onOpenTranscodedStream(view, item.download)}"
                     android:paddingStart="13dp"
                     app:icon="@drawable/icon_remote" />
 

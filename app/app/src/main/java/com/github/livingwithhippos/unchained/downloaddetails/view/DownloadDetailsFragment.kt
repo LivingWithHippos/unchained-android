@@ -45,6 +45,7 @@ import com.github.livingwithhippos.unchained.data.model.Alternative
 import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.databinding.FragmentDownloadDetailsBinding
 import com.github.livingwithhippos.unchained.downloaddetails.model.AlternativeDownloadAdapter
+import com.github.livingwithhippos.unchained.downloaddetails.model.DownloadDetailsListener
 import com.github.livingwithhippos.unchained.downloaddetails.viewmodel.DownloadDetailsMessage
 import com.github.livingwithhippos.unchained.downloaddetails.viewmodel.DownloadDetailsViewModel
 import com.github.livingwithhippos.unchained.downloaddetails.viewmodel.DownloadEvent
@@ -64,7 +65,7 @@ import timber.log.Timber
  * A simple [UnchainedFragment] subclass. It is capable of showing the details of a [DownloadItem]
  */
 @AndroidEntryPoint
-class DownloadDetailsFragment : UnchainedFragment() {
+class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
 
     private val viewModel: DownloadDetailsViewModel by activityViewModels()
 
@@ -135,14 +136,14 @@ class DownloadDetailsFragment : UnchainedFragment() {
             startActivity(Intent.createChooser(shareIntent, getString(R.string.share_with)))
         }
         binding.fabOpenLink.setOnClickListener {
-            context?.openExternalWebPage(args.details.download)
+            onOpenClick(args.details.download)
         }
         binding.fabCopyLink.setOnClickListener {
             copyToClipboard("Real-Debrid Download Link", args.details.download)
             context?.showToast(R.string.link_copied)
         }
         binding.fabDownloadLink.setOnClickListener {
-            activityViewModel.enqueueDownload(args.details.download, args.details.filename)
+            onDownloadClick(args.details.download, args.details.filename)
         }
         binding.fabSendToPlayer.setOnClickListener { onSendToPlayer(args.details.download) }
         if (!args.details.alternative.isNullOrEmpty()) {
@@ -202,11 +203,7 @@ class DownloadDetailsFragment : UnchainedFragment() {
         }
 
         binding.fabLoadStreams.setOnClickListener {
-            lifecycleScope.launch {
-                if (activityViewModel.isTokenPrivate()) {
-                    viewModel.fetchStreamingInfo(args.details.id)
-                } else context?.showToast(R.string.api_needs_private_token)
-            }
+            onLoadStreamsClick(args.details.id)
         }
 
         if (args.details.alternative.isNullOrEmpty()) {
@@ -415,7 +412,7 @@ class DownloadDetailsFragment : UnchainedFragment() {
                 }
 
                 R.id.browser_streaming -> {
-                    context?.openExternalWebPage(RD_STREAMING_URL + args.details.id)
+                    onBrowserStreamsClick(args.details.id)
                 }
             }
             true
@@ -643,7 +640,43 @@ class DownloadDetailsFragment : UnchainedFragment() {
         return intent
     }
 
-    fun onSendToPlayer(url: String) {
+    override fun onCopyClick(text: String) {
+        copyToClipboard("Real-Debrid Download Link", text)
+        context?.showToast(R.string.link_copied)
+    }
+
+    override fun onOpenClick(url: String) {
+        context?.openExternalWebPage(url)
+    }
+
+    override fun onOpenTranscodedStream(view: View, url: String) {
+        manageStreamingPopup(view, url)
+    }
+
+    override fun onLoadStreamsClick(id: String) {
+        lifecycleScope.launch {
+            if (activityViewModel.isTokenPrivate()) {
+                viewModel.fetchStreamingInfo(args.details.id)
+            } else context?.showToast(R.string.api_needs_private_token)
+        }
+    }
+
+    override fun onBrowserStreamsClick(id: String) {
+        context?.openExternalWebPage(RD_STREAMING_URL + args.details.id)
+    }
+
+    override fun onDownloadClick(link: String, fileName: String) {
+        activityViewModel.enqueueDownload(link, fileName)
+    }
+
+    override fun onShareClick(url: String) {
+        val shareIntent = Intent(Intent.ACTION_SEND)
+        shareIntent.type = "text/plain"
+        shareIntent.putExtra(Intent.EXTRA_TEXT, url)
+        startActivity(Intent.createChooser(shareIntent, getString(R.string.share_with)))
+    }
+
+    override fun onSendToPlayer(url: String) {
         when (viewModel.getDefaultPlayer()) {
             "vlc" -> {
                 val vlcIntent = createMediaIntent("org.videolan.vlc", url)
