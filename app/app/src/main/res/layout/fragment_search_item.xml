@@ -1,137 +1,135 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rootLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".search.view.SearchItemFragment">
+
+    <TextView
+        android:id="@+id/tvName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textAppearance="?attr/textAppearanceTitleMedium"
+        app:layout_constraintBottom_toTopOf="@id/infoLayout"
+        app:layout_constraintEnd_toStartOf="@id/linkCaption"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/linkCaption"
+        style="?attr/materialIconButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="20dp"
+        android:contentDescription="@string/link"
+        app:icon="@drawable/icon_link"
+        app:layout_constraintBottom_toBottomOf="@id/tvName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/tvName"
+        app:layout_constraintTop_toTopOf="@id/tvName" />
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/rootLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".search.view.SearchItemFragment">
+        android:id="@+id/infoLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        app:layout_constraintBottom_toTopOf="@id/linkList"
+        app:layout_constraintEnd_toEndOf="@id/linkCaption"
+        app:layout_constraintStart_toStartOf="@id/tvName"
+        app:layout_constraintTop_toBottomOf="@id/tvName">
+
 
         <TextView
-            android:id="@+id/tvName"
-            android:textAppearance="?attr/textAppearanceTitleMedium"
+            android:id="@+id/size"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"
-            android:ellipsize="end"
-            android:maxLines="2"
-            app:layout_constraintBottom_toTopOf="@id/infoLayout"
-            app:layout_constraintEnd_toStartOf="@id/linkCaption"
-            app:layout_constraintHorizontal_bias="0.5"
+            android:textAlignment="center"
+            android:textAppearance="?attr/textAppearanceBodyMedium"
+            app:layout_constraintBottom_toTopOf="@id/sizeTitle"
+            app:layout_constraintEnd_toStartOf="@id/seeders"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <Button
-            android:id="@+id/linkCaption"
-            style="?attr/materialIconButtonStyle"
+        <TextView
+            android:id="@+id/sizeTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="20dp"
-            app:icon="@drawable/icon_link"
-            android:contentDescription="@string/link"
-            app:layout_constraintBottom_toBottomOf="@id/tvName"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/tvName"
-            app:layout_constraintTop_toTopOf="@id/tvName" />
+            android:text="@string/size"
+            android:textAppearance="?attr/textAppearanceLabelMedium"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/size"
+            app:layout_constraintStart_toStartOf="@id/size"
+            app:layout_constraintTop_toBottomOf="@id/size" />
 
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/infoLayout"
+        <TextView
+            android:id="@+id/seeders"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            app:layout_constraintBottom_toTopOf="@id/linkList"
-            app:layout_constraintEnd_toEndOf="@id/linkCaption"
-            app:layout_constraintStart_toStartOf="@id/tvName"
-            app:layout_constraintTop_toBottomOf="@id/tvName">
+            android:textAlignment="center"
+            android:textAppearance="?attr/textAppearanceBodyMedium"
+            app:layout_constraintBottom_toTopOf="@id/seedersTitle"
+            app:layout_constraintEnd_toStartOf="@id/leechers"
+            app:layout_constraintStart_toEndOf="@id/size"
+            app:layout_constraintTop_toTopOf="parent" />
 
-
-            <TextView
-                android:id="@+id/size"
-                android:textAppearance="?attr/textAppearanceBodyMedium"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:textAlignment="center"
-                app:layout_constraintBottom_toTopOf="@id/sizeTitle"
-                app:layout_constraintEnd_toStartOf="@id/seeders"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/sizeTitle"
-                android:textAppearance="?attr/textAppearanceLabelMedium"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/size"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@id/size"
-                app:layout_constraintStart_toStartOf="@id/size"
-                app:layout_constraintTop_toBottomOf="@id/size" />
-
-            <TextView
-                android:id="@+id/seeders"
-                android:textAppearance="?attr/textAppearanceBodyMedium"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:textAlignment="center"
-                app:layout_constraintBottom_toTopOf="@id/seedersTitle"
-                app:layout_constraintEnd_toStartOf="@id/leechers"
-                app:layout_constraintStart_toEndOf="@id/size"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/seedersTitle"
-                android:textAppearance="?attr/textAppearanceLabelMedium"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/seeders"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@id/seeders"
-                app:layout_constraintStart_toStartOf="@id/seeders"
-                app:layout_constraintTop_toBottomOf="@id/seeders" />
-
-            <TextView
-                android:id="@+id/leechers"
-                android:textAppearance="?attr/textAppearanceBodyMedium"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:textAlignment="center"
-                app:layout_constraintBottom_toTopOf="@id/leechersTitle"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/seeders"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/leechersTitle"
-                android:textAppearance="?attr/textAppearanceLabelMedium"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/leechers"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@id/leechers"
-                app:layout_constraintStart_toStartOf="@id/leechers"
-                app:layout_constraintTop_toBottomOf="@id/leechers" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/linkList"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="10dp"
-            android:scrollbars="vertical"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        <TextView
+            android:id="@+id/seedersTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/seeders"
+            android:textAppearance="?attr/textAppearanceLabelMedium"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/seeders"
+            app:layout_constraintStart_toStartOf="@id/seeders"
+            app:layout_constraintTop_toBottomOf="@id/seeders" />
+
+        <TextView
+            android:id="@+id/leechers"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:textAppearance="?attr/textAppearanceBodyMedium"
+            app:layout_constraintBottom_toTopOf="@id/leechersTitle"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/infoLayout"
-            tools:listitem="@layout/item_list_link" />
+            app:layout_constraintStart_toEndOf="@id/seeders"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/leechersTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/leechers"
+            android:textAppearance="?attr/textAppearanceLabelMedium"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/leechers"
+            app:layout_constraintStart_toStartOf="@id/leechers"
+            app:layout_constraintTop_toBottomOf="@id/leechers" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-</layout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/linkList"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        android:scrollbars="vertical"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/infoLayout"
+        tools:listitem="@layout/item_list_link" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

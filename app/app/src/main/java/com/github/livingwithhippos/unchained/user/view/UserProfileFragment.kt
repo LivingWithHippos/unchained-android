@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import coil.load
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.data.model.User
@@ -22,7 +23,6 @@ import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Comp
 import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationState
 import com.github.livingwithhippos.unchained.utilities.ACCOUNT_LINK
 import com.github.livingwithhippos.unchained.utilities.REFERRAL_LINK
-import com.github.livingwithhippos.unchained.utilities.extension.loadImage
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
@@ -171,7 +171,8 @@ class UserProfileFragment : UnchainedFragment() {
         user?.let {
             binding.tvName.text = it.username
             binding.tvMail.text = it.email
-            binding.ivProfilePic.loadImage(it.avatar)
+            // todo: check https://coil-kt.github.io/coil/image_loaders/#caching
+            binding.ivProfilePic.load(it.avatar) { crossfade(true) }
             if (it.premium > 0) {
                 binding.tvPremium.text = getString(R.string.premium)
             } else {

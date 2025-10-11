@@ -1,63 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/cvDevice"
-        style="?attr/materialCardViewElevatedStyle"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cvDevice"
+    style="?attr/materialCardViewElevatedStyle"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    android:layout_marginHorizontal="10dp"
+    android:layout_marginTop="12dp"
+    android:layout_marginBottom="3dp"
+    android:checkable="false"
+    android:clickable="true"
+    android:focusable="true"
+    android:padding="3dp"
+    app:cardCornerRadius="10dp"
+    app:cardElevation="3dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:checkable="false"
-        android:focusable="true"
-        android:clickable="true"
-        android:layout_marginHorizontal="10dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginBottom="3dp"
-        android:padding="3dp"
-        app:cardCornerRadius="10dp"
-        app:cardElevation="3dp">
+        android:padding="10dp">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
+        <View
+            android:id="@+id/defaultIndicator"
+            android:layout_width="10dp"
+            android:layout_height="0dp"
+            android:background="@drawable/rectangle"
+            android:backgroundTint="?attr/colorPrimary"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:padding="10dp">
+            android:layout_marginStart="5dp"
+            android:layout_marginBottom="5dp"
+            android:maxLines="2"
+            android:textAppearance="?attr/textAppearanceLabelSmall"
+            app:layout_constraintBottom_toTopOf="@+id/tvDetails"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/defaultIndicator"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <View
-                android:id="@+id/defaultIndicator"
-                android:layout_width="10dp"
-                android:layout_height="0dp"
-                android:backgroundTint="?attr/colorPrimary"
-                android:background="@drawable/rectangle"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/tvTitle"
-                android:textAppearance="?attr/textAppearanceLabelSmall"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:layout_marginBottom="5dp"
-                android:maxLines="2"
-                app:layout_constraintBottom_toTopOf="@+id/tvDetails"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/defaultIndicator"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/tvDetails"
-                android:textAppearance="?attr/textAppearanceBodySmall"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/tvTitle"
-                app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
+        <TextView
+            android:id="@+id/tvDetails"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="?attr/textAppearanceBodySmall"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/tvTitle"
+            app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
 
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </com.google.android.material.card.MaterialCardView>
-</layout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>

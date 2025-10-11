@@ -1,177 +1,175 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+
+
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-
-    <androidx.core.widget.NestedScrollView
+    <!-- todo: nested scroll if the screen is smaller than the inner view
+    and the inner view has center_vertical has an issue with scrolling upward.
+    Either pin to top, remove scrolling or hope for the best-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/rootLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_gravity="center_vertical"
+        tools:context=".newdownload.view.NewDownloadFragment">
 
-        <!-- todo: nested scroll if the screen is smaller than the inner view
-        and the inner view has center_vertical has an issue with scrolling upward.
-        Either pin to top, remove scrolling or hope for the best-->
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/rootLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_vertical"
-            tools:context=".newdownload.view.NewDownloadFragment">
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tfLink"
+            android:layout_width="230dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:hint="@string/link_or_magnet"
+            android:importantForAutofill="no"
+            app:endIconMode="clear_text"
+            app:layout_constraintBottom_toTopOf="@+id/tiPassword"
+            app:layout_constraintEnd_toStartOf="@+id/bPasteLink"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
+            app:startIconDrawable="@drawable/icon_link">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/tfLink"
-                android:layout_width="230dp"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tiLink"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:hint="@string/link_or_magnet"
-                android:importantForAutofill="no"
-                app:endIconMode="clear_text"
-                app:layout_constraintBottom_toTopOf="@+id/tiPassword"
-                app:layout_constraintEnd_toStartOf="@+id/bPasteLink"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintHorizontal_chainStyle="packed"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_chainStyle="packed"
-                app:startIconDrawable="@drawable/icon_link">
+                android:singleLine="true" />
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/tiLink"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:singleLine="true" />
-
-            </com.google.android.material.textfield.TextInputLayout>
+        </com.google.android.material.textfield.TextInputLayout>
 
 
-            <Button
-                android:id="@+id/bPasteLink"
-                style="?attr/materialIconButtonStyle"
-                android:layout_width="wrap_content"
+        <Button
+            android:id="@+id/bPasteLink"
+            style="?attr/materialIconButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:contentDescription="@string/paste"
+            app:icon="@drawable/icon_paste"
+            app:iconSize="35dp"
+            app:layout_constraintBottom_toBottomOf="@id/tfLink"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/tfLink"
+            app:layout_constraintTop_toTopOf="@id/tfLink" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tiPassword"
+            android:layout_width="230dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:hint="@string/password_optional"
+            app:endIconMode="password_toggle"
+            app:layout_constraintBottom_toTopOf="@+id/switchRemote"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/bPastePassword"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tfLink"
+            app:layout_constraintVertical_chainStyle="packed">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tePassword"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                app:icon="@drawable/icon_paste"
-                app:iconSize="35dp"
-                android:contentDescription="@string/paste"
-                app:layout_constraintBottom_toBottomOf="@id/tfLink"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/tfLink"
-                app:layout_constraintTop_toTopOf="@id/tfLink" />
+                android:imeOptions="actionDone"
+                android:inputType="textPassword" />
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/tiPassword"
-                android:layout_width="230dp"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                app:endIconMode="password_toggle"
-                android:hint="@string/password_optional"
-                app:layout_constraintBottom_toTopOf="@+id/switchRemote"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/bPastePassword"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintHorizontal_chainStyle="packed"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tfLink"
-                app:layout_constraintVertical_chainStyle="packed">
+        </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/tePassword"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:imeOptions="actionDone"
-                    android:inputType="textPassword" />
+        <Button
+            android:id="@+id/bPastePassword"
+            style="?attr/materialIconButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:contentDescription="@string/paste"
+            app:icon="@drawable/icon_paste"
+            app:iconSize="35dp"
+            app:layout_constraintBottom_toBottomOf="@id/tiPassword"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/tiPassword"
+            app:layout_constraintTop_toTopOf="@id/tiPassword" />
 
-            </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/switchRemote"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:checked="false"
+            android:text="@string/remote_traffic"
+            app:layout_constraintBottom_toTopOf="@+id/bUnrestrict"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tiPassword" />
 
-            <Button
-                android:id="@+id/bPastePassword"
-                style="?attr/materialIconButtonStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                app:icon="@drawable/icon_paste"
-                app:iconSize="35dp"
-                android:contentDescription="@string/paste"
-                app:layout_constraintTop_toTopOf="@id/tiPassword"
-                app:layout_constraintBottom_toBottomOf="@id/tiPassword"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/tiPassword" />
+        <Button
+            android:id="@+id/bUnrestrict"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:minWidth="170dp"
+            android:minLines="2"
+            android:text="@string/download"
+            app:layout_constraintBottom_toTopOf="@+id/divider"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.502"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/switchRemote" />
 
-            <com.google.android.material.materialswitch.MaterialSwitch
-                android:id="@+id/switchRemote"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:checked="false"
-                android:text="@string/remote_traffic"
-                app:layout_constraintBottom_toTopOf="@+id/bUnrestrict"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tiPassword" />
+        <com.google.android.material.divider.MaterialDivider
+            android:id="@+id/divider"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="10dp"
+            app:layout_constraintBottom_toTopOf="@+id/tvUploadTorrent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/bUnrestrict" />
 
-            <Button
-                android:id="@+id/bUnrestrict"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:minWidth="170dp"
-                android:minLines="2"
-                android:text="@string/download"
-                app:layout_constraintBottom_toTopOf="@+id/divider"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.502"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/switchRemote" />
+        <TextView
+            android:id="@+id/tvUploadTorrent"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="10dp"
+            android:text="@string/upload_file_description"
+            android:textAlignment="center"
+            android:textAppearance="?attr/textAppearanceLabelMedium"
+            app:layout_constraintBottom_toTopOf="@id/bUploadFile"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/divider"
+            app:layout_constraintVertical_chainStyle="packed" />
 
-            <com.google.android.material.divider.MaterialDivider
-                android:id="@+id/divider"
-                android:layout_width="300dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
-                android:layout_marginBottom="10dp"
-                app:layout_constraintBottom_toTopOf="@+id/tvUploadTorrent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/bUnrestrict" />
+        <Button
+            android:id="@+id/bUploadFile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:minWidth="170dp"
+            android:minLines="2"
+            android:text="@string/upload"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvUploadTorrent" />
 
-            <TextView
-                android:id="@+id/tvUploadTorrent"
-                android:textAppearance="?attr/textAppearanceLabelMedium"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
-                android:layout_marginBottom="10dp"
-                android:text="@string/upload_file_description"
-                android:textAlignment="center"
-                app:layout_constraintBottom_toTopOf="@id/bUploadFile"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/divider"
-                app:layout_constraintVertical_chainStyle="packed" />
-
-            <Button
-                android:id="@+id/bUploadFile"
-                android:layout_width="wrap_content"
-                android:minWidth="170dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:minLines="2"
-                android:text="@string/upload"
-                app:layout_constraintHorizontal_weight="1"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvUploadTorrent" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.core.widget.NestedScrollView>
-</layout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>

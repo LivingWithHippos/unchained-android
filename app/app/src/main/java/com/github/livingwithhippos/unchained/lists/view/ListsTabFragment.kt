@@ -498,6 +498,14 @@ class DownloadsListFragment : UnchainedFragment(), DownloadListListener {
 
         binding.srLayout.setOnRefreshListener { downloadAdapter.refresh() }
 
+        context?.let {
+            // theme the swipe refresh circle and arrow
+            val primaryColor = getThemeColor(it, android.R.attr.colorPrimary)
+            val surfaceColor = getThemeColor(it, com.google.android.material.R.attr.colorSurface)
+            binding.srLayout.setColorSchemeColors(primaryColor)
+            binding.srLayout.setProgressBackgroundColorSchemeColor(surfaceColor)
+        }
+
         // observers created to be easily added and removed. Pass the retrieved list to the adapter
         // and
         // removes the loading icon from the swipe layout

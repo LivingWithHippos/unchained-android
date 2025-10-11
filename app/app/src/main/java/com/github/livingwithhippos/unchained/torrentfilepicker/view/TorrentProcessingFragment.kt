@@ -22,11 +22,11 @@ import com.github.livingwithhippos.unchained.databinding.FragmentTorrentProcessi
 import com.github.livingwithhippos.unchained.lists.view.ListState
 import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationEvent
 import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationState
-import com.github.livingwithhippos.unchained.torrentdetails.model.TorrentContentFilesSelectionAdapter
 import com.github.livingwithhippos.unchained.torrentdetails.model.TorrentContentListener
 import com.github.livingwithhippos.unchained.torrentdetails.model.TorrentFileItem
 import com.github.livingwithhippos.unchained.torrentdetails.model.TorrentFileItem.Companion.TYPE_FOLDER
 import com.github.livingwithhippos.unchained.torrentdetails.model.getFilesNodes
+import com.github.livingwithhippos.unchained.torrentfilepicker.model.TorrentContentFilesSelectionAdapter
 import com.github.livingwithhippos.unchained.torrentfilepicker.viewmodel.TorrentEvent
 import com.github.livingwithhippos.unchained.torrentfilepicker.viewmodel.TorrentProcessingViewModel
 import com.github.livingwithhippos.unchained.utilities.Node

@@ -27,6 +27,7 @@ import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.databinding.FragmentTorrentDetailsBinding
 import com.github.livingwithhippos.unchained.lists.view.ListState
 import com.github.livingwithhippos.unchained.torrentdetails.model.TorrentContentFilesAdapter
+import com.github.livingwithhippos.unchained.torrentdetails.model.TorrentContentListener
 import com.github.livingwithhippos.unchained.torrentdetails.model.TorrentFileItem
 import com.github.livingwithhippos.unchained.torrentdetails.model.getFilesNodes
 import com.github.livingwithhippos.unchained.torrentdetails.viewmodel.TorrentDetailsViewModel
@@ -44,7 +45,7 @@ import dagger.hilt.android.AndroidEntryPoint
  * updating it.
  */
 @AndroidEntryPoint
-class TorrentDetailsFragment : UnchainedFragment() {
+class TorrentDetailsFragment : UnchainedFragment(), TorrentContentListener {
 
     private val viewModel: TorrentDetailsViewModel by viewModels()
 
@@ -289,5 +290,13 @@ class TorrentDetailsFragment : UnchainedFragment() {
     fun onCopyMagnetClick() {
         copyToClipboard("Real-Debrid Magnet", "magnet:?xt=urn:btih:${args.item.hash}")
         context?.showToast(R.string.link_copied)
+    }
+
+    override fun onSelectedFile(item: TorrentFileItem) {
+        // not used here
+    }
+
+    override fun onSelectedFolder(item: TorrentFileItem) {
+        // not used here
     }
 }

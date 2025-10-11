@@ -1,106 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="5dp"
+    android:clickable="true"
+    android:focusable="false"
+    android:paddingVertical="5dp">
+
+    <ImageView
+        android:id="@+id/ivStatus"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
-        android:paddingVertical="5dp"
-        android:clickable="true"
-        android:focusable="false">
+        android:contentDescription="@string/status"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/tvName"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="?attr/colorControlNormal" />
 
-        <ImageView
-            android:id="@+id/ivStatus"
+    <TextView
+        android:id="@+id/tvName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:maxLines="2"
+        android:textAppearance="?attr/textAppearanceBodyMedium"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/tvStatus"
+        app:layout_constraintEnd_toStartOf="@id/buttonsLayout"
+        app:layout_constraintStart_toEndOf="@id/ivStatus"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:id="@+id/buttonsLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:paddingEnd="10dp"
+        app:alignItems="flex_start"
+        app:flexWrap="wrap"
+        app:justifyContent="space_around"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/tvName"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <Button
+            android:id="@+id/bDownload"
+            style="?attr/materialIconButtonFilledStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:contentDescription="@string/status"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/tvName"
-            app:layout_constraintStart_toStartOf="parent"
-            app:tint="?attr/colorControlNormal"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:focusable="true"
+            app:icon="@drawable/icon_download" />
 
-        <TextView
-            android:id="@+id/tvName"
-            android:textAppearance="?attr/textAppearanceBodyMedium"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:maxLines="2"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/tvStatus"
-            app:layout_constraintEnd_toStartOf="@id/buttonsLayout"
-            app:layout_constraintStart_toEndOf="@id/ivStatus"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <com.google.android.flexbox.FlexboxLayout
-            android:id="@+id/buttonsLayout"
+        <Button
+            android:id="@+id/bUpdate"
+            style="?attr/materialIconButtonFilledStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
-            app:alignItems="flex_start"
-            app:flexWrap="wrap"
-            app:justifyContent="space_around"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toEndOf="@id/tvName"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:paddingEnd="10dp">
+            android:focusable="true"
+            app:icon="@drawable/icon_reload" />
 
-            <Button
-                android:id="@+id/bDownload"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:icon="@drawable/icon_download"
-                style="?attr/materialIconButtonFilledStyle"
-                android:focusable="true"
-                />
-
-            <Button
-                android:id="@+id/bUpdate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                app:icon="@drawable/icon_reload"
-                style="?attr/materialIconButtonFilledStyle"
-                android:focusable="true"
-                />
-
-            <Button
-                android:id="@+id/bDelete"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                app:icon="@drawable/icon_delete"
-                style="?attr/materialIconButtonFilledStyle"
-                android:focusable="true"
-                />
-
-        </com.google.android.flexbox.FlexboxLayout>
-
-        <TextView
-            android:id="@+id/tvVersion"
-            android:textAppearance="?attr/textAppearanceLabelMedium"
+        <Button
+            android:id="@+id/bDelete"
+            style="?attr/materialIconButtonFilledStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/tvStatus"
-            app:layout_constraintStart_toStartOf="@+id/tvName"
-            app:layout_constraintTop_toBottomOf="@+id/tvName" />
-
-        <TextView
-            android:id="@+id/tvStatus"
-            android:textAppearance="?attr/textAppearanceLabelMedium"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
-            android:textAllCaps="true"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/tvVersion"
-            app:layout_constraintTop_toBottomOf="@+id/tvName" />
+            android:focusable="true"
+            app:icon="@drawable/icon_delete" />
 
+    </com.google.android.flexbox.FlexboxLayout>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</layout>
+    <TextView
+        android:id="@+id/tvVersion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?attr/textAppearanceLabelMedium"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/tvStatus"
+        app:layout_constraintStart_toStartOf="@+id/tvName"
+        app:layout_constraintTop_toBottomOf="@+id/tvName" />
+
+    <TextView
+        android:id="@+id/tvStatus"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:textAllCaps="true"
+        android:textAppearance="?attr/textAppearanceLabelMedium"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tvVersion"
+        app:layout_constraintTop_toBottomOf="@+id/tvName" />
+</androidx.constraintlayout.widget.ConstraintLayout>

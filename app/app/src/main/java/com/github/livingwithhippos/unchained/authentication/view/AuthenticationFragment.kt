@@ -74,14 +74,17 @@ class AuthenticationFragment : UnchainedFragment() {
             }
         }
 
-        binding.loginMessageDirect = getLoginMessage(LOGIN_TYPE_DIRECT)
-        binding.loginMessageIndirect = getLoginMessage(LOGIN_TYPE_INDIRECT)
+        // todo: check if needed
+        // binding.loginMessageDirect = getLoginMessage(LOGIN_TYPE_DIRECT)
+        // binding.loginMessageIndirect = getLoginMessage(LOGIN_TYPE_INDIRECT)
 
         binding.tiPrivateCode.setOnFocusChangeListener { v, hasFocus ->
             if (!hasFocus) {
                 v.hideKeyboard()
             }
         }
+
+        binding.bInsertPrivate.setOnClickListener { onSaveCodeClick(binding.tiPrivateCode) }
 
         activityViewModel.fsmAuthenticationState.observe(viewLifecycleOwner) {
             if (it != null) {
@@ -251,7 +254,7 @@ class AuthenticationFragment : UnchainedFragment() {
         return sb
     }
 
-    override fun onSaveCodeClick(codeInputField: TextInputEditText) {
+    fun onSaveCodeClick(codeInputField: TextInputEditText) {
         val token: String = codeInputField.text.toString().trim()
         // mine is 52 characters
         if (token.length < 40) context?.showToast(R.string.invalid_token)

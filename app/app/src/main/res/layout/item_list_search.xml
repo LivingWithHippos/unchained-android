@@ -1,92 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <data>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cvScrapedItem"
+    style="?attr/materialCardViewElevatedStyle"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    android:layout_marginTop="20dp"
+    android:checkable="false"
+    android:focusable="true"
+    android:padding="10dp"
+    app:cardCornerRadius="10dp"
+    app:cardElevation="3dp">
 
-        <import type="android.view.View" />
 
-        <variable
-            name="listener"
-            type="com.github.livingwithhippos.unchained.search.model.SearchItemListener" />
-    </data>
-
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/cvScrapedItem"
-        style="?attr/materialCardViewElevatedStyle"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:padding="10dp"
-        android:checkable="false"
-        android:focusable="true"
-        android:layout_gravity="center_horizontal"
-        app:cardCornerRadius="10dp"
-        app:cardElevation="3dp">
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:id="@+id/tvName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
+            android:ellipsize="middle"
+            android:maxLines="3"
+            android:textAppearance="?attr/textAppearanceBodyMedium"
+            android:textSize="14sp" />
 
 
         <LinearLayout
+            android:id="@+id/linksLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="20dp">
+            android:orientation="horizontal">
+
 
             <TextView
-                android:id="@+id/tvName"
-                android:textAppearance="?attr/textAppearanceBodyMedium"
-                android:layout_width="match_parent"
+                android:id="@+id/tvLinks"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="14sp"
-                android:maxLines="3"
-                android:ellipsize="middle"
-                android:layout_marginEnd="5dp" />
+                android:layout_marginEnd="8dp"
+                android:textAppearance="?attr/textAppearanceLabelSmall"
+                android:textColor="?attr/colorSecondary" />
 
-
-            <LinearLayout
-                android:id="@+id/linksLayout"
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/tvSeeders"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_marginEnd="5dp"
+                android:textAppearance="?attr/textAppearanceLabelSmall"
+                android:textColor="?attr/colorSecondary" />
 
+            <TextView
+                android:id="@+id/tvLeechers"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:textAppearance="?attr/textAppearanceLabelSmall"
+                android:textColor="?attr/colorSecondary" />
 
-                <TextView
-                    android:id="@+id/tvLinks"
-                    android:textAppearance="?attr/textAppearanceLabelSmall"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:textColor="?attr/colorSecondary"
-                    />
-
-                <TextView
-                    android:id="@+id/tvSeeders"
-                    android:textAppearance="?attr/textAppearanceLabelSmall"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="5dp"
-                    android:textColor="?attr/colorSecondary"
-                    />
-
-                <TextView
-                    android:id="@+id/tvLeechers"
-                    android:textAppearance="?attr/textAppearanceLabelSmall"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:textColor="?attr/colorSecondary"
-                    />
-
-                <TextView
-                    android:id="@+id/tvSize"
-                    android:textAppearance="?attr/textAppearanceLabelSmall"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="?attr/colorSecondary"
-                    />
-
-            </LinearLayout>
+            <TextView
+                android:id="@+id/tvSize"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?attr/textAppearanceLabelSmall"
+                android:textColor="?attr/colorSecondary" />
 
         </LinearLayout>
 
-    </com.google.android.material.card.MaterialCardView>
-</layout>
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>
