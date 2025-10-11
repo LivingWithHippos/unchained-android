@@ -83,10 +83,10 @@ data class ThemeItem(
     val name: String,
     val key: String,
     val nightMode: String,
-    @StyleRes val themeID: Int,
-    @ColorInt val primaryColorID: Int,
-    @ColorInt val surfaceColorID: Int,
-    @ColorInt val primaryContainerColorID: Int,
+    @param:StyleRes val themeID: Int,
+    @param:ColorInt val primaryColorID: Int,
+    @param:ColorInt val surfaceColorID: Int,
+    @param:ColorInt val primaryContainerColorID: Int,
 )
 
 class ThemePickerAdapter(private val listener: ThemePickListener) :

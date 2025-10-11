@@ -20,7 +20,7 @@ import timber.log.Timber
 
 class KodiRepository
 @Inject
-constructor(protoStore: ProtoStore, @ClassicClient private val client: OkHttpClient) :
+constructor(protoStore: ProtoStore, @param:ClassicClient private val client: OkHttpClient) :
     BaseRepository(protoStore) {
 
     // todo: conflict with other Retrofit with qualifiers?

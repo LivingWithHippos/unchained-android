@@ -16,8 +16,9 @@ import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import timber.log.Timber
+import androidx.core.net.toUri
 
-class JackettRepository @Inject constructor(@ClassicClient private val client: OkHttpClient) {
+class JackettRepository @Inject constructor(@param:ClassicClient private val client: OkHttpClient) {
 
     private fun getBasicBuilder(
         baseUrl: String,
@@ -28,7 +29,7 @@ class JackettRepository @Inject constructor(@ClassicClient private val client: O
     ): Uri.Builder? {
         var existingUri: Uri =
             try {
-                Uri.parse("$baseUrl:$port")
+                "$baseUrl:$port".toUri()
             } catch (ex: Exception) {
                 Timber.e(ex, "Error parsing url: $baseUrl:$port")
                 return null
@@ -38,7 +39,7 @@ class JackettRepository @Inject constructor(@ClassicClient private val client: O
             !(existingUri.scheme.equals("http", ignoreCase = true) ||
                 existingUri.scheme.equals("https", ignoreCase = true))
         ) {
-            existingUri = Uri.parse("${if (useSecureHttp) "https" else "http"}://$baseUrl:$port")
+            existingUri = "${if (useSecureHttp) "https" else "http"}://$baseUrl:$port".toUri()
         }
         val baseBuilder: Uri.Builder =
             try {

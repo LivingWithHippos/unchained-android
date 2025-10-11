@@ -82,7 +82,7 @@ data class StatItem(
     val content: String,
     val label: String,
     val caption: String,
-    @DrawableRes val icon: Int,
+    @param:DrawableRes val icon: Int,
 )
 
 class StatAdapter(

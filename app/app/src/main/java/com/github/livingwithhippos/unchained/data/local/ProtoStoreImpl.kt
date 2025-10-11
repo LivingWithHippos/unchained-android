@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 
-class ProtoStoreImpl @Inject constructor(@ApplicationContext private val context: Context) :
+class ProtoStoreImpl @Inject constructor(@param:ApplicationContext private val context: Context) :
     ProtoStore {
 
     override val credentialsFlow: Flow<Credentials.CurrentCredential> =

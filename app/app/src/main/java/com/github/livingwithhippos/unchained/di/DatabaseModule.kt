@@ -24,7 +24,7 @@ object DatabaseModule {
 
     @Provides
     @Singleton
-    fun provideDatabase(@ApplicationContext appContext: Context): UnchaineDB {
+    fun provideDatabase(@param:ApplicationContext appContext: Context): UnchaineDB {
         return Room.databaseBuilder(appContext, UnchaineDB::class.java, "unchained_db")
             .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
             .build()
