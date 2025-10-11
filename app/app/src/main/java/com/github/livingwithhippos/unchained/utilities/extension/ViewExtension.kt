@@ -404,6 +404,14 @@ fun ImageView.setDrawableByServiceType(type: Int) {
         else -> this.setImageResource(R.drawable.icon_play_outline)
     }
 }
+fun setDrawableByServiceType(view: ImageView, type: Int) {
+    return when (type) {
+        RemoteServiceType.KODI.value -> view.setImageResource(R.drawable.icon_kodi)
+        RemoteServiceType.VLC.value -> view.setImageResource(R.drawable.icon_vlc)
+        RemoteServiceType.JACKETT.value -> view.setImageResource(R.drawable.icon_jackett)
+        else -> view.setImageResource(R.drawable.icon_play_outline)
+    }
+}
 
 /** hides the keyboard when called on a View */
 fun View.hideKeyboard() {
