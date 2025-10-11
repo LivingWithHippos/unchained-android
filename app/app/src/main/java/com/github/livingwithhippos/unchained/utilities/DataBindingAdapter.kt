@@ -14,28 +14,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.github.livingwithhippos.unchained.BR
 
-// todo: test implementing class with Nothing as generic value to avoid passing listeners
-/**
- * A [ListAdapter] subclass. Allows for a generic list of items with data binding and an optional
- * listener.
- */
-abstract class DataBindingAdapter<T, U>(
-    diffCallback: DiffUtil.ItemCallback<T>,
-    val listener: U? = null,
-) : ListAdapter<T, DataBindingViewHolder<T, U>>(diffCallback) {
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DataBindingViewHolder<T, U> {
-        val layoutInflater = LayoutInflater.from(parent.context)
-        val binding =
-            DataBindingUtil.inflate<ViewDataBinding>(layoutInflater, viewType, parent, false)
-        return DataBindingViewHolder(binding)
-    }
-
-    override fun onBindViewHolder(holder: DataBindingViewHolder<T, U>, position: Int) {
-        holder.bind(getItem(position), listener)
-    }
-}
-
 /**
  * A [ListAdapter] subclass. Allows for a generic list of items with data binding, an optional
  * listener and a tracker for selected items. After having created the adapter set the tracker with
@@ -71,37 +49,6 @@ class DataBindingViewHolder<T, U>(private val binding: ViewDataBinding) : ViewHo
     fun bind(item: T, listener: U?) {
         binding.setVariable(BR.item, item)
         if (listener != null) binding.setVariable(BR.listener, listener)
-        binding.executePendingBindings()
-    }
-}
-
-/**
- * A [DataBindingViewHolder] subclass. Allows for a generic list of items with data binding without
- * listeners
- */
-abstract class DataBindingStaticAdapter<T>(diffCallback: DiffUtil.ItemCallback<T>) :
-    ListAdapter<T, DataBindingStaticViewHolder<T>>(diffCallback) {
-
-    override fun onCreateViewHolder(
-        parent: ViewGroup,
-        viewType: Int,
-    ): DataBindingStaticViewHolder<T> {
-        val layoutInflater = LayoutInflater.from(parent.context)
-        val binding =
-            DataBindingUtil.inflate<ViewDataBinding>(layoutInflater, viewType, parent, false)
-        return DataBindingStaticViewHolder(binding)
-    }
-
-    override fun onBindViewHolder(holder: DataBindingStaticViewHolder<T>, position: Int) {
-        holder.bind(getItem(position))
-    }
-}
-
-class DataBindingStaticViewHolder<T>(private val binding: ViewDataBinding) :
-    ViewHolder(binding.root) {
-
-    fun bind(item: T) {
-        binding.setVariable(BR.item, item)
         binding.executePendingBindings()
     }
 }

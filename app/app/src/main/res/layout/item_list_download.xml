@@ -3,23 +3,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <data>
-
-        <import type="android.view.View" />
-
-        <variable
-            name="isSelected"
-            type="Boolean" />
-
-        <variable
-            name="item"
-            type="com.github.livingwithhippos.unchained.data.model.DownloadItem" />
-
-        <variable
-            name="listener"
-            type="com.github.livingwithhippos.unchained.lists.view.DownloadListListener" />
-    </data>
-
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/cvDownload"
         style="?attr/materialCardViewElevatedStyle"
@@ -31,7 +14,6 @@
         android:padding="10dp"
         android:checkable="false"
         android:focusable="true"
-        android:onClick="@{() -> listener.onClick(item)}"
         android:layout_gravity="center_horizontal"
         app:cardCornerRadius="10dp"
         app:cardElevation="3dp">
@@ -52,7 +34,6 @@
                 android:background="@drawable/rectangle"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
-                android:visibility="@{isSelected ? View.VISIBLE : View.GONE}"
                 app:layout_constraintEnd_toStartOf="@id/tvTitle"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -65,7 +46,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
-                android:text="@{item.streamable == 1 ? @string/streaming : @string/download, default=`Download`}"
                 app:layout_constraintBottom_toTopOf="@+id/tvName"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -75,7 +55,6 @@
                 android:textAppearance="?attr/textAppearanceBodyMedium"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@{item.filename, default=`Big.Buck.Bunny.BDRip.S01E16.End.Of.The.Buckening.720p.WEB-DL.`}"
                 android:maxLines="4"
                 android:ellipsize="middle"
                 android:layout_marginEnd="5dp"
@@ -89,7 +68,6 @@
                 android:textAppearance="?attr/textAppearanceLabelSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                fileSize="@{item.fileSize}"
                 android:text="20 MB"
                 android:textColor="?attr/colorSecondary"
                 app:layout_constraintBottom_toBottomOf="parent"
