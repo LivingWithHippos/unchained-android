@@ -2,16 +2,6 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <data>
-
-        <variable
-            name="item"
-            type="com.github.livingwithhippos.unchained.torrentdetails.model.TorrentFileItem" />
-
-        <variable
-            name="listener"
-            type="com.github.livingwithhippos.unchained.torrentdetails.model.TorrentContentListener" />
-    </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/file_list_item"
@@ -24,8 +14,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text=""
-            android:checked="@{item.selected}"
-            android:onClick="@{() -> listener.onSelectedFile(item)}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -38,7 +26,6 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:maxLines="3"
-            android:text="@{item.name, default=`File item name`}"
             android:ellipsize="middle"
             app:layout_constraintStart_toEndOf="@id/cbSelectFile"
             app:layout_constraintEnd_toEndOf="parent"
@@ -50,8 +37,7 @@
             android:textAppearance="?attr/textAppearanceLabelSmall"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            fileSize="@{item.bytes}"
-            android:text="12 MB"
+            android:text=""
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/tvFileName"
             app:layout_constraintTop_toBottomOf="@id/tvFileName"
