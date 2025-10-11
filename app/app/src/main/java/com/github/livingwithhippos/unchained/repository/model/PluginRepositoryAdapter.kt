@@ -18,18 +18,18 @@ class PluginRepositoryAdapter(private val listener: PluginListener) :
     ListAdapter<RepositoryListItem, RecyclerView.ViewHolder>(DiffCallback()) {
 
     class DiffCallback :
-        DiffUtil.ItemCallback<com.github.livingwithhippos.unchained.repository.model.RepositoryListItem>() {
+        DiffUtil.ItemCallback<RepositoryListItem>() {
         override fun areItemsTheSame(
-            oldItem: com.github.livingwithhippos.unchained.repository.model.RepositoryListItem,
-            newItem: com.github.livingwithhippos.unchained.repository.model.RepositoryListItem,
+            oldItem: RepositoryListItem,
+            newItem: RepositoryListItem,
         ): Boolean {
             // trick for smart casting
             if (
-                oldItem is com.github.livingwithhippos.unchained.repository.model.RepositoryListItem.Repository && newItem is com.github.livingwithhippos.unchained.repository.model.RepositoryListItem.Repository
+                oldItem is RepositoryListItem.Repository && newItem is RepositoryListItem.Repository
             ) {
                 return oldItem.link.equals(newItem.link, ignoreCase = true)
             } else if (
-                oldItem is com.github.livingwithhippos.unchained.repository.model.RepositoryListItem.Plugin && newItem is com.github.livingwithhippos.unchained.repository.model.RepositoryListItem.Plugin
+                oldItem is RepositoryListItem.Plugin && newItem is RepositoryListItem.Plugin
             ) {
                 return oldItem.repository.equals(newItem.repository, ignoreCase = true) &&
                         oldItem.link.equals(newItem.link, ignoreCase = true)
@@ -37,18 +37,18 @@ class PluginRepositoryAdapter(private val listener: PluginListener) :
         }
 
         override fun areContentsTheSame(
-            oldItem: com.github.livingwithhippos.unchained.repository.model.RepositoryListItem,
-            newItem: com.github.livingwithhippos.unchained.repository.model.RepositoryListItem,
+            oldItem: RepositoryListItem,
+            newItem: RepositoryListItem,
         ): Boolean {
             // trick for smart casting
             if (
-                oldItem is com.github.livingwithhippos.unchained.repository.model.RepositoryListItem.Repository && newItem is com.github.livingwithhippos.unchained.repository.model.RepositoryListItem.Repository
+                oldItem is RepositoryListItem.Repository && newItem is RepositoryListItem.Repository
             ) {
                 return oldItem.version == newItem.version &&
                         oldItem.name == newItem.name &&
                         oldItem.description == newItem.description
             } else if (
-                oldItem is com.github.livingwithhippos.unchained.repository.model.RepositoryListItem.Plugin && newItem is com.github.livingwithhippos.unchained.repository.model.RepositoryListItem.Plugin
+                oldItem is RepositoryListItem.Plugin && newItem is RepositoryListItem.Plugin
             ) {
                 return oldItem.name == newItem.name &&
                         oldItem.version == newItem.version &&
