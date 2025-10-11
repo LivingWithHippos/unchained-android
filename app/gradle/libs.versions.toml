@@ -26,7 +26,7 @@ material_three = "1.13.0"
 moshi = "1.15.2"
 navigation = "2.9.5"
 # 5.1.0 has some issues
-okhttp = "4.12.0"
+okhttp = "5.2.1"
 paging = "3.3.6"
 protobuf = "4.32.1"
 protobuf_plugin = "0.9.5"
