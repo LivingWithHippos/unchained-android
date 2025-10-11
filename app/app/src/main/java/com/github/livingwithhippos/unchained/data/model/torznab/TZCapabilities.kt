@@ -12,7 +12,9 @@ data class Capabilities(
     @param:JacksonXmlProperty(localName = "categories") val categories: Categories,
 )
 
-data class Server(@param:JacksonXmlProperty(isAttribute = true, localName = "title") val title: String)
+data class Server(
+    @param:JacksonXmlProperty(isAttribute = true, localName = "title") val title: String
+)
 
 data class Limits(
     @param:JacksonXmlProperty(isAttribute = true, localName = "default") val default: Int,
@@ -32,7 +34,8 @@ data class CapsSearch(
     @param:JacksonXmlProperty(isAttribute = true, localName = "available") val available: String,
     @param:JacksonXmlProperty(isAttribute = true, localName = "supportedParams")
     val supportedParams: String,
-    @param:JacksonXmlProperty(isAttribute = true, localName = "searchEngine") val searchEngine: String?,
+    @param:JacksonXmlProperty(isAttribute = true, localName = "searchEngine")
+    val searchEngine: String?,
 )
 
 data class Categories(

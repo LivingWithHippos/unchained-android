@@ -1,6 +1,7 @@
 package com.github.livingwithhippos.unchained.data.repository
 
 import android.net.Uri
+import androidx.core.net.toUri
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.github.livingwithhippos.unchained.data.model.jackett.Indexers
 import com.github.livingwithhippos.unchained.data.model.torznab.Capabilities
@@ -16,7 +17,6 @@ import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import timber.log.Timber
-import androidx.core.net.toUri
 
 class JackettRepository @Inject constructor(@param:ClassicClient private val client: OkHttpClient) {
 

@@ -150,9 +150,13 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentContentListener {
                             binding.tvSpeed.text =
                                 when (torrent.speed.toString().length) {
                                     in 0..3 -> getString(R.string.speed_format_b, torrentSpeed)
-                                    in 4..6 -> getString(R.string.speed_format_kb, torrentSpeed / 1000.0)
+                                    in 4..6 ->
+                                        getString(R.string.speed_format_kb, torrentSpeed / 1000.0)
                                     in 7..15 ->
-                                        getString(R.string.speed_format_mb, torrentSpeed / 1000000.0)
+                                        getString(
+                                            R.string.speed_format_mb,
+                                            torrentSpeed / 1000000.0,
+                                        )
                                     else -> getString(R.string.speed_error)
                                 }
                         }
