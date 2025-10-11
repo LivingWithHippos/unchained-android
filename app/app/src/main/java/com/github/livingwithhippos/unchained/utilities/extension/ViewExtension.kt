@@ -395,6 +395,18 @@ fun ImageView.setDrawableByPluginStatus(status: String) {
     }
 }
 
+fun setDrawableByPluginStatus(view: ImageView, status: String) {
+    return when (status) {
+        PluginStatus.updated -> view.setImageResource(R.drawable.icon_check)
+        PluginStatus.hasUpdate -> view.setImageResource(R.drawable.icon_reload)
+        PluginStatus.hasIncompatibleUpdate -> view.setImageResource(R.drawable.icon_close)
+        PluginStatus.isNew -> view.setImageResource(R.drawable.icon_new_releases)
+        PluginStatus.incompatible -> view.setImageResource(R.drawable.icon_close)
+        PluginStatus.unknown -> view.setImageResource(R.drawable.icon_question_mark)
+        else -> view.setImageResource(R.drawable.icon_question_mark)
+    }
+}
+
 @BindingAdapter("mapServiceTypeDrawable")
 fun ImageView.setDrawableByServiceType(type: Int) {
     return when (type) {

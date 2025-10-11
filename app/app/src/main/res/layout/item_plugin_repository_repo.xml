@@ -2,17 +2,6 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <data>
-
-        <variable
-            name="item"
-            type="com.github.livingwithhippos.unchained.repository.model.RepositoryListItem.Repository" />
-
-        <variable
-            name="listener"
-            type="com.github.livingwithhippos.unchained.repository.model.PluginListener" />
-    </data>
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -47,7 +36,6 @@
             android:layout_marginTop="5dp"
             android:layout_marginStart="10dp"
             android:maxLines="2"
-            android:text="@{item.name, default =`Repository name really long so I can test how multiple lines are rendered`}"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/tvAuthor"
             app:layout_constraintEnd_toStartOf="@id/bManage"
@@ -63,7 +51,6 @@
             app:icon="@drawable/icon_settings"
             app:iconSize="25dp"
             android:focusable="true"
-            android:onClick="@{() ->listener.onRepositoryClick(item)}"
             app:layout_constraintStart_toEndOf="@id/tvName"
             app:layout_constraintTop_toTopOf="@id/tvName"
             app:layout_constraintBottom_toBottomOf="@id/tvAuthor"
@@ -74,7 +61,6 @@
             android:id="@+id/tvVersion"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{item.version + ``, default=`1.02`}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/tvAuthor"
             app:layout_constraintStart_toStartOf="@+id/tvName"
@@ -85,7 +71,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
-            android:text="@{item.author, default=`LivingWithHippos`}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/tvVersion"
