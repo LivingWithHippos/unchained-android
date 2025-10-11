@@ -1,8 +1,11 @@
 package com.github.livingwithhippos.unchained.remotedevice.view
 
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.selection.ItemDetailsLookup
+import androidx.recyclerview.selection.ItemDetailsLookup.ItemDetails
 import androidx.recyclerview.selection.ItemKeyProvider
 import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.widget.DiffUtil
@@ -54,7 +57,10 @@ class RemoteServiceViewHolder(
     private val listener: ServiceListListener,
 ) : RecyclerView.ViewHolder(binding.root) {
 
+    var mItem: RemoteService? = null
+
     fun bindCell(item: RemoteService) {
+        mItem = item
         binding.defaultIndicator.visibility = if (item.isDefault) View.VISIBLE else View.INVISIBLE
 
         binding.tvTitle.text = item.name
@@ -62,6 +68,25 @@ class RemoteServiceViewHolder(
         setDrawableByServiceType(binding.ivType, item.type)
 
         binding.cvDevice.setOnClickListener { listener.onServiceClick(item) }
+    }
+
+    fun getItemDetails(): ItemDetailsLookup.ItemDetails<RemoteService> =
+        object : ItemDetailsLookup.ItemDetails<RemoteService>() {
+            override fun getPosition(): Int = layoutPosition
+
+            override fun getSelectionKey(): RemoteService? = mItem
+        }
+}
+
+class ServiceDetailsLookup(private val recyclerView: RecyclerView) :
+    ItemDetailsLookup<RemoteService>() {
+    override fun getItemDetails(event: MotionEvent): ItemDetails<RemoteService>? {
+        val view = recyclerView.findChildViewUnder(event.x, event.y)
+        if (view != null) {
+            return (recyclerView.getChildViewHolder(view) as RemoteServiceViewHolder)
+                .getItemDetails()
+        }
+        return null
     }
 }
 

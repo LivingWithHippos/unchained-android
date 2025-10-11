@@ -1,8 +1,11 @@
 package com.github.livingwithhippos.unchained.remotedevice.view
 
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.selection.ItemDetailsLookup
+import androidx.recyclerview.selection.ItemDetailsLookup.ItemDetails
 import androidx.recyclerview.selection.ItemKeyProvider
 import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.widget.DiffUtil
@@ -52,8 +55,10 @@ class RemoteDeviceViewHolder(
     private val binding: ItemListRemoteDeviceBinding,
     private val listener: DeviceListListener,
 ) : RecyclerView.ViewHolder(binding.root) {
+    var mItem: RemoteDevice? = null
 
     fun bindCell(item: RemoteDevice, selected: Boolean) {
+        mItem = item
         binding.defaultIndicator.visibility = if (item.isDefault) View.VISIBLE else View.INVISIBLE
 
         val servicesCount = item.services ?: 0
@@ -71,6 +76,25 @@ class RemoteDeviceViewHolder(
         binding.tvDetails.text = item.address
 
         binding.cvDevice.setOnClickListener { listener.onDeviceClick(item) }
+    }
+
+    fun getItemDetails(): ItemDetailsLookup.ItemDetails<RemoteDevice> =
+        object : ItemDetailsLookup.ItemDetails<RemoteDevice>() {
+            override fun getPosition(): Int = layoutPosition
+
+            override fun getSelectionKey(): RemoteDevice? = mItem
+        }
+}
+
+class DeviceDetailsLookup(private val recyclerView: RecyclerView) :
+    ItemDetailsLookup<RemoteDevice>() {
+    override fun getItemDetails(event: MotionEvent): ItemDetails<RemoteDevice>? {
+        val view = recyclerView.findChildViewUnder(event.x, event.y)
+        if (view != null) {
+            return (recyclerView.getChildViewHolder(view) as RemoteDeviceViewHolder)
+                .getItemDetails()
+        }
+        return null
     }
 }
 

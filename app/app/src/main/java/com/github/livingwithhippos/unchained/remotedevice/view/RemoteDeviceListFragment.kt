@@ -19,7 +19,6 @@ import com.github.livingwithhippos.unchained.data.local.RemoteDevice
 import com.github.livingwithhippos.unchained.databinding.FragmentRemoteDeviceListBinding
 import com.github.livingwithhippos.unchained.remotedevice.viewmodel.DeviceEvent
 import com.github.livingwithhippos.unchained.remotedevice.viewmodel.DeviceViewModel
-import com.github.livingwithhippos.unchained.utilities.DataBindingDetailsLookup
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -46,7 +45,7 @@ class RemoteDeviceListFragment : UnchainedFragment(), DeviceListListener {
                     "deviceListSelection",
                     binding.rvDeviceList,
                     DeviceKeyProvider(deviceAdapter),
-                    DataBindingDetailsLookup(binding.rvDeviceList),
+                    DeviceDetailsLookup(binding.rvDeviceList),
                     StorageStrategy.createParcelableStorage(RemoteDevice::class.java),
                 )
                 .withSelectionPredicate(SelectionPredicates.createSelectAnything())

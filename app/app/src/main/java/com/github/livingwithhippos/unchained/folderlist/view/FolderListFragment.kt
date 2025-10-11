@@ -30,11 +30,11 @@ import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.data.model.EmptyBodyError
 import com.github.livingwithhippos.unchained.data.model.NetworkError
 import com.github.livingwithhippos.unchained.databinding.FragmentFolderListBinding
+import com.github.livingwithhippos.unchained.folderlist.model.FolderDetailsLookup
 import com.github.livingwithhippos.unchained.folderlist.model.FolderItemAdapter
 import com.github.livingwithhippos.unchained.folderlist.model.FolderKeyProvider
 import com.github.livingwithhippos.unchained.folderlist.viewmodel.FolderListViewModel
 import com.github.livingwithhippos.unchained.lists.view.DownloadListListener
-import com.github.livingwithhippos.unchained.utilities.DataBindingDetailsLookup
 import com.github.livingwithhippos.unchained.utilities.extension.copyToClipboard
 import com.github.livingwithhippos.unchained.utilities.extension.delayedScrolling
 import com.github.livingwithhippos.unchained.utilities.extension.getThemedDrawable
@@ -167,7 +167,7 @@ class FolderListFragment : UnchainedFragment(), DownloadListListener {
                     "folderListSelection",
                     binding.rvFolderList,
                     FolderKeyProvider(adapter),
-                    DataBindingDetailsLookup(binding.rvFolderList),
+                    FolderDetailsLookup(binding.rvFolderList),
                     StorageStrategy.createParcelableStorage(DownloadItem::class.java),
                 )
                 .withSelectionPredicate(SelectionPredicates.createSelectAnything())

@@ -21,7 +21,6 @@ import com.github.livingwithhippos.unchained.data.local.RemoteService
 import com.github.livingwithhippos.unchained.databinding.FragmentRemoteDeviceBinding
 import com.github.livingwithhippos.unchained.remotedevice.viewmodel.DeviceEvent
 import com.github.livingwithhippos.unchained.remotedevice.viewmodel.DeviceViewModel
-import com.github.livingwithhippos.unchained.utilities.DataBindingDetailsLookup
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -50,7 +49,7 @@ class RemoteDeviceFragment : UnchainedFragment(), ServiceListListener {
                     "serviceListSelection",
                     binding.rvServiceList,
                     ServiceKeyProvider(serviceAdapter),
-                    DataBindingDetailsLookup(binding.rvServiceList),
+                    ServiceDetailsLookup(binding.rvServiceList),
                     StorageStrategy.createParcelableStorage(RemoteService::class.java),
                 )
                 .withSelectionPredicate(SelectionPredicates.createSelectAnything())
