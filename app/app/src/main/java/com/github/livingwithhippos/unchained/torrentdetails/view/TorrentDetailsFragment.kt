@@ -39,6 +39,7 @@ import com.github.livingwithhippos.unchained.utilities.extension.getFileSizeStri
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.github.livingwithhippos.unchained.utilities.loadingStatusList
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 /**
  * A simple [Fragment] subclass. It is capable of showing the details of a [TorrentItem] and
@@ -130,6 +131,7 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentContentListener {
                     val selectedFiles: Int =
                         torrent.files?.count { file -> file.selected == 1 } ?: 0
                     binding.tvSelectedFilesNumber.text = selectedFiles.toString()
+
                     binding.tvTotalFiles.text = (torrent.files?.count() ?: 0).toString()
                     binding.tvName.text = torrent.filename
                     binding.tvProgressPercent.text =
@@ -140,17 +142,23 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentContentListener {
                     } else {
                         binding.tvProgress.visibility = View.GONE
                     }
-                    if (torrent.speed == null) {
+                    try {
+                        val torrentSpeed = torrent.speed
+                        if (torrentSpeed == null) {
+                            binding.tvSpeed.text = ""
+                        } else {
+                            binding.tvSpeed.text =
+                                when (torrent.speed.toString().length) {
+                                    in 0..3 -> getString(R.string.speed_format_b, torrentSpeed)
+                                    in 4..6 -> getString(R.string.speed_format_kb, torrentSpeed / 1000.0)
+                                    in 7..15 ->
+                                        getString(R.string.speed_format_mb, torrentSpeed / 1000000.0)
+                                    else -> getString(R.string.speed_error)
+                                }
+                        }
+                    } catch (ex: Exception) {
+                        Timber.e(ex, "Error formatting speed from '${torrent.speed}'")
                         binding.tvSpeed.text = ""
-                    } else {
-                        binding.tvSpeed.text =
-                            when (torrent.speed.toString().length) {
-                                in 0..3 -> getString(R.string.speed_format_b, torrent.speed)
-                                in 4..6 -> getString(R.string.speed_format_kb, torrent.speed / 1000)
-                                in 7..15 ->
-                                    getString(R.string.speed_format_mb, torrent.speed / 1000000)
-                                else -> getString(R.string.speed_error)
-                            }
                     }
                     if (torrent.seeders == null) {
                         binding.tvSeeders.visibility = View.GONE
@@ -173,7 +181,7 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentContentListener {
                         torrent.originalBytes?.let { size ->
                             binding.tvFileSize.text = getFileSizeString(ctx, size)
                         }
-                        binding.tvFileSize.text = getFileSizeString(ctx, torrent.bytes)
+                        binding.tvSelectedSize.text = getFileSizeString(ctx, torrent.bytes)
                     }
                     binding.cvDownloadDetails.visibility =
                         if (torrent.status.equals("downloading", true)) View.VISIBLE else View.GONE
