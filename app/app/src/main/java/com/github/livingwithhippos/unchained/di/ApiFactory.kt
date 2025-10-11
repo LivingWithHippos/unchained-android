@@ -108,9 +108,7 @@ object ApiFactory {
     @Provides
     @Singleton
     @DOHClient
-    fun provideDOHClient(
-        preferences: SharedPreferences
-        ): OkHttpClient {
+    fun provideDOHClient(preferences: SharedPreferences): OkHttpClient {
 
         val bootstrapClient: OkHttpClient =
             if (BuildConfig.DEBUG) {
@@ -152,47 +150,48 @@ object ApiFactory {
 
         val dohProvider = preferences.getString("doh_provider", "quad9") ?: "quad9"
 
-        val dns = when(dohProvider) {
-            "google" -> DnsOverHttps.Builder()
-                .client(bootstrapClient)
-                .url("https://dns.google/dns-query".toHttpUrl())
-                .bootstrapDnsHosts(
-                    InetAddress.getByName("8.8.8.8"),
-                    InetAddress.getByName("8.8.4.4")
-                )
-                .build()
-            "cloudflare" -> DnsOverHttps.Builder()
-                .client(bootstrapClient)
-                .url("https://cloudflare-dns.com/dns-query".toHttpUrl())
-                .bootstrapDnsHosts(
-                    InetAddress.getByName("1.1.1.1")
-                )
-                .build()
-            "quad9" -> DnsOverHttps.Builder()
-                .client(bootstrapClient)
-                .url("https://dns.quad9.net/dns-query".toHttpUrl())
-                .bootstrapDnsHosts(
-                    InetAddress.getByName("9.9.9.9"),
-                    InetAddress.getByName("149.112.112.112")
-                )
-                .build()
-            "mullvad" -> DnsOverHttps.Builder()
-                .client(bootstrapClient)
-                .url("https://dns.mullvad.net/dns-query".toHttpUrl())
-                .bootstrapDnsHosts(
-                    InetAddress.getByName("194.242.2.2")
-                )
-                .build()
-            else -> DnsOverHttps.Builder()
-                .client(bootstrapClient)
-                .url("https://dns.quad9.net/dns-query".toHttpUrl())
-                .bootstrapDnsHosts(
-                    InetAddress.getByName("9.9.9.9"),
-                    InetAddress.getByName("149.112.112.112")
-                )
-                .build()
-        }
-
+        val dns =
+            when (dohProvider) {
+                "google" ->
+                    DnsOverHttps.Builder()
+                        .client(bootstrapClient)
+                        .url("https://dns.google/dns-query".toHttpUrl())
+                        .bootstrapDnsHosts(
+                            InetAddress.getByName("8.8.8.8"),
+                            InetAddress.getByName("8.8.4.4"),
+                        )
+                        .build()
+                "cloudflare" ->
+                    DnsOverHttps.Builder()
+                        .client(bootstrapClient)
+                        .url("https://cloudflare-dns.com/dns-query".toHttpUrl())
+                        .bootstrapDnsHosts(InetAddress.getByName("1.1.1.1"))
+                        .build()
+                "quad9" ->
+                    DnsOverHttps.Builder()
+                        .client(bootstrapClient)
+                        .url("https://dns.quad9.net/dns-query".toHttpUrl())
+                        .bootstrapDnsHosts(
+                            InetAddress.getByName("9.9.9.9"),
+                            InetAddress.getByName("149.112.112.112"),
+                        )
+                        .build()
+                "mullvad" ->
+                    DnsOverHttps.Builder()
+                        .client(bootstrapClient)
+                        .url("https://dns.mullvad.net/dns-query".toHttpUrl())
+                        .bootstrapDnsHosts(InetAddress.getByName("194.242.2.2"))
+                        .build()
+                else ->
+                    DnsOverHttps.Builder()
+                        .client(bootstrapClient)
+                        .url("https://dns.quad9.net/dns-query".toHttpUrl())
+                        .bootstrapDnsHosts(
+                            InetAddress.getByName("9.9.9.9"),
+                            InetAddress.getByName("149.112.112.112"),
+                        )
+                        .build()
+            }
 
         return bootstrapClient.newBuilder().dns(dns).build()
     }

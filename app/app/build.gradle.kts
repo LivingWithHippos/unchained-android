@@ -49,9 +49,7 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    room {
-        schemaDirectory("$projectDir/schemas")
-    }
+    room { schemaDirectory("$projectDir/schemas") }
 
     packaging {
         jniLibs { excludes.addAll(listOf("META-INF/proguard/*")) }
