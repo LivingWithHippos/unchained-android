@@ -47,7 +47,6 @@ import com.github.livingwithhippos.unchained.lists.viewmodel.ListTabsViewModel.C
 import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationEvent
 import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationState
 import com.github.livingwithhippos.unchained.utilities.DOWNLOADS_TAB
-import com.github.livingwithhippos.unchained.utilities.DataBindingDetailsLookup
 import com.github.livingwithhippos.unchained.utilities.EventObserver
 import com.github.livingwithhippos.unchained.utilities.TORRENTS_TAB
 import com.github.livingwithhippos.unchained.utilities.beforeSelectionStatusList
@@ -432,7 +431,7 @@ class DownloadsListFragment : UnchainedFragment(), DownloadListListener {
                     "downloadListSelection",
                     binding.rvDownloadList,
                     DownloadKeyProvider(downloadAdapter),
-                    DataBindingDetailsLookup(binding.rvDownloadList),
+                    DownloadDetailsLookup(binding.rvDownloadList),
                     StorageStrategy.createParcelableStorage(DownloadItem::class.java),
                 )
                 .withSelectionPredicate(SelectionPredicates.createSelectAnything())
@@ -650,7 +649,7 @@ class TorrentsListFragment : UnchainedFragment(), TorrentListListener {
                     "torrentListSelection",
                     binding.rvTorrentList,
                     TorrentKeyProvider(torrentAdapter),
-                    DataBindingDetailsLookup(binding.rvTorrentList),
+                    TorrentDetailsLookup(binding.rvTorrentList),
                     StorageStrategy.createParcelableStorage(TorrentItem::class.java),
                 )
                 .withSelectionPredicate(SelectionPredicates.createSelectAnything())

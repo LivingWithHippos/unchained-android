@@ -1,9 +1,12 @@
 package com.github.livingwithhippos.unchained.lists.view
 
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
+import androidx.recyclerview.selection.ItemDetailsLookup
+import androidx.recyclerview.selection.ItemDetailsLookup.ItemDetails
 import androidx.recyclerview.selection.ItemKeyProvider
 import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.widget.DiffUtil
@@ -66,6 +69,24 @@ class DownloadViewHolder(
         binding.tvSize.text = getFileSizeString(itemView.context, item.fileSize)
         binding.selectionIndicator.visibility = if (selected) View.VISIBLE else View.GONE
         binding.cvDownload.setOnClickListener { listener.onClick(item) }
+    }
+
+    fun getItemDetails(): ItemDetailsLookup.ItemDetails<DownloadItem> =
+        object : ItemDetailsLookup.ItemDetails<DownloadItem>() {
+            override fun getPosition(): Int = layoutPosition
+
+            override fun getSelectionKey(): DownloadItem? = mItem
+        }
+}
+
+class DownloadDetailsLookup(private val recyclerView: RecyclerView) :
+    ItemDetailsLookup<DownloadItem>() {
+    override fun getItemDetails(event: MotionEvent): ItemDetails<DownloadItem>? {
+        val view = recyclerView.findChildViewUnder(event.x, event.y)
+        if (view != null) {
+            return (recyclerView.getChildViewHolder(view) as DownloadViewHolder).getItemDetails()
+        }
+        return null
     }
 }
 

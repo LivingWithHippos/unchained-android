@@ -3,24 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <data>
-
-        <import type="android.view.View" />
-
-        <variable
-            name="isSelected"
-            type="Boolean" />
-
-        <variable
-            name="item"
-            type="com.github.livingwithhippos.unchained.data.model.TorrentItem" />
-
-        <variable
-            name="listener"
-            type="com.github.livingwithhippos.unchained.lists.view.TorrentListListener" />
-
-    </data>
-
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/cvTorrent"
         style="?attr/materialCardViewElevatedStyle"
@@ -31,7 +13,6 @@
         android:layout_marginEnd="20dp"
         android:checkable="false"
         android:focusable="true"
-        android:onClick="@{() -> listener.onClick(item)}"
         android:layout_gravity="center_horizontal"
         app:cardCornerRadius="10dp"
         app:cardElevation="3dp">
@@ -52,7 +33,6 @@
                 android:background="@drawable/rectangle"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
-                android:visibility="@{isSelected ? View.VISIBLE : View.GONE}"
                 app:layout_constraintEnd_toStartOf="@id/tvTitle"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -66,7 +46,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
-                android:text="@{item.status, default=`downloading`}"
                 app:layout_constraintBottom_toTopOf="@+id/tvName"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -76,8 +55,6 @@
                 android:textAppearance="?attr/textAppearanceLabelMedium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:visibility="@{item.progress >=0 &amp;&amp; item.progress &lt;100 ? View.VISIBLE : View.GONE, default=visible}"
-                android:text="@{@string/percent_format(item.progress), default=`90%`}"
                 android:layout_marginStart="5dp"
                 android:textColor="?attr/colorPrimary"
                 app:layout_constraintBottom_toBottomOf="@+id/tvTitle"
@@ -88,7 +65,6 @@
                 android:textAppearance="?attr/textAppearanceBodyMedium"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@{item.filename, default=`Big.Buck.Bunny.BDRip.S01E16.End.Of.The.Buckening.720p.WEB-DL.`}"
                 android:maxLines="4"
                 android:ellipsize="middle"
                 app:layout_constraintBottom_toTopOf="@+id/tvSize"
@@ -99,7 +75,6 @@
             <TextView
                 android:id="@+id/tvSize"
                 android:textAppearance="?attr/textAppearanceLabelSmall"
-                fileSize="@{item.bytes}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="20 MB"
