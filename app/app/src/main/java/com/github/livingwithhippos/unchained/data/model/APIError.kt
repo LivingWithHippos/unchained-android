@@ -5,9 +5,9 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class APIError(
-    @Json(name = "error") val error: String,
-    @Json(name = "error_details") val errorDetails: String?,
-    @Json(name = "error_code") val errorCode: Int?,
+    @param:Json(name = "error") val error: String,
+    @param:Json(name = "error_details") val errorDetails: String?,
+    @param:Json(name = "error_code") val errorCode: Int?,
 ) : UnchainedNetworkException
 
 // todo: this has been resolved by adding an interceptor, change class name at least

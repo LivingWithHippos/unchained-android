@@ -5,22 +5,22 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class JsonPluginRepository(
-    @Json(name = "repository_version") val repositoryVersion: Double,
-    @Json(name = "name") val name: String,
-    @Json(name = "description") val description: String,
-    @Json(name = "author") val author: String,
-    @Json(name = "plugins") val plugins: List<JsonPlugin>,
+    @param:Json(name = "repository_version") val repositoryVersion: Double,
+    @param:Json(name = "name") val name: String,
+    @param:Json(name = "description") val description: String,
+    @param:Json(name = "author") val author: String,
+    @param:Json(name = "plugins") val plugins: List<JsonPlugin>,
 )
 
 @JsonClass(generateAdapter = true)
 data class JsonPlugin(
-    @Json(name = "id") val id: String,
-    @Json(name = "versions") val versions: List<JsonPluginVersion>,
+    @param:Json(name = "id") val id: String,
+    @param:Json(name = "versions") val versions: List<JsonPluginVersion>,
 )
 
 @JsonClass(generateAdapter = true)
 data class JsonPluginVersion(
-    @Json(name = "plugin") val plugin: Float,
-    @Json(name = "engine") val engine: Float,
-    @Json(name = "link") val link: String,
+    @param:Json(name = "plugin") val plugin: Float,
+    @param:Json(name = "engine") val engine: Float,
+    @param:Json(name = "link") val link: String,
 )

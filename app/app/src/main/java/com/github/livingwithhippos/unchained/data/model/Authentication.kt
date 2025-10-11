@@ -9,12 +9,12 @@ import com.squareup.moshi.JsonClass
  */
 @JsonClass(generateAdapter = true)
 data class Authentication(
-    @Json(name = "device_code") val deviceCode: String,
-    @Json(name = "user_code") val userCode: String,
-    @Json(name = "interval") val interval: Int,
-    @Json(name = "expires_in") val expiresIn: Int,
-    @Json(name = "verification_url") val verificationUrl: String,
-    @Json(name = "direct_verification_url") val directVerificationUrl: String,
+    @param:Json(name = "device_code") val deviceCode: String,
+    @param:Json(name = "user_code") val userCode: String,
+    @param:Json(name = "interval") val interval: Int,
+    @param:Json(name = "expires_in") val expiresIn: Int,
+    @param:Json(name = "verification_url") val verificationUrl: String,
+    @param:Json(name = "direct_verification_url") val directVerificationUrl: String,
 )
 
 /**
@@ -23,8 +23,8 @@ data class Authentication(
  */
 @JsonClass(generateAdapter = true)
 data class Secrets(
-    @Json(name = "client_id") val clientId: String,
-    @Json(name = "client_secret") val clientSecret: String,
+    @param:Json(name = "client_id") val clientId: String,
+    @param:Json(name = "client_secret") val clientSecret: String,
 )
 
 /**
@@ -33,10 +33,10 @@ data class Secrets(
  */
 @JsonClass(generateAdapter = true)
 data class Token(
-    @Json(name = "access_token") val accessToken: String,
-    @Json(name = "expires_in") val expiresIn: Int,
-    @Json(name = "token_type") val tokenType: String,
-    @Json(name = "refresh_token") val refreshToken: String,
+    @param:Json(name = "access_token") val accessToken: String,
+    @param:Json(name = "expires_in") val expiresIn: Int,
+    @param:Json(name = "token_type") val tokenType: String,
+    @param:Json(name = "refresh_token") val refreshToken: String,
 )
 
 enum class UserAction {
