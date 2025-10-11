@@ -4,11 +4,12 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.parcelize")
-    id("dagger.hilt.android.plugin")
+    id("com.google.dagger.hilt.android")
     id("androidx.navigation.safeargs.kotlin")
     alias(libs.plugins.protobuf)
     alias(libs.plugins.ktfmt)
-    kotlin("kapt")
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.room)
 }
 
 fun readProperties(propertiesFile: File) =
@@ -34,8 +35,6 @@ ktfmt {
     kotlinLangStyle()
 }
 
-kapt { correctErrorTypes = true }
-
 android {
     namespace = "com.github.livingwithhippos.unchained"
     compileSdk = 36
@@ -47,14 +46,11 @@ android {
         versionCode = 52
         versionName = "1.3.8"
 
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments["room.schemaLocation"] = "$projectDir/schemas"
-                arguments["room.incremental"] = "true"
-            }
-        }
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    room {
+        schemaDirectory("$projectDir/schemas")
     }
 
     packaging {
@@ -180,7 +176,7 @@ dependencies {
     implementation(libs.jakarta.xmlapi)
     implementation(libs.documentfile)
 
-    kapt(libs.moshi.kapt)
+    ksp(libs.moshi.codegen)
     implementation(libs.moshi.runtime)
 
     implementation(libs.retrofit.runtime)
@@ -195,7 +191,7 @@ dependencies {
     implementation(libs.navigation.fragment)
     implementation(libs.navigation.ui)
 
-    kapt(libs.room.compiler)
+    ksp(libs.room.compiler)
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
 
@@ -212,7 +208,7 @@ dependencies {
 
     implementation(libs.coil)
 
-    kapt(libs.hilt.compiler)
+    ksp(libs.hilt.compiler)
     implementation(libs.hilt.navigation)
     implementation(libs.hilt.android)
 

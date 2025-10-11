@@ -20,6 +20,7 @@ jsoup = "1.21.2"
 junit = "4.13.2"
 kotlin = "2.2.20"
 ktfmt = "0.24.0"
+ksp = "2.2.20-2.0.4"
 lifecycle = "2.9.4"
 material_three = "1.13.0"
 moshi = "1.15.2"
@@ -59,9 +60,9 @@ coroutines_core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-
 coroutines_android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
 countly = { group = "ly.count.android", name = "sdk", version.ref = "countly" }
 hilt_android = { group = "com.google.dagger", name = "hilt-android", version.ref = "dagger" }
-hilt_compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "dagger" }
-hilt_plugin = { group = "com.google.dagger", name = "hilt-android-gradle-plugin", version.ref = "dagger" }
+hilt_compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "dagger" }
 hilt_navigation = { group = "androidx.hilt", name = "hilt-navigation-fragment", version.ref = "hilt_navigation" }
+hilt_plugin = { group = "com.google.dagger", name = "hilt-android-gradle-plugin", version.ref = "dagger" }
 fragment_ktx = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "fragment" }
 datastore_prefs = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
 datastore_core = { group = "androidx.datastore", name = "datastore", version.ref = "datastore" }
@@ -83,7 +84,7 @@ lifecycle_viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmode
 lifecycle_livedata = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "lifecycle" }
 material_version3 = { group = "com.google.android.material", name = "material", version.ref = "material_three" }
 moshi_runtime = { group = "com.squareup.moshi", name = "moshi-kotlin", version.ref = "moshi" }
-moshi_kapt = { group = "com.squareup.moshi", name = "moshi-kotlin-codegen", version.ref = "moshi" }
+moshi_codegen = { group = "com.squareup.moshi", name = "moshi-kotlin-codegen", version.ref = "moshi" }
 navigation_runtime = { group = "androidx.navigation", name = "navigation-runtime-ktx", version.ref = "navigation" }
 navigation_fragment = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "navigation" }
 navigation_ui = { group = "androidx.navigation", name = "navigation-ui", version.ref = "navigation" }
@@ -123,3 +124,6 @@ android_application = { id = "com.android.application", version.ref = "android_g
 kotlin_android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 ktfmt = { id = "com.ncorti.ktfmt.gradle", version.ref = "ktfmt" }
 protobuf = { id = "com.google.protobuf", version.ref = "protobuf_plugin" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+hilt_android = { id = "com.google.dagger.hilt.android", version.ref = "dagger" }
+room = { id = "androidx.room", version.ref = "room" }
