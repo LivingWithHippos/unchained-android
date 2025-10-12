@@ -603,7 +603,12 @@ class Parser(
         }
     }
 
-    private fun parseSingle(regexpsGroup: RegexpsGroup?, source: String, url: String, cleanResult: Boolean = false): String? {
+    private fun parseSingle(
+        regexpsGroup: RegexpsGroup?,
+        source: String,
+        url: String,
+        cleanResult: Boolean = false,
+    ): String? {
         if (regexpsGroup == null) return null
         var parsedResult: String? = null
         regexpsGroup.regexps.forEach { regex ->
@@ -627,8 +632,7 @@ class Parser(
                         else -> match
                     }
                 if (parsedResult.isNotBlank()) {
-                    if (cleanResult)
-                        return cleanScrapingResult(parsedResult)
+                    if (cleanResult) return cleanScrapingResult(parsedResult)
                     return parsedResult
                 }
             }

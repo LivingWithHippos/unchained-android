@@ -53,11 +53,10 @@ fun cleanScrapingResult(result: String): String {
         .trim()
 }
 
-/**
- * format a search string to be used in a url query
- */
+/** format a search string to be used in a url query */
 fun formatStringForSearch(query: String): String {
-    return query.trim()
+    return query
+        .trim()
         .replace("\\s+".toRegex(), "+")
         // replace the % first since we use it as escape character after that
         .replace("%", "%25")
