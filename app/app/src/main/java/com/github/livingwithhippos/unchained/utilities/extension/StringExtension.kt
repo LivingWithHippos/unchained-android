@@ -33,6 +33,26 @@ fun String.removeWebFormatting(): String {
         .replace("%25", "%")
 }
 
+fun cleanScrapingResult(result: String): String {
+    return result
+        // remove styling tags
+        .replace("<b\\s[^>]+>".toRegex(), "")
+        .replace("</b>", "")
+        // replace html tags
+        .replace("%3A", ":")
+        .replace("%3F", "?")
+        .replace("&#x3D;", "=")
+        .replace("%3D", "=")
+        .replace("%26", "&")
+        .replace("&amp;", "&")
+        .replace("&nbsp;", " ")
+        .replace("%2B", "+")
+        .replace("%25", "%")
+        .replace("\\s+".toRegex(), " ")
+        .replace("\n+".toRegex(), " ")
+        .trim()
+}
+
 /**
  * format a search string to be used in a url query
  */
