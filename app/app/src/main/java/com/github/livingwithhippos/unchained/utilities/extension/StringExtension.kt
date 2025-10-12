@@ -28,6 +28,7 @@ fun String.removeWebFormatting(): String {
         .replace("%3D", "=")
         .replace("%26", "&")
         .replace("&amp;", "&")
+        .replace("&nbsp;", " ")
         .replace("%2B", "+")
         .replace("%25", "%")
 }
