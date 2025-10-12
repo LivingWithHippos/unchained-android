@@ -126,10 +126,18 @@ class ForegroundTorrentService : LifecycleService() {
             if (shouldVibrate && finishedTorrents.isNotEmpty()) applicationContext.vibrate()
         }
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-            startForeground(SUMMARY_ID, summaryBuilder.build())
-        } else {
-            startForeground(SUMMARY_ID, summaryBuilder.build(), FOREGROUND_SERVICE_TYPE_DATA_SYNC)
+        try {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+                startForeground(SUMMARY_ID, summaryBuilder.build())
+            } else {
+                startForeground(
+                    SUMMARY_ID,
+                    summaryBuilder.build(),
+                    FOREGROUND_SERVICE_TYPE_DATA_SYNC,
+                )
+            }
+        } catch (ex: Exception) {
+            Timber.e("Error starting foreground service: ${ex.message}")
         }
 
         preferences.registerOnSharedPreferenceChangeListener(preferenceListener)
@@ -209,9 +217,7 @@ class ForegroundTorrentService : LifecycleService() {
                     // Get the PendingIntent containing the entire back stack
                     getPendingIntent(
                         torrent.id.hashCode(),
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-                            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-                        else PendingIntent.FLAG_UPDATE_CURRENT,
+                        PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
                     )
                 }
 
@@ -244,9 +250,7 @@ class ForegroundTorrentService : LifecycleService() {
                 // Get the PendingIntent containing the entire back stack
                 getPendingIntent(
                     item.id.hashCode(),
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-                        PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-                    else PendingIntent.FLAG_UPDATE_CURRENT,
+                    PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
                 )
             }
 

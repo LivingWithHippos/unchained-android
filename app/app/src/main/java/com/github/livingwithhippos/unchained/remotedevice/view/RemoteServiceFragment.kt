@@ -28,12 +28,16 @@ class RemoteServiceFragment : Fragment() {
 
     private val viewModel: DeviceViewModel by viewModels()
 
+    private var _binding: FragmentRemoteServiceBinding? = null
+    private val binding
+        get() = _binding!!
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        val binding = FragmentRemoteServiceBinding.inflate(inflater, container, false)
+        _binding = FragmentRemoteServiceBinding.inflate(inflater, container, false)
 
         val item: RemoteService? = args.item
 
@@ -105,6 +109,7 @@ class RemoteServiceFragment : Fragment() {
                         )
                     viewModel.updateService(remoteService)
                 }
+
                 RemoteServiceType.KODI -> {
                     val remoteService =
                         RemoteService(
@@ -119,6 +124,7 @@ class RemoteServiceFragment : Fragment() {
                         )
                     viewModel.updateService(remoteService)
                 }
+
                 RemoteServiceType.VLC -> {
                     val remoteService =
                         RemoteService(
@@ -133,6 +139,7 @@ class RemoteServiceFragment : Fragment() {
                         )
                     viewModel.updateService(remoteService)
                 }
+
                 null -> {
                     Timber.e("Unknown service type saving ${binding.servicePickerText.text}")
                 }
@@ -157,11 +164,13 @@ class RemoteServiceFragment : Fragment() {
                         context?.showToast(R.string.updated)
                     }
                 }
+
                 is DeviceEvent.DeletedService -> {
                     context?.showToast(R.string.service_deleted)
                     // go back
                     findNavController().popBackStack()
                 }
+
                 else -> {}
             }
         }
@@ -169,17 +178,25 @@ class RemoteServiceFragment : Fragment() {
         return binding.root
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     private fun getServiceType(text: String?): RemoteServiceType? {
         return when (text) {
             getString(R.string.kodi) -> {
                 RemoteServiceType.KODI
             }
+
             getString(R.string.player_vlc) -> {
                 RemoteServiceType.VLC
             }
+
             getString(R.string.jackett) -> {
                 RemoteServiceType.JACKETT
             }
+
             else -> {
                 null
             }
@@ -201,14 +218,17 @@ class RemoteServiceFragment : Fragment() {
                 binding.switchDefault.isEnabled = true
                 binding.tfApiToken.visibility = View.GONE
             }
+
             RemoteServiceType.VLC -> {
                 binding.switchDefault.isEnabled = true
                 binding.tfApiToken.visibility = View.GONE
             }
+
             RemoteServiceType.JACKETT -> {
                 binding.switchDefault.isEnabled = false
                 binding.switchDefault.isChecked = false
             }
+
             null -> {
                 Timber.e("Unknown service type $type")
                 return

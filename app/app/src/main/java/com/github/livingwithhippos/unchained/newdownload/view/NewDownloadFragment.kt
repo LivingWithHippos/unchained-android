@@ -61,19 +61,27 @@ class NewDownloadFragment : UnchainedFragment() {
     private val viewModel: NewDownloadViewModel by viewModels()
 
     private val args: NewDownloadFragmentArgs by navArgs()
+    private var _binding: NewDownloadFragmentBinding? = null
+    private val binding
+        get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        val binding = NewDownloadFragmentBinding.inflate(inflater, container, false)
+        _binding = NewDownloadFragmentBinding.inflate(inflater, container, false)
 
         setupObservers(binding)
         setupClickListeners(binding)
         setupArgs(binding)
 
         return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     private fun setupObservers(binding: NewDownloadFragmentBinding) {
@@ -121,9 +129,11 @@ class NewDownloadFragment : UnchainedFragment() {
                             )
                         findNavController().navigate(action)
                     }
+
                     is Link.RetrievalError -> {
                         viewModel.postMessage(getString(R.string.error_parsing_container))
                     }
+
                     is Link.Torrent -> {
                         val action =
                             NewDownloadFragmentDirections
@@ -132,6 +142,7 @@ class NewDownloadFragment : UnchainedFragment() {
                                 )
                         findNavController().navigate(action)
                     }
+
                     else -> {}
                 }
             },
@@ -184,6 +195,7 @@ class NewDownloadFragment : UnchainedFragment() {
                                         "Asked for a refresh while in a wrong state: ${activityViewModel.getAuthenticationMachineState()}"
                                     )
                             }
+
                             in 10..15 -> {
                                 viewModel.postMessage(errorMessage)
                                 when (activityViewModel.getAuthenticationMachineState()) {
@@ -194,6 +206,7 @@ class NewDownloadFragment : UnchainedFragment() {
                                             FSMAuthenticationEvent.OnAuthenticationError
                                         )
                                     }
+
                                     else -> {
                                         Timber.e(
                                             "Asked for logout while in a wrong state: ${activityViewModel.getAuthenticationMachineState()}"
@@ -201,6 +214,7 @@ class NewDownloadFragment : UnchainedFragment() {
                                     }
                                 }
                             }
+
                             9 -> {
                                 // todo: check if permission denied (code 9) is related only to
                                 // asking for magnet
@@ -208,14 +222,17 @@ class NewDownloadFragment : UnchainedFragment() {
                                 // we use this because permission denied is not clear
                                 viewModel.postMessage(getString(R.string.premium_needed))
                             }
+
                             else -> {
                                 viewModel.postMessage(errorMessage)
                             }
                         }
                     }
+
                     is EmptyBodyError -> {
                         // call successful, fit to singular api case
                     }
+
                     is NetworkError -> {
                         // todo: alert the user according to the different network error
                         viewModel.postMessage(getString(R.string.network_error))
@@ -297,6 +314,7 @@ class NewDownloadFragment : UnchainedFragment() {
                              */
                             // downloadTorrentToCache(binding, link)
                         }
+
                         link.isMagnet() -> {
                             // this one must stay above link.isWebUrl() || link.isSimpleWebUrl()
                             // because some magnets have http in their link, getting recognized as
@@ -312,6 +330,7 @@ class NewDownloadFragment : UnchainedFragment() {
                         link.isContainerWebLink() -> {
                             viewModel.unrestrictContainer(link)
                         }
+
                         link.isWebUrl() || link.isSimpleWebUrl() -> {
                             viewModel.postMessage(getString(R.string.loading_host_link))
                             enableButtons(binding, false)
@@ -327,6 +346,7 @@ class NewDownloadFragment : UnchainedFragment() {
 
                             viewModel.fetchUnrestrictedLink(link, password, remote)
                         }
+
                         else -> {
                             Timber.w("Invalid link: $link")
                             viewModel.postMessage(getString(R.string.invalid_url))
@@ -408,6 +428,7 @@ class NewDownloadFragment : UnchainedFragment() {
                 FSMAuthenticationState.RefreshingOpenToken -> {
                     filePicker.launch("*/*")
                 }
+
                 else -> {
                     viewModel.postMessage(getString(R.string.premium_needed))
                 }
@@ -426,6 +447,7 @@ class NewDownloadFragment : UnchainedFragment() {
                     // simulate button click
                     binding.bUnrestrict.performClick()
                 }
+
                 SCHEME_CONTENT,
                 SCHEME_FILE -> {
 
@@ -450,6 +472,7 @@ class NewDownloadFragment : UnchainedFragment() {
                                         handled = true
                                         loadContainer(binding, link)
                                     }
+
                                     fileName.endsWith(".torrent", ignoreCase = true) -> {
                                         handled = true
                                         loadTorrent(binding, link)
@@ -464,9 +487,11 @@ class NewDownloadFragment : UnchainedFragment() {
                             CONTAINER_EXTENSION_PATTERN.toRegex().matches(link.path ?: "") -> {
                                 loadContainer(binding, link)
                             }
+
                             link.path?.endsWith(".torrent", ignoreCase = true) == true -> {
                                 loadTorrent(binding, link)
                             }
+
                             else ->
                                 Timber.e(
                                     "Unsupported content/file passed to NewDownloadFragment: $link"
@@ -476,6 +501,7 @@ class NewDownloadFragment : UnchainedFragment() {
                         // do nothing
                     }
                 }
+
                 SCHEME_HTTP,
                 SCHEME_HTTPS -> {
                     // set as text input text
@@ -483,6 +509,7 @@ class NewDownloadFragment : UnchainedFragment() {
                     // simulate button click
                     binding.bUnrestrict.performClick()
                 }
+
                 else -> {
                     // shouldn't trigger
                     Timber.e(
@@ -506,11 +533,13 @@ class NewDownloadFragment : UnchainedFragment() {
                 is java.io.FileNotFoundException -> {
                     Timber.e("Torrent conversion: file not found: ${exception.message}")
                 }
+
                 is IOException -> {
                     Timber.e(
                         "Torrent conversion: IOException error getting the file: ${exception.message}"
                     )
                 }
+
                 else -> {
                     Timber.e(
                         "Torrent conversion: Other error getting the file: ${exception.message}"
@@ -539,11 +568,13 @@ class NewDownloadFragment : UnchainedFragment() {
                 is java.io.FileNotFoundException -> {
                     Timber.e("Container conversion: file not found: ${exception.message}")
                 }
+
                 is IOException -> {
                     Timber.e(
                         "Container conversion: IOException error getting the file: ${exception.message}"
                     )
                 }
+
                 else -> {
                     Timber.e(
                         "Container conversion: Other error getting the file: ${exception.message}"

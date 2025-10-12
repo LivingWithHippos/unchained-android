@@ -1,12 +1,17 @@
 package com.github.livingwithhippos.unchained.torrentdetails.model
 
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
+import com.github.livingwithhippos.unchained.databinding.ItemListTorrentDirectoryBinding
+import com.github.livingwithhippos.unchained.databinding.ItemListTorrentFileBinding
 import com.github.livingwithhippos.unchained.torrentdetails.model.TorrentFileItem.Companion.TYPE_FOLDER
-import com.github.livingwithhippos.unchained.utilities.DataBindingAdapter
-import com.github.livingwithhippos.unchained.utilities.DataBindingStaticAdapter
 import com.github.livingwithhippos.unchained.utilities.Node
+import com.github.livingwithhippos.unchained.utilities.extension.getFileSizeString
 
 data class TorrentFileItem(
     val id: Int,
@@ -96,7 +101,8 @@ interface TorrentContentListener {
     fun onSelectedFolder(item: TorrentFileItem)
 }
 
-class TorrentContentFilesAdapter : DataBindingStaticAdapter<TorrentFileItem>(DiffCallback()) {
+class TorrentContentFilesAdapter :
+    ListAdapter<TorrentFileItem, RecyclerView.ViewHolder>(DiffCallback()) {
 
     class DiffCallback : DiffUtil.ItemCallback<TorrentFileItem>() {
         override fun areItemsTheSame(oldItem: TorrentFileItem, newItem: TorrentFileItem): Boolean {
@@ -109,39 +115,63 @@ class TorrentContentFilesAdapter : DataBindingStaticAdapter<TorrentFileItem>(Dif
             oldItem: TorrentFileItem,
             newItem: TorrentFileItem,
         ): Boolean {
-            // content is not dynamic unless selected is added
             return true
         }
     }
 
     override fun getItemViewType(position: Int): Int {
-        val item: TorrentFileItem = this.getItem(position)
+        val item = getItem(position)
         return if (item.id == TYPE_FOLDER) R.layout.item_list_torrent_directory
         else R.layout.item_list_torrent_file
     }
-}
 
-class TorrentContentFilesSelectionAdapter(listener: TorrentContentListener) :
-    DataBindingAdapter<TorrentFileItem, TorrentContentListener>(DiffCallback(), listener) {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return when (viewType) {
+            R.layout.item_list_torrent_directory -> {
+                val binding =
+                    ItemListTorrentDirectoryBinding.inflate(
+                        LayoutInflater.from(parent.context),
+                        parent,
+                        false,
+                    )
+                DirectoryViewHolder(binding)
+            }
 
-    class DiffCallback : DiffUtil.ItemCallback<TorrentFileItem>() {
-        override fun areItemsTheSame(oldItem: TorrentFileItem, newItem: TorrentFileItem): Boolean {
-            return oldItem.id == newItem.id &&
-                oldItem.name == newItem.name &&
-                oldItem.absolutePath == newItem.absolutePath
-        }
+            R.layout.item_list_torrent_file -> {
+                val binding =
+                    ItemListTorrentFileBinding.inflate(
+                        LayoutInflater.from(parent.context),
+                        parent,
+                        false,
+                    )
+                FileViewHolder(binding)
+            }
 
-        override fun areContentsTheSame(
-            oldItem: TorrentFileItem,
-            newItem: TorrentFileItem,
-        ): Boolean {
-            return oldItem.selected == newItem.selected
+            else -> throw IllegalArgumentException("Invalid view type")
         }
     }
 
-    override fun getItemViewType(position: Int): Int {
-        val item: TorrentFileItem = this.getItem(position)
-        return if (item.id == TYPE_FOLDER) R.layout.item_list_torrent_selection_directory
-        else R.layout.item_list_torrent_selection_file
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        val item = getItem(position)
+        when (holder) {
+            is DirectoryViewHolder -> holder.bindCell(item)
+            is FileViewHolder -> holder.bindCell(item)
+        }
+    }
+
+    class DirectoryViewHolder(private val binding: ItemListTorrentDirectoryBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bindCell(item: TorrentFileItem) {
+            binding.tvDirectoryName.text = item.name
+        }
+    }
+
+    class FileViewHolder(private val binding: ItemListTorrentFileBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bindCell(item: TorrentFileItem) {
+            binding.tvFileID.text = item.id.toString()
+            binding.tvFileName.text = item.name
+            binding.tvFileSize.text = getFileSizeString(itemView.context, item.bytes)
+        }
     }
 }

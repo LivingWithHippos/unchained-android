@@ -164,9 +164,10 @@ constructor(
                 "^(https?://)?(www?\\d?\\.)?uploadgig\\.com/file/download/\\w{16}/[^\\s]+\$",
                 "^(https?://)?(www?\\d?\\.)?dropapk\\.to/\\w+/[^\\s]+\$",
                 "^(https?://)?(www?\\d?\\.)?katfile\\.com/\\w+/[^\\s]+\$",
-                "^(https?://)?(www?\\d?\\.)?clicknupload\\.cc/\\w+/[^\\s]+\$",
+                "^(https?://)?(www?\\d?\\.)?clicknupload\\.(cc|click|red|club|to)/\\w+/[^\\s]+\$",
                 "^(https?://)?(www?\\d?\\.)?fastclick\\.to/\\w+/[^\\s]+\$",
                 "^(https?://)?(www?\\d?\\.)?drop\\.download/\\w+/[^\\s]+\$",
+                "^(https?://)?(www?\\d?\\.)?1fichier\\.com/\\w+/[^\\s]+\$",
             )
 
         // if any of the converted folder regexps are wrong, we can add these to the db manually

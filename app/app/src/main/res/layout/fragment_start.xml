@@ -1,94 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rootLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center_vertical"
+    tools:context=".start.view.StartFragment">
 
-    <data>
+    <FrameLayout
+        android:id="@+id/flLoadButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/tvErrorMessage"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed">
 
-        <import type="android.view.View" />
-
-    </data>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/rootLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center_vertical"
-        tools:context=".start.view.StartFragment">
-
-        <FrameLayout
-            android:id="@+id/flLoadButton"
+        <LinearLayout
+            android:id="@+id/buttonsLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toTopOf="@+id/tvErrorMessage"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_chainStyle="packed">
+            android:orientation="vertical"
+            android:visibility="invisible">
 
-            <LinearLayout
-                android:id="@+id/buttonsLayout"
+            <Button
+                android:id="@+id/bRetry"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:visibility="invisible">
+                android:layout_marginBottom="10dp"
+                android:minWidth="170dp"
+                android:minLines="2"
+                android:text="@string/retry_login" />
 
-                <Button
-                    android:id="@+id/bRetry"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:minWidth="170dp"
-                    android:minLines="2"
-                    android:text="@string/retry_login" />
+            <Button
+                android:id="@+id/bReset"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:minWidth="170dp"
+                android:minLines="2"
+                android:text="@string/reset_login" />
+        </LinearLayout>
 
-                <Button
-                    android:id="@+id/bReset"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:minWidth="170dp"
-                    android:minLines="2"
-                    android:text="@string/reset_login" />
-            </LinearLayout>
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/loadingCircle"
+            style="@style/Widget.MaterialComponents.CircularProgressIndicator"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:indeterminate="true"
+            app:trackCornerRadius="20dp" />
+    </FrameLayout>
 
-            <com.google.android.material.progressindicator.CircularProgressIndicator
-                android:id="@+id/loadingCircle"
-                style="@style/Widget.MaterialComponents.CircularProgressIndicator"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_gravity="center"
-                android:indeterminate="true"
-                app:trackCornerRadius="20dp" />
-        </FrameLayout>
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gStart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.1" />
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/gStart"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.1" />
+    <TextView
+        android:id="@+id/tvErrorMessage"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/loading"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/gEnd"
+        app:layout_constraintStart_toEndOf="@+id/gStart"
+        app:layout_constraintTop_toBottomOf="@+id/flLoadButton" />
 
-        <TextView
-            android:id="@+id/tvErrorMessage"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@string/loading"
-            android:textAlignment="center"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/gEnd"
-            app:layout_constraintStart_toEndOf="@+id/gStart"
-            app:layout_constraintTop_toBottomOf="@+id/flLoadButton" />
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gEnd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintGuide_percent="0.9" />
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/gEnd"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintGuide_percent="0.9" />
-
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</layout>
+</androidx.constraintlayout.widget.ConstraintLayout>

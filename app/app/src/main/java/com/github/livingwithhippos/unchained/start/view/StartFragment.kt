@@ -22,12 +22,17 @@ import timber.log.Timber
 @AndroidEntryPoint
 class StartFragment : UnchainedFragment() {
 
+    private var _binding: FragmentStartBinding? = null
+    // This property is only valid between onCreateView and onDestroyView.
+    private val binding
+        get() = _binding!!
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        val binding = FragmentStartBinding.inflate(inflater, container, false)
+        _binding = FragmentStartBinding.inflate(inflater, container, false)
 
         activityViewModel.fsmAuthenticationState.observe(viewLifecycleOwner) {
             if (it != null) {
@@ -96,5 +101,10 @@ class StartFragment : UnchainedFragment() {
         }
 
         return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

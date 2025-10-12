@@ -12,8 +12,10 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import coil.load
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
+import com.github.livingwithhippos.unchained.data.model.User
 import com.github.livingwithhippos.unchained.databinding.FragmentUserProfileBinding
 import com.github.livingwithhippos.unchained.settings.view.SettingsActivity
 import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Companion.KEY_REFERRAL_ASKED
@@ -33,28 +35,47 @@ class UserProfileFragment : UnchainedFragment() {
 
     @Inject lateinit var preferences: SharedPreferences
 
+    private var _binding: FragmentUserProfileBinding? = null
+
+    // This property is only valid between onCreateView and onDestroyView.
+    private val binding
+        get() = _binding!!
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
         // Inflate the layout for this fragment
-        val userBinding = FragmentUserProfileBinding.inflate(inflater, container, false)
+        _binding = FragmentUserProfileBinding.inflate(inflater, container, false)
+        val view = binding.root
 
-        val user = activityViewModel.getCachedUser()
+        val user: User? = activityViewModel.getCachedUser()
         if (user == null) {
             activityViewModel.fetchUser()
         } else {
-            userBinding.user = user
+            populateUserView(user)
         }
-        lifecycleScope.launch { userBinding.privateToken = activityViewModel.isTokenPrivate() }
+        lifecycleScope.launch {
+            if (activityViewModel.isTokenPrivate()) {
+                binding.tvLoginDescription.text = getString(R.string.login_type_private)
+            } else {
+                binding.tvLoginDescription.text = getString(R.string.login_type_open)
+            }
+        }
 
         activityViewModel.userLiveData.observe(viewLifecycleOwner) {
-            userBinding.user = it.peekContent()
-            lifecycleScope.launch { userBinding.privateToken = activityViewModel.isTokenPrivate() }
+            populateUserView(it.peekContent())
+            lifecycleScope.launch {
+                if (activityViewModel.isTokenPrivate()) {
+                    binding.tvLoginDescription.text = getString(R.string.login_type_private)
+                } else {
+                    binding.tvLoginDescription.text = getString(R.string.login_type_open)
+                }
+            }
         }
 
-        userBinding.bAccount.setOnClickListener {
+        binding.bAccount.setOnClickListener {
             // if we never asked, show a dialog
             if (!preferences.getBoolean(KEY_REFERRAL_ASKED, false)) {
                 // set asked as true
@@ -96,20 +117,24 @@ class UserProfileFragment : UnchainedFragment() {
                         val action = UserProfileFragmentDirections.actionUserToStartFragment()
                         findNavController().navigate(action)
                     }
+
                     FSMAuthenticationState.StartNewLogin -> {
                         // the user reset the login, go to the auth fragment
                         val action =
                             UserProfileFragmentDirections.actionUserToAuthenticationFragment()
                         findNavController().navigate(action)
                     }
+
                     FSMAuthenticationState.AuthenticatedOpenToken,
                     FSMAuthenticationState.AuthenticatedPrivateToken,
                     FSMAuthenticationState.RefreshingOpenToken -> {
                         // managed by activity
                     }
+
                     FSMAuthenticationState.CheckCredentials -> {
                         // shouldn't matter
                     }
+
                     FSMAuthenticationState.Start,
                     FSMAuthenticationState.WaitingToken,
                     FSMAuthenticationState.WaitingUserConfirmation -> {
@@ -119,7 +144,7 @@ class UserProfileFragment : UnchainedFragment() {
             }
         }
 
-        userBinding.bSettings.setOnClickListener {
+        binding.bSettings.setOnClickListener {
             val intent = Intent(requireContext(), SettingsActivity::class.java)
             startActivity(intent)
         }
@@ -134,6 +159,29 @@ class UserProfileFragment : UnchainedFragment() {
             activityViewModel.requireNotificationPermissions()
         }
 
-        return userBinding.root
+        return view
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    fun populateUserView(user: User?) {
+        user?.let {
+            binding.tvName.text = it.username
+            binding.tvMail.text = it.email
+            // todo: check https://coil-kt.github.io/coil/image_loaders/#caching
+            binding.ivProfilePic.load(it.avatar) { crossfade(true) }
+            if (it.premium > 0) {
+                binding.tvPremium.text = getString(R.string.premium)
+            } else {
+                binding.tvPremium.text = getString(R.string.not_premium)
+            }
+            binding.tvPremiumDays.text =
+                getString(R.string.premium_days_format, it.premium / 60 / 60 / 24)
+            binding.tvPoints.text = getString(R.string.premium_points_format, it.points)
+            binding.pointsBar.setProgressCompat(it.points, true)
+        }
     }
 }

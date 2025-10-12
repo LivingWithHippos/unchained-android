@@ -11,7 +11,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import timber.log.Timber
 
-class RemoteRepository @Inject constructor(@ClassicClient private val client: OkHttpClient) {
+class RemoteRepository @Inject constructor(@param:ClassicClient private val client: OkHttpClient) {
     // todo: add https://mpv.io/manual/stable/#json-ipc
 
     suspend fun openUrl(

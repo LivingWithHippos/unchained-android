@@ -36,35 +36,35 @@ import kotlinx.parcelize.Parcelize
 @JsonClass(generateAdapter = true)
 @Parcelize
 data class DownloadItem(
-    @Json(name = "id") val id: String,
-    @Json(name = "filename") val filename: String,
+    @param:Json(name = "id") val id: String,
+    @param:Json(name = "filename") val filename: String,
     /** Mime Type of the file, guessed by the file extension */
-    @Json(name = "mimeType") val mimeType: String?,
+    @param:Json(name = "mimeType") val mimeType: String?,
     /** bytes, 0 if unknown */
-    @Json(name = "filesize") val fileSize: Long,
+    @param:Json(name = "filesize") val fileSize: Long,
     /** Original link, use "generated" to download this file */
-    @Json(name = "link") val link: String,
+    @param:Json(name = "link") val link: String,
     /** Host main domain */
-    @Json(name = "host") val host: String,
-    @Json(name = "host_icon") val hostIcon: String?,
+    @param:Json(name = "host") val host: String,
+    @param:Json(name = "host_icon") val hostIcon: String?,
     /** Max Chunks allowed */
-    @Json(name = "chunks") val chunks: Int,
-    @Json(name = "crc") val crc: Int?,
+    @param:Json(name = "chunks") val chunks: Int,
+    @param:Json(name = "crc") val crc: Int?,
     /** Generated link to be used for downloading */
-    @Json(name = "download") val download: String,
-    @Json(name = "streamable") val streamable: Int?,
+    @param:Json(name = "download") val download: String,
+    @param:Json(name = "streamable") val streamable: Int?,
     /** jsonDate */
-    @Json(name = "generated") val generated: String?,
-    @Json(name = "type") val type: String?,
-    @Json(name = "alternative") val alternative: List<Alternative>?,
+    @param:Json(name = "generated") val generated: String?,
+    @param:Json(name = "type") val type: String?,
+    @param:Json(name = "alternative") val alternative: List<Alternative>?,
 ) : Parcelable
 
 @JsonClass(generateAdapter = true)
 @Parcelize
 data class Alternative(
-    @Json(name = "id") val id: String,
-    @Json(name = "filename") val filename: String,
-    @Json(name = "download") val download: String,
-    @Json(name = "mimeType") val mimeType: String?,
-    @Json(name = "quality") val quality: String?,
+    @param:Json(name = "id") val id: String,
+    @param:Json(name = "filename") val filename: String,
+    @param:Json(name = "download") val download: String,
+    @param:Json(name = "mimeType") val mimeType: String?,
+    @param:Json(name = "quality") val quality: String?,
 ) : Parcelable

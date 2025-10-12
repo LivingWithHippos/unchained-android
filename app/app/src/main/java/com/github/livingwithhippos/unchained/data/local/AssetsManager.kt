@@ -7,7 +7,7 @@ import java.io.FileInputStream
 import java.io.InputStream
 import javax.inject.Inject
 
-class AssetsManager @Inject constructor(@ApplicationContext private val appContext: Context) {
+class AssetsManager @Inject constructor(@param:ApplicationContext private val appContext: Context) {
 
     private val SYSTEM_ASSETS_FOLDER = listOf("images", "webkit")
 

@@ -1,5 +1,10 @@
 <resources>
     <string name="app_name" translatable="false">Unchained</string>
+    <string name="google" translatable="false">Google</string>
+    <string name="cloudflare" translatable="false">Cloudflare</string>
+    <string name="quad9" translatable="false">Quad9</string>
+    <string name="mullvad" translatable="false">Mullvad</string>
+    <string name="percent_format" translatable="false">%1$.1f%%</string>
     <string name="loading_auth_link">Loading Authentication…</string>
     <string name="please_visit">Please visit\u0020</string>
     <string name="link">Link</string>
@@ -398,7 +403,6 @@
     <string name="confirm_item_removal_description">Are you sure you want to remove this item? The action cannot be undone.</string>
     <string name="confirm_removal">Confirm removal</string>
     <string name="multiple_links_warning">This torrent has multiple links. Check the downloads list to find all of them.</string>
-    <string name="percent_format" translatable="false">%1$s%%</string>
     <string name="theme_day_support">This theme supports only the day mode</string>
     <string name="app_not_installed">App not installed. Check your settings.</string>
     <string name="limitations">Error: your phone is limiting background activity.</string>
@@ -561,7 +565,7 @@
     <string name="share_all">Share all</string>
     <string name="copy_all">Copy all</string>
     <string name="enable_doh">Enable DNS over HTTPS</string>
-    <string name="uses_google_dns">Uses Google DNS</string>
+    <string name="pick_doh_provider">Pick a DNS over HTTPS provider</string>
     <string name="doh" translatable="false">DNS over HTTPS</string>
     <string name="doh_description_message">DNS over HTTPS is a protocol used to increase privacy and avoid eavesdropping of DNS requests. If a plugin\'s website is blocked at DNS level, enabling DOH can help bypass this. The DOH only provider available at the moment is  Google. This option is disabled by default and it can be changed anytime from the settings menu. This feature may cause crashes.</string>
     <string name="disable">Disable</string>

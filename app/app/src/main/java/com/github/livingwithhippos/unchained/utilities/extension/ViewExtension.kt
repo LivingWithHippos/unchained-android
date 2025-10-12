@@ -3,7 +3,6 @@ package com.github.livingwithhippos.unchained.utilities.extension
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.Rect
-import android.graphics.drawable.Animatable
 import android.graphics.drawable.ClipDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.InsetDrawable
@@ -12,112 +11,20 @@ import android.graphics.drawable.RippleDrawable
 import android.graphics.drawable.RotateDrawable
 import android.graphics.drawable.ScaleDrawable
 import android.graphics.drawable.VectorDrawable
-import android.os.Build
-import android.text.SpannableStringBuilder
 import android.util.TypedValue
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
-import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
 import android.widget.ImageView
 import android.widget.ProgressBar
-import android.widget.TextView
-import androidx.databinding.BindingAdapter
+import androidx.annotation.AttrRes
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.local.RemoteServiceType
 import com.github.livingwithhippos.unchained.repository.model.PluginStatus
-import com.github.livingwithhippos.unchained.utilities.extensionIconMap
-import com.google.android.material.progressindicator.BaseProgressIndicator
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.delay
-
-/**
- * start an animation from the [ImageView] drawable if possible
- *
- * @param start: true to start the animation or false to stop it
- */
-@BindingAdapter("startAnimation")
-fun ImageView.startAnimation(start: Boolean) {
-    if (drawable is Animatable) {
-        if (start) (drawable as Animatable).start() else (drawable as Animatable).stop()
-    }
-}
-
-/**
- * set a simple [AutoCompleteTextView] items adapter
- *
- * @param contents: the list to be show on the dropdown menu
- */
-@BindingAdapter("adapter")
-fun AutoCompleteTextView.setAdapter(contents: List<String>) {
-    // a simple layout is set for the dropdown items
-    val adapter = ArrayAdapter(this.context, R.layout.item_dropdown_plain, contents)
-    this.setAdapter(adapter)
-}
-
-/**
- * set the background [ProgressBar] color
- *
- * @param color: the color to be shown
- */
-@BindingAdapter("backgroundProgressColor")
-fun ProgressBar.setBackgroundProgressColor(color: Int) {
-    tintDrawable(android.R.id.background, color)
-}
-
-/**
- * set the primary [ProgressBar] color
- *
- * @param color: the color to be shown
- */
-@BindingAdapter("progressColor")
-fun ProgressBar.setProgressColor(color: Int) {
-    tintDrawable(android.R.id.progress, color)
-}
-
-/**
- * set the secondary [ProgressBar] color
- *
- * @param color: the color to be shown
- */
-@BindingAdapter("secondaryProgressColor")
-fun ProgressBar.setSecondaryProgressColor(color: Int) {
-    tintDrawable(android.R.id.secondaryProgress, color)
-}
-
-/**
- * set the background progress drawable for the [ProgressBar]
- *
- * @param drawable: the drawable for the background
- */
-@BindingAdapter("backgroundProgressDrawable")
-fun ProgressBar.setBackgroundProgressDrawable(drawable: Drawable) {
-    swapLayerDrawable(android.R.id.background, drawable)
-}
-
-/**
- * set the primary progress drawable for the [ProgressBar]
- *
- * @param drawable: the drawable
- */
-@BindingAdapter("primaryProgressDrawable")
-fun ProgressBar.setPrimaryProgressDrawable(drawable: Drawable) {
-    swapLayerDrawable(android.R.id.progress, drawable)
-}
-
-/**
- * set the secondary progress drawable for the [ProgressBar]
- *
- * @param drawable: the drawable
- */
-@BindingAdapter("secondaryProgressDrawable")
-fun ProgressBar.setSecondaryProgressDrawable(drawable: Drawable) {
-    swapLayerDrawable(android.R.id.secondaryProgress, drawable)
-}
 
 /**
  * tint the color of a [ProgressBar] layer drawable
@@ -137,16 +44,14 @@ fun ProgressBar.tintDrawable(layerId: Int, color: Int) {
  * @param drawable: the drawable to apply
  */
 fun ProgressBar.swapLayerDrawable(layerId: Int, drawable: Drawable) {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-        when (val oldDrawable = getDrawableByLayerId(layerId)) {
-            is ClipDrawable -> oldDrawable.drawable = drawable
-            is ScaleDrawable -> oldDrawable.drawable = drawable
-            is InsetDrawable -> oldDrawable.drawable = drawable
-            is RotateDrawable -> oldDrawable.drawable = drawable
-            is VectorDrawable -> getLayerDrawable().setDrawableByLayerId(layerId, drawable)
-        // ShapeDrawable is a generic shape and does not have drawables
-        // is ShapeDrawable ->
-        }
+    when (val oldDrawable = getDrawableByLayerId(layerId)) {
+        is ClipDrawable -> oldDrawable.drawable = drawable
+        is ScaleDrawable -> oldDrawable.drawable = drawable
+        is InsetDrawable -> oldDrawable.drawable = drawable
+        is RotateDrawable -> oldDrawable.drawable = drawable
+        is VectorDrawable -> getLayerDrawable().setDrawableByLayerId(layerId, drawable)
+    // ShapeDrawable is a generic shape and does not have drawables
+    // is ShapeDrawable ->
     }
 }
 
@@ -169,79 +74,19 @@ fun ProgressBar.getDrawableByLayerId(id: Int): Drawable {
     return getLayerDrawable().findDrawableByLayerId(id)
 }
 
-/**
- * set the [ProgressIndicator] progress value, not available as xml tag
- *
- * @param progress: the progress to be set
- */
-@BindingAdapter("progressCompat")
-fun BaseProgressIndicator<*>.setRealProgress(progress: Int) {
-    val animated = true
-    this.setProgressCompat(progress, animated)
-}
-
-/**
- * set the [ProgressIndicator] progress value, not available as xml tag
- *
- * @param progress: the progress to be set
- */
-@BindingAdapter("floatProgress")
-fun BaseProgressIndicator<*>.setFloatProgress(progress: Float) {
-    this.setProgressCompat(progress.toInt(), true)
-}
-
-/**
- * This function format the download speed from bytes/s to kb/s and MB/s and assign it to the
- * [TextView]
- *
- * @param speed - the speed in bytes/s.
- */
-@BindingAdapter("downloadSpeed")
-fun TextView.setDownloadSpeed(speed: Int) {
-    this.text =
-        when (speed.toString().length) {
-            in 0..3 -> this.context.getString(R.string.speed_format_b, speed)
-            in 4..6 -> this.context.getString(R.string.speed_format_kb, speed.toFloat() / 1000)
-            in 7..15 -> this.context.getString(R.string.speed_format_mb, speed.toFloat() / 1000000)
-            else -> this.context.getString(R.string.speed_error)
-        }
-}
-
-/**
- * This function format the file size from bytes to Kb, Mb, Gb and assign it to the [TextView]
- *
- * @param size - the file size in bytes.
- */
-@BindingAdapter("fileSize")
-fun TextView.setFileSize(size: Long) {
-    this.text =
-        when {
-            size < 1048575 ->
-                this.context.getString(R.string.file_size_format_kb, size.toFloat() / 1024)
-            size < 1073741823 ->
-                this.context.getString(R.string.file_size_format_mb, size.toFloat() / 1024 / 1024)
-            // ~9 TB, for now it's more probable that a wrong value is being passed if it's over
-            // this
-            // value
-            size < 9999999999999 ->
-                this.context.getString(
-                    R.string.file_size_format_gb,
-                    size.toFloat() / 1024 / 1024 / 1024,
-                )
-            // todo: shorten this
-            else -> this.context.getString(R.string.size_error)
-        }
-}
-
-/**
- * This function sets a SpannableStringBuilder as the TextView text.
- *
- * @param spannableStringBuilder - the text to be displayed
- */
-@BindingAdapter("spannableText")
-fun TextView.setTextFromSpan(spannableStringBuilder: SpannableStringBuilder?) {
-    if (spannableStringBuilder != null)
-        setText(spannableStringBuilder, TextView.BufferType.SPANNABLE)
+fun getFileSizeString(context: Context, size: Long): String {
+    return when {
+        size < 1048575 -> context.getString(R.string.file_size_format_kb, size.toFloat() / 1024)
+        size < 1073741823 ->
+            context.getString(R.string.file_size_format_mb, size.toFloat() / 1024 / 1024)
+        // ~9 TB, for now it's more probable that a wrong value is being passed if it's over
+        // this
+        // value
+        size < 9999999999999 ->
+            context.getString(R.string.file_size_format_gb, size.toFloat() / 1024 / 1024 / 1024)
+        // todo: shorten this
+        else -> context.getString(R.string.size_error)
+    }
 }
 
 /**
@@ -325,58 +170,32 @@ fun View.showSnackBar(
         .show()
 }
 
-/**
- * The refresh indicator is not themed according to the app, it's always a black arrow in a white
- * circle. This can be used to paint it.
- */
-@BindingAdapter("refreshColorTheme")
-fun SwipeRefreshLayout.setRefreshThemeColor(themed: Boolean) {
-    if (themed) {
-        // get a reference to the current theme
-        val typedValue = TypedValue()
-        val theme: Resources.Theme = context.theme
-        theme.resolveAttribute(com.google.android.material.R.attr.colorSurface, typedValue, true)
-        // arrow color
-        val arrowColor = typedValue.data
-        // this function accept a number of colors, the refresh indicator will rotate between them.
-        setColorSchemeColors(arrowColor)
-        theme.resolveAttribute(com.google.android.material.R.attr.colorPrimary, typedValue, true)
-        // background color
-        val backgroundColor = typedValue.data
-        setProgressBackgroundColorSchemeColor(backgroundColor)
-    }
+fun getThemeColor(context: Context, @AttrRes resId: Int): Int {
+    // get a reference to the current theme
+    val typedValue = TypedValue()
+    val theme: Resources.Theme = context.theme
+    theme.resolveAttribute(resId, typedValue, true)
+    return typedValue.data
 }
 
-@BindingAdapter("mapExtensionDrawable")
-fun ImageView.setDrawableByExtension(fileName: String) {
-    val extension = fileName.substringAfterLast(".").lowercase()
-    // todo: use when like below instead of map
-    if (extensionIconMap.containsKey(extension))
-        this.setImageResource(extensionIconMap.getValue(extension))
-    else this.setImageResource(extensionIconMap.getValue("default"))
-}
-
-@BindingAdapter("mapPluginStatusDrawable")
-fun ImageView.setDrawableByPluginStatus(status: String) {
-
+fun setDrawableByPluginStatus(view: ImageView, status: String) {
     return when (status) {
-        PluginStatus.updated -> this.setImageResource(R.drawable.icon_check)
-        PluginStatus.hasUpdate -> this.setImageResource(R.drawable.icon_reload)
-        PluginStatus.hasIncompatibleUpdate -> this.setImageResource(R.drawable.icon_close)
-        PluginStatus.isNew -> this.setImageResource(R.drawable.icon_new_releases)
-        PluginStatus.incompatible -> this.setImageResource(R.drawable.icon_close)
-        PluginStatus.unknown -> this.setImageResource(R.drawable.icon_question_mark)
-        else -> this.setImageResource(R.drawable.icon_question_mark)
+        PluginStatus.updated -> view.setImageResource(R.drawable.icon_check)
+        PluginStatus.hasUpdate -> view.setImageResource(R.drawable.icon_reload)
+        PluginStatus.hasIncompatibleUpdate -> view.setImageResource(R.drawable.icon_close)
+        PluginStatus.isNew -> view.setImageResource(R.drawable.icon_new_releases)
+        PluginStatus.incompatible -> view.setImageResource(R.drawable.icon_close)
+        PluginStatus.unknown -> view.setImageResource(R.drawable.icon_question_mark)
+        else -> view.setImageResource(R.drawable.icon_question_mark)
     }
 }
 
-@BindingAdapter("mapServiceTypeDrawable")
-fun ImageView.setDrawableByServiceType(type: Int) {
+fun setDrawableByServiceType(view: ImageView, type: Int) {
     return when (type) {
-        RemoteServiceType.KODI.value -> this.setImageResource(R.drawable.icon_kodi)
-        RemoteServiceType.VLC.value -> this.setImageResource(R.drawable.icon_vlc)
-        RemoteServiceType.JACKETT.value -> this.setImageResource(R.drawable.icon_jackett)
-        else -> this.setImageResource(R.drawable.icon_play_outline)
+        RemoteServiceType.KODI.value -> view.setImageResource(R.drawable.icon_kodi)
+        RemoteServiceType.VLC.value -> view.setImageResource(R.drawable.icon_vlc)
+        RemoteServiceType.JACKETT.value -> view.setImageResource(R.drawable.icon_jackett)
+        else -> view.setImageResource(R.drawable.icon_play_outline)
     }
 }
 

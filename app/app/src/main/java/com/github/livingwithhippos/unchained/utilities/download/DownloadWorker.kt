@@ -11,6 +11,7 @@ import android.webkit.MimeTypeMap
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.net.toUri
 import androidx.documentfile.provider.DocumentFile
 import androidx.preference.PreferenceManager
 import androidx.work.CoroutineWorker
@@ -65,7 +66,7 @@ class DownloadWorker(private val appContext: Context, workerParams: WorkerParame
             return Result.failure()
         }
 
-        val folderUri: Uri = Uri.parse(folderSetting)
+        val folderUri: Uri = folderSetting.toUri()
 
         val newFile: DocumentFile? =
             try {
