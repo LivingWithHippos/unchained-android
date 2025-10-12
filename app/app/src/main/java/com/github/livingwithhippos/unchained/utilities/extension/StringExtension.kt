@@ -32,6 +32,17 @@ fun String.removeWebFormatting(): String {
         .replace("%25", "%")
 }
 
+/**
+ * format a search string to be used in a url query
+ */
+fun formatStringForSearch(query: String): String {
+    return query.trim()
+        .replace("\\s+".toRegex(), "+")
+        // replace the % first since we use it as escape character after that
+        .replace("%", "%25")
+        .replace("&", "%26")
+}
+
 /** check if a String is a magnet link */
 fun String?.isMagnet(): Boolean {
     if (this == null) return false

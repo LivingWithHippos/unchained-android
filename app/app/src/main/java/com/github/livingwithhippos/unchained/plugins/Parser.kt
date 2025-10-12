@@ -50,11 +50,7 @@ class Parser(
         flow {
             if (query.isBlank()) emit(ParserResult.MissingQuery)
             else {
-                // todo: format queries with other unsupported web characters
-                // todo: check if this works with other plugins, otherwise add it as a json
-                // parameter.
-                // Possible alternative: %20
-                val currentQuery = query.trim().replace("\\s+".toRegex(), "+")
+                val currentQuery = formatStringForSearch(query)
                 if (!plugin.isCompatible()) {
                     emit(ParserResult.PluginVersionUnsupported)
                 } else {
