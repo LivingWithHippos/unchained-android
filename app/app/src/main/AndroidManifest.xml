@@ -344,6 +344,7 @@
                 <data android:host="inclouddrive.com" />
                 <data android:host="isra.cloud" />
 
+                <data android:host="katfile.cloud" />
                 <data android:host="katfile.com" />
                 <data android:host="keep2share.cc" />
 
