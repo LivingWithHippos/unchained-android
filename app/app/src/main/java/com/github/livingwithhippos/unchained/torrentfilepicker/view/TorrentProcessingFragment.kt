@@ -22,11 +22,11 @@ import com.github.livingwithhippos.unchained.databinding.FragmentTorrentProcessi
 import com.github.livingwithhippos.unchained.lists.view.ListState
 import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationEvent
 import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationState
-import com.github.livingwithhippos.unchained.torrentdetails.model.TorrentContentFilesSelectionAdapter
 import com.github.livingwithhippos.unchained.torrentdetails.model.TorrentContentListener
 import com.github.livingwithhippos.unchained.torrentdetails.model.TorrentFileItem
 import com.github.livingwithhippos.unchained.torrentdetails.model.TorrentFileItem.Companion.TYPE_FOLDER
 import com.github.livingwithhippos.unchained.torrentdetails.model.getFilesNodes
+import com.github.livingwithhippos.unchained.torrentfilepicker.model.TorrentContentFilesSelectionAdapter
 import com.github.livingwithhippos.unchained.torrentfilepicker.viewmodel.TorrentEvent
 import com.github.livingwithhippos.unchained.torrentfilepicker.viewmodel.TorrentProcessingViewModel
 import com.github.livingwithhippos.unchained.utilities.Node
@@ -53,6 +53,12 @@ class TorrentProcessingFragment : UnchainedFragment(), TorrentContentListener {
     private val viewModel: TorrentProcessingViewModel by
         hiltNavGraphViewModels(R.id.navigation_lists)
 
+    private var _binding: FragmentTorrentProcessingBinding? = null
+
+    // This property is only valid between onCreateView and onDestroyView.
+    private val binding
+        get() = _binding!!
+
     /** Save the torrent/magnet has when loaded */
     private var torrentHash: String? = null
 
@@ -63,7 +69,7 @@ class TorrentProcessingFragment : UnchainedFragment(), TorrentContentListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        val binding = FragmentTorrentProcessingBinding.inflate(inflater, container, false)
+        _binding = FragmentTorrentProcessingBinding.inflate(inflater, container, false)
 
         setup(binding)
 
@@ -76,6 +82,7 @@ class TorrentProcessingFragment : UnchainedFragment(), TorrentContentListener {
                     // todo: add a loop so this is repeated if it fails, instead of wasting the
                     // fragment
                 }
+
                 is TorrentEvent.TorrentInfo -> {
                     if (
                         content.item.files?.size == 1 &&
@@ -116,6 +123,7 @@ class TorrentProcessingFragment : UnchainedFragment(), TorrentContentListener {
                         }
                     }
                 }
+
                 is TorrentEvent.FilesSelected -> {
                     activityViewModel.setListState(ListState.UpdateTorrent)
                     val action =
@@ -125,12 +133,14 @@ class TorrentProcessingFragment : UnchainedFragment(), TorrentContentListener {
                             )
                     findNavController().navigate(action)
                 }
+
                 TorrentEvent.DownloadAll -> {
                     binding.tvStatus.text = getString(R.string.selecting_all_files)
                     binding.tvLoadingTorrent.visibility = View.INVISIBLE
                     binding.loadingLayout.visibility = View.VISIBLE
                     binding.loadedLayout.visibility = View.INVISIBLE
                 }
+
                 is TorrentEvent.DownloadSelection -> {
                     binding.tvStatus.text =
                         getString(R.string.selecting_picked_files, content.filesNumber)
@@ -138,6 +148,7 @@ class TorrentProcessingFragment : UnchainedFragment(), TorrentContentListener {
                     binding.loadingLayout.visibility = View.VISIBLE
                     binding.loadedLayout.visibility = View.INVISIBLE
                 }
+
                 TorrentEvent.DownloadedFileFailure -> {
                     binding.tvStatus.text = getString(R.string.error_loading_torrent)
                     binding.tvLoadingTorrent.visibility = View.INVISIBLE
@@ -146,14 +157,17 @@ class TorrentProcessingFragment : UnchainedFragment(), TorrentContentListener {
                     binding.loadingLayout.visibility = View.VISIBLE
                     binding.loadedLayout.visibility = View.INVISIBLE
                 }
+
                 is TorrentEvent.DownloadedFileProgress -> {
                     binding.tvStatus.text = getString(R.string.downloading_torrent)
                     binding.loadingCircle.isIndeterminate = false
                     binding.loadingCircle.progress = content.progress
                 }
+
                 TorrentEvent.DownloadedFileSuccess -> {
                     // do nothing
                 }
+
                 is TorrentEvent.SelectionUpdated -> {
                     currentStructure?.let { structure ->
                         val filesList = mutableListOf<TorrentFileItem>()
@@ -163,6 +177,7 @@ class TorrentProcessingFragment : UnchainedFragment(), TorrentContentListener {
                         binding.rvTorrentFilePicker.adapter?.notifyDataSetChanged()
                     }
                 }
+
                 else -> {
                     Timber.d("Found unknown torrentLiveData event $content")
                     // reloaded fragment, close?
@@ -189,14 +204,17 @@ class TorrentProcessingFragment : UnchainedFragment(), TorrentContentListener {
                     }
                     findNavController().popBackStack()
                 }
+
                 is NetworkError -> {
                     context?.showToast(R.string.network_error)
                     findNavController().popBackStack()
                 }
+
                 is ApiConversionError -> {
                     context?.showToast(R.string.unknown_error)
                     findNavController().popBackStack()
                 }
+
                 is EmptyBodyError -> {
                     context?.showToast(R.string.network_error)
                     findNavController().popBackStack()
@@ -207,8 +225,9 @@ class TorrentProcessingFragment : UnchainedFragment(), TorrentContentListener {
         return binding.root
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     private fun setup(binding: FragmentTorrentProcessingBinding) {
@@ -229,10 +248,12 @@ class TorrentProcessingFragment : UnchainedFragment(), TorrentContentListener {
                         Timber.d("Found torrent $it")
                         downloadTorrentToCache(it)
                     }
+
                     args.link.isMagnet() -> {
                         Timber.d("Found magnet $it")
                         viewModel.fetchAddedMagnet(it)
                     }
+
                     else -> {
                         Timber.e("Torrent processing link not recognized: $it")
                     }
@@ -263,6 +284,7 @@ class TorrentProcessingFragment : UnchainedFragment(), TorrentContentListener {
                     viewModel.triggerTorrentEvent(TorrentEvent.DownloadAll)
                     viewModel.startSelectionLoop()
                 }
+
                 R.id.manual_pick -> {
 
                     currentStructure?.let { structure ->
@@ -287,16 +309,19 @@ class TorrentProcessingFragment : UnchainedFragment(), TorrentContentListener {
                         }
                     }
                 }
+
                 R.id.copy_magnet -> {
                     copyToClipboard("Real-Debrid Magnet", "magnet:?xt=urn:btih:$torrentHash")
                     context?.showToast(R.string.link_copied)
                 }
+
                 R.id.share_magnet -> {
                     val shareIntent = Intent(Intent.ACTION_SEND)
                     shareIntent.type = "text/plain"
                     shareIntent.putExtra(Intent.EXTRA_TEXT, "magnet:?xt=urn:btih:$torrentHash")
                     startActivity(Intent.createChooser(shareIntent, getString(R.string.share_with)))
                 }
+
                 else -> {
                     Timber.e("Unknown menu button pressed: $menuItem")
                 }
@@ -325,14 +350,17 @@ class TorrentProcessingFragment : UnchainedFragment(), TorrentContentListener {
                         viewModel.triggerTorrentEvent(TorrentEvent.DownloadedFileSuccess)
                         loadCachedTorrent(cacheDir, it.fileName)
                     }
+
                     DownloadResult.Failure -> {
                         viewModel.triggerTorrentEvent(TorrentEvent.DownloadedFileFailure)
                     }
+
                     is DownloadResult.Progress -> {
                         viewModel.triggerTorrentEvent(
                             TorrentEvent.DownloadedFileProgress(it.percent)
                         )
                     }
+
                     DownloadResult.WrongURL -> {
                         viewModel.triggerTorrentEvent(TorrentEvent.DownloadedFileFailure)
                     }
@@ -354,11 +382,13 @@ class TorrentProcessingFragment : UnchainedFragment(), TorrentContentListener {
                 is java.io.FileNotFoundException -> {
                     Timber.e("Torrent conversion: file not found: ${exception.message}")
                 }
+
                 is IOException -> {
                     Timber.e(
                         "Torrent conversion: IOException error getting the file: ${exception.message}"
                     )
                 }
+
                 else -> {
                     Timber.e(
                         "Torrent conversion: Other error getting the file: ${exception.message}"

@@ -25,7 +25,6 @@ import com.github.livingwithhippos.unchained.utilities.PRIVATE_TOKEN
 import com.github.livingwithhippos.unchained.utilities.extension.getClipboardText
 import com.github.livingwithhippos.unchained.utilities.extension.getThemeColor
 import com.github.livingwithhippos.unchained.utilities.extension.hideKeyboard
-import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.google.android.material.textfield.TextInputEditText
 import dagger.hilt.android.AndroidEntryPoint
@@ -36,9 +35,12 @@ import kotlinx.coroutines.launch
  * private API key or the OAUTH system
  */
 @AndroidEntryPoint
-class AuthenticationFragment : UnchainedFragment(), ButtonListener {
+class AuthenticationFragment : UnchainedFragment() {
 
     private val viewModel: AuthenticationViewModel by viewModels()
+    private var _binding: FragmentAuthenticationBinding? = null
+    private val binding
+        get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,18 +48,43 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
         savedInstanceState: Bundle?,
     ): View {
 
-        val authBinding = FragmentAuthenticationBinding.inflate(inflater, container, false)
+        _binding = FragmentAuthenticationBinding.inflate(inflater, container, false)
 
-        authBinding.listener = this
+        binding.bPastePrivateCode.setOnClickListener {
+            val pasteText = getClipboardText()
+            binding.tiPrivateCode.setText(pasteText, TextView.BufferType.EDITABLE)
+            binding.tiPrivateCode.hideKeyboard()
+        }
+        binding.bInsertPrivate.setOnClickListener {
+            val token: String = binding.tiPrivateCode.text.toString().trim()
+            // mine is 52 characters
+            if (token.length < 40) context?.showToast(R.string.invalid_token)
+            else {
+                // pass the value to be checked and eventually saved
+                activityViewModel.updateCredentials(
+                    accessToken = token,
+                    clientId = PRIVATE_TOKEN,
+                    clientSecret = PRIVATE_TOKEN,
+                    deviceCode = PRIVATE_TOKEN,
+                    refreshToken = PRIVATE_TOKEN,
+                )
+                activityViewModel.transitionAuthenticationMachine(
+                    FSMAuthenticationEvent.OnPrivateToken
+                )
+            }
+        }
 
-        authBinding.loginMessageDirect = getLoginMessage(LOGIN_TYPE_DIRECT)
-        authBinding.loginMessageIndirect = getLoginMessage(LOGIN_TYPE_INDIRECT)
+        // todo: check if needed
+        // binding.loginMessageDirect = getLoginMessage(LOGIN_TYPE_DIRECT)
+        // binding.loginMessageIndirect = getLoginMessage(LOGIN_TYPE_INDIRECT)
 
-        authBinding.tiPrivateCode.setOnFocusChangeListener { v, hasFocus ->
+        binding.tiPrivateCode.setOnFocusChangeListener { v, hasFocus ->
             if (!hasFocus) {
                 v.hideKeyboard()
             }
         }
+
+        binding.bInsertPrivate.setOnClickListener { onSaveCodeClick(binding.tiPrivateCode) }
 
         activityViewModel.fsmAuthenticationState.observe(viewLifecycleOwner) {
             if (it != null) {
@@ -72,9 +99,19 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
                     }
                     FSMAuthenticationState.StartNewLogin -> {
                         // reset the current data
-                        authBinding.auth = null
-                        authBinding.secrets = null
-                        authBinding.token = null
+                        // token == null
+                        binding.cbToken.isChecked = false
+                        binding.cbToken.text = getString(R.string.waiting_token)
+                        // auth == null
+                        binding.tvAuthenticationLink.text = ""
+                        binding.tvAuthenticationLink.visibility = View.GONE
+                        binding.cbLink.isChecked = false
+                        binding.cbLink.text = getString(R.string.waiting_link)
+                        // secrets == null
+                        binding.tvLoginMessage.visibility = View.VISIBLE
+                        binding.cbSecret.isChecked = false
+                        binding.cbSecret.text = getString(R.string.waiting_user_auth)
+
                         // get the authentication link to start the process
                         viewModel.fetchAuthenticationInfo()
                     }
@@ -105,7 +142,10 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
             viewLifecycleOwner,
             EventObserver { auth ->
                 if (auth != null) {
-                    authBinding.auth = auth
+                    binding.tvAuthenticationLink.text = auth.verificationUrl
+                    binding.tvAuthenticationLink.visibility = View.VISIBLE
+                    binding.cbLink.isChecked = true
+                    binding.cbLink.text = getString(R.string.link_loaded)
                     // update the currently saved credentials
                     activityViewModel.updateCredentialsDeviceCode(auth.deviceCode)
                     // transition state machine
@@ -144,8 +184,8 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
                             activityViewModel.getAuthenticationMachineState()
                                 is FSMAuthenticationState.WaitingUserConfirmation
                         ) {
-
-                            authBinding.secrets = secrets.value
+                            binding.cbSecret.isChecked = true
+                            binding.cbSecret.text = getString(R.string.obtained_user_auth)
 
                             lifecycleScope.launch {
                                 // update the currently saved credentials
@@ -168,9 +208,10 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
         viewModel.tokenLiveData.observe(
             viewLifecycleOwner,
             EventObserver { token ->
-                authBinding.token = token
                 // pass the value to be checked and eventually saved
                 if (token != null) {
+                    binding.cbToken.isChecked = true
+                    binding.cbToken.text = getString(R.string.obtained_token)
                     // update the current credentials
                     activityViewModel.updateCredentialsAccessToken(token.accessToken)
                     activityViewModel.updateCredentialsRefreshToken(token.refreshToken)
@@ -181,7 +222,12 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
             },
         )
 
-        return authBinding.root
+        return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     private fun getLoginMessage(type: Int): SpannableStringBuilder {
@@ -208,7 +254,7 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
         return sb
     }
 
-    override fun onSaveCodeClick(codeInputField: TextInputEditText) {
+    fun onSaveCodeClick(codeInputField: TextInputEditText) {
         val token: String = codeInputField.text.toString().trim()
         // mine is 52 characters
         if (token.length < 40) context?.showToast(R.string.invalid_token)
@@ -225,26 +271,8 @@ class AuthenticationFragment : UnchainedFragment(), ButtonListener {
         }
     }
 
-    override fun onPasteCodeClick(codeInputField: TextInputEditText) {
-        val pasteText = getClipboardText()
-        codeInputField.setText(pasteText, TextView.BufferType.EDITABLE)
-        codeInputField.hideKeyboard()
-    }
-
-    override fun onOpenLinkClick(url: String) {
-        context?.openExternalWebPage(url)
-    }
-
     companion object {
         const val LOGIN_TYPE_DIRECT = 0
         const val LOGIN_TYPE_INDIRECT = 1
     }
-}
-
-interface ButtonListener {
-    fun onSaveCodeClick(codeInputField: TextInputEditText)
-
-    fun onPasteCodeClick(codeInputField: TextInputEditText)
-
-    fun onOpenLinkClick(url: String)
 }

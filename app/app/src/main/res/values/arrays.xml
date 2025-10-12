@@ -44,6 +44,19 @@
         <item>search</item>
     </string-array>
 
+    <string-array name="doh_provider" >
+        <item>@string/cloudflare</item>
+        <item>@string/google</item>
+        <item>@string/quad9</item>
+        <item>@string/mullvad</item>
+    </string-array>
+    <string-array name="doh_provider_values">
+        <item>cloudflare</item>
+        <item>google</item>
+        <item>quad9</item>
+        <item>mullvad</item>
+    </string-array>
+
     <string-array name="default_media_player" >
         <item>@string/player_vlc</item>
         <item>@string/player_mx</item>

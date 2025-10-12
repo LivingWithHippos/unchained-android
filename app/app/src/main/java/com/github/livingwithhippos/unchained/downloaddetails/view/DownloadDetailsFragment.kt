@@ -8,8 +8,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
-import android.net.Uri
 import android.os.Bundle
 import android.util.Size
 import android.view.Gravity
@@ -24,6 +22,8 @@ import android.widget.PopupWindow
 import android.widget.TextView
 import androidx.appcompat.widget.PopupMenu
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.graphics.drawable.toDrawable
+import androidx.core.net.toUri
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.activityViewModels
@@ -33,6 +33,7 @@ import androidx.lifecycle.coroutineScope
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import coil.load
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.DeleteDialogFragment
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
@@ -44,6 +45,7 @@ import com.github.livingwithhippos.unchained.data.model.Alternative
 import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.databinding.FragmentDownloadDetailsBinding
 import com.github.livingwithhippos.unchained.downloaddetails.model.AlternativeDownloadAdapter
+import com.github.livingwithhippos.unchained.downloaddetails.model.DownloadDetailsListener
 import com.github.livingwithhippos.unchained.downloaddetails.viewmodel.DownloadDetailsMessage
 import com.github.livingwithhippos.unchained.downloaddetails.viewmodel.DownloadDetailsViewModel
 import com.github.livingwithhippos.unchained.downloaddetails.viewmodel.DownloadEvent
@@ -52,6 +54,7 @@ import com.github.livingwithhippos.unchained.utilities.EventObserver
 import com.github.livingwithhippos.unchained.utilities.RD_STREAMING_URL
 import com.github.livingwithhippos.unchained.utilities.extension.copyToClipboard
 import com.github.livingwithhippos.unchained.utilities.extension.getAvailableSpace
+import com.github.livingwithhippos.unchained.utilities.extension.getFileSizeString
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
@@ -69,6 +72,9 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
     private val args: DownloadDetailsFragmentArgs by navArgs()
 
     private val deviceServiceMap: MutableMap<RemoteDevice, List<RemoteService>> = mutableMapOf()
+    private var _binding: FragmentDownloadDetailsBinding? = null
+    private val binding
+        get() = _binding!!
 
     @SuppressLint("SetTextI18n")
     override fun onCreateView(
@@ -76,7 +82,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        val detailsBinding = FragmentDownloadDetailsBinding.inflate(inflater, container, false)
+        _binding = FragmentDownloadDetailsBinding.inflate(inflater, container, false)
 
         val menuHost: MenuHost = requireActivity()
 
@@ -98,6 +104,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                             dialog.show(parentFragmentManager, "DeleteDialogFragment")
                             true
                         }
+
                         else -> false
                     }
                 }
@@ -106,34 +113,105 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
             Lifecycle.State.RESUMED,
         )
 
-        detailsBinding.details = args.details
-        detailsBinding.listener = this
+        binding.tvName.text = args.details.filename
+        binding.tvDownloadId.text = getString(R.string.file_id_format, args.details.id)
+        binding.ivHosterPic.load(args.details.hostIcon) { crossfade(true) }
+        context?.let { binding.tvSize.text = getFileSizeString(it, args.details.fileSize) }
+        if (args.details.mimeType == null) {
+            binding.tvMimeType.visibility = View.GONE
+        } else {
+            binding.tvMimeType.text = getString(R.string.file_type_format, args.details.mimeType)
+            binding.tvMimeType.visibility = View.VISIBLE
+        }
+        if (args.details.type == null) {
+            binding.tvType.visibility = View.GONE
+        } else {
+            binding.tvType.text = ": ${args.details.type}"
+            binding.tvType.visibility = View.VISIBLE
+        }
+        binding.fabShareLink.setOnClickListener {
+            val shareIntent = Intent(Intent.ACTION_SEND)
+            shareIntent.type = "text/plain"
+            shareIntent.putExtra(Intent.EXTRA_TEXT, args.details.download)
+            startActivity(Intent.createChooser(shareIntent, getString(R.string.share_with)))
+        }
+        binding.fabOpenLink.setOnClickListener { onOpenClick(args.details.download) }
+        binding.fabCopyLink.setOnClickListener {
+            copyToClipboard("Real-Debrid Download Link", args.details.download)
+            context?.showToast(R.string.link_copied)
+        }
+        binding.fabDownloadLink.setOnClickListener {
+            onDownloadClick(args.details.download, args.details.filename)
+        }
+        binding.fabSendToPlayer.setOnClickListener { onSendToPlayer(args.details.download) }
+        if (!args.details.alternative.isNullOrEmpty()) {
+            binding.rvAlternativeList.visibility = View.VISIBLE
+        } else {
+            binding.rvAlternativeList.visibility = View.GONE
+        }
 
         // set up streams and alternative (e.g. for youtube) links list
         val alternativeAdapter = AlternativeDownloadAdapter(this)
-        detailsBinding.rvAlternativeList.adapter = alternativeAdapter
+        binding.rvAlternativeList.adapter = alternativeAdapter
 
         if (!args.details.alternative.isNullOrEmpty()) {
             alternativeAdapter.submitList(args.details.alternative)
         }
 
-        detailsBinding.showShare = viewModel.getButtonVisibilityPreference(SHOW_SHARE_BUTTON)
-        detailsBinding.showOpen = viewModel.getButtonVisibilityPreference(SHOW_OPEN_BUTTON)
-        detailsBinding.showCopy = viewModel.getButtonVisibilityPreference(SHOW_COPY_BUTTON)
-        detailsBinding.showDownload = viewModel.getButtonVisibilityPreference(SHOW_DOWNLOAD_BUTTON)
-        detailsBinding.showStreaming =
-            viewModel.getButtonVisibilityPreference(SHOW_STREAMING_BUTTON)
-        detailsBinding.showLocalPlay = viewModel.getButtonVisibilityPreference(SHOW_MEDIA_BUTTON)
-        detailsBinding.showLoadStream =
-            viewModel.getButtonVisibilityPreference(SHOW_TRANSCODING_BUTTON)
-
-        detailsBinding.fabPickStreaming.setOnClickListener { popView ->
-            manageStreamingPopup(popView)
+        if (viewModel.getButtonVisibilityPreference(SHOW_SHARE_BUTTON)) {
+            binding.llFabShare.visibility = View.VISIBLE
+        } else {
+            binding.llFabShare.visibility = View.GONE
         }
+
+        if (viewModel.getButtonVisibilityPreference(SHOW_OPEN_BUTTON)) {
+            binding.llFabOpen.visibility = View.VISIBLE
+        } else {
+            binding.llFabOpen.visibility = View.GONE
+        }
+
+        if (viewModel.getButtonVisibilityPreference(SHOW_COPY_BUTTON)) {
+            binding.llFabCopy.visibility = View.VISIBLE
+        } else {
+            binding.llFabCopy.visibility = View.GONE
+        }
+
+        if (viewModel.getButtonVisibilityPreference(SHOW_DOWNLOAD_BUTTON)) {
+            binding.llFabDownload.visibility = View.VISIBLE
+        } else {
+            binding.llFabDownload.visibility = View.GONE
+        }
+
+        if (args.details.streamable == 1) {
+            if (viewModel.getButtonVisibilityPreference(SHOW_MEDIA_BUTTON))
+                binding.llFabSendToPlayer.visibility = View.VISIBLE
+            else binding.llFabSendToPlayer.visibility = View.GONE
+
+            if (viewModel.getButtonVisibilityPreference(SHOW_STREAMING_BUTTON))
+                binding.llFabPickStreaming.visibility = View.VISIBLE
+            else binding.llFabPickStreaming.visibility = View.GONE
+
+            if (viewModel.getButtonVisibilityPreference(SHOW_TRANSCODING_BUTTON))
+                binding.llFabLoadStreams.visibility = View.VISIBLE
+            else binding.llFabLoadStreams.visibility = View.GONE
+        } else {
+            binding.llFabSendToPlayer.visibility = View.GONE
+            binding.llFabPickStreaming.visibility = View.GONE
+            binding.llFabLoadStreams.visibility = View.GONE
+        }
+
+        binding.fabLoadStreams.setOnClickListener { onLoadStreamsClick(args.details.id) }
+
+        if (args.details.alternative.isNullOrEmpty()) {
+            binding.fabLoadStreams.isEnabled = false
+        }
+
+        binding.fabPickStreaming.setOnClickListener { popView -> manageStreamingPopup(popView) }
 
         viewModel.streamLiveData.observe(viewLifecycleOwner) {
             if (it != null) {
-                detailsBinding.stream = it
+                binding.fabLoadStreams.isEnabled = false
+                binding.rvAlternativeList.visibility = View.VISIBLE
 
                 val streams = mutableListOf<Alternative>()
                 // parameter mimetype gets shown as the name and "streaming" as title in the list,
@@ -198,15 +276,19 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                 is DownloadDetailsMessage.KodiError -> {
                     context?.showToast(R.string.connection_error)
                 }
+
                 is DownloadDetailsMessage.KodiSuccess -> {
                     context?.showToast(R.string.connection_successful)
                 }
+
                 DownloadDetailsMessage.KodiMissingCredentials -> {
                     context?.showToast(R.string.kodi_configure_credentials)
                 }
+
                 DownloadDetailsMessage.KodiMissingDefault -> {
                     context?.showToast(R.string.kodi_missing_default)
                 }
+
                 else -> {}
             }
         }
@@ -224,16 +306,23 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                 is DownloadEvent.DefaultDeviceService -> {
                     // send media to default device
                 }
+
                 is DownloadEvent.DeviceAndServices -> {
                     // used to populate the menu
                     deviceServiceMap.clear()
                     deviceServiceMap.putAll(content.devicesServices)
                 }
+
                 is DownloadEvent.KodiDevices -> {}
             }
         }
 
-        return detailsBinding.root
+        return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     private fun showBasicStreamingPopup(v: View, url: String?) {
@@ -297,6 +386,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                         )
                     }
                 }
+
                 R.id.default_service -> {
                     if (defaultDevice != null && defaultService != null) {
                         val serviceType: RemoteServiceType = getServiceType(defaultService.type)!!
@@ -308,6 +398,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                         )
                     }
                 }
+
                 R.id.pick_service -> {
                     val dialog = ServicePickerDialog()
                     val bundle = Bundle()
@@ -315,6 +406,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                     dialog.arguments = bundle
                     dialog.show(parentFragmentManager, "ServicePickerDialog")
                 }
+
                 R.id.browser_streaming -> {
                     onBrowserStreamsClick(args.details.id)
                 }
@@ -451,8 +543,10 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
             browserLayout.visibility = View.GONE
         } else {
             browserLayout.setOnClickListener {
-                onBrowserStreamsClick(args.details.id)
-                if (popup.isShowing) popup.dismiss()
+                {
+                    context?.openExternalWebPage(RD_STREAMING_URL + args.details.id)
+                    if (popup.isShowing) popup.dismiss()
+                }
             }
         }
     }
@@ -467,9 +561,11 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
             RemoteServiceType.KODI -> {
                 viewModel.openUrlOnKodi(mediaURL = link, kodiDevice = device, kodiService = service)
             }
+
             RemoteServiceType.VLC -> {
                 viewModel.openUrlOnVLC(mediaURL = link, vlcDevice = device, vlcService = service)
             }
+
             else -> {
                 // should not happen
                 Timber.e("Unknown service type $serviceType")
@@ -493,7 +589,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                         }
                 }
                 .also { popupWindow ->
-                    popupWindow.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                    popupWindow.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
                     if (screenDistances[2] < 600 && screenDistances[0] > 600) {
                         // Absolute location of the anchor view
                         val location = IntArray(2).apply { parentView.getLocationOnScreen(this) }
@@ -516,6 +612,30 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         return popup
     }
 
+    private fun tryStartExternalApp(intent: Intent) {
+        try {
+            startActivity(intent)
+        } catch (e: ActivityNotFoundException) {
+            context?.showToast(R.string.app_not_installed)
+        }
+    }
+
+    private fun createMediaIntent(
+        appPackage: String,
+        url: String,
+        component: ComponentName? = null,
+        dataType: String = "video/*",
+    ): Intent {
+
+        val uri = url.toUri()
+        val intent = Intent(Intent.ACTION_VIEW)
+        intent.setPackage(appPackage)
+        intent.setDataAndTypeAndNormalize(uri, dataType)
+        if (component != null) intent.component = component
+
+        return intent
+    }
+
     override fun onCopyClick(text: String) {
         copyToClipboard("Real-Debrid Download Link", text)
         context?.showToast(R.string.link_copied)
@@ -532,13 +652,13 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
     override fun onLoadStreamsClick(id: String) {
         lifecycleScope.launch {
             if (activityViewModel.isTokenPrivate()) {
-                viewModel.fetchStreamingInfo(id)
+                viewModel.fetchStreamingInfo(args.details.id)
             } else context?.showToast(R.string.api_needs_private_token)
         }
     }
 
     override fun onBrowserStreamsClick(id: String) {
-        context?.openExternalWebPage(RD_STREAMING_URL + id)
+        context?.openExternalWebPage(RD_STREAMING_URL + args.details.id)
     }
 
     override fun onDownloadClick(link: String, fileName: String) {
@@ -552,40 +672,18 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         startActivity(Intent.createChooser(shareIntent, getString(R.string.share_with)))
     }
 
-    private fun tryStartExternalApp(intent: Intent) {
-        try {
-            startActivity(intent)
-        } catch (e: ActivityNotFoundException) {
-            context?.showToast(R.string.app_not_installed)
-        }
-    }
-
-    private fun createMediaIntent(
-        appPackage: String,
-        url: String,
-        component: ComponentName? = null,
-        dataType: String = "video/*",
-    ): Intent {
-
-        val uri = Uri.parse(url)
-        val intent = Intent(Intent.ACTION_VIEW)
-        intent.setPackage(appPackage)
-        intent.setDataAndTypeAndNormalize(uri, dataType)
-        if (component != null) intent.component = component
-
-        return intent
-    }
-
     override fun onSendToPlayer(url: String) {
         when (viewModel.getDefaultPlayer()) {
             "vlc" -> {
                 val vlcIntent = createMediaIntent("org.videolan.vlc", url)
                 tryStartExternalApp(vlcIntent)
             }
+
             "mpv" -> {
                 val mpvIntent = createMediaIntent("is.xyz.mpv", url)
                 tryStartExternalApp(mpvIntent)
             }
+
             "mx_player" -> {
                 val mxIntent = createMediaIntent("com.mxtech.videoplayer.pro", url)
 
@@ -596,18 +694,22 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                     tryStartExternalApp(mxIntent)
                 }
             }
+
             "web_video_cast" -> {
                 val wvcIntent = createMediaIntent("com.instantbits.cast.webvideo", url)
                 tryStartExternalApp(wvcIntent)
             }
+
             "play_it" -> {
                 val wvcIntent = createMediaIntent("com.playit.videoplayer", url)
                 tryStartExternalApp(wvcIntent)
             }
+
             "player_just_video" -> {
                 val wvcIntent = createMediaIntent("com.brouken.player", url)
                 tryStartExternalApp(wvcIntent)
             }
+
             "custom_player" -> {
                 val customPlayerPackage = viewModel.getCustomPlayerPreference()
                 if (customPlayerPackage.isBlank()) {
@@ -617,6 +719,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                     tryStartExternalApp(customIntent)
                 }
             }
+
             else -> {
                 context?.showToast(R.string.missing_default_player)
             }
@@ -644,22 +747,4 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         const val SHOW_STREAMING_BUTTON = "show_streaming"
         const val SHOW_TRANSCODING_BUTTON = "show_load_stream_button"
     }
-}
-
-interface DownloadDetailsListener {
-    fun onCopyClick(text: String)
-
-    fun onOpenClick(url: String)
-
-    fun onOpenTranscodedStream(view: View, url: String)
-
-    fun onLoadStreamsClick(id: String)
-
-    fun onBrowserStreamsClick(id: String)
-
-    fun onDownloadClick(link: String, fileName: String)
-
-    fun onShareClick(url: String)
-
-    fun onSendToPlayer(url: String)
 }

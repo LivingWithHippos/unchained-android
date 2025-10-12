@@ -11,6 +11,8 @@ import com.github.livingwithhippos.unchained.plugins.model.RegexpsGroup
 import com.github.livingwithhippos.unchained.plugins.model.ScrapedItem
 import com.github.livingwithhippos.unchained.plugins.model.TableParser
 import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Companion.KEY_USE_DOH
+import com.github.livingwithhippos.unchained.utilities.extension.cleanScrapingResult
+import com.github.livingwithhippos.unchained.utilities.extension.formatStringForSearch
 import com.github.livingwithhippos.unchained.utilities.extension.removeWebFormatting
 import com.github.livingwithhippos.unchained.utilities.parseCommonSize
 import kotlinx.coroutines.Dispatchers
@@ -50,11 +52,7 @@ class Parser(
         flow {
             if (query.isBlank()) emit(ParserResult.MissingQuery)
             else {
-                // todo: format queries with other unsupported web characters
-                // todo: check if this works with other plugins, otherwise add it as a json
-                // parameter.
-                // Possible alternative: %20
-                val currentQuery = query.trim().replace("\\s+".toRegex(), "+")
+                val currentQuery = formatStringForSearch(query)
                 if (!plugin.isCompatible()) {
                     emit(ParserResult.PluginVersionUnsupported)
                 } else {
@@ -605,7 +603,12 @@ class Parser(
         }
     }
 
-    private fun parseSingle(regexpsGroup: RegexpsGroup?, source: String, url: String): String? {
+    private fun parseSingle(
+        regexpsGroup: RegexpsGroup?,
+        source: String,
+        url: String,
+        cleanResult: Boolean = false,
+    ): String? {
         if (regexpsGroup == null) return null
         var parsedResult: String? = null
         regexpsGroup.regexps.forEach { regex ->
@@ -628,7 +631,10 @@ class Parser(
                         "complete" -> match
                         else -> match
                     }
-                if (!parsedResult.isNullOrBlank()) return parsedResult
+                if (parsedResult.isNotBlank()) {
+                    if (cleanResult) return cleanScrapingResult(parsedResult)
+                    return parsedResult
+                }
             }
         }
 
@@ -760,10 +766,11 @@ class Parser(
         if (containerClass != null) {
             if (parser.entryClass != null)
                 entries.addAll(containerClass.getElementsByClass(parser.entryClass))
-            else entries.addAll(containerClass.getElementsByTag(parser.entryTag))
+            else if (parser.entryTag != null)
+                entries.addAll(containerClass.getElementsByTag(parser.entryTag))
         } else {
             if (parser.entryClass != null) entries.addAll(doc.getElementsByClass(parser.entryClass))
-            else entries.addAll(doc.getElementsByTag(parser.entryTag))
+            else if (parser.entryTag != null) entries.addAll(doc.getElementsByTag(parser.entryTag))
         }
 
         for (entry in entries) {
@@ -771,7 +778,7 @@ class Parser(
             // val data =  entry.data()
             val html = entry.html()
 
-            val name = parseSingle(regexes.nameRegex, html, url)
+            val name = parseSingle(regexes.nameRegex, html, url, cleanResult = true)
             val magnets: List<String> = parseList(regexes.magnetRegex, html, url)
             val torrents: List<String> = parseList(regexes.torrentRegexes, html, url)
             val hosting: List<String> = parseList(regexes.hostingRegexes, html, url)
@@ -783,7 +790,7 @@ class Parser(
 
                 val seeders = parseSingle(regexes.seedersRegex, html, url)
                 val leechers = parseSingle(regexes.leechersRegex, html, url)
-                val size = parseSingle(regexes.sizeRegex, html, url)
+                val size = parseSingle(regexes.sizeRegex, html, url, cleanResult = true)
                 val details = parseSingle(regexes.detailsRegex, html, url)
                 val addedDate = parseSingle(regexes.dateAddedRegex, html, url)
 

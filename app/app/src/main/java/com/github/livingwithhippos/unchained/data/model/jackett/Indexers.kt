@@ -7,17 +7,17 @@ import com.github.livingwithhippos.unchained.data.model.torznab.Capabilities
 
 @JacksonXmlRootElement(localName = "indexers")
 data class Indexers(
-    @JacksonXmlElementWrapper(useWrapping = false)
-    @JacksonXmlProperty(localName = "indexer")
+    @param:JacksonXmlElementWrapper(useWrapping = false)
+    @param:JacksonXmlProperty(localName = "indexer")
     val indexers: List<Indexer>
 )
 
 data class Indexer(
-    @JacksonXmlProperty(isAttribute = true, localName = "id") val id: String,
-    @JacksonXmlProperty(isAttribute = true, localName = "configured") val configured: String,
-    @JacksonXmlProperty(localName = "title") val title: String,
-    @JacksonXmlProperty(localName = "description") val description: String,
-    @JacksonXmlProperty(localName = "link") val link: String,
-    @JacksonXmlProperty(localName = "type") val type: String,
-    @JacksonXmlProperty(localName = "caps") val capabilities: Capabilities,
+    @param:JacksonXmlProperty(isAttribute = true, localName = "id") val id: String,
+    @param:JacksonXmlProperty(isAttribute = true, localName = "configured") val configured: String,
+    @param:JacksonXmlProperty(localName = "title") val title: String,
+    @param:JacksonXmlProperty(localName = "description") val description: String,
+    @param:JacksonXmlProperty(localName = "link") val link: String,
+    @param:JacksonXmlProperty(localName = "type") val type: String,
+    @param:JacksonXmlProperty(localName = "caps") val capabilities: Capabilities,
 )

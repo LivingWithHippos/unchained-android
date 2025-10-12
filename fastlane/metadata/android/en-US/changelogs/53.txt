@@ -1,0 +1,7 @@
+What's new 1.3.8:
+- added Turkish translation (for real this time) thanks to mikropsoft
+- removed support for old Android versions, min API is now 27
+- updated supported external links (enable them in the Android app settings)
+- added DNS over HTTPS providers: Cloudflare, Mullvad and Quad9 (now default)
+- new search plugin
+- updated libraries

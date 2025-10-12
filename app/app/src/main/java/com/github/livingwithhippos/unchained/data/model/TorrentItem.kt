@@ -70,41 +70,43 @@ import kotlinx.parcelize.Parcelize
 @JsonClass(generateAdapter = true)
 @Parcelize
 data class TorrentItem(
-    @Json(name = "id") val id: String,
-    @Json(name = "filename") val filename: String,
-    @Json(name = "original_filename") val originalFilename: String?,
-    @Json(name = "hash") val hash: String,
-    @Json(name = "bytes") val bytes: Long,
-    @Json(name = "original_bytes") val originalBytes: Long?,
-    @Json(name = "host") val host: String,
-    @Json(name = "split") val split: Int,
-    @Json(name = "progress") val progress: Float,
-    @Json(name = "status") val status: String,
-    @Json(name = "added") val added: String,
-    @Json(name = "files") val files: List<InnerTorrentFile>?,
-    @Json(name = "links") val links: List<String>,
-    @Json(name = "ended") val ended: String?,
-    @Json(name = "speed") val speed: Int?,
-    @Json(name = "seeders") val seeders: Int?,
+    @param:Json(name = "id") val id: String,
+    @param:Json(name = "filename") val filename: String,
+    @param:Json(name = "original_filename") val originalFilename: String?,
+    @param:Json(name = "hash") val hash: String,
+    @param:Json(name = "bytes") val bytes: Long,
+    @param:Json(name = "original_bytes") val originalBytes: Long?,
+    @param:Json(name = "host") val host: String,
+    @param:Json(name = "split") val split: Int,
+    @param:Json(name = "progress") val progress: Float,
+    @param:Json(name = "status") val status: String,
+    @param:Json(name = "added") val added: String,
+    @param:Json(name = "files") val files: List<InnerTorrentFile>?,
+    @param:Json(name = "links") val links: List<String>,
+    @param:Json(name = "ended") val ended: String?,
+    @param:Json(name = "speed") val speed: Int?,
+    @param:Json(name = "seeders") val seeders: Int?,
 ) : Parcelable
 
 @JsonClass(generateAdapter = true)
 @Parcelize
 data class InnerTorrentFile(
-    @Json(name = "id") val id: Int,
-    @Json(name = "path") val path: String,
-    @Json(name = "bytes") val bytes: Long,
-    @Json(name = "selected") val selected: Int,
+    @param:Json(name = "id") val id: Int,
+    @param:Json(name = "path") val path: String,
+    @param:Json(name = "bytes") val bytes: Long,
+    @param:Json(name = "selected") val selected: Int,
 ) : Parcelable
 
 @JsonClass(generateAdapter = true)
 @Parcelize
-data class UploadedTorrent(@Json(name = "id") val id: String, @Json(name = "uri") val uri: String) :
-    Parcelable
+data class UploadedTorrent(
+    @param:Json(name = "id") val id: String,
+    @param:Json(name = "uri") val uri: String,
+) : Parcelable
 
 @JsonClass(generateAdapter = true)
 @Parcelize
 data class AvailableHost(
-    @Json(name = "host") val host: String,
-    @Json(name = "max_file_size") val maxFileSize: Int,
+    @param:Json(name = "host") val host: String,
+    @param:Json(name = "max_file_size") val maxFileSize: Int,
 ) : Parcelable

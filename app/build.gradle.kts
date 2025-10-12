@@ -3,8 +3,10 @@ plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.kotlin.android) apply false
     alias(libs.plugins.protobuf) apply false
-    id("com.github.ben-manes.versions") version "0.52.0"
-    // id("se.ascp.gradle.gradle-versions-filter") version "0.1.16"
+    alias(libs.plugins.hilt.android) apply false
+    alias(libs.plugins.ksp) apply false
+    alias(libs.plugins.room) apply false
+    id("com.github.ben-manes.versions") version "0.53.0"
 }
 
 buildscript {

@@ -30,6 +30,7 @@ import androidx.annotation.AttrRes
 import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
@@ -225,7 +226,6 @@ fun Fragment.getClipboardText(): String {
  * @param title the title to show on the notification
  * @param description the title to show on the notification
  * @param fileName the name to give to the downloaded file, title will be used if this is null
- * @param directory the public directory destination. Defaults to the Downloads directory
  * @return a Long identifying the download or null if an error has occurred
  */
 fun DownloadManager.downloadFileInStandardFolder(
@@ -294,9 +294,7 @@ fun Context.getDownloadedFileUri(id: Long): Uri? {
     if (cursor.moveToFirst()) {
         val columnIndex: Int = cursor.getColumnIndex(DownloadManager.COLUMN_STATUS)
         if (cursor.getInt(columnIndex) == DownloadManager.STATUS_SUCCESSFUL)
-            return Uri.parse(
-                cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI))
-            )
+            return cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI)).toUri()
     }
     cursor.close()
     return null
@@ -333,7 +331,7 @@ fun Context.openExternalWebPage(url: String, showErrorToast: Boolean = true): Bo
     if (url.isWebUrl()) {
         try {
             val webIntent =
-                Intent(Intent.ACTION_VIEW, Uri.parse(url)).addCategory(Intent.CATEGORY_BROWSABLE)
+                Intent(Intent.ACTION_VIEW, url.toUri()).addCategory(Intent.CATEGORY_BROWSABLE)
             startActivity(webIntent)
         } catch (ex: android.content.ActivityNotFoundException) {
             Timber.e("Error opening externally a link ${ex.message}")
@@ -358,7 +356,7 @@ fun Context.openExternalWebPage(url: String, showErrorToast: Boolean = true): Bo
  * BaseActivity extended by them
  */
 fun Activity.getUpdatedLocaleContext(context: Context, language: String): Context {
-    val locale = Locale(language)
+    val locale = Locale.forLanguageTag(language)
     val configuration = Configuration(context.resources.configuration)
     // check if this is necessary
     Locale.setDefault(locale)
@@ -414,35 +412,31 @@ fun <T> LiveData<T>.observeOnce(
 }
 
 fun AppCompatActivity.setNavigationBarColor(color: Int, alpha: Int = 0) {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-        val newColor = Color.argb(alpha, Color.red(color), Color.green(color), Color.blue(color))
+    val newColor = Color.argb(alpha, Color.red(color), Color.green(color), Color.blue(color))
 
-        // set the color before applying the light bar effect
-        window.navigationBarColor = newColor
+    // set the color before applying the light bar effect
+    window.navigationBarColor = newColor
 
-        val luminance = Color.luminance(color)
-        if (luminance >= 0.25) {
-            when {
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> {
-                    window.insetsController?.setSystemBarsAppearance(
-                        WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS,
-                        WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS,
-                    )
-                }
-                Build.VERSION.SDK_INT in Build.VERSION_CODES.O..Build.VERSION_CODES.Q -> {
-                    // the check above is not recognized
-                    @Suppress("DEPRECATION") @SuppressLint("InlinedApi")
-                    window.decorView.systemUiVisibility =
-                        window.decorView.systemUiVisibility or
-                            View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
-                }
+    val luminance = Color.luminance(color)
+    if (luminance >= 0.25) {
+        when {
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> {
+                window.insetsController?.setSystemBarsAppearance(
+                    WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS,
+                    WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS,
+                )
             }
-        } else
-            @Suppress("DEPRECATION") @SuppressLint("InlinedApi")
-            window.decorView.systemUiVisibility =
-                window.decorView.systemUiVisibility and
-                    View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR.inv()
-    }
+            else -> {
+                // the check above is not recognized
+                @Suppress("DEPRECATION") @SuppressLint("InlinedApi")
+                window.decorView.systemUiVisibility =
+                    window.decorView.systemUiVisibility or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
+            }
+        }
+    } else
+        @Suppress("DEPRECATION") @SuppressLint("InlinedApi")
+        window.decorView.systemUiVisibility =
+            window.decorView.systemUiVisibility and View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR.inv()
 }
 
 fun Context.getApiErrorMessage(errorCode: Int?): String {
@@ -509,12 +503,7 @@ fun Context.getStatusTranslation(status: String): String {
 @Suppress("DEPRECATION")
 fun Context.vibrate(duration: Long = 200) {
     val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        vibrator.vibrate(VibrationEffect.createOneShot(duration, VibrationEffect.DEFAULT_AMPLITUDE))
-    } else {
-        // minsdk is 24
-        vibrator.vibrate(duration)
-    }
+    vibrator.vibrate(VibrationEffect.createOneShot(duration, VibrationEffect.DEFAULT_AMPLITUDE))
 }
 
 /** AssetManager extensions */

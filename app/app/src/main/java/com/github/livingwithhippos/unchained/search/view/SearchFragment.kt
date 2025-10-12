@@ -25,15 +25,15 @@ import com.github.livingwithhippos.unchained.plugins.model.ScrapedItem
 import com.github.livingwithhippos.unchained.search.model.SearchItemAdapter
 import com.github.livingwithhippos.unchained.search.model.SearchItemListener
 import com.github.livingwithhippos.unchained.search.viewmodel.SearchViewModel
-import com.github.livingwithhippos.unchained.utilities.MAGNET_PATTERN
 import com.github.livingwithhippos.unchained.utilities.extension.delayedScrolling
 import com.github.livingwithhippos.unchained.utilities.extension.getThemedDrawable
 import com.github.livingwithhippos.unchained.utilities.extension.hideKeyboard
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.google.android.material.button.MaterialButton
 import dagger.hilt.android.AndroidEntryPoint
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 import kotlinx.coroutines.launch
-import kotlinx.datetime.toInstant
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -41,18 +41,25 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
 
     private val viewModel: SearchViewModel by viewModels()
 
-    private val magnetPattern = Regex(MAGNET_PATTERN, RegexOption.IGNORE_CASE)
+    private var _binding: FragmentSearchBinding? = null
+    private val binding
+        get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        val binding = FragmentSearchBinding.inflate(inflater, container, false)
+        _binding = FragmentSearchBinding.inflate(inflater, container, false)
 
         setup(binding)
 
         return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     private fun setup(binding: FragmentSearchBinding) {
@@ -280,6 +287,7 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
         return getString(res)
     }
 
+    @OptIn(ExperimentalTime::class)
     private fun submitSortedList(adapter: SearchItemAdapter, items: List<ScrapedItem>) {
         when (viewModel.getListSortPreference()) {
             FolderListFragment.TAG_DEFAULT_SORT -> {
@@ -311,7 +319,7 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
                     items.sortedByDescending { item ->
                         if (item.addedDate != null) {
                             try {
-                                item.addedDate.toInstant().toEpochMilliseconds()
+                                Instant.parse(item.addedDate).toEpochMilliseconds()
                             } catch (e: Exception) {
                                 null
                             }

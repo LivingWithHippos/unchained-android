@@ -1,59 +1,57 @@
 [versions]
-aboutlibraries = "11.2.3"
-android_gradle_plugin = "8.11.0"
+android_gradle_plugin = "8.13.0"
 appcompat = "1.7.1"
 constraint_layout = "2.2.1"
 coil = "2.7.0"
-core_ktx = "1.16.0"
+core_ktx = "1.17.0"
 coroutines = "1.10.2"
 # non compliant with new Play Store but it's not used in production
-countly = "25.4.2"
-dagger = "2.56.2"
-datetime = "0.6.2"
-espresso = "3.6.1"
+countly = "25.4.4"
+dagger = "2.57.2"
+datetime = "0.7.1"
+espresso = "3.7.0"
 datastore = "1.1.7"
 flexbox = "3.0.0"
-fragment = "1.8.8"
-hilt_navigation = "1.2.0"
-jackson = "2.19.1"
-jakarta_xml = "4.0.2"
-jsoup = "1.21.1"
+fragment = "1.8.9"
+hilt_navigation = "1.3.0"
+jackson = "2.20.0"
+jakarta_xml = "4.0.4"
+jsoup = "1.21.2"
 junit = "4.13.2"
-# 2.1.21 has some incompatibilities
-# kotlin = "2.1.21"
-kotlin = "2.0.21"
-ktfmt = "0.23.0"
-lifecycle = "2.9.1"
-material_three = "1.12.0"
+kotlin = "2.2.20"
+ktfmt = "0.24.0"
+ksp = "2.2.20-2.0.4"
+lifecycle = "2.9.4"
+material_three = "1.13.0"
 moshi = "1.15.2"
-navigation = "2.9.0"
-okhttp = "4.12.0"
+navigation = "2.9.5"
+# 5.1.0 has some issues
+okhttp = "5.2.1"
 paging = "3.3.6"
-protobuf = "4.31.1"
+protobuf = "4.32.1"
 protobuf_plugin = "0.9.5"
 preference = "1.2.1"
 recyclerview = "1.4.0"
 recyclerview_selection = "1.2.0"
 retrofit = "3.0.0"
-robolectric = "4.15.1"
-room = "2.7.2"
+robolectric = "4.16"
+room = "2.8.2"
 statemachine = "0.2.0"
 stax = "1.0-2"
 swiperefresh = "1.1.0"
-test = "1.6.1"
-test_truth = "1.6.0"
-test_runner = "1.6.2"
-test_junit = "1.2.1"
+test = "1.7.0"
+test_truth = "1.7.0"
+test_runner = "1.7.0"
+test_junit = "1.3.0"
 timber = "5.0.1"
 viewpager2 = "1.1.0"
 woodstox = "7.1.1"
-work = "2.10.1"
+work = "2.10.5"
+documentfile = "1.1.0"
 
 [libraries]
 protobuf_core = { group = "com.google.protobuf", name = "protoc", version.ref = "protobuf" }
 protobuf_javaLite = { group = "com.google.protobuf", name = "protobuf-javalite", version.ref = "protobuf" }
-about_core = { group = "com.mikepenz", name = "aboutlibraries-core", version.ref = "aboutlibraries" }
-about_ui = { group = "com.mikepenz", name = "aboutlibraries", version.ref = "aboutlibraries" }
 android_appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 coil = { group = "io.coil-kt", name = "coil", version.ref = "coil" }
 android_constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraint_layout" }
@@ -62,9 +60,9 @@ coroutines_core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-
 coroutines_android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
 countly = { group = "ly.count.android", name = "sdk", version.ref = "countly" }
 hilt_android = { group = "com.google.dagger", name = "hilt-android", version.ref = "dagger" }
-hilt_compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "dagger" }
-hilt_plugin = { group = "com.google.dagger", name = "hilt-android-gradle-plugin", version.ref = "dagger" }
+hilt_compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "dagger" }
 hilt_navigation = { group = "androidx.hilt", name = "hilt-navigation-fragment", version.ref = "hilt_navigation" }
+hilt_plugin = { group = "com.google.dagger", name = "hilt-android-gradle-plugin", version.ref = "dagger" }
 fragment_ktx = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "fragment" }
 datastore_prefs = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
 datastore_core = { group = "androidx.datastore", name = "datastore", version.ref = "datastore" }
@@ -86,14 +84,15 @@ lifecycle_viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmode
 lifecycle_livedata = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "lifecycle" }
 material_version3 = { group = "com.google.android.material", name = "material", version.ref = "material_three" }
 moshi_runtime = { group = "com.squareup.moshi", name = "moshi-kotlin", version.ref = "moshi" }
-moshi_kapt = { group = "com.squareup.moshi", name = "moshi-kotlin-codegen", version.ref = "moshi" }
+moshi_codegen = { group = "com.squareup.moshi", name = "moshi-kotlin-codegen", version.ref = "moshi" }
 navigation_runtime = { group = "androidx.navigation", name = "navigation-runtime-ktx", version.ref = "navigation" }
 navigation_fragment = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "navigation" }
 navigation_ui = { group = "androidx.navigation", name = "navigation-ui", version.ref = "navigation" }
 navigation_plugin = { group = "androidx.navigation", name = "navigation-safe-args-gradle-plugin", version.ref = "navigation" }
-okhttp3_runtime = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
-okhttp3_doh = { group = "com.squareup.okhttp3", name = "okhttp-dnsoverhttps", version.ref = "okhttp" }
-okhttp3_logging = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
+okhttp_bom = { group = "com.squareup.okhttp3", name = "okhttp-bom", version.ref = "okhttp" }
+okhttp_runtime = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
+okhttp_doh = { group = "com.squareup.okhttp3", name = "okhttp-dnsoverhttps", version.ref = "okhttp" }
+okhttp_logging = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
 paging_runtime = { group = "androidx.paging", name = "paging-runtime", version.ref = "paging" }
 preference_ktx = { group = "androidx.preference", name = "preference-ktx", version.ref = "preference" }
 recyclerview_core = { group = "androidx.recyclerview", name = "recyclerview", version.ref = "recyclerview" }
@@ -104,6 +103,7 @@ retrofit_scalars = { group = "com.squareup.retrofit2", name = "converter-scalars
 robolectric = { group = "org.robolectric", name = "robolectric", version.ref = "robolectric" }
 room_runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+room-processing = { group = "androidx.room", name = "room-compiler-processing", version.ref = "room" }
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 stax = { group = "javax.xml.stream", name = "stax-api", version.ref = "stax" }
 statemachine = { group = "com.tinder.statemachine", name = "statemachine", version.ref = "statemachine" }
@@ -117,9 +117,13 @@ timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "tim
 viewpager2 = { group = "androidx.viewpager2", name = "viewpager2", version.ref = "viewpager2" }
 woodstox = { group = "com.fasterxml.woodstox", name = "woodstox-core", version.ref = "woodstox" }
 android_work = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "work" }
+documentfile = { group = "androidx.documentfile", name = "documentfile", version.ref = "documentfile" }
 
 [plugins]
 android_application = { id = "com.android.application", version.ref = "android_gradle_plugin" }
 kotlin_android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 ktfmt = { id = "com.ncorti.ktfmt.gradle", version.ref = "ktfmt" }
 protobuf = { id = "com.google.protobuf", version.ref = "protobuf_plugin" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+hilt_android = { id = "com.google.dagger.hilt.android", version.ref = "dagger" }
+room = { id = "androidx.room", version.ref = "room" }

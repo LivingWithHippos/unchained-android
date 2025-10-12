@@ -1,448 +1,405 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <data>
-
-        <import type="android.view.View" />
-
-        <import type="java.util.List" />
-
-        <import type="java.util.Map" />
-
-        <variable
-            name="loadingStatusList"
-            type="List&lt;String>" />
-
-        <variable
-            name="statusTranslation"
-            type="Map&lt;String, String>" />
-
-        <variable
-            name="torrent"
-            type="com.github.livingwithhippos.unchained.data.model.TorrentItem" />
-
-        <variable
-            name="listener"
-            type="com.github.livingwithhippos.unchained.torrentdetails.view.TorrentDetailsListener" />
-
-    </data>
-
-    <androidx.core.widget.NestedScrollView
+    <LinearLayout
+        android:id="@+id/rootLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        tools:context=".torrentdetails.view.TorrentDetailsFragment">
 
-        <LinearLayout
-            android:id="@+id/rootLayout"
+
+        <TextView
+            android:id="@+id/tvName"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            tools:context=".torrentdetails.view.TorrentDetailsFragment">
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="20dp"
+            android:ellipsize="end"
+            android:maxLines="3"
+            android:textAppearance="?attr/textAppearanceTitleLarge"
+            android:textStyle="bold" />
 
 
-            <TextView
-                android:id="@+id/tvName"
-                android:textAppearance="?attr/textAppearanceTitleLarge"
-                android:layout_width="match_parent"
+        <com.google.android.flexbox.FlexboxLayout
+            android:id="@+id/actionsLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            app:alignItems="flex_start"
+            app:flexWrap="wrap"
+            app:justifyContent="space_around">
+
+            <LinearLayout
+                android:layout_width="@dimen/fab_download_details_width"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_margin="20dp"
-                android:textStyle="bold"
-                android:ellipsize="end"
-                android:maxLines="3"
-                android:text="@{torrent.filename, default=`File Name`}" />
+                android:layout_marginBottom="10dp"
+                android:gravity="center"
+                android:orientation="vertical">
 
-
-            <com.google.android.flexbox.FlexboxLayout
-                android:id="@+id/actionsLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                app:alignItems="flex_start"
-                app:flexWrap="wrap"
-                app:justifyContent="space_around">
-
-                <LinearLayout
-                    android:layout_width="@dimen/fab_download_details_width"
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/fabShareMagnet"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:layout_marginBottom="10dp">
+                    android:contentDescription="@string/share_magnet"
+                    app:srcCompat="@drawable/icon_share" />
 
-                    <com.google.android.material.floatingactionbutton.FloatingActionButton
-                        android:id="@+id/fabShareMagnet"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:contentDescription="@string/share_magnet"
-                        android:onClick="@{() -> listener.onShareMagnetClick()}"
-                        app:srcCompat="@drawable/icon_share" />
-
-                    <TextView
-                        android:textAppearance="?attr/textAppearanceLabelSmall"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:focusable="false"
-                        android:text="@string/share_magnet"
-                        android:textAlignment="center" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="@dimen/fab_download_details_width"
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:layout_marginBottom="10dp">
+                    android:layout_marginTop="5dp"
+                    android:focusable="false"
+                    android:text="@string/share_magnet"
+                    android:textAlignment="center"
+                    android:textAppearance="?attr/textAppearanceLabelSmall" />
+            </LinearLayout>
 
-                    <com.google.android.material.floatingactionbutton.FloatingActionButton
-                        android:id="@+id/fabCopyMagnet"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:contentDescription="@string/copy_magnet"
-                        android:onClick="@{() -> listener.onCopyMagnetClick()}"
-                        app:srcCompat="@drawable/icon_open_external" />
+            <LinearLayout
+                android:layout_width="@dimen/fab_download_details_width"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:gravity="center"
+                android:orientation="vertical">
 
-                    <TextView
-                        android:textAppearance="?attr/textAppearanceLabelSmall"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:focusable="false"
-                        android:text="@string/copy_magnet"
-                        android:textAlignment="center" />
-                </LinearLayout>
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/fabCopyMagnet"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/copy_magnet"
+                    app:srcCompat="@drawable/icon_open_external" />
 
-            </com.google.android.flexbox.FlexboxLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:focusable="false"
+                    android:text="@string/copy_magnet"
+                    android:textAlignment="center"
+                    android:textAppearance="?attr/textAppearanceLabelSmall" />
+            </LinearLayout>
+
+        </com.google.android.flexbox.FlexboxLayout>
 
 
-            <com.google.android.material.card.MaterialCardView
-                style="?attr/materialCardViewElevatedStyle"
+        <com.google.android.material.card.MaterialCardView
+            style="?attr/materialCardViewElevatedStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="20dp"
+            android:checkable="false"
+            android:clickable="false"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="5dp">
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_margin="20dp"
-                android:checkable="false"
-                android:clickable="false"
-                app:cardCornerRadius="10dp"
-                app:cardElevation="5dp">
+                android:orientation="vertical"
+                android:padding="20dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="20dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:textAppearance="?attr/textAppearanceLabelMedium"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="3dp"
-                            android:layout_weight="1"
-                            android:maxLines="2"
-                            android:text="@string/status"
-                            android:textAlignment="center" />
-
-                        <TextView
-                            android:textAppearance="?attr/textAppearanceLabelMedium"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="3dp"
-                            android:layout_weight="1"
-                            android:maxLines="2"
-                            android:text="@string/download"
-                            android:textAlignment="center" />
-
-                        <TextView
-                            android:textAppearance="?attr/textAppearanceLabelMedium"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="3dp"
-                            android:layout_weight="1"
-                            android:maxLines="2"
-                            android:text="@string/size"
-                            android:textAlignment="center" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:textAppearance="?attr/textAppearanceBodyMedium"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="@{statusTranslation[torrent.status], default=`Queued`}"
-                            android:textAlignment="center"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:textAppearance="?attr/textAppearanceBodyMedium"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="@{@string/percent_format(String.valueOf(torrent.progress)), default=`75 %`}"
-                            android:textAlignment="center"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:textAppearance="?attr/textAppearanceBodyMedium"
-                            fileSize="@{torrent.originalBytes}"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="12215,84 MB"
-                            android:textAlignment="center"
-                            android:textStyle="bold" />
-                    </LinearLayout>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginVertical="10dp"
-                        android:background="?android:attr/listDivider" />
-
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:textAppearance="?attr/textAppearanceLabelMedium"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="3dp"
-                            android:layout_weight="1"
-                            android:maxLines="2"
-                            android:text="@string/selected_size"
-                            android:textAlignment="center" />
-
-                        <TextView
-                            android:textAppearance="?attr/textAppearanceLabelMedium"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="3dp"
-                            android:layout_weight="1"
-                            android:maxLines="2"
-                            android:text="@string/total_files"
-                            android:textAlignment="center" />
-
-                        <TextView
-                            android:textAppearance="?attr/textAppearanceLabelMedium"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="3dp"
-                            android:layout_weight="1"
-                            android:maxLines="2"
-                            android:text="@string/selected_files"
-                            android:textAlignment="center" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:textAppearance="?attr/textAppearanceBodyMedium"
-                            fileSize="@{torrent.bytes}"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="123 MB"
-                            android:textAlignment="center"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/tvTotalFiles"
-                            android:textAppearance="?attr/textAppearanceBodyMedium"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="14"
-                            android:textAlignment="center"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/tvSelectedFilesNumber"
-                            android:textAppearance="?attr/textAppearanceBodyMedium"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="3"
-                            android:textAlignment="center"
-                            android:textStyle="bold" />
-                    </LinearLayout>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cvDownloadDetails"
-                style="?attr/materialCardViewElevatedStyle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_margin="20dp"
-                android:checkable="false"
-                android:clickable="false"
-                android:visibility="@{torrent.status.equalsIgnoreCase(`downloading`) ? View.VISIBLE : View.GONE}"
-                app:cardCornerRadius="10dp"
-                app:cardElevation="5dp"
-                app:layout_constraintWidth_max="400dp">
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:padding="20dp">
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
                     <TextView
-                        android:id="@+id/tvDownloadOverline"
-                        android:textAppearance="?attr/textAppearanceLabelMedium"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/download"
-                        app:layout_constraintBottom_toTopOf="@+id/tvSpeed"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <TextView
-                        android:id="@+id/tvProgress"
-                        android:textAppearance="?attr/textAppearanceLabelMedium"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="5dp"
-                        android:text="@{@string/percent_format(String.valueOf(torrent.progress)), default=`90%`}"
-                        android:visibility="@{torrent.progress >=0 &amp;&amp; torrent.progress &lt;100 ? View.VISIBLE : View.GONE, default=visible}"
-                        app:layout_constraintBottom_toBottomOf="@+id/tvDownloadOverline"
-                        app:layout_constraintStart_toEndOf="@id/tvDownloadOverline" />
-
-                    <TextView
-                        android:id="@+id/tvSpeed"
-                        android:textAppearance="?attr/textAppearanceBodyMedium"
-                        downloadSpeed="@{torrent.speed}"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="%1$d kb/s"
-                        android:textStyle="bold"
-                        app:layout_constraintBottom_toTopOf="@+id/tvSeeders"
-                        app:layout_constraintEnd_toStartOf="@id/flProgress"
-                        app:layout_constraintHorizontal_bias="0.5"
-                        app:layout_constraintStart_toStartOf="@id/tvDownloadOverline"
-                        app:layout_constraintTop_toBottomOf="@+id/tvDownloadOverline"
-                        tools:ignore="HardcodedText" />
-
+                        android:layout_marginBottom="3dp"
+                        android:layout_weight="1"
+                        android:maxLines="2"
+                        android:text="@string/status"
+                        android:textAlignment="center"
+                        android:textAppearance="?attr/textAppearanceLabelMedium" />
 
                     <TextView
-                        android:id="@+id/tvSeeders"
-                        android:textAppearance="?attr/textAppearanceLabelSmall"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="@{torrent.seeders == null ? `` : @plurals/seeders_format(torrent.seeders, torrent.seeders), default=`%1$d seeders`}"
-                        android:visibility="@{torrent.seeders == null ? View.GONE : View.VISIBLE}"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="@id/tvSpeed"
-                        app:layout_constraintTop_toBottomOf="@+id/tvSpeed" />
+                        android:layout_marginBottom="3dp"
+                        android:layout_weight="1"
+                        android:maxLines="2"
+                        android:text="@string/download"
+                        android:textAlignment="center"
+                        android:textAppearance="?attr/textAppearanceLabelMedium" />
 
-                    <FrameLayout
-                        android:id="@+id/flProgress"
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="3dp"
+                        android:layout_weight="1"
+                        android:maxLines="2"
+                        android:text="@string/size"
+                        android:textAlignment="center"
+                        android:textAppearance="?attr/textAppearanceLabelMedium" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tvStatus"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textAlignment="center"
+                        android:textAppearance="?attr/textAppearanceBodyMedium"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvProgressPercent"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textAlignment="center"
+                        android:textAppearance="?attr/textAppearanceBodyMedium"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvFileSize"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textAlignment="center"
+                        android:textAppearance="?attr/textAppearanceBodyMedium"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginVertical="10dp"
+                    android:background="?android:attr/listDivider" />
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="3dp"
+                        android:layout_weight="1"
+                        android:maxLines="2"
+                        android:text="@string/selected_size"
+                        android:textAlignment="center"
+                        android:textAppearance="?attr/textAppearanceLabelMedium" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="3dp"
+                        android:layout_weight="1"
+                        android:maxLines="2"
+                        android:text="@string/selected_files"
+                        android:textAlignment="center"
+                        android:textAppearance="?attr/textAppearanceLabelMedium" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="3dp"
+                        android:layout_weight="1"
+                        android:maxLines="2"
+                        android:text="@string/total_files"
+                        android:textAlignment="center"
+                        android:textAppearance="?attr/textAppearanceLabelMedium" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tvSelectedSize"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textAlignment="center"
+                        android:textAppearance="?attr/textAppearanceBodyMedium"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvSelectedFilesNumber"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textAlignment="center"
+                        android:textAppearance="?attr/textAppearanceBodyMedium"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvTotalFiles"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textAlignment="center"
+                        android:textAppearance="?attr/textAppearanceBodyMedium"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cvDownloadDetails"
+            style="?attr/materialCardViewElevatedStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="20dp"
+            android:checkable="false"
+            android:clickable="false"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="5dp"
+            app:layout_constraintWidth_max="400dp">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="20dp">
+
+                <TextView
+                    android:id="@+id/tvDownloadOverline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/download"
+                    android:textAppearance="?attr/textAppearanceLabelMedium"
+                    app:layout_constraintBottom_toTopOf="@+id/tvSpeed"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tvProgress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:textAppearance="?attr/textAppearanceLabelMedium"
+                    app:layout_constraintBottom_toBottomOf="@+id/tvDownloadOverline"
+                    app:layout_constraintStart_toEndOf="@id/tvDownloadOverline" />
+
+                <TextView
+                    android:id="@+id/tvSpeed"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="%1$d kb/s"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toTopOf="@+id/tvSeeders"
+                    app:layout_constraintEnd_toStartOf="@id/flProgress"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="@id/tvDownloadOverline"
+                    app:layout_constraintTop_toBottomOf="@+id/tvDownloadOverline"
+                    tools:ignore="HardcodedText" />
+
+
+                <TextView
+                    android:id="@+id/tvSeeders"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?attr/textAppearanceLabelSmall"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="@id/tvSpeed"
+                    app:layout_constraintTop_toBottomOf="@+id/tvSpeed" />
+
+                <FrameLayout
+                    android:id="@+id/flProgress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <com.google.android.material.progressindicator.CircularProgressIndicator
+                        android:id="@+id/pbDownload"
+                        style="@style/Widget.MaterialComponents.CircularProgressIndicator"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="10dp"
+                        android:indeterminate="false"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent">
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:trackCornerRadius="20dp" />
 
-                        <com.google.android.material.progressindicator.CircularProgressIndicator
-                            android:id="@+id/pbDownload"
-                            style="@style/Widget.MaterialComponents.CircularProgressIndicator"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="10dp"
-                            android:indeterminate="false"
-                            floatProgress="@{torrent.progress, default=60}"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:trackCornerRadius="20dp" />
-
-                    </FrameLayout>
+                </FrameLayout>
 
 
-                </androidx.constraintlayout.widget.ConstraintLayout>
-            </com.google.android.material.card.MaterialCardView>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.card.MaterialCardView>
 
-            <Button
-                android:id="@+id/bDownload"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="20dp"
-                android:minWidth="150dp"
-                android:minLines="3"
-                android:onClick="@{() -> listener.onDownloadClick(torrent)}"
-                android:text="@string/pass_to_download"
-                android:textAllCaps="true"
-                android:visibility="@{torrent.status.equalsIgnoreCase(`downloaded`) ? View.VISIBLE : View.GONE}"
-                app:icon="@drawable/icon_open_external"
-                app:layout_constraintEnd_toStartOf="@id/bCopy"
-                app:layout_constraintStart_toStartOf="@id/cvDetails"
-                app:layout_constraintTop_toBottomOf="@id/cvDetails" />
+        <Button
+            android:id="@+id/bDownload"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="20dp"
+            android:minWidth="150dp"
+            android:minLines="3"
+            android:text="@string/pass_to_download"
+            android:textAllCaps="true"
+            app:icon="@drawable/icon_open_external"
+            app:layout_constraintEnd_toStartOf="@id/bCopy"
+            app:layout_constraintStart_toStartOf="@id/cvDetails"
+            app:layout_constraintTop_toBottomOf="@id/cvDetails" />
 
 
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cvSelectedTorrentFiles"
-                style="?attr/materialCardViewElevatedStyle"
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cvSelectedTorrentFiles"
+            style="?attr/materialCardViewElevatedStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="20dp"
+            android:checkable="false"
+            android:clickable="false"
+            android:visibility="invisible"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="5dp">
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_margin="20dp"
-                android:checkable="false"
-                android:clickable="false"
-                android:visibility="invisible"
-                app:cardCornerRadius="10dp"
-                app:cardElevation="5dp">
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="10dp">
 
-                <LinearLayout
+                <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:padding="10dp"
-                    android:orientation="vertical">
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="@string/selected_files"
+                    android:textAlignment="center"
+                    android:textAppearance="?attr/textAppearanceTitleSmall" />
 
-                    <TextView
-                        android:textAppearance="?attr/textAppearanceTitleSmall"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:text="@string/selected_files"
-                        android:textAlignment="center" />
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/rvFileList"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginTop="15dp"
-                        android:scrollbars="vertical"
-                        tools:listitem="@layout/item_list_torrent_file"
-                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-        </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
-</layout>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvFileList"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="15dp"
+                    android:scrollbars="vertical"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:listitem="@layout/item_list_torrent_file" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

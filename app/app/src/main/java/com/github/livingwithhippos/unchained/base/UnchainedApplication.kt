@@ -5,7 +5,6 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.content.SharedPreferences
-import android.os.Build
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.local.ProtoStore
 import com.github.livingwithhippos.unchained.data.local.RepositoryDataDao
@@ -56,22 +55,20 @@ class UnchainedApplication : Application() {
     private fun createNotificationChannels() {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = getString(R.string.app_name)
-            val torrentChannel =
-                NotificationChannel(TORRENT_CHANNEL_ID, name, NotificationManager.IMPORTANCE_LOW)
-                    .apply { description = getString(R.string.torrent_channel_description) }
-            val notificationManager: NotificationManager =
-                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val name = getString(R.string.app_name)
+        val torrentChannel =
+            NotificationChannel(TORRENT_CHANNEL_ID, name, NotificationManager.IMPORTANCE_LOW)
+                .apply { description = getString(R.string.torrent_channel_description) }
+        val notificationManager: NotificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-            // Register the channels with the system
-            notificationManager.createNotificationChannel(torrentChannel)
+        // Register the channels with the system
+        notificationManager.createNotificationChannel(torrentChannel)
 
-            val downloadChannel =
-                NotificationChannel(DOWNLOAD_CHANNEL_ID, name, NotificationManager.IMPORTANCE_LOW)
-                    .apply { description = getString(R.string.download_channel_description) }
-            notificationManager.createNotificationChannel(downloadChannel)
-        }
+        val downloadChannel =
+            NotificationChannel(DOWNLOAD_CHANNEL_ID, name, NotificationManager.IMPORTANCE_LOW)
+                .apply { description = getString(R.string.download_channel_description) }
+        notificationManager.createNotificationChannel(downloadChannel)
     }
 
     companion object {

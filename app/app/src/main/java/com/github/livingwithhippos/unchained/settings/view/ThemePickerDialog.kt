@@ -2,16 +2,19 @@ package com.github.livingwithhippos.unchained.settings.view
 
 import android.app.Dialog
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import android.widget.TextView
 import androidx.annotation.ColorInt
 import androidx.annotation.StyleRes
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.github.livingwithhippos.unchained.R
+import com.github.livingwithhippos.unchained.databinding.ItemThemeListBinding
 import com.github.livingwithhippos.unchained.settings.viewmodel.SettingsViewModel
-import com.github.livingwithhippos.unchained.utilities.DataBindingAdapter
 import com.github.livingwithhippos.unchained.utilities.extension.getThemeList
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -80,22 +83,50 @@ data class ThemeItem(
     val name: String,
     val key: String,
     val nightMode: String,
-    @StyleRes val themeID: Int,
-    @ColorInt val primaryColorID: Int,
-    @ColorInt val surfaceColorID: Int,
-    @ColorInt val primaryContainerColorID: Int,
+    @param:StyleRes val themeID: Int,
+    @param:ColorInt val primaryColorID: Int,
+    @param:ColorInt val surfaceColorID: Int,
+    @param:ColorInt val primaryContainerColorID: Int,
 )
 
-class ThemePickerAdapter(listener: ThemePickListener) :
-    DataBindingAdapter<ThemeItem, ThemePickListener>(DiffCallback(), listener) {
+class ThemePickerAdapter(private val listener: ThemePickListener) :
+    ListAdapter<ThemeItem, ThemeViewHolder>(DiffCallback()) {
+
     class DiffCallback : DiffUtil.ItemCallback<ThemeItem>() {
         override fun areItemsTheSame(oldItem: ThemeItem, newItem: ThemeItem): Boolean =
             oldItem.key == newItem.key
 
+        // content does not change on update
         override fun areContentsTheSame(oldItem: ThemeItem, newItem: ThemeItem): Boolean = true
     }
 
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ThemeViewHolder {
+        val binding =
+            ItemThemeListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ThemeViewHolder(binding, listener)
+    }
+
+    override fun onBindViewHolder(holder: ThemeViewHolder, position: Int) {
+        val item = getItem(position)
+        holder.bindCell(item)
+    }
+
     override fun getItemViewType(position: Int) = R.layout.item_theme_list
+}
+
+class ThemeViewHolder(
+    private val binding: ItemThemeListBinding,
+    private val listener: ThemePickListener,
+) : RecyclerView.ViewHolder(binding.root) {
+
+    fun bindCell(item: ThemeItem) {
+        binding.themeName.text = item.name
+        binding.themeColor.topColor = item.primaryColorID
+        binding.themeColor.bottomLeftColor = item.surfaceColorID
+        binding.themeColor.bottomRightColor = item.primaryContainerColorID
+
+        binding.clItemTheme.setOnClickListener { listener.onThemeClick(item) }
+    }
 }
 
 interface ThemePickListener {
