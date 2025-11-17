@@ -3571,7 +3571,7 @@ class TestTorrentFileParser {
             	"speed": 1141000,
             	"seeders": 4
             }
-                    """
+            """
                 .trimIndent()
         val item: TorrentItem = jsonAdapter.fromJson(json)!!
 
@@ -7176,7 +7176,7 @@ class TestTorrentFileParser {
             	"speed": 1141000,
             	"seeders": 4
             }
-                    """
+            """
                 .trimIndent()
         val item: TorrentItem = jsonAdapter.fromJson(json)!!
 
