@@ -160,12 +160,15 @@ object ApiFactory {
                             InetAddress.getByName("8.8.8.8"),
                             InetAddress.getByName("8.8.4.4"),
                         )
+                        // we noticed ipv6 was checked first and then failed for a plugin
+                        .includeIPv6(false)
                         .build()
                 "cloudflare" ->
                     DnsOverHttps.Builder()
                         .client(bootstrapClient)
                         .url("https://cloudflare-dns.com/dns-query".toHttpUrl())
                         .bootstrapDnsHosts(InetAddress.getByName("1.1.1.1"))
+                        .includeIPv6(false)
                         .build()
                 "quad9" ->
                     DnsOverHttps.Builder()
@@ -175,12 +178,14 @@ object ApiFactory {
                             InetAddress.getByName("9.9.9.9"),
                             InetAddress.getByName("149.112.112.112"),
                         )
+                        .includeIPv6(false)
                         .build()
                 "mullvad" ->
                     DnsOverHttps.Builder()
                         .client(bootstrapClient)
                         .url("https://dns.mullvad.net/dns-query".toHttpUrl())
                         .bootstrapDnsHosts(InetAddress.getByName("194.242.2.2"))
+                        .includeIPv6(false)
                         .build()
                 else ->
                     DnsOverHttps.Builder()
@@ -190,6 +195,7 @@ object ApiFactory {
                             InetAddress.getByName("9.9.9.9"),
                             InetAddress.getByName("149.112.112.112"),
                         )
+                        .includeIPv6(false)
                         .build()
             }
 
