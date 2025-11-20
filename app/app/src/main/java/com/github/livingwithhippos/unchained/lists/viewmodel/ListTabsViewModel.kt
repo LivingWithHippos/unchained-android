@@ -164,7 +164,9 @@ constructor(
     }
 
     fun downloadItems(torrents: List<TorrentItem>) {
-        torrents.filter { it.status == "downloaded" || it.status == "ready" }.forEach { unrestrictTorrent(it) }
+        torrents
+            .filter { it.status == "downloaded" || it.status == "ready" }
+            .forEach { unrestrictTorrent(it) }
     }
 
     fun deleteDownloads(downloads: List<DownloadItem>) {

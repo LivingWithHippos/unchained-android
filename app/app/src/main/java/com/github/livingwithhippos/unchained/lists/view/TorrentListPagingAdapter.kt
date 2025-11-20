@@ -73,8 +73,7 @@ class TorrentViewHolder(
         if (item.status == "downloaded") {
             // "ready" is used to make it clearer that the torrent is NOT downloaded on the phone
             binding.tvTitle.text = binding.root.context.getStatusTranslation("ready")
-        } else
-            binding.tvTitle.text = binding.root.context.getStatusTranslation(item.status)
+        } else binding.tvTitle.text = binding.root.context.getStatusTranslation(item.status)
         if (item.progress >= 0 && item.progress < 100) {
             binding.tvProgress.text =
                 itemView.context.getString(R.string.percent_format, item.progress)

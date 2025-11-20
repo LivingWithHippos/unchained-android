@@ -76,7 +76,10 @@ class AuthenticationFragment : UnchainedFragment() {
         }
 
         binding.bCopyLink.setOnClickListener {
-            copyToClipboard(getString(R.string.code_copied), binding.tvUserCodeValue.text.toString())
+            copyToClipboard(
+                getString(R.string.code_copied),
+                binding.tvUserCodeValue.text.toString(),
+            )
         }
 
         // todo: check if needed
