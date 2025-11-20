@@ -109,6 +109,7 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentContentListener {
                 "queued" to getString(R.string.queued),
                 "downloading" to getString(R.string.downloading),
                 "downloaded" to getString(R.string.downloaded),
+                "ready" to getString(R.string.ready),
                 "error" to getString(R.string.error),
                 "virus" to getString(R.string.virus),
                 "compressing" to getString(R.string.compressing),
@@ -176,7 +177,7 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentContentListener {
                         binding.tvSeeders.visibility = View.VISIBLE
                     }
                     binding.pbDownload.setProgressCompat(torrent.progress.toInt(), true)
-                    if (torrent.status.equals("downloaded", true)) {
+                    if (torrent.status.equals("downloaded", true) || torrent.status.equals("ready", true)) {
                         binding.bDownload.visibility = View.VISIBLE
                     } else {
                         binding.bDownload.visibility = View.GONE
