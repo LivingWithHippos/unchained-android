@@ -22,6 +22,7 @@ import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuth
 import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationState
 import com.github.livingwithhippos.unchained.utilities.EventObserver
 import com.github.livingwithhippos.unchained.utilities.PRIVATE_TOKEN
+import com.github.livingwithhippos.unchained.utilities.extension.copyToClipboard
 import com.github.livingwithhippos.unchained.utilities.extension.getClipboardText
 import com.github.livingwithhippos.unchained.utilities.extension.getThemeColor
 import com.github.livingwithhippos.unchained.utilities.extension.hideKeyboard
@@ -74,6 +75,10 @@ class AuthenticationFragment : UnchainedFragment() {
             }
         }
 
+        binding.bCopyLink.setOnClickListener {
+            copyToClipboard(getString(R.string.code_copied), binding.tvUserCodeValue.text.toString())
+        }
+
         // todo: check if needed
         // binding.loginMessageDirect = getLoginMessage(LOGIN_TYPE_DIRECT)
         // binding.loginMessageIndirect = getLoginMessage(LOGIN_TYPE_INDIRECT)
@@ -111,6 +116,8 @@ class AuthenticationFragment : UnchainedFragment() {
                         binding.tvLoginMessage.visibility = View.VISIBLE
                         binding.cbSecret.isChecked = false
                         binding.cbSecret.text = getString(R.string.waiting_user_auth)
+                        binding.tvUserCodeValue.text = getString(R.string.copy_code)
+                        binding.bCopyLink.isEnabled = false
 
                         // get the authentication link to start the process
                         viewModel.fetchAuthenticationInfo()
@@ -146,6 +153,9 @@ class AuthenticationFragment : UnchainedFragment() {
                     binding.tvAuthenticationLink.visibility = View.VISIBLE
                     binding.cbLink.isChecked = true
                     binding.cbLink.text = getString(R.string.link_loaded)
+                    // let the user copy the user code to enter in the website
+                    binding.tvUserCodeValue.text = auth.userCode
+                    binding.bCopyLink.isEnabled = true
                     // update the currently saved credentials
                     activityViewModel.updateCredentialsDeviceCode(auth.deviceCode)
                     // transition state machine
