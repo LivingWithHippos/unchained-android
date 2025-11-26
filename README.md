@@ -119,6 +119,8 @@ LWeoBVVmaYAiZ3oGaLAV9sV2dvY62XxdCF
 #### Translators
 
 - edgarpatronperez (spanish)
+- mikropsoft (turkish)
+- poihoii (korean)
 
 #### Media
 

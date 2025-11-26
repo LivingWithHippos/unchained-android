@@ -872,6 +872,7 @@ class MainActivity : AppCompatActivity() {
 
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
+        // fixme: not working good anymore on android 16, migrate
         // if the user is pressing back on an "exiting" fragment, show a toast alerting him and wait
         // for him to press back again for confirmation
 

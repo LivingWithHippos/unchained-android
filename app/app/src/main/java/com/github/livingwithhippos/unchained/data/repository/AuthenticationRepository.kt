@@ -32,6 +32,7 @@ constructor(private val protoStore: ProtoStore, private val apiHelper: AuthApiHe
                 call = { apiHelper.getSecrets(deviceCode = code) },
                 errorMessage = "Error Fetching Secrets",
             )
+        // fixme: if we receive 403 we must restart the process, ths returns null instead
 
         return secretResponse
     }
