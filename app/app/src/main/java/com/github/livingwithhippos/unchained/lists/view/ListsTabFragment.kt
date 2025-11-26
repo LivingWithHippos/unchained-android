@@ -236,7 +236,8 @@ class ListsTabFragment : UnchainedFragment() {
 
                     is ListEvent.TorrentItemClick -> {
                         when (event.item.status) {
-                            "downloaded" -> {
+                            "downloaded",
+                            "ready" -> {
                                 if (event.item.links.size > 1) {
                                     val action =
                                         ListsTabFragmentDirections
@@ -839,7 +840,7 @@ class TorrentsListFragment : UnchainedFragment(), TorrentListListener {
                 delay(100)
             }
 
-            if (item.status == "downloaded") {
+            if (item.status == "downloaded" || item.status == "ready") {
                 // unrestrict and move to download tab
                 if (item.links.size > 1) {
                     val action =

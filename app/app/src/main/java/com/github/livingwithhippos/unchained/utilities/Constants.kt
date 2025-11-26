@@ -12,6 +12,7 @@ const val REFERRAL_LINK = "http://real-debrid.com/?id=78841"
 const val ACCOUNT_LINK = "https://real-debrid.com/account"
 const val DEFAULT_PLUGINS_REPOSITORY_LINK =
     "https://gitlab.com/LivingWithHippos/unchained-plugins/-/raw/main/repository/repository.json"
+
 /** Folder name for the plugins installed manually, not from a web repository */
 const val MANUAL_PLUGINS_REPOSITORY_NAME = "common_repository"
 
@@ -77,7 +78,7 @@ val errorMap =
 // queued, downloading, downloaded, error, virus, compressing, uploading, dead
 
 /** Statuses the torrent is not going to advance from */
-val endedStatusList = listOf("magnet_error", "downloaded", "error", "virus", "dead")
+val endedStatusList = listOf("magnet_error", "downloaded", "ready", "error", "virus", "dead")
 
 /** Statuses the torrent will advance from */
 val loadingStatusList =

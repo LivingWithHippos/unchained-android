@@ -72,9 +72,46 @@
             android:clickable="false"
             android:focusable="false"
             android:text="@string/waiting_user_auth"
-            app:layout_constraintBottom_toTopOf="@+id/cbToken"
+            app:layout_constraintBottom_toTopOf="@+id/llUserCode"
             app:layout_constraintStart_toStartOf="@+id/cbLink"
-            app:layout_constraintTop_toBottomOf="@+id/cbLink" />
+            app:layout_constraintTop_toBottomOf="@+id/cbLink"
+            />
+
+        <LinearLayout
+            android:id="@+id/llUserCode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="visible"
+            app:layout_constraintTop_toBottomOf="@+id/cbSecret"
+            app:layout_constraintStart_toStartOf="@+id/cbLink"
+            app:layout_constraintEnd_toEndOf="@+id/cbLink"
+            app:layout_constraintBottom_toTopOf="@+id/cbToken"
+            >
+            <TextView
+                android:id="@+id/tvUserCodeValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textIsSelectable="true"
+                android:scrollHorizontally="true"
+                android:gravity="start"
+                android:text="@string/copy_code"
+                />
+
+            <Button
+                android:id="@+id/bCopyLink"
+                android:enabled="false"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="30dp"
+                android:text="@string/copy"
+                />
+
+        </LinearLayout>
+
 
         <CheckBox
             android:id="@+id/cbToken"
@@ -84,9 +121,10 @@
             android:clickable="false"
             android:focusable="false"
             android:text="@string/waiting_token"
-            app:layout_constraintBottom_toTopOf="@+id/tvUsePrivateToken"
+            app:layout_constraintTop_toBottomOf="@+id/llUserCode"
             app:layout_constraintStart_toStartOf="@+id/cbSecret"
-            app:layout_constraintTop_toBottomOf="@+id/cbSecret" />
+            app:layout_constraintBottom_toTopOf="@+id/tvUsePrivateToken"
+            />
 
 
         <TextView

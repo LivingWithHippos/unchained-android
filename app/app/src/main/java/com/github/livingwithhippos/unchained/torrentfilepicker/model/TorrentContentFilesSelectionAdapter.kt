@@ -89,6 +89,7 @@ class TorrentContentFilesSelectionAdapter(private val listener: TorrentContentLi
         fun bindCell(item: TorrentFileItem) {
             binding.cbSelectFile.isChecked = item.selected
             binding.cbSelectFile.setOnClickListener { listener.onSelectedFile(item) }
+            binding.fileListItem.setOnClickListener { binding.cbSelectFile.performClick() }
             binding.tvFileName.text = item.name
             binding.tvFileSize.text = getFileSizeString(itemView.context, item.bytes)
         }

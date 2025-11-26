@@ -491,12 +491,13 @@ fun Context.getStatusTranslation(status: String): String {
         "queued" -> getString(R.string.queued)
         "downloading" -> getString(R.string.downloading)
         "downloaded" -> getString(R.string.downloaded)
+        "ready" -> getString(R.string.ready)
         "error" -> getString(R.string.error)
         "virus" -> getString(R.string.virus)
         "compressing" -> getString(R.string.compressing)
         "uploading" -> getString(R.string.uploading)
         "dead" -> getString(R.string.dead)
-        else -> getString(R.string.unknown_status)
+        else -> status
     }
 }
 
