@@ -4,7 +4,9 @@
     android:id="@+id/file_list_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="10dp">
+    android:layout_marginBottom="10dp"
+    android:clickable="true"
+    >
 
     <CheckBox
         android:id="@+id/cbSelectFile"
