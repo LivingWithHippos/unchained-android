@@ -493,6 +493,7 @@
     <string name="new_service">새 서비스</string>
     <string name="remote_device">원격 기기</string>
     <string name="service_deleted">서비스 삭제됨</string>
+    <string name="service_stopped">서비스가 중지되었습니다</string>
     <string name="service">서비스</string>
     <string name="services">서비스</string>
     <plurals name="services_format">

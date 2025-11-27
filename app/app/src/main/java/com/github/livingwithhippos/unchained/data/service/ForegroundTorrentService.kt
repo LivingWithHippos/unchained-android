@@ -32,6 +32,9 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
+const val MAX_SERVICE_DURATION = 5 * 60 * 60 * 1000
+const val MIN_SERVICE_DURATION = 20 * 60 * 1000
+
 @AndroidEntryPoint
 @SuppressLint("MissingPermission")
 class ForegroundTorrentService : LifecycleService() {
@@ -157,21 +160,38 @@ class ForegroundTorrentService : LifecycleService() {
                 // right now on api >= 35 after 6 hours the service will crash
                 // because of system imposed limits
                 if (
-                    Build.VERSION.SDK_INT >= 35 &&
-                        System.currentTimeMillis() - serviceStart > 5 * 60 * 60 * 1000
+                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM &&
+                        System.currentTimeMillis() - serviceStart > MAX_SERVICE_DURATION
                 ) {
                     Timber.w("Service has been running for too long, stopping it.")
                     break
                 }
                 try {
-                    torrentsLiveData.postValue(getTorrentList())
+                    val torrentList = getTorrentList()
+                    torrentsLiveData.postValue(torrentList)
+
+                    if (
+                        Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM &&
+                            System.currentTimeMillis() - serviceStart > MIN_SERVICE_DURATION
+                    ) {
+                        // if there are no active torrents and the services has been started
+                        // for at least some minutes, stop the service
+                        val unfinishedTorrents =
+                            torrentList.count { loadingStatusList.contains(it.status) }
+                        if (unfinishedTorrents == 0) {
+                            Timber.i(
+                                "Service has been running and no torrents are active, stopping it."
+                            )
+                            break
+                        }
+                    }
                 } catch (ex: IllegalArgumentException) {
                     // no valid token ready, retry later
                 }
                 // update notifications every 5 seconds
                 delay(updateTiming)
             }
-            stopSelf()
+            stopTorrentService()
         }
     }
 
@@ -271,10 +291,12 @@ class ForegroundTorrentService : LifecycleService() {
     }
 
     private fun stopTorrentService() {
-        torrentsLiveData.value?.let {
-            it.forEach { torrent -> notificationManager.cancel(torrent.id.hashCode()) }
+        lifecycleScope.launch {
+            // delay used to let the notification finish
+            delay(1000)
+            // this will avoid removing the notifications, so the user can see what happened in the meanwhile
+            stopForeground(STOP_FOREGROUND_DETACH)
         }
-        stopSelf()
     }
 
     companion object {

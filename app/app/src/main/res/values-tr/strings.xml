@@ -492,6 +492,7 @@
     <string name="new_service">Yeni Hizmet</string>
     <string name="remote_device">Uzak Cihaz</string>
     <string name="service_deleted">Hizmet silindi</string>
+    <string name="service_stopped">Hizmet durduruldu</string>
     <string name="service">Hizmet</string>
     <string name="services">Hizmetler</string>
     <plurals name="services_format">
