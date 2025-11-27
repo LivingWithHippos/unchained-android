@@ -295,7 +295,8 @@ class ForegroundTorrentService : LifecycleService() {
             // delay used to let the notification finish
             delay(1000)
             notificationManager.cancel(SUMMARY_ID)
-            // this will avoid removing the notifications, so the user can see what happened in the meanwhile
+            // this will avoid removing the notifications, so the user can see what happened in the
+            // meanwhile
             stopForeground(STOP_FOREGROUND_DETACH)
         }
     }
