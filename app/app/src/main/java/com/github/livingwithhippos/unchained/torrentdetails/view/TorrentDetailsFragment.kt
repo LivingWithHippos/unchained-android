@@ -120,7 +120,7 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentContentListener {
         binding.tvStatus.text = statusTranslation[args.item.status] ?: args.item.status
         binding.fabShareMagnet.setOnClickListener { onShareMagnetClick() }
         binding.fabCopyMagnet.setOnClickListener { onCopyMagnetClick() }
-        binding.bDownload.setOnClickListener { onDownloadClick(args.item) }
+        binding.bDownload.setOnClickListener { onDownloadClick() }
 
         val adapter = TorrentContentFilesAdapter()
         binding.rvFileList.adapter = adapter
@@ -280,7 +280,8 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentContentListener {
         _binding = null
     }
 
-    fun onDownloadClick(item: TorrentItem) {
+    fun onDownloadClick() {
+        val item: TorrentItem = viewModel.torrentLiveData.value?.peekContent() ?: args.item
         if (item.links.size > 1) {
             val action =
                 TorrentDetailsFragmentDirections.actionTorrentDetailsToTorrentFolder(
