@@ -513,8 +513,9 @@ class DownloadsListFragment : UnchainedFragment(), DownloadListListener {
         val downloadObserver =
             Observer<PagingData<DownloadItem>> {
                 viewLifecycleOwner.lifecycleScope.launch {
-                    val b = _binding
-                        ?: return@launch  // capture binding and bail out if view was destroyed
+                    val b =
+                        _binding
+                            ?: return@launch // capture binding and bail out if view was destroyed
 
                     downloadAdapter.submitData(it)
                     // stop the refresh animation if playing

@@ -47,15 +47,13 @@ class StartFragment : UnchainedFragment() {
                         val action =
                             StartFragmentDirections.actionStartFragmentToUserProfileFragment()
                         val navigated = safeNavigate(action)
-                        if (navigated)
-                            activityViewModel.goToStartUpScreen()
+                        if (navigated) activityViewModel.goToStartUpScreen()
                     }
                     FSMAuthenticationState.AuthenticatedPrivateToken -> {
                         val action =
                             StartFragmentDirections.actionStartFragmentToUserProfileFragment()
                         val navigated = safeNavigate(action)
-                        if (navigated)
-                            activityViewModel.goToStartUpScreen()
+                        if (navigated) activityViewModel.goToStartUpScreen()
                     }
                     is FSMAuthenticationState.WaitingUserAction -> {
                         // todo: show action needed
@@ -106,7 +104,6 @@ class StartFragment : UnchainedFragment() {
         return binding.root
     }
 
-
     private fun safeNavigate(action: NavDirections): Boolean {
         val nav = findNavController()
         val current = nav.currentDestination
@@ -119,7 +116,9 @@ class StartFragment : UnchainedFragment() {
                 return false
             }
         } else {
-            Timber.w("Navigation action not found from destination ${current?.id} for actionId=${action.actionId}")
+            Timber.w(
+                "Navigation action not found from destination ${current?.id} for actionId=${action.actionId}"
+            )
             return false
         }
     }
