@@ -746,9 +746,7 @@ class TorrentsListFragment : UnchainedFragment(), TorrentListListener {
                     torrentAdapter.submitData(it)
                     if (b.srLayout.isRefreshing) {
                         b.srLayout.isRefreshing = false
-                        lifecycleScope.launch {
-                            b.rvTorrentList.delayedScrolling(requireContext())
-                        }
+                        lifecycleScope.launch { b.rvTorrentList.delayedScrolling(requireContext()) }
                     }
                     delay(300)
                     torrentAdapter.notifyDataSetChanged()
