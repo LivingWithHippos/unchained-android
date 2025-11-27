@@ -703,19 +703,19 @@ class TorrentsListFragment : UnchainedFragment(), TorrentListListener {
             } else context?.showToast(R.string.select_one_item)
         }
         binding.bDetailsSelected.setOnClickListener {
-            if (torrentTracker.selection.toList().size == 1) {
-                val item: TorrentItem = torrentTracker.selection.toList().first()
-                val action =
-                    if (beforeSelectionStatusList.contains(item.status))
-                        ListsTabFragmentDirections.actionListTabsDestToTorrentProcessingFragment(
-                            torrentID = item.id
-                        )
-                    else ListsTabFragmentDirections.actionListsTabToTorrentDetails(item)
-                findNavController().navigate(action)
-            } else
-                Timber.e(
-                    "Somehow user triggered openSelectedDetails with a selection size of ${torrentTracker.selection.toList().size}"
-                )
+            if (torrentTracker.selection.size() != 1) {
+                // we can only open a single torrent at a time
+                return@setOnClickListener
+            }
+
+            val item: TorrentItem = torrentTracker.selection.toList().first()
+            val action =
+                if (beforeSelectionStatusList.contains(item.status))
+                    ListsTabFragmentDirections.actionListTabsDestToTorrentProcessingFragment(
+                        torrentID = item.id
+                    )
+                else ListsTabFragmentDirections.actionListsTabToTorrentDetails(item)
+            findNavController().navigate(action)
         }
         binding.bAddNew?.setOnClickListener {
             // landscape only
