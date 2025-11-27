@@ -133,6 +133,8 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentContentListener {
                         torrent.files?.count { file -> file.selected == 1 } ?: 0
                     binding.tvSelectedFilesNumber.text = selectedFiles.toString()
 
+                    binding.tvStatus.text = statusTranslation[torrent.status] ?: torrent.status
+
                     binding.tvTotalFiles.text = (torrent.files?.count() ?: 0).toString()
                     binding.tvName.text = torrent.filename
                     binding.tvProgressPercent.text =
