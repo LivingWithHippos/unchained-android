@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
@@ -40,19 +41,21 @@ class StartFragment : UnchainedFragment() {
                     FSMAuthenticationState.StartNewLogin -> {
                         val action =
                             StartFragmentDirections.actionStartFragmentToAuthenticationFragment()
-                        findNavController().navigate(action)
+                        safeNavigate(action)
                     }
                     FSMAuthenticationState.AuthenticatedOpenToken -> {
                         val action =
                             StartFragmentDirections.actionStartFragmentToUserProfileFragment()
-                        findNavController().navigate(action)
-                        activityViewModel.goToStartUpScreen()
+                        val navigated = safeNavigate(action)
+                        if (navigated)
+                            activityViewModel.goToStartUpScreen()
                     }
                     FSMAuthenticationState.AuthenticatedPrivateToken -> {
                         val action =
                             StartFragmentDirections.actionStartFragmentToUserProfileFragment()
-                        findNavController().navigate(action)
-                        activityViewModel.goToStartUpScreen()
+                        val navigated = safeNavigate(action)
+                        if (navigated)
+                            activityViewModel.goToStartUpScreen()
                     }
                     is FSMAuthenticationState.WaitingUserAction -> {
                         // todo: show action needed
@@ -101,6 +104,24 @@ class StartFragment : UnchainedFragment() {
         }
 
         return binding.root
+    }
+
+
+    private fun safeNavigate(action: NavDirections): Boolean {
+        val nav = findNavController()
+        val current = nav.currentDestination
+        if (current != null && current.getAction(action.actionId) != null) {
+            try {
+                nav.navigate(action)
+                return true
+            } catch (e: IllegalArgumentException) {
+                Timber.w(e, "Safe navigate failed for actionId=${action.actionId}")
+                return false
+            }
+        } else {
+            Timber.w("Navigation action not found from destination ${current?.id} for actionId=${action.actionId}")
+            return false
+        }
     }
 
     override fun onDestroyView() {
