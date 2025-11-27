@@ -522,7 +522,9 @@ class DownloadsListFragment : UnchainedFragment(), DownloadListListener {
                     if (b.srLayout.isRefreshing) {
                         b.srLayout.isRefreshing = false
                         // scroll to top if we were refreshing
-                        b.rvDownloadList.delayedScrolling(requireContext())
+                        lifecycleScope.launch {
+                            b.rvDownloadList.delayedScrolling(requireContext())
+                        }
                     }
                     // delay for notifying the list that the items have changed, otherwise stuff
                     // like the
@@ -744,7 +746,9 @@ class TorrentsListFragment : UnchainedFragment(), TorrentListListener {
                     torrentAdapter.submitData(it)
                     if (b.srLayout.isRefreshing) {
                         b.srLayout.isRefreshing = false
-                        b.rvTorrentList.delayedScrolling(requireContext())
+                        lifecycleScope.launch {
+                            b.rvTorrentList.delayedScrolling(requireContext())
+                        }
                     }
                     delay(300)
                     torrentAdapter.notifyDataSetChanged()
