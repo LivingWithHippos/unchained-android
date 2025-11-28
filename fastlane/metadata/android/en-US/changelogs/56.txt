@@ -1,0 +1,5 @@
+What's new in 1.5.1:
+- fixed missing torrent status update
+- fixed torrent to download conversion not working when reselecting files
+- stop torrent monitoring services after 20 minutes if there's no activity
+- tried to fix crashes
