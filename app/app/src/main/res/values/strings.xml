@@ -711,6 +711,7 @@
     <string name="remote_device">Remote Device</string>
     <string name="jackett" translatable="false">Jackett</string>
     <string name="service_deleted">Service deleted</string>
+    <string name="service_stopped">Service has been stopped</string>
     <string name="service">Service</string>
     <string name="services">Services</string>
     <plurals name="services_format">

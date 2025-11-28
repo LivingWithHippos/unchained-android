@@ -489,6 +489,7 @@
     <string name="new_service">Nuevo servicio</string>
     <string name="remote_device">Dispositivo remoto</string>
     <string name="service_deleted">Servicio suprimido</string>
+    <string name="service_stopped">El servicio se ha detenido</string>
     <string name="service">Servicio</string>
     <string name="services">Servicios</string>
     <plurals name="services_format">

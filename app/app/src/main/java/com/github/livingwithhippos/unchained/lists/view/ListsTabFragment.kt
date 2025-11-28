@@ -512,14 +512,18 @@ class DownloadsListFragment : UnchainedFragment(), DownloadListListener {
         // removes the loading icon from the swipe layout
         val downloadObserver =
             Observer<PagingData<DownloadItem>> {
-                lifecycleScope.launch {
+                viewLifecycleOwner.lifecycleScope.launch {
+                    val b =
+                        _binding
+                            ?: return@launch // capture binding and bail out if view was destroyed
+
                     downloadAdapter.submitData(it)
                     // stop the refresh animation if playing
-                    if (binding.srLayout.isRefreshing) {
-                        binding.srLayout.isRefreshing = false
+                    if (b.srLayout.isRefreshing) {
+                        b.srLayout.isRefreshing = false
                         // scroll to top if we were refreshing
                         lifecycleScope.launch {
-                            binding.rvDownloadList.delayedScrolling(requireContext())
+                            b.rvDownloadList.delayedScrolling(requireContext())
                         }
                     }
                     // delay for notifying the list that the items have changed, otherwise stuff
@@ -699,19 +703,19 @@ class TorrentsListFragment : UnchainedFragment(), TorrentListListener {
             } else context?.showToast(R.string.select_one_item)
         }
         binding.bDetailsSelected.setOnClickListener {
-            if (torrentTracker.selection.toList().size == 1) {
-                val item: TorrentItem = torrentTracker.selection.toList().first()
-                val action =
-                    if (beforeSelectionStatusList.contains(item.status))
-                        ListsTabFragmentDirections.actionListTabsDestToTorrentProcessingFragment(
-                            torrentID = item.id
-                        )
-                    else ListsTabFragmentDirections.actionListsTabToTorrentDetails(item)
-                findNavController().navigate(action)
-            } else
-                Timber.e(
-                    "Somehow user triggered openSelectedDetails with a selection size of ${torrentTracker.selection.toList().size}"
-                )
+            if (torrentTracker.selection.size() != 1) {
+                // we can only open a single torrent at a time
+                return@setOnClickListener
+            }
+
+            val item: TorrentItem = torrentTracker.selection.toList().first()
+            val action =
+                if (beforeSelectionStatusList.contains(item.status))
+                    ListsTabFragmentDirections.actionListTabsDestToTorrentProcessingFragment(
+                        torrentID = item.id
+                    )
+                else ListsTabFragmentDirections.actionListsTabToTorrentDetails(item)
+            findNavController().navigate(action)
         }
         binding.bAddNew?.setOnClickListener {
             // landscape only
@@ -736,13 +740,13 @@ class TorrentsListFragment : UnchainedFragment(), TorrentListListener {
 
         val torrentObserver =
             Observer<PagingData<TorrentItem>> {
-                lifecycleScope.launch {
+                viewLifecycleOwner.lifecycleScope.launch {
+                    val b = _binding ?: return@launch
+
                     torrentAdapter.submitData(it)
-                    if (binding.srLayout.isRefreshing) {
-                        binding.srLayout.isRefreshing = false
-                        lifecycleScope.launch {
-                            binding.rvTorrentList.delayedScrolling(requireContext())
-                        }
+                    if (b.srLayout.isRefreshing) {
+                        b.srLayout.isRefreshing = false
+                        lifecycleScope.launch { b.rvTorrentList.delayedScrolling(requireContext()) }
                     }
                     delay(300)
                     torrentAdapter.notifyDataSetChanged()
