@@ -810,6 +810,7 @@ class TorrentsListFragment : UnchainedFragment(), TorrentListListener {
         activityViewModel.listStateLiveData.observe(
             viewLifecycleOwner,
             EventObserver {
+                if (_binding == null) return@EventObserver
                 when (it) {
                     ListState.UpdateTorrent -> {
                         lifecycleScope.launch {
