@@ -429,10 +429,6 @@
                 <data android:host="wushare.com" />
                 <data android:host="xubster.com" />
 
-                <data android:host="www.youtube.com" />
-                <data android:host="youtu.be" />
-                <data android:host="youtube.com" />
-
                 <data android:host="zippyshare.com" />
             </intent-filter>
         </activity>
