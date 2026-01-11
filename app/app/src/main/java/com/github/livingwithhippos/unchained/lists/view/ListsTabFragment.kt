@@ -552,6 +552,7 @@ class DownloadsListFragment : UnchainedFragment(), DownloadListListener {
         viewModel.downloadItemLiveData.observe(
             viewLifecycleOwner,
             EventObserver { links ->
+                if (_binding == null) return@EventObserver
                 // todo: if it gets emptied null/empty should be processed too
                 if (links.isNotEmpty()) {
                     // simulate list refresh
@@ -567,6 +568,7 @@ class DownloadsListFragment : UnchainedFragment(), DownloadListListener {
         activityViewModel.listStateLiveData.observe(
             viewLifecycleOwner,
             EventObserver {
+                if (_binding == null) return@EventObserver
                 when (it) {
                     ListState.UpdateDownload -> {
                         lifecycleScope.launch {
