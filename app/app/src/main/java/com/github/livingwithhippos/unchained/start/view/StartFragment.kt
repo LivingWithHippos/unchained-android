@@ -104,25 +104,6 @@ class StartFragment : UnchainedFragment() {
         return binding.root
     }
 
-    private fun safeNavigate(action: NavDirections): Boolean {
-        val nav = findNavController()
-        val current = nav.currentDestination
-        if (current != null && current.getAction(action.actionId) != null) {
-            try {
-                nav.navigate(action)
-                return true
-            } catch (e: IllegalArgumentException) {
-                Timber.w(e, "Safe navigate failed for actionId=${action.actionId}")
-                return false
-            }
-        } else {
-            Timber.w(
-                "Navigation action not found from destination ${current?.id} for actionId=${action.actionId}"
-            )
-            return false
-        }
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

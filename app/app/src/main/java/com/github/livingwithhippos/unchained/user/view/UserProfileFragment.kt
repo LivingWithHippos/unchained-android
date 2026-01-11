@@ -11,7 +11,6 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
 import coil.load
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
@@ -115,14 +114,14 @@ class UserProfileFragment : UnchainedFragment() {
                     is FSMAuthenticationState.WaitingUserAction -> {
                         // an error occurred, check it and eventually go back to the start fragment
                         val action = UserProfileFragmentDirections.actionUserToStartFragment()
-                        findNavController().navigate(action)
+                        safeNavigate(action)
                     }
 
                     FSMAuthenticationState.StartNewLogin -> {
                         // the user reset the login, go to the auth fragment
                         val action =
                             UserProfileFragmentDirections.actionUserToAuthenticationFragment()
-                        findNavController().navigate(action)
+                        safeNavigate(action)
                     }
 
                     FSMAuthenticationState.AuthenticatedOpenToken,
