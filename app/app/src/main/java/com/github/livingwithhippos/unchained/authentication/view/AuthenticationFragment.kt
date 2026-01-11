@@ -101,10 +101,12 @@ class AuthenticationFragment : UnchainedFragment() {
                         val action = AuthenticationFragmentDirections.actionAuthenticationToUser()
                         findNavController().navigate(action)
                     }
+
                     FSMAuthenticationState.AuthenticatedPrivateToken -> {
                         val action = AuthenticationFragmentDirections.actionAuthenticationToUser()
                         findNavController().navigate(action)
                     }
+
                     FSMAuthenticationState.StartNewLogin -> {
                         // reset the current data
                         // token == null
@@ -125,21 +127,26 @@ class AuthenticationFragment : UnchainedFragment() {
                         // get the authentication link to start the process
                         viewModel.fetchAuthenticationInfo()
                     }
+
                     FSMAuthenticationState.WaitingUserConfirmation -> {
                         // start the next auth step
                         viewModel.fetchSecrets()
                     }
+
                     FSMAuthenticationState.WaitingToken -> {
                         viewModel.fetchToken()
                     }
+
                     FSMAuthenticationState.CheckCredentials,
                     FSMAuthenticationState.RefreshingOpenToken -> {
                         // managed by activity
                     }
+
                     is FSMAuthenticationState.WaitingUserAction -> {
                         // todo: depending on the action required show an error or restart the
                         // process
                     }
+
                     FSMAuthenticationState.Start -> {
                         // this shouldn't happen
                     }
@@ -160,7 +167,10 @@ class AuthenticationFragment : UnchainedFragment() {
                 // update the currently saved credentials
                 activityViewModel.updateCredentialsDeviceCode(auth.deviceCode)
                 // transition state machine
-                if (activityViewModel.getAuthenticationMachineState() is FSMAuthenticationState.StartNewLogin) {
+                if (
+                    activityViewModel.getAuthenticationMachineState()
+                        is FSMAuthenticationState.StartNewLogin
+                ) {
                     activityViewModel.transitionAuthenticationMachine(
                         FSMAuthenticationEvent.OnAuthLoaded
                     )
@@ -185,12 +195,14 @@ class AuthenticationFragment : UnchainedFragment() {
                                 FSMAuthenticationEvent.OnUserConfirmationMissing
                             )
                     }
+
                     SecretResult.Expired -> {
                         // will restart the authentication process
                         activityViewModel.transitionAuthenticationMachine(
                             FSMAuthenticationEvent.OnUserConfirmationExpired
                         )
                     }
+
                     is SecretResult.Retrieved -> {
                         if (
                             activityViewModel.getAuthenticationMachineState()
