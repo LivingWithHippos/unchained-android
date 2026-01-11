@@ -12,10 +12,9 @@ plugins {
     alias(libs.plugins.room)
 }
 
-fun readProperties(propertiesFile: File) =
-    Properties().apply {
-        if (propertiesFile.exists()) propertiesFile.inputStream().use { fis -> load(fis) }
-    }
+fun readProperties(propertiesFile: File) = Properties().apply {
+    if (propertiesFile.exists()) propertiesFile.inputStream().use { fis -> load(fis) }
+}
 
 val keyPropertiesFile: File = rootProject.file("signingkey.properties")
 val keyProperties = readProperties(keyPropertiesFile)
@@ -87,8 +86,7 @@ android {
 
     buildTypes {
         applicationVariants.forEach { variant ->
-            variant.outputs
-                .map { it as com.android.build.gradle.internal.api.BaseVariantOutputImpl }
+            variant.outputs.map { it as com.android.build.gradle.internal.api.BaseVariantOutputImpl }
                 .forEach { it.outputFileName = "${variant.name}-${variant.versionName}.apk" }
         }
 
@@ -102,10 +100,8 @@ android {
                 "COUNTLY_APP_KEY",
                 apiProperties.getOrDefault(
                     "COUNTLY_APP_KEY",
-                    "\"" +
-                        (System.getenv("COUNTLY_APP_KEY")
-                            ?: "pDJz4WrY9XeBotXAaL9MYrraSwZNyDqfAPy8p38c") +
-                        "\"",
+                    "\"" + (System.getenv("COUNTLY_APP_KEY")
+                        ?: "pDJz4WrY9XeBotXAaL9MYrraSwZNyDqfAPy8p38c") + "\"",
                 ) as String,
             )
 
