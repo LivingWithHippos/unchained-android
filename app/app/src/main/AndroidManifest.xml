@@ -353,6 +353,7 @@
 
                 <data android:host="down.mdiaload.com" />
                 <data android:host="mediafire.com" />
+                <data android:host="mega.nz" />
                 <data android:host="mega.co.nz" />
                 <data android:host="mixdrop.co" />
                 <data android:host="mixloads.com" />
