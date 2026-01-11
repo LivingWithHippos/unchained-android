@@ -34,6 +34,10 @@ ktfmt {
     kotlinLangStyle()
 }
 
+kotlin {
+    jvmToolchain(11)
+}
+
 android {
     namespace = "com.github.livingwithhippos.unchained"
     compileSdk = 36
