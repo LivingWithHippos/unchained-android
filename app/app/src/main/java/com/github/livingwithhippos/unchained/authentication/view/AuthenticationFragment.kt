@@ -148,28 +148,27 @@ class AuthenticationFragment : UnchainedFragment() {
         }
 
         // 1. start checking for the auth link
-        viewModel.authLiveData.observe(
-            viewLifecycleOwner,
-            EventObserver { auth ->
-                if (auth != null) {
-                    binding.tvAuthenticationLink.text = auth.verificationUrl
-                    binding.tvAuthenticationLink.visibility = View.VISIBLE
-                    binding.cbLink.isChecked = true
-                    binding.cbLink.text = getString(R.string.link_loaded)
-                    // let the user copy the user code to enter in the website
-                    binding.tvUserCodeValue.text = auth.userCode
-                    binding.bCopyLink.isEnabled = true
-                    // update the currently saved credentials
-                    activityViewModel.updateCredentialsDeviceCode(auth.deviceCode)
-                    // transition state machine
+        viewModel.authLiveData.observe(viewLifecycleOwner) { event ->
+            event?.peekContent()?.let { auth ->
+                binding.tvAuthenticationLink.text = auth.verificationUrl
+                binding.tvAuthenticationLink.visibility = View.VISIBLE
+                binding.cbLink.isChecked = true
+                binding.cbLink.text = getString(R.string.link_loaded)
+                // let the user copy the user code to enter in the website
+                binding.tvUserCodeValue.text = auth.userCode
+                binding.bCopyLink.isEnabled = true
+                // update the currently saved credentials
+                activityViewModel.updateCredentialsDeviceCode(auth.deviceCode)
+                // transition state machine
+                if (activityViewModel.getAuthenticationMachineState() is FSMAuthenticationState.StartNewLogin) {
                     activityViewModel.transitionAuthenticationMachine(
                         FSMAuthenticationEvent.OnAuthLoaded
                     )
                     // set up values for calling the secrets endpoint
                     viewModel.setupSecretLoop(auth.expiresIn)
                 }
-            },
-        )
+            }
+        }
 
         // 2. start checking for user confirmation
         viewModel.secretLiveData.observe(
