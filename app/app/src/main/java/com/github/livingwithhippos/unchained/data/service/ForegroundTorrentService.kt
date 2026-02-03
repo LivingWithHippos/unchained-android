@@ -89,7 +89,7 @@ class ForegroundTorrentService : LifecycleService() {
                 preferences.getStringSet(KEY_OBSERVED_TORRENTS, emptySet()) as Set<String>
             // their updated status
             val newLoadingTorrents =
-                list.filter { torrent -> loadingStatusList.contains(torrent.status) }
+                list.filter { torrent -> loadingStatusList.contains(torrent.status.lowercase()) }
             // the torrent whose status is not a loading one anymore.
             val finishedTorrents =
                 list

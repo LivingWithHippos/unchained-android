@@ -165,7 +165,7 @@ constructor(
                 val updatablePlugins =
                     remotePlugins.filter { remotePlugin ->
                         val installedVersion: Plugin? =
-                            installedPlugins.firstOrNull { it.name == remotePlugin.plugin }
+                            installedPlugins.firstOrNull { it.name.equals(remotePlugin.plugin, ignoreCase = true) }
 
                         if (installedVersion == null) false
                         else installedVersion.version < remotePlugin.version
