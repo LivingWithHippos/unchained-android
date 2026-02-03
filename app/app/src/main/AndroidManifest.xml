@@ -273,144 +273,108 @@
                 <data android:host="4shared.com" />
 
                 <data android:host="alfafile.net" />
-                <data android:host="anzfile.net" />
 
-                <data android:host="backin.net" />
-                <data android:host="bayfiles.com" />
                 <data android:host="bdupload.in" />
                 <data android:host="brupload.net" />
                 <data android:host="btafile.com" />
 
-                <data android:host="catshare.net" />
                 <data android:host="clicknupload.me" />
                 <data android:host="clicknupload.click" />
-                <data android:host="clipwatching.com" />
                 <data android:host="cosmobox.org" />
 
+                <!-- confirmed -->
                 <data android:host="dailymotion.com" />
+                <!-- confirmed -->
                 <data android:host="dailyuploads.net" />
-                <data android:host="daofile.com" />
                 <data android:host="ddownload.com" />
+                <data android:host="ddl.to" />
                 <data android:host="depositfiles.com" />
-                <data android:host="dl.free.fr" />
                 <data android:host="douploads.net" />
                 <data android:host="drop.download" />
                 <data android:host="dropbox.com" />
 
-                <data android:host="earn4files.com" />
-                <data android:host="easybytez.com" />
                 <data android:host="ex-load.com" />
                 <data android:host="extmatrix.com" />
 
-                <data android:host="down.fast-down.com" />
-                <data android:host="fastclick.to" />
-                <data android:host="faststore.org" />
                 <data android:host="fikper.com" />
                 <data android:host="file.al" />
-                <data android:host="file4safe.com" />
                 <data android:host="fboom.me" />
                 <data android:host="filefactory.com" />
                 <data android:host="filefox.cc" />
-                <data android:host="filenext.com" />
                 <data android:host="filer.net" />
-                <data android:host="filerio.in" />
-                <data android:host="filesabc.com" />
+                <!-- confirmed -->
                 <data android:host="filespace.com" />
                 <data android:host="filestore.me" />
-                <data android:host="file-up.org" />
                 <data android:host="fileupload.pw" />
                 <data android:host="filextras.com" />
-                <data android:host="filezip.cc" />
-                <data android:host="fireget.com" />
                 <data android:host="flashbit.cc" />
-                <data android:host="flashx.tv" />
                 <data android:host="florenfile.com" />
                 <data android:host="fshare.vn" />
 
                 <data android:host="gigapeta.com" />
-                <data android:host="goloady.com" />
                 <data android:host="docs.google.com" />
                 <data android:host="drive.google.com" />
-                <data android:host="gounlimited.to" />
 
                 <data android:host="heroupload.com" />
-                <data android:host="hexupload.net" />
+                <data android:host="hexload.net" />
+                <!-- confirmed -->
                 <data android:host="hitfile.net" />
+                <!-- confirmed -->
+                <data android:host="htfl.net" />
                 <data android:host="hotlink.cc" />
+                <!-- confirmed -->
                 <data android:host="hulkshare.com" />
 
                 <data android:host="icerbox.com" />
                 <data android:host="icloud.com" />
-                <data android:host="inclouddrive.com" />
                 <data android:host="isra.cloud" />
 
                 <data android:host="katfile.cloud" />
                 <data android:host="katfile.com" />
                 <data android:host="keep2share.cc" />
 
-                <data android:host="letsupload.cc" />
-                <data android:host="load.to" />
-
-                <data android:host="down.mdiaload.com" />
                 <data android:host="mediafire.com" />
                 <data android:host="mega.nz" />
                 <data android:host="mega.co.nz" />
-                <data android:host="mixdrop.co" />
-                <data android:host="mixloads.com" />
                 <data android:host="mp4upload.com" />
 
                 <data android:host="nelion.me" />
-                <data android:host="ninjastream.to" />
                 <data android:host="nitroflare.com" />
-                <data android:host="nowvideo.club" />
-
-                <data android:host="oboom.com" />
 
                 <data android:host="prefiles.com" />
 
+                <!-- confirmed -->
+                <data android:host="radiotunes.com" />
                 <data android:host="rapidgator.net" />
                 <data android:host="rapidrar.com" />
                 <data android:host="rapidu.net" />
                 <data android:host="rarefile.net" />
-                <data android:host="redbunker.net" />
-                <data android:host="rockfile.eu" />
+                <!-- confirmed -->
                 <data android:host="rutube.ru" />
 
-                <data android:host="sky.fm" />
                 <data android:host="scribd.com" />
                 <data android:host="send.cm" />
-                <data android:host="sendit.cloud" />
+                <!-- confirmed -->
+                <data android:host="send.now" />
                 <data android:host="sendspace.com" />
                 <data android:host="simfileshare.net" />
-                <data android:host="solidfiles.com" />
                 <data android:host="soundcloud.com" />
-                <data android:host="speed-down.org" />
-                <data android:host="streamon.to" />
                 <data android:host="streamtape.com" />
 
                 <data android:host="takefile.link" />
                 <data android:host="terabytez.org" />
                 <data android:host="tezfiles.com" />
-                <data android:host="thevideo.me" />
                 <data android:host="turbobit.net" />
-                <data android:host="tusfiles.com" />
+                <!-- confirmed -->
+                <data android:host="trbt.cc" />
 
                 <data android:host="ubiqfile.com" />
                 <data android:host="uloz.to" />
-                <data android:host="unibytes.com" />
-                <data android:host="uploadbox.io" />
                 <data android:host="uploadboy.com" />
-                <data android:host="uploadc.com" />
-                <data android:host="uploadev.org" />
                 <data android:host="uploadgig.com" />
                 <data android:host="uploadrar.com" />
                 <data android:host="uploady.io" />
-                <data android:host="uppit.com" />
                 <data android:host="upstore.net" />
-                <data android:host="upstream.to" />
-                <data android:host="uptobox.com" />
-                <data android:host="userscloud.com" />
-                <data android:host="usersdrive.com" />
 
                 <data android:host="vidcloud.ru" />
                 <data android:host="videobin.co" />
@@ -421,15 +385,8 @@
                 <data android:host="vk.com" />
                 <data android:host="voe.sx" />
 
-                <data android:host="wdupload.com" />
                 <data android:host="wipfiles.net" />
-                <data android:host="world-files.com" />
                 <data android:host="worldbytez.com" />
-                <data android:host="wupfile.com" />
-                <data android:host="wushare.com" />
-                <data android:host="xubster.com" />
-
-                <data android:host="zippyshare.com" />
             </intent-filter>
         </activity>
 
