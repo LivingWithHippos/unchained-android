@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker
+import androidx.core.content.edit
 import androidx.lifecycle.lifecycleScope
 import coil.load
 import com.github.livingwithhippos.unchained.R
@@ -78,26 +79,17 @@ class UserProfileFragment : UnchainedFragment() {
             // if we never asked, show a dialog
             if (!preferences.getBoolean(KEY_REFERRAL_ASKED, false)) {
                 // set asked as true
-                with(preferences.edit()) {
-                    putBoolean(KEY_REFERRAL_ASKED, true)
-                    apply()
-                }
+                preferences.edit { putBoolean(KEY_REFERRAL_ASKED, true) }
 
                 MaterialAlertDialogBuilder(requireContext())
                     .setTitle(getString(R.string.referral))
                     .setMessage(getString(R.string.referral_proposal))
                     .setNegativeButton(getString(R.string.decline)) { _, _ ->
-                        with(preferences.edit()) {
-                            putBoolean(KEY_REFERRAL_USE, false)
-                            apply()
-                        }
+                        preferences.edit { putBoolean(KEY_REFERRAL_USE, false) }
                         context?.openExternalWebPage(ACCOUNT_LINK)
                     }
                     .setPositiveButton(getString(R.string.accept)) { _, _ ->
-                        with(preferences.edit()) {
-                            putBoolean(KEY_REFERRAL_USE, true)
-                            apply()
-                        }
+                        preferences.edit { putBoolean(KEY_REFERRAL_USE, true) }
                         context?.openExternalWebPage(REFERRAL_LINK)
                     }
                     .show()

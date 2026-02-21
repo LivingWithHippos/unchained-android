@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.Uri
+import androidx.core.content.edit
 import androidx.core.net.toUri
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
@@ -921,10 +922,7 @@ constructor(
             if (remoteVersion > localVersion && remoteVersion > lastVersionChecked) {
                 messageLiveData.postValue(Event(MainActivityMessage.UpdateFound(signature)))
             }
-            with(preferences.edit()) {
-                putInt(KEY_LAST_UPDATE_VERSION_CHECKED, remoteVersion)
-                apply()
-            }
+            preferences.edit { putInt(KEY_LAST_UPDATE_VERSION_CHECKED, remoteVersion) }
         }
     }
 
@@ -975,10 +973,7 @@ constructor(
 
     fun setDownloadFolder(uri: Uri) {
         uri.describeContents()
-        with(preferences.edit()) {
-            putString(KEY_DOWNLOAD_FOLDER, uri.toString())
-            apply()
-        }
+        preferences.edit { putString(KEY_DOWNLOAD_FOLDER, uri.toString()) }
     }
 
     fun getDownloadFolder(): Uri? {

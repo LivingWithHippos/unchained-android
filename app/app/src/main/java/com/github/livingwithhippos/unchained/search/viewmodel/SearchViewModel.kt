@@ -2,6 +2,7 @@ package com.github.livingwithhippos.unchained.search.viewmodel
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.core.content.edit
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
@@ -126,10 +127,7 @@ constructor(
     }
 
     fun setLastSelectedPlugin(name: String) {
-        with(preferences.edit()) {
-            putString(KEY_LAST_SELECTED_PLUGIN, name)
-            apply()
-        }
+        preferences.edit { putString(KEY_LAST_SELECTED_PLUGIN, name) }
     }
 
     fun isPluginDialogNeeded(): Boolean {
@@ -137,10 +135,7 @@ constructor(
     }
 
     fun setPluginDialogNeeded(needed: Boolean) {
-        with(preferences.edit()) {
-            putBoolean(KEY_PLUGIN_DIALOG_NEEDED, needed)
-            apply()
-        }
+        preferences.edit { putBoolean(KEY_PLUGIN_DIALOG_NEEDED, needed) }
     }
 
     fun isDOHDialogNeeded(): Boolean {
@@ -148,24 +143,15 @@ constructor(
     }
 
     fun setDOHDialogNeeded(needed: Boolean) {
-        with(preferences.edit()) {
-            putBoolean(KEY_DOH_DIALOG_NEEDED, needed)
-            apply()
-        }
+        preferences.edit { putBoolean(KEY_DOH_DIALOG_NEEDED, needed) }
     }
 
     fun enableDOH(enable: Boolean) {
-        with(preferences.edit()) {
-            putBoolean(KEY_USE_DOH, enable)
-            apply()
-        }
+        preferences.edit { putBoolean(KEY_USE_DOH, enable) }
     }
 
     fun setListSortPreference(tag: String) {
-        with(preferences.edit()) {
-            putString(FolderListViewModel.KEY_LIST_SORTING, tag)
-            apply()
-        }
+        preferences.edit { putString(FolderListViewModel.KEY_LIST_SORTING, tag) }
     }
 
     fun getListSortPreference(): String {
@@ -176,10 +162,7 @@ constructor(
     }
 
     fun saveSearchCategory(category: String) {
-        with(preferences.edit()) {
-            putString(KEY_CATEGORY, category)
-            apply()
-        }
+        preferences.edit { putString(KEY_CATEGORY, category) }
     }
 
     fun getSearchCategory(): String {

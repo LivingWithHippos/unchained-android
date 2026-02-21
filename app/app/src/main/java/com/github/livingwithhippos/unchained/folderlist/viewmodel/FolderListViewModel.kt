@@ -1,6 +1,7 @@
 package com.github.livingwithhippos.unchained.folderlist.viewmodel
 
 import android.content.SharedPreferences
+import androidx.core.content.edit
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -121,10 +122,7 @@ constructor(
     }
 
     fun setFilterSizePreference(enabled: Boolean) {
-        with(preferences.edit()) {
-            putBoolean(KEY_LIST_FILTER_SIZE, enabled)
-            apply()
-        }
+        preferences.edit { putBoolean(KEY_LIST_FILTER_SIZE, enabled) }
     }
 
     fun getFilterSizePreference(): Boolean {
@@ -132,10 +130,7 @@ constructor(
     }
 
     fun setFilterTypePreference(enabled: Boolean) {
-        with(preferences.edit()) {
-            putBoolean(KEY_LIST_FILTER_TYPE, enabled)
-            apply()
-        }
+        preferences.edit { putBoolean(KEY_LIST_FILTER_TYPE, enabled) }
     }
 
     fun getFilterTypePreference(): Boolean {
@@ -143,10 +138,7 @@ constructor(
     }
 
     fun setListSortPreference(tag: String) {
-        with(preferences.edit()) {
-            putString(KEY_LIST_SORTING, tag)
-            apply()
-        }
+        preferences.edit { putString(KEY_LIST_SORTING, tag) }
     }
 
     fun getListSortPreference(): String {
@@ -155,10 +147,7 @@ constructor(
     }
 
     fun setScrollingAllowed(allow: Boolean) {
-        with(preferences.edit()) {
-            putBoolean(KEY_ALLOW_SCROLLING, allow)
-            apply()
-        }
+        preferences.edit { putBoolean(KEY_ALLOW_SCROLLING, allow) }
     }
 
     fun getScrollingAllowed(): Boolean {

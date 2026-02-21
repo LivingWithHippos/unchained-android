@@ -3,6 +3,7 @@ package com.github.livingwithhippos.unchained.settings.viewmodel
 import android.content.Context
 import android.content.SharedPreferences
 import android.net.Uri
+import androidx.core.content.edit
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -59,10 +60,7 @@ constructor(
 
     fun setDownloadFolder(uri: Uri) {
         uri.describeContents()
-        with(preferences.edit()) {
-            putString(KEY_DOWNLOAD_FOLDER, uri.toString())
-            apply()
-        }
+        preferences.edit { putString(KEY_DOWNLOAD_FOLDER, uri.toString()) }
     }
 
     fun userLogout() {
@@ -79,12 +77,7 @@ constructor(
 
     fun applyTheme() {
         val selectedTheme: ThemeItem? = themeLiveData.value?.peekContent()
-        selectedTheme?.let {
-            with(preferences.edit()) {
-                putInt(KEY_THEME_NEW, it.themeID)
-                apply()
-            }
-        }
+        selectedTheme?.let { preferences.edit { putInt(KEY_THEME_NEW, it.themeID) } }
     }
 
     fun getCurrentTheme(): Int {

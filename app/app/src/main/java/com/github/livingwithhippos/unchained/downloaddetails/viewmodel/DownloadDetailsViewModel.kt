@@ -1,6 +1,7 @@
 package com.github.livingwithhippos.unchained.downloaddetails.viewmodel
 
 import android.content.SharedPreferences
+import androidx.core.content.edit
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -136,10 +137,7 @@ constructor(
     }
 
     private fun setRecentService(serviceId: Int) {
-        with(preferences.edit()) {
-            putInt(RECENT_SERVICE_KEY, serviceId).apply()
-            apply()
-        }
+        preferences.edit { putInt(RECENT_SERVICE_KEY, serviceId) }
     }
 
     fun openOnRemoteService(serviceDetails: RemoteServiceDetails, link: String) {
