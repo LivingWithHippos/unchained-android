@@ -59,7 +59,9 @@
             app:destination="@id/remoteServiceFragment"
             app:popUpTo="@id/remoteDeviceFragment" />
         <argument
-            android:name="deviceID"
-            app:argType="integer" />
+            android:name="device"
+            app:argType="com.github.livingwithhippos.unchained.data.local.RemoteDevice"
+            app:nullable="false"
+            />
     </fragment>
 </navigation>

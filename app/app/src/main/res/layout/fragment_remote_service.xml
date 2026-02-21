@@ -186,44 +186,52 @@
 
                     </com.google.android.material.textfield.TextInputLayout>
 
-                </LinearLayout>
-
                 <com.google.android.material.materialswitch.MaterialSwitch
                     android:id="@+id/switchDefault"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
+                    android:layout_gravity="center_horizontal"
                     android:focusable="true"
                     android:text="@string/set_as_default"
-                    app:layout_constraintBottom_toTopOf="@+id/bSaveService"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/customServiceLayout" />
+                    />
 
                 <Button
                     android:id="@+id/bDeleteService"
                     android:layout_width="wrap_content"
+                    android:minWidth="140dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
+                    android:layout_gravity="center_horizontal"
                     android:backgroundTint="?attr/colorError"
                     android:contentDescription="@string/remove"
                     android:text="@string/remove"
                     android:textColor="?attr/colorOnError"
-                    app:layout_constraintEnd_toStartOf="@+id/bSaveService"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/switchDefault" />
+                    />
 
                 <Button
                     android:id="@+id/bSaveService"
                     android:layout_width="wrap_content"
+                    android:minWidth="140dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
+                    android:layout_gravity="center_horizontal"
                     android:contentDescription="@string/save"
                     android:text="@string/save"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/bDeleteService"
-                    app:layout_constraintTop_toBottomOf="@+id/switchDefault" />
+                    />
+
+                <Button
+                    android:id="@+id/bTestService"
+                    android:layout_width="wrap_content"
+                    android:minWidth="140dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_gravity="center_horizontal"
+                    android:contentDescription="@string/test"
+                    android:text="@string/test"
+                    />
+
+                </LinearLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>
