@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_settingsFragment_to_remoteDeviceListFragment"
             app:destination="@id/remoteDeviceListFragment" />
+        <action
+            android:id="@+id/action_settingsFragment_to_completeServiceListFragment"
+            app:destination="@id/completeServiceListFragment" />
     </fragment>
     <fragment
         android:id="@+id/remoteDeviceListFragment"
@@ -63,5 +66,31 @@
             app:argType="com.github.livingwithhippos.unchained.data.local.RemoteDevice"
             app:nullable="false"
             />
+    </fragment>
+    <fragment
+        android:id="@+id/completeServiceListFragment"
+        android:name="com.github.livingwithhippos.unchained.remoteservice.view.CompleteServiceListFragment"
+        android:label="CompleteServiceListFragment"
+        tools:layout="@layout/fragment_services_list"
+        >
+        <action
+            android:id="@+id/action_completeServiceListFragment_to_completeServiceFragment"
+            app:destination="@id/completeServiceFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/completeServiceFragment"
+        android:name="com.github.livingwithhippos.unchained.remoteservice.view.CompleteServiceFragment"
+        android:label="CompleteServiceFragment"
+        tools:layout="@layout/fragment_complete_service"
+        >
+        <action
+            android:id="@+id/action_completeServiceFragment_self"
+            app:destination="@id/completeServiceFragment"
+            app:popUpTo="@id/completeServiceListFragment" />
+        <argument
+            android:name="item"
+            app:argType="com.github.livingwithhippos.unchained.data.local.CompleteRemoteService"
+            app:nullable="true"
+            android:defaultValue="@null" />
     </fragment>
 </navigation>

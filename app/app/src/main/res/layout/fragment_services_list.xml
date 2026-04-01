@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+    <LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="20dp"
+    >
+
+
+    <TextView
+        android:id="@+id/tvDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:text="@string/remote_services_description"
+        android:textAlignment="center"
+        android:layout_gravity="center_horizontal"
+        android:textAppearance="?attr/textAppearanceBodyMedium"
+        />
+
+    <Button
+        android:id="@+id/bAddService"
+        android:layout_marginBottom="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:nextFocusLeft="@id/tfPrivateCode"
+        android:nextFocusRight="@id/bInsertPrivate"
+        android:nextFocusDown="@id/bInsertPrivate"
+        android:text="@string/new_service"
+        android:layout_gravity="center_horizontal"
+        app:icon="@drawable/icon_add" />
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvServiceList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_horizontal"
+        android:scrollbars="vertical"
+        android:visibility="visible"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/item_complete_service" />
+</LinearLayout>

@@ -543,4 +543,7 @@
     <string name="no_credentials_found">Kimlik bilgileri bulunamadı</string>
     <string name="invalid_player_found">Bu bağlantıyı açmaya çalışan uygulama hatalı, başka bir oynatıcı yükleyin</string>
     <string name="pick_doh_provider">HTTPS üzerinden DNS sağlayıcısı seçin</string>
+    <string name="complete_address">Port numarasıyla birlikte tam adres</string>
+    <string name="remote_services_description">Hizmetler, dosya aramak veya medya oynatmak için kullanılan, bilgisayarlarda çalışan programlardır</string>
+    <string name="service_added">Hizmet Eklendi</string>
 </resources>

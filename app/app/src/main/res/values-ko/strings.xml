@@ -543,4 +543,7 @@
     <string name="remote_devices_services_description">원격 기기는 Kodi나 VLC와 같은 서비스가 실행되는 컴퓨터, TV 또는 휴대전화입니다. 먼저 기기를 생성한 후 하나 이상의 서비스를 추가하세요.</string>
     <string name="no_credentials_found">자격 증명을 찾을 수 없음</string>
     <string name="invalid_player_found">이 링크를 열려는 앱에 오류가 있습니다. 다른 플레이어를 설치해 주세요.</string>
+    <string name="complete_address">포트 번호를 포함한 전체 주소</string>
+    <string name="remote_services_description">서비스는 컴퓨터에서 실행되는 프로그램으로, 파일을 검색하거나 미디어를 재생하는 데 사용됩니다</string>
+    <string name="service_added">서비스 추가</string>
 </resources>

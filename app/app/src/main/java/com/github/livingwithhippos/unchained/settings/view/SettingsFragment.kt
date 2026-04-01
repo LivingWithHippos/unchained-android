@@ -101,7 +101,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         findPreference<Preference>("manage_remote_devices")?.setOnPreferenceClickListener {
             val action =
-                SettingsFragmentDirections.actionSettingsFragmentToRemoteDeviceListFragment()
+                SettingsFragmentDirections.actionSettingsFragmentToCompleteServiceListFragment()
+                //SettingsFragmentDirections.actionSettingsFragmentToRemoteDeviceListFragment()
             findNavController().navigate(action)
             true
         }

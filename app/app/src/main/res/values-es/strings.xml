@@ -539,4 +539,7 @@
     <string name="remote_devices_services_description">Los dispositivos remotos son computadoras, televisores o teléfonos en los que se están ejecutando servicios como Kodi y VLC. Primero, crea un dispositivo para añadir uno o más servicios.</string>
     <string name="no_credentials_found">No se han encontrado credenciales</string>
     <string name="invalid_player_found">La aplicación que intentaba abrir este enlace tiene errores, instala otro reproductor</string>
+    <string name="complete_address">Dirección completa con número de puerto</string>
+    <string name="remote_services_description">Los servicios son programas que se ejecutan en los ordenadores y que se utilizan para buscar archivos o reproducir archivos multimedia</string>
+    <string name="service_added">Servicio añadido</string>
 </resources>
