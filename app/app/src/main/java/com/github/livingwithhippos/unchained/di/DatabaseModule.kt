@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.github.livingwithhippos.unchained.data.local.CompleteRemoteServiceDao
 import com.github.livingwithhippos.unchained.data.local.HostRegexDao
 import com.github.livingwithhippos.unchained.data.local.KodiDeviceDao
 import com.github.livingwithhippos.unchained.data.local.RemoteDeviceDao
@@ -42,12 +43,17 @@ object DatabaseModule {
 
     @Provides
     fun provideRemoteDeviceDao(database: UnchaineDB): RemoteDeviceDao {
-        return database.pluginRemoteDeviceDao()
+        return database.remoteDeviceDao()
     }
 
     @Provides
     fun providePluginRepositoryDao(database: UnchaineDB): RepositoryDataDao {
         return database.pluginRepositoryDao()
+    }
+
+    @Provides
+    fun provideCompleteServiceDao(database: UnchaineDB): CompleteRemoteServiceDao {
+        return database.completeRemoteServiceDao()
     }
 
     private val MIGRATION_1_2 =
