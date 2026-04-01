@@ -59,9 +59,7 @@ class RemoteRepository @Inject constructor(@param:ClassicClient private val clie
             val newBaseUrl = if (baseUrl.endsWith("/")) baseUrl.dropLast(1) else baseUrl
             val request =
                 Request.Builder()
-                    .url(
-                        "$newBaseUrl/requests/status.xml?command=in_play&input=$url"
-                    )
+                    .url("$newBaseUrl/requests/status.xml?command=in_play&input=$url")
                     .header("Authorization", credential)
                     .build()
 

@@ -9,12 +9,12 @@ import com.github.livingwithhippos.unchained.data.local.RemoteServiceType
 import com.github.livingwithhippos.unchained.di.ClassicClient
 import com.github.livingwithhippos.unchained.remotedevice.viewmodel.ServiceErrorType
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import timber.log.Timber
-import javax.inject.Inject
 
 @HiltViewModel
 class ServiceViewModel
@@ -130,8 +130,7 @@ sealed class ServiceEvent {
 
     data object DeletedAll : ServiceEvent()
 
-    data class AllServices(val items: List<CompleteRemoteService>) :
-        ServiceEvent()
+    data class AllServices(val items: List<CompleteRemoteService>) : ServiceEvent()
 
     data class Service(val service: CompleteRemoteService) : ServiceEvent()
 

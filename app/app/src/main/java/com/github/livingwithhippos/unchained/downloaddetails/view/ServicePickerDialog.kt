@@ -42,12 +42,11 @@ class ServicePickerDialog : DialogFragment(), ServicePickerListener {
                     is DownloadEvent.AllServices -> {
 
                         val devSer: List<CompleteRemoteServiceDetails> =
-                            content.services.map {serv ->
-                                    CompleteRemoteServiceDetails(
-                                        service = serv,
-                                        type = serviceTypeMap[serv.type]!!,
-                                    )
-
+                            content.services.map { serv ->
+                                CompleteRemoteServiceDetails(
+                                    service = serv,
+                                    type = serviceTypeMap[serv.type]!!,
+                                )
                             }
                         adapter.submitList(devSer)
                     }

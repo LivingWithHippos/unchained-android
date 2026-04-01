@@ -17,29 +17,20 @@ interface CompleteRemoteServiceDao {
 
     @Delete suspend fun deleteService(service: CompleteRemoteService)
 
-    @Query("DELETE FROM complete_remote_service WHERE id = :serviceID") suspend fun deleteService(serviceID: Int)
+    @Query("DELETE FROM complete_remote_service WHERE id = :serviceID")
+    suspend fun deleteService(serviceID: Int)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAllServices(list: List<CompleteRemoteService>): List<Long>
 
-    @Query(
-        "SELECT * FROM complete_remote_service"
-    )
+    @Query("SELECT * FROM complete_remote_service")
     suspend fun getServices(): List<CompleteRemoteService>
 
-    @Query(
-        "SELECT * FROM complete_remote_service WHERE complete_remote_service.type IN (:types)"
-    )
-    suspend fun getMediaPlayerServices(
-        types: List<Int>
-    ): List<CompleteRemoteService>
+    @Query("SELECT * FROM complete_remote_service WHERE complete_remote_service.type IN (:types)")
+    suspend fun getMediaPlayerServices(types: List<Int>): List<CompleteRemoteService>
 
-    @Query(
-        "SELECT * FROM complete_remote_service WHERE complete_remote_service.type IN (:types)"
-    )
-    fun getMediaPlayerServicesFlow(
-        types: List<Int>
-    ): Flow<List<CompleteRemoteService>>
+    @Query("SELECT * FROM complete_remote_service WHERE complete_remote_service.type IN (:types)")
+    fun getMediaPlayerServicesFlow(types: List<Int>): Flow<List<CompleteRemoteService>>
 
     @Query("SELECT id FROM complete_remote_service WHERE rowid = :rowId")
     suspend fun getServiceIDByRow(rowId: Long): Int?
@@ -51,7 +42,9 @@ interface CompleteRemoteServiceDao {
 
     @Query("DELETE FROM complete_remote_service WHERE id = :id") suspend fun removeService(id: Int)
 
-    @Query("SELECT * from complete_remote_service WHERE complete_remote_service.is_default = 1 LIMIT 1")
+    @Query(
+        "SELECT * from complete_remote_service WHERE complete_remote_service.is_default = 1 LIMIT 1"
+    )
     suspend fun getDefaultService(): RemoteDevice?
 
     @Query("UPDATE complete_remote_service SET is_default = CASE WHEN id = :id THEN 1 ELSE 0 END;")

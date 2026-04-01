@@ -89,7 +89,7 @@ class CompleteServiceFragment : Fragment() {
             val apiToken = binding.tiApiToken.text.toString().trim()
             val serviceType = getServiceType(binding.servicePickerText.text.toString())
 
-            if (address.isBlank() ||serviceType == null) {
+            if (address.isBlank() || serviceType == null) {
                 context?.showToast(R.string.missing_parameter)
             } else {
                 binding.bTestService.isEnabled = false
@@ -171,11 +171,11 @@ class CompleteServiceFragment : Fragment() {
         }
 
         viewModel.serviceLiveData.observe(viewLifecycleOwner) {
-            when(it) {
+            when (it) {
                 is ServiceEvent.AllServices -> {
                     // not happening here
                 }
-                ServiceEvent.DeletedAll  -> {
+                ServiceEvent.DeletedAll -> {
                     // not happening here
                 }
                 is ServiceEvent.DeletedService -> {
@@ -185,10 +185,12 @@ class CompleteServiceFragment : Fragment() {
                 }
                 is ServiceEvent.Service -> {
                     if (args.item == null) {
-                        val action = CompleteServiceFragmentDirections.actionCompleteServiceFragmentSelf(item = it.service)
+                        val action =
+                            CompleteServiceFragmentDirections.actionCompleteServiceFragmentSelf(
+                                item = it.service
+                            )
                         findNavController().navigate(action)
                         /**
-                         *
                          *                         context?.showToast(R.string.service_added)
                          *                         // todo: reload the page with the set service
                          *                         findNavController().popBackStack()
@@ -279,4 +281,3 @@ class CompleteServiceFragment : Fragment() {
         serviceDropdown?.setText(getString(serviceType.nameRes), false)
     }
 }
-

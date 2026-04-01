@@ -61,30 +61,31 @@ class UnchainedApplication : Application() {
     private suspend fun migrateServices() {
         // todo: check migration in DatabaseModule
         val legacyServices = legacyServiceDao.getDevicesAndServices()
-        if (legacyServices.isEmpty())
-            return
+        if (legacyServices.isEmpty()) return
 
         try {
             print("Migrating ${legacyServices.values.size} services from legacy database")
             legacyServices.forEach { (device, services) ->
-                newServiceDato.insertAllServices(services.map {
-                    CompleteRemoteService(
-                        id = 0,
-                        name = it.name,
-                        address = "${device.address}:${it.port}",
-                        username = it.username,
-                        password = it.password,
-                        type = it.type,
-                        isDefault = device.isDefault && it.isDefault,
-                        apiToken = it.apiToken,
-                        fieldOne = it.fieldOne,
-                        fieldTwo = it.fieldTwo,
-                        fieldThree = it.fieldThree
-                    )
-                })
+                newServiceDato.insertAllServices(
+                    services.map {
+                        CompleteRemoteService(
+                            id = 0,
+                            name = it.name,
+                            address = "${device.address}:${it.port}",
+                            username = it.username,
+                            password = it.password,
+                            type = it.type,
+                            isDefault = device.isDefault && it.isDefault,
+                            apiToken = it.apiToken,
+                            fieldOne = it.fieldOne,
+                            fieldTwo = it.fieldTwo,
+                            fieldThree = it.fieldThree,
+                        )
+                    }
+                )
             }
             legacyServiceDao.deleteAll()
-        }catch (e: Exception) {
+        } catch (e: Exception) {
             print("Error migrating services: ${e.message}")
         }
     }

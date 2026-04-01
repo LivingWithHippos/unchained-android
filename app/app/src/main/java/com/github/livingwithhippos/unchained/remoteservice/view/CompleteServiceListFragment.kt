@@ -22,7 +22,6 @@ import com.github.livingwithhippos.unchained.remoteservice.viewmodel.ServiceView
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
 
-
 @AndroidEntryPoint
 class CompleteServiceListFragment : UnchainedFragment(), CompleteServiceListListener {
 
@@ -43,12 +42,12 @@ class CompleteServiceListFragment : UnchainedFragment(), CompleteServiceListList
 
         val serviceTracker: SelectionTracker<CompleteRemoteService> =
             SelectionTracker.Builder(
-                "serviceListSelection",
-                binding.rvServiceList,
-                CompleteServiceKeyProvider(serviceAdapter),
-                CompleteServiceDetailsLookup(binding.rvServiceList),
-                StorageStrategy.createParcelableStorage(CompleteRemoteService::class.java),
-            )
+                    "serviceListSelection",
+                    binding.rvServiceList,
+                    CompleteServiceKeyProvider(serviceAdapter),
+                    CompleteServiceDetailsLookup(binding.rvServiceList),
+                    StorageStrategy.createParcelableStorage(CompleteRemoteService::class.java),
+                )
                 .withSelectionPredicate(SelectionPredicates.createSelectAnything())
                 .build()
 
@@ -79,7 +78,9 @@ class CompleteServiceListFragment : UnchainedFragment(), CompleteServiceListList
         }
 
         binding.bAddService.setOnClickListener {
-            val action = CompleteServiceListFragmentDirections.actionCompleteServiceListFragmentToCompleteServiceFragment()
+            val action =
+                CompleteServiceListFragmentDirections
+                    .actionCompleteServiceListFragmentToCompleteServiceFragment()
             findNavController().navigate(action)
         }
 
@@ -101,7 +102,9 @@ class CompleteServiceListFragment : UnchainedFragment(), CompleteServiceListList
             // Respond to menu item click.
             when (menuItem.itemId) {
                 R.id.new_remote_service -> {
-                    val action = CompleteServiceListFragmentDirections.actionCompleteServiceListFragmentToCompleteServiceFragment()
+                    val action =
+                        CompleteServiceListFragmentDirections
+                            .actionCompleteServiceListFragmentToCompleteServiceFragment()
                     findNavController().navigate(action)
                     true
                 }
@@ -130,16 +133,16 @@ class CompleteServiceListFragment : UnchainedFragment(), CompleteServiceListList
         builder
             ?.setMessage(R.string.dialog_confirm_action)
             ?.setTitle(R.string.delete_all)
-            ?.setPositiveButton(R.string.yes) { _, _ ->
-                viewModel.deleteAllServices()
-            }
+            ?.setPositiveButton(R.string.yes) { _, _ -> viewModel.deleteAllServices() }
             ?.setNegativeButton(R.string.no) { dialog, _ -> dialog.cancel() }
         val dialog: AlertDialog? = builder?.create()
         dialog?.show()
     }
 
     override fun onServiceClick(item: CompleteRemoteService) {
-        val action = CompleteServiceListFragmentDirections.actionCompleteServiceListFragmentToCompleteServiceFragment(item = item)
+        val action =
+            CompleteServiceListFragmentDirections
+                .actionCompleteServiceListFragmentToCompleteServiceFragment(item = item)
         findNavController().navigate(action)
     }
 }

@@ -367,22 +367,14 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
 
                         val serviceType: RemoteServiceType =
                             getServiceType(recentServiceItem.type)!!
-                        playOnService(
-                            url ?: args.details.download,
-                            recentServiceItem,
-                            serviceType,
-                        )
+                        playOnService(url ?: args.details.download, recentServiceItem, serviceType)
                     }
                 }
 
                 R.id.default_service -> {
                     if (defaultService != null) {
                         val serviceType: RemoteServiceType = getServiceType(defaultService.type)!!
-                        playOnService(
-                            url ?: args.details.download,
-                            defaultService,
-                            serviceType,
-                        )
+                        playOnService(url ?: args.details.download, defaultService, serviceType)
                     }
                 }
 
@@ -437,15 +429,12 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                     .setImageResource(serviceType.iconRes)
                 defaultLayout.findViewById<TextView>(R.id.serviceName).text = defaultService.name
                 // ip from device, port from service
-                defaultLayout.findViewById<TextView>(R.id.serviceAddress).text = defaultService.address.trim()
+                defaultLayout.findViewById<TextView>(R.id.serviceAddress).text =
+                    defaultService.address.trim()
 
                 defaultLayout.setOnClickListener {
                     if (popup.isShowing) popup.dismiss()
-                    playOnService(
-                        url ?: args.details.download,
-                        defaultService,
-                        serviceType,
-                    )
+                    playOnService(url ?: args.details.download, defaultService, serviceType)
                 }
             } else {
                 defaultLayout.visibility = View.GONE
@@ -468,15 +457,12 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                     recentLayout.findViewById<TextView>(R.id.recentServiceName).text =
                         recentServiceItem.name
                     // ip from device, port from service
-                    recentLayout.findViewById<TextView>(R.id.recentServiceAddress).text = recentServiceItem.address.trim()
+                    recentLayout.findViewById<TextView>(R.id.recentServiceAddress).text =
+                        recentServiceItem.address.trim()
 
                     recentLayout.setOnClickListener {
                         if (popup.isShowing) popup.dismiss()
-                        playOnService(
-                            url ?: args.details.download,
-                            recentServiceItem,
-                            serviceType,
-                        )
+                        playOnService(url ?: args.details.download, recentServiceItem, serviceType)
                     }
                 } else {
                     recentLayout.visibility = View.GONE

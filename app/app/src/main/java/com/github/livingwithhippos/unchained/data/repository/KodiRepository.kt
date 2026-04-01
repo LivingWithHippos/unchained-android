@@ -115,8 +115,7 @@ constructor(protoStore: ProtoStore, @param:ClassicClient private val client: OkH
 
         try {
             val kodiApiHelper: KodiApiHelper =
-                if (address.endsWith("/"))
-                    provideApiHelper(address)
+                if (address.endsWith("/")) provideApiHelper(address)
                 else provideApiHelper("$address/")
 
             val kodiResponse =

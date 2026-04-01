@@ -10,9 +10,7 @@ import kotlinx.parcelize.Parcelize
 
 @Keep
 @Parcelize
-@Entity(
-    tableName = "complete_remote_service"
-)
+@Entity(tableName = "complete_remote_service")
 class CompleteRemoteService(
     @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id") val id: Int,
     @ColumnInfo(name = "name") val name: String,
@@ -40,7 +38,6 @@ class CompleteRemoteService(
 
     override fun hashCode(): Int = Objects.hash(id)
 }
-
 
 /** Helper class to have all the service details together */
 data class CompleteRemoteServiceDetails(

@@ -113,14 +113,12 @@ constructor(
     fun fetchServices(mediaPlayerOnly: Boolean = true) {
         // todo: replace other uses with [allServices]
         viewModelScope.launch {
-            val services: List<CompleteRemoteService> = if (mediaPlayerOnly) {
-                completeRemoteServiceDao.getMediaPlayerServices(
-                    types = listOf(
-                        RemoteServiceType.KODI.value,
-                        RemoteServiceType.VLC.value
+            val services: List<CompleteRemoteService> =
+                if (mediaPlayerOnly) {
+                    completeRemoteServiceDao.getMediaPlayerServices(
+                        types = listOf(RemoteServiceType.KODI.value, RemoteServiceType.VLC.value)
                     )
-                )
-            } else completeRemoteServiceDao.getServices()
+                } else completeRemoteServiceDao.getServices()
 
             eventLiveData.postEvent(DownloadEvent.AllServices(services))
         }
@@ -128,7 +126,9 @@ constructor(
 
     suspend fun allServices(): Flow<List<CompleteRemoteService>> {
         // todo: move to repo
-        return completeRemoteServiceDao.getMediaPlayerServicesFlow(types = listOf(RemoteServiceType.KODI.value, RemoteServiceType.VLC.value))
+        return completeRemoteServiceDao.getMediaPlayerServicesFlow(
+            types = listOf(RemoteServiceType.KODI.value, RemoteServiceType.VLC.value)
+        )
     }
 
     /**
@@ -176,9 +176,7 @@ sealed class DownloadDetailsMessage {
 sealed class DownloadEvent {
     data class KodiDevices(val devices: List<KodiDevice>) : DownloadEvent()
 
-    data class AllServices(val services: List<CompleteRemoteService>) :
-        DownloadEvent()
+    data class AllServices(val services: List<CompleteRemoteService>) : DownloadEvent()
 
-    data class DefaultDeviceService(val service: CompleteRemoteService) :
-        DownloadEvent()
+    data class DefaultDeviceService(val service: CompleteRemoteService) : DownloadEvent()
 }

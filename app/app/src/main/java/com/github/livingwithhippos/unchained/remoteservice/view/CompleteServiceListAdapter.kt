@@ -15,24 +15,31 @@ import com.github.livingwithhippos.unchained.data.local.CompleteRemoteService
 import com.github.livingwithhippos.unchained.databinding.ItemCompleteServiceBinding
 import com.github.livingwithhippos.unchained.utilities.extension.setDrawableByServiceType
 
-
 class CompleteServiceListAdapter(private val listener: CompleteServiceListListener) :
     ListAdapter<CompleteRemoteService, CompleteRemoteServiceViewHolder>(DiffCallback()) {
 
     var tracker: SelectionTracker<CompleteRemoteService>? = null
 
     class DiffCallback : DiffUtil.ItemCallback<CompleteRemoteService>() {
-        override fun areItemsTheSame(oldItem: CompleteRemoteService, newItem: CompleteRemoteService): Boolean =
-            oldItem.id == newItem.id
+        override fun areItemsTheSame(
+            oldItem: CompleteRemoteService,
+            newItem: CompleteRemoteService,
+        ): Boolean = oldItem.id == newItem.id
 
-        override fun areContentsTheSame(oldItem: CompleteRemoteService, newItem: CompleteRemoteService): Boolean =
+        override fun areContentsTheSame(
+            oldItem: CompleteRemoteService,
+            newItem: CompleteRemoteService,
+        ): Boolean =
             oldItem.isDefault == newItem.isDefault &&
-                    oldItem.name == newItem.name &&
-                    oldItem.type == newItem.type &&
-                    oldItem.address == newItem.address
+                oldItem.name == newItem.name &&
+                oldItem.type == newItem.type &&
+                oldItem.address == newItem.address
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CompleteRemoteServiceViewHolder {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int,
+    ): CompleteRemoteServiceViewHolder {
         val binding =
             ItemCompleteServiceBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return CompleteRemoteServiceViewHolder(binding, listener)

@@ -27,7 +27,10 @@ class ServicePickerAdapter(private val listener: ServicePickerListener) :
         ): Boolean = true
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CompleteRemoteServiceViewHolder {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int,
+    ): CompleteRemoteServiceViewHolder {
         val binding =
             ItemListServicePickerBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return CompleteRemoteServiceViewHolder(binding, listener)
