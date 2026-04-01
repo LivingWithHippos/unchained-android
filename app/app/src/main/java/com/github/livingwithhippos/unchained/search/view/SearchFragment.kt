@@ -31,7 +31,6 @@ import com.github.livingwithhippos.unchained.utilities.extension.hideKeyboard
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.google.android.material.button.MaterialButton
 import dagger.hilt.android.AndroidEntryPoint
-import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -287,7 +286,6 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
         return getString(res)
     }
 
-    @OptIn(ExperimentalTime::class)
     private fun submitSortedList(adapter: SearchItemAdapter, items: List<ScrapedItem>) {
         when (viewModel.getListSortPreference()) {
             FolderListFragment.TAG_DEFAULT_SORT -> {

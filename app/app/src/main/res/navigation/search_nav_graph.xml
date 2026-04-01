@@ -37,5 +37,12 @@
         android:label="@string/search_files"
         android:name="com.github.livingwithhippos.unchained.search.view.PluginSearchFragment"
         tools:layout="@layout/fragment_search_plugins_tab"
-        />
+        >
+        <action
+            android:id="@+id/action_plugin_search_to_search_item"
+            app:destination="@id/searchItemFragment" />
+        <action
+            android:id="@+id/action_plugin_search_to_plugins_repository"
+            app:destination="@id/repositoryFragment" />
+    </fragment>
 </navigation>

@@ -21,6 +21,7 @@ import com.github.livingwithhippos.unchained.utilities.extension.cancelIfActive
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -187,7 +188,7 @@ constructor(
                 // retrieve plugins from disk if needed
                 // search for each one and publish
 
-                // todo: repo + plugin name?
+                // todo: use something better to recognize them, hash repo + plugin name/url?
                 val enabledPlugins: List<Plugin> =
                     databasePluginsRepository.getEnabledPlugins().values.flatten().mapNotNull {
                         repoPlugin ->
@@ -199,45 +200,40 @@ constructor(
                 }
 
                 parsingLiveData.postValue(ParserResult.SearchStarted(-1))
-
-                // todo: launch search, parallel if possible and post results on live data
-
-                val results = mutableListOf<ScrapedItem>()
-
-                clearSearchResults()
+                delay(100)
 
                 enabledPlugins.forEach { plugin ->
-                    Timber.d("Starting search for plugin ${plugin.name}")
-                    parser
-                        .completeSearch(plugin, query, category, page)
-                        .onEach {
-                            when (it) {
-                                is ParserResult.SingleResult -> {
-                                    results.add(it.value)
-                                    parsingLiveData.value = ParserResult.Results(results)
-                                    setSearchResults(results)
-                                }
-                                is ParserResult.Results -> {
-                                    // here I have all the results at once
-                                    parsingLiveData.value = it
-                                    results.addAll(it.values)
-                                    setSearchResults(results)
-                                }
-                                is ParserResult.SearchStarted -> {
-                                    // results.clear()
-                                    parsingLiveData.value = it
-                                }
-                                is ParserResult.SearchFinished -> {
-                                    parsingLiveData.value = it
-                                }
-                                else -> {
-                                    // todo: check if we are stopping on the fragment side, with
-                                    // parallel search it's ok to continue if a single one fails
-                                    parsingLiveData.value = it
+                    launch {
+                        Timber.d("Starting search for plugin ${plugin.name}")
+                        parser
+                            .completeSearch(plugin, query, category, page)
+                            .onEach {
+                                when (it) {
+                                    is ParserResult.SingleResult -> {
+                                        parsingLiveData.postValue(
+                                            ParserResult.SingleResult(it.value)
+                                        )
+                                    }
+                                    is ParserResult.Results -> {
+                                        // here I have all the results at once
+                                        parsingLiveData.postValue(ParserResult.Results(it.values))
+                                        Timber.w("Passingg ${it.values.size} results")
+                                    }
+                                    is ParserResult.SearchStarted -> {
+                                        // not needed when run in parallel
+                                    }
+                                    is ParserResult.SearchFinished -> {
+                                        // todo: only when all are finished
+                                        // parsingLiveData.value = it
+                                    }
+                                    else -> {
+                                        // todo: manage
+                                        // parsingLiveData.value = it
+                                    }
                                 }
                             }
-                        }
-                        .launchIn(viewModelScope)
+                            .launchIn(viewModelScope)
+                    }
                 }
             }
 

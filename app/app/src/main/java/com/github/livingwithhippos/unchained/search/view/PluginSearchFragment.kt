@@ -7,12 +7,17 @@ import android.view.ViewGroup
 import android.widget.AutoCompleteTextView
 import android.widget.Button
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.databinding.FragmentSearchPluginsTabBinding
 import com.github.livingwithhippos.unchained.folderlist.view.FolderListFragment
 import com.github.livingwithhippos.unchained.plugins.ParserResult
 import com.github.livingwithhippos.unchained.plugins.model.Plugin
+import com.github.livingwithhippos.unchained.plugins.model.ScrapedItem
+import com.github.livingwithhippos.unchained.search.model.SearchItemAdapter
+import com.github.livingwithhippos.unchained.search.model.SearchItemListener
+import com.github.livingwithhippos.unchained.search.view.SearchFragment.Companion.digitRegex
 import com.github.livingwithhippos.unchained.search.viewmodel.SearchViewModel
 import com.github.livingwithhippos.unchained.utilities.extension.hideKeyboard
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
@@ -20,14 +25,16 @@ import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.sidesheet.SideSheetDialog
 import dagger.hilt.android.AndroidEntryPoint
+import kotlin.time.Instant
 import timber.log.Timber
 
 @AndroidEntryPoint
-class PluginSearchFragment : UnchainedFragment() {
+class PluginSearchFragment : UnchainedFragment(), SearchItemListener {
 
     private val viewModel: SearchViewModel by viewModels()
 
     private val pluginsList: MutableList<Plugin> = mutableListOf()
+    private val searchResultsList: MutableList<ScrapedItem> = mutableListOf()
 
     private var _binding: FragmentSearchPluginsTabBinding? = null
     private val binding
@@ -188,30 +195,40 @@ class PluginSearchFragment : UnchainedFragment() {
     private fun setup(binding: FragmentSearchPluginsTabBinding) {
         binding.tfSearch.hideKeyboard()
         binding.bPluginSettings.setOnClickListener { viewModel.fetchPlugins(requireContext()) }
+        val adapter = SearchItemAdapter(this)
+        binding.rvSearchList.adapter = adapter
+
         binding.bStartSearch.setOnClickListener {
             val query: String = binding.tiSearch.text?.toString()?.trim() ?: ""
             if (query.isBlank()) {
                 // todo: add string
-                context?.showToast(R.string.file_not_allowed)
+                context?.showToast(R.string.missing_parameter)
             } else {
                 // todo: category etc
                 viewModel.pluginSearchWithSettings(query = query).observe(viewLifecycleOwner) {
                     result ->
                     when (result) {
                         is ParserResult.SingleResult -> {
-                            Timber.d("Single result: ${result.value}")
+                            searchResultsList.add(result.value)
+                            submitSortedList(adapter, searchResultsList)
                         }
                         is ParserResult.Results -> {
-                            Timber.d("Results: ${result.values}")
+                            searchResultsList.addAll(result.values)
+                            submitSortedList(adapter, searchResultsList)
                         }
                         is ParserResult.SearchStarted -> {
                             Timber.d("Search started")
+                            searchResultsList.clear()
+                            submitSortedList(adapter, searchResultsList)
                         }
                         is ParserResult.SearchFinished -> {
                             Timber.d("Search finished")
                         }
                         is ParserResult.EmptyInnerLinks -> {
                             Timber.d("Empty inner links")
+                        }
+                        is ParserResult.NoEnabledPlugins -> {
+                            context?.showToast(R.string.please_select_plugins)
                         }
                         else -> {
                             Timber.d("Unknown result: $result")
@@ -220,5 +237,59 @@ class PluginSearchFragment : UnchainedFragment() {
                 }
             }
         }
+    }
+
+    private fun submitSortedList(adapter: SearchItemAdapter, items: List<ScrapedItem>) {
+        if (items.isNotEmpty())
+            Timber.d("Submitting list with ${items.size}")
+        when (viewModel.getListSortPreference()) {
+            FolderListFragment.TAG_DEFAULT_SORT -> {
+                adapter.submitList(items)
+            }
+            FolderListFragment.TAG_SORT_AZ -> {
+                adapter.submitList(items.sortedBy { item -> item.name })
+            }
+            FolderListFragment.TAG_SORT_ZA -> {
+                adapter.submitList(items.sortedByDescending { item -> item.name })
+            }
+            FolderListFragment.TAG_SORT_SIZE_DESC -> {
+                adapter.submitList(items.sortedByDescending { item -> item.parsedSize })
+            }
+            FolderListFragment.TAG_SORT_SIZE_ASC -> {
+                adapter.submitList(items.sortedBy { item -> item.parsedSize })
+            }
+            FolderListFragment.TAG_SORT_SEEDERS -> {
+                adapter.submitList(
+                    items.sortedByDescending { item ->
+                        if (item.seeders != null) {
+                            digitRegex.find(item.seeders)?.value?.toInt()
+                        } else null
+                    }
+                )
+            }
+            FolderListFragment.TAG_SORT_ADDED -> {
+                adapter.submitList(
+                    items.sortedByDescending { item ->
+                        if (item.addedDate != null) {
+                            try {
+                                Instant.parse(item.addedDate).toEpochMilliseconds()
+                            } catch (e: Exception) {
+                                null
+                            }
+                        } else null
+                    }
+                )
+            }
+            else -> {
+                adapter.submitList(items)
+            }
+        }
+        adapter.notifyDataSetChanged()
+    }
+
+    override fun onClick(item: ScrapedItem) {
+        viewModel.stopSearch()
+        val action = PluginSearchFragmentDirections.actionPluginSearchToSearchItem(item)
+        findNavController().navigate(action)
     }
 }
