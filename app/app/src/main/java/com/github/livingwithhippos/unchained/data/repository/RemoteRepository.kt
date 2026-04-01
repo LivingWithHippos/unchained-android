@@ -47,4 +47,32 @@ class RemoteRepository @Inject constructor(@param:ClassicClient private val clie
                 return@withContext EitherResult.Success(true)
             }
         }
+
+    suspend fun openUrl(
+        baseUrl: String,
+        url: String,
+        username: String? = null,
+        password: String? = null,
+    ): EitherResult<Exception, Boolean> =
+        withContext(Dispatchers.IO) {
+            val credential = okhttp3.Credentials.basic(username ?: "", password ?: "")
+            val newBaseUrl = if (baseUrl.endsWith("/")) baseUrl.dropLast(1) else baseUrl
+            val request =
+                Request.Builder()
+                    .url(
+                        "$newBaseUrl/requests/status.xml?command=in_play&input=$url"
+                    )
+                    .header("Authorization", credential)
+                    .build()
+
+            client.newCall(request).execute().use { response ->
+                if (!response.isSuccessful)
+                    return@withContext EitherResult.Failure(
+                        IOException("Unexpected http code $response")
+                    )
+
+                Timber.d(response.body!!.string())
+                return@withContext EitherResult.Success(true)
+            }
+        }
 }

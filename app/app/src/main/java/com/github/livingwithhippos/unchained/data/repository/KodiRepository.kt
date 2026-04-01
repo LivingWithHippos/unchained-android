@@ -106,6 +106,41 @@ constructor(protoStore: ProtoStore, @param:ClassicClient private val client: OkH
         }
     }
 
+    suspend fun openUrl(
+        address: String,
+        url: String,
+        username: String? = null,
+        password: String? = null,
+    ): KodiResponse? {
+
+        try {
+            val kodiApiHelper: KodiApiHelper =
+                if (address.endsWith("/"))
+                    provideApiHelper(address)
+                else provideApiHelper("$address/")
+
+            val kodiResponse =
+                safeApiCall(
+                    call = {
+                        kodiApiHelper.openUrl(
+                            request =
+                                KodiRequest(
+                                    method = "Player.Open",
+                                    params = KodiParams(item = KodiItem(fileUrl = url)),
+                                ),
+                            auth = encodeAuthentication(username, password),
+                        )
+                    },
+                    errorMessage = "Error Sending url to Kodi",
+                )
+
+            return kodiResponse
+        } catch (e: Exception) {
+            Timber.e(e)
+            return null
+        }
+    }
+
     private fun encodeAuthentication(username: String?, password: String?): String? {
         return if (!username.isNullOrBlank() && !password.isNullOrBlank()) {
             "Basic " +

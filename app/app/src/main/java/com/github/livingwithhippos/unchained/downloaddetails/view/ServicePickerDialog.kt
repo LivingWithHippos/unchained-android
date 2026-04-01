@@ -6,7 +6,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.github.livingwithhippos.unchained.R
-import com.github.livingwithhippos.unchained.data.local.RemoteServiceDetails
+import com.github.livingwithhippos.unchained.data.local.CompleteRemoteServiceDetails
 import com.github.livingwithhippos.unchained.data.local.serviceTypeMap
 import com.github.livingwithhippos.unchained.downloaddetails.model.ServicePickerAdapter
 import com.github.livingwithhippos.unchained.downloaddetails.model.ServicePickerListener
@@ -39,17 +39,15 @@ class ServicePickerDialog : DialogFragment(), ServicePickerListener {
 
             viewModel.eventLiveData.observe(this) { event ->
                 when (val content = event.getContentIfNotHandled()) {
-                    is DownloadEvent.DeviceAndServices -> {
+                    is DownloadEvent.AllServices -> {
 
-                        val devSer: List<RemoteServiceDetails> =
-                            content.devicesServices.flatMap {
-                                it.value.map { serv ->
-                                    RemoteServiceDetails(
+                        val devSer: List<CompleteRemoteServiceDetails> =
+                            content.services.map {serv ->
+                                    CompleteRemoteServiceDetails(
                                         service = serv,
-                                        device = it.key,
                                         type = serviceTypeMap[serv.type]!!,
                                     )
-                                }
+
                             }
                         adapter.submitList(devSer)
                     }
@@ -57,7 +55,7 @@ class ServicePickerDialog : DialogFragment(), ServicePickerListener {
                 }
             }
 
-            viewModel.fetchDevicesAndServices()
+            viewModel.fetchServices()
 
             builder.setView(view).setTitle(R.string.services).setNegativeButton(
                 getString(R.string.close)
@@ -69,7 +67,7 @@ class ServicePickerDialog : DialogFragment(), ServicePickerListener {
         } ?: throw IllegalStateException("Activity cannot be null")
     }
 
-    override fun onServiceClick(serviceDetails: RemoteServiceDetails) {
+    override fun onServiceClick(serviceDetails: CompleteRemoteServiceDetails) {
         val link = arguments?.getString("downloadUrl")
         if (link == null) {
             Timber.e("Download url is null")

@@ -37,8 +37,7 @@ import coil.load
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.DeleteDialogFragment
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
-import com.github.livingwithhippos.unchained.data.local.RemoteDevice
-import com.github.livingwithhippos.unchained.data.local.RemoteService
+import com.github.livingwithhippos.unchained.data.local.CompleteRemoteService
 import com.github.livingwithhippos.unchained.data.local.RemoteServiceType
 import com.github.livingwithhippos.unchained.data.local.serviceTypeMap
 import com.github.livingwithhippos.unchained.data.model.Alternative
@@ -71,7 +70,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
 
     private val args: DownloadDetailsFragmentArgs by navArgs()
 
-    private val deviceServiceMap: MutableMap<RemoteDevice, List<RemoteService>> = mutableMapOf()
+    private val servicesList: MutableList<CompleteRemoteService> = mutableListOf()
     private var _binding: FragmentDownloadDetailsBinding? = null
     private val binding
         get() = _binding!!
@@ -294,10 +293,10 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         }
 
         lifecycle.coroutineScope.launch {
-            viewModel.devicesAndServices().collect {
+            viewModel.allServices().collect {
                 // used to populate the menu
-                deviceServiceMap.clear()
-                deviceServiceMap.putAll(it)
+                servicesList.clear()
+                servicesList.addAll(it)
             }
         }
 
@@ -307,13 +306,11 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                     // send media to default device
                 }
 
-                is DownloadEvent.DeviceAndServices -> {
-                    // used to populate the menu
-                    deviceServiceMap.clear()
-                    deviceServiceMap.putAll(content.devicesServices)
-                }
-
                 is DownloadEvent.KodiDevices -> {}
+                is DownloadEvent.AllServices -> {
+                    servicesList.clear()
+                    servicesList.addAll(content.services)
+                }
             }
         }
 
@@ -329,14 +326,9 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
 
         val recentService: Int = viewModel.getRecentService()
 
-        val defaultDevice: Map.Entry<RemoteDevice, List<RemoteService>>? =
-            deviceServiceMap.firstNotNullOfOrNull { if (it.key.isDefault) it else null }
-        val defaultService: RemoteService? = defaultDevice?.value?.firstOrNull { it.isDefault }
-        val servicesNumber = deviceServiceMap.values.sumOf { it.size }
-        val recentServiceItem: RemoteService? =
-            deviceServiceMap.firstNotNullOfOrNull {
-                it.value.firstOrNull { service -> service.id == recentService }
-            }
+        val defaultService: CompleteRemoteService? = servicesList.firstOrNull { it.isDefault }
+        val recentServiceItem: CompleteRemoteService? =
+            servicesList.firstOrNull { service -> service.id == recentService }
 
         val popup = PopupMenu(requireContext(), v)
         popup.menuInflater.inflate(R.menu.basic_streaming_popup, popup.menu)
@@ -351,7 +343,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                 getString(R.string.recent_service_format, serviceName)
         }
 
-        if (defaultDevice == null || defaultService == null) {
+        if (defaultService == null) {
             popup.menu.findItem(R.id.default_service).isVisible = false
         } else {
             val serviceName = getString(serviceTypeMap[defaultService.type]!!.nameRes)
@@ -359,7 +351,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                 getString(R.string.default_service_format, serviceName)
         }
 
-        if (servicesNumber == 0) {
+        if (servicesList.isEmpty()) {
             popup.menu.findItem(R.id.pick_service).isVisible = false
         }
 
@@ -371,16 +363,12 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
             // save the new sorting preference
             when (menuItem.itemId) {
                 R.id.recent_service -> {
-                    val recentDeviceItem =
-                        deviceServiceMap.keys.firstOrNull { it.id == recentServiceItem?.device }
-
-                    if (recentServiceItem != null && recentDeviceItem != null) {
+                    if (recentServiceItem != null) {
 
                         val serviceType: RemoteServiceType =
                             getServiceType(recentServiceItem.type)!!
-                        playOnDeviceService(
+                        playOnService(
                             url ?: args.details.download,
-                            recentDeviceItem,
                             recentServiceItem,
                             serviceType,
                         )
@@ -388,11 +376,10 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                 }
 
                 R.id.default_service -> {
-                    if (defaultDevice != null && defaultService != null) {
+                    if (defaultService != null) {
                         val serviceType: RemoteServiceType = getServiceType(defaultService.type)!!
-                        playOnDeviceService(
+                        playOnService(
                             url ?: args.details.download,
-                            defaultDevice.key,
                             defaultService,
                             serviceType,
                         )
@@ -435,9 +422,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
 
         val recentService: Int = viewModel.getRecentService()
 
-        val defaultDevice: Map.Entry<RemoteDevice, List<RemoteService>>? =
-            deviceServiceMap.firstNotNullOfOrNull { if (it.key.isDefault) it else null }
-        val defaultService: RemoteService? = defaultDevice?.value?.firstOrNull { it.isDefault }
+        val defaultService: CompleteRemoteService? = servicesList.firstOrNull { it.isDefault }
 
         // get all the services of the corresponding menu item
         // populate according to results
@@ -452,14 +437,12 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                     .setImageResource(serviceType.iconRes)
                 defaultLayout.findViewById<TextView>(R.id.serviceName).text = defaultService.name
                 // ip from device, port from service
-                defaultLayout.findViewById<TextView>(R.id.serviceAddress).text =
-                    "${defaultDevice.key.address}:${defaultService.port}"
+                defaultLayout.findViewById<TextView>(R.id.serviceAddress).text = defaultService.address.trim()
 
                 defaultLayout.setOnClickListener {
                     if (popup.isShowing) popup.dismiss()
-                    playOnDeviceService(
+                    playOnService(
                         url ?: args.details.download,
-                        defaultDevice.key,
                         defaultService,
                         serviceType,
                     )
@@ -474,29 +457,23 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         val recentLayout =
             popup.contentView.findViewById<ConstraintLayout>(R.id.recentServiceLayout)
         if (recentService != -1 && recentService != defaultService?.id) {
-            val recentServiceItem: RemoteService? =
-                deviceServiceMap.firstNotNullOfOrNull {
-                    it.value.firstOrNull { service -> service.id == recentService }
-                }
+            val recentServiceItem: CompleteRemoteService? =
+                servicesList.firstOrNull { service -> service.id == recentService }
             if (recentServiceItem != null) {
-                val recentDeviceItem =
-                    deviceServiceMap.keys.firstOrNull { it.id == recentServiceItem.device }
                 val serviceType: RemoteServiceType? = getServiceType(recentServiceItem.type)
-                if (recentDeviceItem != null && serviceType != null) {
+                if (serviceType != null) {
                     recentLayout
                         .findViewById<ImageView>(R.id.recentServiceIcon)
                         .setImageResource(serviceType.iconRes)
                     recentLayout.findViewById<TextView>(R.id.recentServiceName).text =
                         recentServiceItem.name
                     // ip from device, port from service
-                    recentLayout.findViewById<TextView>(R.id.recentServiceAddress).text =
-                        "${recentDeviceItem.address}:${recentServiceItem.port}"
+                    recentLayout.findViewById<TextView>(R.id.recentServiceAddress).text = recentServiceItem.address.trim()
 
                     recentLayout.setOnClickListener {
                         if (popup.isShowing) popup.dismiss()
-                        playOnDeviceService(
+                        playOnService(
                             url ?: args.details.download,
-                            recentDeviceItem,
                             recentServiceItem,
                             serviceType,
                         )
@@ -512,18 +489,12 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         }
 
         val pickerLayout = popup.contentView.findViewById<ConstraintLayout>(R.id.pickServiceLayout)
-        val servicesNumber = deviceServiceMap.values.sumOf { it.size }
+        val servicesNumber = servicesList.size
         pickerLayout.findViewById<TextView>(R.id.servicesNumber).text =
             resources.getQuantityString(
                 R.plurals.service_number_format,
                 servicesNumber,
                 servicesNumber,
-            )
-        pickerLayout.findViewById<TextView>(R.id.devicesNumber).text =
-            resources.getQuantityString(
-                R.plurals.device_number_format,
-                deviceServiceMap.keys.size,
-                deviceServiceMap.keys.size,
             )
         pickerLayout.setOnClickListener {
             if (popup.isShowing) popup.dismiss()
@@ -551,19 +522,18 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         }
     }
 
-    private fun playOnDeviceService(
+    private fun playOnService(
         link: String,
-        device: RemoteDevice,
-        service: RemoteService,
+        service: CompleteRemoteService,
         serviceType: RemoteServiceType,
     ) {
         when (serviceType) {
             RemoteServiceType.KODI -> {
-                viewModel.openUrlOnKodi(mediaURL = link, kodiDevice = device, kodiService = service)
+                viewModel.openUrlOnKodi(mediaURL = link, kodiService = service)
             }
 
             RemoteServiceType.VLC -> {
-                viewModel.openUrlOnVLC(mediaURL = link, vlcDevice = device, vlcService = service)
+                viewModel.openUrlOnVLC(mediaURL = link, vlcService = service)
             }
 
             else -> {

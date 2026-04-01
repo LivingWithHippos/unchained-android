@@ -156,32 +156,18 @@
             android:focusable="true">
 
             <TextView
-                android:id="@+id/devicesNumber"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:maxLines="1"
-                android:clickable="false"
-                android:focusable="false"
-                android:text="@string/remote_devices"
-                android:textAppearance="?attr/textAppearanceTitleSmall"
-                app:layout_constraintBottom_toTopOf="@id/pickServiceTitle"
-                app:layout_constraintEnd_toStartOf="@id/servicesNumber"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
                 android:id="@+id/servicesNumber"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/service"
                 android:maxLines="1"
                 android:clickable="false"
                 android:focusable="false"
+                android:text="@string/service"
                 android:textAppearance="?attr/textAppearanceTitleSmall"
-                app:layout_constraintBottom_toBottomOf="@id/devicesNumber"
-                app:layout_constraintEnd_toStartOf="@id/pickServiceIcon"
-                app:layout_constraintStart_toEndOf="@id/devicesNumber"
-                app:layout_constraintTop_toTopOf="@id/devicesNumber" />
+                app:layout_constraintBottom_toTopOf="@id/pickServiceTitle"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
                 android:id="@+id/pickServiceIcon"
@@ -206,7 +192,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/pickServiceIcon"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/devicesNumber" />
+                app:layout_constraintTop_toBottomOf="@+id/servicesNumber" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

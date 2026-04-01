@@ -5,15 +5,14 @@ import androidx.core.content.edit
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.livingwithhippos.unchained.data.local.RemoteDevice
-import com.github.livingwithhippos.unchained.data.local.RemoteService
-import com.github.livingwithhippos.unchained.data.local.RemoteServiceDetails
+import com.github.livingwithhippos.unchained.data.local.CompleteRemoteService
+import com.github.livingwithhippos.unchained.data.local.CompleteRemoteServiceDao
+import com.github.livingwithhippos.unchained.data.local.CompleteRemoteServiceDetails
 import com.github.livingwithhippos.unchained.data.local.RemoteServiceType
 import com.github.livingwithhippos.unchained.data.model.KodiDevice
 import com.github.livingwithhippos.unchained.data.model.Stream
 import com.github.livingwithhippos.unchained.data.repository.DownloadRepository
 import com.github.livingwithhippos.unchained.data.repository.KodiRepository
-import com.github.livingwithhippos.unchained.data.repository.RemoteDeviceRepository
 import com.github.livingwithhippos.unchained.data.repository.RemoteRepository
 import com.github.livingwithhippos.unchained.data.repository.StreamingRepository
 import com.github.livingwithhippos.unchained.utilities.EitherResult
@@ -35,7 +34,7 @@ constructor(
     private val downloadRepository: DownloadRepository,
     private val kodiRepository: KodiRepository,
     private val remoteServiceRepository: RemoteRepository,
-    private val remoteDeviceRepository: RemoteDeviceRepository,
+    private val completeRemoteServiceDao: CompleteRemoteServiceDao,
 ) : ViewModel() {
 
     val streamLiveData = MutableLiveData<Stream?>()
@@ -58,13 +57,12 @@ constructor(
         }
     }
 
-    fun openUrlOnKodi(mediaURL: String, kodiDevice: RemoteDevice, kodiService: RemoteService) {
+    fun openUrlOnKodi(mediaURL: String, kodiService: CompleteRemoteService) {
         viewModelScope.launch {
             try {
                 val response =
                     kodiRepository.openUrl(
-                        kodiDevice.address,
-                        kodiService.port,
+                        kodiService.address,
                         mediaURL,
                         kodiService.username,
                         kodiService.password,
@@ -78,14 +76,13 @@ constructor(
         }
     }
 
-    fun openUrlOnVLC(mediaURL: String, vlcDevice: RemoteDevice, vlcService: RemoteService) {
+    fun openUrlOnVLC(mediaURL: String, vlcService: CompleteRemoteService) {
 
         viewModelScope.launch {
             try {
                 val response =
                     remoteServiceRepository.openUrl(
-                        vlcDevice.address,
-                        vlcService.port,
+                        vlcService.address,
                         mediaURL,
                         vlcService.username,
                         vlcService.password,
@@ -113,19 +110,25 @@ constructor(
         return preferences.getString("custom_media_player", "") ?: ""
     }
 
-    fun fetchDevicesAndServices(mediaPlayerOnly: Boolean = true) {
-        // todo: replace other uses with [devicesAndServices]
+    fun fetchServices(mediaPlayerOnly: Boolean = true) {
+        // todo: replace other uses with [allServices]
         viewModelScope.launch {
-            val devices: Map<RemoteDevice, List<RemoteService>> =
-                if (mediaPlayerOnly) remoteDeviceRepository.getMediaPlayerDevicesAndServices()
-                else remoteDeviceRepository.getDevicesAndServices()
+            val services: List<CompleteRemoteService> = if (mediaPlayerOnly) {
+                completeRemoteServiceDao.getMediaPlayerServices(
+                    types = listOf(
+                        RemoteServiceType.KODI.value,
+                        RemoteServiceType.VLC.value
+                    )
+                )
+            } else completeRemoteServiceDao.getServices()
 
-            eventLiveData.postEvent(DownloadEvent.DeviceAndServices(devices))
+            eventLiveData.postEvent(DownloadEvent.AllServices(services))
         }
     }
 
-    suspend fun devicesAndServices(): Flow<Map<RemoteDevice, List<RemoteService>>> {
-        return remoteDeviceRepository.getMediaPlayerDevicesAndServicesFlow()
+    suspend fun allServices(): Flow<List<CompleteRemoteService>> {
+        // todo: move to repo
+        return completeRemoteServiceDao.getMediaPlayerServicesFlow(types = listOf(RemoteServiceType.KODI.value, RemoteServiceType.VLC.value))
     }
 
     /**
@@ -140,14 +143,14 @@ constructor(
         preferences.edit { putInt(RECENT_SERVICE_KEY, serviceId) }
     }
 
-    fun openOnRemoteService(serviceDetails: RemoteServiceDetails, link: String) {
+    fun openOnRemoteService(serviceDetails: CompleteRemoteServiceDetails, link: String) {
         setRecentService(serviceDetails.service.id)
         when (serviceDetails.service.type) {
             RemoteServiceType.KODI.value -> {
-                openUrlOnKodi(link, serviceDetails.device, serviceDetails.service)
+                openUrlOnKodi(link, serviceDetails.service)
             }
             RemoteServiceType.VLC.value -> {
-                openUrlOnVLC(link, serviceDetails.device, serviceDetails.service)
+                openUrlOnVLC(link, serviceDetails.service)
             }
             else -> {
                 Timber.e("Unknown service type: ${serviceDetails.service.type}")
@@ -173,9 +176,9 @@ sealed class DownloadDetailsMessage {
 sealed class DownloadEvent {
     data class KodiDevices(val devices: List<KodiDevice>) : DownloadEvent()
 
-    data class DeviceAndServices(val devicesServices: Map<RemoteDevice, List<RemoteService>>) :
+    data class AllServices(val services: List<CompleteRemoteService>) :
         DownloadEvent()
 
-    data class DefaultDeviceService(val device: RemoteDevice, val service: RemoteService) :
+    data class DefaultDeviceService(val service: CompleteRemoteService) :
         DownloadEvent()
 }
