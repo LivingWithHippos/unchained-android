@@ -204,7 +204,6 @@ class PluginSearchFragment : UnchainedFragment(), SearchItemListener {
                 // todo: add string
                 context?.showToast(R.string.missing_parameter)
             } else {
-                // todo: category etc
                 viewModel.pluginSearchWithSettings(query = query).observe(viewLifecycleOwner) {
                     result ->
                     when (result) {
@@ -225,7 +224,6 @@ class PluginSearchFragment : UnchainedFragment(), SearchItemListener {
                             Timber.d("Search finished")
                         }
                         is ParserResult.EmptyInnerLinks -> {
-                            Timber.d("Empty inner links")
                         }
                         is ParserResult.NoEnabledPlugins -> {
                             context?.showToast(R.string.please_select_plugins)
@@ -240,8 +238,6 @@ class PluginSearchFragment : UnchainedFragment(), SearchItemListener {
     }
 
     private fun submitSortedList(adapter: SearchItemAdapter, items: List<ScrapedItem>) {
-        if (items.isNotEmpty())
-            Timber.d("Submitting list with ${items.size}")
         when (viewModel.getListSortPreference()) {
             FolderListFragment.TAG_DEFAULT_SORT -> {
                 adapter.submitList(items)

@@ -89,8 +89,9 @@ class ForegroundTorrentService : LifecycleService() {
             val oldTorrentsIDs: Set<String> =
                 preferences.getStringSet(KEY_OBSERVED_TORRENTS, emptySet()) as Set<String>
             // their updated status
-            val newLoadingTorrents =
-                list.filter { torrent -> loadingStatusList.contains(torrent.status.lowercase()) }
+            val newLoadingTorrents = list.filter { torrent ->
+                loadingStatusList.contains(torrent.status.lowercase())
+            }
             // the torrent whose status is not a loading one anymore.
             val finishedTorrents =
                 list
@@ -174,8 +175,9 @@ class ForegroundTorrentService : LifecycleService() {
                     ) {
                         // if there are no active torrents and the services has been started
                         // for at least some minutes, stop the service
-                        val unfinishedTorrents =
-                            torrentList.count { loadingStatusList.contains(it.status) }
+                        val unfinishedTorrents = torrentList.count {
+                            loadingStatusList.contains(it.status)
+                        }
                         if (unfinishedTorrents == 0) {
                             Timber.i(
                                 "Service has been running and no torrents are active, stopping it."

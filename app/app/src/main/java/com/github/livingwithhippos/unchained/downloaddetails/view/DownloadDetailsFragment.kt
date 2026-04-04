@@ -327,8 +327,9 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         val recentService: Int = viewModel.getRecentService()
 
         val defaultService: CompleteRemoteService? = servicesList.firstOrNull { it.isDefault }
-        val recentServiceItem: CompleteRemoteService? =
-            servicesList.firstOrNull { service -> service.id == recentService }
+        val recentServiceItem: CompleteRemoteService? = servicesList.firstOrNull { service ->
+            service.id == recentService
+        }
 
         val popup = PopupMenu(requireContext(), v)
         popup.menuInflater.inflate(R.menu.basic_streaming_popup, popup.menu)
@@ -446,8 +447,9 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         val recentLayout =
             popup.contentView.findViewById<ConstraintLayout>(R.id.recentServiceLayout)
         if (recentService != -1 && recentService != defaultService?.id) {
-            val recentServiceItem: CompleteRemoteService? =
-                servicesList.firstOrNull { service -> service.id == recentService }
+            val recentServiceItem: CompleteRemoteService? = servicesList.firstOrNull { service ->
+                service.id == recentService
+            }
             if (recentServiceItem != null) {
                 val serviceType: RemoteServiceType? = getServiceType(recentServiceItem.type)
                 if (serviceType != null) {

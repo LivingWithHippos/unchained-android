@@ -108,11 +108,10 @@ constructor(
         // simulate debounce
         queryJob?.cancel()
 
-        queryJob =
-            viewModelScope.launch {
-                delay(500)
-                if (isActive) queryLiveData.postValue(query?.trim() ?: "")
-            }
+        queryJob = viewModelScope.launch {
+            delay(500)
+            if (isActive) queryLiveData.postValue(query?.trim() ?: "")
+        }
     }
 
     fun getMinFileSize(): Long {

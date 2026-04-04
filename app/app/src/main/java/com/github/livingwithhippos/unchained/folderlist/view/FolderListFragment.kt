@@ -394,16 +394,16 @@ class FolderListFragment : UnchainedFragment(), DownloadListListener {
                 customizedList.addAll(items.filter { it.fileSize > viewModel.getMinFileSize() })
             }
             if (filterType) {
-                val temp =
-                    customizedList.filter { mediaRegex.find(it.filename.lowercase()) != null }
+                val temp = customizedList.filter {
+                    mediaRegex.find(it.filename.lowercase()) != null
+                }
                 customizedList.clear()
                 customizedList.addAll(temp)
             }
             if (!filterQuery.isNullOrBlank()) {
-                val temp =
-                    customizedList.filter { item ->
-                        item.filename.contains(filterQuery, ignoreCase = true)
-                    }
+                val temp = customizedList.filter { item ->
+                    item.filename.contains(filterQuery, ignoreCase = true)
+                }
                 customizedList.clear()
                 customizedList.addAll(temp)
             }
