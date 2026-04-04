@@ -67,6 +67,12 @@ class PluginSearchFragment : UnchainedFragment(), SearchItemListener {
         val sideSheetDialog = SideSheetDialog(requireContext())
         sideSheetDialog.setContentView(R.layout.sidesheet_search_plugins_options)
 
+        sideSheetDialog.findViewById<Button>(R.id.btnOpenRepositories)?.setOnClickListener {
+            val action = PluginSearchFragmentDirections.actionPluginSearchToPluginsRepository()
+            findNavController().navigate(action)
+            sideSheetDialog.dismiss()
+        }
+
         sideSheetDialog.findViewById<Button>(R.id.closeButton)?.setOnClickListener {
             sideSheetDialog.dismiss()
         }
@@ -80,8 +86,7 @@ class PluginSearchFragment : UnchainedFragment(), SearchItemListener {
                     .apply {
                         text = plugin.name
                         isCheckable = true
-                        // todo: load this from preferences
-                        isChecked = false
+                        isChecked = plugin.selected == true
                     }
             pluginChip.setOnCheckedChangeListener { _, isChecked ->
                 viewModel.setPluginEnabled(plugin.name, isChecked)

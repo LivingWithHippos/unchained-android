@@ -50,7 +50,8 @@ class PluginRepositoryAdapter(private val listener: PluginListener) :
             ) {
                 return oldItem.name == newItem.name &&
                     oldItem.version == newItem.version &&
-                    oldItem.status == newItem.status
+                    oldItem.status == newItem.status &&
+                    oldItem.disabled == newItem.disabled
             }
             return false
         }
@@ -106,7 +107,7 @@ class PluginViewHolder(
 
     fun bindCell(item: RepositoryListItem.Plugin) {
 
-        setDrawableByPluginStatus(binding.ivStatus, item.status)
+        setDrawableByPluginStatus(binding.ivStatus, item.status, item.disabled ?: false)
         binding.tvName.text = item.name
 
         if (item.status == PluginStatus.isNew) binding.bDownload.visibility = View.VISIBLE
@@ -128,6 +129,20 @@ class PluginViewHolder(
 
         binding.tvVersion.text = item.version.toString()
         binding.tvStatus.text = item.statusTranslation
+
+        if (item.disabled == true) {
+            binding.bDownload.isEnabled = false
+            binding.bUpdate.isEnabled = false
+            binding.tvName.alpha = 0.5f
+            binding.tvVersion.alpha = 0.5f
+            binding.tvStatus.alpha = 0.5f
+        } else {
+            binding.bDownload.isEnabled = true
+            binding.bUpdate.isEnabled = true
+            binding.tvName.alpha = 1f
+            binding.tvVersion.alpha = 1f
+            binding.tvStatus.alpha = 1f
+        }
     }
 }
 
@@ -165,6 +180,7 @@ sealed class RepositoryListItem {
         // see PluginStatus
         var status: String,
         var statusTranslation: String,
+        var disabled: Boolean? = false,
     ) : RepositoryListItem()
 }
 
@@ -186,6 +202,9 @@ object PluginStatus {
 
     // new. not installable
     const val incompatible = "incompatible"
+
+    // disabled when it has issues, marked by the repo (website down etc.)
+    const val disabled = "disabled"
 }
 
 interface PluginListener {

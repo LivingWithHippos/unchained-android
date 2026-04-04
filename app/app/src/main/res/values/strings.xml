@@ -768,4 +768,5 @@
     <string name="remote_services_description">Services are programs running on computers used to search for files or play media</string>
     <string name="service_added">Service Added</string>
     <string name="please_select_plugins">Please select at least a plugin</string>
+    <string name="disabled">Disabled</string>
 </resources>

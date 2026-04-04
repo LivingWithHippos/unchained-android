@@ -28,7 +28,7 @@ class PluginRepository @Inject constructor() {
         manuallyInstalledOnly: Boolean = false,
     ): Pair<List<Plugin>, Int> =
         withContext(Dispatchers.IO) {
-            val pluginFiles = mutableListOf<File>()
+            val pluginFiles = mutableListOf<Pair<String, File>>()
             val pluginFolder = context.getDir("plugins", Context.MODE_PRIVATE)
             if (pluginFolder.exists()) {
                 if (manuallyInstalledOnly) {
@@ -36,14 +36,15 @@ class PluginRepository @Inject constructor() {
                     if (localPluginFolder.exists()) {
                         pluginFolder.walk().forEach {
                             if (it.isFile && it.name.endsWith(TYPE_UNCHAINED, ignoreCase = true)) {
-                                pluginFiles.add(it)
+                                pluginFiles.add(Pair(MANUAL_PLUGINS_REPOSITORY_NAME, it))
                             }
                         }
                     }
                 } else {
                     pluginFolder.walk().forEach {
+                        // for no these are the full path of the directory
                         if (it.isFile && it.name.endsWith(TYPE_UNCHAINED, ignoreCase = true)) {
-                            pluginFiles.add(it)
+                            pluginFiles.add(Pair(it.parent ?: "unparsed_repository", it))
                         }
                     }
                 }
@@ -53,11 +54,14 @@ class PluginRepository @Inject constructor() {
 
             var errors = 0
 
-            for (file in pluginFiles) {
+            for (pluginPair in pluginFiles) {
                 try {
-                    val json = file.readText()
+                    val json = pluginPair.second.readText()
                     val plugin: Plugin? = pluginAdapter.fromJson(json)
-                    if (plugin != null) plugins.add(plugin) else errors++
+                    if (plugin != null) {
+                        plugin.repository = pluginPair.first
+                        plugins.add(plugin)
+                    } else errors++
                 } catch (ex: Exception) {
                     Timber.e("Exception while parsing json plugin: $ex")
                 }
@@ -124,6 +128,7 @@ class PluginRepository @Inject constructor() {
                         val json = pluginFile.readText()
                         val plugin: Plugin? = pluginAdapter.fromJson(json)
                         if (plugin != null) {
+                            plugin.repository = repoName
                             repoList.add(plugin)
                         } else errors++
                     } catch (ex: Exception) {

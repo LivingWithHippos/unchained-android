@@ -97,7 +97,11 @@ constructor(
     fun fetchPlugins(context: Context) {
         viewModelScope.launch {
             val pluginsResult: Pair<List<Plugin>, Int> = pluginRepository.getPlugins(context)
-            pluginLiveData.postValue(pluginsResult)
+            val selectedPlugins = databasePluginsRepository.getEnabledPlugins().values.flatten().map { it.name }
+            val pluginsWithSelection = pluginsResult.first.map { plugin ->
+                plugin.copy(selected = selectedPlugins.contains(plugin.name))
+            }
+            pluginLiveData.postValue(pluginsWithSelection to pluginsResult.second)
             setPlugins(pluginsResult.first)
         }
     }

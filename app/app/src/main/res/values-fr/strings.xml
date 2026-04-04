@@ -546,4 +546,5 @@
     <string name="please_select_plugins">Veuillez sélectionner au moins un plugin</string>
     <string name="title_search_start_destination">Écran de recherche</string>
     <string name="summary_search_start_destination">Page à afficher lors de l\'accès à l\'onglet « Recherche »</string>
+    <string name="disabled">Désactivée</string>
 </resources>

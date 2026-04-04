@@ -178,7 +178,9 @@ fun getThemeColor(context: Context, @AttrRes resId: Int): Int {
     return typedValue.data
 }
 
-fun setDrawableByPluginStatus(view: ImageView, status: String) {
+fun setDrawableByPluginStatus(view: ImageView, status: String, disabled: Boolean = false) {
+    if (disabled)
+        return view.setImageResource(R.drawable.icon_close)
     return when (status) {
         PluginStatus.updated -> view.setImageResource(R.drawable.icon_check)
         PluginStatus.hasUpdate -> view.setImageResource(R.drawable.icon_reload)
@@ -186,6 +188,7 @@ fun setDrawableByPluginStatus(view: ImageView, status: String) {
         PluginStatus.isNew -> view.setImageResource(R.drawable.icon_new_releases)
         PluginStatus.incompatible -> view.setImageResource(R.drawable.icon_close)
         PluginStatus.unknown -> view.setImageResource(R.drawable.icon_question_mark)
+        PluginStatus.disabled -> view.setImageResource(R.drawable.icon_close)
         else -> view.setImageResource(R.drawable.icon_question_mark)
     }
 }

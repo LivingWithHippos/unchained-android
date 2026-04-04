@@ -69,6 +69,7 @@ constructor(private val repositoryDataDao: RepositoryDataDao) {
                         version = it.plugin,
                         engine = it.engine,
                         link = it.link,
+                        disabled = plugin.disabled ?: false
                     )
                 }
             )

@@ -550,4 +550,5 @@
     <string name="title_search_start_destination">Arama başlangıç ekranı</string>
     <string name="summary_search_start_destination">“Arama” sekmesine girildiğinde açılacak sayfa</string>
     <string name="please_select_plugins">Lütfen en az bir eklenti seçin</string>
+    <string name="disabled">Engelli</string>
 </resources>

@@ -19,6 +19,14 @@ data class Plugin(
     @param:Json(name = "supported_categories") val supportedCategories: SupportedCategories,
     @param:Json(name = "search") val search: PluginSearch,
     @param:Json(name = "download") val download: PluginDownload,
+    /**
+     * Selected plugins are the ones enabled for the mass search in the Plugin Search Fragment.
+     */
+    @param:Json(name = "selected") var selected: Boolean?,
+    /**
+     * Repository is the path or url of the repository, something to distinguish plugins with the same name
+     */
+    @param:Json(name = "repository") var repository: String?
 ) : Parcelable {
     fun isCompatible(): Boolean {
         return engineVersion.toInt() == Parser.PLUGIN_ENGINE_VERSION.toInt() &&
