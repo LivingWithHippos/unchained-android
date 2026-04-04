@@ -357,6 +357,7 @@
     <string name="show_folder_filters_summary">Afficher les filtres pour la taille des fichiers et le type de média dans l\'écran du dossier</string>
     <string name="title_main_screen">Page d\'accueil</string>
     <string name="summary_main_screen">Onglet à ouvrir au démarrage</string>
+    <string name="new_string">Nouveau</string>
     <string name="select_deselect_all">Tout sélectionner ou désélectionner</string>
     <string name="select_one_item">Sélectionnez au moins un élément</string>
     <string name="torrent_monitoring_description">Surveillez le téléchargement de vos torrents sur les serveurs Real Debrid.</string>
@@ -542,4 +543,7 @@
     <string name="complete_address">Adresse complète avec numéro de port</string>
     <string name="remote_services_description">Les services sont des programmes exécutés sur des ordinateurs qui servent à rechercher des fichiers ou à lire des fichiers multimédias</string>
     <string name="service_added">Service ajouté</string>
+    <string name="please_select_plugins">Veuillez sélectionner au moins un plugin</string>
+    <string name="title_search_start_destination">Écran de recherche</string>
+    <string name="summary_search_start_destination">Page à afficher lors de l\'accès à l\'onglet « Recherche »</string>
 </resources>
