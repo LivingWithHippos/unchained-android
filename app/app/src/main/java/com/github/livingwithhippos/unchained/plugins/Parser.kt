@@ -16,6 +16,7 @@ import com.github.livingwithhippos.unchained.utilities.extension.formatStringFor
 import com.github.livingwithhippos.unchained.utilities.extension.removeWebFormatting
 import com.github.livingwithhippos.unchained.utilities.parseCommonSize
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
@@ -90,6 +91,8 @@ class Parser(
                                 plugin.download.internalParser != null -> {
                                     emit(ParserResult.SearchStarted(-1))
                                     val innerSource = mutableListOf<String>()
+                                    // todo: check if one is failing for cloudflare, then skip the
+                                    //  others
 
                                     plugin.download.internalParser.link.regexps.forEach {
                                         val linksFound = parseList(it, source, plugin.url)
@@ -98,9 +101,7 @@ class Parser(
                                             plugin.download.internalParser.link.regexUse == "first"
                                         ) {
                                             // if I wanted to get only the first matches I can exit
-                                            // the
-                                            // loop if I have
-                                            // results
+                                            // the loop if I have results
                                             if (linksFound.isNotEmpty()) return@forEach
                                         }
                                     }
@@ -108,6 +109,7 @@ class Parser(
                                     emit(ParserResult.SearchStarted(innerSource.size))
                                     if (innerSource.isNotEmpty()) {
                                         for (link in innerSource) {
+                                            delay(50)
                                             // parse every page linked to the results
                                             val s = getSource(link)
                                             if (s.isNotBlank()) {
@@ -165,6 +167,7 @@ class Parser(
                                         )
                                     emit(ParserResult.SearchStarted(links.size))
                                     links.forEach {
+                                        delay(50)
                                         val itemSource = getSource(it)
                                         if (itemSource.isNotBlank()) {
                                             val scrapedItem =
