@@ -162,16 +162,14 @@ constructor(
             if (installedPlugins.isNullOrEmpty()) {
                 installMultiplePlugins(context, emptyList())
             } else {
-                val updatablePlugins =
-                    remotePlugins.filter { remotePlugin ->
-                        val installedVersion: Plugin? =
-                            installedPlugins.firstOrNull {
-                                it.name.equals(remotePlugin.plugin, ignoreCase = true)
-                            }
-
-                        if (installedVersion == null) false
-                        else installedVersion.version < remotePlugin.version
+                val updatablePlugins = remotePlugins.filter { remotePlugin ->
+                    val installedVersion: Plugin? = installedPlugins.firstOrNull {
+                        it.name.equals(remotePlugin.plugin, ignoreCase = true)
                     }
+
+                    if (installedVersion == null) false
+                    else installedVersion.version < remotePlugin.version
+                }
 
                 installMultiplePlugins(context, updatablePlugins)
             }

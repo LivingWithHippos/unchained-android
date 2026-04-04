@@ -118,11 +118,10 @@ class ListsTabFragment : UnchainedFragment() {
                                 // simulate debounce
                                 queryJob?.cancel()
 
-                                queryJob =
-                                    lifecycleScope.launch {
-                                        delay(500)
-                                        if (isActive) viewModel.setListFilter(newText)
-                                    }
+                                queryJob = lifecycleScope.launch {
+                                    delay(500)
+                                    if (isActive) viewModel.setListFilter(newText)
+                                }
                                 return true
                             }
                         }

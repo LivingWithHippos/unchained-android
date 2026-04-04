@@ -212,8 +212,7 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
                         getPluginItemFromVersion(pickedVersion, pickedStatus, repository.key.author)
                     }
                 )
-            }
-            else {
+            } else {
                 // check against installed plugins from this repo
                 plugins.addAll(
                     repository.value.map { onlinePlugin ->
@@ -243,7 +242,7 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
                                         version = 0f,
                                         engine = 0.0f,
                                         link = repository.key.link,
-                                        disabled = false
+                                        disabled = false,
                                     )
                                 } else {
                                     Timber.w(
@@ -255,7 +254,8 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
                                         version = installedPlugin.version,
                                         engine = 0.0f,
                                         link = repository.key.link,
-                                        disabled = onlinePlugin.value.firstOrNull()?.disabled ?: false,
+                                        disabled =
+                                            onlinePlugin.value.firstOrNull()?.disabled ?: false,
                                     )
                                 }
 

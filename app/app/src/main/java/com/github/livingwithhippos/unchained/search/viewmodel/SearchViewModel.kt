@@ -97,10 +97,12 @@ constructor(
     fun fetchPlugins(context: Context) {
         viewModelScope.launch {
             val pluginsResult: Pair<List<Plugin>, Int> = pluginRepository.getPlugins(context)
-            val selectedPlugins = databasePluginsRepository.getEnabledPlugins().values.flatten().map { it.name }
-            val pluginsWithSelection = pluginsResult.first.map { plugin ->
-                plugin.copy(selected = selectedPlugins.contains(plugin.name))
-            }
+            val selectedPlugins =
+                databasePluginsRepository.getEnabledPlugins().values.flatten().map { it.name }
+            val pluginsWithSelection =
+                pluginsResult.first.map { plugin ->
+                    plugin.copy(selected = selectedPlugins.contains(plugin.name))
+                }
             pluginLiveData.postValue(pluginsWithSelection to pluginsResult.second)
             setPlugins(pluginsResult.first)
         }
@@ -188,63 +190,60 @@ constructor(
         // search for each one and publish
         job?.cancelIfActive()
 
-        job =
-            viewModelScope.launch {
-                // get category if selected
-                // get all selected plugins
-                // retrieve plugins from disk if needed
-                // search for each one and publish
+        job = viewModelScope.launch {
+            // get category if selected
+            // get all selected plugins
+            // retrieve plugins from disk if needed
+            // search for each one and publish
 
-                // todo: use something better to recognize them, hash repo + plugin name/url?
-                val enabledPlugins: List<Plugin> =
-                    databasePluginsRepository.getEnabledPlugins().values.flatten().mapNotNull {
-                        repoPlugin ->
-                        pluginLiveData.value?.first?.firstOrNull { it.name == repoPlugin.name }
-                    }
-                if (enabledPlugins.isEmpty()) {
-                    parsingLiveData.postValue(ParserResult.NoEnabledPlugins)
-                    return@launch
+            // todo: use something better to recognize them, hash repo + plugin name/url?
+            val enabledPlugins: List<Plugin> =
+                databasePluginsRepository.getEnabledPlugins().values.flatten().mapNotNull {
+                    repoPlugin ->
+                    pluginLiveData.value?.first?.firstOrNull { it.name == repoPlugin.name }
                 }
+            if (enabledPlugins.isEmpty()) {
+                parsingLiveData.postValue(ParserResult.NoEnabledPlugins)
+                return@launch
+            }
 
-                parsingLiveData.postValue(ParserResult.SearchStarted(-1))
-                delay(100)
+            parsingLiveData.postValue(ParserResult.SearchStarted(-1))
+            delay(100)
 
-                supervisorScope {
-                    val searches =
-                        enabledPlugins.map { plugin ->
-                            launch {
-                                Timber.d("Starting search for plugin ${plugin.name}")
-                                parser.completeSearch(plugin, query, category, page).collect {
-                                    when (it) {
-                                        is ParserResult.SingleResult -> {
-                                            parsingLiveData.postValue(
-                                                ParserResult.SingleResult(it.value)
-                                            )
-                                        }
-                                        is ParserResult.Results -> {
-                                            // here I have all the results at once
-                                            parsingLiveData.postValue(ParserResult.Results(it.values))
-                                            Timber.w("Passingg ${it.values.size} results")
-                                        }
-                                        is ParserResult.SearchStarted -> {
-                                            // not needed when run in parallel
-                                        }
-                                        is ParserResult.SearchFinished -> {
-                                            // emitted once after all plugin searches complete
-                                        }
-                                        else -> {
-                                            // forward plugin-specific errors while keeping aggregate flow alive
-                                            parsingLiveData.postValue(it)
-                                        }
-                                    }
+            supervisorScope {
+                val searches = enabledPlugins.map { plugin ->
+                    launch {
+                        Timber.d("Starting search for plugin ${plugin.name}")
+                        parser.completeSearch(plugin, query, category, page).collect {
+                            when (it) {
+                                is ParserResult.SingleResult -> {
+                                    parsingLiveData.postValue(ParserResult.SingleResult(it.value))
+                                }
+                                is ParserResult.Results -> {
+                                    // here I have all the results at once
+                                    parsingLiveData.postValue(ParserResult.Results(it.values))
+                                    Timber.w("Passingg ${it.values.size} results")
+                                }
+                                is ParserResult.SearchStarted -> {
+                                    // not needed when run in parallel
+                                }
+                                is ParserResult.SearchFinished -> {
+                                    // emitted once after all plugin searches complete
+                                }
+                                else -> {
+                                    // forward plugin-specific errors while keeping aggregate flow
+                                    // alive
+                                    parsingLiveData.postValue(it)
                                 }
                             }
                         }
-                    searches.joinAll()
+                    }
                 }
-
-                parsingLiveData.postValue(ParserResult.SearchFinished)
+                searches.joinAll()
             }
+
+            parsingLiveData.postValue(ParserResult.SearchFinished)
+        }
 
         return parsingLiveData
     }

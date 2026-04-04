@@ -101,9 +101,7 @@ class Parser(
                             plugin.download.internalParser.link.regexps.forEach {
                                 val linksFound = parseList(it, source, plugin.url)
                                 innerSource.addAll(linksFound)
-                                if (
-                                    plugin.download.internalParser.link.regexUse == "first"
-                                ) {
+                                if (plugin.download.internalParser.link.regexUse == "first") {
                                     // if I wanted to get only the first matches I can exit
                                     // the loop if I have results
                                     if (linksFound.isNotEmpty()) return@forEach
@@ -195,7 +193,6 @@ class Parser(
                         else -> emit(ParserResult.MissingImplementationError)
                     }
                 }
-
             }
         }
 
@@ -807,7 +804,7 @@ class Parser(
 
             if (
                 !name.isNullOrBlank() &&
-                (magnets.isNotEmpty() || torrents.isNotEmpty() || hosting.isNotEmpty())
+                    (magnets.isNotEmpty() || torrents.isNotEmpty() || hosting.isNotEmpty())
             ) {
 
                 val seeders = parseSingle(regexes.seedersRegex, html, url)

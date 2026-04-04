@@ -230,8 +230,7 @@ class PluginSearchFragment : UnchainedFragment(), SearchItemListener {
                             Timber.d("Search finished")
                             binding.searchingProgress.visibility = View.INVISIBLE
                         }
-                        is ParserResult.EmptyInnerLinks -> {
-                        }
+                        is ParserResult.EmptyInnerLinks -> {}
                         is ParserResult.NoEnabledPlugins -> {
                             context?.showToast(R.string.please_select_plugins)
                         }

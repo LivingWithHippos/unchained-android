@@ -333,39 +333,37 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
 
     private fun showDialogsIfNeeded() {
         if (viewModel.isPluginDialogNeeded()) {
-            val alertDialog: AlertDialog? =
-                activity?.let {
-                    val builder = AlertDialog.Builder(it)
-                    builder.apply {
-                        setTitle(R.string.search_plugins)
-                        setMessage(R.string.plugin_description_message)
-                        setPositiveButton(R.string.close) { _, _ ->
-                            viewModel.setPluginDialogNeeded(false)
-                        }
+            val alertDialog: AlertDialog? = activity?.let {
+                val builder = AlertDialog.Builder(it)
+                builder.apply {
+                    setTitle(R.string.search_plugins)
+                    setMessage(R.string.plugin_description_message)
+                    setPositiveButton(R.string.close) { _, _ ->
+                        viewModel.setPluginDialogNeeded(false)
                     }
-                    builder.create()
                 }
+                builder.create()
+            }
             alertDialog?.show()
         }
 
         if (viewModel.isDOHDialogNeeded()) {
-            val alertDialog: AlertDialog? =
-                activity?.let {
-                    val builder = AlertDialog.Builder(it)
-                    builder.apply {
-                        setTitle(R.string.doh)
-                        setMessage(R.string.doh_description_message)
-                        setPositiveButton(R.string.enable) { _, _ ->
-                            viewModel.enableDOH(true)
-                            viewModel.setDOHDialogNeeded(false)
-                        }
-                        setNegativeButton(R.string.disable) { _, _ ->
-                            viewModel.enableDOH(false)
-                            viewModel.setDOHDialogNeeded(false)
-                        }
+            val alertDialog: AlertDialog? = activity?.let {
+                val builder = AlertDialog.Builder(it)
+                builder.apply {
+                    setTitle(R.string.doh)
+                    setMessage(R.string.doh_description_message)
+                    setPositiveButton(R.string.enable) { _, _ ->
+                        viewModel.enableDOH(true)
+                        viewModel.setDOHDialogNeeded(false)
                     }
-                    builder.create()
+                    setNegativeButton(R.string.disable) { _, _ ->
+                        viewModel.enableDOH(false)
+                        viewModel.setDOHDialogNeeded(false)
+                    }
                 }
+                builder.create()
+            }
             alertDialog?.show()
         }
     }

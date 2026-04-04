@@ -89,8 +89,10 @@ class PluginRepository @Inject constructor() {
                         if (currentFile.isDirectory) {
                             if (currentPluginList.isNotEmpty()) {
                                 // finished scanning a directory and passing to a new one
-                                // important! if we don't use toList() we'll have issues with its reference!
-                                pluginRepoFileAssociation[currentFolder] = currentPluginList.toList()
+                                // important! if we don't use toList() we'll have issues with its
+                                // reference!
+                                pluginRepoFileAssociation[currentFolder] =
+                                    currentPluginList.toList()
                                 currentPluginList.clear()
                             }
                             currentFolder = currentFile.name
