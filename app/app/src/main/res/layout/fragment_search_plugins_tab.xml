@@ -40,16 +40,29 @@
         app:layout_constraintStart_toEndOf="@id/tfSearch"
         app:layout_constraintTop_toTopOf="@id/tfSearch" />
 
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/searchingProgress"
+        style="@style/Widget.MaterialComponents.LinearProgressIndicator"
+        android:layout_width="0dp"
+        android:layout_height="7dp"
+        android:layout_marginTop="5dp"
+        android:indeterminate="true"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@id/bStartSearch"
+        app:layout_constraintEnd_toEndOf="@id/bPluginSettings"
+        app:layout_constraintStart_toStartOf="@id/tfSearch"
+        app:layout_constraintTop_toBottomOf="@id/tfSearch" />
+
     <Button
         android:id="@+id/bStartSearch"
         style="@style/Widget.Material3.Button.OutlinedButton"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="5dp"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:text="@string/search"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tfSearch"
+        app:layout_constraintTop_toBottomOf="@id/searchingProgress"
         app:layout_constraintBottom_toTopOf="@id/llList"/>
 
     <LinearLayout

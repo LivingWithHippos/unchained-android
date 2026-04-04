@@ -22,9 +22,12 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.supervisorScope
 import timber.log.Timber
 
 @HiltViewModel
@@ -202,39 +205,41 @@ constructor(
                 parsingLiveData.postValue(ParserResult.SearchStarted(-1))
                 delay(100)
 
-                enabledPlugins.forEach { plugin ->
-                    launch {
-                        Timber.d("Starting search for plugin ${plugin.name}")
-                        parser
-                            .completeSearch(plugin, query, category, page)
-                            .onEach {
-                                when (it) {
-                                    is ParserResult.SingleResult -> {
-                                        parsingLiveData.postValue(
-                                            ParserResult.SingleResult(it.value)
-                                        )
-                                    }
-                                    is ParserResult.Results -> {
-                                        // here I have all the results at once
-                                        parsingLiveData.postValue(ParserResult.Results(it.values))
-                                        Timber.w("Passingg ${it.values.size} results")
-                                    }
-                                    is ParserResult.SearchStarted -> {
-                                        // not needed when run in parallel
-                                    }
-                                    is ParserResult.SearchFinished -> {
-                                        // todo: only when all are finished
-                                        // parsingLiveData.value = it
-                                    }
-                                    else -> {
-                                        // todo: manage
-                                        // parsingLiveData.value = it
+                supervisorScope {
+                    val searches =
+                        enabledPlugins.map { plugin ->
+                            launch {
+                                Timber.d("Starting search for plugin ${plugin.name}")
+                                parser.completeSearch(plugin, query, category, page).collect {
+                                    when (it) {
+                                        is ParserResult.SingleResult -> {
+                                            parsingLiveData.postValue(
+                                                ParserResult.SingleResult(it.value)
+                                            )
+                                        }
+                                        is ParserResult.Results -> {
+                                            // here I have all the results at once
+                                            parsingLiveData.postValue(ParserResult.Results(it.values))
+                                            Timber.w("Passingg ${it.values.size} results")
+                                        }
+                                        is ParserResult.SearchStarted -> {
+                                            // not needed when run in parallel
+                                        }
+                                        is ParserResult.SearchFinished -> {
+                                            // emitted once after all plugin searches complete
+                                        }
+                                        else -> {
+                                            // forward plugin-specific errors while keeping aggregate flow alive
+                                            parsingLiveData.postValue(it)
+                                        }
                                     }
                                 }
                             }
-                            .launchIn(viewModelScope)
-                    }
+                        }
+                    searches.joinAll()
                 }
+
+                parsingLiveData.postValue(ParserResult.SearchFinished)
             }
 
         return parsingLiveData

@@ -219,9 +219,11 @@ class PluginSearchFragment : UnchainedFragment(), SearchItemListener {
                             Timber.d("Search started")
                             searchResultsList.clear()
                             submitSortedList(adapter, searchResultsList)
+                            binding.searchingProgress.visibility = View.VISIBLE
                         }
                         is ParserResult.SearchFinished -> {
                             Timber.d("Search finished")
+                            binding.searchingProgress.visibility = View.INVISIBLE
                         }
                         is ParserResult.EmptyInnerLinks -> {
                         }
