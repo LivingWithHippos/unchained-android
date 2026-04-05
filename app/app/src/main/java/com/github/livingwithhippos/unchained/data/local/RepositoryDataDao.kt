@@ -56,6 +56,11 @@ interface RepositoryDataDao {
     )
     suspend fun getEnabledPlugins(): Map<RepositoryInfo, List<RepositoryPlugin>>
 
+    @Query("SELECT * FROM plugin WHERE plugin.search_enabled = 1")
+    suspend fun getEnabledPluginsOnly(): List<RepositoryPlugin>
+
+    @Query("SELECT * FROM plugin") suspend fun getAllPlugins(): List<RepositoryPlugin>
+
     @Query(
         "SELECT * FROM repository_info JOIN " +
             "plugin ON plugin.repository = repository_info.link " +

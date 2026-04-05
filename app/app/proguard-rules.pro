@@ -39,12 +39,5 @@
 -dontwarn org.openjsse.net.ssl.OpenJSSE
 -dontwarn aQute.bnd.annotation.spi.ServiceProvider
 
-# Please add these rules to your existing keep rules in order to suppress warnings.
-# This is generated automatically by the Android Gradle plugin.
--dontwarn javax.xml.stream.FactoryConfigurationError
--dontwarn javax.xml.stream.Location
--dontwarn javax.xml.stream.XMLEventFactory
--dontwarn javax.xml.stream.XMLInputFactory
--dontwarn javax.xml.stream.XMLOutputFactory
--dontwarn javax.xml.stream.XMLResolver
--dontwarn javax.xml.stream.util.XMLEventAllocator
+# Keep Protobuf Lite generated classes
+-keep class * extends com.google.protobuf.GeneratedMessageLite { *; }

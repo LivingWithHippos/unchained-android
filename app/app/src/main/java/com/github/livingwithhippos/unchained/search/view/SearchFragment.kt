@@ -73,15 +73,16 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
             findNavController().navigate(action)
         }
 
-        viewModel.pluginLiveData.observe(viewLifecycleOwner) { parsedPlugins ->
-            val plugins = parsedPlugins.plugins
-            if (parsedPlugins.errors > 0)
+        viewModel.pluginLiveData.observe(viewLifecycleOwner) { event ->
+            val plugins = event.peekContent().plugins
+            val errors = event.peekContent().errors
+            if (errors > 0)
                 requireContext()
                     .showToast(
                         resources.getQuantityString(
                             R.plurals.plugins_version_old_format,
-                            parsedPlugins.errors,
-                            parsedPlugins.errors,
+                            errors,
+                            errors,
                         )
                     )
 

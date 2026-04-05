@@ -48,11 +48,17 @@ class PluginSearchFragment : UnchainedFragment(), SearchItemListener {
 
         setup(binding)
 
-        viewModel.pluginLiveData.observe(viewLifecycleOwner) { parsedPlugins ->
+        viewModel.pluginLiveData.observe(viewLifecycleOwner) { event ->
+            val parsedPlugins = event.getContentIfNotHandled() ?: return@observe
             setupAndShowSheet(inflater, parsedPlugins)
         }
 
         return binding.root
+    }
+
+    override fun onResume() {
+        context?.let { viewModel.fetchPluginsAndServices(it, show = false) }
+        super.onResume()
     }
 
     override fun onDestroyView() {
@@ -68,9 +74,10 @@ class PluginSearchFragment : UnchainedFragment(), SearchItemListener {
         sideSheetDialog.setContentView(R.layout.sidesheet_search_plugins_options)
 
         sideSheetDialog.findViewById<Button>(R.id.btnOpenRepositories)?.setOnClickListener {
+            binding.tiSearch.hideKeyboard()
+            sideSheetDialog.dismiss()
             val action = PluginSearchFragmentDirections.actionPluginSearchToPluginsRepository()
             findNavController().navigate(action)
-            sideSheetDialog.dismiss()
         }
 
         sideSheetDialog.findViewById<Button>(R.id.closeButton)?.setOnClickListener {
@@ -154,7 +161,9 @@ class PluginSearchFragment : UnchainedFragment(), SearchItemListener {
             orderPicker.setText(currentOrder, false)
         }
 
-        sideSheetDialog.show()
+        if (pluginsAndServices.showSheet) {
+            sideSheetDialog.show()
+        }
     }
 
     private fun stringToCategory(pickerText: String): String {
