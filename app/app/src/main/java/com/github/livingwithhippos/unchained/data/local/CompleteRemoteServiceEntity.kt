@@ -25,6 +25,7 @@ class CompleteRemoteService(
     // or also storing a json object as string and parsing it back
     // extra field example: api token
     @ColumnInfo(name = "api_token") val apiToken: String = "",
+    @ColumnInfo(name = "enabled") val enabled: Boolean = true,
     @ColumnInfo(name = "field_1") val fieldOne: String = "",
     @ColumnInfo(name = "field_2") val fieldTwo: String = "",
     @ColumnInfo(name = "field_3") val fieldThree: String = "",

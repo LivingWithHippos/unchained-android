@@ -27,7 +27,13 @@ object DatabaseModule {
     @Singleton
     fun provideDatabase(@ApplicationContext appContext: Context): UnchaineDB {
         return Room.databaseBuilder(appContext, UnchaineDB::class.java, "unchained_db")
-            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_8_9)
+            .addMigrations(
+                MIGRATION_1_2,
+                MIGRATION_2_3,
+                MIGRATION_3_4,
+                MIGRATION_8_9,
+                MIGRATION_9_10,
+            )
             .build()
     }
 
@@ -86,6 +92,15 @@ object DatabaseModule {
             override fun migrate(db: SupportSQLiteDatabase) {
                 db.execSQL(
                     "ALTER TABLE plugin_version ADD COLUMN disabled INTEGER NOT NULL DEFAULT 0"
+                )
+            }
+        }
+
+    private val MIGRATION_9_10 =
+        object : Migration(9, 10) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL(
+                    "ALTER TABLE complete_remote_service ADD COLUMN enabled INTEGER NOT NULL DEFAULT 1"
                 )
             }
         }

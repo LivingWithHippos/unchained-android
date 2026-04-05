@@ -4,8 +4,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.livingwithhippos.unchained.data.local.CompleteRemoteService
-import com.github.livingwithhippos.unchained.data.local.CompleteRemoteServiceDao
 import com.github.livingwithhippos.unchained.data.local.RemoteServiceType
+import com.github.livingwithhippos.unchained.data.repository.ServiceRepository
 import com.github.livingwithhippos.unchained.di.ClassicClient
 import com.github.livingwithhippos.unchained.remotedevice.viewmodel.ServiceErrorType
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,7 +20,7 @@ import timber.log.Timber
 class ServiceViewModel
 @Inject
 constructor(
-    private val serviceDao: CompleteRemoteServiceDao,
+    private val serviceRepository: ServiceRepository,
     @param:ClassicClient private val client: OkHttpClient,
 ) : ViewModel() {
 
@@ -88,21 +88,21 @@ constructor(
 
     fun fetchAllServices() {
         viewModelScope.launch {
-            serviceLiveData.postValue(ServiceEvent.AllServices(serviceDao.getServices()))
+            serviceLiveData.postValue(ServiceEvent.AllServices(serviceRepository.getServices()))
         }
     }
 
     fun updateService(service: CompleteRemoteService) {
         viewModelScope.launch {
-            val insertedRow = serviceDao.upsertService(service)
-            val serviceID = serviceDao.getServiceIDByRow(insertedRow)
+            val insertedRow = serviceRepository.upsertService(service)
+            val serviceID = serviceRepository.getServiceIDByRow(insertedRow)
             // if the default service is updated, remove the old preference
             if (serviceID != null) {
                 if (service.isDefault) {
                     // fixme: not resetting previous defaults
-                    serviceDao.setDefaultService(serviceID)
+                    serviceRepository.setDefaultService(serviceID)
                 }
-                val newService = serviceDao.getService(serviceID)
+                val newService = serviceRepository.getService(serviceID)
                 if (newService != null) serviceLiveData.postValue(ServiceEvent.Service(newService))
             }
         }
@@ -110,14 +110,14 @@ constructor(
 
     fun deleteService(service: CompleteRemoteService) {
         viewModelScope.launch {
-            serviceDao.deleteService(service)
+            serviceRepository.deleteService(service)
             serviceLiveData.postValue(ServiceEvent.DeletedService(service))
         }
     }
 
     fun deleteAllServices() {
         viewModelScope.launch {
-            serviceDao.deleteAll()
+            serviceRepository.deleteAll()
             serviceLiveData.postValue(ServiceEvent.DeletedAll)
         }
     }

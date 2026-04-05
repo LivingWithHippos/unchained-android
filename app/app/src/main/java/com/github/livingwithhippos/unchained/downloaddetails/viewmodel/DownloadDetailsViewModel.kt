@@ -6,7 +6,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.livingwithhippos.unchained.data.local.CompleteRemoteService
-import com.github.livingwithhippos.unchained.data.local.CompleteRemoteServiceDao
 import com.github.livingwithhippos.unchained.data.local.CompleteRemoteServiceDetails
 import com.github.livingwithhippos.unchained.data.local.RemoteServiceType
 import com.github.livingwithhippos.unchained.data.model.KodiDevice
@@ -14,6 +13,7 @@ import com.github.livingwithhippos.unchained.data.model.Stream
 import com.github.livingwithhippos.unchained.data.repository.DownloadRepository
 import com.github.livingwithhippos.unchained.data.repository.KodiRepository
 import com.github.livingwithhippos.unchained.data.repository.RemoteRepository
+import com.github.livingwithhippos.unchained.data.repository.ServiceRepository
 import com.github.livingwithhippos.unchained.data.repository.StreamingRepository
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.Event
@@ -34,7 +34,7 @@ constructor(
     private val downloadRepository: DownloadRepository,
     private val kodiRepository: KodiRepository,
     private val remoteServiceRepository: RemoteRepository,
-    private val completeRemoteServiceDao: CompleteRemoteServiceDao,
+    private val serviceRepository: ServiceRepository,
 ) : ViewModel() {
 
     val streamLiveData = MutableLiveData<Stream?>()
@@ -115,18 +115,17 @@ constructor(
         viewModelScope.launch {
             val services: List<CompleteRemoteService> =
                 if (mediaPlayerOnly) {
-                    completeRemoteServiceDao.getMediaPlayerServices(
+                    serviceRepository.getServicesTypes(
                         types = listOf(RemoteServiceType.KODI.value, RemoteServiceType.VLC.value)
                     )
-                } else completeRemoteServiceDao.getServices()
+                } else serviceRepository.getServices()
 
             eventLiveData.postEvent(DownloadEvent.AllServices(services))
         }
     }
 
     suspend fun allServices(): Flow<List<CompleteRemoteService>> {
-        // todo: move to repo
-        return completeRemoteServiceDao.getMediaPlayerServicesFlow(
+        return serviceRepository.getServicesTypesFlow(
             types = listOf(RemoteServiceType.KODI.value, RemoteServiceType.VLC.value)
         )
     }

@@ -74,14 +74,14 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
         }
 
         viewModel.pluginLiveData.observe(viewLifecycleOwner) { parsedPlugins ->
-            val plugins = parsedPlugins.first
-            if (parsedPlugins.second > 0)
+            val plugins = parsedPlugins.plugins
+            if (parsedPlugins.errors > 0)
                 requireContext()
                     .showToast(
                         resources.getQuantityString(
                             R.plurals.plugins_version_old_format,
-                            parsedPlugins.second,
-                            parsedPlugins.second,
+                            parsedPlugins.errors,
+                            parsedPlugins.errors,
                         )
                     )
 

@@ -13,12 +13,13 @@ import com.github.livingwithhippos.unchained.base.UnchainedFragment
 import com.github.livingwithhippos.unchained.databinding.FragmentSearchPluginsTabBinding
 import com.github.livingwithhippos.unchained.folderlist.view.FolderListFragment
 import com.github.livingwithhippos.unchained.plugins.ParserResult
-import com.github.livingwithhippos.unchained.plugins.model.Plugin
 import com.github.livingwithhippos.unchained.plugins.model.ScrapedItem
 import com.github.livingwithhippos.unchained.search.model.SearchItemAdapter
 import com.github.livingwithhippos.unchained.search.model.SearchItemListener
 import com.github.livingwithhippos.unchained.search.view.SearchFragment.Companion.digitRegex
+import com.github.livingwithhippos.unchained.search.viewmodel.PluginsAndServices
 import com.github.livingwithhippos.unchained.search.viewmodel.SearchViewModel
+import com.github.livingwithhippos.unchained.utilities.extension.getThemeColor
 import com.github.livingwithhippos.unchained.utilities.extension.hideKeyboard
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.google.android.material.chip.Chip
@@ -32,8 +33,6 @@ import timber.log.Timber
 class PluginSearchFragment : UnchainedFragment(), SearchItemListener {
 
     private val viewModel: SearchViewModel by viewModels()
-
-    private val pluginsList: MutableList<Plugin> = mutableListOf()
     private val searchResultsList: MutableList<ScrapedItem> = mutableListOf()
 
     private var _binding: FragmentSearchPluginsTabBinding? = null
@@ -50,9 +49,7 @@ class PluginSearchFragment : UnchainedFragment(), SearchItemListener {
         setup(binding)
 
         viewModel.pluginLiveData.observe(viewLifecycleOwner) { parsedPlugins ->
-            if (pluginsList.isNotEmpty()) pluginsList.clear()
-            pluginsList.addAll(parsedPlugins.first)
-            setupAndShowSheet(inflater, parsedPlugins.first)
+            setupAndShowSheet(inflater, parsedPlugins)
         }
 
         return binding.root
@@ -63,7 +60,10 @@ class PluginSearchFragment : UnchainedFragment(), SearchItemListener {
         _binding = null
     }
 
-    private fun setupAndShowSheet(inflater: LayoutInflater, plugins: List<Plugin>) {
+    private fun setupAndShowSheet(
+        inflater: LayoutInflater,
+        pluginsAndServices: PluginsAndServices,
+    ) {
         val sideSheetDialog = SideSheetDialog(requireContext())
         sideSheetDialog.setContentView(R.layout.sidesheet_search_plugins_options)
 
@@ -80,7 +80,7 @@ class PluginSearchFragment : UnchainedFragment(), SearchItemListener {
         val pluginsChipsGroup: ChipGroup =
             sideSheetDialog.findViewById<ChipGroup>(R.id.pluginsChipGroup) ?: return
 
-        for (plugin in plugins) {
+        for (plugin in pluginsAndServices.plugins) {
             val pluginChip: Chip =
                 (inflater.inflate(R.layout.custom_chip_layout, pluginsChipsGroup, false) as Chip)
                     .apply {
@@ -92,7 +92,32 @@ class PluginSearchFragment : UnchainedFragment(), SearchItemListener {
                 viewModel.setPluginEnabled(plugin.name, isChecked)
             }
             pluginsChipsGroup.addView(pluginChip)
-            // todo: on checked listener to get the enabled list on search click
+        }
+
+        if (pluginsAndServices.services.isNotEmpty()) {
+            val primaryColor = getThemeColor(requireContext(), android.R.attr.colorPrimary)
+            // add a divider between plugins and services
+            val divider =
+                View(requireContext()).apply {
+                    layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1)
+                    setBackgroundColor(primaryColor)
+                }
+            pluginsChipsGroup.addView(divider)
+
+            for (service in pluginsAndServices.services) {
+                val pluginChip: Chip =
+                    (inflater.inflate(R.layout.custom_chip_layout, pluginsChipsGroup, false)
+                            as Chip)
+                        .apply {
+                            text = service.name
+                            isCheckable = true
+                            isChecked = service.enabled == true
+                        }
+                pluginChip.setOnCheckedChangeListener { _, isChecked ->
+                    viewModel.setServiceEnabled(service, isChecked)
+                }
+                pluginsChipsGroup.addView(pluginChip)
+            }
         }
 
         sideSheetDialog.findViewById<Chip>(R.id.allPluginsChip)?.setOnCheckedChangeListener {
@@ -199,7 +224,9 @@ class PluginSearchFragment : UnchainedFragment(), SearchItemListener {
 
     private fun setup(binding: FragmentSearchPluginsTabBinding) {
         binding.tfSearch.hideKeyboard()
-        binding.bPluginSettings.setOnClickListener { viewModel.fetchPlugins(requireContext()) }
+        binding.bPluginSettings.setOnClickListener {
+            viewModel.fetchPluginsAndServices(requireContext())
+        }
         val adapter = SearchItemAdapter(this)
         binding.rvSearchList.adapter = adapter
 
@@ -208,35 +235,38 @@ class PluginSearchFragment : UnchainedFragment(), SearchItemListener {
             if (query.isBlank()) {
                 // todo: add string
                 context?.showToast(R.string.missing_parameter)
-            } else {
-                viewModel.pluginSearchWithSettings(query = query).observe(viewLifecycleOwner) {
-                    result ->
-                    when (result) {
-                        is ParserResult.SingleResult -> {
-                            searchResultsList.add(result.value)
-                            submitSortedList(adapter, searchResultsList)
-                        }
-                        is ParserResult.Results -> {
-                            searchResultsList.addAll(result.values)
-                            submitSortedList(adapter, searchResultsList)
-                        }
-                        is ParserResult.SearchStarted -> {
-                            Timber.d("Search started")
-                            searchResultsList.clear()
-                            submitSortedList(adapter, searchResultsList)
-                            binding.searchingProgress.visibility = View.VISIBLE
-                        }
-                        is ParserResult.SearchFinished -> {
-                            Timber.d("Search finished")
-                            binding.searchingProgress.visibility = View.INVISIBLE
-                        }
-                        is ParserResult.EmptyInnerLinks -> {}
-                        is ParserResult.NoEnabledPlugins -> {
-                            context?.showToast(R.string.please_select_plugins)
-                        }
-                        else -> {
-                            Timber.d("Unknown result: $result")
-                        }
+                return@setOnClickListener
+            }
+            binding.tiSearch.hideKeyboard()
+            val searchLiveData = viewModel.pluginSearchWithSettings(query = query)
+            // Keep only one active observer for search events to avoid duplicate/lost UI updates.
+            searchLiveData.removeObservers(viewLifecycleOwner)
+            searchLiveData.observe(viewLifecycleOwner) { result ->
+                when (result) {
+                    is ParserResult.SingleResult -> {
+                        searchResultsList.add(result.value)
+                        submitSortedList(adapter, searchResultsList)
+                    }
+                    is ParserResult.Results -> {
+                        searchResultsList.addAll(result.values)
+                        submitSortedList(adapter, searchResultsList)
+                    }
+                    is ParserResult.SearchStarted -> {
+                        Timber.d("Search started")
+                        searchResultsList.clear()
+                        submitSortedList(adapter, searchResultsList)
+                        binding.searchingProgress.visibility = View.VISIBLE
+                    }
+                    is ParserResult.SearchFinished -> {
+                        Timber.d("Search finished")
+                        binding.searchingProgress.visibility = View.INVISIBLE
+                    }
+                    is ParserResult.EmptyInnerLinks -> {}
+                    is ParserResult.NoEnabledPlugins -> {
+                        context?.showToast(R.string.please_select_plugins)
+                    }
+                    else -> {
+                        Timber.d("Unknown result: $result")
                     }
                 }
             }

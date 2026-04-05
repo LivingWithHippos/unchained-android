@@ -7,11 +7,11 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.local.CompleteRemoteService
-import com.github.livingwithhippos.unchained.data.local.CompleteRemoteServiceDao
 import com.github.livingwithhippos.unchained.data.local.ProtoStore
 import com.github.livingwithhippos.unchained.data.local.RemoteDeviceDao
 import com.github.livingwithhippos.unchained.data.local.RepositoryDataDao
 import com.github.livingwithhippos.unchained.data.model.Repository
+import com.github.livingwithhippos.unchained.data.repository.ServiceRepository
 import com.github.livingwithhippos.unchained.utilities.DEFAULT_PLUGINS_REPOSITORY_LINK
 import com.github.livingwithhippos.unchained.utilities.TelemetryManager
 import dagger.hilt.android.HiltAndroidApp
@@ -35,8 +35,8 @@ class UnchainedApplication : Application() {
     @Inject lateinit var protoStore: ProtoStore
 
     @Inject lateinit var pluginRepositoryDataDao: RepositoryDataDao
-    @Inject lateinit var legacyServiceDao: RemoteDeviceDao
-    @Inject lateinit var newServiceDato: CompleteRemoteServiceDao
+    @Inject lateinit var legacyServiceRepository: RemoteDeviceDao
+    @Inject lateinit var newServiceRepository: ServiceRepository
 
     private val job = Job()
     private val scope = CoroutineScope(Dispatchers.Default + job)
@@ -60,13 +60,13 @@ class UnchainedApplication : Application() {
 
     private suspend fun migrateServices() {
         // todo: check migration in DatabaseModule
-        val legacyServices = legacyServiceDao.getDevicesAndServices()
+        val legacyServices = legacyServiceRepository.getDevicesAndServices()
         if (legacyServices.isEmpty()) return
 
         try {
             print("Migrating ${legacyServices.values.size} services from legacy database")
             legacyServices.forEach { (device, services) ->
-                newServiceDato.insertAllServices(
+                newServiceRepository.insertAllServices(
                     services.map {
                         CompleteRemoteService(
                             id = 0,
@@ -84,7 +84,7 @@ class UnchainedApplication : Application() {
                     }
                 )
             }
-            legacyServiceDao.deleteAll()
+            legacyServiceRepository.deleteAll()
         } catch (e: Exception) {
             print("Error migrating services: ${e.message}")
         }

@@ -63,6 +63,7 @@ object ApiFactory {
         if (BuildConfig.DEBUG) {
             val logInterceptor: HttpLoggingInterceptor =
                 HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY }
+            // HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.HEADERS }
 
             return OkHttpClient()
                 .newBuilder()
@@ -115,6 +116,7 @@ object ApiFactory {
 
                 val logInterceptor: HttpLoggingInterceptor =
                     HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY }
+                // HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.HEADERS }
 
                 OkHttpClient()
                     .newBuilder()

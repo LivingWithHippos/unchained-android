@@ -3,6 +3,7 @@ import java.util.Properties
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    alias(libs.plugins.kotlin.serialization)
     id("org.jetbrains.kotlin.plugin.parcelize")
     id("com.google.dagger.hilt.android")
     id("androidx.navigation.safeargs.kotlin")
@@ -166,13 +167,6 @@ dependencies {
     implementation(libs.datastore.core)
     implementation(libs.datastore.prefs)
 
-    implementation(libs.jackson.kotlin)
-    implementation(libs.jackson.xml)
-    implementation(libs.woodstox)
-    // replaced legacy jaxb with jakarta
-    // https://github.com/FasterXML/jackson-modules-base
-    // implementation(libs.stax)
-    implementation(libs.jakarta.xmlapi)
     implementation(libs.documentfile)
 
     ksp(libs.moshi.codegen)
@@ -196,6 +190,7 @@ dependencies {
 
     implementation(libs.coroutines.core)
     implementation(libs.coroutines.android)
+    implementation(libs.kotlin.serialization.json)
 
     implementation(libs.material.version3)
 

@@ -24,7 +24,7 @@ import com.github.livingwithhippos.unchained.data.model.RepositoryPlugin
             RemoteService::class,
             CompleteRemoteService::class,
         ],
-    version = 9,
+    version = 10,
     exportSchema = true,
     autoMigrations =
         [

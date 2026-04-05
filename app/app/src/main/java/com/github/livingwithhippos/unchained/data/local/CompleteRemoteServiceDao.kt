@@ -27,10 +27,10 @@ interface CompleteRemoteServiceDao {
     suspend fun getServices(): List<CompleteRemoteService>
 
     @Query("SELECT * FROM complete_remote_service WHERE complete_remote_service.type IN (:types)")
-    suspend fun getMediaPlayerServices(types: List<Int>): List<CompleteRemoteService>
+    suspend fun getServicesTypes(types: List<Int>): List<CompleteRemoteService>
 
     @Query("SELECT * FROM complete_remote_service WHERE complete_remote_service.type IN (:types)")
-    fun getMediaPlayerServicesFlow(types: List<Int>): Flow<List<CompleteRemoteService>>
+    fun getServicesTypesFlow(types: List<Int>): Flow<List<CompleteRemoteService>>
 
     @Query("SELECT id FROM complete_remote_service WHERE rowid = :rowId")
     suspend fun getServiceIDByRow(rowId: Long): Int?
@@ -49,4 +49,15 @@ interface CompleteRemoteServiceDao {
 
     @Query("UPDATE complete_remote_service SET is_default = CASE WHEN id = :id THEN 1 ELSE 0 END;")
     suspend fun setDefaultService(id: Int)
+
+    @Query("UPDATE complete_remote_service SET enabled = 1 WHERE name = :name")
+    suspend fun setDefault(name: String)
+
+    @Query("UPDATE complete_remote_service SET enabled = :enabled WHERE id = :id")
+    suspend fun enableService(id: Int, enabled: Boolean)
+
+    @Query(
+        "SELECT * FROM complete_remote_service WHERE complete_remote_service.type IN (:types) AND enabled = 1"
+    )
+    fun getEnabledServicesTypes(types: List<Int>): List<CompleteRemoteService>
 }
