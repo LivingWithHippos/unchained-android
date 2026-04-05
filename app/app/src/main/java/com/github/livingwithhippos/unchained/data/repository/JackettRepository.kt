@@ -25,7 +25,9 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import timber.log.Timber
 
-class JackettRepository @Inject constructor(
+class JackettRepository
+@Inject
+constructor(
     @param:ClassicClient private val client: OkHttpClient,
     @ApplicationContext private val applicationContext: Context,
 ) {
@@ -122,7 +124,7 @@ class JackettRepository @Inject constructor(
                     val body: String = response.body.string()
                     try {
                         val search: SearchRSS = parseSearchRss(body)
-                        val items = rssToScrapedItems(applicationContext,search)
+                        val items = rssToScrapedItems(applicationContext, search)
                         emit(ParserResult.Results(items.first))
                         return@flow
                     } catch (ex: Exception) {

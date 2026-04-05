@@ -111,7 +111,8 @@ fun rssToScrapedItems(context: Context, rss: SearchRSS): Pair<List<ScrapedItem>,
                         item.torznabAttributes
                             .firstOrNull { it.name.equals("leechers", ignoreCase = true) }
                             ?.value,
-                    size = if (sizeLong !== null) getFileSizeString(context, sizeLong) else item.size,
+                    size =
+                        if (sizeLong !== null) getFileSizeString(context, sizeLong) else item.size,
                     addedDate = item.pubDate,
                     parsedSize = parseCommonSize(item.size),
                     // todo: add better recognition of links
