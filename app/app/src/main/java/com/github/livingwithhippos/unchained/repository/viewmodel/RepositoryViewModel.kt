@@ -128,12 +128,12 @@ constructor(
         }
     }
 
-    private suspend fun installMultiplePlugins(context: Context, plugins: List<PluginVersion>) {
+    private suspend fun installMultiplePlugins(context: Context, plugins: List<PluginVersion>, skipDisabled: Boolean = true) {
         var errors = 0
         val installResults = mutableListOf<InstallResult>()
         // install all
         for (plugin in plugins) {
-            if (plugin.disabled) {
+            if (skipDisabled && plugin.disabled) {
                 Timber.d("Skipping disabled plugin ${plugin.plugin}")
                 continue
             }
