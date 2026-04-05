@@ -15,6 +15,7 @@ data class JsonPluginRepository(
 @JsonClass(generateAdapter = true)
 data class JsonPlugin(
     @param:Json(name = "id") val id: String,
+    @param:Json(name = "disabled") val disabled: Boolean?,
     @param:Json(name = "versions") val versions: List<JsonPluginVersion>,
 )
 

@@ -192,6 +192,7 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
                                     version = 0f,
                                     engine = 0.0f,
                                     link = repository.key.link,
+                                    disabled = plug.value.firstOrNull()?.disabled ?: false,
                                 )
                         } else {
                             val latestCompatibleVersion: PluginVersion? =
@@ -241,6 +242,7 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
                                         version = 0f,
                                         engine = 0.0f,
                                         link = repository.key.link,
+                                        disabled = false,
                                     )
                                 } else {
                                     Timber.w(
@@ -252,6 +254,8 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
                                         version = installedPlugin.version,
                                         engine = 0.0f,
                                         link = repository.key.link,
+                                        disabled =
+                                            onlinePlugin.value.firstOrNull()?.disabled ?: false,
                                     )
                                 }
 
@@ -319,40 +323,40 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
                     }
                 )
             }
-            // add fake repo for plugins installed manually without going through a web repository
-            // otherwise users won't be able to uninstall them
-            if (installedData.pluginsData[MANUAL_PLUGINS_REPOSITORY_NAME].isNullOrEmpty().not()) {
-                plugins.add(
-                    RepositoryListItem.Repository(
-                        link = MANUAL_PLUGINS_REPOSITORY_NAME,
-                        name = getString(R.string.manually_installed_plugins),
-                        version = 1.0,
-                        description = getString(R.string.manually_installed_plugins_description),
-                        author = getString(R.string.various),
-                    )
-                )
-
-                plugins.addAll(
-                    installedData.pluginsData.getValue(MANUAL_PLUGINS_REPOSITORY_NAME).map {
-                        // all are installed, cannot check updates, check only compatibility
-                        val currentStatus =
-                            if (it.isCompatible()) PluginStatus.updated else PluginStatus.unknown
-                        RepositoryListItem.Plugin(
-                            repository = MANUAL_PLUGINS_REPOSITORY_NAME,
-                            name = it.name,
-                            version = it.version,
-                            link = MANUAL_PLUGINS_REPOSITORY_NAME,
-                            author = it.author,
-                            status = currentStatus,
-                            statusTranslation = getStatusTranslation(currentStatus),
-                        )
-                    }
-                )
-            }
-
-            adapter.submitList(plugins)
-            adapter.notifyDataSetChanged()
         }
+        // add fake repo for plugins installed manually without going through a web repository
+        // otherwise users won't be able to uninstall them
+        if (installedData.pluginsData[MANUAL_PLUGINS_REPOSITORY_NAME].isNullOrEmpty().not()) {
+            plugins.add(
+                RepositoryListItem.Repository(
+                    link = MANUAL_PLUGINS_REPOSITORY_NAME,
+                    name = getString(R.string.manually_installed_plugins),
+                    version = 1.0,
+                    description = getString(R.string.manually_installed_plugins_description),
+                    author = getString(R.string.various),
+                )
+            )
+
+            plugins.addAll(
+                installedData.pluginsData.getValue(MANUAL_PLUGINS_REPOSITORY_NAME).map {
+                    // all are installed, cannot check updates, check only compatibility
+                    val currentStatus =
+                        if (it.isCompatible()) PluginStatus.updated else PluginStatus.unknown
+                    RepositoryListItem.Plugin(
+                        repository = MANUAL_PLUGINS_REPOSITORY_NAME,
+                        name = it.name,
+                        version = it.version,
+                        link = MANUAL_PLUGINS_REPOSITORY_NAME,
+                        author = it.author,
+                        status = currentStatus,
+                        statusTranslation = getStatusTranslation(currentStatus),
+                    )
+                }
+            )
+        }
+
+        adapter.submitList(plugins)
+        adapter.notifyDataSetChanged()
     }
 
     private fun getPluginItemFromVersion(
@@ -368,6 +372,7 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
             author = author,
             status = pluginStatus,
             statusTranslation = getStatusTranslation(pluginStatus),
+            disabled = pluginVersion.disabled,
         )
     }
 
@@ -379,6 +384,7 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
             PluginStatus.hasIncompatibleUpdate -> getString(R.string.incompatible_update)
             PluginStatus.incompatible -> getString(R.string.incompatible)
             PluginStatus.unknown -> getString(R.string.unknown_status)
+            PluginStatus.disabled -> getString(R.string.disabled)
             else -> getString(R.string.unknown_status)
         }
     }

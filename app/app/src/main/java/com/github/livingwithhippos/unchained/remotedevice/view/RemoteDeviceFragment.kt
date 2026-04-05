@@ -155,9 +155,7 @@ class RemoteDeviceFragment : UnchainedFragment(), ServiceListListener {
                 R.id.new_remote_service -> {
                     val action =
                         RemoteDeviceFragmentDirections
-                            .actionRemoteDeviceFragmentToRemoteServiceFragment(
-                                deviceID = args.item!!.id
-                            )
+                            .actionRemoteDeviceFragmentToRemoteServiceFragment(device = args.item!!)
                     findNavController().navigate(action)
                     true
                 }
@@ -207,7 +205,7 @@ class RemoteDeviceFragment : UnchainedFragment(), ServiceListListener {
         val action =
             RemoteDeviceFragmentDirections.actionRemoteDeviceFragmentToRemoteServiceFragment(
                 item = item,
-                deviceID = args.item!!.id,
+                device = args.item!!,
             )
         findNavController().navigate(action)
     }

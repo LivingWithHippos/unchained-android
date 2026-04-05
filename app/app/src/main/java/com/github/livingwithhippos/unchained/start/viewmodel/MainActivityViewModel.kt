@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.Uri
+import androidx.core.content.edit
 import androidx.core.net.toUri
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
@@ -637,12 +638,11 @@ constructor(
 
     private fun programTokenRefresh(secondsDelay: Int) {
         refreshJob?.cancel()
-        refreshJob =
-            viewModelScope.launch {
-                // secondsDelay*950L -> expiration time - 5%
-                delay(secondsDelay * 950L)
-                if (isActive) refreshToken()
-            }
+        refreshJob = viewModelScope.launch {
+            // secondsDelay*950L -> expiration time - 5%
+            delay(secondsDelay * 950L)
+            if (isActive) refreshToken()
+        }
     }
 
     fun downloadSupportedLink(link: String) {
@@ -921,10 +921,7 @@ constructor(
             if (remoteVersion > localVersion && remoteVersion > lastVersionChecked) {
                 messageLiveData.postValue(Event(MainActivityMessage.UpdateFound(signature)))
             }
-            with(preferences.edit()) {
-                putInt(KEY_LAST_UPDATE_VERSION_CHECKED, remoteVersion)
-                apply()
-            }
+            preferences.edit { putInt(KEY_LAST_UPDATE_VERSION_CHECKED, remoteVersion) }
         }
     }
 
@@ -975,10 +972,7 @@ constructor(
 
     fun setDownloadFolder(uri: Uri) {
         uri.describeContents()
-        with(preferences.edit()) {
-            putString(KEY_DOWNLOAD_FOLDER, uri.toString())
-            apply()
-        }
+        preferences.edit { putString(KEY_DOWNLOAD_FOLDER, uri.toString()) }
     }
 
     fun getDownloadFolder(): Uri? {
@@ -1065,23 +1059,22 @@ constructor(
                 .setRequiresStorageNotLow(true)
                 .build()
 
-        val work: List<OneTimeWorkRequest> =
-            downloads.map {
-                val data =
-                    Data.Builder()
-                        .apply {
-                            putString(KEY_FOLDER_URI, folder.toString())
-                            putString(KEY_DOWNLOAD_SOURCE, it.download)
-                            putString(KEY_DOWNLOAD_NAME, it.filename)
-                        }
-                        .build()
-
-                OneTimeWorkRequestBuilder<DownloadWorker>()
-                    .setInputData(data)
-                    .setConstraints(constraints)
-                    .addTag(it.download)
+        val work: List<OneTimeWorkRequest> = downloads.map {
+            val data =
+                Data.Builder()
+                    .apply {
+                        putString(KEY_FOLDER_URI, folder.toString())
+                        putString(KEY_DOWNLOAD_SOURCE, it.download)
+                        putString(KEY_DOWNLOAD_NAME, it.filename)
+                    }
                     .build()
-            }
+
+            OneTimeWorkRequestBuilder<DownloadWorker>()
+                .setInputData(data)
+                .setConstraints(constraints)
+                .addTag(it.download)
+                .build()
+        }
 
         // use KEEP or REPLACE
         workManager.enqueue(work)

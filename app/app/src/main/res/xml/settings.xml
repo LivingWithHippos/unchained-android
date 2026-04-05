@@ -113,6 +113,15 @@
             app:summary="@string/delete_plugins_summary"
             app:title="@string/delete_plugins" />
 
+        <DropDownPreference
+            android:defaultValue="plugins"
+            android:entries="@array/search_start_destination"
+            android:entryValues="@array/search_start_destination_values"
+            android:key="search_start_destination"
+            android:summary="@string/summary_search_start_destination"
+            android:title="@string/title_search_start_destination"
+            app:useSimpleSummaryProvider="true" />
+
         <SwitchPreference
             android:defaultValue="false"
             app:key="use_doh_key"

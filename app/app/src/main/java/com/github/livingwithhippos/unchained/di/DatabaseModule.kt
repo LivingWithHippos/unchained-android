@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.github.livingwithhippos.unchained.data.local.CompleteRemoteServiceDao
 import com.github.livingwithhippos.unchained.data.local.HostRegexDao
 import com.github.livingwithhippos.unchained.data.local.KodiDeviceDao
 import com.github.livingwithhippos.unchained.data.local.RemoteDeviceDao
@@ -26,7 +27,13 @@ object DatabaseModule {
     @Singleton
     fun provideDatabase(@ApplicationContext appContext: Context): UnchaineDB {
         return Room.databaseBuilder(appContext, UnchaineDB::class.java, "unchained_db")
-            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
+            .addMigrations(
+                MIGRATION_1_2,
+                MIGRATION_2_3,
+                MIGRATION_3_4,
+                MIGRATION_8_9,
+                MIGRATION_9_10,
+            )
             .build()
     }
 
@@ -42,12 +49,17 @@ object DatabaseModule {
 
     @Provides
     fun provideRemoteDeviceDao(database: UnchaineDB): RemoteDeviceDao {
-        return database.pluginRemoteDeviceDao()
+        return database.remoteDeviceDao()
     }
 
     @Provides
     fun providePluginRepositoryDao(database: UnchaineDB): RepositoryDataDao {
         return database.pluginRepositoryDao()
+    }
+
+    @Provides
+    fun provideCompleteServiceDao(database: UnchaineDB): CompleteRemoteServiceDao {
+        return database.completeRemoteServiceDao()
     }
 
     private val MIGRATION_1_2 =
@@ -72,6 +84,24 @@ object DatabaseModule {
         object : Migration(3, 4) {
             override fun migrate(db: SupportSQLiteDatabase) {
                 db.execSQL("DROP TABLE credentials")
+            }
+        }
+
+    private val MIGRATION_8_9 =
+        object : Migration(8, 9) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL(
+                    "ALTER TABLE plugin_version ADD COLUMN disabled INTEGER NOT NULL DEFAULT 0"
+                )
+            }
+        }
+
+    private val MIGRATION_9_10 =
+        object : Migration(9, 10) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL(
+                    "ALTER TABLE complete_remote_service ADD COLUMN enabled INTEGER NOT NULL DEFAULT 1"
+                )
             }
         }
 }

@@ -122,6 +122,15 @@ object PreferenceKeys {
         const val VIBRATE_ON_FINISH = "vibrate_on_download"
     }
 
+    object Ui {
+        const val SEARCH_START_DESTINATION_KEY = "search_start_destination"
+
+        object SearchStartDestination {
+            const val FILES = "files"
+            const val PLUGINS = "plugins"
+        }
+    }
+
     object Kodi {
         const val SERVER_PICKER = "select_kodi_on_play"
     }

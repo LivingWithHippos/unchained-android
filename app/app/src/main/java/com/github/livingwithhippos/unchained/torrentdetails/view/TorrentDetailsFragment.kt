@@ -201,7 +201,7 @@ class TorrentDetailsFragment : UnchainedFragment(), TorrentContentListener {
                         val torrentStructure: Node<TorrentFileItem> =
                             getFilesNodes(torrent, selectedOnly = true)
                         // show list only if it's populated enough
-                        if (torrentStructure.children.size > 0) {
+                        if (torrentStructure.children.isNotEmpty()) {
                             val filesList = mutableListOf<TorrentFileItem>()
                             var skippedFirst = false
                             Node.traverseDepthFirst(torrentStructure) { item ->

@@ -40,6 +40,7 @@ class RemoteServiceFragment : Fragment() {
         _binding = FragmentRemoteServiceBinding.inflate(inflater, container, false)
 
         val item: RemoteService? = args.item
+        val deviceID: Int = args.device.id
 
         val serviceTypeView = binding.serviceTypePicker.editText as? AutoCompleteTextView
 
@@ -70,6 +71,7 @@ class RemoteServiceFragment : Fragment() {
             binding.tiUsername.setText(item.username ?: "")
             binding.tiPassword.setText(item.password.toString())
             binding.switchDefault.isChecked = item.isDefault
+            binding.tiApiToken.setText(item.apiToken)
 
             setupServiceType(binding, item.type, serviceTypeView)
         }
@@ -81,11 +83,34 @@ class RemoteServiceFragment : Fragment() {
             }
         }
 
+        binding.bTestService.setOnClickListener {
+            val username = binding.tiUsername.text.toString().trim()
+            val password = binding.tiPassword.text.toString().trim()
+            val port = binding.tiPort.text.toString().toIntOrNull()
+            val apiToken = binding.tiApiToken.text.toString().trim()
+            val serviceType = getServiceType(binding.servicePickerText.text.toString())
+
+            if (args.device.address.isBlank() || port == null || serviceType == null) {
+                context?.showToast(R.string.missing_parameter)
+            } else {
+                binding.bTestService.isEnabled = false
+                viewModel.testService(
+                    serviceType,
+                    args.device.address,
+                    port,
+                    username.ifBlank { null },
+                    password.ifBlank { null },
+                    apiToken.ifBlank { null },
+                )
+            }
+        }
+
         binding.bSaveService.setOnClickListener {
             val name = binding.tiName.text.toString().trim()
             val username = binding.tiUsername.text.toString().trim()
             val password = binding.tiPassword.text.toString().trim()
             val port = binding.tiPort.text.toString().toIntOrNull()
+            val apiToken = binding.tiApiToken.text.toString().trim()
             val serviceId = item?.id ?: 0
 
             if (name.isBlank() || port == null) {
@@ -98,13 +123,13 @@ class RemoteServiceFragment : Fragment() {
                     val remoteService =
                         RemoteService(
                             id = serviceId,
-                            device = args.deviceID,
+                            device = deviceID,
                             name = name,
                             port = port,
                             username = username.ifBlank { null },
                             password = password.ifBlank { null },
                             type = serviceType.value,
-                            apiToken = binding.tiApiToken.text.toString().trim(),
+                            apiToken = apiToken,
                             isDefault = false,
                         )
                     viewModel.updateService(remoteService)
@@ -114,7 +139,7 @@ class RemoteServiceFragment : Fragment() {
                     val remoteService =
                         RemoteService(
                             id = serviceId,
-                            device = args.deviceID,
+                            device = deviceID,
                             name = name,
                             port = port,
                             username = username.ifBlank { null },
@@ -129,7 +154,7 @@ class RemoteServiceFragment : Fragment() {
                     val remoteService =
                         RemoteService(
                             id = serviceId,
-                            device = args.deviceID,
+                            device = deviceID,
                             name = name,
                             port = port,
                             username = username.ifBlank { null },
@@ -157,7 +182,7 @@ class RemoteServiceFragment : Fragment() {
                         val action =
                             RemoteServiceFragmentDirections.actionRemoteServiceFragmentSelf(
                                 item = it.service,
-                                deviceID = args.deviceID,
+                                device = args.device,
                             )
                         findNavController().navigate(action)
                     } else {
@@ -169,6 +194,16 @@ class RemoteServiceFragment : Fragment() {
                     context?.showToast(R.string.service_deleted)
                     // go back
                     findNavController().popBackStack()
+                }
+
+                is DeviceEvent.ServiceWorking -> {
+                    context?.showToast(R.string.connection_successful)
+                    binding.bTestService.isEnabled = true
+                }
+
+                is DeviceEvent.ServiceNotWorking -> {
+                    context?.showToast(R.string.connection_error)
+                    binding.bTestService.isEnabled = true
                 }
 
                 else -> {}
@@ -227,6 +262,7 @@ class RemoteServiceFragment : Fragment() {
             RemoteServiceType.JACKETT -> {
                 binding.switchDefault.isEnabled = false
                 binding.switchDefault.isChecked = false
+                binding.tfApiToken.visibility = View.VISIBLE
             }
 
             null -> {

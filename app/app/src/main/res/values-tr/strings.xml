@@ -361,6 +361,7 @@
     <string name="show_folder_filters_summary">Klasör ekranında dosya boyutu ve medya türü için filtreleri göster</string>
     <string name="title_main_screen">Başlangıç Ekranı</string>
     <string name="summary_main_screen">Başlangıçta açılacak sekme</string>
+    <string name="new_string">Yeni</string>
     <string name="select_deselect_all">Tümünü seç veya seçimi kaldır</string>
     <string name="select_one_item">En az bir öğe seçin</string>
     <string name="torrent_monitoring_description">Real-Debrid sunucularında indirilen torrentlerinizi izleyin.</string>
@@ -543,4 +544,11 @@
     <string name="no_credentials_found">Kimlik bilgileri bulunamadı</string>
     <string name="invalid_player_found">Bu bağlantıyı açmaya çalışan uygulama hatalı, başka bir oynatıcı yükleyin</string>
     <string name="pick_doh_provider">HTTPS üzerinden DNS sağlayıcısı seçin</string>
+    <string name="complete_address">Port numarasıyla birlikte tam adres</string>
+    <string name="remote_services_description">Hizmetler, dosya aramak veya medya oynatmak için kullanılan, bilgisayarlarda çalışan programlardır</string>
+    <string name="service_added">Hizmet Eklendi</string>
+    <string name="title_search_start_destination">Arama başlangıç ekranı</string>
+    <string name="summary_search_start_destination">“Arama” sekmesine girildiğinde açılacak sayfa</string>
+    <string name="please_select_plugins">Lütfen en az bir eklenti seçin</string>
+    <string name="disabled">Engelli</string>
 </resources>

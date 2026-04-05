@@ -81,9 +81,8 @@ constructor(
      *   secrets endpoint
      */
     fun setupSecretLoop(expiresIn: Int) {
-        // this is just an estimate, keeping track of time would be more precise. As of now this
-        // value
-        // should be 120
+        // this is just an estimate, keeping track of time would be more precise.
+        // As of now this value should be 120
         var calls = (expiresIn * 1000 / SECRET_CALLS_DELAY).toInt() - 10
         // remove 10% of the calls to account for the api calls
         calls -= calls / 10

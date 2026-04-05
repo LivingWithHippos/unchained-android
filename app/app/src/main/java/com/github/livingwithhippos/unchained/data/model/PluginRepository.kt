@@ -67,4 +67,5 @@ data class PluginVersion(
     @ColumnInfo(name = "version") val version: Float,
     @ColumnInfo(name = "engine") val engine: Float,
     @ColumnInfo(name = "plugin_link") val link: String,
+    @ColumnInfo(name = "disabled", defaultValue = "0") val disabled: Boolean = false,
 )

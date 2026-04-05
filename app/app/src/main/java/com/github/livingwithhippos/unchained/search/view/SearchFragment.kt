@@ -31,7 +31,6 @@ import com.github.livingwithhippos.unchained.utilities.extension.hideKeyboard
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.google.android.material.button.MaterialButton
 import dagger.hilt.android.AndroidEntryPoint
-import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -75,14 +74,14 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
         }
 
         viewModel.pluginLiveData.observe(viewLifecycleOwner) { parsedPlugins ->
-            val plugins = parsedPlugins.first
-            if (parsedPlugins.second > 0)
+            val plugins = parsedPlugins.plugins
+            if (parsedPlugins.errors > 0)
                 requireContext()
                     .showToast(
                         resources.getQuantityString(
                             R.plurals.plugins_version_old_format,
-                            parsedPlugins.second,
-                            parsedPlugins.second,
+                            parsedPlugins.errors,
+                            parsedPlugins.errors,
                         )
                     )
 
@@ -287,7 +286,6 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
         return getString(res)
     }
 
-    @OptIn(ExperimentalTime::class)
     private fun submitSortedList(adapter: SearchItemAdapter, items: List<ScrapedItem>) {
         when (viewModel.getListSortPreference()) {
             FolderListFragment.TAG_DEFAULT_SORT -> {
@@ -335,39 +333,37 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
 
     private fun showDialogsIfNeeded() {
         if (viewModel.isPluginDialogNeeded()) {
-            val alertDialog: AlertDialog? =
-                activity?.let {
-                    val builder = AlertDialog.Builder(it)
-                    builder.apply {
-                        setTitle(R.string.search_plugins)
-                        setMessage(R.string.plugin_description_message)
-                        setPositiveButton(R.string.close) { _, _ ->
-                            viewModel.setPluginDialogNeeded(false)
-                        }
+            val alertDialog: AlertDialog? = activity?.let {
+                val builder = AlertDialog.Builder(it)
+                builder.apply {
+                    setTitle(R.string.search_plugins)
+                    setMessage(R.string.plugin_description_message)
+                    setPositiveButton(R.string.close) { _, _ ->
+                        viewModel.setPluginDialogNeeded(false)
                     }
-                    builder.create()
                 }
+                builder.create()
+            }
             alertDialog?.show()
         }
 
         if (viewModel.isDOHDialogNeeded()) {
-            val alertDialog: AlertDialog? =
-                activity?.let {
-                    val builder = AlertDialog.Builder(it)
-                    builder.apply {
-                        setTitle(R.string.doh)
-                        setMessage(R.string.doh_description_message)
-                        setPositiveButton(R.string.enable) { _, _ ->
-                            viewModel.enableDOH(true)
-                            viewModel.setDOHDialogNeeded(false)
-                        }
-                        setNegativeButton(R.string.disable) { _, _ ->
-                            viewModel.enableDOH(false)
-                            viewModel.setDOHDialogNeeded(false)
-                        }
+            val alertDialog: AlertDialog? = activity?.let {
+                val builder = AlertDialog.Builder(it)
+                builder.apply {
+                    setTitle(R.string.doh)
+                    setMessage(R.string.doh_description_message)
+                    setPositiveButton(R.string.enable) { _, _ ->
+                        viewModel.enableDOH(true)
+                        viewModel.setDOHDialogNeeded(false)
                     }
-                    builder.create()
+                    setNegativeButton(R.string.disable) { _, _ ->
+                        viewModel.enableDOH(false)
+                        viewModel.setDOHDialogNeeded(false)
+                    }
                 }
+                builder.create()
+            }
             alertDialog?.show()
         }
     }

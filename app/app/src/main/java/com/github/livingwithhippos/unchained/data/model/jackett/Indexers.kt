@@ -1,23 +1,52 @@
 package com.github.livingwithhippos.unchained.data.model.jackett
 
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement
 import com.github.livingwithhippos.unchained.data.model.torznab.Capabilities
+import com.github.livingwithhippos.unchained.data.model.torznab.parseCapabilities
+import com.github.livingwithhippos.unchained.utilities.directChild
+import com.github.livingwithhippos.unchained.utilities.directChildren
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import org.jsoup.Jsoup
+import org.jsoup.parser.Parser
 
-@JacksonXmlRootElement(localName = "indexers")
-data class Indexers(
-    @param:JacksonXmlElementWrapper(useWrapping = false)
-    @param:JacksonXmlProperty(localName = "indexer")
-    val indexers: List<Indexer>
-)
+@Serializable data class Indexers(@SerialName("indexer") val indexers: List<Indexer>)
 
+@Serializable
 data class Indexer(
-    @param:JacksonXmlProperty(isAttribute = true, localName = "id") val id: String,
-    @param:JacksonXmlProperty(isAttribute = true, localName = "configured") val configured: String,
-    @param:JacksonXmlProperty(localName = "title") val title: String,
-    @param:JacksonXmlProperty(localName = "description") val description: String,
-    @param:JacksonXmlProperty(localName = "link") val link: String,
-    @param:JacksonXmlProperty(localName = "type") val type: String,
-    @param:JacksonXmlProperty(localName = "caps") val capabilities: Capabilities,
+    val id: String,
+    val configured: String,
+    val title: String,
+    val description: String,
+    val link: String,
+    val type: String,
+    @SerialName("caps") val capabilities: Capabilities,
 )
+
+fun parseIndexers(body: String): Indexers? {
+
+    val document = Jsoup.parse(body, "", Parser.xmlParser())
+    val indexers =
+        document.directChild("indexers")
+            ?: throw IllegalArgumentException("Missing indexers element")
+    val indexerList =
+        indexers.directChildren("indexer").map { indexerElement ->
+            val id = indexerElement.attr("id")
+            val configured = indexerElement.attr("configured")
+            val title = indexerElement.directChild("title")
+            val description = indexerElement.directChild("description")
+            val link = indexerElement.directChild("link")
+            val type = indexerElement.directChild("type")
+
+            val capabilities = parseCapabilities(indexerElement.directChild("caps")) ?: return null
+            Indexer(
+                id = id,
+                configured = configured,
+                title = title?.text() ?: "",
+                description = description?.text() ?: "",
+                link = link?.text() ?: "",
+                type = type?.text() ?: "",
+                capabilities = capabilities,
+            )
+        }
+    return Indexers(indexerList)
+}

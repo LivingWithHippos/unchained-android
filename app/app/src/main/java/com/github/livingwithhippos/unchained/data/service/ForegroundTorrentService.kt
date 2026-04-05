@@ -12,6 +12,7 @@ import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.TaskStackBuilder
+import androidx.core.content.edit
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
@@ -88,8 +89,9 @@ class ForegroundTorrentService : LifecycleService() {
             val oldTorrentsIDs: Set<String> =
                 preferences.getStringSet(KEY_OBSERVED_TORRENTS, emptySet()) as Set<String>
             // their updated status
-            val newLoadingTorrents =
-                list.filter { torrent -> loadingStatusList.contains(torrent.status) }
+            val newLoadingTorrents = list.filter { torrent ->
+                loadingStatusList.contains(torrent.status.lowercase())
+            }
             // the torrent whose status is not a loading one anymore.
             val finishedTorrents =
                 list
@@ -101,7 +103,7 @@ class ForegroundTorrentService : LifecycleService() {
             // the new torrents to add to the notification system
             val unwatchedTorrents = newLoadingTorrents.filter { !oldTorrentsIDs.contains(it.id) }
             // the torrents not in our updated list anymore. These needs to be retrieved and analyzed singularly.
-            // Shouldn't happen often since there is a limit on how many active torrents you can have in real debrid
+            // Shouldn't happen often since there is a limit on how many active torrents you can have in real-debrid,
             // and we retrieve the last 30 torrents every time
             val missingTorrents = oldTorrentsIDs.filter { id ->
                 !list.map { it.id }.contains(id)
@@ -114,10 +116,7 @@ class ForegroundTorrentService : LifecycleService() {
             // update the torrents id to observe
             val newIDs = mutableSetOf<String>()
             newIDs.addAll(newLoadingTorrents.map { it.id })
-            with(preferences.edit()) {
-                putStringSet(KEY_OBSERVED_TORRENTS, newIDs)
-                apply()
-            }
+            preferences.edit { putStringSet(KEY_OBSERVED_TORRENTS, newIDs) }
             updateTiming = if (newIDs.isEmpty()) UPDATE_TIMING_LONG else UPDATE_TIMING_SHORT
 
             // let's first operate as if all the needed torrents were always in the list
@@ -176,8 +175,9 @@ class ForegroundTorrentService : LifecycleService() {
                     ) {
                         // if there are no active torrents and the services has been started
                         // for at least some minutes, stop the service
-                        val unfinishedTorrents =
-                            torrentList.count { loadingStatusList.contains(it.status) }
+                        val unfinishedTorrents = torrentList.count {
+                            loadingStatusList.contains(it.status)
+                        }
                         if (unfinishedTorrents == 0) {
                             Timber.i(
                                 "Service has been running and no torrents are active, stopping it."

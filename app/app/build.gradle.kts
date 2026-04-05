@@ -3,6 +3,7 @@ import java.util.Properties
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    alias(libs.plugins.kotlin.serialization)
     id("org.jetbrains.kotlin.plugin.parcelize")
     id("com.google.dagger.hilt.android")
     id("androidx.navigation.safeargs.kotlin")
@@ -35,6 +36,8 @@ ktfmt {
     kotlinLangStyle()
 }
 
+kotlin { jvmToolchain(11) }
+
 android {
     namespace = "com.github.livingwithhippos.unchained"
     compileSdk = 36
@@ -43,8 +46,8 @@ android {
         applicationId = "com.github.livingwithhippos.unchained"
         minSdk = 27
         targetSdk = 36
-        versionCode = 56
-        versionName = "1.5.1"
+        versionCode = 57
+        versionName = "1.6.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -57,8 +60,8 @@ android {
             excludes.addAll(
                 listOf(
                     "META-INF/*.version",
-                    // manually added, markdown files should not be needed
-                    // was crashing with the jakarta xml bind api
+                    // manually added, Markdown files should not be needed
+                    // was crashing with the jakarta XML bind api
                     "META-INF/*.md",
                     "META-INF/proguard/*",
                     "/*.properties",
@@ -134,7 +137,6 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-    kotlinOptions { jvmTarget = "11" }
     buildFeatures {
         viewBinding = true
         buildConfig = true
@@ -165,13 +167,6 @@ dependencies {
     implementation(libs.datastore.core)
     implementation(libs.datastore.prefs)
 
-    implementation(libs.jackson.kotlin)
-    implementation(libs.jackson.xml)
-    implementation(libs.woodstox)
-    // replaced legacy jaxb with jakarta
-    // https://github.com/FasterXML/jackson-modules-base
-    // implementation(libs.stax)
-    implementation(libs.jakarta.xmlapi)
     implementation(libs.documentfile)
 
     ksp(libs.moshi.codegen)
@@ -195,6 +190,7 @@ dependencies {
 
     implementation(libs.coroutines.core)
     implementation(libs.coroutines.android)
+    implementation(libs.kotlin.serialization.json)
 
     implementation(libs.material.version3)
 

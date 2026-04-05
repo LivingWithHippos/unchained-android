@@ -356,8 +356,9 @@ class NewDownloadFragment : UnchainedFragment() {
                     return@setOnClickListener
                 }
 
-                val multipleLinks: List<String> =
-                    splitLinks.filter { it.isWebUrl() || it.isSimpleWebUrl() }
+                val multipleLinks: List<String> = splitLinks.filter {
+                    it.isWebUrl() || it.isSimpleWebUrl()
+                }
 
                 if (multipleLinks.isEmpty()) {
                     Timber.w("Invalid link: $link")

@@ -3,7 +3,9 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:padding="10dp">
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/tfSearch"
@@ -38,13 +40,49 @@
         app:layout_constraintStart_toEndOf="@id/tfSearch"
         app:layout_constraintTop_toTopOf="@id/tfSearch" />
 
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/searchingProgress"
+        style="@style/Widget.MaterialComponents.LinearProgressIndicator"
+        android:layout_width="0dp"
+        android:layout_height="7dp"
+        android:layout_marginTop="5dp"
+        android:indeterminate="true"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@id/bStartSearch"
+        app:layout_constraintEnd_toEndOf="@id/bPluginSettings"
+        app:layout_constraintStart_toStartOf="@id/tfSearch"
+        app:layout_constraintTop_toBottomOf="@id/tfSearch" />
+
     <Button
         android:id="@+id/bStartSearch"
         style="@style/Widget.Material3.Button.OutlinedButton"
+        android:layout_marginTop="5dp"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:text="@string/search"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tfSearch" />
+        app:layout_constraintTop_toBottomOf="@id/searchingProgress"
+        app:layout_constraintBottom_toTopOf="@id/llList"/>
+
+    <LinearLayout
+        android:id="@+id/llList"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="5dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/bStartSearch">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvSearchList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:scrollbars="vertical"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/item_list_download" />
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

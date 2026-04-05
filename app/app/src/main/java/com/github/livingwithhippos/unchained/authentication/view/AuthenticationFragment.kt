@@ -101,10 +101,12 @@ class AuthenticationFragment : UnchainedFragment() {
                         val action = AuthenticationFragmentDirections.actionAuthenticationToUser()
                         findNavController().navigate(action)
                     }
+
                     FSMAuthenticationState.AuthenticatedPrivateToken -> {
                         val action = AuthenticationFragmentDirections.actionAuthenticationToUser()
                         findNavController().navigate(action)
                     }
+
                     FSMAuthenticationState.StartNewLogin -> {
                         // reset the current data
                         // token == null
@@ -125,21 +127,26 @@ class AuthenticationFragment : UnchainedFragment() {
                         // get the authentication link to start the process
                         viewModel.fetchAuthenticationInfo()
                     }
+
                     FSMAuthenticationState.WaitingUserConfirmation -> {
                         // start the next auth step
                         viewModel.fetchSecrets()
                     }
+
                     FSMAuthenticationState.WaitingToken -> {
                         viewModel.fetchToken()
                     }
+
                     FSMAuthenticationState.CheckCredentials,
                     FSMAuthenticationState.RefreshingOpenToken -> {
                         // managed by activity
                     }
+
                     is FSMAuthenticationState.WaitingUserAction -> {
                         // todo: depending on the action required show an error or restart the
                         // process
                     }
+
                     FSMAuthenticationState.Start -> {
                         // this shouldn't happen
                     }
@@ -148,28 +155,30 @@ class AuthenticationFragment : UnchainedFragment() {
         }
 
         // 1. start checking for the auth link
-        viewModel.authLiveData.observe(
-            viewLifecycleOwner,
-            EventObserver { auth ->
-                if (auth != null) {
-                    binding.tvAuthenticationLink.text = auth.verificationUrl
-                    binding.tvAuthenticationLink.visibility = View.VISIBLE
-                    binding.cbLink.isChecked = true
-                    binding.cbLink.text = getString(R.string.link_loaded)
-                    // let the user copy the user code to enter in the website
-                    binding.tvUserCodeValue.text = auth.userCode
-                    binding.bCopyLink.isEnabled = true
-                    // update the currently saved credentials
-                    activityViewModel.updateCredentialsDeviceCode(auth.deviceCode)
-                    // transition state machine
+        viewModel.authLiveData.observe(viewLifecycleOwner) { event ->
+            event?.peekContent()?.let { auth ->
+                binding.tvAuthenticationLink.text = auth.verificationUrl
+                binding.tvAuthenticationLink.visibility = View.VISIBLE
+                binding.cbLink.isChecked = true
+                binding.cbLink.text = getString(R.string.link_loaded)
+                // let the user copy the user code to enter in the website
+                binding.tvUserCodeValue.text = auth.userCode
+                binding.bCopyLink.isEnabled = true
+                // update the currently saved credentials
+                activityViewModel.updateCredentialsDeviceCode(auth.deviceCode)
+                // transition state machine
+                if (
+                    activityViewModel.getAuthenticationMachineState()
+                        is FSMAuthenticationState.StartNewLogin
+                ) {
                     activityViewModel.transitionAuthenticationMachine(
                         FSMAuthenticationEvent.OnAuthLoaded
                     )
                     // set up values for calling the secrets endpoint
                     viewModel.setupSecretLoop(auth.expiresIn)
                 }
-            },
-        )
+            }
+        }
 
         // 2. start checking for user confirmation
         viewModel.secretLiveData.observe(
@@ -186,12 +195,14 @@ class AuthenticationFragment : UnchainedFragment() {
                                 FSMAuthenticationEvent.OnUserConfirmationMissing
                             )
                     }
+
                     SecretResult.Expired -> {
                         // will restart the authentication process
                         activityViewModel.transitionAuthenticationMachine(
                             FSMAuthenticationEvent.OnUserConfirmationExpired
                         )
                     }
+
                     is SecretResult.Retrieved -> {
                         if (
                             activityViewModel.getAuthenticationMachineState()

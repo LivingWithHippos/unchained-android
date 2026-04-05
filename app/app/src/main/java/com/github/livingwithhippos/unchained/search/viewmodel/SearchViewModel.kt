@@ -2,13 +2,18 @@ package com.github.livingwithhippos.unchained.search.viewmodel
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.core.content.edit
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.livingwithhippos.unchained.data.local.CompleteRemoteService
+import com.github.livingwithhippos.unchained.data.local.RemoteServiceType
 import com.github.livingwithhippos.unchained.data.repository.DatabasePluginRepository
+import com.github.livingwithhippos.unchained.data.repository.JackettRepository
 import com.github.livingwithhippos.unchained.data.repository.PluginRepository
+import com.github.livingwithhippos.unchained.data.repository.ServiceRepository
 import com.github.livingwithhippos.unchained.folderlist.view.FolderListFragment
 import com.github.livingwithhippos.unchained.folderlist.viewmodel.FolderListViewModel
 import com.github.livingwithhippos.unchained.plugins.Parser
@@ -20,9 +25,12 @@ import com.github.livingwithhippos.unchained.utilities.extension.cancelIfActive
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.supervisorScope
 import timber.log.Timber
 
 @HiltViewModel
@@ -33,13 +41,15 @@ constructor(
     private val preferences: SharedPreferences,
     private val pluginRepository: PluginRepository,
     private val databasePluginsRepository: DatabasePluginRepository,
+    private val serviceRepository: ServiceRepository,
+    private val jackettRepository: JackettRepository,
     private val parser: Parser,
 ) : ViewModel() {
 
     // used to simulate a debounce effect while typing on the search bar
     private var job: Job? = null
 
-    val pluginLiveData = MutableLiveData<Pair<List<Plugin>, Int>>()
+    val pluginLiveData = MutableLiveData<PluginsAndServices>()
     private val parsingLiveData = MutableLiveData<ParserResult>()
 
     fun completeSearch(
@@ -49,7 +59,7 @@ constructor(
         page: Int = 1,
     ): LiveData<ParserResult> {
 
-        val plugin = pluginLiveData.value?.first?.firstOrNull { it.name == pluginName }
+        val plugin = pluginLiveData.value?.plugins?.firstOrNull { it.name == pluginName }
         if (plugin != null) {
             val results = mutableListOf<ScrapedItem>()
             // empty saved results on new searches
@@ -64,20 +74,24 @@ constructor(
                                 parsingLiveData.value = ParserResult.Results(results)
                                 setSearchResults(results)
                             }
+
                             is ParserResult.Results -> {
                                 // here I have all the results at once
                                 parsingLiveData.value = it
                                 results.addAll(it.values)
                                 setSearchResults(results)
                             }
+
                             is ParserResult.SearchStarted -> {
                                 clearSearchResults()
                                 results.clear()
                                 parsingLiveData.value = it
                             }
+
                             is ParserResult.SearchFinished -> {
                                 parsingLiveData.value = it
                             }
+
                             else -> parsingLiveData.value = it
                         }
                     }
@@ -92,8 +106,41 @@ constructor(
     fun fetchPlugins(context: Context) {
         viewModelScope.launch {
             val pluginsResult: Pair<List<Plugin>, Int> = pluginRepository.getPlugins(context)
-            pluginLiveData.postValue(pluginsResult)
+            val selectedPlugins =
+                databasePluginsRepository.getEnabledPlugins().values.flatten().map { it.name }
+            val pluginsWithSelection =
+                pluginsResult.first.map { plugin ->
+                    plugin.copy(selected = selectedPlugins.contains(plugin.name))
+                }
+            pluginLiveData.postValue(
+                PluginsAndServices(
+                    plugins = pluginsWithSelection,
+                    services = emptyList(),
+                    errors = pluginsResult.second,
+                )
+            )
             setPlugins(pluginsResult.first)
+        }
+    }
+
+    fun fetchPluginsAndServices(context: Context) {
+        viewModelScope.launch {
+            val pluginsResult: Pair<List<Plugin>, Int> = pluginRepository.getPlugins(context)
+            val selectedPlugins =
+                databasePluginsRepository.getEnabledPlugins().values.flatten().map { it.name }
+            val pluginsWithSelection =
+                pluginsResult.first.map { plugin ->
+                    plugin.copy(selected = selectedPlugins.contains(plugin.name))
+                }
+            val services =
+                serviceRepository.getServicesTypes(types = listOf(RemoteServiceType.JACKETT.value))
+            pluginLiveData.postValue(
+                PluginsAndServices(
+                    plugins = pluginsWithSelection,
+                    services = services,
+                    errors = pluginsResult.second,
+                )
+            )
         }
     }
 
@@ -126,10 +173,7 @@ constructor(
     }
 
     fun setLastSelectedPlugin(name: String) {
-        with(preferences.edit()) {
-            putString(KEY_LAST_SELECTED_PLUGIN, name)
-            apply()
-        }
+        preferences.edit { putString(KEY_LAST_SELECTED_PLUGIN, name) }
     }
 
     fun isPluginDialogNeeded(): Boolean {
@@ -137,10 +181,7 @@ constructor(
     }
 
     fun setPluginDialogNeeded(needed: Boolean) {
-        with(preferences.edit()) {
-            putBoolean(KEY_PLUGIN_DIALOG_NEEDED, needed)
-            apply()
-        }
+        preferences.edit { putBoolean(KEY_PLUGIN_DIALOG_NEEDED, needed) }
     }
 
     fun isDOHDialogNeeded(): Boolean {
@@ -148,24 +189,15 @@ constructor(
     }
 
     fun setDOHDialogNeeded(needed: Boolean) {
-        with(preferences.edit()) {
-            putBoolean(KEY_DOH_DIALOG_NEEDED, needed)
-            apply()
-        }
+        preferences.edit { putBoolean(KEY_DOH_DIALOG_NEEDED, needed) }
     }
 
     fun enableDOH(enable: Boolean) {
-        with(preferences.edit()) {
-            putBoolean(KEY_USE_DOH, enable)
-            apply()
-        }
+        preferences.edit { putBoolean(KEY_USE_DOH, enable) }
     }
 
     fun setListSortPreference(tag: String) {
-        with(preferences.edit()) {
-            putString(FolderListViewModel.KEY_LIST_SORTING, tag)
-            apply()
-        }
+        preferences.edit { putString(FolderListViewModel.KEY_LIST_SORTING, tag) }
     }
 
     fun getListSortPreference(): String {
@@ -176,10 +208,7 @@ constructor(
     }
 
     fun saveSearchCategory(category: String) {
-        with(preferences.edit()) {
-            putString(KEY_CATEGORY, category)
-            apply()
-        }
+        preferences.edit { putString(KEY_CATEGORY, category) }
     }
 
     fun getSearchCategory(): String {
@@ -197,72 +226,99 @@ constructor(
         // search for each one and publish
         job?.cancelIfActive()
 
-        job =
-            viewModelScope.launch {
-                // get category if selected
-                // get all selected plugins
-                // retrieve plugins from disk if needed
-                // search for each one and publish
+        job = viewModelScope.launch {
+            // get category if selected
+            // get all selected plugins
+            // retrieve plugins from disk if needed
+            // search for each one and publish
 
-                // todo: repo + plugin name?
-                val enabledPlugins: List<Plugin> =
-                    databasePluginsRepository.getEnabledPlugins().values.flatten().mapNotNull {
-                        repoPlugin ->
-                        pluginLiveData.value?.first?.firstOrNull { it.name == repoPlugin.name }
-                    }
-                if (enabledPlugins.isEmpty()) {
-                    parsingLiveData.postValue(ParserResult.NoEnabledPlugins)
-                    return@launch
+            // todo: use something better to recognize them, hash repo + plugin name/url?
+            val enabledPlugins: List<Plugin> =
+                databasePluginsRepository.getEnabledPlugins().values.flatten().mapNotNull {
+                    repoPlugin ->
+                    pluginLiveData.value?.plugins?.firstOrNull { it.name == repoPlugin.name }
                 }
+            // todo add repo with suspend to access the db of complete remote servceis
+            val enabledServices =
+                serviceRepository.getEnabledServicesTypes(
+                    types = listOf(RemoteServiceType.JACKETT.value)
+                )
 
-                parsingLiveData.postValue(ParserResult.SearchStarted(-1))
+            if (enabledPlugins.isEmpty() && enabledServices.isEmpty()) {
+                parsingLiveData.value = ParserResult.NoEnabledPlugins
+                return@launch
+            }
 
-                // todo: launch search, parallel if possible and post results on live data
+            parsingLiveData.value = ParserResult.SearchStarted(-1)
+            delay(100)
 
-                val results = mutableListOf<ScrapedItem>()
-
-                clearSearchResults()
-
-                enabledPlugins.forEach { plugin ->
-                    Timber.d("Starting search for plugin ${plugin.name}")
-                    parser
-                        .completeSearch(plugin, query, category, page)
-                        .onEach {
+            supervisorScope {
+                val pluginSearches = enabledPlugins.map { plugin ->
+                    launch {
+                        parser.completeSearch(plugin, query, category, page).collect {
                             when (it) {
                                 is ParserResult.SingleResult -> {
-                                    results.add(it.value)
-                                    parsingLiveData.value = ParserResult.Results(results)
-                                    setSearchResults(results)
+                                    parsingLiveData.value = ParserResult.SingleResult(it.value)
                                 }
+
                                 is ParserResult.Results -> {
                                     // here I have all the results at once
-                                    parsingLiveData.value = it
-                                    results.addAll(it.values)
-                                    setSearchResults(results)
+                                    parsingLiveData.value = ParserResult.Results(it.values)
                                 }
+
                                 is ParserResult.SearchStarted -> {
-                                    // results.clear()
-                                    parsingLiveData.value = it
+                                    // not needed when run in parallel
                                 }
+
                                 is ParserResult.SearchFinished -> {
-                                    parsingLiveData.value = it
+                                    // emitted once after all plugin searches complete
                                 }
+
                                 else -> {
-                                    // todo: check if we are stopping on the fragment side, with
-                                    // parallel search it's ok to continue if a single one fails
+                                    // forward plugin-specific errors while keeping aggregate flow
+                                    // alive
                                     parsingLiveData.value = it
                                 }
                             }
                         }
-                        .launchIn(viewModelScope)
+                    }
                 }
+                val servicesSearches = enabledServices.map { service ->
+                    launch {
+                        Timber.d("Starting search for service ${service.name}")
+                        // todo: add categories support
+                        jackettRepository.performSearch(service, query = query).collect {
+                            when (it) {
+                                is ParserResult.Results -> {
+                                    parsingLiveData.value = ParserResult.Results(it.values)
+                                }
+
+                                else -> {
+                                    // not used yet
+                                    Timber.d(
+                                        "Received non-results parser result from service search: $it"
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+                pluginSearches.joinAll()
+                servicesSearches.joinAll()
             }
+
+            parsingLiveData.value = ParserResult.SearchFinished
+        }
 
         return parsingLiveData
     }
 
     fun setPluginEnabled(name: String, checked: Boolean) {
         viewModelScope.launch { databasePluginsRepository.enablePlugin(name, checked) }
+    }
+
+    fun setServiceEnabled(service: CompleteRemoteService, checked: Boolean) {
+        viewModelScope.launch { serviceRepository.enableService(service.id, checked) }
     }
 
     companion object {
@@ -276,3 +332,9 @@ constructor(
         const val KEY_DOH_DIALOG_NEEDED = "doh_dialog_needed_key"
     }
 }
+
+data class PluginsAndServices(
+    val plugins: List<Plugin>,
+    val services: List<CompleteRemoteService>,
+    val errors: Int,
+)

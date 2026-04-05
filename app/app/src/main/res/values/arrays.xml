@@ -44,6 +44,15 @@
         <item>search</item>
     </string-array>
 
+    <string-array name="search_start_destination">
+        <item>@string/previous</item>
+        <item>@string/new_string</item>
+    </string-array>
+    <string-array name="search_start_destination_values">
+        <item>previous</item>
+        <item>new</item>
+    </string-array>
+
     <string-array name="doh_provider" >
         <item>@string/cloudflare</item>
         <item>@string/google</item>
@@ -86,7 +95,7 @@
     <string-array name="service_types">
         <item>@string/kodi</item>
         <item>@string/player_vlc</item>
-        <!-- item>@string/jackett</item -->
+        <item>@string/jackett</item>
     </string-array>
     <string-array name="search_categories">
         <item>@string/category_all</item>

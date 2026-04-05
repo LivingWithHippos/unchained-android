@@ -577,6 +577,9 @@
     <string name="show_folder_filters_summary">Show the filters for files size and media type in the folder screen</string>
     <string name="title_main_screen">Start-up Screen</string>
     <string name="summary_main_screen">Tab to open at start-up</string>
+    <string name="title_search_start_destination">Search start screen</string>
+    <string name="summary_search_start_destination">Page to open when entering the Search tab</string>
+    <string name="new_string">New</string>
     <string name="select_deselect_all">Select or deselect all</string>
     <string name="select_one_item">Select at least one item</string>
     <string name="torrent_monitoring_description">Monitor your torrents being downloaded on Real-Debrid servers.</string>
@@ -761,4 +764,9 @@
     <string name="remote_devices_services_description">Remote devices are computers, TVs, or phones on which services like Kodi and VLC are running. First, create a device to add one or more services.</string>
     <string name="no_credentials_found">No credentials found</string>
     <string name="invalid_player_found">The app that tried opening this link is bugged, install another player</string>
+    <string name="complete_address">Complete address with port</string>
+    <string name="remote_services_description">Services are programs running on computers used to search for files or play media</string>
+    <string name="service_added">Service Added</string>
+    <string name="please_select_plugins">Please select at least a plugin</string>
+    <string name="disabled">Disabled</string>
 </resources>

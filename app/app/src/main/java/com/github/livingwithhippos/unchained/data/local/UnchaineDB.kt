@@ -22,14 +22,16 @@ import com.github.livingwithhippos.unchained.data.model.RepositoryPlugin
             PluginVersion::class,
             RemoteDevice::class,
             RemoteService::class,
+            CompleteRemoteService::class,
         ],
-    version = 7,
+    version = 10,
     exportSchema = true,
     autoMigrations =
         [
             AutoMigration(from = 4, to = 5),
             AutoMigration(from = 5, to = 6),
             AutoMigration(from = 6, to = 7),
+            AutoMigration(from = 7, to = 8),
         ],
 )
 abstract class UnchaineDB : RoomDatabase() {
@@ -39,5 +41,7 @@ abstract class UnchaineDB : RoomDatabase() {
 
     abstract fun pluginRepositoryDao(): RepositoryDataDao
 
-    abstract fun pluginRemoteDeviceDao(): RemoteDeviceDao
+    abstract fun remoteDeviceDao(): RemoteDeviceDao
+
+    abstract fun completeRemoteServiceDao(): CompleteRemoteServiceDao
 }

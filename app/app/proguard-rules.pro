@@ -20,16 +20,12 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
-# avoid rewriting of proto datastore variables name. Remove when https://android-review.googlesource.com/c/platform/frameworks/support/+/1433465/ is available
--keep class * extends com.google.protobuf.GeneratedMessageLite {
-  <fields>;
-   }
-
 # https://github.com/square/retrofit#r8--proguard
 # With R8 full mode generic signatures are stripped for classes that are not
 # kept. Suspend functions are wrapped in continuations where the type argument
 # is used.
 -keep,allowobfuscation,allowshrinking class kotlin.coroutines.Continuation
+-dontwarn com.google.re2j.**
 
 # With R8 full mode generic signatures are stripped for classes that are not kept.
 -keep,allowobfuscation,allowshrinking class retrofit2.Response

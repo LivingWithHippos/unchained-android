@@ -128,11 +128,19 @@ constructor(
         }
     }
 
-    private suspend fun installMultiplePlugins(context: Context, plugins: List<PluginVersion>) {
+    private suspend fun installMultiplePlugins(
+        context: Context,
+        plugins: List<PluginVersion>,
+        skipDisabled: Boolean = true,
+    ) {
         var errors = 0
         val installResults = mutableListOf<InstallResult>()
         // install all
         for (plugin in plugins) {
+            if (skipDisabled && plugin.disabled) {
+                Timber.d("Skipping disabled plugin ${plugin.plugin}")
+                continue
+            }
             when (val result = downloadRepository.downloadPlugin(plugin.link)) {
                 is EitherResult.Failure -> {
                     Timber.e("Error downloading plugin at ${plugin.link}:\n${result.failure}")
@@ -162,14 +170,14 @@ constructor(
             if (installedPlugins.isNullOrEmpty()) {
                 installMultiplePlugins(context, emptyList())
             } else {
-                val updatablePlugins =
-                    remotePlugins.filter { remotePlugin ->
-                        val installedVersion: Plugin? =
-                            installedPlugins.firstOrNull { it.name == remotePlugin.plugin }
-
-                        if (installedVersion == null) false
-                        else installedVersion.version < remotePlugin.version
+                val updatablePlugins = remotePlugins.filter { remotePlugin ->
+                    val installedVersion: Plugin? = installedPlugins.firstOrNull {
+                        it.name.equals(remotePlugin.plugin, ignoreCase = true)
                     }
+
+                    if (installedVersion == null) false
+                    else installedVersion.version < remotePlugin.version
+                }
 
                 installMultiplePlugins(context, updatablePlugins)
             }
