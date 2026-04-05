@@ -133,6 +133,10 @@ constructor(
         val installResults = mutableListOf<InstallResult>()
         // install all
         for (plugin in plugins) {
+            if (plugin.disabled) {
+                Timber.d("Skipping disabled plugin ${plugin.plugin}")
+                continue
+            }
             when (val result = downloadRepository.downloadPlugin(plugin.link)) {
                 is EitherResult.Failure -> {
                     Timber.e("Error downloading plugin at ${plugin.link}:\n${result.failure}")

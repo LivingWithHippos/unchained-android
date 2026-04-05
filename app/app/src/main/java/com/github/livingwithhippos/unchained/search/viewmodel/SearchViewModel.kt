@@ -141,7 +141,6 @@ constructor(
                     errors = pluginsResult.second,
                 )
             )
-            setPlugins(pluginsResult.first)
         }
     }
 
