@@ -99,7 +99,7 @@ constructor(
     }
 
     fun getDefaultPlayer(): String? {
-        return preferences.getString("default_media_player", null)
+        return preferences.getString("default_media_player", "vlc")
     }
 
     fun getButtonVisibilityPreference(buttonKey: String, default: Boolean = true): Boolean {
