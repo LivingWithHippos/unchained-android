@@ -1,0 +1,9 @@
+What's new in 1.6.1:
+- updated links supported by the app
+- fixed credentials lost on rotate
+- fixed some crashes
+- filtering files in folder now case insensitive
+- added jackett support for searching
+- aadded new plugin search page
+- fixed plugins marked as manually installed
+- use disabled plugins information
