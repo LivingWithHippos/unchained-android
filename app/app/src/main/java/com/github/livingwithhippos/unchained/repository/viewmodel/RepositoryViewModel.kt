@@ -128,7 +128,11 @@ constructor(
         }
     }
 
-    private suspend fun installMultiplePlugins(context: Context, plugins: List<PluginVersion>, skipDisabled: Boolean = true) {
+    private suspend fun installMultiplePlugins(
+        context: Context,
+        plugins: List<PluginVersion>,
+        skipDisabled: Boolean = true,
+    ) {
         var errors = 0
         val installResults = mutableListOf<InstallResult>()
         // install all

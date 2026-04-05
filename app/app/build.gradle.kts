@@ -46,8 +46,8 @@ android {
         applicationId = "com.github.livingwithhippos.unchained"
         minSdk = 27
         targetSdk = 36
-        versionCode = 56
-        versionName = "1.5.1"
+        versionCode = 57
+        versionName = "1.6.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -60,8 +60,8 @@ android {
             excludes.addAll(
                 listOf(
                     "META-INF/*.version",
-                    // manually added, markdown files should not be needed
-                    // was crashing with the jakarta xml bind api
+                    // manually added, Markdown files should not be needed
+                    // was crashing with the jakarta XML bind api
                     "META-INF/*.md",
                     "META-INF/proguard/*",
                     "/*.properties",
