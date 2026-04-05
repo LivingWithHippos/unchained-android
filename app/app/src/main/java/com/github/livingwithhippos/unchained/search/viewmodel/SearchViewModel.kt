@@ -21,7 +21,9 @@ import com.github.livingwithhippos.unchained.plugins.ParserResult
 import com.github.livingwithhippos.unchained.plugins.model.Plugin
 import com.github.livingwithhippos.unchained.plugins.model.ScrapedItem
 import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Companion.KEY_USE_DOH
+import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.extension.cancelIfActive
+import com.github.livingwithhippos.unchained.utilities.postEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.Job
@@ -49,7 +51,7 @@ constructor(
     // used to simulate a debounce effect while typing on the search bar
     private var job: Job? = null
 
-    val pluginLiveData = MutableLiveData<PluginsAndServices>()
+    val pluginLiveData = MutableLiveData<Event<PluginsAndServices>>()
     private val parsingLiveData = MutableLiveData<ParserResult>()
 
     fun completeSearch(
@@ -59,7 +61,7 @@ constructor(
         page: Int = 1,
     ): LiveData<ParserResult> {
 
-        val plugin = pluginLiveData.value?.plugins?.firstOrNull { it.name == pluginName }
+        val plugin = pluginLiveData.value?.peekContent()?.plugins?.firstOrNull { it.name == pluginName }
         if (plugin != null) {
             val results = mutableListOf<ScrapedItem>()
             // empty saved results on new searches
@@ -112,7 +114,7 @@ constructor(
                 pluginsResult.first.map { plugin ->
                     plugin.copy(selected = selectedPlugins.contains(plugin.name))
                 }
-            pluginLiveData.postValue(
+            pluginLiveData.postEvent(
                 PluginsAndServices(
                     plugins = pluginsWithSelection,
                     services = emptyList(),
@@ -123,7 +125,7 @@ constructor(
         }
     }
 
-    fun fetchPluginsAndServices(context: Context) {
+    fun fetchPluginsAndServices(context: Context, show: Boolean = true) {
         viewModelScope.launch {
             val pluginsResult: Pair<List<Plugin>, Int> = pluginRepository.getPlugins(context)
             val selectedPlugins =
@@ -134,11 +136,12 @@ constructor(
                 }
             val services =
                 serviceRepository.getServicesTypes(types = listOf(RemoteServiceType.JACKETT.value))
-            pluginLiveData.postValue(
+            pluginLiveData.postEvent(
                 PluginsAndServices(
                     plugins = pluginsWithSelection,
                     services = services,
                     errors = pluginsResult.second,
+                    showSheet = show
                 )
             )
         }
@@ -236,7 +239,7 @@ constructor(
             val enabledPlugins: List<Plugin> =
                 databasePluginsRepository.getEnabledPlugins().values.flatten().mapNotNull {
                     repoPlugin ->
-                    pluginLiveData.value?.plugins?.firstOrNull { it.name == repoPlugin.name }
+                    pluginLiveData.value?.peekContent()?.plugins?.firstOrNull { it.name == repoPlugin.name }
                 }
             // todo add repo with suspend to access the db of complete remote servceis
             val enabledServices =
@@ -337,4 +340,5 @@ data class PluginsAndServices(
     val plugins: List<Plugin>,
     val services: List<CompleteRemoteService>,
     val errors: Int,
+    val showSheet: Boolean = true
 )
