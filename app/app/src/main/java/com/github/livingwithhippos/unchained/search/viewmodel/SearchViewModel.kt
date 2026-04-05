@@ -128,11 +128,10 @@ constructor(
     fun fetchPluginsAndServices(context: Context, show: Boolean = true) {
         viewModelScope.launch {
             val pluginsResult: Pair<List<Plugin>, Int> = pluginRepository.getPlugins(context)
-            val selectedPlugins =
-                databasePluginsRepository.getEnabledPlugins().values.flatten().map { it.name }
+            val selectedPlugins = databasePluginsRepository.getEnabledPluginsOnly().map { it.name.lowercase() }
             val pluginsWithSelection =
                 pluginsResult.first.map { plugin ->
-                    plugin.copy(selected = selectedPlugins.contains(plugin.name))
+                    plugin.copy(selected = selectedPlugins.contains(plugin.name.lowercase()))
                 }
             val services =
                 serviceRepository.getServicesTypes(types = listOf(RemoteServiceType.JACKETT.value))
