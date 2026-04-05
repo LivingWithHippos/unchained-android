@@ -57,7 +57,7 @@ class PluginSearchFragment : UnchainedFragment(), SearchItemListener {
     }
 
     override fun onResume() {
-        context?.let{ viewModel.fetchPluginsAndServices(it, show = false) }
+        context?.let { viewModel.fetchPluginsAndServices(it, show = false) }
         super.onResume()
     }
 
@@ -68,7 +68,7 @@ class PluginSearchFragment : UnchainedFragment(), SearchItemListener {
 
     private fun setupAndShowSheet(
         inflater: LayoutInflater,
-        pluginsAndServices: PluginsAndServices
+        pluginsAndServices: PluginsAndServices,
     ) {
         val sideSheetDialog = SideSheetDialog(requireContext())
         sideSheetDialog.setContentView(R.layout.sidesheet_search_plugins_options)

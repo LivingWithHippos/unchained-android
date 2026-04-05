@@ -121,11 +121,11 @@ constructor(private val repositoryDataDao: RepositoryDataDao) {
     suspend fun getEnabledPluginsOnly(): List<RepositoryPlugin> =
         repositoryDataDao.getEnabledPluginsOnly()
 
-    suspend fun getAllPlugins(): List<RepositoryPlugin> =
-        repositoryDataDao.getAllPlugins()
+    suspend fun getAllPlugins(): List<RepositoryPlugin> = repositoryDataDao.getAllPlugins()
 
     suspend fun enablePlugin(name: String, enabled: Boolean) {
-        // since in the db they are stored in lowercase, we need to convert the name to lowercase before updating
+        // since in the db they are stored in lowercase, we need to convert the name to lowercase
+        // before updating
         repositoryDataDao.enablePlugin(name.lowercase(), enabled)
     }
 }

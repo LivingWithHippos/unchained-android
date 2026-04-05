@@ -61,7 +61,8 @@ constructor(
         page: Int = 1,
     ): LiveData<ParserResult> {
 
-        val plugin = pluginLiveData.value?.peekContent()?.plugins?.firstOrNull { it.name == pluginName }
+        val plugin =
+            pluginLiveData.value?.peekContent()?.plugins?.firstOrNull { it.name == pluginName }
         if (plugin != null) {
             val results = mutableListOf<ScrapedItem>()
             // empty saved results on new searches
@@ -128,7 +129,8 @@ constructor(
     fun fetchPluginsAndServices(context: Context, show: Boolean = true) {
         viewModelScope.launch {
             val pluginsResult: Pair<List<Plugin>, Int> = pluginRepository.getPlugins(context)
-            val selectedPlugins = databasePluginsRepository.getEnabledPluginsOnly().map { it.name.lowercase() }
+            val selectedPlugins =
+                databasePluginsRepository.getEnabledPluginsOnly().map { it.name.lowercase() }
             val pluginsWithSelection =
                 pluginsResult.first.map { plugin ->
                     plugin.copy(selected = selectedPlugins.contains(plugin.name.lowercase()))
@@ -140,7 +142,7 @@ constructor(
                     plugins = pluginsWithSelection,
                     services = services,
                     errors = pluginsResult.second,
-                    showSheet = show
+                    showSheet = show,
                 )
             )
         }
@@ -238,7 +240,9 @@ constructor(
             val enabledPlugins: List<Plugin> =
                 databasePluginsRepository.getEnabledPlugins().values.flatten().mapNotNull {
                     repoPlugin ->
-                    pluginLiveData.value?.peekContent()?.plugins?.firstOrNull { it.name == repoPlugin.name }
+                    pluginLiveData.value?.peekContent()?.plugins?.firstOrNull {
+                        it.name == repoPlugin.name
+                    }
                 }
             // todo add repo with suspend to access the db of complete remote servceis
             val enabledServices =
@@ -339,5 +343,5 @@ data class PluginsAndServices(
     val plugins: List<Plugin>,
     val services: List<CompleteRemoteService>,
     val errors: Int,
-    val showSheet: Boolean = true
+    val showSheet: Boolean = true,
 )
