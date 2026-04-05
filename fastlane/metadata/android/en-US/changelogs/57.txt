@@ -1,4 +1,4 @@
-What's new in 1.5.1:
+What's new in 1.6.0:
 - updated links supported by the app
 - fixed credentials lost on rotate
 - fixed some crashes
