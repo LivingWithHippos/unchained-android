@@ -154,7 +154,7 @@ class AuthenticationFragment : UnchainedFragment() {
         // 1. start checking for the auth link
         viewModel.authLiveData.observe(viewLifecycleOwner) { event ->
             event?.peekContent()?.let { auth ->
-                val previousUserCode = binding.tvUserCodeValue.text?.toString().orEmpty()
+                val displayedUserCode = binding.tvUserCodeValue.text?.toString().orEmpty()
                 binding.tvAuthenticationLink.text = auth.verificationUrl
                 binding.tvAuthenticationLink.visibility = View.VISIBLE
                 binding.cbLink.isChecked = true
@@ -164,7 +164,7 @@ class AuthenticationFragment : UnchainedFragment() {
                 binding.bCopyLink.isEnabled = true
                 // update the currently saved credentials
                 activityViewModel.updateCredentialsDeviceCode(auth.deviceCode)
-                if (previousUserCode != auth.userCode) {
+                if (displayedUserCode != auth.userCode) {
                     viewModel.setupSecretLoop(auth.expiresIn)
                 }
                 // transition state machine
