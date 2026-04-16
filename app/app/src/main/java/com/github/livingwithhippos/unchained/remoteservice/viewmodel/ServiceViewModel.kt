@@ -74,8 +74,8 @@ constructor(
                     is RemoteServiceType.KODI -> {
                         val response = kodiRepository.getVolume(address, username, password)
                         serviceLiveData.postValue(
-                            if (response != null) ServiceEvent.ServiceWorking else
-                            ServiceEvent.ServiceNotWorking(ServiceErrorType.InvalidService)
+                            if (response != null) ServiceEvent.ServiceWorking
+                            else ServiceEvent.ServiceNotWorking(ServiceErrorType.InvalidService)
                         )
                     }
 
