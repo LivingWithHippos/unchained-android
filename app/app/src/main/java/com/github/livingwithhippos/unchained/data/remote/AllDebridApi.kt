@@ -368,7 +368,11 @@ fun AllDebridPinCheckData.toResult(): AllDebridPinCheckResult =
 fun AllDebridUserInfo.toUser(nowEpochSeconds: Long): User {
     val premiumUntilEpoch = premiumUntil.toLongOrNull() ?: 0L
     val premiumSeconds =
-        if (premiumUntilEpoch > nowEpochSeconds) (premiumUntilEpoch - nowEpochSeconds).toInt() else 0
+        if (premiumUntilEpoch > nowEpochSeconds) {
+            (premiumUntilEpoch - nowEpochSeconds).coerceAtMost(Int.MAX_VALUE.toLong()).toInt()
+        } else {
+            0
+        }
     return User(
         id = 0,
         username = username,
