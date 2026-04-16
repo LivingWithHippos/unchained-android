@@ -50,6 +50,34 @@ interface AllDebridUnrestrictApi {
         @Field("link") link: String,
         @Field("password") password: String? = null,
     ): Response<AllDebridLinkUnlockResponse>
+
+    @FormUrlEncoded
+    @POST("v4/link/redirector")
+    suspend fun getRedirectorLinks(
+        @Header("Authorization") token: String,
+        @Field("links[]") links: List<String>,
+    ): Response<AllDebridRedirectorResponse>
+}
+
+interface AllDebridUserLinksApi {
+    @GET("v4/user/history")
+    suspend fun getUserHistory(
+        @Header("Authorization") token: String,
+    ): Response<AllDebridUserHistoryResponse>
+
+    @FormUrlEncoded
+    @POST("v4/user/links/save")
+    suspend fun saveLinks(
+        @Header("Authorization") token: String,
+        @Field("links[]") links: List<String>,
+    ): Response<AllDebridMessageResponse>
+
+    @FormUrlEncoded
+    @POST("v4/user/links/delete")
+    suspend fun deleteLinks(
+        @Header("Authorization") token: String,
+        @Field("links[]") links: List<String>,
+    ): Response<AllDebridMessageResponse>
 }
 
 interface AllDebridTorrentsApi {
@@ -308,6 +336,47 @@ data class AllDebridPinCheckResult(
     val apiKey: String?,
 )
 
+@JsonClass(generateAdapter = true)
+data class AllDebridUserHistoryResponse(
+    @param:Json(name = "status") val status: String,
+    @param:Json(name = "data") val data: AllDebridUserHistoryData?,
+    @param:Json(name = "error") val error: AllDebridError?,
+)
+
+@JsonClass(generateAdapter = true)
+data class AllDebridUserHistoryData(
+    @param:Json(name = "links") val links: List<AllDebridUserLink>?,
+)
+
+@JsonClass(generateAdapter = true)
+data class AllDebridUserLink(
+    @param:Json(name = "link") val link: String,
+    @param:Json(name = "filename") val filename: String,
+    @param:Json(name = "size") val size: Long,
+    @param:Json(name = "date") val date: Long,
+    @param:Json(name = "host") val host: String,
+)
+
+@JsonClass(generateAdapter = true)
+data class AllDebridRedirectorResponse(
+    @param:Json(name = "status") val status: String,
+    @param:Json(name = "data") val data: AllDebridRedirectorData?,
+    @param:Json(name = "error") val error: AllDebridError?,
+)
+
+@JsonClass(generateAdapter = true)
+data class AllDebridRedirectorData(
+    @param:Json(name = "links") val links: List<AllDebridRedirectorLink>?,
+)
+
+@JsonClass(generateAdapter = true)
+data class AllDebridRedirectorLink(
+    @param:Json(name = "link") val link: String?,
+    @param:Json(name = "host") val host: String?,
+    @param:Json(name = "filename") val filename: String?,
+    @param:Json(name = "filesize") val filesize: Long?,
+)
+
 private val apiErrorAdapter = Moshi.Builder().build().adapter(APIError::class.java)
 
 fun mapAllDebridErrorCode(code: String?): Int =
@@ -482,3 +551,24 @@ fun allDebridTokenPlaceholder(apiKey: String): Token =
         tokenType = "Bearer",
         refreshToken = apiKey,
     )
+
+fun AllDebridUserLink.toDownloadItem(): DownloadItem =
+    DownloadItem(
+        id = link,
+        filename = filename,
+        mimeType = null,
+        fileSize = size,
+        link = link,
+        host = host,
+        hostIcon = null,
+        chunks = 1,
+        crc = null,
+        download = link,
+        streamable = 0,
+        generated = date.toString(),
+        type = null,
+        alternative = null,
+    )
+
+fun AllDebridRedirectorData.toLinkList(): List<String> =
+    links?.mapNotNull { it.link } ?: emptyList()

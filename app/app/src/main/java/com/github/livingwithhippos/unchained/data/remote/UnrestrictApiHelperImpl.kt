@@ -14,6 +14,7 @@ constructor(
     private val preferences: SharedPreferences,
     private val unrestrictApi: UnrestrictApi,
     private val allDebridUnrestrictApi: AllDebridUnrestrictApi,
+    private val allDebridUserLinksApi: AllDebridUserLinksApi,
 ) : UnrestrictApiHelper {
     override suspend fun getUnrestrictedLink(
         token: String,
@@ -32,6 +33,8 @@ constructor(
                     val body = response.body()
                     val data = body?.data
                     if (body?.status == "success" && data != null) {
+                        // auto-save unlocked link so it appears in the history/downloads list
+                        allDebridUserLinksApi.saveLinks(token, listOf(link))
                         Response.success(data.toDownloadItem(link))
                     } else allDebridErrorResponse(body?.error)
                 }
@@ -44,7 +47,18 @@ constructor(
     ): Response<List<String>> =
         when (preferences.getDebridProvider()) {
             DebridProvider.RealDebrid -> unrestrictApi.getUnrestrictedFolder(token, link)
-            DebridProvider.AllDebrid -> Response.success(emptyList())
+            DebridProvider.AllDebrid -> {
+                val response = allDebridUnrestrictApi.getRedirectorLinks(token, listOf(link))
+                if (!response.isSuccessful) {
+                    allDebridErrorResponse(code = response.code(), error = response.body()?.error)
+                } else {
+                    val body = response.body()
+                    val data = body?.data
+                    if (body?.status == "success" && data != null) {
+                        Response.success(data.toLinkList())
+                    } else allDebridErrorResponse(body?.error)
+                }
+            }
         }
 
     override suspend fun uploadContainer(

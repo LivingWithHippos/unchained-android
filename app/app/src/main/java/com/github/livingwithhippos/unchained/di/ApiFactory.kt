@@ -7,6 +7,7 @@ import com.github.livingwithhippos.unchained.data.remote.AllDebridAuthentication
 import com.github.livingwithhippos.unchained.data.remote.AllDebridTorrentsApi
 import com.github.livingwithhippos.unchained.data.remote.AllDebridUnrestrictApi
 import com.github.livingwithhippos.unchained.data.remote.AllDebridUserApi
+import com.github.livingwithhippos.unchained.data.remote.AllDebridUserLinksApi
 import com.github.livingwithhippos.unchained.data.remote.AuthApiHelper
 import com.github.livingwithhippos.unchained.data.remote.AuthApiHelperImpl
 import com.github.livingwithhippos.unchained.data.remote.AuthenticationApi
@@ -313,6 +314,12 @@ object ApiFactory {
     @Singleton
     fun provideAllDebridTorrentsApi(@AllDebridRetrofit retrofit: Retrofit): AllDebridTorrentsApi =
         retrofit.create(AllDebridTorrentsApi::class.java)
+
+    @Provides
+    @Singleton
+    fun provideAllDebridUserLinksApi(
+        @AllDebridRetrofit retrofit: Retrofit
+    ): AllDebridUserLinksApi = retrofit.create(AllDebridUserLinksApi::class.java)
 
     @Provides
     @Singleton
