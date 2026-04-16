@@ -22,7 +22,9 @@ import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Comp
 import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Companion.KEY_REFERRAL_USE
 import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationState
 import com.github.livingwithhippos.unchained.utilities.ACCOUNT_LINK
+import com.github.livingwithhippos.unchained.utilities.DebridProvider
 import com.github.livingwithhippos.unchained.utilities.REFERRAL_LINK
+import com.github.livingwithhippos.unchained.utilities.getDebridProvider
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
@@ -57,25 +59,27 @@ class UserProfileFragment : UnchainedFragment() {
             populateUserView(user)
         }
         lifecycleScope.launch {
-            if (activityViewModel.isTokenPrivate()) {
-                binding.tvLoginDescription.text = getString(R.string.login_type_private)
-            } else {
-                binding.tvLoginDescription.text = getString(R.string.login_type_open)
-            }
+            binding.tvLoginDescription.text = getLoginDescription()
         }
 
         activityViewModel.userLiveData.observe(viewLifecycleOwner) {
             populateUserView(it.peekContent())
             lifecycleScope.launch {
-                if (activityViewModel.isTokenPrivate()) {
-                    binding.tvLoginDescription.text = getString(R.string.login_type_private)
-                } else {
-                    binding.tvLoginDescription.text = getString(R.string.login_type_open)
-                }
+                binding.tvLoginDescription.text = getLoginDescription()
             }
         }
 
+        binding.tvDescription.text =
+            when (preferences.getDebridProvider()) {
+                DebridProvider.RealDebrid -> getString(R.string.rd_settings_link_description)
+                DebridProvider.AllDebrid -> getString(R.string.alldebrid_settings_link_description)
+            }
+
         binding.bAccount.setOnClickListener {
+            if (preferences.getDebridProvider() == DebridProvider.AllDebrid) {
+                context?.openExternalWebPage("https://alldebrid.com/account/")
+                return@setOnClickListener
+            }
             // if we never asked, show a dialog
             if (!preferences.getBoolean(KEY_REFERRAL_ASKED, false)) {
                 // set asked as true
@@ -175,4 +179,8 @@ class UserProfileFragment : UnchainedFragment() {
             binding.pointsBar.setProgressCompat(it.points, true)
         }
     }
+
+    private suspend fun getLoginDescription(): String =
+        if (activityViewModel.isTokenPrivate()) getString(R.string.login_type_private)
+        else getString(R.string.login_type_open)
 }

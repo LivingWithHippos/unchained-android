@@ -12,4 +12,6 @@ interface AuthApiHelper {
     suspend fun getSecrets(deviceCode: String): Response<Secrets>
 
     suspend fun getToken(clientId: String, clientSecret: String, code: String): Response<Token>
+
+    suspend fun checkPin(deviceCode: String, userCode: String): Response<AllDebridPinCheckResult>
 }

@@ -10,6 +10,10 @@
     <string name="link">Link</string>
     <string name="using_code">using the code</string>
     <string name="copy_code">Copy code</string>
+    <string name="debrid_service">Debrid service</string>
+    <string name="provider_real_debrid">Real-Debrid</string>
+    <string name="provider_all_debrid">AllDebrid</string>
+    <string name="alldebrid_pin_message">Open the link below, confirm the PIN shown here, then wait for AllDebrid to authorize the app.</string>
     <string name="code_copied">Code copied to clipboard</string>
     <string name="or_visit">Or directly visit</string>
     <string name="waiting_user_auth">Waiting user authorization</string>
@@ -58,9 +62,11 @@
     <string name="quality">Quality</string>
     <string name="links">Links</string>
     <string name="add_private_token_message">You can also use your private API token from https://real-debrid.com/apitoken, which will allow you to utilize every functionality, such as streaming.</string>
+    <string name="add_private_token_message_alldebrid">You can also use an AllDebrid API key from https://alldebrid.com/apikeys/ for the currently supported features.</string>
     <string name="add_private_token">Add Private Token</string>
     <string name="save">Save</string>
     <string name="private_token">Private Token</string>
+    <string name="api_key">API Key</string>
     <string name="invalid_token">Please check the token value</string>
     <string name="download_details">Download Details</string>
     <string name="authenticate">Authenticate</string>
@@ -134,8 +140,10 @@
     <string name="torrent_already_active">Torrent already active</string>
     <string name="logout">Logout</string>
     <string name="account_page">Account Page</string>
-    <string name="login_type_open">Logged in with the open token. Some features such as transcoding are unavailable.</string>
-    <string name="login_type_private">Logged in with private token. All features are available.</string>
+    <string name="login_type_open">Logged in with a temporary token. Some provider-specific features may be unavailable.</string>
+    <string name="login_type_private">Logged in with an API key. Supported provider features are available.</string>
+    <string name="alldebrid_settings_link_description">Open your AllDebrid account page to manage your subscription, API keys, and account settings.</string>
+    <string name="download_link_label">Download Link</string>
     <string name="api_needs_private_token">This function requires a private API token</string>
     <string name="torrents">Torrents</string>
     <string name="downloads">Downloads</string>

@@ -136,7 +136,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         }
         binding.fabOpenLink.setOnClickListener { onOpenClick(args.details.download) }
         binding.fabCopyLink.setOnClickListener {
-            copyToClipboard("Real-Debrid Download Link", args.details.download)
+            copyToClipboard(getString(R.string.download_link_label), args.details.download)
             context?.showToast(R.string.link_copied)
         }
         binding.fabDownloadLink.setOnClickListener {

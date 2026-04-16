@@ -3,6 +3,10 @@ package com.github.livingwithhippos.unchained.di
 import android.content.SharedPreferences
 import com.github.livingwithhippos.unchained.BuildConfig
 import com.github.livingwithhippos.unchained.data.model.EmptyBodyInterceptor
+import com.github.livingwithhippos.unchained.data.remote.AllDebridAuthenticationApi
+import com.github.livingwithhippos.unchained.data.remote.AllDebridTorrentsApi
+import com.github.livingwithhippos.unchained.data.remote.AllDebridUnrestrictApi
+import com.github.livingwithhippos.unchained.data.remote.AllDebridUserApi
 import com.github.livingwithhippos.unchained.data.remote.AuthApiHelper
 import com.github.livingwithhippos.unchained.data.remote.AuthApiHelperImpl
 import com.github.livingwithhippos.unchained.data.remote.AuthenticationApi
@@ -226,12 +230,28 @@ object ApiFactory {
             .build()
     }
 
+    @Provides
+    @Singleton
+    @AllDebridRetrofit
+    fun allDebridRetrofit(@ClassicClient okHttpClient: OkHttpClient): Retrofit =
+        Retrofit.Builder()
+            .client(okHttpClient)
+            .baseUrl("https://api.alldebrid.com/")
+            .addConverterFactory(MoshiConverterFactory.create())
+            .build()
+
     // authentication api injection
     @Provides
     @Singleton
     fun provideAuthenticationApi(@AuthRetrofit retrofit: Retrofit): AuthenticationApi {
         return retrofit.create(AuthenticationApi::class.java)
     }
+
+    @Provides
+    @Singleton
+    fun provideAllDebridAuthenticationApi(
+        @AllDebridRetrofit retrofit: Retrofit
+    ): AllDebridAuthenticationApi = retrofit.create(AllDebridAuthenticationApi::class.java)
 
     @Provides
     @Singleton
@@ -246,6 +266,11 @@ object ApiFactory {
 
     @Provides
     @Singleton
+    fun provideAllDebridUserApi(@AllDebridRetrofit retrofit: Retrofit): AllDebridUserApi =
+        retrofit.create(AllDebridUserApi::class.java)
+
+    @Provides
+    @Singleton
     fun provideUserApiHelper(apiHelper: UserApiHelperImpl): UserApiHelper = apiHelper
 
     // unrestrict api injection
@@ -254,6 +279,12 @@ object ApiFactory {
     fun provideUnrestrictApi(@ApiRetrofit retrofit: Retrofit): UnrestrictApi {
         return retrofit.create(UnrestrictApi::class.java)
     }
+
+    @Provides
+    @Singleton
+    fun provideAllDebridUnrestrictApi(
+        @AllDebridRetrofit retrofit: Retrofit
+    ): AllDebridUnrestrictApi = retrofit.create(AllDebridUnrestrictApi::class.java)
 
     @Provides
     @Singleton
@@ -277,6 +308,11 @@ object ApiFactory {
     fun provideTorrentsApi(@ApiRetrofit retrofit: Retrofit): TorrentsApi {
         return retrofit.create(TorrentsApi::class.java)
     }
+
+    @Provides
+    @Singleton
+    fun provideAllDebridTorrentsApi(@AllDebridRetrofit retrofit: Retrofit): AllDebridTorrentsApi =
+        retrofit.create(AllDebridTorrentsApi::class.java)
 
     @Provides
     @Singleton

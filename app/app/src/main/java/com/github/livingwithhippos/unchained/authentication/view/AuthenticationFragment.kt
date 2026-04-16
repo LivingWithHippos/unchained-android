@@ -1,5 +1,6 @@
 package com.github.livingwithhippos.unchained.authentication.view
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.SpannableStringBuilder
@@ -21,7 +22,10 @@ import com.github.livingwithhippos.unchained.databinding.FragmentAuthenticationB
 import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationEvent
 import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationState
 import com.github.livingwithhippos.unchained.utilities.EventObserver
+import com.github.livingwithhippos.unchained.utilities.DebridProvider
 import com.github.livingwithhippos.unchained.utilities.PRIVATE_TOKEN
+import com.github.livingwithhippos.unchained.utilities.getDebridProvider
+import com.github.livingwithhippos.unchained.utilities.setDebridProvider
 import com.github.livingwithhippos.unchained.utilities.extension.copyToClipboard
 import com.github.livingwithhippos.unchained.utilities.extension.getClipboardText
 import com.github.livingwithhippos.unchained.utilities.extension.getThemeColor
@@ -29,6 +33,7 @@ import com.github.livingwithhippos.unchained.utilities.extension.hideKeyboard
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.google.android.material.textfield.TextInputEditText
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import kotlinx.coroutines.launch
 
 /**
@@ -37,6 +42,8 @@ import kotlinx.coroutines.launch
  */
 @AndroidEntryPoint
 class AuthenticationFragment : UnchainedFragment() {
+
+    @Inject lateinit var preferences: SharedPreferences
 
     private val viewModel: AuthenticationViewModel by viewModels()
     private var _binding: FragmentAuthenticationBinding? = null
@@ -50,29 +57,19 @@ class AuthenticationFragment : UnchainedFragment() {
     ): View {
 
         _binding = FragmentAuthenticationBinding.inflate(inflater, container, false)
+        renderProviderUi(preferences.getDebridProvider())
+
+        binding.bServiceRealDebrid.setOnClickListener {
+            onProviderSelected(DebridProvider.RealDebrid)
+        }
+        binding.bServiceAllDebrid.setOnClickListener {
+            onProviderSelected(DebridProvider.AllDebrid)
+        }
 
         binding.bPastePrivateCode.setOnClickListener {
             val pasteText = getClipboardText()
             binding.tiPrivateCode.setText(pasteText, TextView.BufferType.EDITABLE)
             binding.tiPrivateCode.hideKeyboard()
-        }
-        binding.bInsertPrivate.setOnClickListener {
-            val token: String = binding.tiPrivateCode.text.toString().trim()
-            // mine is 52 characters
-            if (token.length < 40) context?.showToast(R.string.invalid_token)
-            else {
-                // pass the value to be checked and eventually saved
-                activityViewModel.updateCredentials(
-                    accessToken = token,
-                    clientId = PRIVATE_TOKEN,
-                    clientSecret = PRIVATE_TOKEN,
-                    deviceCode = PRIVATE_TOKEN,
-                    refreshToken = PRIVATE_TOKEN,
-                )
-                activityViewModel.transitionAuthenticationMachine(
-                    FSMAuthenticationEvent.OnPrivateToken
-                )
-            }
         }
 
         binding.bCopyLink.setOnClickListener {
@@ -166,6 +163,7 @@ class AuthenticationFragment : UnchainedFragment() {
                 binding.bCopyLink.isEnabled = true
                 // update the currently saved credentials
                 activityViewModel.updateCredentialsDeviceCode(auth.deviceCode)
+                viewModel.setupSecretLoop(auth.expiresIn)
                 // transition state machine
                 if (
                     activityViewModel.getAuthenticationMachineState()
@@ -174,8 +172,6 @@ class AuthenticationFragment : UnchainedFragment() {
                     activityViewModel.transitionAuthenticationMachine(
                         FSMAuthenticationEvent.OnAuthLoaded
                     )
-                    // set up values for calling the secrets endpoint
-                    viewModel.setupSecretLoop(auth.expiresIn)
                 }
             }
         }
@@ -223,6 +219,23 @@ class AuthenticationFragment : UnchainedFragment() {
                                 )
                             }
                         }
+                    }
+
+                    is SecretResult.ApiKeyRetrieved -> {
+                        binding.cbSecret.isChecked = true
+                        binding.cbSecret.text = getString(R.string.obtained_user_auth)
+                        binding.cbToken.isChecked = true
+                        binding.cbToken.text = getString(R.string.obtained_token)
+                        activityViewModel.updateCredentials(
+                            accessToken = secrets.value,
+                            clientId = PRIVATE_TOKEN,
+                            clientSecret = PRIVATE_TOKEN,
+                            deviceCode = PRIVATE_TOKEN,
+                            refreshToken = PRIVATE_TOKEN,
+                        )
+                        activityViewModel.transitionAuthenticationMachine(
+                            FSMAuthenticationEvent.OnPrivateToken
+                        )
                     }
                 }
             },
@@ -280,8 +293,12 @@ class AuthenticationFragment : UnchainedFragment() {
 
     fun onSaveCodeClick(codeInputField: TextInputEditText) {
         val token: String = codeInputField.text.toString().trim()
-        // mine is 52 characters
-        if (token.length < 40) context?.showToast(R.string.invalid_token)
+        val minimumLength =
+            when (preferences.getDebridProvider()) {
+                DebridProvider.RealDebrid -> 40
+                DebridProvider.AllDebrid -> 16
+            }
+        if (token.length < minimumLength) context?.showToast(R.string.invalid_token)
         else {
             // pass the value to be checked and eventually saved
             activityViewModel.updateCredentials(
@@ -293,6 +310,52 @@ class AuthenticationFragment : UnchainedFragment() {
             )
             activityViewModel.transitionAuthenticationMachine(FSMAuthenticationEvent.OnPrivateToken)
         }
+    }
+
+    private fun onProviderSelected(provider: DebridProvider) {
+        if (preferences.getDebridProvider() == provider) return
+        preferences.setDebridProvider(provider)
+        renderProviderUi(provider)
+        resetAuthenticationUi()
+        viewModel.fetchAuthenticationInfo()
+    }
+
+    private fun renderProviderUi(provider: DebridProvider) {
+        binding.serviceToggleGroup.check(
+            when (provider) {
+                DebridProvider.RealDebrid -> R.id.bServiceRealDebrid
+                DebridProvider.AllDebrid -> R.id.bServiceAllDebrid
+            }
+        )
+        binding.tvLoginMessage.text =
+            when (provider) {
+                DebridProvider.RealDebrid -> getLoginMessage(LOGIN_TYPE_INDIRECT)
+                DebridProvider.AllDebrid -> getString(R.string.alldebrid_pin_message)
+            }
+        binding.tvUsePrivateToken.text =
+            when (provider) {
+                DebridProvider.RealDebrid -> getString(R.string.add_private_token_message)
+                DebridProvider.AllDebrid -> getString(R.string.add_private_token_message_alldebrid)
+            }
+        binding.tfPrivateCode.hint =
+            when (provider) {
+                DebridProvider.RealDebrid -> getString(R.string.private_token)
+                DebridProvider.AllDebrid -> getString(R.string.api_key)
+            }
+    }
+
+    private fun resetAuthenticationUi() {
+        binding.cbToken.isChecked = false
+        binding.cbToken.text = getString(R.string.waiting_token)
+        binding.tvAuthenticationLink.text = ""
+        binding.tvAuthenticationLink.visibility = View.GONE
+        binding.cbLink.isChecked = false
+        binding.cbLink.text = getString(R.string.waiting_link)
+        binding.cbSecret.isChecked = false
+        binding.cbSecret.text = getString(R.string.waiting_user_auth)
+        binding.tvUserCodeValue.text = getString(R.string.copy_code)
+        binding.bCopyLink.isEnabled = false
+        binding.tiPrivateCode.setText("")
     }
 
     companion object {
