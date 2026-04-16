@@ -379,6 +379,20 @@ data class AllDebridRedirectorLink(
 
 private val apiErrorAdapter = Moshi.Builder().build().adapter(APIError::class.java)
 
+/**
+ * Maps an AllDebrid error code string to the equivalent Real-Debrid numeric error code used
+ * throughout the app (see [APIError.errorCode]).  Errors not listed here return -1, which the
+ * UI treats as a generic network/API error.
+ *
+ * Selected mappings:
+ *  8  – bad/missing token (triggers token-refresh flow in [MainActivityViewModel])
+ *  16 – host not supported
+ *  17 – host temporarily unavailable
+ *  18 – host daily limit reached
+ *  20 – premium required
+ *  21 – too many active downloads
+ *  22 – account blocked
+ */
 fun mapAllDebridErrorCode(code: String?): Int =
     when (code) {
         "AUTH_MISSING_APIKEY",
