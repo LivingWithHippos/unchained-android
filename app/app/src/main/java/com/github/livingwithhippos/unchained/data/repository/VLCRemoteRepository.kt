@@ -1,19 +1,20 @@
 package com.github.livingwithhippos.unchained.data.repository
 
-import androidx.core.net.toUri
 import com.github.livingwithhippos.unchained.di.ClassicClient
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.addHttpScheme
 import java.io.IOException
+import java.net.URLEncoder
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import timber.log.Timber
-import java.net.URLEncoder
 
-class VLCRemoteRepository @Inject constructor(@param:ClassicClient private val client: OkHttpClient) {
+class VLCRemoteRepository
+@Inject
+constructor(@param:ClassicClient private val client: OkHttpClient) {
     // todo: add https://mpv.io/manual/stable/#json-ipc
 
     suspend fun openUrl(
@@ -27,7 +28,8 @@ class VLCRemoteRepository @Inject constructor(@param:ClassicClient private val c
             // https://wiki.videolan.org/Documentation:Modules/http_intf/#VLC_2.0.0_and_later
             // needs a password, or it won't work:
             // vlc --http-host 0.0.0.0 --http-port 9090 --http-password pass
-            // important! enable the web interface in the settings or the command won't print errors but also won't work!
+            // important! enable the web interface in the settings or the command won't print errors
+            // but also won't work!
             // also on some linux distro there may be a bug crashing the app 'glconv_vaapi_x11 gl
             // error: vaInitialize: unknown libva error'
             // workaround with export LIBVA_DRIVER_NAME=nvidia
