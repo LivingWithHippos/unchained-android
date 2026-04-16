@@ -46,7 +46,6 @@ class VLCRemoteRepository @Inject constructor(@param:ClassicClient private val c
                         IOException("Unexpected http code $response")
                     )
 
-                Timber.d(response.body!!.string())
                 return@withContext EitherResult.Success(true)
             }
         }
@@ -59,23 +58,58 @@ class VLCRemoteRepository @Inject constructor(@param:ClassicClient private val c
         encodeUrl: Boolean = true,
     ): EitherResult<Exception, Boolean> =
         withContext(Dispatchers.IO) {
-            val credential = okhttp3.Credentials.basic(username ?: "", password ?: "")
-            val newBaseUrl = addHttpScheme(if (baseUrl.endsWith("/")) baseUrl.dropLast(1) else baseUrl)
-            val finalUrl = if (encodeUrl) URLEncoder.encode(url, "UTF-8") else url
-            val request =
-                Request.Builder()
-                    .url("$newBaseUrl/requests/status.xml?command=in_play&input=$finalUrl")
-                    .header("Authorization", credential)
-                    .build()
+            try {
+                val credential = okhttp3.Credentials.basic(username ?: "", password ?: "")
+                val newBaseUrl =
+                    addHttpScheme(if (baseUrl.endsWith("/")) baseUrl.dropLast(1) else baseUrl)
+                val finalUrl = if (encodeUrl) URLEncoder.encode(url, "UTF-8") else url
+                val request =
+                    Request.Builder()
+                        .url("$newBaseUrl/requests/status.xml?command=in_play&input=$finalUrl")
+                        .header("Authorization", credential)
+                        .build()
 
-            client.newCall(request).execute().use { response ->
-                if (!response.isSuccessful)
-                    return@withContext EitherResult.Failure(
-                        IOException("Unexpected http code $response")
-                    )
+                client.newCall(request).execute().use { response ->
+                    if (!response.isSuccessful)
+                        return@withContext EitherResult.Failure(
+                            IOException("Unexpected http code $response")
+                        )
 
-                Timber.d(response.body!!.string())
-                return@withContext EitherResult.Success(true)
+                    return@withContext EitherResult.Success(true)
+                }
+            } catch (e: Exception) {
+                Timber.e(e, "Error opening VLC remote url")
+                return@withContext EitherResult.Failure(e)
+            }
+        }
+
+    suspend fun getPlayList(
+        baseUrl: String,
+        username: String? = null,
+        password: String? = null,
+    ): EitherResult<Exception, Boolean> =
+        withContext(Dispatchers.IO) {
+            try {
+                val credential = okhttp3.Credentials.basic(username ?: "", password ?: "")
+                val newBaseUrl =
+                    addHttpScheme(if (baseUrl.endsWith("/")) baseUrl.dropLast(1) else baseUrl)
+                val request =
+                    Request.Builder()
+                        .url("$newBaseUrl/requests/playlist.xml")
+                        .header("Authorization", credential)
+                        .build()
+
+                client.newCall(request).execute().use { response ->
+                    if (!response.isSuccessful)
+                        return@withContext EitherResult.Failure(
+                            IOException("Unexpected http code $response")
+                        )
+
+                    return@withContext EitherResult.Success(true)
+                }
+            } catch (e: Exception) {
+                Timber.e(e, "Error testing VLC service")
+                return@withContext EitherResult.Failure(e)
             }
         }
 }

@@ -7,8 +7,10 @@ import com.github.livingwithhippos.unchained.data.local.CompleteRemoteService
 import com.github.livingwithhippos.unchained.data.local.RemoteServiceType
 import com.github.livingwithhippos.unchained.data.repository.KodiRepository
 import com.github.livingwithhippos.unchained.data.repository.ServiceRepository
+import com.github.livingwithhippos.unchained.data.repository.VLCRemoteRepository
 import com.github.livingwithhippos.unchained.di.ClassicClient
 import com.github.livingwithhippos.unchained.remotedevice.viewmodel.ServiceErrorType
+import com.github.livingwithhippos.unchained.utilities.EitherResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
@@ -23,6 +25,7 @@ class ServiceViewModel
 constructor(
     private val serviceRepository: ServiceRepository,
     private val kodiRepository: KodiRepository,
+    private val vlcRemoteRepository: VLCRemoteRepository,
     @param:ClassicClient private val client: OkHttpClient,
 ) : ViewModel() {
 
@@ -75,13 +78,15 @@ constructor(
                         val response = kodiRepository.getVolume(address, username, password)
                         serviceLiveData.postValue(
                             if (response != null) ServiceEvent.ServiceWorking
-                            else ServiceEvent.ServiceNotWorking(ServiceErrorType.InvalidService)
+                            else ServiceEvent.ServiceNotWorking(ServiceErrorType.ResponseError)
                         )
                     }
 
                     is RemoteServiceType.VLC -> {
+                        val response = vlcRemoteRepository.getPlayList(address, username, password)
                         serviceLiveData.postValue(
-                            ServiceEvent.ServiceNotWorking(ServiceErrorType.InvalidService)
+                            if (response is EitherResult.Success) ServiceEvent.ServiceWorking
+                            else ServiceEvent.ServiceNotWorking(ServiceErrorType.ResponseError)
                         )
                     }
                 }
