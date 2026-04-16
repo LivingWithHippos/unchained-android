@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.livingwithhippos.unchained.data.local.CompleteRemoteService
 import com.github.livingwithhippos.unchained.data.local.RemoteServiceType
+import com.github.livingwithhippos.unchained.data.repository.KodiRepository
 import com.github.livingwithhippos.unchained.data.repository.ServiceRepository
 import com.github.livingwithhippos.unchained.di.ClassicClient
 import com.github.livingwithhippos.unchained.remotedevice.viewmodel.ServiceErrorType
@@ -21,6 +22,7 @@ class ServiceViewModel
 @Inject
 constructor(
     private val serviceRepository: ServiceRepository,
+    private val kodiRepository: KodiRepository,
     @param:ClassicClient private val client: OkHttpClient,
 ) : ViewModel() {
 
@@ -70,8 +72,9 @@ constructor(
                     }
 
                     is RemoteServiceType.KODI -> {
-                        // todo: implement or manage from caller
+                        val response = kodiRepository.getVolume(address, username, password)
                         serviceLiveData.postValue(
+                            if (response != null) ServiceEvent.ServiceWorking else
                             ServiceEvent.ServiceNotWorking(ServiceErrorType.InvalidService)
                         )
                     }

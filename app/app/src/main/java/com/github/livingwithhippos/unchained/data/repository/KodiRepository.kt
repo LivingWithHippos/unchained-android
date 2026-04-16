@@ -70,6 +70,35 @@ constructor(protoStore: ProtoStore, @param:ClassicClient private val client: OkH
         }
     }
 
+    suspend fun getVolume(
+        address: String,
+        username: String? = null,
+        password: String? = null,
+    ): KodiGenericResponse? {
+        try {
+            val kodiApiHelper: KodiApiHelper = provideApiHelper(address)
+            val kodiResponse =
+                safeApiCall(
+                    call = {
+                        kodiApiHelper.getVolume(
+                            request =
+                                KodiRequest(
+                                    method = "Application.GetProperties",
+                                    params = KodiParams(properties = listOf("volume")),
+                                ),
+                            auth = encodeAuthentication(username, password),
+                        )
+                    },
+                    errorMessage = "Error getting Kodi volume",
+                )
+
+            return kodiResponse
+        } catch (e: Exception) {
+            Timber.e(e)
+            return null
+        }
+    }
+
     suspend fun openUrl(
         baseUrl: String,
         port: Int,
