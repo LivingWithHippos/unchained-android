@@ -544,6 +544,9 @@ private fun List<AllDebridMagnetFileNode>.flattenMagnetNodes(
 fun allDebridSecretsPlaceholder(): Secrets =
     Secrets(clientId = "alldebrid", clientSecret = "alldebrid")
 
+// AllDebrid API keys do not expire; use Int.MAX_VALUE so the token-refresh flow is never
+// triggered.  The key is stored with refreshToken == PRIVATE_TOKEN, so isTokenPrivate()
+// returns true and the app treats it as a permanent credential.
 fun allDebridTokenPlaceholder(apiKey: String): Token =
     Token(
         accessToken = apiKey,

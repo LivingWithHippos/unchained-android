@@ -122,8 +122,18 @@ constructor(
         savedStateHandle[SECRET_CALLS] = 0
     }
 
+    /** Returns the user code for which the secret polling loop was last initialised. */
+    fun getLastHandledUserCode(): String =
+        savedStateHandle.get<String>(LAST_HANDLED_USER_CODE).orEmpty()
+
+    /** Persists the user code once the polling loop has been initialised for it. */
+    fun markUserCodeHandled(userCode: String) {
+        savedStateHandle[LAST_HANDLED_USER_CODE] = userCode
+    }
+
     companion object {
         const val AUTH_USER_CODE = "auth_user_code"
+        const val LAST_HANDLED_USER_CODE = "last_handled_user_code"
         const val SECRET_CALLS = "secret_calls"
         const val SECRET_CALLS_MAX = "max_secret_calls"
 

@@ -33,7 +33,9 @@ constructor(
                     val body = response.body()
                     val data = body?.data
                     if (body?.status == "success" && data != null) {
-                        // auto-save unlocked link so it appears in the history/downloads list
+                        // Auto-save so the link appears in the downloads/history list.
+                        // Failure here is intentionally ignored: the unlock has already succeeded,
+                        // and the link would simply not appear in the saved list until refreshed.
                         allDebridUserLinksApi.saveLinks(token, listOf(link))
                         Response.success(data.toDownloadItem(link))
                     } else allDebridErrorResponse(body?.error)

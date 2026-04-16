@@ -154,7 +154,6 @@ class AuthenticationFragment : UnchainedFragment() {
         // 1. start checking for the auth link
         viewModel.authLiveData.observe(viewLifecycleOwner) { event ->
             event?.peekContent()?.let { auth ->
-                val displayedUserCode = binding.tvUserCodeValue.text?.toString().orEmpty()
                 binding.tvAuthenticationLink.text = auth.verificationUrl
                 binding.tvAuthenticationLink.visibility = View.VISIBLE
                 binding.cbLink.isChecked = true
@@ -164,7 +163,11 @@ class AuthenticationFragment : UnchainedFragment() {
                 binding.bCopyLink.isEnabled = true
                 // update the currently saved credentials
                 activityViewModel.updateCredentialsDeviceCode(auth.deviceCode)
-                if (displayedUserCode != auth.userCode) {
+                // Only (re-)initialise the secret-polling loop when a genuinely new auth code
+                // has arrived; uses the value saved in the ViewModel so fragment recreation
+                // does not reset the call counter for the same session.
+                if (viewModel.getLastHandledUserCode() != auth.userCode) {
+                    viewModel.markUserCodeHandled(auth.userCode)
                     viewModel.setupSecretLoop(auth.expiresIn)
                 }
                 // transition state machine
