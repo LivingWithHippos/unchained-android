@@ -29,34 +29,6 @@ jobs:
         uses: gradle/actions/setup-gradle@v5
       - name: Run tests
         run: ./gradlew ktfmtCheck
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-      - name: Setup
-        uses: actions/setup-java@v5
-        with:
-          distribution: 'temurin'
-          java-version: '17'
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v5
-      - name: Retrieve keystore for apk signing
-        env:
-          ENCODED_KEYSTORE: ${{ secrets.KEYSTORE }}
-        run: echo "$ENCODED_KEYSTORE" | base64 --decode > /home/runner/work/unchained-android/unchained-android/app/release.pfk
-      - name: Build the app
-        env:
-          KEYSTORE: /home/runner/work/unchained-android/unchained-android/app/release.pfk
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-        run: ./gradlew clean assembleRelease --stacktrace
-      - name: Save apk
-        uses: actions/upload-artifact@v6
-        with:
-          name: apk
-          path: /home/runner/work/unchained-android/unchained-android/app/app/build/outputs/apk/release/*.apk
   build-debug:
     runs-on: ubuntu-latest
     steps:
@@ -69,20 +41,10 @@ jobs:
           java-version: '17'
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v5
-      - name: Retrieve keystore for apk signing
-        env:
-          ENCODED_KEYSTORE: ${{ secrets.KEYSTORE }}
-        run: echo "$ENCODED_KEYSTORE" | base64 --decode > /home/runner/work/unchained-android/unchained-android/app/release.pfk
       - name: Build the app
-        env:
-          KEYSTORE: /home/runner/work/unchained-android/unchained-android/app/release.pfk
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: ./gradlew clean assembleDebug --stacktrace
       - name: Save apk
         uses: actions/upload-artifact@v6
         with:
           name: apk-debug
           path: /home/runner/work/unchained-android/unchained-android/app/app/build/outputs/apk/debug/*.apk
-
