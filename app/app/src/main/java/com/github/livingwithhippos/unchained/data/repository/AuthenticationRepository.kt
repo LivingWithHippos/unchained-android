@@ -6,6 +6,7 @@ import com.github.livingwithhippos.unchained.data.model.Secrets
 import com.github.livingwithhippos.unchained.data.model.Token
 import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkException
 import com.github.livingwithhippos.unchained.data.remote.AuthApiHelper
+import com.github.livingwithhippos.unchained.data.remote.AllDebridPinCheckResult
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import javax.inject.Inject
 
@@ -35,6 +36,15 @@ constructor(private val protoStore: ProtoStore, private val apiHelper: AuthApiHe
         // fixme: if we receive 403 we must restart the process, ths returns null instead
 
         return secretResponse
+    }
+
+    suspend fun checkPin(code: String, userCode: String): AllDebridPinCheckResult? {
+        val pinResponse =
+            safeApiCall(
+                call = { apiHelper.checkPin(deviceCode = code, userCode = userCode) },
+                errorMessage = "Error Fetching Pin Status",
+            )
+        return pinResponse
     }
 
     suspend fun getToken(clientId: String, clientSecret: String, code: String): Token? {

@@ -1,5 +1,6 @@
 package com.github.livingwithhippos.unchained.authentication.viewmodel
 
+import android.content.SharedPreferences
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -10,6 +11,8 @@ import com.github.livingwithhippos.unchained.data.model.Secrets
 import com.github.livingwithhippos.unchained.data.model.Token
 import com.github.livingwithhippos.unchained.data.repository.AuthenticationRepository
 import com.github.livingwithhippos.unchained.utilities.Event
+import com.github.livingwithhippos.unchained.utilities.DebridProvider
+import com.github.livingwithhippos.unchained.utilities.getDebridProvider
 import com.github.livingwithhippos.unchained.utilities.postEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -26,6 +29,7 @@ class AuthenticationViewModel
 @Inject
 constructor(
     private val savedStateHandle: SavedStateHandle,
+    private val preferences: SharedPreferences,
     private val authRepository: AuthenticationRepository,
     private val protoStore: ProtoStore,
 ) : ViewModel() {
@@ -39,6 +43,9 @@ constructor(
     fun fetchAuthenticationInfo() {
         viewModelScope.launch {
             val authData = authRepository.getVerificationCode()
+            if (authData != null) {
+                savedStateHandle[AUTH_USER_CODE] = authData.userCode
+            }
             authLiveData.postEvent(authData)
         }
     }
@@ -52,11 +59,36 @@ constructor(
         } else {
             viewModelScope.launch {
                 val credentials = credentialsFlow.first { it.deviceCode.isNotBlank() }
-                val secretData = authRepository.getSecrets(credentials.deviceCode)
-                if (secretData != null) secretLiveData.postEvent(SecretResult.Retrieved(secretData))
-                else {
-                    delay(SECRET_CALLS_DELAY)
-                    secretLiveData.postEvent(SecretResult.Empty)
+                when (preferences.getDebridProvider()) {
+                    DebridProvider.RealDebrid -> {
+                        val secretData = authRepository.getSecrets(credentials.deviceCode)
+                        if (secretData != null) {
+                            secretLiveData.postEvent(SecretResult.Retrieved(secretData))
+                        } else {
+                            delay(SECRET_CALLS_DELAY)
+                            secretLiveData.postEvent(SecretResult.Empty)
+                        }
+                    }
+                    DebridProvider.AllDebrid -> {
+                        val userCode = savedStateHandle.get<String>(AUTH_USER_CODE).orEmpty()
+                        val pinStatus =
+                            authRepository.checkPin(
+                                code = credentials.deviceCode,
+                                userCode = userCode,
+                            )
+                        when {
+                            pinStatus?.activated == true && !pinStatus.apiKey.isNullOrBlank() ->
+                                secretLiveData.postEvent(
+                                    SecretResult.ApiKeyRetrieved(pinStatus.apiKey)
+                                )
+                            pinStatus != null && pinStatus.expiresIn <= 0 ->
+                                secretLiveData.postEvent(SecretResult.Expired)
+                            else -> {
+                                delay(SECRET_CALLS_DELAY)
+                                secretLiveData.postEvent(SecretResult.Empty)
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -90,7 +122,18 @@ constructor(
         savedStateHandle[SECRET_CALLS] = 0
     }
 
+    /** Returns the user code for which the secret polling loop was last initialised. */
+    fun getLastHandledUserCode(): String =
+        savedStateHandle.get<String>(LAST_HANDLED_USER_CODE).orEmpty()
+
+    /** Persists the user code once the polling loop has been initialised for it. */
+    fun markUserCodeHandled(userCode: String) {
+        savedStateHandle[LAST_HANDLED_USER_CODE] = userCode
+    }
+
     companion object {
+        const val AUTH_USER_CODE = "auth_user_code"
+        const val LAST_HANDLED_USER_CODE = "last_handled_user_code"
         const val SECRET_CALLS = "secret_calls"
         const val SECRET_CALLS_MAX = "max_secret_calls"
 
@@ -105,4 +148,6 @@ sealed class SecretResult {
     data object Expired : SecretResult()
 
     data class Retrieved(val value: Secrets) : SecretResult()
+
+    data class ApiKeyRetrieved(val value: String) : SecretResult()
 }

@@ -14,6 +14,45 @@
         android:layout_height="wrap_content">
 
         <TextView
+            android:id="@+id/tvServiceLabel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
+            android:text="@string/debrid_service"
+            android:textAlignment="center"
+            app:layout_constraintBottom_toTopOf="@+id/serviceToggleGroup"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.button.MaterialButtonToggleGroup
+            android:id="@+id/serviceToggleGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/tvLoginMessage"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvServiceLabel"
+            app:singleSelection="true">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/bServiceRealDebrid"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/provider_real_debrid" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/bServiceAllDebrid"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/provider_all_debrid" />
+        </com.google.android.material.button.MaterialButtonToggleGroup>
+
+        <TextView
             android:id="@+id/tvLoginMessage"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -26,7 +65,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/serviceToggleGroup"
             app:layout_constraintVertical_chainStyle="packed" />
 
         <TextView

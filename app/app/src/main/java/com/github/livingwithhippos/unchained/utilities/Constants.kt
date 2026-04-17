@@ -131,6 +131,10 @@ object PreferenceKeys {
         }
     }
 
+    object Services {
+        const val DEBRID_PROVIDER = "debrid_provider"
+    }
+
     object Kodi {
         const val SERVER_PICKER = "select_kodi_on_play"
     }
