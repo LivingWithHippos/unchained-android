@@ -1,0 +1,6 @@
+What's new in 1.7.0:
+- added prowlarr support
+- fixes test button for all services
+- fixed not encoding url sent to remote vlc
+- better magnet and torrent recognition for jackett
+- fixed manage plugin button style on new plugin search side sheet
