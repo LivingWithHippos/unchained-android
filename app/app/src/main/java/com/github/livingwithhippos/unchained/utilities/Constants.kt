@@ -23,6 +23,7 @@ const val PRIVATE_TOKEN: String = "private_token"
 
 const val REMOTE_TRAFFIC_ON: Int = 1
 
+const val HASH_PATTERN: String = "[a-zA-Z0-9]{32,}"
 const val MAGNET_PATTERN: String = "magnet:\\?xt=urn:btih:([a-zA-Z0-9]{32,})"
 const val TORRENT_PATTERN: String = "https?://[^\\s]{7,}\\.torrent"
 const val CONTAINER_PATTERN: String = "https?://[^\\s]{7,}\\.(rsdf|ccf3|ccf|dlc)"

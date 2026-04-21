@@ -66,6 +66,8 @@ sealed class RemoteServiceType(
     data object VLC : RemoteServiceType(1, true, R.string.player_vlc, R.drawable.icon_vlc)
 
     data object JACKETT : RemoteServiceType(2, false, R.string.jackett, R.drawable.icon_jackett)
+
+    data object PROWLARR : RemoteServiceType(3, false, R.string.prowlarr, R.drawable.icon_prowlarr)
 }
 
 val serviceTypeMap =
@@ -73,6 +75,7 @@ val serviceTypeMap =
         RemoteServiceType.KODI.value to RemoteServiceType.KODI,
         RemoteServiceType.VLC.value to RemoteServiceType.VLC,
         RemoteServiceType.JACKETT.value to RemoteServiceType.JACKETT,
+        RemoteServiceType.PROWLARR.value to RemoteServiceType.PROWLARR,
     )
 
 /** Helper class to have all the service details together */

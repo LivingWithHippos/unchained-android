@@ -37,6 +37,36 @@ constructor(
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 when (type) {
+                    is RemoteServiceType.PROWLARR -> {
+                        val url: StringBuilder = StringBuilder()
+                        if (
+                            !address.startsWith("http://", ignoreCase = true) &&
+                                !address.startsWith("https://", ignoreCase = true)
+                        ) {
+                            if (port == 443) url.append("https://") else url.append("http://")
+                        }
+                        url.append(address)
+                        if (port != 80 && port != 443) url.append(":$port")
+                        url.append("/api")
+                        if (apiToken != null) url.append("&apikey=$apiToken")
+                        val request = okhttp3.Request.Builder().url(url.toString()).build()
+                        try {
+                            val response = client.newCall(request).execute()
+                            if (response.isSuccessful) {
+                                Timber.d(response.body.toString())
+                                deviceLiveData.postValue(DeviceEvent.ServiceWorking)
+                            } else {
+                                deviceLiveData.postValue(
+                                    DeviceEvent.ServiceNotWorking(ServiceErrorType.ResponseError)
+                                )
+                            }
+                        } catch (e: Exception) {
+                            Timber.e(e, "Error testing the service $url")
+                            deviceLiveData.postValue(
+                                DeviceEvent.ServiceNotWorking(ServiceErrorType.Generic)
+                            )
+                        }
+                    }
                     is RemoteServiceType.JACKETT -> {
                         val url: StringBuilder = StringBuilder()
                         if (

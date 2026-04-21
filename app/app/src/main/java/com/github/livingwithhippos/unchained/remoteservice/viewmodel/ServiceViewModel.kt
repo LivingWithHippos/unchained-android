@@ -74,6 +74,30 @@ constructor(
                         }
                     }
 
+                    is RemoteServiceType.PROWLARR -> {
+                        val url: StringBuilder = StringBuilder()
+                        url.append(address)
+                        url.append("/api")
+                        if (apiToken != null) url.append("&apikey=$apiToken")
+                        val request = okhttp3.Request.Builder().url(url.toString()).build()
+                        try {
+                            val response = client.newCall(request).execute()
+                            if (response.isSuccessful) {
+                                Timber.d(response.body.toString())
+                                serviceLiveData.postValue(ServiceEvent.ServiceWorking)
+                            } else {
+                                serviceLiveData.postValue(
+                                    ServiceEvent.ServiceNotWorking(ServiceErrorType.ResponseError)
+                                )
+                            }
+                        } catch (e: Exception) {
+                            Timber.e(e, "Error testing the service $url")
+                            serviceLiveData.postValue(
+                                ServiceEvent.ServiceNotWorking(ServiceErrorType.Generic)
+                            )
+                        }
+                    }
+
                     is RemoteServiceType.KODI -> {
                         val response = kodiRepository.getVolume(address, username, password)
                         serviceLiveData.postValue(

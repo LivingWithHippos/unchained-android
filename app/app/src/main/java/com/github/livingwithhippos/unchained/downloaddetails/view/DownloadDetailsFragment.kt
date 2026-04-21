@@ -367,14 +367,14 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                     if (recentServiceItem != null) {
 
                         val serviceType: RemoteServiceType =
-                            getServiceType(recentServiceItem.type)!!
+                            serviceTypeMap[recentServiceItem.type]!!
                         playOnService(url ?: args.details.download, recentServiceItem, serviceType)
                     }
                 }
 
                 R.id.default_service -> {
                     if (defaultService != null) {
-                        val serviceType: RemoteServiceType = getServiceType(defaultService.type)!!
+                        val serviceType: RemoteServiceType = serviceTypeMap[defaultService.type]!!
                         playOnService(url ?: args.details.download, defaultService, serviceType)
                     }
                 }
@@ -423,7 +423,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
             popup.contentView.findViewById<ConstraintLayout>(R.id.defaultServiceLayout)
 
         if (defaultService != null) {
-            val serviceType: RemoteServiceType? = getServiceType(defaultService.type)
+            val serviceType: RemoteServiceType? = serviceTypeMap[defaultService.type]
             if (serviceType != null) {
                 defaultLayout
                     .findViewById<ImageView>(R.id.serviceIcon)
@@ -451,7 +451,7 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                 service.id == recentService
             }
             if (recentServiceItem != null) {
-                val serviceType: RemoteServiceType? = getServiceType(recentServiceItem.type)
+                val serviceType: RemoteServiceType? = serviceTypeMap[recentServiceItem.type]
                 if (serviceType != null) {
                     recentLayout
                         .findViewById<ImageView>(R.id.recentServiceIcon)
@@ -680,18 +680,6 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
 
             else -> {
                 context?.showToast(R.string.missing_default_player)
-            }
-        }
-    }
-
-    private fun getServiceType(type: Int): RemoteServiceType? {
-        return when (type) {
-            RemoteServiceType.KODI.value -> RemoteServiceType.KODI
-            RemoteServiceType.VLC.value -> RemoteServiceType.VLC
-            RemoteServiceType.JACKETT.value -> RemoteServiceType.JACKETT
-            else -> {
-                Timber.e("Unknown service type $type")
-                null
             }
         }
     }

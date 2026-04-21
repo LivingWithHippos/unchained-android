@@ -70,7 +70,7 @@
     <fragment
         android:id="@+id/completeServiceListFragment"
         android:name="com.github.livingwithhippos.unchained.remoteservice.view.CompleteServiceListFragment"
-        android:label="CompleteServiceListFragment"
+        android:label="@string/remote_devices"
         tools:layout="@layout/fragment_services_list"
         >
         <action
@@ -80,7 +80,7 @@
     <fragment
         android:id="@+id/completeServiceFragment"
         android:name="com.github.livingwithhippos.unchained.remoteservice.view.CompleteServiceFragment"
-        android:label="CompleteServiceFragment"
+        android:label="@string/remote_device"
         tools:layout="@layout/fragment_complete_service"
         >
         <action

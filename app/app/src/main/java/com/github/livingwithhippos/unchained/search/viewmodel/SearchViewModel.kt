@@ -13,6 +13,7 @@ import com.github.livingwithhippos.unchained.data.local.RemoteServiceType
 import com.github.livingwithhippos.unchained.data.repository.DatabasePluginRepository
 import com.github.livingwithhippos.unchained.data.repository.JackettRepository
 import com.github.livingwithhippos.unchained.data.repository.PluginRepository
+import com.github.livingwithhippos.unchained.data.repository.ProwlarrRepository
 import com.github.livingwithhippos.unchained.data.repository.ServiceRepository
 import com.github.livingwithhippos.unchained.folderlist.view.FolderListFragment
 import com.github.livingwithhippos.unchained.folderlist.viewmodel.FolderListViewModel
@@ -45,6 +46,7 @@ constructor(
     private val databasePluginsRepository: DatabasePluginRepository,
     private val serviceRepository: ServiceRepository,
     private val jackettRepository: JackettRepository,
+    private val prowlarrRepository: ProwlarrRepository,
     private val parser: Parser,
 ) : ViewModel() {
 
@@ -136,7 +138,10 @@ constructor(
                     plugin.copy(selected = selectedPlugins.contains(plugin.name.lowercase()))
                 }
             val services =
-                serviceRepository.getServicesTypes(types = listOf(RemoteServiceType.JACKETT.value))
+                serviceRepository.getServicesTypes(
+                    types =
+                        listOf(RemoteServiceType.JACKETT.value, RemoteServiceType.PROWLARR.value)
+                )
             pluginLiveData.postEvent(
                 PluginsAndServices(
                     plugins = pluginsWithSelection,
@@ -247,7 +252,8 @@ constructor(
             // todo add repo with suspend to access the db of complete remote servceis
             val enabledServices =
                 serviceRepository.getEnabledServicesTypes(
-                    types = listOf(RemoteServiceType.JACKETT.value)
+                    types =
+                        listOf(RemoteServiceType.JACKETT.value, RemoteServiceType.PROWLARR.value)
                 )
 
             if (enabledPlugins.isEmpty() && enabledServices.isEmpty()) {
@@ -293,17 +299,38 @@ constructor(
                     launch {
                         Timber.d("Starting search for service ${service.name}")
                         // todo: add categories support
-                        jackettRepository.performSearch(service, query = query).collect {
-                            when (it) {
-                                is ParserResult.Results -> {
-                                    parsingLiveData.value = ParserResult.Results(it.values)
-                                }
+                        when (service.type) {
+                            RemoteServiceType.JACKETT.value -> {
+                                jackettRepository.performSearch(service, query = query).collect {
+                                    when (it) {
+                                        is ParserResult.Results -> {
+                                            parsingLiveData.value = ParserResult.Results(it.values)
+                                        }
 
-                                else -> {
-                                    // not used yet
-                                    Timber.d(
-                                        "Received non-results parser result from service search: $it"
-                                    )
+                                        else -> {
+                                            // not used yet
+                                            Timber.d(
+                                                "Received non-results parser result from service search: $it"
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+
+                            RemoteServiceType.PROWLARR.value -> {
+                                prowlarrRepository.performSearch(service, query = query).collect {
+                                    when (it) {
+                                        is ParserResult.Results -> {
+                                            parsingLiveData.value = ParserResult.Results(it.values)
+                                        }
+
+                                        else -> {
+                                            // not used yet
+                                            Timber.d(
+                                                "Received non-results parser result from service search: $it"
+                                            )
+                                        }
+                                    }
                                 }
                             }
                         }
