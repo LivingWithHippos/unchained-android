@@ -265,17 +265,26 @@ constructor(
             delay(100)
 
             supervisorScope {
+                // accumulate results from all plugin/service searches so they survive fragment
+                // recreation (saved to SavedStateHandle via setSearchResults)
+                val results = mutableListOf<ScrapedItem>()
+
                 val pluginSearches = enabledPlugins.map { plugin ->
                     launch {
                         parser.completeSearch(plugin, query, category, page).collect {
                             when (it) {
                                 is ParserResult.SingleResult -> {
-                                    parsingLiveData.value = ParserResult.SingleResult(it.value)
+                                    // accumulate and publish aggregated results
+                                    results.add(it.value)
+                                    parsingLiveData.value = ParserResult.Results(results)
+                                    setSearchResults(results)
                                 }
 
                                 is ParserResult.Results -> {
-                                    // here I have all the results at once
-                                    parsingLiveData.value = ParserResult.Results(it.values)
+                                    // add all and publish aggregated results
+                                    results.addAll(it.values)
+                                    parsingLiveData.value = ParserResult.Results(results)
+                                    setSearchResults(results)
                                 }
 
                                 is ParserResult.SearchStarted -> {
@@ -295,6 +304,7 @@ constructor(
                         }
                     }
                 }
+
                 val servicesSearches = enabledServices.map { service ->
                     launch {
                         Timber.d("Starting search for service ${service.name}")
@@ -304,7 +314,9 @@ constructor(
                                 jackettRepository.performSearch(service, query = query).collect {
                                     when (it) {
                                         is ParserResult.Results -> {
-                                            parsingLiveData.value = ParserResult.Results(it.values)
+                                            results.addAll(it.values)
+                                            parsingLiveData.value = ParserResult.Results(results)
+                                            setSearchResults(results)
                                         }
 
                                         else -> {
@@ -321,7 +333,9 @@ constructor(
                                 prowlarrRepository.performSearch(service, query = query).collect {
                                     when (it) {
                                         is ParserResult.Results -> {
-                                            parsingLiveData.value = ParserResult.Results(it.values)
+                                            results.addAll(it.values)
+                                            parsingLiveData.value = ParserResult.Results(results)
+                                            setSearchResults(results)
                                         }
 
                                         else -> {
@@ -336,6 +350,7 @@ constructor(
                         }
                     }
                 }
+
                 pluginSearches.joinAll()
                 servicesSearches.joinAll()
             }
