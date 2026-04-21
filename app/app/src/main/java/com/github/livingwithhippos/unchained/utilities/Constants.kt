@@ -23,10 +23,12 @@ const val PRIVATE_TOKEN: String = "private_token"
 
 const val REMOTE_TRAFFIC_ON: Int = 1
 
+const val HASH_PATTERN: String = "[a-zA-Z0-9]{32,}"
 const val MAGNET_PATTERN: String = "magnet:\\?xt=urn:btih:([a-zA-Z0-9]{32,})"
 const val TORRENT_PATTERN: String = "https?://[^\\s]{7,}\\.torrent"
 const val CONTAINER_PATTERN: String = "https?://[^\\s]{7,}\\.(rsdf|ccf3|ccf|dlc)"
 const val CONTAINER_EXTENSION_PATTERN: String = "[^\\s]+\\.(rsdf|ccf3|ccf|dlc)$"
+const val IP_PATTERN: String = "^(((?!25?[6-9])[12]\\d|[1-9])?\\d\\.?\\b){4}"
 
 const val FEEDBACK_URL = "https://github.com/LivingWithHippos/unchained-android"
 const val GPLV3_URL = "https://www.gnu.org/licenses/gpl-3.0.en.html"

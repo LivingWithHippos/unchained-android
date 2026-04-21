@@ -6,7 +6,7 @@ plugins {
     alias(libs.plugins.hilt.android) apply false
     alias(libs.plugins.ksp) apply false
     alias(libs.plugins.room) apply false
-    id("com.github.ben-manes.versions") version "0.53.0"
+    id("com.github.ben-manes.versions") version "0.54.0"
 }
 
 buildscript {
@@ -18,5 +18,12 @@ buildscript {
         classpath(libs.kotlin.plugin)
         classpath(libs.navigation.plugin)
         classpath(libs.hilt.plugin)
+    }
+}
+
+// dependencyUpdates fails in parallel mode with Gradle 9+ (https://github.com/ben-manes/gradle-versions-plugin/issues/968)
+tasks.named("dependencyUpdates") {
+    doFirst {
+        gradle.startParameter.isParallelProjectExecutionEnabled = false
     }
 }

@@ -6,6 +6,8 @@ import com.github.livingwithhippos.unchained.utilities.directChild
 import com.github.livingwithhippos.unchained.utilities.directChildText
 import com.github.livingwithhippos.unchained.utilities.directChildren
 import com.github.livingwithhippos.unchained.utilities.extension.getFileSizeString
+import com.github.livingwithhippos.unchained.utilities.extension.isMagnet
+import com.github.livingwithhippos.unchained.utilities.extension.isTorrent
 import com.github.livingwithhippos.unchained.utilities.parseCommonSize
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -99,28 +101,49 @@ fun rssToScrapedItems(context: Context, rss: SearchRSS): Pair<List<ScrapedItem>,
     rss.channel.items.forEach { item ->
         try {
             val sizeLong = item.size.toLongOrNull()
-            scraped.add(
-                ScrapedItem(
-                    name = item.title,
-                    link = item.comments,
-                    seeders =
-                        item.torznabAttributes
-                            .firstOrNull { it.name.equals("seeders", ignoreCase = true) }
-                            ?.value,
-                    leechers =
-                        item.torznabAttributes
-                            .firstOrNull { it.name.equals("leechers", ignoreCase = true) }
-                            ?.value,
-                    size =
-                        if (sizeLong !== null) getFileSizeString(context, sizeLong) else item.size,
-                    addedDate = item.pubDate,
-                    parsedSize = parseCommonSize(item.size),
-                    // todo: add better recognition of links
-                    magnets = listOf(item.link),
-                    torrents = emptyList(),
-                    hosting = emptyList(),
+
+            var magnet: String?
+            var torrent: String? = null
+
+            magnet =
+                item.torznabAttributes
+                    .firstOrNull { it.name.equals("magneturl", ignoreCase = true) }
+                    ?.value
+            if (magnet == null) {
+                if (item.link.isMagnet()) magnet = item.link
+                else if (item.guid.isMagnet()) magnet = item.guid
+                else if (item.enclosure.url.isMagnet()) magnet = item.enclosure.url
+            }
+
+            if (item.link.isTorrent()) torrent = item.link
+            else if (item.guid.isTorrent()) torrent = item.guid
+            else if (item.enclosure.url.isTorrent()) torrent = item.enclosure.url
+
+            if (magnet != null || torrent != null) {
+                scraped.add(
+                    ScrapedItem(
+                        name = item.title,
+                        link = item.comments,
+                        seeders =
+                            item.torznabAttributes
+                                .firstOrNull { it.name.equals("seeders", ignoreCase = true) }
+                                ?.value,
+                        leechers =
+                            item.torznabAttributes
+                                .firstOrNull { it.name.equals("leechers", ignoreCase = true) }
+                                ?.value,
+                        size =
+                            if (sizeLong !== null) getFileSizeString(context, sizeLong)
+                            else item.size,
+                        addedDate = item.pubDate,
+                        parsedSize = parseCommonSize(item.size),
+                        // todo: add better recognition of links
+                        magnets = if (magnet != null) listOf(magnet) else emptyList(),
+                        torrents = if (torrent != null) listOf(torrent) else emptyList(),
+                        hosting = emptyList(),
+                    )
                 )
-            )
+            }
         } catch (ex: Exception) {
             Timber.e(ex)
             errors++

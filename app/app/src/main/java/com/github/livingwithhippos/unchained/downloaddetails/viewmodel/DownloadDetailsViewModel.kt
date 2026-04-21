@@ -12,9 +12,9 @@ import com.github.livingwithhippos.unchained.data.model.KodiDevice
 import com.github.livingwithhippos.unchained.data.model.Stream
 import com.github.livingwithhippos.unchained.data.repository.DownloadRepository
 import com.github.livingwithhippos.unchained.data.repository.KodiRepository
-import com.github.livingwithhippos.unchained.data.repository.RemoteRepository
 import com.github.livingwithhippos.unchained.data.repository.ServiceRepository
 import com.github.livingwithhippos.unchained.data.repository.StreamingRepository
+import com.github.livingwithhippos.unchained.data.repository.VLCRemoteRepository
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.postEvent
@@ -33,7 +33,7 @@ constructor(
     private val streamingRepository: StreamingRepository,
     private val downloadRepository: DownloadRepository,
     private val kodiRepository: KodiRepository,
-    private val remoteServiceRepository: RemoteRepository,
+    private val remoteServiceRepository: VLCRemoteRepository,
     private val serviceRepository: ServiceRepository,
 ) : ViewModel() {
 

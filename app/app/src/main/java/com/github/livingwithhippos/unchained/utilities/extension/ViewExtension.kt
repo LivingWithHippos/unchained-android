@@ -197,6 +197,7 @@ fun setDrawableByServiceType(view: ImageView, type: Int) {
         RemoteServiceType.KODI.value -> view.setImageResource(R.drawable.icon_kodi)
         RemoteServiceType.VLC.value -> view.setImageResource(R.drawable.icon_vlc)
         RemoteServiceType.JACKETT.value -> view.setImageResource(R.drawable.icon_jackett)
+        RemoteServiceType.PROWLARR.value -> view.setImageResource(R.drawable.icon_prowlarr)
         else -> view.setImageResource(R.drawable.icon_play_outline)
     }
 }

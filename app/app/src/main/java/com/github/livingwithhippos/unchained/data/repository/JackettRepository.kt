@@ -128,7 +128,7 @@ constructor(
                         emit(ParserResult.Results(items.first))
                         return@flow
                     } catch (ex: Exception) {
-                        Timber.e(ex, "Error parsing Search response")
+                        Timber.e(ex, "Error parsing Jackett search response")
                     }
 
                     emit(ParserResult.SourceError)

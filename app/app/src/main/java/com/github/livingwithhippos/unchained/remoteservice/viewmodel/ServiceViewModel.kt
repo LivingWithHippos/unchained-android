@@ -5,9 +5,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.livingwithhippos.unchained.data.local.CompleteRemoteService
 import com.github.livingwithhippos.unchained.data.local.RemoteServiceType
+import com.github.livingwithhippos.unchained.data.repository.KodiRepository
 import com.github.livingwithhippos.unchained.data.repository.ServiceRepository
+import com.github.livingwithhippos.unchained.data.repository.VLCRemoteRepository
 import com.github.livingwithhippos.unchained.di.ClassicClient
 import com.github.livingwithhippos.unchained.remotedevice.viewmodel.ServiceErrorType
+import com.github.livingwithhippos.unchained.utilities.EitherResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
@@ -21,6 +24,8 @@ class ServiceViewModel
 @Inject
 constructor(
     private val serviceRepository: ServiceRepository,
+    private val kodiRepository: KodiRepository,
+    private val vlcRemoteRepository: VLCRemoteRepository,
     @param:ClassicClient private val client: OkHttpClient,
 ) : ViewModel() {
 
@@ -69,16 +74,43 @@ constructor(
                         }
                     }
 
+                    is RemoteServiceType.PROWLARR -> {
+                        val url: StringBuilder = StringBuilder()
+                        url.append(address)
+                        url.append("/api")
+                        if (apiToken != null) url.append("&apikey=$apiToken")
+                        val request = okhttp3.Request.Builder().url(url.toString()).build()
+                        try {
+                            val response = client.newCall(request).execute()
+                            if (response.isSuccessful) {
+                                Timber.d(response.body.toString())
+                                serviceLiveData.postValue(ServiceEvent.ServiceWorking)
+                            } else {
+                                serviceLiveData.postValue(
+                                    ServiceEvent.ServiceNotWorking(ServiceErrorType.ResponseError)
+                                )
+                            }
+                        } catch (e: Exception) {
+                            Timber.e(e, "Error testing the service $url")
+                            serviceLiveData.postValue(
+                                ServiceEvent.ServiceNotWorking(ServiceErrorType.Generic)
+                            )
+                        }
+                    }
+
                     is RemoteServiceType.KODI -> {
-                        // todo: implement or manage from caller
+                        val response = kodiRepository.getVolume(address, username, password)
                         serviceLiveData.postValue(
-                            ServiceEvent.ServiceNotWorking(ServiceErrorType.InvalidService)
+                            if (response != null) ServiceEvent.ServiceWorking
+                            else ServiceEvent.ServiceNotWorking(ServiceErrorType.ResponseError)
                         )
                     }
 
                     is RemoteServiceType.VLC -> {
+                        val response = vlcRemoteRepository.getPlayList(address, username, password)
                         serviceLiveData.postValue(
-                            ServiceEvent.ServiceNotWorking(ServiceErrorType.InvalidService)
+                            if (response is EitherResult.Success) ServiceEvent.ServiceWorking
+                            else ServiceEvent.ServiceNotWorking(ServiceErrorType.ResponseError)
                         )
                     }
                 }

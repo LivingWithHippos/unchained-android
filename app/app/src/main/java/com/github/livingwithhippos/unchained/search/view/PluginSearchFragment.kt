@@ -239,6 +239,15 @@ class PluginSearchFragment : UnchainedFragment(), SearchItemListener {
         val adapter = SearchItemAdapter(this)
         binding.rvSearchList.adapter = adapter
 
+        // Restore any previously saved search results from the ViewModel so results
+        // are preserved when navigating to a detail and back (or on configuration change).
+        val savedResults = viewModel.getSearchResults()
+        if (savedResults.isNotEmpty()) {
+            searchResultsList.clear()
+            searchResultsList.addAll(savedResults)
+            submitSortedList(adapter, searchResultsList)
+        }
+
         binding.bStartSearch.setOnClickListener {
             val query: String = binding.tiSearch.text?.toString()?.trim() ?: ""
             if (query.isBlank()) {

@@ -134,6 +134,21 @@ class RemoteServiceFragment : Fragment() {
                         )
                     viewModel.updateService(remoteService)
                 }
+                RemoteServiceType.PROWLARR -> {
+                    val remoteService =
+                        RemoteService(
+                            id = serviceId,
+                            device = deviceID,
+                            name = name,
+                            port = port,
+                            username = username.ifBlank { null },
+                            password = password.ifBlank { null },
+                            type = serviceType.value,
+                            apiToken = apiToken,
+                            isDefault = false,
+                        )
+                    viewModel.updateService(remoteService)
+                }
 
                 RemoteServiceType.KODI -> {
                     val remoteService =
@@ -232,6 +247,10 @@ class RemoteServiceFragment : Fragment() {
                 RemoteServiceType.JACKETT
             }
 
+            getString(R.string.prowlarr) -> {
+                RemoteServiceType.PROWLARR
+            }
+
             else -> {
                 null
             }
@@ -260,6 +279,12 @@ class RemoteServiceFragment : Fragment() {
             }
 
             RemoteServiceType.JACKETT -> {
+                binding.switchDefault.isEnabled = false
+                binding.switchDefault.isChecked = false
+                binding.tfApiToken.visibility = View.VISIBLE
+            }
+
+            RemoteServiceType.PROWLARR -> {
                 binding.switchDefault.isEnabled = false
                 binding.switchDefault.isChecked = false
                 binding.tfApiToken.visibility = View.VISIBLE
