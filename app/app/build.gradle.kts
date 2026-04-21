@@ -40,14 +40,14 @@ kotlin { jvmToolchain(11) }
 
 android {
     namespace = "com.github.livingwithhippos.unchained"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.github.livingwithhippos.unchained"
         minSdk = 27
-        targetSdk = 36
-        versionCode = 58
-        versionName = "1.6.1"
+        targetSdk = 37
+        versionCode = 59
+        versionName = "1.7.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
