@@ -236,15 +236,7 @@ class FolderListFragment : UnchainedFragment(), DownloadListListener {
 
         // observe the list loading status
         viewModel.folderLiveData.observe(viewLifecycleOwner) {
-            it.getContentIfNotHandled()?.let { _ ->
-                updateList(adapter)
-                // scroll only if the results are still coming in
-                if (viewModel.getScrollingAllowed()) {
-                    lifecycleScope.launch {
-                        binding.rvFolderList.delayedScrolling(requireContext(), delay = 500)
-                    }
-                }
-            }
+            it.getContentIfNotHandled()?.let { _ -> updateList(adapter) }
         }
 
         // observe errors
