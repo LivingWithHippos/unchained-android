@@ -2,7 +2,6 @@ import java.util.Properties
 
 plugins {
     id("com.android.application")
-    id("org.jetbrains.kotlin.android")
     alias(libs.plugins.kotlin.serialization)
     id("org.jetbrains.kotlin.plugin.parcelize")
     id("com.google.dagger.hilt.android")
@@ -89,12 +88,6 @@ android {
     }
 
     buildTypes {
-        applicationVariants.forEach { variant ->
-            variant.outputs
-                .map { it as com.android.build.gradle.internal.api.BaseVariantOutputImpl }
-                .forEach { it.outputFileName = "${variant.name}-${variant.versionName}.apk" }
-        }
-
         debug {
             versionNameSuffix = "-dev"
             applicationIdSuffix = ".debug"
@@ -226,7 +219,15 @@ dependencies {
     androidTestImplementation(libs.test.rules)
     androidTestImplementation(libs.test.junit)
     androidTestImplementation(libs.test.truth)
-    testImplementation(libs.test.core)
     testImplementation(libs.junit)
     testImplementation(libs.robolectric)
+}
+
+androidComponents {
+    onVariants(selector().all()) { variant ->
+        variant.outputs.forEach { output ->
+            val versionName = output.versionName.orNull ?: "unspecified"
+            output.outputFileName.set("${variant.name}-$versionName.apk")
+        }
+    }
 }
