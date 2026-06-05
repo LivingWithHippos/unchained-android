@@ -7,8 +7,11 @@ import javax.inject.Inject
 
 class DownloadRepository
 @Inject
-constructor(protoStore: ProtoStore, private val downloadApiHelper: DownloadApiHelper) :
-    BaseRepository(protoStore) {
+constructor(
+    protoStore: ProtoStore,
+    private val downloadApiHelper: DownloadApiHelper,
+    private val unrestrictRepository: UnrestrictRepository,
+) : BaseRepository(protoStore) {
     suspend fun getDownloads(offset: Int?, page: Int = 1, limit: Int = 50): List<DownloadItem> {
 
         val downloadResponse =
@@ -31,6 +34,10 @@ constructor(protoStore: ProtoStore, private val downloadApiHelper: DownloadApiHe
                 },
                 errorMessage = "Error deleting download",
             )
+
+        if (response != null) {
+            unrestrictRepository.clearUnrestrictedLinkCache()
+        }
 
         return response
     }
