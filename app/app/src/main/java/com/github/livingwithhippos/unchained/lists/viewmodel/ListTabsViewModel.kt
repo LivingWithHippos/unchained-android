@@ -44,9 +44,6 @@ constructor(
     private val unrestrictRepository: UnrestrictRepository,
 ) : ViewModel() {
 
-    private val MAX_PAGE_SIZE = 2500
-    private val INITIAL_LOAD = 100
-
     // stores the last query value
     private val queryLiveData = MutableLiveData<String>()
 
@@ -191,6 +188,10 @@ constructor(
         const val DOWNLOADS_DELETED = -2
         const val DOWNLOADS_DELETED_ALL = -3
         const val DOWNLOAD_NOT_DELETED = -4
+
+        private const val MAX_PAGE_SIZE = 2500
+
+        private const val INITIAL_LOAD = 100
     }
 }
 

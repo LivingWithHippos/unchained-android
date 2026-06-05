@@ -16,6 +16,7 @@ import javax.inject.Inject
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * A [ViewModel] subclass. It offers LiveData to be observed during the authentication process and
@@ -55,7 +56,7 @@ constructor(
                 val secretData = authRepository.getSecrets(credentials.deviceCode)
                 if (secretData != null) secretLiveData.postEvent(SecretResult.Retrieved(secretData))
                 else {
-                    delay(SECRET_CALLS_DELAY)
+                    delay(SECRET_CALLS_DELAY.milliseconds)
                     secretLiveData.postEvent(SecretResult.Empty)
                 }
             }

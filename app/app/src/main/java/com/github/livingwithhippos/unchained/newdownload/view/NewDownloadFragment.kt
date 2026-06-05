@@ -48,6 +48,7 @@ import java.io.IOException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * A simple [UnchainedFragment] subclass. Allow the user to create a new download from a link or a
@@ -251,7 +252,7 @@ class NewDownloadFragment : UnchainedFragment() {
                 lifecycleScope.launch {
                     currentToast.cancel()
                     // if we call this too soon between toasts we'll miss some
-                    if (System.currentTimeMillis() - lastToastTime < 1000L) delay(1000)
+                    if (System.currentTimeMillis() - lastToastTime < 1000L) delay(1000.milliseconds)
                     currentToast.setText(it)
                     currentToast.show()
                     lastToastTime = System.currentTimeMillis()

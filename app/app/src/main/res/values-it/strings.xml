@@ -27,7 +27,7 @@
     <string name="unrestrict">Sblocca</string>
     <string name="invalid_url">URL non valido</string>
     <string name="loading">Caricamento</string>
-    <string name="copy">Copia</string>
+    <string name="copy_string">Copia</string>
     <string name="open_link">Apri link</string>
     <string name="copy_link">Copia link</string>
     <string name="link_copied">Link copiato</string>
@@ -456,7 +456,7 @@
     <string name="update">Aggiorna</string>
     <string name="new_word">Nuovo</string>
     <string name="not_compatible">Non compatibile</string>
-    <string name="checking_plugins">Controllo plugins...</string>
+    <string name="checking_plugins">Controllo plugins…</string>
     <string name="manage_plugins">Gestione plugin</string>
     <string name="repository">Repository</string>
     <string name="updated">Aggiornato</string>

@@ -37,6 +37,8 @@ ktfmt {
 
 kotlin { jvmToolchain(11) }
 
+room { schemaDirectory("$projectDir/schemas") }
+
 android {
     namespace = "com.github.livingwithhippos.unchained"
     compileSdk = 37
@@ -50,8 +52,6 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
-
-    room { schemaDirectory("$projectDir/schemas") }
 
     packaging {
         jniLibs { excludes.addAll(listOf("META-INF/proguard/*")) }

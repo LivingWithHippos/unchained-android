@@ -65,6 +65,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * A simple [UnchainedFragment] subclass. It is capable of showing a list of both [DownloadItem] and
@@ -119,7 +120,7 @@ class ListsTabFragment : UnchainedFragment() {
                                 queryJob?.cancel()
 
                                 queryJob = lifecycleScope.launch {
-                                    delay(500)
+                                    delay(500.milliseconds)
                                     if (isActive) viewModel.setListFilter(newText)
                                 }
                                 return true
@@ -226,7 +227,7 @@ class ListsTabFragment : UnchainedFragment() {
                                 loop++ < 20 &&
                                     controller.currentDestination?.id != R.id.list_tabs_dest
                             ) {
-                                delay(100)
+                                delay(100.milliseconds)
                             }
                             if (controller.currentDestination?.id == R.id.list_tabs_dest)
                                 controller.navigate(action)
@@ -262,7 +263,7 @@ class ListsTabFragment : UnchainedFragment() {
                                         loop++ < 20 &&
                                             controller.currentDestination?.id != R.id.list_tabs_dest
                                     ) {
-                                        delay(100)
+                                        delay(100.milliseconds)
                                     }
                                     if (controller.currentDestination?.id == R.id.list_tabs_dest)
                                         controller.navigate(action)
@@ -285,7 +286,7 @@ class ListsTabFragment : UnchainedFragment() {
                                 loop++ < 20 &&
                                     controller.currentDestination?.id != R.id.list_tabs_dest
                             ) {
-                                delay(100)
+                                delay(100.milliseconds)
                             }
                             if (controller.currentDestination?.id == R.id.list_tabs_dest)
                                 controller.navigate(action)
@@ -530,7 +531,7 @@ class DownloadsListFragment : UnchainedFragment(), DownloadListListener {
                     // delay for notifying the list that the items have changed, otherwise stuff
                     // like the
                     // status and the progress are not updated until you scroll away and back there
-                    delay(300)
+                    delay(300.milliseconds)
                     downloadAdapter.notifyDataSetChanged()
                 }
             }
@@ -573,7 +574,7 @@ class DownloadsListFragment : UnchainedFragment(), DownloadListListener {
                 when (it) {
                     ListState.UpdateDownload -> {
                         lifecycleScope.launch {
-                            delay(300L)
+                            delay(300.milliseconds)
                             downloadAdapter.refresh()
                             lifecycleScope.launch {
                                 binding.rvDownloadList.delayedScrolling(requireContext())
@@ -757,7 +758,7 @@ class TorrentsListFragment : UnchainedFragment(), TorrentListListener {
                             binding.rvTorrentList.delayedScrolling(requireContext())
                         }
                     }
-                    delay(300)
+                    delay(300.milliseconds)
                     torrentAdapter.notifyDataSetChanged()
                 }
             }
@@ -821,7 +822,7 @@ class TorrentsListFragment : UnchainedFragment(), TorrentListListener {
                 when (it) {
                     ListState.UpdateTorrent -> {
                         lifecycleScope.launch {
-                            delay(300L)
+                            delay(300.milliseconds)
                             torrentAdapter.refresh()
                             lifecycleScope.launch {
                                 binding.rvTorrentList.delayedScrolling(requireContext())
@@ -851,7 +852,7 @@ class TorrentsListFragment : UnchainedFragment(), TorrentListListener {
         lifecycleScope.launch {
             val controller = findNavController()
             while (loop++ < 20 && controller.currentDestination?.id != R.id.list_tabs_dest) {
-                delay(100)
+                delay(100.milliseconds)
             }
 
             if (item.status == "downloaded" || item.status == "ready") {

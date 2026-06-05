@@ -30,6 +30,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.json.JSONException
 import timber.log.Timber
+import kotlin.time.Duration.Companion.milliseconds
 
 @HiltViewModel
 class RepositoryViewModel
@@ -249,7 +250,7 @@ constructor(
     fun addRepository(url: String) {
         viewModelScope.launch {
             databasePluginsRepository.addRepositoryUrl(url)
-            delay(100)
+            delay(100.milliseconds)
             // used to update on the main screen the repo
             checkCurrentRepositories()
         }

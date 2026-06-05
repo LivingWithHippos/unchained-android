@@ -25,6 +25,7 @@ import com.github.livingwithhippos.unchained.data.local.RemoteServiceType
 import com.github.livingwithhippos.unchained.repository.model.PluginStatus
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.delay
+import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * tint the color of a [ProgressBar] layer drawable
@@ -140,7 +141,7 @@ fun RecyclerView.LayoutManager.verticalScrollToPosition(
  */
 suspend fun RecyclerView.delayedScrolling(context: Context, delay: Long = 300) {
     this.layoutManager?.let {
-        delay(delay)
+        delay(delay.milliseconds)
         it.verticalScrollToPosition(context)
     }
 }

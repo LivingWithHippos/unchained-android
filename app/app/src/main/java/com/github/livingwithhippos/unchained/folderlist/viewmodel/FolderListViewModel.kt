@@ -20,6 +20,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.milliseconds
 
 @HiltViewModel
 class FolderListViewModel
@@ -109,7 +110,7 @@ constructor(
         queryJob?.cancel()
 
         queryJob = viewModelScope.launch {
-            delay(500)
+            delay(500.milliseconds)
             if (isActive) queryLiveData.postValue(query?.trim() ?: "")
         }
     }

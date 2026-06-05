@@ -502,10 +502,8 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
             browserLayout.visibility = View.GONE
         } else {
             browserLayout.setOnClickListener {
-                {
-                    context?.openExternalWebPage(RD_STREAMING_URL + args.details.id)
-                    if (popup.isShowing) popup.dismiss()
-                }
+                context?.openExternalWebPage(RD_STREAMING_URL + args.details.id)
+                if (popup.isShowing) popup.dismiss()
             }
         }
     }

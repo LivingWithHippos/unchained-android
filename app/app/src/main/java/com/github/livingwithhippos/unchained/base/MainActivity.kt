@@ -15,7 +15,6 @@ import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Parcelable
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -60,6 +59,7 @@ import com.github.livingwithhippos.unchained.utilities.SIGNATURE
 import com.github.livingwithhippos.unchained.utilities.TelemetryManager
 import com.github.livingwithhippos.unchained.utilities.extension.downloadFileInStandardFolder
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
+import com.github.livingwithhippos.unchained.utilities.extension.parcelable
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.github.livingwithhippos.unchained.utilities.extension.toHex
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -72,6 +72,7 @@ import javax.inject.Inject
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import kotlin.time.Duration.Companion.milliseconds
 
 /** A [AppCompatActivity] subclass. Shared between all the fragments except for the preferences. */
 @AndroidEntryPoint
@@ -385,10 +386,8 @@ class MainActivity : AppCompatActivity() {
             },
         )
 
-        // monitor if the torrent notification service needs to be started. It monitor the
-        // preference
-        // change itself
-        // for the shutting down part
+        // monitor if the torrent notification service needs to be started. It monitors the
+        // preference change itself for the shutting down part
         preferences.registerOnSharedPreferenceChangeListener { sharedPreferences, key ->
             if (key == KEY_TORRENT_NOTIFICATIONS) {
                 val enableTorrentNotifications = sharedPreferences.getBoolean(key, false)
@@ -485,7 +484,7 @@ class MainActivity : AppCompatActivity() {
                         when (viewModel.getDownloadManagerPreference()) {
                             PreferenceKeys.DownloadManager.SYSTEM -> {
                                 val manager =
-                                    applicationContext.getSystemService(Context.DOWNLOAD_SERVICE)
+                                    applicationContext.getSystemService(DOWNLOAD_SERVICE)
                                         as DownloadManager
                                 var downloadsStarted = 0
                                 content.downloads.forEach { download ->
@@ -525,7 +524,7 @@ class MainActivity : AppCompatActivity() {
                                     if (viewModel.getDownloadOnUnmeteredOnlyPreference()) {
                                         val connectivityManager =
                                             applicationContext.getSystemService(
-                                                Context.CONNECTIVITY_SERVICE
+                                                CONNECTIVITY_SERVICE
                                             ) as ConnectivityManager
                                         if (connectivityManager.isActiveNetworkMetered) {
                                             applicationContext.showToast(
@@ -558,7 +557,7 @@ class MainActivity : AppCompatActivity() {
                             PreferenceKeys.DownloadManager.SYSTEM -> {
 
                                 val manager =
-                                    applicationContext.getSystemService(Context.DOWNLOAD_SERVICE)
+                                    applicationContext.getSystemService(DOWNLOAD_SERVICE)
                                         as DownloadManager
 
                                 val queuedDownload =
@@ -592,7 +591,7 @@ class MainActivity : AppCompatActivity() {
                                     if (viewModel.getDownloadOnUnmeteredOnlyPreference()) {
                                         val connectivityManager =
                                             applicationContext.getSystemService(
-                                                Context.CONNECTIVITY_SERVICE
+                                                CONNECTIVITY_SERVICE
                                             ) as ConnectivityManager
                                         if (connectivityManager.isActiveNetworkMetered) {
                                             applicationContext.showToast(
@@ -671,9 +670,8 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     "*/*" -> {
-                        // replace with intent.getParcelableExtra(Intent.EXTRA_STREAM,
-                        // Uri::class.java) when stabilized
-                        (intent.getParcelableExtra<Parcelable>(Intent.EXTRA_STREAM) as? Uri)?.let {
+                        val data: Uri? = intent.parcelable(Intent.EXTRA_STREAM)
+                        data?.let {
                             if (
                                 it.lastPathSegment?.endsWith(TYPE_UNCHAINED, ignoreCase = true) ==
                                     true
@@ -759,7 +757,7 @@ class MainActivity : AppCompatActivity() {
 
                     CurrentFSMAuthentication.Waiting -> {
                         // auth may become ok, delay and continue loop
-                        delay(100)
+                        delay(100.milliseconds)
                     }
                 }
             }
@@ -798,13 +796,12 @@ class MainActivity : AppCompatActivity() {
     private suspend fun doubleClickBottomItem(destinationID: Int) {
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_nav_view)
 
-        // if the tab was already selected, a single tap will bring us back to the first fragment of
-        // its
-        // navigation xml. Otherwise, simulate another click after a delay
+        // if the tab was already selected, a single tap will bring us back to the first fragment
+        // of its navigation XML. Otherwise, simulate another click after a delay
         if (bottomNav.selectedItemId != destinationID) {
             bottomNav.selectedItemId = destinationID
         }
-        delay(100)
+        delay(100.milliseconds)
         bottomNav.selectedItemId = destinationID
     }
 
@@ -844,7 +841,7 @@ class MainActivity : AppCompatActivity() {
 
         binding.bottomNavView.setupWithNavController(navController)
 
-        // Setup the ActionBar with navController and 3 top level destinations
+        // Set up the ActionBar with navController and 3 top level destinations
         // these won't show a back/up arrow
         appBarConfiguration =
             AppBarConfiguration(

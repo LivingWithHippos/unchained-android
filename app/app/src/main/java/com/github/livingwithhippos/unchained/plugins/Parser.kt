@@ -27,6 +27,7 @@ import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
 import timber.log.Timber
+import kotlin.time.Duration.Companion.milliseconds
 
 sealed class WebResponse {
     data class Success(val source: String) : WebResponse()
@@ -111,7 +112,7 @@ class Parser(
                             emit(ParserResult.SearchStarted(innerSource.size))
                             if (innerSource.isNotEmpty()) {
                                 for (link in innerSource) {
-                                    delay(50)
+                                    delay(50.milliseconds)
                                     // parse every page linked to the results
                                     val s = getSource(link)
                                     if (s.isNotBlank()) {
@@ -172,7 +173,7 @@ class Parser(
                                 )
                             emit(ParserResult.SearchStarted(links.size))
                             links.forEach {
-                                delay(50)
+                                delay(50.milliseconds)
                                 val itemSource = getSource(it)
                                 if (itemSource.isNotBlank()) {
                                     val scrapedItem =
@@ -273,7 +274,7 @@ class Parser(
         regexes.nameRegex.regexps.forEach {
             val parsedName = cleanName(parseSingle(it, source, baseUrl) ?: "")
             // this is a single string, no need to check for regexUse
-            if (!parsedName.isNullOrBlank()) {
+            if (parsedName.isNotBlank()) {
                 name = parsedName
                 return@forEach
             }
@@ -781,7 +782,7 @@ class Parser(
         val containerClass: Element? =
             if (parser.className != null) doc.getElementsByClass(parser.className).firstOrNull()
             else if (parser.idName != null) doc.getElementById(parser.idName) else null
-        val entries: Elements = Elements()
+        val entries = Elements()
         if (containerClass != null) {
             if (parser.entryClass != null)
                 entries.addAll(containerClass.getElementsByClass(parser.entryClass))
@@ -858,7 +859,7 @@ class Parser(
             .trim()
             // replace newlines anf multiple spaces with single space
             .replace("[\\t\\n\\r\\s]+".toRegex(), " ")
-            // remove all html tags from the name. Will replace anything like <*> if it's in the
+            // remove all HTML tags from the name. Will replace anything like <*> if it's in the
             // name
             .replace("<[^>]+>".toRegex(), "")
     }

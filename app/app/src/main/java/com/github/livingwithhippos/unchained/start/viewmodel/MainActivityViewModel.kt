@@ -74,6 +74,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * a [ViewModel] subclass. Shared between the fragments to observe the authentication status and
@@ -555,7 +556,7 @@ constructor(
                         }
                     }
                     9 -> {
-                        Timber.e("onParseCallFailure " + 9)
+                        Timber.e("onParseCallFailure 9")
                         // 9 is permission denied which should mean the token is not valid at all
                         // and should be
                         // discarded
@@ -640,7 +641,7 @@ constructor(
         refreshJob?.cancel()
         refreshJob = viewModelScope.launch {
             // secondsDelay*950L -> expiration time - 5%
-            delay(secondsDelay * 950L)
+            delay((secondsDelay * 950L).milliseconds)
             if (isActive) refreshToken()
         }
     }
@@ -998,7 +999,7 @@ constructor(
     fun requireNotificationPermissions(callDelay: Boolean = true) {
         viewModelScope.launch {
             if (callDelay) {
-                delay(500)
+                delay(500.milliseconds)
             }
             messageLiveData.postValue(Event(MainActivityMessage.RequireNotificationPermissions))
         }

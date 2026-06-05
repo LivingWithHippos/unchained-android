@@ -18,7 +18,10 @@ import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
+import android.os.Build.VERSION.SDK_INT
+import android.os.Bundle
 import android.os.Environment
+import android.os.Parcelable
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.provider.OpenableColumns
@@ -32,10 +35,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.Observer
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Companion.THEME_AUTO
 import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Companion.THEME_DAY
@@ -147,8 +146,8 @@ fun Context.showToast(stringResource: Int, length: Int = Toast.LENGTH_SHORT) =
 /**
  * Show a toast message
  *
- * @param message: the message and shown
- * @param length: the duration of the toast. Defaults to short
+ * @param message the message and shown
+ * @param length the duration of the toast. Defaults to short
  */
 fun Context.showToast(message: String, length: Int = Toast.LENGTH_SHORT) {
     Toast.makeText(this, message, length).show()
@@ -252,35 +251,6 @@ fun DownloadManager.downloadFileInStandardFolder(
     }
 }
 
-fun DownloadManager.downloadFileInCustomFolder(
-    source: Uri,
-    title: String,
-    description: String,
-    fileName: String = title,
-    folder: Uri,
-): EitherResult<Exception, Long> {
-    // https://issuetracker.google.com/issues/134858946
-    val destination = Uri.withAppendedPath(folder, fileName)
-    Timber.e(destination.toString())
-    val request: DownloadManager.Request =
-        DownloadManager.Request(source)
-            .setTitle(title)
-            .setDescription(description)
-            .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-            .setDestinationUri(destination)
-
-    return try {
-        val downloadID = this.enqueue(request)
-        EitherResult.Success(downloadID)
-    } catch (e: Exception) {
-        Timber.e(
-            "Error starting download in custom folder $destination of ${source.path}, exception ${e.message}"
-        )
-        e.printStackTrace()
-        EitherResult.Failure(e)
-    }
-}
-
 /**
  * Return the Uri from a downloaded file id returned by the download manager
  *
@@ -364,53 +334,6 @@ fun Activity.getUpdatedLocaleContext(context: Context, language: String): Contex
     return context.createConfigurationContext(configuration)
 }
 
-fun <T, K, R> LiveData<T>.combineWith(liveData: LiveData<K>, block: (T?, K?) -> R): LiveData<R> {
-    val result = MediatorLiveData<R>()
-    result.addSource(this) { result.value = block(this.value, liveData.value) }
-    result.addSource(liveData) { result.value = block(this.value, liveData.value) }
-    return result
-}
-
-fun <T, K> zipLiveData(t: LiveData<T>, k: LiveData<K>): LiveData<Pair<T, K>> {
-    return MediatorLiveData<Pair<T, K>>().apply {
-        var lastT: T? = null
-        var lastK: K? = null
-
-        fun update() {
-            val localLastT = lastT
-            val localLastK = lastK
-            if (localLastT != null && localLastK != null) this.value = Pair(localLastT, localLastK)
-        }
-
-        addSource(t) {
-            lastT = it
-            update()
-        }
-        addSource(k) {
-            lastK = it
-            update()
-        }
-    }
-}
-
-fun <T> LiveData<T>.observeOnce(
-    lifecycleOwner: LifecycleOwner,
-    observer: Observer<T>,
-    untilNotNull: Boolean = false,
-) {
-    observe(
-        lifecycleOwner,
-        object : Observer<T> {
-            override fun onChanged(value: T) {
-                observer.onChanged(value)
-                if (untilNotNull) {
-                    if (value != null) removeObserver(this)
-                } else removeObserver(this)
-            }
-        },
-    )
-}
-
 fun AppCompatActivity.setNavigationBarColor(color: Int, alpha: Int = 0) {
     val newColor = Color.argb(alpha, Color.red(color), Color.green(color), Color.blue(color))
 
@@ -420,7 +343,7 @@ fun AppCompatActivity.setNavigationBarColor(color: Int, alpha: Int = 0) {
     val luminance = Color.luminance(color)
     if (luminance >= 0.25) {
         when {
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> {
+            SDK_INT >= Build.VERSION_CODES.R -> {
                 window.insetsController?.setSystemBarsAppearance(
                     WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS,
                     WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS,
@@ -520,3 +443,13 @@ fun AssetManager.smartList(path: String): Array<String>? {
 }
 
 fun ByteArray.toHex(): String = joinToString(separator = "") { eachByte -> "%02x".format(eachByte) }
+
+inline fun <reified T : Parcelable> Intent.parcelable(key: String): T? = when {
+    SDK_INT >= 34 -> getParcelableExtra(key, T::class.java)
+    else -> @Suppress("DEPRECATION") getParcelableExtra(key) as? T
+}
+
+inline fun <reified T : Parcelable> Bundle.parcelable(key: String): T? = when {
+    SDK_INT >= 34 -> getParcelable(key, T::class.java)
+    else -> @Suppress("DEPRECATION") getParcelable(key) as? T
+}
