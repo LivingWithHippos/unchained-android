@@ -74,7 +74,7 @@ constructor(
                         }
                         is EitherResult.Success -> {
                             hitList.add(file.success)
-                            folderLiveData.postEvent(hitList)
+                            folderLiveData.postEvent(hitList.toList())
                             setRetrievedLinks(hitList.size)
                             progressLiveData.postValue((index + 1) * 100 / links.size)
                         }
