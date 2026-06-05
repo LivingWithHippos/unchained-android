@@ -197,7 +197,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:focusable="false"
-                    android:text="@string/copy"
+                    android:text="@string/copy_string"
                     android:textAlignment="center"
                     android:textAppearance="?attr/textAppearanceLabelSmall" />
             </LinearLayout>

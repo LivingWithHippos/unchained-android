@@ -35,6 +35,7 @@ import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
 import timber.log.Timber
+import kotlin.time.Duration.Companion.milliseconds
 
 @HiltViewModel
 class SearchViewModel
@@ -262,7 +263,7 @@ constructor(
             }
 
             parsingLiveData.value = ParserResult.SearchStarted(-1)
-            delay(100)
+            delay(100.milliseconds)
 
             supervisorScope {
                 // accumulate results from all plugin/service searches so they survive fragment

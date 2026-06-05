@@ -32,6 +32,7 @@ import javax.inject.Inject
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import kotlin.time.Duration.Companion.milliseconds
 
 const val MAX_SERVICE_DURATION = 5 * 60 * 60 * 1000
 const val MIN_SERVICE_DURATION = 20 * 60 * 1000
@@ -189,7 +190,7 @@ class ForegroundTorrentService : LifecycleService() {
                     // no valid token ready, retry later
                 }
                 // update notifications every 5 seconds
-                delay(updateTiming)
+                delay(updateTiming.milliseconds)
             }
             stopTorrentService()
         }
@@ -293,7 +294,7 @@ class ForegroundTorrentService : LifecycleService() {
     private fun stopTorrentService() {
         lifecycleScope.launch {
             // delay used to let the notification finish
-            delay(1000)
+            delay(1000.milliseconds)
             notificationManager.cancel(SUMMARY_ID)
             // this will avoid removing the notifications, so the user can see what happened in the
             // meanwhile

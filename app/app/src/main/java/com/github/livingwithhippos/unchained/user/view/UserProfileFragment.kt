@@ -65,6 +65,7 @@ class UserProfileFragment : UnchainedFragment() {
         }
 
         activityViewModel.userLiveData.observe(viewLifecycleOwner) {
+            if (_binding == null) return@observe
             populateUserView(it.peekContent())
             lifecycleScope.launch {
                 if (activityViewModel.isTokenPrivate()) {
@@ -159,6 +160,7 @@ class UserProfileFragment : UnchainedFragment() {
     }
 
     fun populateUserView(user: User?) {
+        if (_binding == null) return
         user?.let {
             binding.tvName.text = it.username
             binding.tvMail.text = it.email

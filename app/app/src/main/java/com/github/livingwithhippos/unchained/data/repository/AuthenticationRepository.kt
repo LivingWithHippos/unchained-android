@@ -11,7 +11,7 @@ import javax.inject.Inject
 
 class AuthenticationRepository
 @Inject
-constructor(private val protoStore: ProtoStore, private val apiHelper: AuthApiHelper) :
+constructor(protoStore: ProtoStore, private val apiHelper: AuthApiHelper) :
     BaseRepository(protoStore) {
 
     suspend fun getVerificationCode(): Authentication? {

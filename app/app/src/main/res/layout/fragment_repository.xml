@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:layout_gravity="center_vertical"
     android:padding="10dp"
-    tools:context=".search.view.RepositoryFragment">
+    tools:context=".repository.view.RepositoryFragment">
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/tfSearch"

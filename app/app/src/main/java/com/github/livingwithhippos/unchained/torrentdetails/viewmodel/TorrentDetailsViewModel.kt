@@ -21,6 +21,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.milliseconds
 
 /** a [ViewModel] subclass. Retrieves a torrent's details */
 @HiltViewModel
@@ -59,7 +60,7 @@ constructor(
                 if (torrentData != null) torrentLiveData.postEvent(torrentData)
                 if (endedStatusList.contains(torrentData?.status)) job.cancelIfActive()
 
-                delay(2000)
+                delay(2000.milliseconds)
             }
         }
     }

@@ -26,7 +26,7 @@
     <string name="unrestrict">Kısıtlamayı Kaldır</string>
     <string name="invalid_url">Geçersiz URL</string>
     <string name="loading">Yükleniyor</string>
-    <string name="copy">Kopyala</string>
+    <string name="copy_string">Kopyala</string>
     <string name="open_link">Bağlantıyı Aç</string>
     <string name="copy_link">Bağlantıyı Kopyala</string>
     <string name="link_copied">Bağlantı kopyalandı</string>
@@ -291,8 +291,6 @@
         <item quantity="many">%d eklenti güncelleme gerektiriyor. Yeni sürümü kontrol edin</item>
     </plurals>
     <string name="n_plugins_installed">%d eklenti yüklendi. Kullanmak için uygulamayı yeniden başlatın.</string>
-    <string name="seeders_short_format">T: %s</string>
-    <string name="leechers_short_format">L: %s</string>
     <string name="size_format">Boyut: %s</string>
     <string name="leechers_string_format">Leecher(lar): %s</string>
     <string name="delete_all">Tümünü sil</string>

@@ -13,6 +13,7 @@ import kotlinx.coroutines.delay
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import kotlin.time.Duration.Companion.milliseconds
 
 @Singleton
 class UnrestrictRepository
@@ -72,7 +73,7 @@ constructor(protoStore: ProtoStore, private val unrestrictApiHelper: UnrestrictA
         linksList.forEach {
             unrestrictedLinks.add(getEitherUnrestrictedLink(it, password, remote))
             // just to be on the safe side...
-            delay(callDelay)
+            delay(callDelay.milliseconds)
         }
         return unrestrictedLinks
     }

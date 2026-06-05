@@ -26,7 +26,7 @@
     <string name="unrestrict">제한 해제(Unrestrict)</string>
     <string name="invalid_url">유효하지 않은 URL</string>
     <string name="loading">로딩 중</string>
-    <string name="copy">복사</string>
+    <string name="copy_string">복사</string>
     <string name="open_link">링크 열기</string>
     <string name="copy_link">링크 복사</string>
     <string name="link_copied">링크 복사됨</string>
@@ -297,7 +297,7 @@
     <string name="delete_all_downloads_message">모든 다운로드를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.</string>
     <string name="delete_all_torrents_message">모든 토렌트를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.</string>
     <string name="torrents_removed">토렌트 삭제 완료</string>
-    <string name="removing_torrents">토렌트 삭제 중...</string>
+    <string name="removing_torrents">토렌트 삭제 중…</string>
     <string name="downloads_removed">다운로드 삭제 완료</string>
     <string name="removing_downloads">다운로드 삭제 중...</string>
     <string name="version">버전</string>
@@ -306,7 +306,6 @@
     <string name="download_not_started_format">%s 다운로드 초기화 오류</string>
     <string name="multiple_downloads_enqueued_format">%2$d개 중 %1$d개의 다운로드가 정상적으로 대기열에 추가되었습니다.</string>
     <string name="needs_download_permission">파일을 직접 다운로드하려면 파일 저장 권한이 필요합니다</string>
-    <string name="kodi" translatable="false">Kodi</string>
     <string name="test_connection">연결 테스트</string>
     <string name="kodi_credentials_incomplete">Kodi 사용을 위해 IP 주소와 port 정보 입력이 필요합니다</string>
     <string name="ip_address">IP 주소</string>
@@ -351,7 +350,6 @@
     <string name="copy_all">모두 복사</string>
     <string name="enable_doh">DNS over HTTPS 활성화</string>
     <string name="pick_doh_provider">DNS over HTTPS 제공자 선택</string>
-    <string name="doh" translatable="false">DNS over HTTPS</string>
     <string name="doh_description_message">DNS over HTTPS는 프라이버시를 강화하고 DNS 요청 도청을 방지하기 위한 프로토콜입니다. 플러그인 웹사이트가 DNS 수준에서 차단된 경우 DOH를 활성화하면 우회하는 데 도움이 될 수 있습니다. 현재 사용 가능한 DOH 제공자는 Google뿐입니다. 이 옵션은 기본적으로 비활성화되어 있으며 설정 메뉴에서 언제든지 변경할 수 있습니다. 이 기능은 충돌을 일으킬 수 있습니다.</string>
     <string name="disable">비활성화</string>
     <string name="enable">활성화</string>

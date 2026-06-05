@@ -78,8 +78,8 @@ class RemoteDeviceViewHolder(
         binding.cvDevice.setOnClickListener { listener.onDeviceClick(item) }
     }
 
-    fun getItemDetails(): ItemDetailsLookup.ItemDetails<RemoteDevice> =
-        object : ItemDetailsLookup.ItemDetails<RemoteDevice>() {
+    fun getItemDetails(): ItemDetails<RemoteDevice> =
+        object : ItemDetails<RemoteDevice>() {
             override fun getPosition(): Int = layoutPosition
 
             override fun getSelectionKey(): RemoteDevice? = mItem

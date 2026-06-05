@@ -54,7 +54,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
                 adapter = StatAdapter(showLabel, showCaption, showIcon)
                 recyclerView.adapter = adapter
 
-                val layoutManager: FlexboxLayoutManager = FlexboxLayoutManager(context)
+                val layoutManager = FlexboxLayoutManager(context)
                 layoutManager.flexDirection =
                     if (direction == 1) FlexDirection.COLUMN else FlexDirection.ROW
                 layoutManager.justifyContent = JustifyContent.CENTER

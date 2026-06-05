@@ -2,7 +2,6 @@ package com.github.livingwithhippos.unchained.base
 
 import android.app.Dialog
 import android.os.Bundle
-import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.setFragmentResult
 import com.github.livingwithhippos.unchained.R
@@ -19,7 +18,11 @@ class DeleteDialogFragment : DialogFragment() {
                 .setMessage(R.string.confirm_item_removal_description)
                 .setTitle(title)
                 .setPositiveButton(R.string.delete) { _, _ ->
-                    setFragmentResult("deleteActionKey", bundleOf("deleteConfirmation" to true))
+
+                    val bundle = Bundle().apply {
+                        putBoolean("deleteConfirmation", true)
+                    }
+                    setFragmentResult("deleteActionKey", bundle)
                 }
                 .setNegativeButton(R.string.close) { dialog, _ -> dialog.cancel() }
             builder.create()

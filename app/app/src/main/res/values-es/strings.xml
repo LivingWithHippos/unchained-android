@@ -27,7 +27,7 @@
     <string name="unrestrict">no restringir</string>
     <string name="invalid_url">URL inválido</string>
     <string name="loading">Cargando</string>
-    <string name="copy">Copiar</string>
+    <string name="copy_string">Copiar</string>
     <string name="open_link">Abrir Enlace</string>
     <string name="copy_link">Copiar enlace</string>
     <string name="link_copied">Enlace copiado</string>
@@ -450,7 +450,7 @@
     <string name="update">Actualizar</string>
     <string name="new_word">Nuevo</string>
     <string name="not_compatible">No es compatible</string>
-    <string name="checking_plugins">Comprobando plugins...</string>
+    <string name="checking_plugins">Comprobando plugins…</string>
     <string name="manage_plugins">Gestionar plugins</string>
     <string name="repository">Repositorio</string>
     <string name="updated">Actualizado</string>

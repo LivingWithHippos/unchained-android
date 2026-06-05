@@ -25,6 +25,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import kotlin.time.Duration.Companion.milliseconds
 
 @HiltViewModel
 class TorrentProcessingViewModel
@@ -141,7 +142,7 @@ constructor(
                         }
                     }
                 }
-                delay(1500)
+                delay(1500.milliseconds)
             }
         }
     }
