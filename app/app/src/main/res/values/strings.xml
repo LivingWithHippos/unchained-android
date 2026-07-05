@@ -654,6 +654,7 @@
     <string name="previous">Previous</string>
     <string name="ready">Ready</string>
     <string name="select_files">Select files</string>
+    <string name="filter_files_hint">Filter names, * supported</string>
     <string name="total_files">Total files</string>
     <string name="total_size">Total size</string>
     <string name="loading_torrent_info">Loading torrent files. Use the download all button on the bottom if you want to download all the content.</string>
