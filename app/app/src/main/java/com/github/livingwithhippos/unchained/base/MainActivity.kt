@@ -19,6 +19,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -217,6 +218,8 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         setupBottomNavigationBar(binding)
+
+        setupBackPressedHandling()
 
         addMenuProvider(
             object : MenuProvider {
@@ -893,46 +896,43 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    @Deprecated("Deprecated in Java")
-    override fun onBackPressed() {
-        // fixme: not working good anymore on android 16, migrate
-        // if the user is pressing back on an "exiting" fragment, show a toast alerting him and wait
-        // for him to press back again for confirmation
-
-        val currentDestination = navController.currentDestination
-        val previousDestination = navController.previousBackStackEntry
-
-        when (currentDestination?.id) {
-            // check if we're pressing back from the user or authentication fragment
-            R.id.user_dest,
-            R.id.authentication_dest -> {
-                // check the destination for the back action
-                if (
-                    previousDestination == null ||
-                        previousDestination.destination.id == R.id.authentication_dest ||
-                        previousDestination.destination.id == R.id.start_dest ||
-                        previousDestination.destination.id == R.id.user_dest ||
-                        previousDestination.destination.id == R.id.search_dest ||
-                        previousDestination.destination.id == R.id.pluginSearchFragment
-                ) {
-                    // check if it has been 2 seconds since the last time we pressed back
-                    val pressedTime = System.currentTimeMillis()
-                    val lastPressedTime = viewModel.getLastBackPress()
-                    // exit if pressed back twice in EXIT_WAIT_TIME
-                    if (pressedTime - lastPressedTime <= EXIT_WAIT_TIME) finish()
-                    // else update the last time the user pressed back
-                    else {
-                        viewModel.setLastBackPress(pressedTime)
-                        this.showToast(R.string.press_again_exit)
-                    }
-                } else {
-                    super.onBackPressed()
+    /**
+     * If the user is pressing back on an "exiting" fragment, show a toast alerting them and wait
+     * for them to press back again for confirmation. The callback replaces the deprecated
+     * [onBackPressed] override, which is not called anymore on Android 16+ with predictive back
+     * enabled. It is only enabled when a back press would exit the app, so the default back
+     * handling (and its predictive animations) keeps working everywhere else.
+     */
+    private fun setupBackPressedHandling() {
+        val exitCallback =
+            onBackPressedDispatcher.addCallback(this, enabled = false) {
+                // check if it has been 2 seconds since the last time we pressed back
+                val pressedTime = System.currentTimeMillis()
+                val lastPressedTime = viewModel.getLastBackPress()
+                // exit if pressed back twice in EXIT_WAIT_TIME
+                if (pressedTime - lastPressedTime <= EXIT_WAIT_TIME) finish()
+                // else update the last time the user pressed back
+                else {
+                    viewModel.setLastBackPress(pressedTime)
+                    this@MainActivity.showToast(R.string.press_again_exit)
                 }
             }
 
-            else -> {
-                super.onBackPressed()
-            }
+        navController.addOnDestinationChangedListener { controller, destination, _ ->
+            // check if we're on the user or authentication fragment
+            val onExitingFragment =
+                destination.id == R.id.user_dest || destination.id == R.id.authentication_dest
+            // check the destination for the back action
+            val previousDestination = controller.previousBackStackEntry?.destination?.id
+            val backWouldExit =
+                previousDestination == null ||
+                    previousDestination == R.id.authentication_dest ||
+                    previousDestination == R.id.start_dest ||
+                    previousDestination == R.id.user_dest ||
+                    previousDestination == R.id.search_dest ||
+                    previousDestination == R.id.pluginSearchFragment
+
+            exitCallback.isEnabled = onExitingFragment && backWouldExit
         }
     }
 
