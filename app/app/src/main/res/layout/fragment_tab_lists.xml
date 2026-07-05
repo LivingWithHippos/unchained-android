@@ -25,6 +25,18 @@
         app:layout_constraintTop_toBottomOf="@id/tabs" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabScrollToTop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:contentDescription="@string/scroll_to_top"
+        app:fabSize="mini"
+        app:layout_constraintBottom_toTopOf="@id/fabNewDownload"
+        app:layout_constraintEnd_toEndOf="@id/fabNewDownload"
+        app:layout_constraintStart_toStartOf="@id/fabNewDownload"
+        app:srcCompat="@drawable/icon_arrow_upward" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabNewDownload"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

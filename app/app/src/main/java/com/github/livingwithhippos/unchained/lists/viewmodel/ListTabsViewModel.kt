@@ -79,6 +79,9 @@ constructor(
 
     val eventLiveData = MutableLiveData<Event<ListEvent>>()
 
+    // tab index of the list to be scrolled to the top, see ListsTabFragment fabScrollToTop
+    val scrollToTopLiveData = MutableLiveData<Event<Int>>()
+
     /**
      * Un restrict a torrent and move it to the download section
      *
@@ -176,6 +179,10 @@ constructor(
 
     fun postEventNotice(event: ListEvent) {
         eventLiveData.postEvent(event)
+    }
+
+    fun postScrollToTop(tab: Int) {
+        scrollToTopLiveData.postEvent(tab)
     }
 
     companion object {

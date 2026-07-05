@@ -175,6 +175,10 @@ class ListsTabFragment : UnchainedFragment() {
             findNavController().navigate(action)
         }
 
+        binding.fabScrollToTop.setOnClickListener {
+            viewModel.postScrollToTop(binding.tabs.selectedTabPosition)
+        }
+
         // an external link has been shared with the app
         activityViewModel.externalLinkLiveData.observe(
             viewLifecycleOwner,
@@ -624,6 +628,15 @@ class DownloadsListFragment : UnchainedFragment(), DownloadListListener {
             },
         )
 
+        // scroll the list to the top when the parent fragment fab is clicked on this tab
+        viewModel.scrollToTopLiveData.observe(viewLifecycleOwner) { event ->
+            if (event?.peekContent() == DOWNLOADS_TAB) {
+                event.getContentIfNotHandled()?.let {
+                    if (_binding != null) binding.rvDownloadList.layoutManager?.scrollToPosition(0)
+                }
+            }
+        }
+
         // starts the Transformations.switchMap(queryLiveData) which otherwise won't trigger the
         // Paging
         // request
@@ -834,6 +847,15 @@ class TorrentsListFragment : UnchainedFragment(), TorrentListListener {
                 }
             },
         )
+
+        // scroll the list to the top when the parent fragment fab is clicked on this tab
+        viewModel.scrollToTopLiveData.observe(viewLifecycleOwner) { event ->
+            if (event?.peekContent() == TORRENTS_TAB) {
+                event.getContentIfNotHandled()?.let {
+                    if (_binding != null) binding.rvTorrentList.layoutManager?.scrollToPosition(0)
+                }
+            }
+        }
 
         return binding.root
     }

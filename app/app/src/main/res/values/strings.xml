@@ -25,6 +25,7 @@
     <string name="premium_days_format">Remaining days: %1$d</string>
     <string name="user">User</string>
     <string name="new_download">New Download</string>
+    <string name="scroll_to_top">Scroll to the top</string>
     <string name="remote_traffic">Remote Traffic</string>
     <string name="password_optional">Password [Optional]</string>
     <string name="yes">Yes</string>
