@@ -294,9 +294,10 @@ class TorrentProcessingFragment : UnchainedFragment(), TorrentContentListener {
     }
 
     private fun updateFilesList() {
+        // the selection DiffCallback already compares TorrentFileItem.selected, so submitList
+        // alone rebinds changed rows without a redundant full notifyDataSetChanged
         (binding.rvTorrentFilePicker.adapter as TorrentContentFilesSelectionAdapter)
             .submitList(getFilteredFiles())
-        binding.rvTorrentFilePicker.adapter?.notifyDataSetChanged()
     }
 
     private fun showMenu(v: View, @MenuRes menuRes: Int) {
