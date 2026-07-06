@@ -301,8 +301,9 @@ class MainActivity : AppCompatActivity() {
                         null -> showToast(R.string.retry_later)
                     }
                     // this state should be managed by the fragments directly
+                    // the search tab is left enabled since it can be used without login, see #302
                     lifecycleScope.launch {
-                        disableBottomNavItems(R.id.navigation_lists, R.id.navigation_search)
+                        disableBottomNavItems(R.id.navigation_lists)
                         doubleClickBottomItem(R.id.navigation_home)
                     }
                 }
@@ -310,7 +311,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         // disable the bottom menu items before loading the credentials
-        disableBottomNavItems(R.id.navigation_lists, R.id.navigation_search)
+        // the search tab is left enabled since it can be used without login, see #302
+        disableBottomNavItems(R.id.navigation_lists)
 
         // to avoid issues with restoring the app state we check the current state before calling
         // this
