@@ -68,6 +68,7 @@ import java.io.File
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 import javax.inject.Inject
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.firstOrNull
@@ -909,7 +910,9 @@ constructor(
     ) = customDownloadRepository.downloadToCache(link, fileName, cacheDir, suffix).asLiveData()
 
     fun clearCache(cacheDir: File) {
-        cacheDir.listFiles()?.forEach { if (it.name != "image_cache") it.deleteRecursively() }
+        viewModelScope.launch(Dispatchers.IO) {
+            cacheDir.listFiles()?.forEach { if (it.name != "image_cache") it.deleteRecursively() }
+        }
     }
 
     private fun checkUpdateVersion(
