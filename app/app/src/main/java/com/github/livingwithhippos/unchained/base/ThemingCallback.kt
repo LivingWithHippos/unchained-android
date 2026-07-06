@@ -13,20 +13,41 @@ import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Comp
 import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Companion.THEME_NIGHT
 import com.github.livingwithhippos.unchained.settings.view.ThemeItem
 import com.github.livingwithhippos.unchained.utilities.extension.getThemeList
+import java.util.WeakHashMap
 
 class ThemingCallback(val preferences: SharedPreferences) : Application.ActivityLifecycleCallbacks {
 
+    // theme resource id each currently alive activity was (re)created with, so a change made
+    // while another activity is on top can be detected and applied on resume, see #305
+    private val appliedThemes = WeakHashMap<Activity, Int>()
+
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
-        val themeRes =
-            preferences.getInt(
-                SettingsFragment.KEY_THEME_NEW,
-                R.style.Theme_Unchained_Material3_Green_One,
-            )
+        val themeRes = currentThemeRes()
         val themesList = activity.applicationContext.getThemeList()
         val currentTheme: ThemeItem = themesList.find { it.themeID == themeRes } ?: themesList[1]
         setupNightMode(currentTheme.nightMode)
-        if (activity is AppCompatActivity) setCustomTheme(activity, themeRes)
+        if (activity is AppCompatActivity) {
+            setCustomTheme(activity, themeRes)
+            appliedThemes[activity] = themeRes
+        }
     }
+
+    override fun onActivityResumed(activity: Activity) {
+        if (activity !is AppCompatActivity) return
+        val themeRes = currentThemeRes()
+        val appliedThemeRes = appliedThemes[activity]
+        if (appliedThemeRes != null && appliedThemeRes != themeRes) {
+            // avoid re-triggering on the recreated instance's own resume
+            appliedThemes.remove(activity)
+            activity.recreate()
+        }
+    }
+
+    private fun currentThemeRes(): Int =
+        preferences.getInt(
+            SettingsFragment.KEY_THEME_NEW,
+            R.style.Theme_Unchained_Material3_Green_One,
+        )
 
     private fun setCustomTheme(activity: Activity, themeRes: Int) {
         activity.setTheme(themeRes)
@@ -39,15 +60,15 @@ class ThemingCallback(val preferences: SharedPreferences) : Application.Activity
 
     override fun onActivityStarted(activity: Activity) {}
 
-    override fun onActivityResumed(activity: Activity) {}
-
     override fun onActivityPaused(activity: Activity) {}
 
     override fun onActivityStopped(activity: Activity) {}
 
     override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {}
 
-    override fun onActivityDestroyed(activity: Activity) {}
+    override fun onActivityDestroyed(activity: Activity) {
+        appliedThemes.remove(activity)
+    }
 
     /** Set the night mode depending on the user preferences and what the theme support */
     private fun setupNightMode(themeNightModeSupport: String) {
