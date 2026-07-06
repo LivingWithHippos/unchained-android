@@ -19,6 +19,10 @@ const val MANUAL_PLUGINS_REPOSITORY_NAME = "common_repository"
 // unofficial link to get streaming from a browser page
 const val RD_STREAMING_URL = "https://real-debrid.com/streaming-"
 
+// shared WorkManager tag added to every embedded (OkHttp) download request, alongside its
+// per-source tag, so all active downloads can be cancelled together on a network change
+const val EMBEDDED_DOWNLOAD_WORK_TAG = "embedded_download"
+
 const val PRIVATE_TOKEN: String = "private_token"
 
 const val REMOTE_TRAFFIC_ON: Int = 1
@@ -122,6 +126,7 @@ object PreferenceKeys {
         const val OKHTTP = "download_manager_okhttp"
         const val UNMETERED_ONLY_KEY = "download_only_on_unmetered"
         const val VIBRATE_ON_FINISH = "vibrate_on_download"
+        const val PAUSE_ON_NETWORK_CHANGE_KEY = "pause_downloads_on_network_change"
     }
 
     object Ui {

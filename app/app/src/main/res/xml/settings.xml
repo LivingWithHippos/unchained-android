@@ -51,6 +51,12 @@
             app:summary="@string/unmetered_downloads_description"
             app:title="@string/unmetered_downloads" />
 
+        <SwitchPreference
+            android:defaultValue="false"
+            app:key="pause_downloads_on_network_change"
+            app:summary="@string/pause_downloads_on_network_change_description"
+            app:title="@string/pause_downloads_on_network_change" />
+
     </PreferenceCategory>
 
     <PreferenceCategory

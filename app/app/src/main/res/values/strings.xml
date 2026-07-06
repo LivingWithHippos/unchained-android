@@ -647,6 +647,8 @@
     <string name="custom_downloader_options_description">These options are not available for the default download manager</string>
     <string name="unmetered_downloads">Downloads on unmetered connections</string>
     <string name="unmetered_downloads_description">Start downloads only on unmetered connection (such as wi-fi)</string>
+    <string name="pause_downloads_on_network_change">Cancel downloads on network change</string>
+    <string name="pause_downloads_on_network_change_description">Cancel active downloads if the network changes (e.g. wi-fi to mobile data), since Real-Debrid may flag your account for downloading from multiple IPs. Cancelled downloads must be restarted manually</string>
     <string name="download_on_metered_connection">Download delayed (metered connection)</string>
     <string name="leechers">Leechers</string>
     <string name="size">Size</string>

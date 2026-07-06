@@ -14,6 +14,7 @@ import com.github.livingwithhippos.unchained.data.model.Repository
 import com.github.livingwithhippos.unchained.data.repository.ServiceRepository
 import com.github.livingwithhippos.unchained.utilities.DEFAULT_PLUGINS_REPOSITORY_LINK
 import com.github.livingwithhippos.unchained.utilities.TelemetryManager
+import com.github.livingwithhippos.unchained.utilities.download.NetworkChangeDownloadCanceller
 import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
@@ -37,6 +38,7 @@ class UnchainedApplication : Application() {
     @Inject lateinit var pluginRepositoryDataDao: RepositoryDataDao
     @Inject lateinit var legacyServiceRepository: RemoteDeviceDao
     @Inject lateinit var newServiceRepository: ServiceRepository
+    @Inject lateinit var networkChangeDownloadCanceller: NetworkChangeDownloadCanceller
 
     private val job = Job()
     private val scope = CoroutineScope(Dispatchers.Default + job)
@@ -45,6 +47,8 @@ class UnchainedApplication : Application() {
         super.onCreate()
 
         registerActivityLifecycleCallbacks(activityCallback)
+
+        networkChangeDownloadCanceller.start()
 
         scope.launch {
             protoStore.deleteIncompleteCredentials()
