@@ -5,30 +5,43 @@
     android:id="@+id/clItemTheme"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="10dp">
+    android:background="?attr/selectableItemBackground"
+    android:minHeight="56dp"
+    android:paddingHorizontal="20dp"
+    android:paddingVertical="12dp">
 
     <com.github.livingwithhippos.unchained.customview.ThemeColorsCircle
         android:id="@+id/theme_color"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginEnd="16dp"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_marginEnd="20dp"
         android:clickable="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/theme_name"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-    </com.github.livingwithhippos.unchained.customview.ThemeColorsCircle>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/theme_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="12dp"
         android:maxLines="2"
-        android:textAppearance="?attr/textAppearanceTitleLarge"
+        android:textAppearance="?attr/textAppearanceTitleMedium"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/theme_selected_check"
         app:layout_constraintStart_toEndOf="@id/theme_color"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/theme_selected_check"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:contentDescription="@string/selected_theme"
+        android:src="@drawable/icon_check"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="?attr/colorPrimary" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

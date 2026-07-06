@@ -33,13 +33,16 @@ import androidx.annotation.AttrRes
 import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.graphics.ColorUtils
 import androidx.core.net.toUri
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.Fragment
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Companion.THEME_AUTO
 import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Companion.THEME_DAY
 import com.github.livingwithhippos.unchained.settings.view.ThemeItem
 import com.github.livingwithhippos.unchained.utilities.EitherResult
+import com.google.android.material.color.DynamicColors
 import java.util.Locale
 import timber.log.Timber
 
@@ -48,7 +51,8 @@ import timber.log.Timber
  * Context
  */
 fun Context.getThemeList(): List<ThemeItem> {
-    return listOf(
+    val staticThemes =
+        listOf(
         ThemeItem(
             "Waves",
             "waves_01",
@@ -131,6 +135,36 @@ fun Context.getThemeList(): List<ThemeItem> {
             ResourcesCompat.getColor(resources, R.color.grey_one_theme_primaryContainer, null),
         ),
     )
+    return if (DynamicColors.isDynamicColorAvailable()) {
+        staticThemes + getDynamicWallpaperThemeItem()
+    } else {
+        staticThemes
+    }
+}
+
+/**
+ * The "Material You" theme entry: colors come from the device wallpaper via Android's dynamic
+ * color system instead of a fixed palette, so its preview swatch is only a best-effort
+ * approximation of the current wallpaper colors, not the exact colors DynamicColors will apply
+ */
+private fun Context.getDynamicWallpaperThemeItem(): ThemeItem {
+    val isNight =
+        resources.configuration.uiMode.and(Configuration.UI_MODE_NIGHT_MASK) ==
+            Configuration.UI_MODE_NIGHT_YES
+    // system_accent1/2 tonal ramps are always available once dynamic color itself is available
+    val primaryTone = if (isNight) android.R.color.system_accent1_200 else android.R.color.system_accent1_600
+    val surfaceTone = if (isNight) android.R.color.system_neutral1_900 else android.R.color.system_neutral1_10
+    val containerTone = if (isNight) android.R.color.system_accent2_700 else android.R.color.system_accent2_100
+    return ThemeItem(
+        name = "Material You",
+        key = "dynamic_wallpaper",
+        nightMode = THEME_AUTO,
+        themeID = R.style.Theme_Unchained_Material3_Dynamic,
+        primaryColorID = ResourcesCompat.getColor(resources, primaryTone, null),
+        surfaceColorID = ResourcesCompat.getColor(resources, surfaceTone, null),
+        primaryContainerColorID = ResourcesCompat.getColor(resources, containerTone, null),
+        isDynamic = true,
+    )
 }
 
 /**
@@ -165,6 +199,23 @@ fun Context.getThemeColor(@AttrRes attributeID: Int): Int {
     val theme: Resources.Theme = this.theme
     theme.resolveAttribute(attributeID, typedValue, true)
     return typedValue.data
+}
+
+/**
+ * Sets the status and navigation bar icon colors (light or dark) to match the theme actually
+ * applied to this activity right now, instead of relying on a static day/night assumption. Themes
+ * don't necessarily get darker in night mode (none of them currently have night-specific colors)
+ * and dynamic color themes aren't knowable ahead of time at all, so the only way to get readable
+ * system icons for every theme, in every mode, is to check the real colors after they're applied.
+ * See #315.
+ */
+fun Activity.applyThemeAwareSystemBarIconColors() {
+    val controller = WindowInsetsControllerCompat(window, window.decorView)
+    controller.isAppearanceLightStatusBars =
+        ColorUtils.calculateLuminance(getThemeColor(android.R.attr.colorPrimary)) > 0.5
+    controller.isAppearanceLightNavigationBars =
+        ColorUtils.calculateLuminance(getThemeColor(com.google.android.material.R.attr.colorSurface)) >
+            0.5
 }
 
 /**
