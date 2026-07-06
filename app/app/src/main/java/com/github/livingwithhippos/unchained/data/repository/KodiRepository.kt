@@ -169,6 +169,68 @@ constructor(protoStore: ProtoStore, @param:ClassicClient private val client: OkH
         }
     }
 
+    /**
+     * Adds a subtitle to the video currently playing on Kodi, using Player.AddSubtitle. The active
+     * player id is fetched first via Player.GetActivePlayers, since Kodi needs it to know which
+     * player to attach the subtitle to.
+     */
+    suspend fun addSubtitle(
+        address: String,
+        subtitleUrl: String,
+        username: String? = null,
+        password: String? = null,
+    ): KodiResponse? {
+        try {
+            val kodiApiHelper: KodiApiHelper =
+                if (address.endsWith("/")) provideApiHelper(address)
+                else provideApiHelper("$address/")
+
+            val auth = encodeAuthentication(username, password)
+
+            val activePlayers =
+                safeApiCall(
+                    call = {
+                        kodiApiHelper.getActivePlayers(
+                            request =
+                                KodiRequest(method = "Player.GetActivePlayers", params = KodiParams()),
+                            auth = auth,
+                        )
+                    },
+                    errorMessage = "Error getting Kodi active players",
+                )
+
+            // prefer the video player, since that's the one a subtitle would be attached to
+            val playerId =
+                activePlayers?.result?.firstOrNull { it.type == "video" }?.playerId
+                    ?: activePlayers?.result?.firstOrNull()?.playerId
+
+            if (playerId == null) {
+                Timber.e("No active Kodi player found, can't add subtitle")
+                return null
+            }
+
+            val kodiResponse =
+                safeApiCall(
+                    call = {
+                        kodiApiHelper.addSubtitle(
+                            request =
+                                KodiRequest(
+                                    method = "Player.AddSubtitle",
+                                    params = KodiParams(playerId = playerId, subtitle = subtitleUrl),
+                                ),
+                            auth = auth,
+                        )
+                    },
+                    errorMessage = "Error adding subtitle on Kodi",
+                )
+
+            return kodiResponse
+        } catch (e: Exception) {
+            Timber.e(e)
+            return null
+        }
+    }
+
     private fun encodeAuthentication(username: String?, password: String?): String? {
         return if (!username.isNullOrBlank() && !password.isNullOrBlank()) {
             "Basic " +

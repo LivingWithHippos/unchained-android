@@ -56,6 +56,7 @@ import com.github.livingwithhippos.unchained.utilities.extension.getAvailableSpa
 import com.github.livingwithhippos.unchained.utilities.extension.getFileSizeString
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
+import com.github.livingwithhippos.unchained.utilities.extensionIconMap
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -206,6 +207,16 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
         }
 
         binding.fabPickStreaming.setOnClickListener { popView -> manageStreamingPopup(popView) }
+
+        // a subtitle file can be attached to whatever is currently playing on Kodi, regardless of
+        // whether it's "streamable" on its own
+        val fileExtension = args.details.filename.substringAfterLast('.', "").lowercase()
+        if (extensionIconMap[fileExtension] == R.drawable.icon_subtitles) {
+            binding.llFabAddSubtitle.visibility = View.VISIBLE
+            binding.fabAddSubtitle.setOnClickListener { showAddSubtitleDialog() }
+        } else {
+            binding.llFabAddSubtitle.visibility = View.GONE
+        }
 
         viewModel.streamLiveData.observe(viewLifecycleOwner) {
             if (it != null) {
@@ -506,6 +517,15 @@ class DownloadDetailsFragment : UnchainedFragment(), DownloadDetailsListener {
                 if (popup.isShowing) popup.dismiss()
             }
         }
+    }
+
+    private fun showAddSubtitleDialog() {
+        val dialog = ServicePickerDialog()
+        val bundle = Bundle()
+        bundle.putString("downloadUrl", args.details.download)
+        bundle.putBoolean("addSubtitle", true)
+        dialog.arguments = bundle
+        dialog.show(parentFragmentManager, "ServicePickerDialog")
     }
 
     private fun playOnService(
