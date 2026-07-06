@@ -3,4 +3,6 @@
     <dimen name="fab_download_details_width">80dp</dimen>
     <dimen name="stat_corner_radius">3dp</dimen>
     <dimen name="stat_card_elevation">10dp</dimen>
+    <dimen name="custom_color_swatch_size">44dp</dimen>
+    <dimen name="custom_color_swatch_margin">12dp</dimen>
 </resources>

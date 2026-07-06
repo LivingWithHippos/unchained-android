@@ -79,7 +79,12 @@ class ThemePickerDialog : BottomSheetDialogFragment(), ThemePickListener {
     }
 
     override fun onThemeClick(item: ThemeItem) {
-        viewModel.selectTheme(item)
+        if (item.key == CUSTOM_THEME_KEY) {
+            dismiss()
+            CustomColorPickerDialog().show(parentFragmentManager, "CustomColorPickerDialogFragment")
+        } else {
+            viewModel.selectTheme(item)
+        }
     }
 }
 
@@ -106,6 +111,9 @@ data class ThemeItem(
     @param:ColorInt val primaryContainerColorID: Int,
     val isDynamic: Boolean = false,
 )
+
+/** [ThemeItem.key] of the user-customizable, seed-color-based dynamic theme. */
+const val CUSTOM_THEME_KEY = "custom_theme"
 
 class ThemePickerAdapter(private val listener: ThemePickListener, initialSelectedKey: String?) :
     ListAdapter<ThemeItem, ThemeViewHolder>(DiffCallback()) {
