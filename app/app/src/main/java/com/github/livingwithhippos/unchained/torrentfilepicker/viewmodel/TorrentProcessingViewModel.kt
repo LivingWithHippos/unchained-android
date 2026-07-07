@@ -18,7 +18,6 @@ import com.github.livingwithhippos.unchained.utilities.extension.cancelIfActive
 import com.github.livingwithhippos.unchained.utilities.postEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -39,7 +38,7 @@ constructor(
     val torrentLiveData = MutableLiveData<Event<TorrentEvent>>()
     val structureLiveData = MutableLiveData<Event<Node<TorrentFileItem>>>()
 
-    private var job = Job()
+    private var job: Job? = null
 
     fun fetchAddedMagnet(magnet: String) {
         viewModelScope.launch {
@@ -103,48 +102,46 @@ constructor(
             return
         }
 
-        job.cancelIfActive()
-        job = Job()
+        job?.cancelIfActive()
 
-        val scope = CoroutineScope(job + Dispatchers.IO)
-
-        scope.launch {
-            var selected = false
-            // / maybe job.isActive?
-            while (isActive) {
-                if (!selected) {
-                    when (val selectResponse = torrentsRepository.selectFiles(id, files)) {
-                        is EitherResult.Failure -> {
-                            if (selectResponse.failure is EmptyBodyError) {
-                                Timber.d(
-                                    "Select torrent files success returned ${selectResponse.failure.returnCode}"
-                                )
+        job =
+            viewModelScope.launch(Dispatchers.IO) {
+                var selected = false
+                // / maybe job.isActive?
+                while (isActive) {
+                    if (!selected) {
+                        when (val selectResponse = torrentsRepository.selectFiles(id, files)) {
+                            is EitherResult.Failure -> {
+                                if (selectResponse.failure is EmptyBodyError) {
+                                    Timber.d(
+                                        "Select torrent files success returned ${selectResponse.failure.returnCode}"
+                                    )
+                                    selected = true
+                                } else {
+                                    Timber.e(
+                                        "Exception during torrent files selection call: ${selectResponse.failure}"
+                                    )
+                                }
+                            }
+                            is EitherResult.Success -> {
+                                Timber.d("Select torrent files success")
                                 selected = true
-                            } else {
-                                Timber.e(
-                                    "Exception during torrent files selection call: ${selectResponse.failure}"
-                                )
                             }
                         }
-                        is EitherResult.Success -> {
-                            Timber.d("Select torrent files success")
-                            selected = true
-                        }
                     }
-                }
 
-                if (selected) {
-                    val torrentItem: TorrentItem? = torrentsRepository.getTorrentInfo(id)
-                    if (torrentItem != null) {
-                        if (!beforeSelectionStatusList.contains(torrentItem.status)) {
-                            job.cancelIfActive()
-                            torrentLiveData.postEvent(TorrentEvent.FilesSelected(torrentItem))
+                    if (selected) {
+                        val torrentItem: TorrentItem? = torrentsRepository.getTorrentInfo(id)
+                        if (torrentItem != null) {
+                            if (!beforeSelectionStatusList.contains(torrentItem.status)) {
+                                job?.cancelIfActive()
+                                torrentLiveData.postEvent(TorrentEvent.FilesSelected(torrentItem))
+                            }
                         }
                     }
+                    delay(1500.milliseconds)
                 }
-                delay(1500.milliseconds)
             }
-        }
     }
 
     fun triggerTorrentEvent(event: TorrentEvent) {
