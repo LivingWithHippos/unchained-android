@@ -19,6 +19,7 @@
     <string name="premium_days_format">Kalan günler: %1$d</string>
     <string name="user">Kullanıcı</string>
     <string name="new_download">Yeni İndirme</string>
+    <string name="scroll_to_top">Sayfanın en üstüne git</string>
     <string name="remote_traffic">Uzak Trafik</string>
     <string name="password_optional">Parola [İsteğe Bağlı]</string>
     <string name="yes">Evet</string>

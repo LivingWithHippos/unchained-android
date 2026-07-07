@@ -30,6 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="15dp"
         android:contentDescription="@string/scroll_to_top"
+        android:nextFocusDown="@id/fabNewDownload"
         app:fabSize="mini"
         app:layout_constraintBottom_toTopOf="@id/fabNewDownload"
         app:layout_constraintEnd_toEndOf="@id/fabNewDownload"
@@ -43,6 +44,7 @@
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="10dp"
         android:contentDescription="@string/new_download"
+        android:nextFocusUp="@id/fabScrollToTop"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/icon_add" />
