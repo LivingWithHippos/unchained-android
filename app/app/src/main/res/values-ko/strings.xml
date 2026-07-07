@@ -19,6 +19,7 @@
     <string name="premium_days_format">남은 기간: %1$d일</string>
     <string name="user">사용자</string>
     <string name="new_download">새 다운로드</string>
+    <string name="scroll_to_top">맨 위로 스크롤하기</string>
     <string name="remote_traffic">원격 트래픽</string>
     <string name="password_optional">비밀번호 [선택 사항]</string>
     <string name="yes">예</string>

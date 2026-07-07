@@ -20,6 +20,7 @@
     <string name="premium_days_format">Giorni rimanenti: %1$d</string>
     <string name="user">Utente</string>
     <string name="new_download">Nuovo Download</string>
+    <string name="scroll_to_top">Torna all\'inizio della pagina</string>
     <string name="remote_traffic">Traffico Remoto</string>
     <string name="password_optional">Password [opzionale]</string>
     <string name="yes">Sì</string>
