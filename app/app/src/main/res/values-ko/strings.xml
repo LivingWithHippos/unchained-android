@@ -378,6 +378,7 @@
     <string name="save_device">기기 저장</string>
     <string name="update_device">기기 업데이트</string>
     <string name="kodi_missing_default">기본 Kodi 기기가 설정되지 않았습니다</string>
+    <string name="add_subtitle_to_kodi">Kodi에 자막 추가</string>
     <string name="device_deleted">기기 삭제됨</string>
     <string name="ui_settings">UI 설정</string>
     <string name="show_media_player_button_summary">설치된 플레이어로 미디어를 보내는 버튼 표시</string>

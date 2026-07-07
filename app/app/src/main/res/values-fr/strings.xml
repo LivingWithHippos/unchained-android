@@ -375,6 +375,7 @@
     <string name="save_device">Sauver le dispositif</string>
     <string name="update_device">Mettre à jour le dispositif</string>
     <string name="kodi_missing_default">Le périphérique Kodi par défaut n\'est pas défini</string>
+    <string name="add_subtitle_to_kodi">Ajouter des sous-titres à Kodi</string>
     <string name="device_deleted">Dispositif supprimé</string>
     <string name="ui_settings">Paramètres de l\'IU</string>
     <string name="show_media_player_button_summary">Afficher le bouton pour envoyer le média vers un lecteur installé</string>
