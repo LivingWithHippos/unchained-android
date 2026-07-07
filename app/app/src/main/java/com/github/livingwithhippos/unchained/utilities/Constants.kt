@@ -126,6 +126,7 @@ object PreferenceKeys {
 
     object Ui {
         const val SEARCH_START_DESTINATION_KEY = "search_start_destination"
+        const val CUSTOM_THEME_SEED_COLOR_KEY = "custom_theme_seed_color"
 
         object SearchStartDestination {
             const val FILES = "files"

@@ -8,8 +8,10 @@
     </style>
 
     <!-- no custom colors: DynamicColors overlays these at runtime, either from the wallpaper or
-    from a user-picked seed color -->
+    from a user-picked seed color. Two identical styles so each has its own resource id: the
+    saved theme preference is a style id, and Material You / Custom need to be told apart -->
     <style name="Theme.Unchained.Material3.Dynamic" parent="Theme.Unchained.Material3" />
+    <style name="Theme.Unchained.Material3.DynamicCustom" parent="Theme.Unchained.Material3" />
 
     <!-- android system top bar with notifications etc. -->
     <style name="Widget.App.AppBarLayout" parent="Widget.Material3.AppBarLayout">

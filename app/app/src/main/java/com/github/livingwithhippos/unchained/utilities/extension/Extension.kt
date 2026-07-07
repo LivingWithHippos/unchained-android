@@ -37,11 +37,14 @@ import androidx.core.graphics.ColorUtils
 import androidx.core.net.toUri
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.Fragment
+import androidx.preference.PreferenceManager
 import com.github.livingwithhippos.unchained.R
+import com.github.livingwithhippos.unchained.settings.view.CUSTOM_THEME_KEY
 import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Companion.THEME_AUTO
 import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Companion.THEME_DAY
 import com.github.livingwithhippos.unchained.settings.view.ThemeItem
 import com.github.livingwithhippos.unchained.utilities.EitherResult
+import com.github.livingwithhippos.unchained.utilities.PreferenceKeys
 import com.google.android.material.color.DynamicColors
 import java.util.Locale
 import timber.log.Timber
@@ -136,7 +139,7 @@ fun Context.getThemeList(): List<ThemeItem> {
         ),
     )
     return if (DynamicColors.isDynamicColorAvailable()) {
-        staticThemes + getDynamicWallpaperThemeItem()
+        staticThemes + getDynamicWallpaperThemeItem() + getCustomThemeItem()
     } else {
         staticThemes
     }
@@ -163,6 +166,31 @@ private fun Context.getDynamicWallpaperThemeItem(): ThemeItem {
         primaryColorID = ResourcesCompat.getColor(resources, primaryTone, null),
         surfaceColorID = ResourcesCompat.getColor(resources, surfaceTone, null),
         primaryContainerColorID = ResourcesCompat.getColor(resources, containerTone, null),
+        isDynamic = true,
+    )
+}
+
+/**
+ * The "Custom" theme entry: colors are generated from a user-picked seed color instead of a
+ * fixed palette or the wallpaper. The preview swatch approximates the generated palette by
+ * blending the seed toward white, since the real palette only exists once DynamicColors applies
+ * it to an actual activity.
+ */
+private fun Context.getCustomThemeItem(): ThemeItem {
+    val preferences = PreferenceManager.getDefaultSharedPreferences(this)
+    val seedColor =
+        preferences.getInt(
+            PreferenceKeys.Ui.CUSTOM_THEME_SEED_COLOR_KEY,
+            ResourcesCompat.getColor(resources, R.color.green_one_theme_primary, null),
+        )
+    return ThemeItem(
+        name = "Custom",
+        key = CUSTOM_THEME_KEY,
+        nightMode = THEME_AUTO,
+        themeID = R.style.Theme_Unchained_Material3_DynamicCustom,
+        primaryColorID = seedColor,
+        surfaceColorID = ColorUtils.blendARGB(seedColor, Color.WHITE, 0.9f),
+        primaryContainerColorID = ColorUtils.blendARGB(seedColor, Color.WHITE, 0.7f),
         isDynamic = true,
     )
 }
