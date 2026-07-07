@@ -12,7 +12,10 @@ import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Comp
 import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Companion.THEME_DAY
 import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Companion.THEME_NIGHT
 import com.github.livingwithhippos.unchained.settings.view.ThemeItem
+import com.github.livingwithhippos.unchained.utilities.extension.applyThemeAwareSystemBarIconColors
 import com.github.livingwithhippos.unchained.utilities.extension.getThemeList
+import com.google.android.material.color.DynamicColors
+import com.google.android.material.color.DynamicColorsOptions
 import java.util.WeakHashMap
 
 class ThemingCallback(val preferences: SharedPreferences) : Application.ActivityLifecycleCallbacks {
@@ -28,8 +31,15 @@ class ThemingCallback(val preferences: SharedPreferences) : Application.Activity
         setupNightMode(currentTheme.nightMode)
         if (activity is AppCompatActivity) {
             setCustomTheme(activity, themeRes)
+            if (currentTheme.isDynamic) applyDynamicColors(activity)
+            activity.applyThemeAwareSystemBarIconColors()
             appliedThemes[activity] = themeRes
         }
+    }
+
+    private fun applyDynamicColors(activity: Activity) {
+        if (!DynamicColors.isDynamicColorAvailable()) return
+        DynamicColors.applyToActivityIfAvailable(activity, DynamicColorsOptions.Builder().build())
     }
 
     override fun onActivityResumed(activity: Activity) {

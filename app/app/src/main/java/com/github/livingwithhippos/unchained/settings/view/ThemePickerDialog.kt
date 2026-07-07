@@ -1,13 +1,11 @@
 package com.github.livingwithhippos.unchained.settings.view
 
-import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.annotation.ColorInt
 import androidx.annotation.StyleRes
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -16,50 +14,68 @@ import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.databinding.ItemThemeListBinding
 import com.github.livingwithhippos.unchained.settings.viewmodel.SettingsViewModel
 import com.github.livingwithhippos.unchained.utilities.extension.getThemeList
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 
+/**
+ * A bottom sheet instead of a plain alert dialog: it's the modern Material 3 pattern for picking
+ * one of many options with a color preview (matching Android's own system theme picker), and it
+ * correctly handles a long, scrollable list at any font scale, unlike a MaterialAlertDialogBuilder
+ * custom view, whose height doesn't resolve reliably for scrollable content, see #315.
+ */
 @AndroidEntryPoint
-class ThemePickerDialog : DialogFragment(), ThemePickListener {
+class ThemePickerDialog : BottomSheetDialogFragment(), ThemePickListener {
 
     private val viewModel: SettingsViewModel by activityViewModels()
+    private lateinit var adapter: ThemePickerAdapter
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        if (activity != null) {
-            // Use the Builder class for convenient dialog construction
-            val builder = MaterialAlertDialogBuilder(requireActivity())
+    override fun onStart() {
+        super.onStart()
+        // wrap_content sizing on the sheet's own content frame is ambiguous with a scrollable
+        // RecyclerView inside, and collapses to just the title and close button; force a fixed,
+        // generous height directly on its container instead of relying on it to size itself from
+        // content. Has to happen here, not onCreateDialog(), since the sheet's internal container
+        // isn't attached yet
+        val bottomSheetContainer =
+            dialog?.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
+                ?: return
+        bottomSheetContainer.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
+        bottomSheetContainer.requestLayout()
+        val behavior = (dialog as? BottomSheetDialog)?.behavior ?: return
+        behavior.isFitToContents = false
+        behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        behavior.skipCollapsed = true
+    }
 
-            // Get the layout inflater
-            val inflater = requireActivity().layoutInflater
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
+    ): View = inflater.inflate(R.layout.dialog_theme_picker, container, false)
 
-            val view = inflater.inflate(R.layout.dialog_theme_picker, null)
-            val adapter = ThemePickerAdapter(this)
-            val list = view.findViewById<RecyclerView>(R.id.themeList)
-            val label = view.findViewById<TextView>(R.id.selectedTheme)
-            list.adapter = adapter
-            adapter.submitList(requireContext().getThemeList())
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-            val currentTheme =
-                requireContext().getThemeList().find { it.themeID == viewModel.getCurrentTheme() }
-            if (currentTheme != null) {
-                label.text = currentTheme.name
+        val themes = requireContext().getThemeList()
+        val currentTheme = themes.find { it.themeID == viewModel.getCurrentTheme() }
+
+        val recyclerView = view.findViewById<RecyclerView>(R.id.themeList)
+        adapter = ThemePickerAdapter(this, currentTheme?.key)
+        recyclerView.adapter = adapter
+        adapter.submitList(themes)
+
+        view.findViewById<View>(R.id.closeButton).setOnClickListener { dismiss() }
+
+        viewModel.themeLiveData.observe(viewLifecycleOwner) {
+            it.getContentIfNotHandled()?.let { theme ->
+                adapter.setSelectedKey(theme.key)
+                viewModel.applyTheme()
+                dismiss()
+                activity?.recreate()
             }
-
-            viewModel.themeLiveData.observe(this) {
-                it.getContentIfNotHandled()?.let { theme ->
-                    label.text = theme.name
-                    viewModel.applyTheme()
-                    dialog?.cancel()
-                    activity?.recreate()
-                }
-            }
-
-            builder
-                .setView(view)
-                .setNeutralButton(getString(R.string.close)) { dialog, _ -> dialog.cancel() }
-                .setTitle(getString(R.string.themes))
-            return builder.create()
-        } else throw IllegalStateException("Activity for theme picker cannot be null")
+        }
     }
 
     override fun onThemeClick(item: ThemeItem) {
@@ -77,6 +93,8 @@ class ThemePickerDialog : DialogFragment(), ThemePickListener {
  * @param primaryColorID: The primary color
  * @param surfaceColorID: The surface color
  * @param primaryContainerColorID: The primary container color
+ * @param isDynamic: true if this theme's colors come from Android's dynamic color system instead
+ *   of the fixed colors baked into themeID, either from the wallpaper or a user-picked seed color
  */
 data class ThemeItem(
     val name: String,
@@ -86,10 +104,18 @@ data class ThemeItem(
     @param:ColorInt val primaryColorID: Int,
     @param:ColorInt val surfaceColorID: Int,
     @param:ColorInt val primaryContainerColorID: Int,
+    val isDynamic: Boolean = false,
 )
 
-class ThemePickerAdapter(private val listener: ThemePickListener) :
+class ThemePickerAdapter(private val listener: ThemePickListener, initialSelectedKey: String?) :
     ListAdapter<ThemeItem, ThemeViewHolder>(DiffCallback()) {
+
+    private var selectedKey: String? = initialSelectedKey
+
+    fun setSelectedKey(key: String) {
+        selectedKey = key
+        notifyDataSetChanged()
+    }
 
     class DiffCallback : DiffUtil.ItemCallback<ThemeItem>() {
         override fun areItemsTheSame(oldItem: ThemeItem, newItem: ThemeItem): Boolean =
@@ -107,7 +133,7 @@ class ThemePickerAdapter(private val listener: ThemePickListener) :
 
     override fun onBindViewHolder(holder: ThemeViewHolder, position: Int) {
         val item = getItem(position)
-        holder.bindCell(item)
+        holder.bindCell(item, item.key == selectedKey)
     }
 
     override fun getItemViewType(position: Int) = R.layout.item_theme_list
@@ -118,11 +144,12 @@ class ThemeViewHolder(
     private val listener: ThemePickListener,
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bindCell(item: ThemeItem) {
+    fun bindCell(item: ThemeItem, isSelected: Boolean) {
         binding.themeName.text = item.name
         binding.themeColor.topColor = item.primaryColorID
         binding.themeColor.bottomLeftColor = item.surfaceColorID
         binding.themeColor.bottomRightColor = item.primaryContainerColorID
+        binding.themeSelectedCheck.visibility = if (isSelected) View.VISIBLE else View.INVISIBLE
 
         binding.clItemTheme.setOnClickListener { listener.onThemeClick(item) }
     }
