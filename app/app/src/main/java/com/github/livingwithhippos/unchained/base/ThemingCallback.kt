@@ -88,12 +88,6 @@ class ThemingCallback(val preferences: SharedPreferences) : Application.Activity
         return preferences.getInt(PreferenceKeys.Ui.CUSTOM_THEME_SEED_COLOR_KEY, defaultSeedColor)
     }
 
-    private fun currentThemeRes(): Int =
-        preferences.getInt(
-            SettingsFragment.KEY_THEME_NEW,
-            R.style.Theme_Unchained_Material3_Green_One,
-        )
-
     private fun setCustomTheme(activity: Activity, themeRes: Int) {
         activity.setTheme(themeRes)
         /*
