@@ -184,7 +184,6 @@
     <string name="share">공유</string>
     <string name="share_with">다음으로 다운로드 링크 공유:</string>
     <string name="share_all_with">다음으로 모든 다운로드 링크 공유:</string>
-    <string name="restart_to_apply">재시작하여 적용</string>
     <string name="remove">제거</string>
     <string name="confirm_download_removal_description">정말로 이 다운로드를 제거하시겠습니까? 이 작업은 되돌릴 수 없습니다.</string>
     <string name="yes_remove">네, 제거합니다</string>

@@ -395,7 +395,6 @@
     <string name="share">Share</string>
     <string name="share_with">Share download link via:</string>
     <string name="share_all_with">Share all download links via:</string>
-    <string name="restart_to_apply">Restart to apply</string>
     <string name="remove">Remove</string>
     <string name="confirm_download_removal_description">Are you sure you want to remove the download? This action cannot be undone.</string>
     <string name="yes_remove">Yes, remove it</string>

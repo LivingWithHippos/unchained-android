@@ -182,7 +182,6 @@
     <string name="share">Partager</string>
     <string name="share_with">Partager le lien de téléchargement via:</string>
     <string name="share_all_with">Partagez tous les liens de téléchargement via:</string>
-    <string name="restart_to_apply">Redémarrer pour appliquer les modifications</string>
     <string name="remove">Supprimer</string>
     <string name="confirm_download_removal_description">Êtes-vous bien sûr de vouloir supprimer ce téléchargement ? Cette action est irréversible.</string>
     <string name="yes_remove">Oui, supprimez-le</string>

@@ -16,7 +16,6 @@ import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.databinding.ItemThemeListBinding
 import com.github.livingwithhippos.unchained.settings.viewmodel.SettingsViewModel
 import com.github.livingwithhippos.unchained.utilities.extension.getThemeList
-import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -50,8 +49,8 @@ class ThemePickerDialog : DialogFragment(), ThemePickListener {
                 it.getContentIfNotHandled()?.let { theme ->
                     label.text = theme.name
                     viewModel.applyTheme()
-                    context?.showToast(R.string.restart_to_apply)
                     dialog?.cancel()
+                    activity?.recreate()
                 }
             }
 

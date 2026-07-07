@@ -2,9 +2,7 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <PreferenceCategory
-        android:summary="@string/restart_to_apply"
-        android:title="@string/title_aspect">
+    <PreferenceCategory android:title="@string/title_aspect">
 
         <Preference
             app:key="selected_theme"
