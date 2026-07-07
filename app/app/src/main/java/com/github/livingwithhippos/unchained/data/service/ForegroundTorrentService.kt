@@ -9,6 +9,7 @@ import android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
 import android.os.Binder
 import android.os.Build
 import android.os.IBinder
+import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.TaskStackBuilder
@@ -16,6 +17,9 @@ import androidx.core.content.edit
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
+import androidx.work.ExistingWorkPolicy
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.MainActivity
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
@@ -28,6 +32,7 @@ import com.github.livingwithhippos.unchained.utilities.extension.getStatusTransl
 import com.github.livingwithhippos.unchained.utilities.extension.vibrate
 import com.github.livingwithhippos.unchained.utilities.loadingStatusList
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -36,6 +41,11 @@ import kotlin.time.Duration.Companion.milliseconds
 
 const val MAX_SERVICE_DURATION = 5 * 60 * 60 * 1000
 const val MIN_SERVICE_DURATION = 20 * 60 * 1000
+
+// how long to wait before trying to restart monitoring after hitting the API 35 foreground
+// service time limit, since none of that 6 hour rolling budget will have freed up immediately
+const val SERVICE_RESTART_COOLDOWN_MINUTES = 60L
+const val TORRENT_MONITORING_RESTART_WORK = "torrent_monitoring_restart_work"
 
 @AndroidEntryPoint
 @SuppressLint("MissingPermission")
@@ -81,6 +91,31 @@ class ForegroundTorrentService : LifecycleService() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         startForegroundService()
         return super.onStartCommand(intent, flags, startId)
+    }
+
+    // called by the system shortly before a dataSync foreground service's time limit is reached
+    // (API 35+), giving the app a chance to stop gracefully instead of crashing on its next
+    // startForeground() call. This is the proper counterpart to the elapsed-time guard already in
+    // startMonitoring(), which only protects against reaching the limit mid-loop
+    @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
+    override fun onTimeout(startId: Int, fgsType: Int) {
+        super.onTimeout(startId, fgsType)
+        Timber.w("Foreground service time limit reached, stopping and scheduling a restart")
+        stopTorrentService()
+        scheduleRestart()
+    }
+
+    private fun scheduleRestart() {
+        val restartRequest =
+            OneTimeWorkRequestBuilder<TorrentMonitoringRestartWorker>()
+                .setInitialDelay(SERVICE_RESTART_COOLDOWN_MINUTES, TimeUnit.MINUTES)
+                .build()
+        WorkManager.getInstance(applicationContext)
+            .enqueueUniqueWork(
+                TORRENT_MONITORING_RESTART_WORK,
+                ExistingWorkPolicy.REPLACE,
+                restartRequest,
+            )
     }
 
     private fun startForegroundService() {
@@ -141,6 +176,8 @@ class ForegroundTorrentService : LifecycleService() {
             }
         } catch (ex: Exception) {
             Timber.e("Error starting foreground service: ${ex.message}")
+            // most likely the API 35 time limit cooldown wasn't long enough yet, try again later
+            scheduleRestart()
         }
 
         preferences.registerOnSharedPreferenceChangeListener(preferenceListener)
@@ -156,14 +193,16 @@ class ForegroundTorrentService : LifecycleService() {
 
     private fun startMonitoring() {
         lifecycleScope.launch {
+            var stoppedForTimeLimit = false
             while (true) {
-                // right now on api >= 35 after 6 hours the service will crash
-                // because of system imposed limits
+                // this is a fallback for onTimeout(), which should stop the service before this
+                // point is ever reached; kept in case onTimeout() doesn't fire in time
                 if (
                     Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM &&
                         System.currentTimeMillis() - serviceStart > MAX_SERVICE_DURATION
                 ) {
                     Timber.w("Service has been running for too long, stopping it.")
+                    stoppedForTimeLimit = true
                     break
                 }
                 try {
@@ -193,6 +232,9 @@ class ForegroundTorrentService : LifecycleService() {
                 delay(updateTiming.milliseconds)
             }
             stopTorrentService()
+            // only restart automatically if we stopped to avoid the time limit crash, not when
+            // there simply were no active torrents left to monitor
+            if (stoppedForTimeLimit) scheduleRestart()
         }
     }
 
@@ -299,6 +341,10 @@ class ForegroundTorrentService : LifecycleService() {
             // this will avoid removing the notifications, so the user can see what happened in the
             // meanwhile
             stopForeground(STOP_FOREGROUND_DETACH)
+            // let the instance be destroyed instead of lingering bound but not foreground, so a
+            // later restart (either the user toggling the setting again or scheduleRestart())
+            // goes through onCreate() again and actually resumes the monitoring loop
+            stopSelf()
         }
     }
 
