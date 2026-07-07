@@ -113,10 +113,10 @@ constructor(
         viewModelScope.launch {
             val pluginsResult: Pair<List<Plugin>, Int> = pluginRepository.getPlugins(context)
             val selectedPlugins =
-                databasePluginsRepository.getEnabledPlugins().values.flatten().map { it.name }
+                databasePluginsRepository.getEnabledPlugins().values.flatten().map { it.name.lowercase() }
             val pluginsWithSelection =
                 pluginsResult.first.map { plugin ->
-                    plugin.copy(selected = selectedPlugins.contains(plugin.name))
+                    plugin.copy(selected = selectedPlugins.contains(plugin.name.lowercase()))
                 }
             pluginLiveData.postEvent(
                 PluginsAndServices(
@@ -247,7 +247,7 @@ constructor(
                 databasePluginsRepository.getEnabledPlugins().values.flatten().mapNotNull {
                     repoPlugin ->
                     pluginLiveData.value?.peekContent()?.plugins?.firstOrNull {
-                        it.name == repoPlugin.name
+                         it.name.equals(repoPlugin.name, ignoreCase = true)
                     }
                 }
             // todo add repo with suspend to access the db of complete remote servceis

@@ -15,7 +15,6 @@ import com.github.livingwithhippos.unchained.utilities.extension.cancelIfActive
 import com.github.livingwithhippos.unchained.utilities.postEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -37,7 +36,7 @@ constructor(
     val downloadLiveData = MutableLiveData<Event<DownloadItem?>>()
     val errorsLiveData = MutableLiveData<Event<List<UnchainedNetworkException>>>()
 
-    private var job = Job()
+    private var job: Job? = null
 
     fun getFullTorrentInfo(id: String) {
         viewModelScope.launch {
@@ -48,21 +47,19 @@ constructor(
 
     fun pollTorrentStatus(id: String) {
         // todo: test if I need to recreate a job when it is cancelled
-        job.cancelIfActive()
-        job = Job()
+        job?.cancelIfActive()
 
-        val scope = CoroutineScope(job + Dispatchers.IO)
+        job =
+            viewModelScope.launch(Dispatchers.IO) {
+                // / maybe job.isActive?
+                while (isActive) {
+                    val torrentData = torrentsRepository.getTorrentInfo(id)
+                    if (torrentData != null) torrentLiveData.postEvent(torrentData)
+                    if (endedStatusList.contains(torrentData?.status)) job?.cancelIfActive()
 
-        scope.launch {
-            // / maybe job.isActive?
-            while (isActive) {
-                val torrentData = torrentsRepository.getTorrentInfo(id)
-                if (torrentData != null) torrentLiveData.postEvent(torrentData)
-                if (endedStatusList.contains(torrentData?.status)) job.cancelIfActive()
-
-                delay(2000.milliseconds)
+                    delay(2000.milliseconds)
+                }
             }
-        }
     }
 
     fun deleteTorrent(id: String) {
