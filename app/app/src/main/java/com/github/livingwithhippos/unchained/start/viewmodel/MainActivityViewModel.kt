@@ -51,6 +51,7 @@ import com.github.livingwithhippos.unchained.statemachine.authentication.Current
 import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationEvent
 import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationSideEffect
 import com.github.livingwithhippos.unchained.statemachine.authentication.FSMAuthenticationState
+import com.github.livingwithhippos.unchained.utilities.EMBEDDED_DOWNLOAD_WORK_TAG
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.MAGNET_PATTERN
@@ -1041,6 +1042,7 @@ constructor(
         val downloadFileRequest =
             OneTimeWorkRequestBuilder<DownloadWorker>()
                 .addTag(content.source)
+                .addTag(EMBEDDED_DOWNLOAD_WORK_TAG)
                 .setInputData(data)
                 .setConstraints(constraints)
                 .build()
@@ -1077,6 +1079,7 @@ constructor(
                 .setInputData(data)
                 .setConstraints(constraints)
                 .addTag(it.download)
+                .addTag(EMBEDDED_DOWNLOAD_WORK_TAG)
                 .build()
         }
 
