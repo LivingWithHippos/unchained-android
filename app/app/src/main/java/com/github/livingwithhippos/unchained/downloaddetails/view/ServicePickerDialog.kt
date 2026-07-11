@@ -7,6 +7,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.local.CompleteRemoteServiceDetails
+import com.github.livingwithhippos.unchained.data.local.RemoteServiceType
 import com.github.livingwithhippos.unchained.data.local.serviceTypeMap
 import com.github.livingwithhippos.unchained.downloaddetails.model.ServicePickerAdapter
 import com.github.livingwithhippos.unchained.downloaddetails.model.ServicePickerListener
@@ -21,6 +22,11 @@ import timber.log.Timber
 class ServicePickerDialog : DialogFragment(), ServicePickerListener {
 
     private val viewModel: DownloadDetailsViewModel by activityViewModels()
+
+    // when true, the picked service is used to add the link as a subtitle to whatever is
+    // currently playing on Kodi, instead of opening it as a new video
+    private val addSubtitleMode: Boolean
+        get() = arguments?.getBoolean("addSubtitle") ?: false
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let { activity ->
@@ -42,12 +48,16 @@ class ServicePickerDialog : DialogFragment(), ServicePickerListener {
                     is DownloadEvent.AllServices -> {
 
                         val devSer: List<CompleteRemoteServiceDetails> =
-                            content.services.map { serv ->
-                                CompleteRemoteServiceDetails(
-                                    service = serv,
-                                    type = serviceTypeMap[serv.type]!!,
-                                )
-                            }
+                            content.services
+                                // adding a subtitle to the currently playing video is a Kodi-only
+                                // feature, so only Kodi services make sense here
+                                .filter { serv -> !addSubtitleMode || serv.type == RemoteServiceType.KODI.value }
+                                .map { serv ->
+                                    CompleteRemoteServiceDetails(
+                                        service = serv,
+                                        type = serviceTypeMap[serv.type]!!,
+                                    )
+                                }
                         adapter.submitList(devSer)
                     }
                     else -> {}
@@ -71,6 +81,13 @@ class ServicePickerDialog : DialogFragment(), ServicePickerListener {
         if (link == null) {
             Timber.e("Download url is null")
             context?.showToast(R.string.error)
+        } else if (addSubtitleMode) {
+            if (serviceDetails.type == RemoteServiceType.KODI) {
+                viewModel.addSubtitleOnKodi(link, serviceDetails.service)
+            } else {
+                Timber.e("Adding a subtitle is only supported on Kodi")
+                context?.showToast(R.string.error)
+            }
         } else {
             viewModel.openOnRemoteService(serviceDetails, link)
             // show toast?

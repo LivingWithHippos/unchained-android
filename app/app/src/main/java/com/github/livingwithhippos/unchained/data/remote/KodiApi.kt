@@ -1,5 +1,6 @@
 package com.github.livingwithhippos.unchained.data.remote
 
+import com.github.livingwithhippos.unchained.data.model.KodiActivePlayersResponse
 import com.github.livingwithhippos.unchained.data.model.KodiGenericResponse
 import com.github.livingwithhippos.unchained.data.model.KodiRequest
 import com.github.livingwithhippos.unchained.data.model.KodiResponse
@@ -23,4 +24,18 @@ interface KodiApi {
         @Header("Authorization") auth: String? = null,
         @Header("Content-Type") contentType: String = "application/json",
     ): Response<KodiGenericResponse>
+
+    @POST("jsonrpc")
+    suspend fun getActivePlayers(
+        @Body body: KodiRequest,
+        @Header("Authorization") auth: String? = null,
+        @Header("Content-Type") contentType: String = "application/json",
+    ): Response<KodiActivePlayersResponse>
+
+    @POST("jsonrpc")
+    suspend fun addSubtitle(
+        @Body body: KodiRequest,
+        @Header("Authorization") auth: String? = null,
+        @Header("Content-Type") contentType: String = "application/json",
+    ): Response<KodiResponse>
 }

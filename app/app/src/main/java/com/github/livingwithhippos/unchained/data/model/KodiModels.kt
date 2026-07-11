@@ -23,6 +23,8 @@ data class KodiRequest(
 data class KodiParams(
     @param:Json(name = "item") val item: KodiItem? = null,
     @param:Json(name = "properties") val properties: List<String>? = null,
+    @param:Json(name = "playerid") val playerId: Int? = null,
+    @param:Json(name = "subtitle") val subtitle: String? = null,
 )
 
 @JsonClass(generateAdapter = true)
@@ -33,6 +35,20 @@ data class KodiResponse(
     @param:Json(name = "id") val id: Int,
     @param:Json(name = "jsonrpc") val jsonrpc: String,
     @param:Json(name = "result") val result: String,
+)
+
+/** A single player currently active on Kodi, as returned by Player.GetActivePlayers */
+@JsonClass(generateAdapter = true)
+data class KodiPlayer(
+    @param:Json(name = "playerid") val playerId: Int,
+    @param:Json(name = "type") val type: String,
+)
+
+@JsonClass(generateAdapter = true)
+data class KodiActivePlayersResponse(
+    @param:Json(name = "id") val id: Int,
+    @param:Json(name = "jsonrpc") val jsonrpc: String,
+    @param:Json(name = "result") val result: List<KodiPlayer>,
 )
 
 @JsonClass(generateAdapter = true)

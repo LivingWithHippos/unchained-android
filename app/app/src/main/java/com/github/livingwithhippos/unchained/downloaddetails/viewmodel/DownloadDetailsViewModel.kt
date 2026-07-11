@@ -76,6 +76,25 @@ constructor(
         }
     }
 
+    fun addSubtitleOnKodi(subtitleURL: String, kodiService: CompleteRemoteService) {
+        viewModelScope.launch {
+            try {
+                val response =
+                    kodiRepository.addSubtitle(
+                        kodiService.address,
+                        subtitleURL,
+                        kodiService.username,
+                        kodiService.password,
+                    )
+                if (response != null) messageLiveData.postEvent(DownloadDetailsMessage.KodiSuccess)
+                else messageLiveData.postEvent(DownloadDetailsMessage.KodiError)
+            } catch (e: Exception) {
+                Timber.e("Error adding subtitle on Kodi: ${e.message}")
+                messageLiveData.postEvent(DownloadDetailsMessage.KodiError)
+            }
+        }
+    }
+
     fun openUrlOnVLC(mediaURL: String, vlcService: CompleteRemoteService) {
 
         viewModelScope.launch {

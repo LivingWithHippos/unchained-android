@@ -597,6 +597,7 @@
     <string name="save_device">Save Device</string>
     <string name="update_device">Update Device</string>
     <string name="kodi_missing_default">The default Kodi device is not set</string>
+    <string name="add_subtitle_to_kodi">Add subtitle to Kodi</string>
     <string name="device_deleted">Device deleted</string>
     <string name="ui_settings">UI Settings</string>
     <string name="player_vlc" translatable="false">VLC</string>

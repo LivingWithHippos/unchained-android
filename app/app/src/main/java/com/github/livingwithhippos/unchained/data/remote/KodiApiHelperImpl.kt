@@ -1,5 +1,6 @@
 package com.github.livingwithhippos.unchained.data.remote
 
+import com.github.livingwithhippos.unchained.data.model.KodiActivePlayersResponse
 import com.github.livingwithhippos.unchained.data.model.KodiGenericResponse
 import com.github.livingwithhippos.unchained.data.model.KodiRequest
 import com.github.livingwithhippos.unchained.data.model.KodiResponse
@@ -13,4 +14,14 @@ class KodiApiHelperImpl(private val kodiApi: KodiApi) : KodiApiHelper {
         request: KodiRequest,
         auth: String?,
     ): Response<KodiGenericResponse> = kodiApi.getVolume(request, auth)
+
+    override suspend fun getActivePlayers(
+        request: KodiRequest,
+        auth: String?,
+    ): Response<KodiActivePlayersResponse> = kodiApi.getActivePlayers(request, auth)
+
+    override suspend fun addSubtitle(
+        request: KodiRequest,
+        auth: String?,
+    ): Response<KodiResponse> = kodiApi.addSubtitle(request, auth)
 }

@@ -277,6 +277,33 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/llFabAddSubtitle"
+                android:layout_width="@dimen/fab_download_details_width"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/fabAddSubtitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/add_subtitle_to_kodi"
+                    app:srcCompat="@drawable/icon_subtitles" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:focusable="false"
+                    android:text="@string/add_subtitle_to_kodi"
+                    android:textAlignment="center"
+                    android:textAppearance="?attr/textAppearanceLabelSmall" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/llFabLoadStreams"
                 android:layout_width="@dimen/fab_download_details_width"
                 android:layout_height="wrap_content"

@@ -377,6 +377,7 @@
     <string name="save_device">Cihazı Kaydet</string>
     <string name="update_device">Cihazı Güncelle</string>
     <string name="kodi_missing_default">Varsayılan Kodi cihazı ayarlanmadı</string>
+    <string name="add_subtitle_to_kodi">Kodi\'ye altyazı ekle</string>
     <string name="device_deleted">Cihaz silindi</string>
     <string name="ui_settings">Kullanıcı Arayüzü Ayarları</string>
     <string name="show_media_player_button_summary">Medyayı yüklü bir oynatıcıya göndermek için düğmeyi göster</string>
