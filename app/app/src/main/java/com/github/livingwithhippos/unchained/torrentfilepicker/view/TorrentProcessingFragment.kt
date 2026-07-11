@@ -271,6 +271,7 @@ class TorrentProcessingFragment : UnchainedFragment(), TorrentContentListener {
      * returned, folders included, otherwise only the matching files are listed, see #450
      */
     private fun getFilteredFiles(): List<TorrentFileItem> {
+        if (_binding == null) return emptyList()
         val structure = currentStructure ?: return emptyList()
         val query = binding.tiFilter.text?.toString()?.trim() ?: ""
         val filesList = mutableListOf<TorrentFileItem>()
