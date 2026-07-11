@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.annotation.MenuRes
+import androidx.core.widget.addTextChangedListener
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -104,18 +105,11 @@ class TorrentProcessingFragment : UnchainedFragment(), TorrentContentListener {
                                     )
                             findNavController().navigate(action)
                         } else {
-                            val filesList = mutableListOf<TorrentFileItem>()
                             val torrentStructure: Node<TorrentFileItem> =
                                 getFilesNodes(content.item, selectedOnly = false)
                             if (torrentStructure.children.isNotEmpty()) {
                                 currentStructure = torrentStructure
-                                Node.traverseDepthFirst(torrentStructure) { item ->
-                                    filesList.add(item)
-                                }
-                                (binding.rvTorrentFilePicker.adapter
-                                        as TorrentContentFilesSelectionAdapter)
-                                    .submitList(filesList)
-                                binding.rvTorrentFilePicker.adapter?.notifyDataSetChanged()
+                                updateFilesList()
                             }
 
                             binding.loadingLayout.visibility = View.INVISIBLE
@@ -169,13 +163,7 @@ class TorrentProcessingFragment : UnchainedFragment(), TorrentContentListener {
                 }
 
                 is TorrentEvent.SelectionUpdated -> {
-                    currentStructure?.let { structure ->
-                        val filesList = mutableListOf<TorrentFileItem>()
-                        Node.traverseDepthFirst(structure) { item -> filesList.add(item) }
-                        (binding.rvTorrentFilePicker.adapter as TorrentContentFilesSelectionAdapter)
-                            .submitList(filesList)
-                        binding.rvTorrentFilePicker.adapter?.notifyDataSetChanged()
-                    }
+                    updateFilesList()
                 }
 
                 else -> {
@@ -237,6 +225,18 @@ class TorrentProcessingFragment : UnchainedFragment(), TorrentContentListener {
 
         binding.fabDownload.setOnClickListener { showMenu(it, R.menu.download_mode_picker) }
 
+        binding.tiFilter.addTextChangedListener {
+            // the selection checkbox refers to the currently visible files
+            binding.cbSelectAll.isChecked = false
+            updateFilesList()
+        }
+
+        binding.cbSelectAll.setOnClickListener {
+            val selected = binding.cbSelectAll.isChecked
+            getFilteredFiles().forEach { item -> item.selected = selected }
+            viewModel.updateTorrentStructure()
+        }
+
         if (args.torrentID != null) {
             // we are loading an already available torrent
             args.torrentID?.let { viewModel.fetchTorrentDetails(it) }
@@ -265,6 +265,41 @@ class TorrentProcessingFragment : UnchainedFragment(), TorrentContentListener {
             )
         }
     }
+
+    /**
+     * Returns the files matching the current filter. With an empty filter the whole structure is
+     * returned, folders included, otherwise only the matching files are listed, see #450
+     */
+    private fun getFilteredFiles(): List<TorrentFileItem> {
+        if (_binding == null) return emptyList()
+        val structure = currentStructure ?: return emptyList()
+        val query = binding.tiFilter.text?.toString()?.trim() ?: ""
+        val filesList = mutableListOf<TorrentFileItem>()
+        if (query.isEmpty()) {
+            Node.traverseDepthFirst(structure) { item -> filesList.add(item) }
+        } else {
+            // a query with wildcards must match the whole file name, a plain one any part of it
+            val regexQuery =
+                if (query.contains('*')) {
+                    val pattern = query.split('*').joinToString(".*") { Regex.escape(it) }
+                    Regex("^$pattern$", RegexOption.IGNORE_CASE)
+                } else {
+                    Regex(Regex.escape(query), RegexOption.IGNORE_CASE)
+                }
+            Node.traverseDepthFirst(structure) { item ->
+                if (item.id != TYPE_FOLDER && regexQuery.containsMatchIn(item.name))
+                    filesList.add(item)
+            }
+        }
+        return filesList
+    }
+
+    private fun updateFilesList() {
+        if (_binding == null) return
+        with(binding.rvTorrentFilePicker.adapter as TorrentContentFilesSelectionAdapter) {
+            submitList(getFilteredFiles())
+            notifyDataSetChanged()
+        }
 
     private fun showMenu(v: View, @MenuRes menuRes: Int) {
         val popup = PopupMenu(requireContext(), v)

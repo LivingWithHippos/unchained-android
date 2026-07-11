@@ -69,11 +69,48 @@
             android:layout_marginTop="10dp"
             android:text="@string/select_files"
             android:textAlignment="center"
-            app:layout_constraintBottom_toTopOf="@id/rvTorrentFilePicker"
+            app:layout_constraintBottom_toTopOf="@id/tfFilter"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tfFilter"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="10dp"
+            android:hint="@string/filter_files_hint"
+            android:importantForAutofill="no"
+            app:endIconMode="clear_text"
+            app:layout_constraintBottom_toTopOf="@id/rvTorrentFilePicker"
+            app:layout_constraintEnd_toStartOf="@id/cbSelectAll"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvPickerTitle"
+            app:startIconDrawable="@drawable/icon_search">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tiFilter"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionDone"
+                android:singleLine="true" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <CheckBox
+            android:id="@+id/cbSelectAll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="20dp"
+            android:checked="false"
+            android:contentDescription="@string/select_deselect_all"
+            android:tooltipText="@string/select_deselect_all"
+            app:layout_constraintBottom_toBottomOf="@id/tfFilter"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tfFilter"
+            app:layout_constraintTop_toTopOf="@id/tfFilter" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvTorrentFilePicker"
@@ -86,7 +123,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvPickerTitle"
+            app:layout_constraintTop_toBottomOf="@id/tfFilter"
             tools:listitem="@layout/item_list_torrent_selection_file" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
