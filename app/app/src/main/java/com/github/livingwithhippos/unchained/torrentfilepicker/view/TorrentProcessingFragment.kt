@@ -295,11 +295,11 @@ class TorrentProcessingFragment : UnchainedFragment(), TorrentContentListener {
     }
 
     private fun updateFilesList() {
-        // the selection DiffCallback already compares TorrentFileItem.selected, so submitList
-        // alone rebinds changed rows without a redundant full notifyDataSetChanged
-        (binding.rvTorrentFilePicker.adapter as TorrentContentFilesSelectionAdapter)
-            .submitList(getFilteredFiles())
-    }
+        if (_binding == null) return
+        with(binding.rvTorrentFilePicker.adapter as TorrentContentFilesSelectionAdapter) {
+            submitList(getFilteredFiles())
+            notifyDataSetChanged()
+        }
 
     private fun showMenu(v: View, @MenuRes menuRes: Int) {
         val popup = PopupMenu(requireContext(), v)
