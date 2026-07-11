@@ -300,6 +300,7 @@ class TorrentProcessingFragment : UnchainedFragment(), TorrentContentListener {
             submitList(getFilteredFiles())
             notifyDataSetChanged()
         }
+    }
 
     private fun showMenu(v: View, @MenuRes menuRes: Int) {
         val popup = PopupMenu(requireContext(), v)
@@ -433,6 +434,7 @@ class TorrentProcessingFragment : UnchainedFragment(), TorrentContentListener {
         }
     }
 
+
     override fun onSelectedFile(item: TorrentFileItem) {
         Timber.d("selected file $item was ${item.selected}")
         currentStructure?.let { structure ->
@@ -452,9 +454,9 @@ class TorrentProcessingFragment : UnchainedFragment(), TorrentContentListener {
             Node.traverseNodeDepthFirst(structure) {
                 if (
                     it.value.absolutePath == item.absolutePath &&
-                        it.value.name == item.name &&
-                        it.value.id == TYPE_FOLDER &&
-                        item.id == TYPE_FOLDER
+                    it.value.name == item.name &&
+                    it.value.id == TYPE_FOLDER &&
+                    item.id == TYPE_FOLDER
                 ) {
                     folderNode = it
                     return@traverseNodeDepthFirst
