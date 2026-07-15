@@ -5,6 +5,96 @@
         <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
         <!-- this can be used to customize backgrounds with images, otherwise it will use the default android:colorBackground value -->
         <item name="mainBackground">@drawable/bg_solid</item>
+
+        <!-- interactive controls draw a colored ring while focused so that d-pad navigation on
+        Android TV is always visible; the ring is a foreground overlay, invisible unless the
+        view is focused, so nothing changes for touch users -->
+        <item name="materialButtonStyle">@style/Widget.Unchained.Button</item>
+        <item name="materialButtonOutlinedStyle">@style/Widget.Unchained.Button.Outlined</item>
+        <item name="borderlessButtonStyle">@style/Widget.Unchained.Button.Text</item>
+        <item name="materialIconButtonStyle">@style/Widget.Unchained.Button.Icon</item>
+        <item name="materialIconButtonFilledStyle">@style/Widget.Unchained.Button.IconFilled</item>
+        <item name="floatingActionButtonStyle">@style/Widget.Unchained.FloatingActionButton</item>
+        <item name="checkboxStyle">@style/Widget.Unchained.CheckBox</item>
+        <item name="materialSwitchStyle">@style/Widget.Unchained.Switch</item>
+        <item name="actionButtonStyle">@style/Widget.Unchained.ActionButton</item>
+        <item name="actionOverflowButtonStyle">@style/Widget.Unchained.ActionButton.Overflow</item>
+        <item name="toolbarNavigationButtonStyle">@style/Widget.Unchained.ActionButton.Navigation</item>
+    </style>
+
+    <!-- focused ring variants of the material widget styles, see the main theme.
+
+    Material3's button styles all bake in a 4dp android:insetTop/Bottom (icon buttons add
+    insetLeft/Right too), which shrinks the button's own drawn surface inward from the view's
+    full bounds; the focus ring above is a foreground drawn to those full bounds. Left alone,
+    a focused button shows a gap between its own edge and the ring's stroke (the view's
+    background showing through) with the ring's stroke floating just outside it. Zeroing the
+    insets here makes the button's surface fill the view completely, so the ring actually hugs
+    it. -->
+    <style name="Widget.Unchained.Button" parent="Widget.Material3.Button">
+        <item name="android:foreground">@drawable/focus_ring_pill</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+    </style>
+
+    <style name="Widget.Unchained.Button.Outlined" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="android:foreground">@drawable/focus_ring_pill</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+    </style>
+
+    <style name="Widget.Unchained.Button.Text" parent="Widget.Material3.Button.TextButton">
+        <item name="android:foreground">@drawable/focus_ring_pill</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+    </style>
+
+    <style name="Widget.Unchained.Button.Icon" parent="Widget.Material3.Button.IconButton">
+        <item name="android:foreground">@drawable/focus_ring_pill</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:insetLeft">0dp</item>
+        <item name="android:insetRight">0dp</item>
+    </style>
+
+    <style name="Widget.Unchained.Button.IconFilled" parent="Widget.Material3.Button.IconButton.Filled">
+        <item name="android:foreground">@drawable/focus_ring_pill</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:insetLeft">0dp</item>
+        <item name="android:insetRight">0dp</item>
+    </style>
+
+    <style name="Widget.Unchained.FloatingActionButton" parent="Widget.Material3.FloatingActionButton.Primary">
+        <item name="android:foreground">@drawable/focus_ring_fab</item>
+    </style>
+
+    <style name="Widget.Unchained.CheckBox" parent="Widget.Material3.CompoundButton.CheckBox">
+        <item name="android:foreground">@drawable/focus_ring_control</item>
+    </style>
+
+    <style name="Widget.Unchained.Switch" parent="Widget.Material3.CompoundButton.MaterialSwitch">
+        <item name="android:foreground">@drawable/focus_ring_control</item>
+    </style>
+
+    <style name="Widget.Unchained.Chip.FilterElevated" parent="Widget.Material3.Chip.Filter.Elevated">
+        <item name="android:foreground">@drawable/focus_ring_control</item>
+    </style>
+
+    <!-- toolbar action icons, the overflow button and the navigation (back/up) icon all sit
+    directly on colorPrimary, so they get their own on-primary ring instead of the general
+    focus_ring_pill one; without this the back arrow had no focus indicator at all, unlike its
+    neighboring overflow button -->
+    <style name="Widget.Unchained.ActionButton" parent="Widget.AppCompat.ActionButton">
+        <item name="android:foreground">@drawable/focus_ring_toolbar</item>
+    </style>
+
+    <style name="Widget.Unchained.ActionButton.Overflow" parent="Widget.AppCompat.ActionButton.Overflow">
+        <item name="android:foreground">@drawable/focus_ring_toolbar</item>
+    </style>
+
+    <style name="Widget.Unchained.ActionButton.Navigation" parent="Widget.AppCompat.Toolbar.Button.Navigation">
+        <item name="android:foreground">@drawable/focus_ring_toolbar</item>
     </style>
 
     <!-- no custom colors: DynamicColors overlays these at runtime, either from the wallpaper or

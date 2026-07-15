@@ -58,10 +58,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/share"
-            android:nextFocusRight="@id/rvDownloadList"
+            android:nextFocusRight="@id/bRefresh"
             android:nextFocusDown="@id/rvDownloadList"
             android:tooltipText="@string/share_selected"
             app:icon="@drawable/icon_share"
+            app:iconSize="25dp" />
+
+        <Button
+            android:id="@+id/bRefresh"
+            style="?attr/materialIconButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/refresh"
+            android:nextFocusRight="@id/rvDownloadList"
+            android:nextFocusDown="@id/rvDownloadList"
+            android:tooltipText="@string/refresh"
+            app:icon="@drawable/icon_reload"
             app:iconSize="25dp" />
 
     </LinearLayout>
@@ -80,6 +92,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
+            android:nextFocusUp="@id/cbSelectAll"
             android:scrollbars="vertical"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/item_list_download" />

@@ -17,6 +17,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.color.MaterialColors
 import com.google.android.material.slider.Slider
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -120,11 +121,24 @@ class CustomColorPickerDialog : BottomSheetDialogFragment() {
         val marginPx = resources.getDimensionPixelSize(R.dimen.custom_color_swatch_margin)
         return View(requireContext()).apply {
             layoutParams = LinearLayout.LayoutParams(sizePx, sizePx).apply { marginEnd = marginPx }
-            background =
+            val swatchDrawable =
                 GradientDrawable().apply {
                     shape = GradientDrawable.OVAL
                     setColor(color)
                 }
+            background = swatchDrawable
+            // plain Views are not reachable with a d-pad by default, so make the swatches
+            // focusable and show a ring around the focused one for TV and keyboard users
+            isFocusable = true
+            setOnFocusChangeListener { v, hasFocus ->
+                val strokeWidth =
+                    if (hasFocus) v.resources.getDimensionPixelSize(R.dimen.focus_stroke_width)
+                    else 0
+                swatchDrawable.setStroke(
+                    strokeWidth,
+                    MaterialColors.getColor(v, com.google.android.material.R.attr.colorOnSurface),
+                )
+            }
             setOnClickListener { onClick() }
         }
     }

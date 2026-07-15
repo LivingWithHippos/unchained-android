@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Translucent focus fill for controls on a colorPrimaryContainer background (fabs),
+     see focus_fill.xml. -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:alpha="0.25" android:color="?attr/colorOnPrimaryContainer" />
+</selector>

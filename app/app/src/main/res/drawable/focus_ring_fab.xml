@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Focus indicator overlay for floating action buttons, see focus_ring_pill.xml. FABs use the
+     16dp rounded square Material 3 shape and a colorPrimaryContainer background, so the ring
+     uses the matching on color to stay visible on top of it. -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_focused="true">
+        <shape android:shape="rectangle">
+            <corners android:radius="16dp" />
+            <solid android:color="@color/focus_fill_on_container" />
+            <stroke
+                android:width="@dimen/focus_stroke_width"
+                android:color="?attr/colorOnPrimaryContainer" />
+        </shape>
+    </item>
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@android:color/transparent" />
+        </shape>
+    </item>
+</selector>

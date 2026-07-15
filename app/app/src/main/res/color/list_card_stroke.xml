@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Stroke color for the list item cards: visible only while the card is focused,
+     e.g. when navigating with a d-pad on Android TV. -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:color="?attr/colorPrimary" android:state_focused="true" />
+    <item android:color="@android:color/transparent" />
+</selector>

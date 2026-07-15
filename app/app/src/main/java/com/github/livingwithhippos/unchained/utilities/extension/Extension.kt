@@ -10,6 +10,7 @@ import android.content.ClipboardManager
 import android.content.ContentResolver.SCHEME_CONTENT
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.content.res.AssetManager
 import android.content.res.Configuration
 import android.content.res.Resources
@@ -364,6 +365,9 @@ fun Uri.getFileName(context: Context): String {
     }
     return fileName
 }
+
+/** True on Android TV, where several controls need d-pad-specific handling. */
+fun Context.isTv(): Boolean = packageManager.hasSystemFeature(PackageManager.FEATURE_LEANBACK)
 
 /**
  * Open an url from available apps
