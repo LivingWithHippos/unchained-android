@@ -4,6 +4,19 @@
         <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
         <!-- this can be used to customize backgrounds with images, otherwise it will use the default android:colorBackground value -->
         <item name="mainBackground">@drawable/bg_solid</item>
+
+        <!-- keep in sync with values/themes.xml: focused ring styles for d-pad navigation -->
+        <item name="materialButtonStyle">@style/Widget.Unchained.Button</item>
+        <item name="materialButtonOutlinedStyle">@style/Widget.Unchained.Button.Outlined</item>
+        <item name="borderlessButtonStyle">@style/Widget.Unchained.Button.Text</item>
+        <item name="materialIconButtonStyle">@style/Widget.Unchained.Button.Icon</item>
+        <item name="materialIconButtonFilledStyle">@style/Widget.Unchained.Button.IconFilled</item>
+        <item name="floatingActionButtonStyle">@style/Widget.Unchained.FloatingActionButton</item>
+        <item name="checkboxStyle">@style/Widget.Unchained.CheckBox</item>
+        <item name="materialSwitchStyle">@style/Widget.Unchained.Switch</item>
+        <item name="actionButtonStyle">@style/Widget.Unchained.ActionButton</item>
+        <item name="actionOverflowButtonStyle">@style/Widget.Unchained.ActionButton.Overflow</item>
+        <item name="toolbarNavigationButtonStyle">@style/Widget.Unchained.ActionButton.Navigation</item>
     </style>
 
 

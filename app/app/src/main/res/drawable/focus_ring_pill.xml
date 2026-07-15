@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Focus indicator overlay for pill shaped controls (buttons, icon buttons): a colored ring
+     that is only visible while the view is focused, e.g. when navigating with a d-pad on
+     Android TV. Used as android:foreground so it never interferes with the background ripple,
+     elevation or touch feedback. -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_focused="true">
+        <shape android:shape="rectangle">
+            <corners android:radius="50dp" />
+            <solid android:color="@color/focus_fill" />
+            <stroke android:width="@dimen/focus_stroke_width" android:color="?attr/colorPrimary" />
+        </shape>
+    </item>
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@android:color/transparent" />
+        </shape>
+    </item>
+</selector>

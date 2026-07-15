@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Translucent fill used inside the focus ring drawables so the whole control lights up
+     while focused, making the d-pad cursor easy to follow on Android TV from a distance. -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:alpha="0.25" android:color="?attr/colorPrimary" />
+</selector>

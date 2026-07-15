@@ -12,7 +12,9 @@
     android:focusable="true"
     android:padding="10dp"
     app:cardCornerRadius="10dp"
-    app:cardElevation="3dp">
+    app:cardElevation="3dp"
+    app:strokeColor="@color/list_card_stroke"
+    app:strokeWidth="@dimen/focus_stroke_width">
 
 
     <LinearLayout
