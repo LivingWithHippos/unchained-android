@@ -215,6 +215,7 @@
     <string name="seeders_string_format">seeder/s: %s</string>
     <string name="torrent_in_progress_format">%1$.2f%% - %2$.2f MB/s</string>
     <string name="download_in_progress_format">다운로드 중 - %1$d%%</string>
+    <string name="download_failed_format">%s 다운로드 실패</string>
     <string name="download_complete">다운로드 완료</string>
     <string name="unknown_status">확인 불가</string>
     <string name="downloading_torrent_format">%1$d개의 토렌트 다운로드 중</string>

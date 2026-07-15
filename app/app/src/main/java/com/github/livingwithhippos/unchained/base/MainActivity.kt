@@ -61,15 +61,18 @@ import com.github.livingwithhippos.unchained.utilities.TelemetryManager
 import com.github.livingwithhippos.unchained.utilities.extension.downloadFileInStandardFolder
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import com.github.livingwithhippos.unchained.utilities.extension.parcelable
+import com.github.livingwithhippos.unchained.utilities.extension.isTv
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.github.livingwithhippos.unchained.utilities.extension.toHex
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.elevation.SurfaceColors
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import java.lang.RuntimeException
 import java.security.MessageDigest
 import javax.inject.Inject
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -83,6 +86,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
     private var searchTabStartDestinationId: Int = R.id.pluginSearchFragment
     private var checkedUpdate: Boolean = false
+
+    // tracks the snackbar polling loop for the latest download shown via showTvDownloadProgress
+    private var tvDownloadProgressJob: Job? = null
 
     // Countly crash reporter set up. Debug mode only
     override fun onStart() {
@@ -492,6 +498,8 @@ class MainActivity : AppCompatActivity() {
                                     applicationContext.getSystemService(DOWNLOAD_SERVICE)
                                         as DownloadManager
                                 var downloadsStarted = 0
+                                var lastQueuedId: Long? = null
+                                var lastQueuedFileName = ""
                                 content.downloads.forEach { download ->
                                     val queuedDownload =
                                         manager.downloadFileInStandardFolder(
@@ -509,6 +517,8 @@ class MainActivity : AppCompatActivity() {
 
                                         is EitherResult.Success -> {
                                             downloadsStarted++
+                                            lastQueuedId = queuedDownload.success
+                                            lastQueuedFileName = download.filename
                                         }
                                     }
                                 }
@@ -520,6 +530,12 @@ class MainActivity : AppCompatActivity() {
                                         content.downloads.size,
                                     )
                                 )
+
+                                // on TV notifications are not shown, display the progress
+                                // of the last queued download in the app
+                                lastQueuedId?.let { id ->
+                                    showTvDownloadProgress(id, lastQueuedFileName)
+                                }
                             }
 
                             PreferenceKeys.DownloadManager.OKHTTP -> {
@@ -583,7 +599,16 @@ class MainActivity : AppCompatActivity() {
                                     }
 
                                     is EitherResult.Success -> {
-                                        applicationContext.showToast(R.string.download_started)
+                                        if (isTv()) {
+                                            // notifications are not shown on TV, display the
+                                            // download progress in the app instead
+                                            showTvDownloadProgress(
+                                                queuedDownload.success,
+                                                content.fileName,
+                                            )
+                                        } else {
+                                            applicationContext.showToast(R.string.download_started)
+                                        }
                                     }
                                 }
                             }
@@ -936,6 +961,81 @@ class MainActivity : AppCompatActivity() {
 
             exitCallback.isEnabled = onExitingFragment && backWouldExit
         }
+    }
+
+    /**
+     * Show the progress of a download enqueued in the system download manager inside the app.
+     * Android TV devices do not display the download manager notifications, so without this the
+     * user gets no feedback at all after starting a download. The progress is polled every second
+     * and shown in a snackbar until the download ends. Does nothing on non-TV devices, where the
+     * system notifications already cover this. Only the latest enqueued download is tracked.
+     */
+    private fun showTvDownloadProgress(downloadId: Long, fileName: String) {
+        if (!isTv()) return
+
+        tvDownloadProgressJob?.cancel()
+
+        val manager = applicationContext.getSystemService(DOWNLOAD_SERVICE) as DownloadManager
+        val snackbar =
+            Snackbar.make(binding.root, fileName, Snackbar.LENGTH_INDEFINITE)
+                .setAnchorView(binding.bottomNavView)
+
+        tvDownloadProgressJob =
+            lifecycleScope.launch {
+                try {
+                    snackbar.show()
+                    while (true) {
+                        var status: Int? = null
+                        var progress = 0
+                        manager.query(DownloadManager.Query().setFilterById(downloadId)).use {
+                            cursor ->
+                            if (cursor.moveToFirst()) {
+                                status =
+                                    cursor.getInt(
+                                        cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_STATUS)
+                                    )
+                                val downloadedBytes =
+                                    cursor.getLong(
+                                        cursor.getColumnIndexOrThrow(
+                                            DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR
+                                        )
+                                    )
+                                val totalBytes =
+                                    cursor.getLong(
+                                        cursor.getColumnIndexOrThrow(
+                                            DownloadManager.COLUMN_TOTAL_SIZE_BYTES
+                                        )
+                                    )
+                                if (totalBytes > 0)
+                                    progress = (downloadedBytes * 100 / totalBytes).toInt()
+                            }
+                        }
+                        when (status) {
+                            // the download disappeared from the download manager, e.g. it was
+                            // removed by the user: stop silently
+                            null -> break
+                            DownloadManager.STATUS_SUCCESSFUL -> {
+                                applicationContext.showToast(R.string.download_complete)
+                                break
+                            }
+                            DownloadManager.STATUS_FAILED -> {
+                                applicationContext.showToast(
+                                    getString(R.string.download_failed_format, fileName)
+                                )
+                                break
+                            }
+                            else -> {
+                                snackbar.setText(
+                                    "$fileName\n${getString(R.string.download_in_progress_format, progress)}"
+                                )
+                            }
+                        }
+                        delay(1000)
+                    }
+                } finally {
+                    snackbar.dismiss()
+                }
+            }
     }
 
     private fun showUpdateDialog(description: String, link: String) {
