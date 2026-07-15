@@ -227,6 +227,32 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/llFabOpenWith"
+                android:layout_width="@dimen/fab_download_details_width"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/fabOpenWith"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:focusable="true"
+                    android:contentDescription="@string/open_with"
+                    app:srcCompat="@drawable/icon_open" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:focusable="false"
+                    android:text="@string/open_with"
+                    android:textAlignment="center"
+                    android:textAppearance="?attr/textAppearanceLabelSmall" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/llFabSendToPlayer"
                 android:layout_width="@dimen/fab_download_details_width"
                 android:layout_height="wrap_content"

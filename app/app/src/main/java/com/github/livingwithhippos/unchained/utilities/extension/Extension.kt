@@ -3,6 +3,8 @@ package com.github.livingwithhippos.unchained.utilities.extension
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.DownloadManager
+import android.app.PendingIntent
+import android.content.ActivityNotFoundException
 import android.content.ClipData
 import android.content.ClipDescription.MIMETYPE_TEXT_HTML
 import android.content.ClipDescription.MIMETYPE_TEXT_PLAIN
@@ -10,6 +12,8 @@ import android.content.ClipboardManager
 import android.content.ContentResolver.SCHEME_CONTENT
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.content.pm.ResolveInfo
 import android.content.res.AssetManager
 import android.content.res.Configuration
 import android.content.res.Resources
@@ -26,12 +30,19 @@ import android.os.VibrationEffect
 import android.os.Vibrator
 import android.provider.OpenableColumns
 import android.util.TypedValue
+import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowInsetsController
+import android.webkit.MimeTypeMap
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.ScrollView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.AttrRes
 import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.FileProvider
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.ColorUtils
 import androidx.core.net.toUri
@@ -44,8 +55,12 @@ import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Comp
 import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Companion.THEME_DAY
 import com.github.livingwithhippos.unchained.settings.view.ThemeItem
 import com.github.livingwithhippos.unchained.utilities.EitherResult
+import com.github.livingwithhippos.unchained.utilities.KEY_PREFERRED_VIDEO_PLAYER
 import com.github.livingwithhippos.unchained.utilities.PreferenceKeys
+import com.github.livingwithhippos.unchained.utilities.VideoPlayerChosenReceiver
 import com.google.android.material.color.DynamicColors
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import java.io.File
 import java.util.Locale
 import timber.log.Timber
 
@@ -395,6 +410,198 @@ fun Context.openExternalWebPage(url: String, showErrorToast: Boolean = true): Bo
     } else if (showErrorToast) showToast(R.string.invalid_url)
 
     return false
+}
+
+/**
+ * Hand a media url to any installed player through a picker dialog, so the user picks the player
+ * themselves instead of relying on a hardcoded list. Uses our own dialog rather than the system
+ * chooser so VLC specifically can still be routed through [launchIntentForPlayer]'s safe shape
+ * once picked; the system chooser dispatches the intent itself and gives no chance to adjust it
+ * per choice.
+ *
+ * @param url the media url to open
+ * @param mimeType the known mime type of the media, or null to guess it from the url
+ * @return true if a picker was shown, false if no app could handle the intent
+ */
+fun Context.openMediaWithChooser(url: String, mimeType: String? = null): Boolean {
+    val resolvedType =
+        mimeType?.takeIf { it.isNotBlank() }
+            ?: MimeTypeMap.getFileExtensionFromUrl(url)
+                .takeIf { it.isNotEmpty() }
+                ?.let {
+                    MimeTypeMap.getSingleton().getMimeTypeFromExtension(it.lowercase(Locale.ROOT))
+                }
+            ?: "video/*"
+    val uri = url.toUri()
+    val probeIntent =
+        Intent(Intent.ACTION_VIEW).apply { setDataAndTypeAndNormalize(uri, resolvedType) }
+    val apps =
+        packageManager
+            .queryIntentActivities(probeIntent, PackageManager.MATCH_DEFAULT_ONLY)
+            .distinctBy { it.activityInfo.packageName }
+            .sortedBy { it.loadLabel(packageManager).toString().lowercase(Locale.ROOT) }
+    if (apps.isEmpty()) {
+        Timber.e("No app found to open media $url")
+        showToast(R.string.app_not_installed, length = Toast.LENGTH_LONG)
+        return false
+    }
+    // plain rows in a scrollable container rather than setAdapter's ListView: a ListView manages
+    // its own single-selection focus, which fights with each row being its own d-pad focus stop
+    val container = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+    val dialog =
+        MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.open_with)
+            .setView(ScrollView(this).apply { addView(container) })
+            .create()
+    apps.forEach { app ->
+        val row = LayoutInflater.from(this).inflate(R.layout.item_open_with_app, container, false)
+        row.findViewById<ImageView>(R.id.ivAppIcon).setImageDrawable(app.loadIcon(packageManager))
+        row.findViewById<TextView>(R.id.tvAppLabel).text = app.loadLabel(packageManager)
+        row.setOnClickListener {
+            dialog.dismiss()
+            val pkg = app.activityInfo.packageName
+            try {
+                startActivity(launchIntentForPlayer(pkg, uri, resolvedType))
+            } catch (ex: ActivityNotFoundException) {
+                Timber.e("Could not open media $url with $pkg: ${ex.message}")
+                showToast(R.string.app_not_installed, length = Toast.LENGTH_LONG)
+            }
+        }
+        container.addView(row)
+    }
+    dialog.show()
+    return true
+}
+
+/** The bundled placeholder clip's file name once copied into the cache for FileProvider. */
+private const val PLAYER_SETUP_CLIP_NAME = "player_setup_clip.mp4"
+
+/**
+ * Copy the bundled placeholder video clip to a cache file, reusing it as long as it still matches
+ * the resource bundled in this build, and return a content:// [Uri] for it through this app's
+ * FileProvider. External players cannot read a raw resource directly, so the settings screen hands
+ * them this small real file to trigger Android's native "open with" chooser.
+ */
+fun Context.playerSetupClipUri(): Uri {
+    val mediaDir = File(cacheDir, "media").apply { mkdirs() }
+    val clip = File(mediaDir, PLAYER_SETUP_CLIP_NAME)
+    val bundledSize = resources.openRawResourceFd(R.raw.player_setup_clip).use { it.length }
+    if (!clip.exists() || clip.length() != bundledSize) {
+        resources.openRawResource(R.raw.player_setup_clip).use { input ->
+            clip.outputStream().use { output -> input.copyTo(output) }
+        }
+    }
+    return FileProvider.getUriForFile(this, "$packageName.fileprovider", clip)
+}
+
+/**
+ * Human readable label of the remembered preferred video player, or null when none is set yet, or
+ * the remembered player is no longer installed (in which case the stale preference is cleared).
+ */
+fun Context.preferredVideoPlayerLabel(): CharSequence? {
+    val pkg =
+        PreferenceManager.getDefaultSharedPreferences(this)
+            .getString(KEY_PREFERRED_VIDEO_PLAYER, null) ?: return null
+    return try {
+        packageManager.getApplicationLabel(packageManager.getApplicationInfo(pkg, 0))
+    } catch (e: PackageManager.NameNotFoundException) {
+        clearPreferredVideoPlayer()
+        null
+    }
+}
+
+/** Forget the remembered preferred video player. Always works: it is only our own preference. */
+fun Context.clearPreferredVideoPlayer() {
+    PreferenceManager.getDefaultSharedPreferences(this)
+        .edit()
+        .remove(KEY_PREFERRED_VIDEO_PLAYER)
+        .apply()
+}
+
+/**
+ * Show the system's app chooser for [uri] so the user can pick a video player, remembering the
+ * choice as the new preferred player via [VideoPlayerChosenReceiver]. Always shows the chooser
+ * regardless of any previously remembered choice; call [playWithPreferredVideoPlayer] instead to go
+ * straight to the remembered player when there is one.
+ */
+fun Context.pickVideoPlayer(uri: Uri) {
+    val viewIntent =
+        Intent(Intent.ACTION_VIEW).apply {
+            setDataAndType(uri, "video/*")
+            flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+        }
+    val callbackFlags =
+        if (SDK_INT >= Build.VERSION_CODES.S) {
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
+        } else {
+            PendingIntent.FLAG_UPDATE_CURRENT
+        }
+    val callback =
+        PendingIntent.getBroadcast(
+            this,
+            0,
+            Intent(this, VideoPlayerChosenReceiver::class.java),
+            callbackFlags,
+        )
+    val chooser = Intent.createChooser(viewIntent, getString(R.string.open_with), callback.intentSender)
+    try {
+        startActivity(chooser)
+    } catch (e: ActivityNotFoundException) {
+        Timber.e("No app found to open a video: ${e.message}")
+        showToast(R.string.app_not_installed, length = Toast.LENGTH_LONG)
+    }
+}
+
+// VLC's own StartActivity branches on the intent shape: a plain ACTION_VIEW races an eager,
+// options-driven launch against this TV's window transitions and can silently fail to show video;
+// ACTION_SEND with plain text (what Share already sends) takes VLC's lazier, service-mediated path
+// instead and avoids the race. This only helps a remembered http(s) link, not the local placeholder
+// clip used to pick a player in settings, since plain text sharing carries no read permission grant
+// for a content:// uri.
+private const val VLC_PACKAGE = "org.videolan.vlc"
+
+/**
+ * Build the intent that launches [pkg] for [uri], special-casing [VLC_PACKAGE] to use its safe
+ * shape. Shared between [playWithPreferredVideoPlayer] and the [openMediaWithChooser] picker
+ * dialog, since both need to apply the same VLC workaround once a package is chosen.
+ */
+private fun launchIntentForPlayer(pkg: String, uri: Uri, mimeType: String): Intent =
+    if (pkg == VLC_PACKAGE) {
+        Intent(Intent.ACTION_SEND).apply {
+            type = "text/plain"
+            putExtra(Intent.EXTRA_TEXT, uri.toString())
+            // set explicitly rather than relying on Android to synthesize it from EXTRA_TEXT:
+            // this is what the share button already sends, and what VLC's own code branches on
+            clipData = ClipData.newPlainText(null, uri.toString())
+            setPackage(VLC_PACKAGE)
+        }
+    } else {
+        Intent(Intent.ACTION_VIEW).apply {
+            setDataAndType(uri, mimeType)
+            setPackage(pkg)
+            flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+        }
+    }
+
+/**
+ * Play [uri] with the remembered preferred video player when one is set and still installed,
+ * otherwise show the chooser so the user can pick one (and remember it for next time).
+ */
+fun Context.playWithPreferredVideoPlayer(uri: Uri) {
+    val pkg =
+        PreferenceManager.getDefaultSharedPreferences(this)
+            .getString(KEY_PREFERRED_VIDEO_PLAYER, null)
+    if (pkg == null) {
+        pickVideoPlayer(uri)
+        return
+    }
+    try {
+        startActivity(launchIntentForPlayer(pkg, uri, "video/*"))
+    } catch (e: ActivityNotFoundException) {
+        // the remembered player can no longer handle this, forget it and let the user pick again
+        clearPreferredVideoPlayer()
+        pickVideoPlayer(uri)
+    }
 }
 
 /**

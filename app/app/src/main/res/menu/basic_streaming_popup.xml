@@ -10,6 +10,9 @@
         android:id="@+id/pick_service"
         android:title="@string/pick_service" />
     <item
+        android:id="@+id/open_with_player"
+        android:title="@string/open_with" />
+    <item
         android:id="@+id/browser_streaming"
         android:title="@string/open_browser_stream" />
 </menu>

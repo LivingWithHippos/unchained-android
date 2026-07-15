@@ -601,26 +601,26 @@
     <string name="device_deleted">Device deleted</string>
     <string name="ui_settings">UI Settings</string>
     <string name="player_vlc" translatable="false">VLC</string>
-    <string name="player_mx" translatable="false">MX Player</string>
     <string name="show_media_player_button_summary">Show the button to send the media to an installed player</string>
     <string name="show_media_player_button">Show media button</string>
     <string name="default_media_player">Default media player</string>
+    <string name="default_media_player_not_set">Not set. You will be asked which app to use the first time you open a video.</string>
+    <string name="default_media_player_current">%1$s. Tap again to change it.</string>
     <string name="send_to_player">Send to player</string>
-    <string name="missing_default_player">Set the default media player in settings</string>
+    <string name="open_with">Open with</string>
+    <string name="local">Local</string>
     <string name="ui_settings_summary">Choose how and if things are shown</string>
     <string name="download_details_button_choice">Choose which buttons should be shown in the download details screen</string>
     <string name="external_apps">External applications</string>
     <string name="show_share_button">Show share button</string>
     <string name="show_open_button">Show open button</string>
+    <string name="show_open_with_button">Show open with button</string>
     <string name="show_copy_button">Show copy button</string>
     <string name="show_download_button">Show download button</string>
     <string name="show_load_stream_button">Show load stream button</string>
     <string name="show_stream_browser_button">Show stream in browser button</string>
     <string name="install_plugins">Install plugins</string>
     <string name="install_plugins_summary">Use the manage repository button in the search screen menu to install the plugins</string>
-    <string name="custom_media_player">Custom media player</string>
-    <string name="custom_media_player_summary">Use a custom media player package like \"org.videolan.vlc\". It may support direct sharing of media files. Remember to pick \"custom player\" as default media player preference</string>
-    <string name="invalid_package">Invalid package</string>
     <string name="delete_all_downloads">Delete all downloads</string>
     <string name="delete_all_torrents">Delete all torrents</string>
     <string name="fdroid_update_description">A new app version has been found on F-Droid</string>
