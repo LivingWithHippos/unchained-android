@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Wrapped in a scroll view: Material dialogs cap the height of their message/content area
+     based on the window size before this custom view is measured, and on some devices (seen
+     on Android TV) that cap leaves less room than the QR code needs, clipping its bottom
+     instead of showing it whole.
+
+     Unlike the NonFocusableNestedScrollView used on the details screens, this one is left
+     focusable on purpose: there is nothing else inside worth focusing (the text and the QR
+     image are both inert), so the scroll view itself must be a d-pad stop, since that is the
+     only way the standard Android arrow key handling can scroll it into view.
+
+     The address and the PIN are two separate TextViews, not one view with a manually inserted
+     line break: a single view sharing its layout pass between two logical lines was seen
+     dropping the first line's content on Android TV. -->
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <TextView
+            android:id="@+id/tvPhoneInputAddress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:textAppearance="?attr/textAppearanceBodyMedium" />
+
+        <TextView
+            android:id="@+id/tvPhoneInputPin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="16dp"
+            android:textAlignment="center"
+            android:textAppearance="?attr/textAppearanceBodyMedium" />
+
+        <ImageView
+            android:id="@+id/ivPhoneInputQrCode"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:contentDescription="@string/phone_input_qr_code_description" />
+
+    </LinearLayout>
+</ScrollView>

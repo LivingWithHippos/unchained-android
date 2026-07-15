@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.AutoCompleteTextView
 import android.widget.Button
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.UnchainedFragment
@@ -22,6 +23,7 @@ import com.github.livingwithhippos.unchained.search.viewmodel.SearchViewModel
 import com.github.livingwithhippos.unchained.utilities.extension.getThemeColor
 import com.github.livingwithhippos.unchained.utilities.extension.hideKeyboard
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
+import com.github.livingwithhippos.unchained.utilities.tv.enablePhoneInput
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.sidesheet.SideSheetDialog
@@ -233,6 +235,12 @@ class PluginSearchFragment : UnchainedFragment(), SearchItemListener {
 
     private fun setup(binding: FragmentSearchPluginsTabBinding) {
         binding.tfSearch.hideKeyboard()
+        // typing a search query with a remote is painful: on TV the field offers a QR code icon
+        // that starts a temporary local server so the query can be sent from a phone
+        binding.tfSearch.enablePhoneInput(
+            scope = viewLifecycleOwner.lifecycleScope,
+            fieldLabel = getString(R.string.search),
+        )
         binding.bPluginSettings.setOnClickListener {
             viewModel.fetchPluginsAndServices(requireContext())
         }

@@ -14,6 +14,7 @@ import android.content.res.AssetManager
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.database.Cursor
+import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.net.Uri
@@ -28,6 +29,7 @@ import android.provider.OpenableColumns
 import android.util.TypedValue
 import android.view.View
 import android.view.WindowInsetsController
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.annotation.AttrRes
 import androidx.annotation.DrawableRes
@@ -46,7 +48,14 @@ import com.github.livingwithhippos.unchained.settings.view.ThemeItem
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.PreferenceKeys
 import com.google.android.material.color.DynamicColors
+import com.google.zxing.BarcodeFormat
+import com.google.zxing.EncodeHintType
+import com.google.zxing.qrcode.QRCodeWriter
 import java.util.Locale
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 /**
@@ -532,3 +541,48 @@ inline fun <reified T : Parcelable> Bundle.parcelable(key: String): T? = when {
     SDK_INT >= 34 -> getParcelable(key, T::class.java)
     else -> @Suppress("DEPRECATION") getParcelable(key) as? T
 }
+
+// size of the QR codes shown on TV, must match the ImageView size in the layouts
+private const val QR_CODE_SIZE_DP = 200
+private const val QR_QUIET_ZONE_MODULES = 2
+
+/**
+ * Render [content] as a QR code and display it in this [ImageView], making it visible. The code
+ * is generated off the main thread on [scope], e.g. the view lifecycle scope so the work is
+ * dropped if the view is destroyed. Used on Android TV, where links cannot be opened, to hand
+ * them over to a phone.
+ */
+fun ImageView.loadQrCode(content: String, scope: CoroutineScope) {
+    val sizePx = (QR_CODE_SIZE_DP * resources.displayMetrics.density).toInt()
+    scope.launch {
+        val qrCode = withContext(Dispatchers.Default) { generateQrCode(content, sizePx) }
+        if (qrCode != null && isAttachedToWindow) {
+            setImageBitmap(qrCode)
+            visibility = View.VISIBLE
+        }
+    }
+}
+
+/** Generate a QR code [Bitmap] encoding [content], around [sizePx] pixels wide, with a quiet zone. */
+private fun generateQrCode(content: String, sizePx: Int): Bitmap? =
+    try {
+        val matrix =
+            QRCodeWriter()
+                .encode(
+                    content,
+                    BarcodeFormat.QR_CODE,
+                    sizePx,
+                    sizePx,
+                    mapOf(EncodeHintType.MARGIN to QR_QUIET_ZONE_MODULES),
+                )
+        val pixels = IntArray(matrix.width * matrix.height)
+        for (y in 0 until matrix.height) {
+            for (x in 0 until matrix.width) {
+                pixels[y * matrix.width + x] = if (matrix.get(x, y)) Color.BLACK else Color.WHITE
+            }
+        }
+        Bitmap.createBitmap(pixels, matrix.width, matrix.height, Bitmap.Config.RGB_565)
+    } catch (e: Exception) {
+        Timber.e(e, "Error generating a QR code")
+        null
+    }

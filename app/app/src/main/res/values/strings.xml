@@ -16,6 +16,22 @@
     <string name="obtained_user_auth">Obtained user authorization</string>
     <string name="waiting_secret">Waiting Secret</string>
     <string name="waiting_token">Waiting token confirmation</string>
+    <string name="login_qr_code_description">Scan the QR code with your phone to log in</string>
+    <string name="show_login_qr_code">Show QR code to log in from your phone</string>
+    <string name="token_web_received">Token received, continue on your TV</string>
+    <string name="token_web_pin_label">PIN shown on the TV</string>
+    <string name="token_web_get_token_link">Get your private token here</string>
+    <string name="send">Send</string>
+    <string name="link_web_received">Link received, continue on your TV</string>
+    <string name="link_qr_code_description">Scan the QR code with your phone to send a link</string>
+    <string name="token_web_wrong_pin">Wrong PIN, check your TV</string>
+    <string name="token_server_pin_format" translatable="false">PIN: %1$s</string>
+    <string name="type_from_phone">Type from your phone</string>
+    <string name="send_value_from_phone_format">Send this from your phone by opening %s</string>
+    <string name="value_web_received">Received, continue on your TV</string>
+    <string name="phone_input_qr_code_description">Scan the QR code with your phone to fill this field</string>
+    <string name="phone_input_invalid">Invalid value, check your TV</string>
+    <string name="phone_input_unavailable">Could not start the phone input server</string>
     <string name="obtained_token">Obtained token</string>
     <string name="waiting_link">Loading authorization link</string>
     <string name="link_loaded">Authorization link loaded</string>

@@ -10,6 +10,23 @@
     android:padding="20dp"
     tools:context=".search.view.SearchFragment">
 
+    <!-- TV only: a QR code icon that starts a temporary local server so the search query can be
+         sent from a phone instead of being typed with the remote. Hidden on phones. -->
+    <Button
+        android:id="@+id/bSearchFromPhone"
+        style="@style/Widget.Unchained.Button.Text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/type_from_phone"
+        android:nextFocusRight="@id/bManagePlugins"
+        android:nextFocusDown="@id/tfSearch"
+        android:visibility="gone"
+        app:icon="@drawable/icon_qr_code"
+        app:layout_constraintBottom_toBottomOf="@id/bManagePlugins"
+        app:layout_constraintEnd_toStartOf="@id/bManagePlugins"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/bManagePlugins" />
+
     <Button
         android:id="@+id/bManagePlugins"
         style="@style/Widget.Material3.Button.TextButton"
@@ -24,7 +41,7 @@
         app:layout_constraintEnd_toStartOf="@id/bSorting"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintHorizontal_chainStyle="spread"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/bSearchFromPhone"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed" />
 

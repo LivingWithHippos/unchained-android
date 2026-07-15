@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.github.livingwithhippos.unchained.R
@@ -18,6 +19,7 @@ import com.github.livingwithhippos.unchained.databinding.FragmentCompleteService
 import com.github.livingwithhippos.unchained.remoteservice.viewmodel.ServiceEvent
 import com.github.livingwithhippos.unchained.remoteservice.viewmodel.ServiceViewModel
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
+import com.github.livingwithhippos.unchained.utilities.tv.enablePhoneInput
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -81,6 +83,13 @@ class CompleteServiceFragment : Fragment() {
                 setupServiceType(binding, selectedService.value)
             }
         }
+
+        // typing the name, address and API token with a remote is painful: on TV these fields
+        // offer a QR code icon that starts a temporary local server so their value can be sent
+        // from another device, e.g. the user's phone
+        binding.tfName.enablePhoneInput(viewLifecycleOwner.lifecycleScope)
+        binding.tfAddress.enablePhoneInput(viewLifecycleOwner.lifecycleScope)
+        binding.tfApiToken.enablePhoneInput(viewLifecycleOwner.lifecycleScope)
 
         binding.bTestService.setOnClickListener {
             val username = binding.tiUsername.text.toString().trim()
