@@ -65,28 +65,14 @@
             app:summary="@string/enable_kodi_control"
             app:title="@string/kodi_remote_control" />
 
-        <PreferenceCategory
-            android:title="@string/default_media_player"
-            app:allowDividerAbove="false"
-            app:allowDividerBelow="false">
-            <DropDownPreference
-                android:defaultValue="vlc"
-                android:entries="@array/default_media_player"
-                android:entryValues="@array/default_media_player_values"
-                android:key="default_media_player"
-                android:title="@string/default_media_player"
-                app:useSimpleSummaryProvider="true" />
-
-            <Preference android:summary="@string/custom_media_player_summary" />
-
-            <EditTextPreference
-                android:defaultValue=""
-                android:key="custom_media_player"
-                android:selectAllOnFocus="true"
-                android:singleLine="true"
-                android:title="@string/custom_media_player"
-                app:useSimpleSummaryProvider="true" />
-        </PreferenceCategory>
+        <!--
+            Clicking this hands a placeholder clip to Android's native "open with" flow so the user
+            can pick a video player and set it as default. The summary is filled in at runtime with
+            the currently resolved default, see setupDefaultMediaPlayerPicker in SettingsFragment.
+        -->
+        <Preference
+            app:key="default_media_player_picker"
+            app:title="@string/default_media_player" />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/notifications">
@@ -188,6 +174,11 @@
                 android:defaultValue="true"
                 app:key="show_download_button"
                 app:title="@string/show_download_button" />
+
+            <SwitchPreference
+                android:defaultValue="true"
+                app:key="show_open_with_button"
+                app:title="@string/show_open_with_button" />
 
             <SwitchPreference
                 android:defaultValue="true"

@@ -200,6 +200,7 @@
             android:id="@+id/streamBrowserLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:nextFocusDown="@id/openWithLayout"
             android:paddingHorizontal="15dp"
             android:paddingBottom="15dp"
             android:paddingTop="7dp"
@@ -244,6 +245,57 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/streamBrowserIcon"
                 app:layout_constraintTop_toBottomOf="@id/streamBrowserType" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/openWithLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="15dp"
+            android:paddingBottom="15dp"
+            android:paddingTop="7dp"
+            android:clickable="true"
+            android:focusable="true">
+
+            <TextView
+                android:id="@+id/openWithType"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:focusable="false"
+                android:maxLines="1"
+                android:text="@string/local"
+                android:textAppearance="?attr/textAppearanceTitleSmall"
+                app:layout_constraintEnd_toStartOf="@id/openWithIcon"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/openWithTitle" />
+
+            <ImageView
+                android:id="@+id/openWithIcon"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:clickable="false"
+                android:focusable="false"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/icon_open" />
+
+            <TextView
+                android:id="@+id/openWithTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:focusable="false"
+                android:text="@string/open_with"
+                android:maxLines="1"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/openWithIcon"
+                app:layout_constraintTop_toBottomOf="@id/openWithType" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
