@@ -9,6 +9,7 @@ import android.widget.PopupMenu
 import androidx.annotation.MenuRes
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.selection.SelectionPredicates
@@ -22,6 +23,7 @@ import com.github.livingwithhippos.unchained.databinding.FragmentRemoteDeviceBin
 import com.github.livingwithhippos.unchained.remotedevice.viewmodel.DeviceEvent
 import com.github.livingwithhippos.unchained.remotedevice.viewmodel.DeviceViewModel
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
+import com.github.livingwithhippos.unchained.utilities.tv.enablePhoneInput
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -92,6 +94,11 @@ class RemoteDeviceFragment : UnchainedFragment(), ServiceListListener {
 
             viewModel.fetchDeviceServices(item.id)
         }
+
+        // typing the name and address with a remote is painful: on TV both fields offer a QR code
+        // icon that starts a temporary local server so their value can be sent from another device
+        binding.tfName.enablePhoneInput(viewLifecycleOwner.lifecycleScope)
+        binding.tfAddress.enablePhoneInput(viewLifecycleOwner.lifecycleScope)
 
         binding.fabDeviceAction.setOnClickListener { showMenu(it, R.menu.device_page_action) }
 

@@ -28,7 +28,9 @@ import com.github.livingwithhippos.unchained.search.viewmodel.SearchViewModel
 import com.github.livingwithhippos.unchained.utilities.extension.delayedScrolling
 import com.github.livingwithhippos.unchained.utilities.extension.getThemedDrawable
 import com.github.livingwithhippos.unchained.utilities.extension.hideKeyboard
+import com.github.livingwithhippos.unchained.utilities.extension.isTv
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
+import com.github.livingwithhippos.unchained.utilities.tv.showPhoneInputDialog
 import com.google.android.material.button.MaterialButton
 import dagger.hilt.android.AndroidEntryPoint
 import kotlin.time.Instant
@@ -71,6 +73,20 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
         binding.bManagePlugins.setOnClickListener {
             val action = SearchFragmentDirections.actionSearchDestToRepositoryFragment()
             findNavController().navigate(action)
+        }
+
+        // typing a search query with a remote is painful: on TV show a QR code button next to the
+        // plugins button that starts a temporary local server so the query can be sent from a phone
+        if (requireContext().isTv()) {
+            binding.bSearchFromPhone.visibility = View.VISIBLE
+            binding.bSearchFromPhone.setOnClickListener {
+                showPhoneInputDialog(
+                    context = requireContext(),
+                    scope = viewLifecycleOwner.lifecycleScope,
+                    fieldLabel = getString(R.string.search),
+                    onValueReceived = { query -> _binding?.tiSearch?.setText(query) },
+                )
+            }
         }
 
         viewModel.pluginLiveData.observe(viewLifecycleOwner) { event ->
