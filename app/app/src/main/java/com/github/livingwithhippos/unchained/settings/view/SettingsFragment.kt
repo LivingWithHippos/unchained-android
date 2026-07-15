@@ -23,6 +23,7 @@ import com.github.livingwithhippos.unchained.settings.viewmodel.SettingsViewMode
 import com.github.livingwithhippos.unchained.utilities.FEEDBACK_URL
 import com.github.livingwithhippos.unchained.utilities.GPLV3_URL
 import com.github.livingwithhippos.unchained.utilities.extension.getThemeList
+import com.github.livingwithhippos.unchained.utilities.extension.isTv
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
@@ -93,6 +94,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
         setupKodi()
 
         setupVersion()
+
+        hideTvIrrelevantPreferences()
 
         findPreference<Preference>("download_folder_key")?.setOnPreferenceClickListener {
             pickDirectoryLauncher.launch(null)
@@ -200,6 +203,14 @@ class SettingsFragment : PreferenceFragmentCompat() {
         val version = pi?.versionName
         val versionPreference = findPreference<Preference>("app_version")
         versionPreference?.summary = version
+    }
+
+    /** Hide preferences that cannot work or make no sense on a leanback (Android TV) device. */
+    private fun hideTvIrrelevantPreferences() {
+        if (!requireContext().isTv()) return
+        // virtually no TV hardware has a vibration motor, so a "vibrate on download" toggle is a
+        // dead control there
+        findPreference<Preference>("vibrate_on_download")?.isVisible = false
     }
 
     override fun onPreferenceTreeClick(preference: Preference): Boolean {

@@ -213,6 +213,7 @@
     <string name="seeders_string_format">seeder/s: %s</string>
     <string name="torrent_in_progress_format">%1$.2f%% - %2$.2f Mo/s</string>
     <string name="download_in_progress_format">Téléchargement - %1$d%%</string>
+    <string name="download_failed_format">Le téléchargement de %s a échoué</string>
     <string name="download_complete">Téléchargement terminé</string>
     <string name="unknown_status">État inconnu</string>
     <string name="downloading_torrent_format">Téléchargement de %1$d torrents </string>
