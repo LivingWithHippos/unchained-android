@@ -22,6 +22,7 @@ import com.github.livingwithhippos.unchained.settings.viewmodel.SettingEvent
 import com.github.livingwithhippos.unchained.settings.viewmodel.SettingsViewModel
 import com.github.livingwithhippos.unchained.utilities.FEEDBACK_URL
 import com.github.livingwithhippos.unchained.utilities.GPLV3_URL
+import com.github.livingwithhippos.unchained.utilities.extension.getThemeItem
 import com.github.livingwithhippos.unchained.utilities.extension.getThemeList
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
@@ -150,11 +151,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
             openThemePickerDialog()
             true
         }
-        val themeRes =
-            preferences.getInt(KEY_THEME_NEW, R.style.Theme_Unchained_Material3_Green_One)
-        val currentTheme: ThemeItem? =
-            requireContext().getThemeList().find { it.themeID == themeRes }
-        findPreference<Preference>("selected_theme")?.summary = currentTheme?.name
+        val theme = requireContext().getThemeItem()
+        findPreference<Preference>("selected_theme")?.summary = theme.name
     }
 
     private fun setupKodi() {
@@ -267,7 +265,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
     companion object {
         // these must match the ones used in [xml/settings.xml]
         const val KEY_DAY_NIGHT = "day_night_theme"
-        const val KEY_THEME_NEW = "new_current_theme"
+        const val KEY_NEW_THEME = "current_theme_new"
         const val KEY_TORRENT_NOTIFICATIONS = "notification_torrent_key"
         const val KEY_REFERRAL_ASKED = "referral_asked_key"
         const val KEY_REFERRAL_USE = "use_referral_key"
