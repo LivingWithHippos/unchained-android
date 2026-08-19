@@ -487,8 +487,7 @@ class DownloadsListFragment : UnchainedFragment(), DownloadListListener {
             // only in landscape view
             viewModel.postEventNotice(ListEvent.NewDownload)
         }
-        binding.bRefresh?.setOnClickListener {
-            // only in landscape view
+        binding.bRefresh.setOnClickListener {
             if (!binding.srLayout.isRefreshing) {
                 binding.srLayout.isRefreshing = true
                 downloadAdapter.refresh()
@@ -739,7 +738,7 @@ class TorrentsListFragment : UnchainedFragment(), TorrentListListener {
             // landscape only
             viewModel.postEventNotice(ListEvent.NewDownload)
         }
-        binding.bRefresh?.setOnClickListener {
+        binding.bRefresh.setOnClickListener {
             if (!binding.srLayout.isRefreshing) {
                 binding.srLayout.isRefreshing = true
                 torrentAdapter.refresh()

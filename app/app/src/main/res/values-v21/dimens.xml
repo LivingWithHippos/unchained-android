@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- see values/dimens.xml: the material library redefines this token per API level
+    (values-v21 and values-v28), and those buckets would shadow the base override -->
+    <item name="m3_sys_state_focus_state_layer_opacity" type="dimen">0.35</item>
+</resources>

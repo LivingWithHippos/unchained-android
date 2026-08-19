@@ -388,22 +388,23 @@
     <string name="show_media_player_button_summary">Mostra un bottone per inviare media ad un lettore locale</string>
     <string name="show_media_player_button">Mostra bottone media</string>
     <string name="default_media_player">Lettore media predefinito</string>
+    <string name="default_media_player_not_set">Non impostato. Ti verrà chiesto quale app usare la prima volta che apri un video.</string>
+    <string name="default_media_player_current">%1$s. Tocca di nuovo per cambiarlo.</string>
     <string name="send_to_player">Invia a lettore</string>
-    <string name="missing_default_player">Imposta il lettore di default nell impostazioni</string>
+    <string name="open_with">Apri con</string>
+    <string name="local">Locale</string>
     <string name="ui_settings_summary">Scegli se e come sono mostrate le cose</string>
     <string name="download_details_button_choice">Scegli quali bottoni mostrare nella schermata di dettagli download</string>
     <string name="external_apps">Applicazioni esterne</string>
     <string name="show_share_button">Mostra bottone condividi</string>
     <string name="show_open_button">Mostra bottone apri</string>
+    <string name="show_open_with_button">Mostra bottone apri con</string>
     <string name="show_copy_button">Mostra bottone copia</string>
     <string name="show_download_button">Mostra bottone download</string>
     <string name="show_load_stream_button">Mostra bottone carica stream</string>
     <string name="show_stream_browser_button">Mostra bottone stream nel browser</string>
     <string name="install_plugins">Installare plugins</string>
     <string name="install_plugins_summary">Per installare i plugin, utilizzare il pulsante Gestisci repository nel menu della schermata di ricerca</string>
-    <string name="custom_media_player">Lettore media personalizzato</string>
-    <string name="custom_media_player_summary">Usa il package di un lettore media personalizzato come \"org.videolan.vlc\". Potrebbe supportare la condivisione diretta di media. Ricorda di impostare \"lettore media personalizzato\" come impostazione di lettore media predefinito</string>
-    <string name="invalid_package">Package non valido</string>
     <string name="delete_all_downloads">Elimina tutti i download</string>
     <string name="delete_all_torrents">Elimina tutti i torrent</string>
     <string name="fdroid_update_description">Una versione più recente della app è stata trovata su F-Droid</string>
@@ -431,6 +432,7 @@
     <string name="custom_downloader_options_description">Queste opzioni non sono disponibili per il gestore di download di default</string>
     <string name="unmetered_downloads">Download su connessioni non a consumo</string>
     <string name="unmetered_downloads_description">Avvia i download solo con connessioni non a consumo (come il wi-fi)</string>
+    <string name="pause_downloads_on_network_change_description">Annulla i download in corso se la connessione di rete cambia (ad esempio, da Wi-Fi a dati mobili), poiché Real-Debrid potrebbe segnalare il tuo account per aver effettuato download da più indirizzi IP. I download annullati devono essere riavviati manualmente</string>
     <string name="download_on_metered_connection">Download rinviato (connessione a consumo)</string>
     <string name="leechers">Leechers</string>
     <string name="size">Dimensione</string>
@@ -438,6 +440,7 @@
     <string name="previous">Precedente</string>
     <string name="ready">Pronto</string>
     <string name="select_files">Seleziona files</string>
+    <string name="filter_files_hint">Filtra per nome; * supportato</string>
     <string name="total_files">Files totali</string>
     <string name="total_size">Dimensione totale</string>
     <string name="loading_torrent_info">Caricamento files torrent. Usa scarica tutto sul bottone in basso se vuoi scaricare tutto il contenuto.</string>
@@ -481,6 +484,7 @@
     <string name="kodi_picker_description">Mostra un menu di selezione quando si inviano link a Kodi</string>
     <string name="kodi_picker">Selezionare il server di destinazione</string>
     <string name="themes">Temi</string>
+    <string name="custom_theme">Tema personalizzato</string>
     <string name="select">Seleziona</string>
     <string name="selected_theme">Tema selezionato</string>
     <string name="apply">Applica</string>
@@ -550,4 +554,5 @@
     <string name="summary_search_start_destination">Pagina da aprire quando si seleziona il pulsante di ricerca</string>
     <string name="please_select_plugins">Selezionare almeno un plugin</string>
     <string name="disabled">Disabilitato</string>
+    <string name="pause_downloads_on_network_change">Annulla i download in caso di cambio rete</string>
 </resources>

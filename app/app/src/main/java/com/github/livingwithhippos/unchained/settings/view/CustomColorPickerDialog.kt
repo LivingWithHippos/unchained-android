@@ -10,13 +10,18 @@ import android.widget.LinearLayout
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import com.github.livingwithhippos.unchained.R
+import com.github.livingwithhippos.unchained.base.ThemingCallback.Companion.CUSTOM_THEME_KEY
+import com.github.livingwithhippos.unchained.base.ThemingCallback.Companion.DEFAULT_THEME_KEY
 import com.github.livingwithhippos.unchained.customview.ColorWheelView
+import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Companion.KEY_NEW_THEME
 import com.github.livingwithhippos.unchained.utilities.PreferenceKeys
+import com.github.livingwithhippos.unchained.utilities.extension.getThemeItem
 import com.github.livingwithhippos.unchained.utilities.extension.getThemeList
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.color.MaterialColors
 import com.google.android.material.slider.Slider
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -69,13 +74,8 @@ class CustomColorPickerDialog : BottomSheetDialogFragment() {
             previewDrawable.setColor(colorWheel.selectedColor)
         }
 
-        val currentTheme = requireContext().getThemeList().find { it.key == CUSTOM_THEME_KEY }
-        val initialColor =
-            currentTheme?.primaryColorID
-                ?: preferences.getInt(
-                    PreferenceKeys.Ui.CUSTOM_THEME_SEED_COLOR_KEY,
-                    0xFF376B00.toInt(),
-                )
+        val currentTheme = requireContext().getThemeItem()
+        val initialColor = currentTheme.primaryColorID
         colorWheel.setColor(initialColor)
         brightnessSlider.value = colorWheel.value
         updatePreview()
@@ -108,7 +108,7 @@ class CustomColorPickerDialog : BottomSheetDialogFragment() {
             // both back to back here would read a stale value and silently fail to persist
             preferences.edit {
                 putInt(PreferenceKeys.Ui.CUSTOM_THEME_SEED_COLOR_KEY, colorWheel.selectedColor)
-                putInt(SettingsFragment.KEY_THEME_NEW, R.style.Theme_Unchained_Material3_DynamicCustom)
+                putString(KEY_NEW_THEME, CUSTOM_THEME_KEY)
             }
             dismiss()
             activity?.recreate()
@@ -120,11 +120,24 @@ class CustomColorPickerDialog : BottomSheetDialogFragment() {
         val marginPx = resources.getDimensionPixelSize(R.dimen.custom_color_swatch_margin)
         return View(requireContext()).apply {
             layoutParams = LinearLayout.LayoutParams(sizePx, sizePx).apply { marginEnd = marginPx }
-            background =
+            val swatchDrawable =
                 GradientDrawable().apply {
                     shape = GradientDrawable.OVAL
                     setColor(color)
                 }
+            background = swatchDrawable
+            // plain Views are not reachable with a d-pad by default, so make the swatches
+            // focusable and show a ring around the focused one for TV and keyboard users
+            isFocusable = true
+            setOnFocusChangeListener { v, hasFocus ->
+                val strokeWidth =
+                    if (hasFocus) v.resources.getDimensionPixelSize(R.dimen.focus_stroke_width)
+                    else 0
+                swatchDrawable.setStroke(
+                    strokeWidth,
+                    MaterialColors.getColor(v, com.google.android.material.R.attr.colorOnSurface),
+                )
+            }
             setOnClickListener { onClick() }
         }
     }

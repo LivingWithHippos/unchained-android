@@ -22,9 +22,13 @@ import com.github.livingwithhippos.unchained.settings.viewmodel.SettingEvent
 import com.github.livingwithhippos.unchained.settings.viewmodel.SettingsViewModel
 import com.github.livingwithhippos.unchained.utilities.FEEDBACK_URL
 import com.github.livingwithhippos.unchained.utilities.GPLV3_URL
+import com.github.livingwithhippos.unchained.utilities.extension.getThemeItem
 import com.github.livingwithhippos.unchained.utilities.extension.getThemeList
 import com.github.livingwithhippos.unchained.utilities.extension.isTv
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
+import com.github.livingwithhippos.unchained.utilities.extension.pickVideoPlayer
+import com.github.livingwithhippos.unchained.utilities.extension.playerSetupClipUri
+import com.github.livingwithhippos.unchained.utilities.extension.preferredVideoPlayerLabel
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -96,6 +100,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         setupVersion()
 
         hideTvIrrelevantPreferences()
+        setupDefaultMediaPlayerPicker()
 
         findPreference<Preference>("download_folder_key")?.setOnPreferenceClickListener {
             pickDirectoryLauncher.launch(null)
@@ -148,16 +153,20 @@ class SettingsFragment : PreferenceFragmentCompat() {
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
+    override fun onResume() {
+        super.onResume()
+        // there is no callback for "user picked a default player", so re-resolve it every time the
+        // settings screen comes back to the foreground to reflect a choice just made in the picker
+        updateDefaultMediaPlayerSummary()
+    }
+
     private fun setupTheme() {
         findPreference<Preference>("selected_theme")?.setOnPreferenceClickListener {
             openThemePickerDialog()
             true
         }
-        val themeRes =
-            preferences.getInt(KEY_THEME_NEW, R.style.Theme_Unchained_Material3_Green_One)
-        val currentTheme: ThemeItem? =
-            requireContext().getThemeList().find { it.themeID == themeRes }
-        findPreference<Preference>("selected_theme")?.summary = currentTheme?.name
+        val theme = requireContext().getThemeItem()
+        findPreference<Preference>("selected_theme")?.summary = theme.name
     }
 
     private fun setupKodi() {
@@ -211,6 +220,37 @@ class SettingsFragment : PreferenceFragmentCompat() {
         // virtually no TV hardware has a vibration motor, so a "vibrate on download" toggle is a
         // dead control there
         findPreference<Preference>("vibrate_on_download")?.isVisible = false
+    }
+    
+    /**
+     * Wire up the single "default media player" row. Instead of maintaining a list of known
+     * players, clicking the row hands a small bundled clip to the system's "open with" chooser so
+     * the user can pick any installed player; the choice is remembered as this app's own preferred
+     * player (see [com.github.livingwithhippos.unchained.utilities.VideoPlayerChosenReceiver]),
+     * not through Android's own OS level "always" mechanism, which cannot be reliably undone by a
+     * third party app. The row always reopens the chooser when clicked, so changing the choice
+     * later works the same way as picking it the first time.
+     */
+    private fun setupDefaultMediaPlayerPicker() {
+        val playerPreference = findPreference<Preference>("default_media_player_picker") ?: return
+        updateDefaultMediaPlayerSummary()
+        playerPreference.setOnPreferenceClickListener {
+            val context = requireContext()
+            context.pickVideoPlayer(context.playerSetupClipUri())
+            true
+        }
+    }
+
+    /** Set the media player row summary to the current preferred player label, or a "not set" hint. */
+    private fun updateDefaultMediaPlayerSummary() {
+        val playerPreference = findPreference<Preference>("default_media_player_picker") ?: return
+        val currentPlayer = requireContext().preferredVideoPlayerLabel()
+        playerPreference.summary =
+            if (currentPlayer.isNullOrBlank()) {
+                getString(R.string.default_media_player_not_set)
+            } else {
+                getString(R.string.default_media_player_current, currentPlayer)
+            }
     }
 
     override fun onPreferenceTreeClick(preference: Preference): Boolean {
@@ -278,7 +318,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
     companion object {
         // these must match the ones used in [xml/settings.xml]
         const val KEY_DAY_NIGHT = "day_night_theme"
-        const val KEY_THEME_NEW = "new_current_theme"
+        const val KEY_NEW_THEME = "current_theme_new"
         const val KEY_TORRENT_NOTIFICATIONS = "notification_torrent_key"
         const val KEY_REFERRAL_ASKED = "referral_asked_key"
         const val KEY_REFERRAL_USE = "use_referral_key"

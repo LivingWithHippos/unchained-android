@@ -8,11 +8,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.livingwithhippos.unchained.R
+import com.github.livingwithhippos.unchained.base.ThemingCallback.Companion.DEFAULT_THEME_KEY
 import com.github.livingwithhippos.unchained.data.local.ProtoStore
 import com.github.livingwithhippos.unchained.data.repository.HostsRepository
 import com.github.livingwithhippos.unchained.data.repository.KodiRepository
 import com.github.livingwithhippos.unchained.data.repository.PluginRepository
-import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Companion.KEY_THEME_NEW
+import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Companion.KEY_NEW_THEME
 import com.github.livingwithhippos.unchained.settings.view.ThemeItem
 import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewModel.Companion.KEY_DOWNLOAD_FOLDER
 import com.github.livingwithhippos.unchained.utilities.Event
@@ -75,13 +76,12 @@ constructor(
         }
     }
 
-    fun applyTheme() {
-        val selectedTheme: ThemeItem? = themeLiveData.value?.peekContent()
-        selectedTheme?.let { preferences.edit { putInt(KEY_THEME_NEW, it.themeID) } }
+    fun applyTheme(selectedTheme: ThemeItem) {
+        preferences.edit { putString(KEY_NEW_THEME, selectedTheme.key) }
     }
 
-    fun getCurrentTheme(): Int {
-        return preferences.getInt(KEY_THEME_NEW, R.style.Theme_Unchained_Material3_Green_One)
+    fun getCurrentTheme(): String {
+        return preferences.getString(KEY_NEW_THEME, DEFAULT_THEME_KEY) ?: DEFAULT_THEME_KEY
     }
 }
 

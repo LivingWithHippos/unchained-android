@@ -17,6 +17,18 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
+    <!-- Android 11+ hides other apps from PackageManager unless declared here. We resolve and
+    launch whatever app the user has set as their default video player, so instead of listing
+    every known player package (which needed constant upkeep and was always incomplete) we
+    declare the intent those players answer. This makes any current or future video player
+    visible to resolveActivity/startActivity without further maintenance. -->
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:mimeType="video/*" />
+        </intent>
+    </queries>
+
     <application
         android:name=".base.UnchainedApplication"
         android:allowBackup="true"
@@ -405,6 +417,22 @@
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
+        <!-- receives the chosen app from the video player picker chooser, see
+        VideoPlayerChosenReceiver -->
+        <receiver
+            android:name=".utilities.VideoPlayerChosenReceiver"
+            android:exported="false" />
     </application>
 
 </manifest>

@@ -11,8 +11,10 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.github.livingwithhippos.unchained.R
+import com.github.livingwithhippos.unchained.base.ThemingCallback.Companion.CUSTOM_THEME_KEY
 import com.github.livingwithhippos.unchained.databinding.ItemThemeListBinding
 import com.github.livingwithhippos.unchained.settings.viewmodel.SettingsViewModel
+import com.github.livingwithhippos.unchained.utilities.extension.getThemeItem
 import com.github.livingwithhippos.unchained.utilities.extension.getThemeList
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -59,10 +61,10 @@ class ThemePickerDialog : BottomSheetDialogFragment(), ThemePickListener {
         super.onViewCreated(view, savedInstanceState)
 
         val themes = requireContext().getThemeList()
-        val currentTheme = themes.find { it.themeID == viewModel.getCurrentTheme() }
+        val currentTheme = requireContext().getThemeItem()
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.themeList)
-        adapter = ThemePickerAdapter(this, currentTheme?.key)
+        adapter = ThemePickerAdapter(this, currentTheme.key)
         recyclerView.adapter = adapter
         adapter.submitList(themes)
 
@@ -71,7 +73,7 @@ class ThemePickerDialog : BottomSheetDialogFragment(), ThemePickListener {
         viewModel.themeLiveData.observe(viewLifecycleOwner) {
             it.getContentIfNotHandled()?.let { theme ->
                 adapter.setSelectedKey(theme.key)
-                viewModel.applyTheme()
+                viewModel.applyTheme(theme)
                 dismiss()
                 activity?.recreate()
             }
@@ -111,9 +113,6 @@ data class ThemeItem(
     @param:ColorInt val primaryContainerColorID: Int,
     val isDynamic: Boolean = false,
 )
-
-/** [ThemeItem.key] of the user-customizable, seed-color-based dynamic theme. */
-const val CUSTOM_THEME_KEY = "custom_theme"
 
 class ThemePickerAdapter(private val listener: ThemePickListener, initialSelectedKey: String?) :
     ListAdapter<ThemeItem, ThemeViewHolder>(DiffCallback()) {

@@ -8,14 +8,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.github.livingwithhippos.unchained.R
 import androidx.core.content.ContextCompat
-import com.github.livingwithhippos.unchained.settings.view.CUSTOM_THEME_KEY
 import com.github.livingwithhippos.unchained.settings.view.SettingsFragment
+import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Companion.KEY_NEW_THEME
 import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Companion.THEME_AUTO
 import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Companion.THEME_DAY
 import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Companion.THEME_NIGHT
 import com.github.livingwithhippos.unchained.settings.view.ThemeItem
 import com.github.livingwithhippos.unchained.utilities.PreferenceKeys
 import com.github.livingwithhippos.unchained.utilities.extension.applyThemeAwareSystemBarIconColors
+import com.github.livingwithhippos.unchained.utilities.extension.getThemeItem
 import com.github.livingwithhippos.unchained.utilities.extension.getThemeList
 import com.google.android.material.color.DynamicColors
 import com.google.android.material.color.DynamicColorsOptions
@@ -31,15 +32,13 @@ class ThemingCallback(val preferences: SharedPreferences) : Application.Activity
     private val appliedThemes = WeakHashMap<Activity, Int>()
 
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
-        val themeRes = currentThemeRes()
-        val themesList = activity.applicationContext.getThemeList()
-        val currentTheme: ThemeItem = themesList.find { it.themeID == themeRes } ?: themesList[1]
+        val currentTheme = activity.applicationContext.getThemeItem()
         setupNightMode(currentTheme.nightMode)
         if (activity is AppCompatActivity) {
-            setCustomTheme(activity, themeRes)
+            setCustomTheme(activity, currentTheme.themeID)
             if (currentTheme.isDynamic) applyDynamicColors(activity, currentTheme)
             activity.applyThemeAwareSystemBarIconColors()
-            appliedThemes[activity] = currentThemeSignature(themeRes, currentTheme)
+            appliedThemes[activity] = themeSignature(currentTheme.themeID, currentTheme)
         }
     }
 
@@ -56,10 +55,8 @@ class ThemingCallback(val preferences: SharedPreferences) : Application.Activity
 
     override fun onActivityResumed(activity: Activity) {
         if (activity !is AppCompatActivity) return
-        val themeRes = currentThemeRes()
-        val themesList = activity.applicationContext.getThemeList()
-        val currentTheme: ThemeItem = themesList.find { it.themeID == themeRes } ?: themesList[1]
-        val themeSignature = currentThemeSignature(themeRes, currentTheme)
+        val theme = activity.applicationContext.getThemeItem()
+        val themeSignature = themeSignature(theme.themeID, theme)
         val appliedSignature = appliedThemes[activity]
         if (appliedSignature != null && appliedSignature != themeSignature) {
             // avoid re-triggering on the recreated instance's own resume
@@ -68,13 +65,7 @@ class ThemingCallback(val preferences: SharedPreferences) : Application.Activity
         }
     }
 
-    private fun currentThemeRes(): Int =
-        preferences.getInt(
-            SettingsFragment.KEY_THEME_NEW,
-            R.style.Theme_Unchained_Material3_Green_One,
-        )
-
-    private fun currentThemeSignature(themeRes: Int, theme: ThemeItem): Int =
+    private fun themeSignature(themeRes: Int, theme: ThemeItem): Int =
         if (theme.key == CUSTOM_THEME_KEY) {
             // the style id alone can't tell two different custom colors apart, since both use
             // the same DynamicCustom style; fold the actual seed color into the signature too
@@ -127,5 +118,11 @@ class ThemingCallback(val preferences: SharedPreferences) : Application.Activity
             THEME_DAY -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             THEME_NIGHT -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
         }
+    }
+
+    companion object {
+        const val CUSTOM_THEME_KEY = "custom_theme"
+        const val DYNAMIC_WALLPAPER_KEY = "dynamic_wallpaper"
+        const val DEFAULT_THEME_KEY = "green_01"
     }
 }

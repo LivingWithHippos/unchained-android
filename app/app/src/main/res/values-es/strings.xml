@@ -382,22 +382,23 @@
     <string name="show_media_player_button_summary">Mostrar el botón para enviar los medios a un reproductor instalado</string>
     <string name="show_media_player_button">Mostrar botón multimedia</string>
     <string name="default_media_player">Reproductor multimedia por defecto</string>
+    <string name="default_media_player_not_set">Sin definir. Se te preguntará qué aplicación usar la primera vez que abras un vídeo.</string>
+    <string name="default_media_player_current">%1$s. Toca de nuevo para cambiarlo.</string>
     <string name="send_to_player">Enviar al reproductor multimedia</string>
-    <string name="missing_default_player">Establecer el reproductor multimedia por defecto en los ajustes</string>
+    <string name="open_with">Abrir con</string>
+    <string name="local">Local</string>
     <string name="ui_settings_summary">Elige cómo y si se muestran las cosas</string>
     <string name="download_details_button_choice">Elija qué botones deben mostrarse en la pantalla de detalles de la descarga</string>
     <string name="external_apps">Aplicaciones externas</string>
     <string name="show_share_button">Mostrar el botón de compartir</string>
     <string name="show_open_button">Mostrar botón de apertura</string>
+    <string name="show_open_with_button">Mostrar botón abrir con</string>
     <string name="show_copy_button">Mostrar botón de copia</string>
     <string name="show_download_button">Mostrar botón de descarga</string>
     <string name="show_load_stream_button">Mostrar el botón de carga de la transmisión</string>
     <string name="show_stream_browser_button">Botón de mostrar la transmisión en el navegador</string>
     <string name="install_plugins">Instalar plugins</string>
     <string name="install_plugins_summary">Utilice el botón de gestión de repositorios en el menú de la pantalla de búsqueda para instalar los plugins</string>
-    <string name="custom_media_player">Reproductor multimedia personalizado</string>
-    <string name="custom_media_player_summary">Utiliza un paquete reproductor multimedia personalizado como \"org.videolan.vlc\". Puede soportar la compartición directa de archivos multimedia. Recuerda elegir \"custom player\" como preferencia de reproductor multimedia por defecto</string>
-    <string name="invalid_package">Paquete no válido</string>
     <string name="delete_all_downloads">Borrar todas las descargas</string>
     <string name="delete_all_torrents">Eliminar todos los torrentes</string>
     <string name="fdroid_update_description">Se ha encontrado una nueva versión de la aplicación en F-Droid</string>
@@ -425,6 +426,7 @@
     <string name="custom_downloader_options_description">Estas opciones no están disponibles para el gestor de descargas por defecto</string>
     <string name="unmetered_downloads">Descargas en conexiones sin medidor</string>
     <string name="unmetered_downloads_description">Inicie las descargas sólo con una conexión sin medidor (como la wi-fi)</string>
+    <string name="pause_downloads_on_network_change_description">Cancela las descargas activas si cambia la conexión a Internet (por ejemplo, de wifi a datos móviles), ya que Real-Debrid podría marcar tu cuenta por descargar desde varias direcciones IP. Las descargas canceladas deben reiniciarse manualmente.</string>
     <string name="download_on_metered_connection">Descarga retardada (conexión con contador)</string>
     <string name="leechers">Leechers</string>
     <string name="size">Tamaño</string>
@@ -432,6 +434,7 @@
     <string name="previous">Anterior</string>
     <string name="ready">Listo</string>
     <string name="select_files">Seleccionar archivos</string>
+    <string name="filter_files_hint">Filtrar por nombres; se puede utilizar el *</string>
     <string name="total_files">Total de archivos</string>
     <string name="total_size">Tamaño total</string>
     <string name="loading_torrent_info">Carga de archivos torrent. Utiliza el botón de descargar todo en la parte inferior si quieres descargar todo el contenido.</string>
@@ -480,6 +483,7 @@
     <string name="kodi_picker_description">Mostrar un menú de selección al enviar enlaces a Kodi</string>
     <string name="kodi_picker">Seleccione el servidor de destino</string>
     <string name="themes">Temas</string>
+    <string name="custom_theme">Tema personalizado</string>
     <string name="select">Selecciona</string>
     <string name="selected_theme">Tema seleccionado</string>
     <string name="apply">Aplicar</string>
@@ -549,4 +553,5 @@
     <string name="summary_search_start_destination">Página que se abrirá al acceder a la pestaña «Buscar»</string>
     <string name="please_select_plugins">Selecciona al menos un complemento</string>
     <string name="disabled">Desactivado</string>
+    <string name="pause_downloads_on_network_change">Cancelar descargas al cambiar de red</string>
 </resources>
