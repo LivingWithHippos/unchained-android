@@ -425,6 +425,7 @@
     <string name="custom_downloader_options_description">Ces options ne sont pas disponibles pour le gestionnaire de téléchargement par défaut</string>
     <string name="unmetered_downloads">Téléchargements sur des connexions non mesurées</string>
     <string name="unmetered_downloads_description">Lancez les téléchargements uniquement sur une connexion non mesurée (comme le wi-fi)</string>
+    <string name="pause_downloads_on_network_change_description">Annulez les téléchargements en cours si le réseau change (par exemple, passage du Wi-Fi aux données mobiles), car Real-Debrid pourrait signaler votre compte pour avoir effectué des téléchargements à partir de plusieurs adresses IP. Les téléchargements annulés doivent être relancés manuellement.</string>
     <string name="download_on_metered_connection">Téléchargement retardé (connexion avec compteur)</string>
     <string name="leechers">Leechers</string>
     <string name="size">Taille</string>
@@ -551,4 +552,5 @@
     <string name="title_search_start_destination">Écran de recherche</string>
     <string name="summary_search_start_destination">Page à afficher lors de l\'accès à l\'onglet « Recherche »</string>
     <string name="disabled">Désactivée</string>
+    <string name="pause_downloads_on_network_change">Annuler les téléchargements en cas de changement de réseau</string>
 </resources>

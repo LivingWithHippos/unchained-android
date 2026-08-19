@@ -427,6 +427,7 @@
     <string name="custom_downloader_options_description">Bu seçenekler varsayılan indirme yöneticisi için kullanılamaz</string>
     <string name="unmetered_downloads">Ölçülmemiş bağlantılarda indirmeler</string>
     <string name="unmetered_downloads_description">İndirmeleri yalnızca ölçülmemiş bağlantılarda (örneğin Wi-Fi) başlat</string>
+    <string name="pause_downloads_on_network_change_description">Ağ değiştiğinde (örneğin, Wi-Fi’den mobil veriye geçtiğinde) aktif indirmeleri iptal edin; çünkü Real-Debrid, birden fazla IP adresinden indirme yapıldığı gerekçesiyle hesabınızı işaretleyebilir. İptal edilen indirmeler manuel olarak yeniden başlatılmalıdır.</string>
     <string name="download_on_metered_connection">İndirme ertelendi (ölçülü bağlantı)</string>
     <string name="leechers">Leecher\'lar</string>
     <string name="size">Boyut</string>
@@ -553,4 +554,5 @@
     <string name="summary_search_start_destination">“Arama” sekmesine girildiğinde açılacak sayfa</string>
     <string name="please_select_plugins">Lütfen en az bir eklenti seçin</string>
     <string name="disabled">Engelli</string>
+    <string name="pause_downloads_on_network_change">Ağ değişikliği durumunda indirmeleri iptal et</string>
 </resources>

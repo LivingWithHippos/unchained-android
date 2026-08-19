@@ -425,6 +425,7 @@
     <string name="custom_downloader_options_description">Estas opciones no están disponibles para el gestor de descargas por defecto</string>
     <string name="unmetered_downloads">Descargas en conexiones sin medidor</string>
     <string name="unmetered_downloads_description">Inicie las descargas sólo con una conexión sin medidor (como la wi-fi)</string>
+    <string name="pause_downloads_on_network_change_description">Cancela las descargas activas si cambia la conexión a Internet (por ejemplo, de wifi a datos móviles), ya que Real-Debrid podría marcar tu cuenta por descargar desde varias direcciones IP. Las descargas canceladas deben reiniciarse manualmente.</string>
     <string name="download_on_metered_connection">Descarga retardada (conexión con contador)</string>
     <string name="leechers">Leechers</string>
     <string name="size">Tamaño</string>
@@ -551,4 +552,5 @@
     <string name="summary_search_start_destination">Página que se abrirá al acceder a la pestaña «Buscar»</string>
     <string name="please_select_plugins">Selecciona al menos un complemento</string>
     <string name="disabled">Desactivado</string>
+    <string name="pause_downloads_on_network_change">Cancelar descargas al cambiar de red</string>
 </resources>

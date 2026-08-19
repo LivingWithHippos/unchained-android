@@ -428,6 +428,7 @@
     <string name="custom_downloader_options_description">이 옵션은 기본 다운로드 관리자에서는 사용할 수 없습니다</string>
     <string name="unmetered_downloads">데이터 무제한 연결에서만 다운로드</string>
     <string name="unmetered_downloads_description">데이터 무제한 연결(Wi-Fi 등)에서만 다운로드 시작</string>
+    <string name="pause_downloads_on_network_change_description">네트워크가 변경될 경우(예: Wi-Fi에서 모바일 데이터로 전환 시) 진행 중인 다운로드를 취소하십시오. Real-Debrid에서 여러 IP 주소에서 다운로드가 이루어진 것으로 판단하여 계정을 차단할 수 있기 때문입니다. 취소된 다운로드는 수동으로 다시 시작해야 합니다.</string>
     <string name="download_on_metered_connection">다운로드 지연됨 (데이터 제한 연결)</string>
     <string name="leechers">요청자(Leechers)</string>
     <string name="size">크기</string>
@@ -554,4 +555,5 @@
     <string name="summary_search_start_destination">‘검색’ 탭으로 이동 시 표시될 페이지</string>
     <string name="please_select_plugins">플러그인을 하나 이상 선택해 주세요</string>
     <string name="disabled">옵션 사용 중지됨</string>
+    <string name="pause_downloads_on_network_change">네트워크 변경 시 다운로드 취소</string>
 </resources>

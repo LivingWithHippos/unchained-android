@@ -431,6 +431,7 @@
     <string name="custom_downloader_options_description">Queste opzioni non sono disponibili per il gestore di download di default</string>
     <string name="unmetered_downloads">Download su connessioni non a consumo</string>
     <string name="unmetered_downloads_description">Avvia i download solo con connessioni non a consumo (come il wi-fi)</string>
+    <string name="pause_downloads_on_network_change_description">Annulla i download in corso se la connessione di rete cambia (ad esempio, da Wi-Fi a dati mobili), poiché Real-Debrid potrebbe segnalare il tuo account per aver effettuato download da più indirizzi IP. I download annullati devono essere riavviati manualmente</string>
     <string name="download_on_metered_connection">Download rinviato (connessione a consumo)</string>
     <string name="leechers">Leechers</string>
     <string name="size">Dimensione</string>
@@ -552,4 +553,5 @@
     <string name="summary_search_start_destination">Pagina da aprire quando si seleziona il pulsante di ricerca</string>
     <string name="please_select_plugins">Selezionare almeno un plugin</string>
     <string name="disabled">Disabilitato</string>
+    <string name="pause_downloads_on_network_change">Annulla i download in caso di cambio rete</string>
 </resources>
