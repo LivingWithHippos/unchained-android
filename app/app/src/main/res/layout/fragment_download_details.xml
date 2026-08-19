@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.github.livingwithhippos.unchained.utilities.NonFocusableNestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -139,6 +139,7 @@
                     android:id="@+id/fabShareLink"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:focusable="true"
                     android:contentDescription="@string/share"
                     app:srcCompat="@drawable/icon_share" />
 
@@ -164,6 +165,7 @@
                     android:id="@+id/fabOpenLink"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:focusable="true"
                     android:contentDescription="@string/open_link"
                     app:srcCompat="@drawable/icon_open_external" />
 
@@ -189,6 +191,7 @@
                     android:id="@+id/fabCopyLink"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:focusable="true"
                     android:contentDescription="@string/copy_link"
                     app:srcCompat="@drawable/icon_copy" />
 
@@ -214,6 +217,7 @@
                     android:id="@+id/fabDownloadLink"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:focusable="true"
                     android:contentDescription="@string/download"
                     app:srcCompat="@drawable/icon_download" />
 
@@ -238,6 +242,7 @@
                     android:id="@+id/fabSendToPlayer"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:focusable="true"
                     android:contentDescription="@string/send_to_player"
                     app:srcCompat="@drawable/icon_play_local" />
 
@@ -263,6 +268,7 @@
                     android:id="@+id/fabPickStreaming"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:focusable="true"
                     android:contentDescription="@string/streaming"
                     app:srcCompat="@drawable/icon_remote" />
 
@@ -315,6 +321,7 @@
                     android:id="@+id/fabLoadStreams"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:focusable="true"
                     android:contentDescription="@string/load_streams"
                     app:srcCompat="@drawable/icon_transform" />
 
@@ -347,4 +354,4 @@
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.core.widget.NestedScrollView>
+</com.github.livingwithhippos.unchained.utilities.NonFocusableNestedScrollView>
