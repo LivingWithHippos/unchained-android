@@ -65,6 +65,11 @@ import com.github.livingwithhippos.unchained.utilities.postEvent
 import com.tinder.StateMachine
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import java.io.File
+import java.util.regex.Matcher
+import java.util.regex.Pattern
+import javax.inject.Inject
+import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -72,11 +77,6 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.io.File
-import java.util.regex.Matcher
-import java.util.regex.Pattern
-import javax.inject.Inject
-import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * a [ViewModel] subclass. Shared between the fragments to observe the authentication status and

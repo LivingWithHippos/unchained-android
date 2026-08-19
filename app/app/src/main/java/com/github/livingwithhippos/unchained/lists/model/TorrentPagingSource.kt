@@ -4,8 +4,8 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.github.livingwithhippos.unchained.data.model.TorrentItem
 import com.github.livingwithhippos.unchained.data.repository.TorrentsRepository
-import retrofit2.HttpException
 import java.io.IOException
+import retrofit2.HttpException
 
 private const val TORRENT_STARTING_PAGE_INDEX = 1
 

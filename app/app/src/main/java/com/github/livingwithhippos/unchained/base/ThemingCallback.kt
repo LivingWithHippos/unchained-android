@@ -44,7 +44,9 @@ class ThemingCallback(val preferences: SharedPreferences) : Application.Activity
         if (!DynamicColors.isDynamicColorAvailable()) return
         val options =
             if (theme.key == CUSTOM_THEME_KEY) {
-                DynamicColorsOptions.Builder().setContentBasedSource(customSeedColor(activity)).build()
+                DynamicColorsOptions.Builder()
+                    .setContentBasedSource(customSeedColor(activity))
+                    .build()
             } else {
                 DynamicColorsOptions.Builder().build()
             }

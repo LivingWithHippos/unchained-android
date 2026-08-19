@@ -1,8 +1,8 @@
 package com.github.livingwithhippos.unchained.data.remote
 
 import com.github.livingwithhippos.unchained.data.model.Host
-import retrofit2.Response
 import javax.inject.Inject
+import retrofit2.Response
 
 class HostsApiHelperImpl @Inject constructor(private val hostsApi: HostsApi) : HostsApiHelper {
 

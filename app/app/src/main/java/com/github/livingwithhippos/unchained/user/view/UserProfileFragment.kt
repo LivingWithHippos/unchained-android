@@ -26,8 +26,8 @@ import com.github.livingwithhippos.unchained.utilities.REFERRAL_LINK
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlinx.coroutines.launch
 
 /** A simple [UnchainedFragment] subclass. Shows a user profile details. */
 @AndroidEntryPoint
@@ -153,9 +153,9 @@ class UserProfileFragment : UnchainedFragment() {
 
         if (
             ContextCompat.checkSelfPermission(
-                    requireContext(),
-                    Manifest.permission.ACCESS_LOCAL_NETWORK,
-                ) != PermissionChecker.PERMISSION_GRANTED
+                requireContext(),
+                Manifest.permission.ACCESS_LOCAL_NETWORK,
+            ) != PermissionChecker.PERMISSION_GRANTED
         ) {
             activityViewModel.requireLocalNetworkPermissions()
         }

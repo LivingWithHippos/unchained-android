@@ -2,11 +2,11 @@ package com.github.livingwithhippos.unchained.data.local
 
 import android.content.Context
 import dagger.hilt.android.qualifiers.ApplicationContext
+import java.io.IOException
+import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
-import java.io.IOException
-import javax.inject.Inject
 
 class ProtoStoreImpl @Inject constructor(@param:ApplicationContext private val context: Context) :
     ProtoStore {

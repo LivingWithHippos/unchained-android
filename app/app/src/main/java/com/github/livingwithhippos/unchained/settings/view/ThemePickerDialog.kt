@@ -101,8 +101,8 @@ class ThemePickerDialog : BottomSheetDialogFragment(), ThemePickListener {
  * @param primaryColorID: The primary color
  * @param surfaceColorID: The surface color
  * @param primaryContainerColorID: The primary container color
- * @param isDynamic: true if this theme's colors come from Android's dynamic color system instead
- *   of the fixed colors baked into themeID, either from the wallpaper or a user-picked seed color
+ * @param isDynamic: true if this theme's colors come from Android's dynamic color system instead of
+ *   the fixed colors baked into themeID, either from the wallpaper or a user-picked seed color
  */
 data class ThemeItem(
     val name: String,

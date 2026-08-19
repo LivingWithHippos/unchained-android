@@ -10,11 +10,11 @@ import com.github.livingwithhippos.unchained.data.model.UnchainedNetworkExceptio
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
+import java.io.IOException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.Response
 import timber.log.Timber
-import java.io.IOException
 
 /**
  * Base repository class to be extended by other repositories. Manages the calls between retrofit

@@ -13,11 +13,11 @@ import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.postEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
-import timber.log.Timber
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 import javax.inject.Inject
+import kotlinx.coroutines.launch
+import timber.log.Timber
 
 /** A [ViewModel] subclass. It offers LiveData to be observed while creating new downloads */
 @HiltViewModel

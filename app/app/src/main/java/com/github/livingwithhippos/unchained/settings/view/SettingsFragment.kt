@@ -30,8 +30,8 @@ import com.github.livingwithhippos.unchained.utilities.extension.playerSetupClip
 import com.github.livingwithhippos.unchained.utilities.extension.preferredVideoPlayerLabel
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 import javax.inject.Inject
+import timber.log.Timber
 
 /**
  * A simple [PreferenceFragmentCompat] subclass. Manages the interactions with the items in the
@@ -220,15 +220,15 @@ class SettingsFragment : PreferenceFragmentCompat() {
         // dead control there
         findPreference<Preference>("vibrate_on_download")?.isVisible = false
     }
-    
+
     /**
      * Wire up the single "default media player" row. Instead of maintaining a list of known
      * players, clicking the row hands a small bundled clip to the system's "open with" chooser so
      * the user can pick any installed player; the choice is remembered as this app's own preferred
-     * player (see [com.github.livingwithhippos.unchained.utilities.VideoPlayerChosenReceiver]),
-     * not through Android's own OS level "always" mechanism, which cannot be reliably undone by a
-     * third party app. The row always reopens the chooser when clicked, so changing the choice
-     * later works the same way as picking it the first time.
+     * player (see [com.github.livingwithhippos.unchained.utilities.VideoPlayerChosenReceiver]), not
+     * through Android's own OS level "always" mechanism, which cannot be reliably undone by a third
+     * party app. The row always reopens the chooser when clicked, so changing the choice later
+     * works the same way as picking it the first time.
      */
     private fun setupDefaultMediaPlayerPicker() {
         val playerPreference = findPreference<Preference>("default_media_player_picker") ?: return
@@ -240,7 +240,9 @@ class SettingsFragment : PreferenceFragmentCompat() {
         }
     }
 
-    /** Set the media player row summary to the current preferred player label, or a "not set" hint. */
+    /**
+     * Set the media player row summary to the current preferred player label, or a "not set" hint.
+     */
     private fun updateDefaultMediaPlayerSummary() {
         val playerPreference = findPreference<Preference>("default_media_player_picker") ?: return
         val currentPlayer = requireContext().preferredVideoPlayerLabel()

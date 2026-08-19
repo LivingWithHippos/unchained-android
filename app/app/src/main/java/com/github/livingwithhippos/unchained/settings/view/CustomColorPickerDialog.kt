@@ -25,10 +25,10 @@ import com.google.android.material.slider.Slider
 import dagger.hilt.android.AndroidEntryPoint
 
 /**
- * Lets the user pick any seed color from a color wheel, generating a full Material 3 palette
- * from it the same way Material You does from the wallpaper (via DynamicColorsOptions'
- * content-based source), instead of only choosing between the app's fixed color themes. There is
- * only one custom slot: applying a new color overwrites whatever was picked before.
+ * Lets the user pick any seed color from a color wheel, generating a full Material 3 palette from
+ * it the same way Material You does from the wallpaper (via DynamicColorsOptions' content-based
+ * source), instead of only choosing between the app's fixed color themes. There is only one custom
+ * slot: applying a new color overwrites whatever was picked before.
  */
 @AndroidEntryPoint
 class CustomColorPickerDialog : BottomSheetDialogFragment() {
@@ -66,9 +66,9 @@ class CustomColorPickerDialog : BottomSheetDialogFragment() {
         val quickSelectContainer = view.findViewById<LinearLayout>(R.id.quickSelectContainer)
 
         val previewDrawable =
-            GradientDrawable().apply { shape = GradientDrawable.OVAL }.also {
-                colorPreview.background = it
-            }
+            GradientDrawable()
+                .apply { shape = GradientDrawable.OVAL }
+                .also { colorPreview.background = it }
         fun updatePreview() {
             previewDrawable.setColor(colorWheel.selectedColor)
         }

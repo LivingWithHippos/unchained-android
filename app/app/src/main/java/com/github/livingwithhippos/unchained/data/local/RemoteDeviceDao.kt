@@ -12,10 +12,10 @@ import androidx.room.OnConflictStrategy
 import androidx.room.PrimaryKey
 import androidx.room.Query
 import androidx.room.Upsert
+import java.util.Objects
 import kotlinx.coroutines.flow.Flow
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
-import java.util.Objects
 
 @Keep
 @Parcelize

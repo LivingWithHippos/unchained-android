@@ -40,6 +40,8 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import java.net.InetAddress
+import javax.inject.Singleton
 import okhttp3.ConnectionSpec
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.OkHttpClient
@@ -48,8 +50,6 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
-import java.net.InetAddress
-import javax.inject.Singleton
 
 /** This object manages the Dagger-Hilt injection for the OkHttp and Retrofit clients */
 @InstallIn(SingletonComponent::class)

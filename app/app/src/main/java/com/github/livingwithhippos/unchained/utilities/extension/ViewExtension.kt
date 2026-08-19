@@ -24,8 +24,8 @@ import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.local.RemoteServiceType
 import com.github.livingwithhippos.unchained.repository.model.PluginStatus
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.milliseconds
+import kotlinx.coroutines.delay
 
 /**
  * tint the color of a [ProgressBar] layer drawable

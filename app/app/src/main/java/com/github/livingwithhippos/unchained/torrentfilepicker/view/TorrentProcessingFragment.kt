@@ -39,11 +39,11 @@ import com.github.livingwithhippos.unchained.utilities.extension.isMagnet
 import com.github.livingwithhippos.unchained.utilities.extension.isTorrent
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 import java.io.File
 import java.io.IOException
 import java.util.regex.Matcher
 import java.util.regex.Pattern
+import timber.log.Timber
 
 /** This fragment is shown after a user uploads a torrent or a magnet. */
 @AndroidEntryPoint
@@ -436,7 +436,6 @@ class TorrentProcessingFragment : UnchainedFragment(), TorrentContentListener {
         }
     }
 
-
     override fun onSelectedFile(item: TorrentFileItem) {
         Timber.d("selected file $item was ${item.selected}")
         currentStructure?.let { structure ->
@@ -456,9 +455,9 @@ class TorrentProcessingFragment : UnchainedFragment(), TorrentContentListener {
             Node.traverseNodeDepthFirst(structure) {
                 if (
                     it.value.absolutePath == item.absolutePath &&
-                    it.value.name == item.name &&
-                    it.value.id == TYPE_FOLDER &&
-                    item.id == TYPE_FOLDER
+                        it.value.name == item.name &&
+                        it.value.id == TYPE_FOLDER &&
+                        item.id == TYPE_FOLDER
                 ) {
                     folderNode = it
                     return@traverseNodeDepthFirst

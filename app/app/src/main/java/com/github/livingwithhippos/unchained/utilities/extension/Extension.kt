@@ -63,9 +63,9 @@ import com.github.livingwithhippos.unchained.utilities.PreferenceKeys
 import com.github.livingwithhippos.unchained.utilities.VideoPlayerChosenReceiver
 import com.google.android.material.color.DynamicColors
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import timber.log.Timber
 import java.io.File
 import java.util.Locale
+import timber.log.Timber
 
 /**
  * Provides the list of available themes, used to easily get them with ids from anything with a
@@ -74,88 +74,100 @@ import java.util.Locale
 fun Context.getThemeList(): List<ThemeItem> {
     val staticThemes =
         listOf(
-        ThemeItem(
-            "Waves",
-            "waves_01",
-            THEME_DAY,
-            R.style.Theme_Unchained_Material3_Waves_One,
-            ResourcesCompat.getColor(resources, R.color.radical_red, null),
-            ResourcesCompat.getColor(resources, R.color.waves_one_theme_surface, null),
-            ResourcesCompat.getColor(resources, R.color.waves_one_theme_primaryContainer, null),
-        ),
-        ThemeItem(
-            "Black and White",
-            "bnw_01",
-            THEME_AUTO,
-            R.style.Theme_Unchained_Material3_BnW_One,
-            ResourcesCompat.getColor(resources, R.color.bnw_one_theme_primary, null),
-            ResourcesCompat.getColor(resources, R.color.bnw_one_theme_surface, null),
-            ResourcesCompat.getColor(resources, R.color.bnw_one_theme_primaryContainer, null),
-        ),
-        ThemeItem(
-            "Red",
-            "red_01",
-            THEME_AUTO,
-            R.style.Theme_Unchained_Material3_Red_One,
-            ResourcesCompat.getColor(resources, R.color.red_one_theme_primary, null),
-            ResourcesCompat.getColor(resources, R.color.red_one_theme_surface, null),
-            ResourcesCompat.getColor(resources, R.color.red_one_theme_primaryContainer, null),
-        ),
-        ThemeItem(
-            "Orange",
-            "orange_01",
-            THEME_AUTO,
-            R.style.Theme_Unchained_Material3_Orange_One,
-            ResourcesCompat.getColor(resources, R.color.orange_one_theme_primary, null),
-            ResourcesCompat.getColor(resources, R.color.orange_one_theme_surface, null),
-            ResourcesCompat.getColor(resources, R.color.orange_one_theme_primaryContainer, null),
-        ),
-        ThemeItem(
-            "Yellow",
-            "yellow_01",
-            THEME_AUTO,
-            R.style.Theme_Unchained_Material3_Yellow_One,
-            ResourcesCompat.getColor(resources, R.color.yellow_one_theme_primary, null),
-            ResourcesCompat.getColor(resources, R.color.yellow_one_theme_surface, null),
-            ResourcesCompat.getColor(resources, R.color.yellow_one_theme_primaryContainer, null),
-        ),
-        ThemeItem(
-            "Purple",
-            "purple_01",
-            THEME_AUTO,
-            R.style.Theme_Unchained_Material3_Purple_One,
-            ResourcesCompat.getColor(resources, R.color.purple_one_theme_primary, null),
-            ResourcesCompat.getColor(resources, R.color.purple_one_theme_surface, null),
-            ResourcesCompat.getColor(resources, R.color.purple_one_theme_primaryContainer, null),
-        ),
-        ThemeItem(
-            "Green",
-            "green_01",
-            THEME_AUTO,
-            R.style.Theme_Unchained_Material3_Green_One,
-            ResourcesCompat.getColor(resources, R.color.green_one_theme_primary, null),
-            ResourcesCompat.getColor(resources, R.color.green_one_theme_surface, null),
-            ResourcesCompat.getColor(resources, R.color.green_one_theme_primaryContainer, null),
-        ),
-        ThemeItem(
-            "Blue",
-            "blue_01",
-            THEME_AUTO,
-            R.style.Theme_Unchained_Material3_Blue_One,
-            ResourcesCompat.getColor(resources, R.color.blue_one_theme_primary, null),
-            ResourcesCompat.getColor(resources, R.color.blue_one_theme_surface, null),
-            ResourcesCompat.getColor(resources, R.color.blue_one_theme_primaryContainer, null),
-        ),
-        ThemeItem(
-            "Grey",
-            "grey_01",
-            THEME_AUTO,
-            R.style.Theme_Unchained_Material3_Grey_One,
-            ResourcesCompat.getColor(resources, R.color.grey_one_theme_primary, null),
-            ResourcesCompat.getColor(resources, R.color.grey_one_theme_surface, null),
-            ResourcesCompat.getColor(resources, R.color.grey_one_theme_primaryContainer, null),
-        ),
-    )
+            ThemeItem(
+                "Waves",
+                "waves_01",
+                THEME_DAY,
+                R.style.Theme_Unchained_Material3_Waves_One,
+                ResourcesCompat.getColor(resources, R.color.radical_red, null),
+                ResourcesCompat.getColor(resources, R.color.waves_one_theme_surface, null),
+                ResourcesCompat.getColor(resources, R.color.waves_one_theme_primaryContainer, null),
+            ),
+            ThemeItem(
+                "Black and White",
+                "bnw_01",
+                THEME_AUTO,
+                R.style.Theme_Unchained_Material3_BnW_One,
+                ResourcesCompat.getColor(resources, R.color.bnw_one_theme_primary, null),
+                ResourcesCompat.getColor(resources, R.color.bnw_one_theme_surface, null),
+                ResourcesCompat.getColor(resources, R.color.bnw_one_theme_primaryContainer, null),
+            ),
+            ThemeItem(
+                "Red",
+                "red_01",
+                THEME_AUTO,
+                R.style.Theme_Unchained_Material3_Red_One,
+                ResourcesCompat.getColor(resources, R.color.red_one_theme_primary, null),
+                ResourcesCompat.getColor(resources, R.color.red_one_theme_surface, null),
+                ResourcesCompat.getColor(resources, R.color.red_one_theme_primaryContainer, null),
+            ),
+            ThemeItem(
+                "Orange",
+                "orange_01",
+                THEME_AUTO,
+                R.style.Theme_Unchained_Material3_Orange_One,
+                ResourcesCompat.getColor(resources, R.color.orange_one_theme_primary, null),
+                ResourcesCompat.getColor(resources, R.color.orange_one_theme_surface, null),
+                ResourcesCompat.getColor(
+                    resources,
+                    R.color.orange_one_theme_primaryContainer,
+                    null,
+                ),
+            ),
+            ThemeItem(
+                "Yellow",
+                "yellow_01",
+                THEME_AUTO,
+                R.style.Theme_Unchained_Material3_Yellow_One,
+                ResourcesCompat.getColor(resources, R.color.yellow_one_theme_primary, null),
+                ResourcesCompat.getColor(resources, R.color.yellow_one_theme_surface, null),
+                ResourcesCompat.getColor(
+                    resources,
+                    R.color.yellow_one_theme_primaryContainer,
+                    null,
+                ),
+            ),
+            ThemeItem(
+                "Purple",
+                "purple_01",
+                THEME_AUTO,
+                R.style.Theme_Unchained_Material3_Purple_One,
+                ResourcesCompat.getColor(resources, R.color.purple_one_theme_primary, null),
+                ResourcesCompat.getColor(resources, R.color.purple_one_theme_surface, null),
+                ResourcesCompat.getColor(
+                    resources,
+                    R.color.purple_one_theme_primaryContainer,
+                    null,
+                ),
+            ),
+            ThemeItem(
+                "Green",
+                "green_01",
+                THEME_AUTO,
+                R.style.Theme_Unchained_Material3_Green_One,
+                ResourcesCompat.getColor(resources, R.color.green_one_theme_primary, null),
+                ResourcesCompat.getColor(resources, R.color.green_one_theme_surface, null),
+                ResourcesCompat.getColor(resources, R.color.green_one_theme_primaryContainer, null),
+            ),
+            ThemeItem(
+                "Blue",
+                "blue_01",
+                THEME_AUTO,
+                R.style.Theme_Unchained_Material3_Blue_One,
+                ResourcesCompat.getColor(resources, R.color.blue_one_theme_primary, null),
+                ResourcesCompat.getColor(resources, R.color.blue_one_theme_surface, null),
+                ResourcesCompat.getColor(resources, R.color.blue_one_theme_primaryContainer, null),
+            ),
+            ThemeItem(
+                "Grey",
+                "grey_01",
+                THEME_AUTO,
+                R.style.Theme_Unchained_Material3_Grey_One,
+                ResourcesCompat.getColor(resources, R.color.grey_one_theme_primary, null),
+                ResourcesCompat.getColor(resources, R.color.grey_one_theme_surface, null),
+                ResourcesCompat.getColor(resources, R.color.grey_one_theme_primaryContainer, null),
+            ),
+        )
     return if (DynamicColors.isDynamicColorAvailable()) {
         staticThemes + getDynamicWallpaperThemeItem() + getCustomThemeItem()
     } else {
@@ -164,9 +176,9 @@ fun Context.getThemeList(): List<ThemeItem> {
 }
 
 /**
- * The "Material You" theme entry: colors come from the device wallpaper via Android's dynamic
- * color system instead of a fixed palette, so its preview swatch is only a best-effort
- * approximation of the current wallpaper colors, not the exact colors DynamicColors will apply
+ * The "Material You" theme entry: colors come from the device wallpaper via Android's dynamic color
+ * system instead of a fixed palette, so its preview swatch is only a best-effort approximation of
+ * the current wallpaper colors, not the exact colors DynamicColors will apply
  */
 @RequiresApi(Build.VERSION_CODES.S)
 private fun Context.getDynamicWallpaperThemeItem(): ThemeItem {
@@ -174,9 +186,12 @@ private fun Context.getDynamicWallpaperThemeItem(): ThemeItem {
         resources.configuration.uiMode.and(Configuration.UI_MODE_NIGHT_MASK) ==
             Configuration.UI_MODE_NIGHT_YES
     // system_accent1/2 tonal ramps are always available once dynamic color itself is available
-    val primaryTone = if (isNight) android.R.color.system_accent1_200 else android.R.color.system_accent1_600
-    val surfaceTone = if (isNight) android.R.color.system_neutral1_900 else android.R.color.system_neutral1_10
-    val containerTone = if (isNight) android.R.color.system_accent2_700 else android.R.color.system_accent2_100
+    val primaryTone =
+        if (isNight) android.R.color.system_accent1_200 else android.R.color.system_accent1_600
+    val surfaceTone =
+        if (isNight) android.R.color.system_neutral1_900 else android.R.color.system_neutral1_10
+    val containerTone =
+        if (isNight) android.R.color.system_accent2_700 else android.R.color.system_accent2_100
     return ThemeItem(
         name = "Material You",
         key = DYNAMIC_WALLPAPER_KEY,
@@ -190,10 +205,10 @@ private fun Context.getDynamicWallpaperThemeItem(): ThemeItem {
 }
 
 /**
- * The "Custom" theme entry: colors are generated from a user-picked seed color instead of a
- * fixed palette or the wallpaper. The preview swatch approximates the generated palette by
- * blending the seed toward white, since the real palette only exists once DynamicColors applies
- * it to an actual activity.
+ * The "Custom" theme entry: colors are generated from a user-picked seed color instead of a fixed
+ * palette or the wallpaper. The preview swatch approximates the generated palette by blending the
+ * seed toward white, since the real palette only exists once DynamicColors applies it to an actual
+ * activity.
  */
 private fun Context.getCustomThemeItem(): ThemeItem {
     val preferences = PreferenceManager.getDefaultSharedPreferences(this)
@@ -269,8 +284,9 @@ fun Activity.applyThemeAwareSystemBarIconColors() {
     controller.isAppearanceLightStatusBars =
         ColorUtils.calculateLuminance(getThemeColor(android.R.attr.colorPrimary)) > 0.5
     controller.isAppearanceLightNavigationBars =
-        ColorUtils.calculateLuminance(getThemeColor(com.google.android.material.R.attr.colorSurface)) >
-            0.5
+        ColorUtils.calculateLuminance(
+            getThemeColor(com.google.android.material.R.attr.colorSurface)
+        ) > 0.5
 }
 
 /**
@@ -430,9 +446,9 @@ fun Context.openExternalWebPage(url: String, showErrorToast: Boolean = true): Bo
 /**
  * Hand a media url to any installed player through a picker dialog, so the user picks the player
  * themselves instead of relying on a hardcoded list. Uses our own dialog rather than the system
- * chooser so VLC specifically can still be routed through [launchIntentForPlayer]'s safe shape
- * once picked; the system chooser dispatches the intent itself and gives no chance to adjust it
- * per choice.
+ * chooser so VLC specifically can still be routed through [launchIntentForPlayer]'s safe shape once
+ * picked; the system chooser dispatches the intent itself and gives no chance to adjust it per
+ * choice.
  *
  * @param url the media url to open
  * @param mimeType the known mime type of the media, or null to guess it from the url
@@ -558,7 +574,8 @@ fun Context.pickVideoPlayer(uri: Uri) {
             Intent(this, VideoPlayerChosenReceiver::class.java),
             callbackFlags,
         )
-    val chooser = Intent.createChooser(viewIntent, getString(R.string.open_with), callback.intentSender)
+    val chooser =
+        Intent.createChooser(viewIntent, getString(R.string.open_with), callback.intentSender)
     try {
         startActivity(chooser)
     } catch (e: ActivityNotFoundException) {
@@ -745,12 +762,14 @@ fun AssetManager.smartList(path: String): Array<String>? {
 
 fun ByteArray.toHex(): String = joinToString(separator = "") { eachByte -> "%02x".format(eachByte) }
 
-inline fun <reified T : Parcelable> Intent.parcelable(key: String): T? = when {
-    SDK_INT >= 34 -> getParcelableExtra(key, T::class.java)
-    else -> @Suppress("DEPRECATION") getParcelableExtra(key) as? T
-}
+inline fun <reified T : Parcelable> Intent.parcelable(key: String): T? =
+    when {
+        SDK_INT >= 34 -> getParcelableExtra(key, T::class.java)
+        else -> @Suppress("DEPRECATION") getParcelableExtra(key) as? T
+    }
 
-inline fun <reified T : Parcelable> Bundle.parcelable(key: String): T? = when {
-    SDK_INT >= 34 -> getParcelable(key, T::class.java)
-    else -> @Suppress("DEPRECATION") getParcelable(key) as? T
-}
+inline fun <reified T : Parcelable> Bundle.parcelable(key: String): T? =
+    when {
+        SDK_INT >= 34 -> getParcelable(key, T::class.java)
+        else -> @Suppress("DEPRECATION") getParcelable(key) as? T
+    }

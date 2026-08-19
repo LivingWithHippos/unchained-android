@@ -12,11 +12,11 @@ import com.github.livingwithhippos.unchained.data.remote.KodiApiHelper
 import com.github.livingwithhippos.unchained.data.remote.KodiApiHelperImpl
 import com.github.livingwithhippos.unchained.di.ClassicClient
 import com.github.livingwithhippos.unchained.utilities.addHttpScheme
+import javax.inject.Inject
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import timber.log.Timber
-import javax.inject.Inject
 
 class KodiRepository
 @Inject
@@ -192,7 +192,10 @@ constructor(protoStore: ProtoStore, @param:ClassicClient private val client: OkH
                     call = {
                         kodiApiHelper.getActivePlayers(
                             request =
-                                KodiRequest(method = "Player.GetActivePlayers", params = KodiParams()),
+                                KodiRequest(
+                                    method = "Player.GetActivePlayers",
+                                    params = KodiParams(),
+                                ),
                             auth = auth,
                         )
                     },
@@ -216,7 +219,8 @@ constructor(protoStore: ProtoStore, @param:ClassicClient private val client: OkH
                             request =
                                 KodiRequest(
                                     method = "Player.AddSubtitle",
-                                    params = KodiParams(playerId = playerId, subtitle = subtitleUrl),
+                                    params =
+                                        KodiParams(playerId = playerId, subtitle = subtitleUrl),
                                 ),
                             auth = auth,
                         )

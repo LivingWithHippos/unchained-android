@@ -9,8 +9,8 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import com.github.livingwithhippos.unchained.R
-import kotlinx.parcelize.Parcelize
 import java.util.Objects
+import kotlinx.parcelize.Parcelize
 
 @Keep
 @Parcelize

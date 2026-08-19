@@ -32,12 +32,12 @@ import com.github.livingwithhippos.unchained.utilities.extension.getStatusTransl
 import com.github.livingwithhippos.unchained.utilities.extension.vibrate
 import com.github.livingwithhippos.unchained.utilities.loadingStatusList
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.milliseconds
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import timber.log.Timber
 
 const val MAX_SERVICE_DURATION = 5 * 60 * 60 * 1000
 const val MIN_SERVICE_DURATION = 20 * 60 * 1000

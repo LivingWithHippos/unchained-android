@@ -27,8 +27,8 @@ import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.sidesheet.SideSheetDialog
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 import kotlin.time.Instant
+import timber.log.Timber
 
 @AndroidEntryPoint
 class PluginSearchFragment : UnchainedFragment(), SearchItemListener {
