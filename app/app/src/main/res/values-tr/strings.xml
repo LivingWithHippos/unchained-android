@@ -556,4 +556,5 @@
     <string name="please_select_plugins">Lütfen en az bir eklenti seçin</string>
     <string name="disabled">Engelli</string>
     <string name="pause_downloads_on_network_change">Ağ değişikliği durumunda indirmeleri iptal et</string>
+    <string name="needs_local_network_permission">Unchained, ağınızdaki medya dosyalarını oynatmak için yerel ağ iznine ihtiyaç duyar</string>
 </resources>

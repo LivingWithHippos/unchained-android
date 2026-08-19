@@ -1,5 +1,6 @@
 package com.github.livingwithhippos.unchained.torrentfilepicker.view
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -44,7 +45,7 @@ import java.util.regex.Matcher
 import java.util.regex.Pattern
 import timber.log.Timber
 
-/** This fragments is shown after a user uploads a torrent or a magnet. */
+/** This fragment is shown after a user uploads a torrent or a magnet. */
 @AndroidEntryPoint
 class TorrentProcessingFragment : UnchainedFragment(), TorrentContentListener {
 
@@ -294,6 +295,7 @@ class TorrentProcessingFragment : UnchainedFragment(), TorrentContentListener {
         return filesList
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun updateFilesList() {
         if (_binding == null) return
         with(binding.rvTorrentFilePicker.adapter as TorrentContentFilesSelectionAdapter) {
@@ -434,7 +436,6 @@ class TorrentProcessingFragment : UnchainedFragment(), TorrentContentListener {
         }
     }
 
-
     override fun onSelectedFile(item: TorrentFileItem) {
         Timber.d("selected file $item was ${item.selected}")
         currentStructure?.let { structure ->
@@ -454,9 +455,9 @@ class TorrentProcessingFragment : UnchainedFragment(), TorrentContentListener {
             Node.traverseNodeDepthFirst(structure) {
                 if (
                     it.value.absolutePath == item.absolutePath &&
-                    it.value.name == item.name &&
-                    it.value.id == TYPE_FOLDER &&
-                    item.id == TYPE_FOLDER
+                        it.value.name == item.name &&
+                        it.value.id == TYPE_FOLDER &&
+                        item.id == TYPE_FOLDER
                 ) {
                     folderNode = it
                     return@traverseNodeDepthFirst

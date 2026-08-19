@@ -6,10 +6,9 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import com.github.livingwithhippos.unchained.R
 import androidx.core.content.ContextCompat
+import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.settings.view.SettingsFragment
-import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Companion.KEY_NEW_THEME
 import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Companion.THEME_AUTO
 import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Companion.THEME_DAY
 import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Companion.THEME_NIGHT
@@ -17,7 +16,6 @@ import com.github.livingwithhippos.unchained.settings.view.ThemeItem
 import com.github.livingwithhippos.unchained.utilities.PreferenceKeys
 import com.github.livingwithhippos.unchained.utilities.extension.applyThemeAwareSystemBarIconColors
 import com.github.livingwithhippos.unchained.utilities.extension.getThemeItem
-import com.github.livingwithhippos.unchained.utilities.extension.getThemeList
 import com.google.android.material.color.DynamicColors
 import com.google.android.material.color.DynamicColorsOptions
 import java.util.WeakHashMap
@@ -46,7 +44,9 @@ class ThemingCallback(val preferences: SharedPreferences) : Application.Activity
         if (!DynamicColors.isDynamicColorAvailable()) return
         val options =
             if (theme.key == CUSTOM_THEME_KEY) {
-                DynamicColorsOptions.Builder().setContentBasedSource(customSeedColor(activity)).build()
+                DynamicColorsOptions.Builder()
+                    .setContentBasedSource(customSeedColor(activity))
+                    .build()
             } else {
                 DynamicColorsOptions.Builder().build()
             }

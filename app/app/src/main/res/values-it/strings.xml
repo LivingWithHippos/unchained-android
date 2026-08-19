@@ -555,4 +555,5 @@
     <string name="please_select_plugins">Selezionare almeno un plugin</string>
     <string name="disabled">Disabilitato</string>
     <string name="pause_downloads_on_network_change">Annulla i download in caso di cambio rete</string>
+    <string name="needs_local_network_permission">Unchained necessita dell\'autorizzazione alla rete locale per riprodurre i file multimediali presenti sulla tua rete</string>
 </resources>

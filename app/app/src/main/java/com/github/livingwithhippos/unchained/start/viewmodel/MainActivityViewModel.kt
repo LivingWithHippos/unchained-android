@@ -69,6 +69,7 @@ import java.io.File
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -76,7 +77,6 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * a [ViewModel] subclass. Shared between the fragments to observe the authentication status and
@@ -1009,6 +1009,15 @@ constructor(
         }
     }
 
+    fun requireLocalNetworkPermissions(callDelay: Boolean = true) {
+        viewModelScope.launch {
+            if (callDelay) {
+                delay(500.milliseconds)
+            }
+            messageLiveData.postValue(Event(MainActivityMessage.RequireLocalNetworkPermissions))
+        }
+    }
+
     fun getDownloadManagerPreference(): String {
         return preferences.getString(
             PreferenceKeys.DownloadManager.KEY,
@@ -1157,6 +1166,8 @@ sealed class MainActivityMessage {
     data object RequireDownloadPermissions : MainActivityMessage()
 
     data object RequireNotificationPermissions : MainActivityMessage()
+
+    data object RequireLocalNetworkPermissions : MainActivityMessage()
 
     data class DownloadEnqueued(val source: String, val fileName: String) : MainActivityMessage()
 

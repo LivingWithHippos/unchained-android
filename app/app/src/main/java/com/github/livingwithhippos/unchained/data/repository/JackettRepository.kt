@@ -79,62 +79,60 @@ constructor(
         album: String? = null,
         artist: String? = null,
         publisher: String? = null,
-    ) =
-        flow {
-                val builder = getBasicApi(service, indexer)
-                if (builder == null) {
-                    emit(ParserResult.SourceError)
-                    return@flow
-                }
-                if (mediaType == null) builder.appendQueryParameter("t", "search")
-                else builder.appendQueryParameter("t", mediaType.value)
+    ) = flow {
+        val builder = getBasicApi(service, indexer)
+        if (builder == null) {
+            emit(ParserResult.SourceError)
+            return@flow
+        }
+        if (mediaType == null) builder.appendQueryParameter("t", "search")
+        else builder.appendQueryParameter("t", mediaType.value)
 
-                // the search fails with no "cat" element, even if empty
-                builder.appendQueryParameter("cat", categories)
+        // the search fails with no "cat" element, even if empty
+        builder.appendQueryParameter("cat", categories)
 
-                if (attributes != null) builder.appendQueryParameter("attrs", attributes)
+        if (attributes != null) builder.appendQueryParameter("attrs", attributes)
 
-                if (extended != null)
-                    builder.appendQueryParameter("extended", if (extended) "1" else "0")
+        if (extended != null) builder.appendQueryParameter("extended", if (extended) "1" else "0")
 
-                if (offset != null) builder.appendQueryParameter("offset", offset.toString())
-                if (limit != null) builder.appendQueryParameter("limit", limit.toString())
-                if (year != null) builder.appendQueryParameter("year", year)
-                if (season != null) builder.appendQueryParameter("season", season)
-                if (episodes != null) builder.appendQueryParameter("ep", episodes)
-                if (genre != null) builder.appendQueryParameter("genre", genre.value)
-                if (imdb != null) builder.appendQueryParameter("imdbid", imdb)
-                if (album != null) builder.appendQueryParameter("album", album)
-                if (artist != null) builder.appendQueryParameter("artist", artist)
-                if (publisher != null) builder.appendQueryParameter("publisher", publisher)
+        if (offset != null) builder.appendQueryParameter("offset", offset.toString())
+        if (limit != null) builder.appendQueryParameter("limit", limit.toString())
+        if (year != null) builder.appendQueryParameter("year", year)
+        if (season != null) builder.appendQueryParameter("season", season)
+        if (episodes != null) builder.appendQueryParameter("ep", episodes)
+        if (genre != null) builder.appendQueryParameter("genre", genre.value)
+        if (imdb != null) builder.appendQueryParameter("imdbid", imdb)
+        if (album != null) builder.appendQueryParameter("album", album)
+        if (artist != null) builder.appendQueryParameter("artist", artist)
+        if (publisher != null) builder.appendQueryParameter("publisher", publisher)
 
-                builder.appendQueryParameter("q", query)
+        builder.appendQueryParameter("q", query)
 
-                val request = Request.Builder().url(builder.build().toString()).build()
+        val request = Request.Builder().url(builder.build().toString()).build()
 
-                client.newCall(request).execute().use { response ->
-                    if (!response.isSuccessful) {
-                        emit(ParserResult.SourceError)
-                        return@flow
-                    }
-                    if (response.body == null) {
-                        emit(ParserResult.NetworkBodyError)
-                        return@flow
-                    }
-                    val body: String = response.body.string()
-                    try {
-                        val search: SearchRSS = parseSearchRss(body)
-                        val items = rssToScrapedItems(applicationContext, search)
-                        emit(ParserResult.Results(items.first))
-                        return@flow
-                    } catch (ex: Exception) {
-                        Timber.e(ex, "Error parsing Jackett search response")
-                    }
-
-                    emit(ParserResult.SourceError)
-                }
+        client.newCall(request).execute().use { response ->
+            if (!response.isSuccessful) {
+                emit(ParserResult.SourceError)
+                return@flow
             }
-            .flowOn(Dispatchers.IO)
+            if (response.body == null) {
+                emit(ParserResult.NetworkBodyError)
+                return@flow
+            }
+            val body: String = response.body.string()
+            try {
+                val search: SearchRSS = parseSearchRss(body)
+                val items = rssToScrapedItems(applicationContext, search)
+                emit(ParserResult.Results(items.first))
+                return@flow
+            } catch (ex: Exception) {
+                Timber.e(ex, "Error parsing Jackett search response")
+            }
+
+            emit(ParserResult.SourceError)
+        }
+    }
+        .flowOn(Dispatchers.IO)
 
     suspend fun getCapabilities(
         service: CompleteRemoteService,

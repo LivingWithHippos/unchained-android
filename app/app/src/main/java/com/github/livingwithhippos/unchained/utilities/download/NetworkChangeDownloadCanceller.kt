@@ -20,14 +20,17 @@ import timber.log.Timber
  * There is no download resume support anywhere in the app, so this cancels the transfer outright;
  * the user has to restart it manually afterward.
  *
- * Registered once from [com.github.livingwithhippos.unchained.base.UnchainedApplication] instead
- * of an Activity, since embedded downloads run in a foreground-service-backed WorkManager worker
- * that can keep going while the app is backgrounded.
+ * Registered once from [com.github.livingwithhippos.unchained.base.UnchainedApplication] instead of
+ * an Activity, since embedded downloads run in a foreground-service-backed WorkManager worker that
+ * can keep going while the app is backgrounded.
  */
 @Singleton
 class NetworkChangeDownloadCanceller
 @Inject
-constructor(@ApplicationContext private val context: Context, private val preferences: SharedPreferences) {
+constructor(
+    @ApplicationContext private val context: Context,
+    private val preferences: SharedPreferences,
+) {
 
     // Android hands out a new Network instance for the new connection on almost any network
     // switch, including reconnecting to the same wi-fi access point, so comparing instances is a
@@ -53,7 +56,10 @@ constructor(@ApplicationContext private val context: Context, private val prefer
 
     private fun onNetworkChanged() {
         val cancelOnNetworkChange =
-            preferences.getBoolean(PreferenceKeys.DownloadManager.PAUSE_ON_NETWORK_CHANGE_KEY, false)
+            preferences.getBoolean(
+                PreferenceKeys.DownloadManager.PAUSE_ON_NETWORK_CHANGE_KEY,
+                false,
+            )
         if (!cancelOnNetworkChange) return
 
         Timber.d("Default network changed, cancelling active embedded downloads")

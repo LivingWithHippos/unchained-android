@@ -66,7 +66,6 @@ import com.github.livingwithhippos.unchained.utilities.extension.downloadFileInS
 import com.github.livingwithhippos.unchained.utilities.extension.isTv
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import com.github.livingwithhippos.unchained.utilities.extension.parcelable
-import com.github.livingwithhippos.unchained.utilities.extension.isTv
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.github.livingwithhippos.unchained.utilities.extension.toHex
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -74,14 +73,13 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.elevation.SurfaceColors
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import java.lang.RuntimeException
 import java.security.MessageDigest
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import kotlin.time.Duration.Companion.milliseconds
 
 /** A [AppCompatActivity] subclass. Shared between all the fragments except for the preferences. */
 @AndroidEntryPoint
@@ -101,6 +99,7 @@ class MainActivity : AppCompatActivity() {
         TelemetryManager.onStart(this)
 
         val bottomColor = SurfaceColors.SURFACE_2.getColor(this)
+        @Suppress("DEPRECATION")
         window.navigationBarColor = bottomColor
         // Set color of system navigationBar same as BottomNavigationView
         // window.statusBarColor = color // Set color of system statusBar same as ActionBar
@@ -186,6 +185,14 @@ class MainActivity : AppCompatActivity() {
                 applicationContext.showToast(R.string.download_permission_granted)
             } else {
                 applicationContext.showToast(R.string.needs_download_permission)
+            }
+        }
+
+    private val requestLocalNetworkPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean
+            ->
+            if (!isGranted) {
+                applicationContext.showToast(R.string.needs_local_network_permission)
             }
         }
 
@@ -650,6 +657,13 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
 
+                MainActivityMessage.RequireLocalNetworkPermissions -> {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.CINNAMON_BUN) {
+                        requestLocalNetworkPermissionLauncher.launch(
+                            Manifest.permission.ACCESS_LOCAL_NETWORK
+                        )
+                    }
+                }
                 null -> {}
             }
         }
@@ -989,68 +1003,67 @@ class MainActivity : AppCompatActivity() {
             Snackbar.make(binding.root, fileName, Snackbar.LENGTH_INDEFINITE)
                 .setAnchorView(binding.bottomNavView)
 
-        tvDownloadProgressJob =
-            lifecycleScope.launch {
-                try {
-                    snackbar.show()
-                    while (true) {
-                        var status: Int? = null
-                        var progress = 0
-                        manager.query(DownloadManager.Query().setFilterById(downloadId)).use {
-                            cursor ->
-                            if (cursor.moveToFirst()) {
-                                status =
-                                    cursor.getInt(
-                                        cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_STATUS)
-                                    )
-                                val downloadedBytes =
-                                    cursor.getLong(
-                                        cursor.getColumnIndexOrThrow(
-                                            DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR
-                                        )
-                                    )
-                                val totalBytes =
-                                    cursor.getLong(
-                                        cursor.getColumnIndexOrThrow(
-                                            DownloadManager.COLUMN_TOTAL_SIZE_BYTES
-                                        )
-                                    )
-                                if (totalBytes > 0)
-                                    progress = (downloadedBytes * 100 / totalBytes).toInt()
-                            }
-                        }
-                        when (status) {
-                            // the download disappeared from the download manager, e.g. it was
-                            // removed by the user: stop silently
-                            null -> break
-                            DownloadManager.STATUS_SUCCESSFUL -> {
-                                applicationContext.showToast(R.string.download_complete)
-                                break
-                            }
-                            DownloadManager.STATUS_FAILED -> {
-                                applicationContext.showToast(
-                                    getString(R.string.download_failed_format, fileName)
+        tvDownloadProgressJob = lifecycleScope.launch {
+            try {
+                snackbar.show()
+                while (true) {
+                    var status: Int? = null
+                    var progress = 0
+                    manager.query(DownloadManager.Query().setFilterById(downloadId)).use { cursor ->
+                        if (cursor.moveToFirst()) {
+                            status =
+                                cursor.getInt(
+                                    cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_STATUS)
                                 )
-                                break
-                            }
-                            else -> {
-                                snackbar.setText(
-                                    "$fileName\n${getString(R.string.download_in_progress_format, progress)}"
+                            val downloadedBytes =
+                                cursor.getLong(
+                                    cursor.getColumnIndexOrThrow(
+                                        DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR
+                                    )
                                 )
-                            }
+                            val totalBytes =
+                                cursor.getLong(
+                                    cursor.getColumnIndexOrThrow(
+                                        DownloadManager.COLUMN_TOTAL_SIZE_BYTES
+                                    )
+                                )
+                            if (totalBytes > 0)
+                                progress = (downloadedBytes * 100 / totalBytes).toInt()
                         }
-                        delay(1000)
                     }
-                } finally {
-                    snackbar.dismiss()
+                    when (status) {
+                        // the download disappeared from the download manager, e.g. it was
+                        // removed by the user: stop silently
+                        null -> break
+                        DownloadManager.STATUS_SUCCESSFUL -> {
+                            applicationContext.showToast(R.string.download_complete)
+                            break
+                        }
+                        DownloadManager.STATUS_FAILED -> {
+                            applicationContext.showToast(
+                                getString(R.string.download_failed_format, fileName)
+                            )
+                            break
+                        }
+                        else -> {
+                            snackbar.setText(
+                                "$fileName\n${getString(R.string.download_in_progress_format, progress)}"
+                            )
+                        }
+                    }
+                    delay(1000.milliseconds)
                 }
+            } finally {
+                snackbar.dismiss()
             }
         }
+    }
 
-
-    /** On TV, a back press while focus is inside a long/endless list moves it to the bottom nav
-     * instead of navigating, since there is no other way to reach the nav bar from deep in a
-     * list (see issue #376). */
+    /**
+     * On TV, a back press while focus is inside a long/endless list moves it to the bottom nav
+     * instead of navigating, since there is no other way to reach the nav bar from deep in a list
+     * (see issue #376).
+     */
     private fun setupTvBackFocusHandling() {
         if (!isTv()) return
 
@@ -1067,9 +1080,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    /** On TV, the toolbar's overflow button is first in layout order and silently grabs default
+    /**
+     * On TV, the toolbar's overflow button is first in layout order and silently grabs default
      * focus on every new destination. Rescue focus onto the bottom nav when that happens, without
-     * touching focus a fragment or back navigation already placed deliberately. */
+     * touching focus a fragment or back navigation already placed deliberately.
+     */
     private fun setupTvInitialFocusHandling() {
         if (!isTv()) return
 

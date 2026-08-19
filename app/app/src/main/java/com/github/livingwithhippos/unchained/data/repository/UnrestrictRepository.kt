@@ -9,11 +9,11 @@ import com.github.livingwithhippos.unchained.data.remote.UnrestrictApiHelper
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.delay
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
-import kotlin.time.Duration.Companion.milliseconds
 
 @Singleton
 class UnrestrictRepository

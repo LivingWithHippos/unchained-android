@@ -19,10 +19,10 @@ import kotlin.math.sin
 import kotlin.math.sqrt
 
 /**
- * An HSV color wheel: hue is the angle around the wheel, saturation is the distance from the
- * center (fully saturated at the edge, white at the center). Brightness (HSV value) isn't
- * represented on the wheel itself, since a 2D wheel can only encode two of the three HSV
- * components; pair this with a separate brightness control that sets [value].
+ * An HSV color wheel: hue is the angle around the wheel, saturation is the distance from the center
+ * (fully saturated at the edge, white at the center). Brightness (HSV value) isn't represented on
+ * the wheel itself, since a 2D wheel can only encode two of the three HSV components; pair this
+ * with a separate brightness control that sets [value].
  */
 class ColorWheelView
 @JvmOverloads
@@ -76,7 +76,8 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 
         if (radius <= 0f) return
 
-        val hues = IntArray(361) { degree -> Color.HSVToColor(floatArrayOf(degree.toFloat(), 1f, 1f)) }
+        val hues =
+            IntArray(361) { degree -> Color.HSVToColor(floatArrayOf(degree.toFloat(), 1f, 1f)) }
         val sweep = SweepGradient(centerX, centerY, hues, null)
         val radial =
             RadialGradient(

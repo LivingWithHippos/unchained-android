@@ -151,6 +151,15 @@ class UserProfileFragment : UnchainedFragment() {
             activityViewModel.requireNotificationPermissions()
         }
 
+        if (
+            ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_LOCAL_NETWORK,
+            ) != PermissionChecker.PERMISSION_GRANTED
+        ) {
+            activityViewModel.requireLocalNetworkPermissions()
+        }
+
         return view
     }
 

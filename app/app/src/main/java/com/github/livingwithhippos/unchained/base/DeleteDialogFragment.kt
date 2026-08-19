@@ -18,10 +18,7 @@ class DeleteDialogFragment : DialogFragment() {
                 .setMessage(R.string.confirm_item_removal_description)
                 .setTitle(title)
                 .setPositiveButton(R.string.delete) { _, _ ->
-
-                    val bundle = Bundle().apply {
-                        putBoolean("deleteConfirmation", true)
-                    }
+                    val bundle = Bundle().apply { putBoolean("deleteConfirmation", true) }
                     setFragmentResult("deleteActionKey", bundle)
                 }
                 .setNegativeButton(R.string.close) { dialog, _ -> dialog.cancel() }

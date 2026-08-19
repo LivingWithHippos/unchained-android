@@ -1,5 +1,6 @@
 package com.github.livingwithhippos.unchained.repository.view
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -155,6 +156,7 @@ class RepositoryFragment : UnchainedFragment(), PluginListener {
      * @param data the online repositories data
      * @param installedData the locally installed plugins data
      */
+    @SuppressLint("NotifyDataSetChanged")
     private fun updateList(
         adapter: PluginRepositoryAdapter,
         data: Map<RepositoryInfo, Map<RepositoryPlugin, List<PluginVersion>>>,

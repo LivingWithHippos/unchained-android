@@ -192,7 +192,10 @@ constructor(protoStore: ProtoStore, @param:ClassicClient private val client: OkH
                     call = {
                         kodiApiHelper.getActivePlayers(
                             request =
-                                KodiRequest(method = "Player.GetActivePlayers", params = KodiParams()),
+                                KodiRequest(
+                                    method = "Player.GetActivePlayers",
+                                    params = KodiParams(),
+                                ),
                             auth = auth,
                         )
                     },
@@ -216,7 +219,8 @@ constructor(protoStore: ProtoStore, @param:ClassicClient private val client: OkH
                             request =
                                 KodiRequest(
                                     method = "Player.AddSubtitle",
-                                    params = KodiParams(playerId = playerId, subtitle = subtitleUrl),
+                                    params =
+                                        KodiParams(playerId = playerId, subtitle = subtitleUrl),
                                 ),
                             auth = auth,
                         )

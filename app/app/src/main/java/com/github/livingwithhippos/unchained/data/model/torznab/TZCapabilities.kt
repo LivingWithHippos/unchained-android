@@ -2,7 +2,6 @@ package com.github.livingwithhippos.unchained.data.model.torznab
 
 import com.github.livingwithhippos.unchained.utilities.directChild
 import com.github.livingwithhippos.unchained.utilities.directChildren
-import kotlin.collections.ifEmpty
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.jsoup.Jsoup

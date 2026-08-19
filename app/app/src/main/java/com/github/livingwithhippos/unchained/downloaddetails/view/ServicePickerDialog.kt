@@ -51,7 +51,9 @@ class ServicePickerDialog : DialogFragment(), ServicePickerListener {
                             content.services
                                 // adding a subtitle to the currently playing video is a Kodi-only
                                 // feature, so only Kodi services make sense here
-                                .filter { serv -> !addSubtitleMode || serv.type == RemoteServiceType.KODI.value }
+                                .filter { serv ->
+                                    !addSubtitleMode || serv.type == RemoteServiceType.KODI.value
+                                }
                                 .map { serv ->
                                     CompleteRemoteServiceDetails(
                                         service = serv,

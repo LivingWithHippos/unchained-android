@@ -27,6 +27,7 @@ import com.github.livingwithhippos.unchained.utilities.extension.cancelIfActive
 import com.github.livingwithhippos.unchained.utilities.postEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
@@ -35,7 +36,6 @@ import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
 import timber.log.Timber
-import kotlin.time.Duration.Companion.milliseconds
 
 @HiltViewModel
 class SearchViewModel
@@ -113,7 +113,9 @@ constructor(
         viewModelScope.launch {
             val pluginsResult: Pair<List<Plugin>, Int> = pluginRepository.getPlugins(context)
             val selectedPlugins =
-                databasePluginsRepository.getEnabledPlugins().values.flatten().map { it.name.lowercase() }
+                databasePluginsRepository.getEnabledPlugins().values.flatten().map {
+                    it.name.lowercase()
+                }
             val pluginsWithSelection =
                 pluginsResult.first.map { plugin ->
                     plugin.copy(selected = selectedPlugins.contains(plugin.name.lowercase()))
@@ -247,7 +249,7 @@ constructor(
                 databasePluginsRepository.getEnabledPlugins().values.flatten().mapNotNull {
                     repoPlugin ->
                     pluginLiveData.value?.peekContent()?.plugins?.firstOrNull {
-                         it.name.equals(repoPlugin.name, ignoreCase = true)
+                        it.name.equals(repoPlugin.name, ignoreCase = true)
                     }
                 }
             // todo add repo with suspend to access the db of complete remote servceis

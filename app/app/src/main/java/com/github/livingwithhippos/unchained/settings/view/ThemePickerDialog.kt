@@ -1,5 +1,6 @@
 package com.github.livingwithhippos.unchained.settings.view
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -100,8 +101,8 @@ class ThemePickerDialog : BottomSheetDialogFragment(), ThemePickListener {
  * @param primaryColorID: The primary color
  * @param surfaceColorID: The surface color
  * @param primaryContainerColorID: The primary container color
- * @param isDynamic: true if this theme's colors come from Android's dynamic color system instead
- *   of the fixed colors baked into themeID, either from the wallpaper or a user-picked seed color
+ * @param isDynamic: true if this theme's colors come from Android's dynamic color system instead of
+ *   the fixed colors baked into themeID, either from the wallpaper or a user-picked seed color
  */
 data class ThemeItem(
     val name: String,
@@ -119,6 +120,7 @@ class ThemePickerAdapter(private val listener: ThemePickListener, initialSelecte
 
     private var selectedKey: String? = initialSelectedKey
 
+    @SuppressLint("NotifyDataSetChanged")
     fun setSelectedKey(key: String) {
         selectedKey = key
         notifyDataSetChanged()

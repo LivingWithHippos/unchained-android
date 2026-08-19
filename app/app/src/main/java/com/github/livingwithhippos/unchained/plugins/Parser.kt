@@ -15,6 +15,7 @@ import com.github.livingwithhippos.unchained.utilities.extension.cleanScrapingRe
 import com.github.livingwithhippos.unchained.utilities.extension.formatStringForSearch
 import com.github.livingwithhippos.unchained.utilities.extension.removeWebFormatting
 import com.github.livingwithhippos.unchained.utilities.parseCommonSize
+import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
@@ -27,7 +28,6 @@ import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
 import timber.log.Timber
-import kotlin.time.Duration.Companion.milliseconds
 
 sealed class WebResponse {
     data class Success(val source: String) : WebResponse()

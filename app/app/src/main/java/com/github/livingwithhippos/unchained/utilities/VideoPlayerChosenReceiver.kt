@@ -15,11 +15,11 @@ const val KEY_PREFERRED_VIDEO_PLAYER = "preferred_video_player_package"
  * Intent.createChooser, and remembers the picked app as the preferred video player.
  *
  * This app manages that choice itself instead of relying on Android's own "always" mechanism:
- * undoing an "always" choice from a third party app requires clearPackagePreferredActivities,
- * which needs a signature level permission regular apps cannot hold, and on some devices (seen on
- * Android TV) the Settings screen meant to undo it does not work either, leaving no way back to
- * the picker. Remembering the choice ourselves means changing it is just clearing our own
- * preference, which always works.
+ * undoing an "always" choice from a third party app requires clearPackagePreferredActivities, which
+ * needs a signature level permission regular apps cannot hold, and on some devices (seen on Android
+ * TV) the Settings screen meant to undo it does not work either, leaving no way back to the picker.
+ * Remembering the choice ourselves means changing it is just clearing our own preference, which
+ * always works.
  */
 class VideoPlayerChosenReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {

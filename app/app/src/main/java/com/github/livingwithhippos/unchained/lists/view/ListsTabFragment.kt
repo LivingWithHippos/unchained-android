@@ -1,5 +1,6 @@
 package com.github.livingwithhippos.unchained.lists.view
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -60,12 +61,12 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
+import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * A simple [UnchainedFragment] subclass. It is capable of showing a list of both [DownloadItem] and
@@ -419,6 +420,7 @@ class DownloadsListFragment : UnchainedFragment(), DownloadListListener {
     private val binding
         get() = _binding!!
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -662,6 +664,7 @@ class TorrentsListFragment : UnchainedFragment(), TorrentListListener {
     private val binding
         get() = _binding!!
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
