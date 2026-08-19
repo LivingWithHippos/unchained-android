@@ -62,6 +62,10 @@
         app:allowDividerBelow="false">
 
         <Preference
+            app:summary="@string/needs_local_network_permission"
+            />
+
+        <Preference
             app:key="manage_remote_devices"
             app:summary="@string/remote_devices_summary"
             app:title="@string/manage_remote_devices" />

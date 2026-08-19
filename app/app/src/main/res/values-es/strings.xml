@@ -554,4 +554,5 @@
     <string name="please_select_plugins">Selecciona al menos un complemento</string>
     <string name="disabled">Desactivado</string>
     <string name="pause_downloads_on_network_change">Cancelar descargas al cambiar de red</string>
+    <string name="needs_local_network_permission">Unchained necesita permiso para acceder a la red local a fin de reproducir archivos multimedia en tu red</string>
 </resources>

@@ -1009,6 +1009,15 @@ constructor(
         }
     }
 
+    fun requireLocalNetworkPermissions(callDelay: Boolean = true) {
+        viewModelScope.launch {
+            if (callDelay) {
+                delay(500.milliseconds)
+            }
+            messageLiveData.postValue(Event(MainActivityMessage.RequireLocalNetworkPermissions))
+        }
+    }
+
     fun getDownloadManagerPreference(): String {
         return preferences.getString(
             PreferenceKeys.DownloadManager.KEY,
@@ -1157,6 +1166,8 @@ sealed class MainActivityMessage {
     data object RequireDownloadPermissions : MainActivityMessage()
 
     data object RequireNotificationPermissions : MainActivityMessage()
+
+    data object RequireLocalNetworkPermissions : MainActivityMessage()
 
     data class DownloadEnqueued(val source: String, val fileName: String) : MainActivityMessage()
 

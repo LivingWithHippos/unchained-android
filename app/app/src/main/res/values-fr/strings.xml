@@ -554,4 +554,5 @@
     <string name="summary_search_start_destination">Page à afficher lors de l\'accès à l\'onglet « Recherche »</string>
     <string name="disabled">Désactivée</string>
     <string name="pause_downloads_on_network_change">Annuler les téléchargements en cas de changement de réseau</string>
+    <string name="needs_local_network_permission">Unchained a besoin d\'une autorisation d\'accès au réseau local pour lire les fichiers multimédias présents sur votre réseau</string>
 </resources>

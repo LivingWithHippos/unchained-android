@@ -19,6 +19,9 @@ abstract class UnchainedFragment : Fragment() {
         if (current != null && current.getAction(action.actionId) != null) {
             try {
                 nav.navigate(action)
+                Timber.w(
+                    "Navigation valid from destination ${current.id} for actionId=${action.actionId}"
+                )
                 return true
             } catch (e: IllegalArgumentException) {
                 Timber.w(e, "Safe navigate failed for actionId=${action.actionId}")

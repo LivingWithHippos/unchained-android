@@ -189,6 +189,13 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+    private val requestLocalNetworkPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean
+            -> if (!isGranted) {
+                applicationContext.showToast(R.string.needs_local_network_permission)
+            }
+        }
+
     private val requestNotificationPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean
             ->
@@ -650,6 +657,13 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
 
+                MainActivityMessage.RequireLocalNetworkPermissions -> {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.CINNAMON_BUN) {
+                        requestLocalNetworkPermissionLauncher.launch(
+                            Manifest.permission.ACCESS_LOCAL_NETWORK
+                        )
+                    }
+                }
                 null -> {}
             }
         }
