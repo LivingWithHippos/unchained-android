@@ -12,11 +12,11 @@ import com.github.livingwithhippos.unchained.data.remote.KodiApiHelper
 import com.github.livingwithhippos.unchained.data.remote.KodiApiHelperImpl
 import com.github.livingwithhippos.unchained.di.ClassicClient
 import com.github.livingwithhippos.unchained.utilities.addHttpScheme
-import javax.inject.Inject
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import timber.log.Timber
+import javax.inject.Inject
 
 class KodiRepository
 @Inject

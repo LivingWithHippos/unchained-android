@@ -9,7 +9,6 @@ import com.github.livingwithhippos.unchained.data.model.prowlarrToScrapedItems
 import com.github.livingwithhippos.unchained.di.ClassicClient
 import com.github.livingwithhippos.unchained.plugins.ParserResult
 import dagger.hilt.android.qualifiers.ApplicationContext
-import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -17,6 +16,7 @@ import kotlinx.serialization.json.Json
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import timber.log.Timber
+import javax.inject.Inject
 
 class ProwlarrRepository
 @Inject

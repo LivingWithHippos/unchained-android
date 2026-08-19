@@ -9,12 +9,12 @@ import com.github.livingwithhippos.unchained.data.local.RemoteServiceType
 import com.github.livingwithhippos.unchained.data.repository.RemoteDeviceRepository
 import com.github.livingwithhippos.unchained.di.ClassicClient
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import timber.log.Timber
+import javax.inject.Inject
 
 @HiltViewModel
 class DeviceViewModel

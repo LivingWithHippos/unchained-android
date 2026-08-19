@@ -1,5 +1,6 @@
 package com.github.livingwithhippos.unchained.search.view
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -26,8 +27,8 @@ import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.sidesheet.SideSheetDialog
 import dagger.hilt.android.AndroidEntryPoint
-import kotlin.time.Instant
 import timber.log.Timber
+import kotlin.time.Instant
 
 @AndroidEntryPoint
 class PluginSearchFragment : UnchainedFragment(), SearchItemListener {
@@ -85,7 +86,7 @@ class PluginSearchFragment : UnchainedFragment(), SearchItemListener {
         }
 
         val pluginsChipsGroup: ChipGroup =
-            sideSheetDialog.findViewById<ChipGroup>(R.id.pluginsChipGroup) ?: return
+            sideSheetDialog.findViewById(R.id.pluginsChipGroup) ?: return
 
         for (plugin in pluginsAndServices.plugins) {
             val pluginChip: Chip =
@@ -291,6 +292,7 @@ class PluginSearchFragment : UnchainedFragment(), SearchItemListener {
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun submitSortedList(adapter: SearchItemAdapter, items: List<ScrapedItem>) {
         when (viewModel.getListSortPreference()) {
             FolderListFragment.TAG_DEFAULT_SORT -> {

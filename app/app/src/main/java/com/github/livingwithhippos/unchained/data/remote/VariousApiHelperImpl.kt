@@ -1,7 +1,7 @@
 package com.github.livingwithhippos.unchained.data.remote
 
-import javax.inject.Inject
 import retrofit2.Response
+import javax.inject.Inject
 
 class VariousApiHelperImpl @Inject constructor(private val variousApi: VariousApi) :
     VariousApiHelper {

@@ -3,10 +3,10 @@ package com.github.livingwithhippos.unchained.data.repository
 import com.github.livingwithhippos.unchained.data.local.CompleteRemoteService
 import com.github.livingwithhippos.unchained.data.local.CompleteRemoteServiceDao
 import com.github.livingwithhippos.unchained.data.local.RemoteDevice
-import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
 class ServiceRepository @Inject constructor(private val serviceDao: CompleteRemoteServiceDao) {
 

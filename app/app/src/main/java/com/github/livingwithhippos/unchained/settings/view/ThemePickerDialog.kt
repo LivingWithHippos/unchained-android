@@ -1,5 +1,6 @@
 package com.github.livingwithhippos.unchained.settings.view
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -119,6 +120,7 @@ class ThemePickerAdapter(private val listener: ThemePickListener, initialSelecte
 
     private var selectedKey: String? = initialSelectedKey
 
+    @SuppressLint("NotifyDataSetChanged")
     fun setSelectedKey(key: String) {
         selectedKey = key
         notifyDataSetChanged()

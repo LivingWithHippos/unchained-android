@@ -5,7 +5,6 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.selection.ItemDetailsLookup
-import androidx.recyclerview.selection.ItemDetailsLookup.ItemDetails
 import androidx.recyclerview.selection.ItemKeyProvider
 import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.widget.DiffUtil

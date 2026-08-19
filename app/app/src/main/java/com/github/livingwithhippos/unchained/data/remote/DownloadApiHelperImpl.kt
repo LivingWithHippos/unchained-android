@@ -1,8 +1,8 @@
 package com.github.livingwithhippos.unchained.data.remote
 
 import com.github.livingwithhippos.unchained.data.model.DownloadItem
-import javax.inject.Inject
 import retrofit2.Response
+import javax.inject.Inject
 
 class DownloadApiHelperImpl @Inject constructor(private val downloadApi: DownloadApi) :
     DownloadApiHelper {

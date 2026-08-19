@@ -7,7 +7,6 @@ import androidx.core.content.edit
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.ThemingCallback.Companion.DEFAULT_THEME_KEY
 import com.github.livingwithhippos.unchained.data.local.ProtoStore
 import com.github.livingwithhippos.unchained.data.repository.HostsRepository
@@ -19,8 +18,8 @@ import com.github.livingwithhippos.unchained.start.viewmodel.MainActivityViewMod
 import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.postEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel

@@ -1,5 +1,6 @@
 package com.github.livingwithhippos.unchained.torrentfilepicker.view
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -38,13 +39,13 @@ import com.github.livingwithhippos.unchained.utilities.extension.isMagnet
 import com.github.livingwithhippos.unchained.utilities.extension.isTorrent
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 import java.io.File
 import java.io.IOException
 import java.util.regex.Matcher
 import java.util.regex.Pattern
-import timber.log.Timber
 
-/** This fragments is shown after a user uploads a torrent or a magnet. */
+/** This fragment is shown after a user uploads a torrent or a magnet. */
 @AndroidEntryPoint
 class TorrentProcessingFragment : UnchainedFragment(), TorrentContentListener {
 
@@ -294,6 +295,7 @@ class TorrentProcessingFragment : UnchainedFragment(), TorrentContentListener {
         return filesList
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun updateFilesList() {
         if (_binding == null) return
         with(binding.rvTorrentFilePicker.adapter as TorrentContentFilesSelectionAdapter) {

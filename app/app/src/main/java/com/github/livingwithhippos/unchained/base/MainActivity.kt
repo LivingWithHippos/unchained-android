@@ -73,13 +73,12 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.elevation.SurfaceColors
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import java.lang.RuntimeException
-import java.security.MessageDigest
-import javax.inject.Inject
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.security.MessageDigest
+import javax.inject.Inject
 import kotlin.time.Duration.Companion.milliseconds
 
 /** A [AppCompatActivity] subclass. Shared between all the fragments except for the preferences. */

@@ -1,5 +1,6 @@
 package com.github.livingwithhippos.unchained.search.view
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -31,9 +32,9 @@ import com.github.livingwithhippos.unchained.utilities.extension.hideKeyboard
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.google.android.material.button.MaterialButton
 import dagger.hilt.android.AndroidEntryPoint
-import kotlin.time.Instant
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import kotlin.time.Instant
 
 @AndroidEntryPoint
 class SearchFragment : UnchainedFragment(), SearchItemListener {
@@ -63,7 +64,7 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
 
     private fun setup(binding: FragmentSearchBinding) {
         showDialogsIfNeeded()
-        // setup the plugin dropdown
+        // set up the plugin dropdown
         val pluginAdapter =
             ArrayAdapter(requireContext(), R.layout.basic_dropdown_list_item, arrayListOf<String>())
         (binding.pluginPicker.editText as? AutoCompleteTextView)?.setAdapter(pluginAdapter)
@@ -207,6 +208,7 @@ class SearchFragment : UnchainedFragment(), SearchItemListener {
         popup.show()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun performSearch(binding: FragmentSearchBinding, searchAdapter: SearchItemAdapter) {
         binding.tfSearch.hideKeyboard()
         viewModel

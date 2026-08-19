@@ -4,8 +4,8 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.github.livingwithhippos.unchained.data.model.DownloadItem
 import com.github.livingwithhippos.unchained.data.repository.DownloadRepository
-import java.io.IOException
 import retrofit2.HttpException
+import java.io.IOException
 
 private const val DOWNLOAD_STARTING_PAGE_INDEX = 1
 

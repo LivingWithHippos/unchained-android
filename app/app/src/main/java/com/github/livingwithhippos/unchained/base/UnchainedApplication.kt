@@ -16,11 +16,11 @@ import com.github.livingwithhippos.unchained.utilities.DEFAULT_PLUGINS_REPOSITOR
 import com.github.livingwithhippos.unchained.utilities.TelemetryManager
 import com.github.livingwithhippos.unchained.utilities.download.NetworkChangeDownloadCanceller
 import dagger.hilt.android.HiltAndroidApp
-import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 /**
  * Entry point for the Dagger-Hilt injection. Deletes incomplete credentials from the datastore on

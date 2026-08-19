@@ -3,14 +3,14 @@ package com.github.livingwithhippos.unchained.data.repository
 import com.github.livingwithhippos.unchained.di.ClassicClient
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.addHttpScheme
-import java.io.IOException
-import java.net.URLEncoder
-import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import timber.log.Timber
+import java.io.IOException
+import java.net.URLEncoder
+import javax.inject.Inject
 
 class VLCRemoteRepository
 @Inject

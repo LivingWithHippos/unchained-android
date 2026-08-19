@@ -1,5 +1,6 @@
 package com.github.livingwithhippos.unchained.lists.view
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -419,6 +420,7 @@ class DownloadsListFragment : UnchainedFragment(), DownloadListListener {
     private val binding
         get() = _binding!!
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -662,6 +664,7 @@ class TorrentsListFragment : UnchainedFragment(), TorrentListListener {
     private val binding
         get() = _binding!!
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

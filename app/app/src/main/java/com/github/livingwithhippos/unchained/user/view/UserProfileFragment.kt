@@ -26,8 +26,8 @@ import com.github.livingwithhippos.unchained.utilities.REFERRAL_LINK
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 /** A simple [UnchainedFragment] subclass. Shows a user profile details. */
 @AndroidEntryPoint

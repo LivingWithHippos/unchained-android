@@ -15,8 +15,6 @@ import com.github.livingwithhippos.unchained.di.ClassicClient
 import com.github.livingwithhippos.unchained.plugins.ParserResult
 import com.github.livingwithhippos.unchained.utilities.EitherResult
 import dagger.hilt.android.qualifiers.ApplicationContext
-import java.io.IOException
-import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -24,6 +22,8 @@ import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import timber.log.Timber
+import java.io.IOException
+import javax.inject.Inject
 
 class JackettRepository
 @Inject

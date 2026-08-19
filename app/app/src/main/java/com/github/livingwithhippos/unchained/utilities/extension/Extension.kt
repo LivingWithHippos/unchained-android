@@ -13,7 +13,6 @@ import android.content.ContentResolver.SCHEME_CONTENT
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.content.pm.ResolveInfo
 import android.content.res.AssetManager
 import android.content.res.Configuration
 import android.content.res.Resources
@@ -64,9 +63,9 @@ import com.github.livingwithhippos.unchained.utilities.PreferenceKeys
 import com.github.livingwithhippos.unchained.utilities.VideoPlayerChosenReceiver
 import com.google.android.material.color.DynamicColors
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import timber.log.Timber
 import java.io.File
 import java.util.Locale
-import timber.log.Timber
 
 /**
  * Provides the list of available themes, used to easily get them with ids from anything with a

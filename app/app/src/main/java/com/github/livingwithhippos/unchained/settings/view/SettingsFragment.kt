@@ -23,7 +23,6 @@ import com.github.livingwithhippos.unchained.settings.viewmodel.SettingsViewMode
 import com.github.livingwithhippos.unchained.utilities.FEEDBACK_URL
 import com.github.livingwithhippos.unchained.utilities.GPLV3_URL
 import com.github.livingwithhippos.unchained.utilities.extension.getThemeItem
-import com.github.livingwithhippos.unchained.utilities.extension.getThemeList
 import com.github.livingwithhippos.unchained.utilities.extension.isTv
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import com.github.livingwithhippos.unchained.utilities.extension.pickVideoPlayer
@@ -31,8 +30,8 @@ import com.github.livingwithhippos.unchained.utilities.extension.playerSetupClip
 import com.github.livingwithhippos.unchained.utilities.extension.preferredVideoPlayerLabel
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 import timber.log.Timber
+import javax.inject.Inject
 
 /**
  * A simple [PreferenceFragmentCompat] subclass. Manages the interactions with the items in the

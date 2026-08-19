@@ -1,5 +1,6 @@
 package com.github.livingwithhippos.unchained.folderlist.view
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -142,6 +143,7 @@ class FolderListFragment : UnchainedFragment(), DownloadListListener {
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun setup(binding: FragmentFolderListBinding) {
 
         if (viewModel.shouldShowFilters()) {
@@ -370,6 +372,7 @@ class FolderListFragment : UnchainedFragment(), DownloadListListener {
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun updateList(adapter: FolderItemAdapter) {
         val items: List<DownloadItem>? = viewModel.folderLiveData.value?.peekContent()
         val filterSize: Boolean = viewModel.getFilterSizePreference()

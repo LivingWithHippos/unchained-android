@@ -1,13 +1,13 @@
 package com.github.livingwithhippos.unchained.utilities.download
 
-import java.io.BufferedInputStream
-import java.io.IOException
-import java.io.InputStream
-import java.io.OutputStream
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.withContext
+import java.io.BufferedInputStream
+import java.io.IOException
+import java.io.InputStream
+import java.io.OutputStream
 
 /** Taken from https://www.baeldung.com/java-okhttp-download-binary-file */
 class FileWriter(private val outputStream: OutputStream) : AutoCloseable {

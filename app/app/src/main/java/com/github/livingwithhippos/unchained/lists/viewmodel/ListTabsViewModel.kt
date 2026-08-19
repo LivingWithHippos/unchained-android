@@ -25,10 +25,10 @@ import com.github.livingwithhippos.unchained.utilities.EitherResult
 import com.github.livingwithhippos.unchained.utilities.Event
 import com.github.livingwithhippos.unchained.utilities.postEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.math.max
 import kotlin.math.min
-import kotlinx.coroutines.launch
 
 /**
  * A [ViewModel] subclass. It offers LiveData to be observed to populate lists with paging support

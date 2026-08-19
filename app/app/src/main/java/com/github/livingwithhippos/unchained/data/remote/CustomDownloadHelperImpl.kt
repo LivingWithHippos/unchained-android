@@ -2,9 +2,9 @@ package com.github.livingwithhippos.unchained.data.remote
 
 import com.github.livingwithhippos.unchained.plugins.model.Plugin
 import com.github.livingwithhippos.unchained.repository.model.JsonPluginRepository
-import javax.inject.Inject
 import okhttp3.ResponseBody
 import retrofit2.Response
+import javax.inject.Inject
 
 class CustomDownloadHelperImpl @Inject constructor(private val customDownload: CustomDownload) :
     CustomDownloadHelper {

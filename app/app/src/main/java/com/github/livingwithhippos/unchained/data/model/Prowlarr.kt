@@ -5,9 +5,9 @@ import com.github.livingwithhippos.unchained.plugins.model.ScrapedItem
 import com.github.livingwithhippos.unchained.utilities.HASH_PATTERN
 import com.github.livingwithhippos.unchained.utilities.MAGNET_PATTERN
 import com.github.livingwithhippos.unchained.utilities.extension.getFileSizeString
-import java.util.regex.Pattern
 import kotlinx.serialization.Serializable
 import timber.log.Timber
+import java.util.regex.Pattern
 
 private val magnetPattern = Pattern.compile(MAGNET_PATTERN)
 private val hashPattern = Regex(HASH_PATTERN)

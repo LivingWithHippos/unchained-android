@@ -8,9 +8,9 @@ import androidx.work.WorkManager
 import com.github.livingwithhippos.unchained.utilities.EMBEDDED_DOWNLOAD_WORK_TAG
 import com.github.livingwithhippos.unchained.utilities.PreferenceKeys
 import dagger.hilt.android.qualifiers.ApplicationContext
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
-import timber.log.Timber
 
 /**
  * Cancels active embedded (WorkManager/OkHttp) downloads whenever the default network changes,

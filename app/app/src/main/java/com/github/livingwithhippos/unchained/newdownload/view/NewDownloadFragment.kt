@@ -44,10 +44,10 @@ import com.github.livingwithhippos.unchained.utilities.extension.isSimpleWebUrl
 import com.github.livingwithhippos.unchained.utilities.extension.isTorrent
 import com.github.livingwithhippos.unchained.utilities.extension.isWebUrl
 import dagger.hilt.android.AndroidEntryPoint
-import java.io.IOException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.io.IOException
 import kotlin.time.Duration.Companion.milliseconds
 
 /**
@@ -319,7 +319,7 @@ class NewDownloadFragment : UnchainedFragment() {
                         link.isMagnet() -> {
                             // this one must stay above link.isWebUrl() || link.isSimpleWebUrl()
                             // because some magnets have http in their link, getting recognized as
-                            // urls
+                            // URLs
                             val action =
                                 NewDownloadFragmentDirections
                                     .actionNewDownloadFragmentToTorrentProcessingFragment(

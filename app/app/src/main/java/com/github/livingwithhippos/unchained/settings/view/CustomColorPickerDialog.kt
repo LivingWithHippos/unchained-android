@@ -11,7 +11,6 @@ import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.base.ThemingCallback.Companion.CUSTOM_THEME_KEY
-import com.github.livingwithhippos.unchained.base.ThemingCallback.Companion.DEFAULT_THEME_KEY
 import com.github.livingwithhippos.unchained.customview.ColorWheelView
 import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Companion.KEY_NEW_THEME
 import com.github.livingwithhippos.unchained.utilities.PreferenceKeys

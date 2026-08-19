@@ -1,11 +1,11 @@
 package com.github.livingwithhippos.unchained.utilities.download
 
 import android.accounts.NetworkErrorException
-import java.io.IOException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import java.io.IOException
 
 /** Taken from https://www.baeldung.com/java-okhttp-download-binary-file */
 class Downloader(private val client: OkHttpClient, private val writer: FileWriter) : AutoCloseable {
