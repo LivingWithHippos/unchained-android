@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <!-- The bundled player setup clip is copied here before being handed to an external
+    video player so it can be served through a content:// Uri, see Context.playerSetupClipUri. -->
+    <cache-path name="media" path="media/" />
+</paths>
