@@ -431,6 +431,7 @@
     <string name="previous">Anterior</string>
     <string name="ready">Listo</string>
     <string name="select_files">Seleccionar archivos</string>
+    <string name="filter_files_hint">Filtrar por nombres; se puede utilizar el *</string>
     <string name="total_files">Total de archivos</string>
     <string name="total_size">Tamaño total</string>
     <string name="loading_torrent_info">Carga de archivos torrent. Utiliza el botón de descargar todo en la parte inferior si quieres descargar todo el contenido.</string>
@@ -479,6 +480,7 @@
     <string name="kodi_picker_description">Mostrar un menú de selección al enviar enlaces a Kodi</string>
     <string name="kodi_picker">Seleccione el servidor de destino</string>
     <string name="themes">Temas</string>
+    <string name="custom_theme">Tema personalizado</string>
     <string name="select">Selecciona</string>
     <string name="selected_theme">Tema seleccionado</string>
     <string name="apply">Aplicar</string>

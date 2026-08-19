@@ -434,6 +434,7 @@
     <string name="previous">이전</string>
     <string name="ready">준비됨</string>
     <string name="select_files">파일 선택</string>
+    <string name="filter_files_hint">이름으로 필터링, * 기호를 사용할 수 있습니다</string>
     <string name="total_files">총 파일 수</string>
     <string name="total_size">총 크기</string>
     <string name="loading_torrent_info">토렌트 파일을 로딩 중입니다. 모든 콘텐츠를 다운로드하려면 하단의 모두 다운로드 버튼을 사용하세요.</string>
@@ -481,6 +482,8 @@
     <string name="kodi_picker">대상 서버 선택</string>
     <string name="kodi_picker_description">Kodi로 링크 전송 시 선택 메뉴 표시</string>
     <string name="themes">테마</string>
+
+    <string name="custom_theme">사용자 정의 테마</string>
     <string name="select">선택</string>
     <string name="selected_theme">선택된 테마</string>
     <string name="apply">적용</string>
