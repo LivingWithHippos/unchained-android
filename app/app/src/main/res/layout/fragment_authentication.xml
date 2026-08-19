@@ -66,28 +66,16 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvAuthenticationLink" />
 
-        <CheckBox
-            android:id="@+id/cbSecret"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="false"
-            android:focusable="false"
-            android:text="@string/waiting_user_auth"
-            app:layout_constraintBottom_toTopOf="@+id/llUserCode"
-            app:layout_constraintStart_toStartOf="@+id/cbLink"
-            app:layout_constraintTop_toBottomOf="@+id/cbLink"
-            />
-
         <LinearLayout
             android:id="@+id/llUserCode"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:visibility="visible"
-            app:layout_constraintTop_toBottomOf="@+id/cbSecret"
+            android:layout_marginStart="10dp"
+            app:layout_constraintTop_toBottomOf="@+id/cbLink"
             app:layout_constraintStart_toStartOf="@+id/cbLink"
-            app:layout_constraintEnd_toEndOf="@+id/cbLink"
-            app:layout_constraintBottom_toTopOf="@+id/cbToken"
+            app:layout_constraintBottom_toTopOf="@+id/cbSecret"
             >
             <TextView
                 android:id="@+id/tvUserCodeValue"
@@ -113,6 +101,18 @@
 
         </LinearLayout>
 
+        <CheckBox
+            android:id="@+id/cbSecret"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="false"
+            android:focusable="false"
+            android:text="@string/waiting_user_auth"
+            app:layout_constraintBottom_toTopOf="@+id/llUserCode"
+            app:layout_constraintStart_toStartOf="@+id/cbLink"
+            app:layout_constraintTop_toBottomOf="@+id/llUserCode"
+            />
+
 
         <CheckBox
             android:id="@+id/cbToken"
@@ -122,7 +122,7 @@
             android:clickable="false"
             android:focusable="false"
             android:text="@string/waiting_token"
-            app:layout_constraintTop_toBottomOf="@+id/llUserCode"
+            app:layout_constraintTop_toBottomOf="@+id/cbSecret"
             app:layout_constraintStart_toStartOf="@+id/cbSecret"
             app:layout_constraintBottom_toTopOf="@+id/tvUsePrivateToken"
             />
