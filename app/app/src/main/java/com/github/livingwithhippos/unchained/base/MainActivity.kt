@@ -66,7 +66,6 @@ import com.github.livingwithhippos.unchained.utilities.extension.downloadFileInS
 import com.github.livingwithhippos.unchained.utilities.extension.isTv
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import com.github.livingwithhippos.unchained.utilities.extension.parcelable
-import com.github.livingwithhippos.unchained.utilities.extension.isTv
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
 import com.github.livingwithhippos.unchained.utilities.extension.toHex
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -101,6 +100,7 @@ class MainActivity : AppCompatActivity() {
         TelemetryManager.onStart(this)
 
         val bottomColor = SurfaceColors.SURFACE_2.getColor(this)
+        @Suppress("DEPRECATION")
         window.navigationBarColor = bottomColor
         // Set color of system navigationBar same as BottomNavigationView
         // window.statusBarColor = color // Set color of system statusBar same as ActionBar
@@ -1053,7 +1053,7 @@ class MainActivity : AppCompatActivity() {
                                 )
                             }
                         }
-                        delay(1000)
+                        delay(1000.milliseconds)
                     }
                 } finally {
                     snackbar.dismiss()
