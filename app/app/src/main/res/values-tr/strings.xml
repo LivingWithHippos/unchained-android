@@ -215,6 +215,7 @@
     <string name="seeders_string_format">Seed(ler): %s</string>
     <string name="torrent_in_progress_format">%1$.2f%% - %2$.2f MB/s</string>
     <string name="download_in_progress_format">İndiriliyor - %1$d%%</string>
+    <string name="download_failed_format">%s indirmesi başarısız oldu</string>
     <string name="download_complete">İndirme tamamlandı</string>
     <string name="unknown_status">Bilinmeyen Durum</string>
     <string name="downloading_torrent_format">%1$d torrent indiriliyor</string>

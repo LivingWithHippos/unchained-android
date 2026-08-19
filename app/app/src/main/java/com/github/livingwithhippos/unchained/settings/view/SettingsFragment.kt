@@ -24,6 +24,7 @@ import com.github.livingwithhippos.unchained.utilities.FEEDBACK_URL
 import com.github.livingwithhippos.unchained.utilities.GPLV3_URL
 import com.github.livingwithhippos.unchained.utilities.extension.getThemeItem
 import com.github.livingwithhippos.unchained.utilities.extension.getThemeList
+import com.github.livingwithhippos.unchained.utilities.extension.isTv
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import com.github.livingwithhippos.unchained.utilities.extension.pickVideoPlayer
 import com.github.livingwithhippos.unchained.utilities.extension.playerSetupClipUri
@@ -98,6 +99,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         setupVersion()
 
+        hideTvIrrelevantPreferences()
         setupDefaultMediaPlayerPicker()
 
         findPreference<Preference>("download_folder_key")?.setOnPreferenceClickListener {
@@ -212,6 +214,14 @@ class SettingsFragment : PreferenceFragmentCompat() {
         versionPreference?.summary = version
     }
 
+    /** Hide preferences that cannot work or make no sense on a leanback (Android TV) device. */
+    private fun hideTvIrrelevantPreferences() {
+        if (!requireContext().isTv()) return
+        // virtually no TV hardware has a vibration motor, so a "vibrate on download" toggle is a
+        // dead control there
+        findPreference<Preference>("vibrate_on_download")?.isVisible = false
+    }
+    
     /**
      * Wire up the single "default media player" row. Instead of maintaining a list of known
      * players, clicking the row hands a small bundled clip to the system's "open with" chooser so
