@@ -1,0 +1,9 @@
+What's new in 1.8.0:
+- new permission to play media on LAN devices
+- many android TV updates
+- new theme picker
+- better local player picker
+- use search tab without logging in
+- cancel active downloads on network change (disabled by default)
+- filter files by name when selecting torrent content
+- send subtitles to kodi
