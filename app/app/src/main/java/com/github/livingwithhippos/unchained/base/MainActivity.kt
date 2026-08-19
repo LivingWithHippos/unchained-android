@@ -1046,7 +1046,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-    }
+
 
     /** On TV, a back press while focus is inside a long/endless list moves it to the bottom nav
      * instead of navigating, since there is no other way to reach the nav bar from deep in a
