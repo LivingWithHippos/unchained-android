@@ -9,6 +9,7 @@ import android.text.style.UnderlineSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -26,7 +27,11 @@ import com.github.livingwithhippos.unchained.utilities.extension.copyToClipboard
 import com.github.livingwithhippos.unchained.utilities.extension.getClipboardText
 import com.github.livingwithhippos.unchained.utilities.extension.getThemeColor
 import com.github.livingwithhippos.unchained.utilities.extension.hideKeyboard
+import com.github.livingwithhippos.unchained.utilities.extension.isTv
+import com.github.livingwithhippos.unchained.utilities.extension.loadQrCode
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
+import com.github.livingwithhippos.unchained.utilities.tv.enablePhoneInput
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -42,6 +47,10 @@ class AuthenticationFragment : UnchainedFragment() {
     private var _binding: FragmentAuthenticationBinding? = null
     private val binding
         get() = _binding!!
+
+    // content of the TV login QR code, shown in a dialog rather than inline so it does not take
+    // up screen space until the user asks for it
+    private var loginQrCodeContent: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -94,6 +103,24 @@ class AuthenticationFragment : UnchainedFragment() {
 
         binding.bInsertPrivate.setOnClickListener { onSaveCodeClick(binding.tiPrivateCode) }
 
+        // typing a long token with a remote is painful: on TV the field offers a QR code icon
+        // that starts a temporary local server so the token can be sent from another device
+        binding.tfPrivateCode.enablePhoneInput(
+            scope = viewLifecycleOwner.lifecycleScope,
+            fieldLabel = getString(R.string.private_token),
+            linkUrl = API_TOKEN_URL,
+            linkLabel = getString(R.string.token_web_get_token_link),
+            errorMessage = getString(R.string.invalid_token),
+            // same minimum length checked by the manual token field
+            isValueValid = { it.length >= MIN_TOKEN_LENGTH },
+            onValueReceived = { token ->
+                _binding?.let {
+                    it.tiPrivateCode.setText(token, TextView.BufferType.EDITABLE)
+                    onSaveCodeClick(it.tiPrivateCode)
+                }
+            },
+        )
+
         activityViewModel.fsmAuthenticationState.observe(viewLifecycleOwner) {
             if (it != null) {
                 when (it.peekContent()) {
@@ -123,6 +150,8 @@ class AuthenticationFragment : UnchainedFragment() {
                         binding.cbSecret.text = getString(R.string.waiting_user_auth)
                         binding.tvUserCodeValue.text = getString(R.string.copy_code)
                         binding.bCopyLink.isEnabled = false
+                        binding.bShowLoginQrCode.visibility = View.GONE
+                        loginQrCodeContent = null
 
                         // get the authentication link to start the process
                         viewModel.fetchAuthenticationInfo()
@@ -164,6 +193,13 @@ class AuthenticationFragment : UnchainedFragment() {
                 // let the user copy the user code to enter in the website
                 binding.tvUserCodeValue.text = auth.userCode
                 binding.bCopyLink.isEnabled = true
+                // TVs have no browser and typing the link with a remote is painful: offer a QR
+                // code, scannable with a phone, behind a button instead of showing it inline
+                if (requireContext().isTv()) {
+                    loginQrCodeContent = auth.directVerificationUrl.ifBlank { auth.verificationUrl }
+                    binding.bShowLoginQrCode.visibility = View.VISIBLE
+                    binding.bShowLoginQrCode.setOnClickListener { showLoginQrCodeDialog() }
+                }
                 // update the currently saved credentials
                 activityViewModel.updateCredentialsDeviceCode(auth.deviceCode)
                 // transition state machine
@@ -254,6 +290,20 @@ class AuthenticationFragment : UnchainedFragment() {
         _binding = null
     }
 
+    /** Show the TV login QR code in a dialog instead of taking up space on the screen inline. */
+    private fun showLoginQrCodeDialog() {
+        val content = loginQrCodeContent ?: return
+        val view = layoutInflater.inflate(R.layout.dialog_qr_code, null)
+        val qrView = view.findViewById<ImageView>(R.id.ivQrCode)
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(R.string.login_qr_code_description)
+            .setView(view)
+            .setNegativeButton(R.string.close) { d, _ -> d.dismiss() }
+            .show()
+        // load the QR only once the dialog view is attached, otherwise loadQrCode skips it
+        qrView.loadQrCode(content, viewLifecycleOwner.lifecycleScope)
+    }
+
     private fun getLoginMessage(type: Int): SpannableStringBuilder {
         val sb = SpannableStringBuilder()
 
@@ -280,8 +330,7 @@ class AuthenticationFragment : UnchainedFragment() {
 
     fun onSaveCodeClick(codeInputField: TextInputEditText) {
         val token: String = codeInputField.text.toString().trim()
-        // mine is 52 characters
-        if (token.length < 40) context?.showToast(R.string.invalid_token)
+        if (token.length < MIN_TOKEN_LENGTH) context?.showToast(R.string.invalid_token)
         else {
             // pass the value to be checked and eventually saved
             activityViewModel.updateCredentials(
@@ -298,5 +347,10 @@ class AuthenticationFragment : UnchainedFragment() {
     companion object {
         const val LOGIN_TYPE_DIRECT = 0
         const val LOGIN_TYPE_INDIRECT = 1
+
+        // same minimum used for the manual private token input, mine is 52 characters
+        private const val MIN_TOKEN_LENGTH = 40
+        // the page where the private token can be copied from
+        private const val API_TOKEN_URL = "https://real-debrid.com/apitoken"
     }
 }

@@ -43,6 +43,7 @@ import com.github.livingwithhippos.unchained.utilities.extension.isMagnet
 import com.github.livingwithhippos.unchained.utilities.extension.isSimpleWebUrl
 import com.github.livingwithhippos.unchained.utilities.extension.isTorrent
 import com.github.livingwithhippos.unchained.utilities.extension.isWebUrl
+import com.github.livingwithhippos.unchained.utilities.tv.enablePhoneInput
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.IOException
 import kotlinx.coroutines.delay
@@ -381,6 +382,27 @@ class NewDownloadFragment : UnchainedFragment() {
                 findNavController().navigate(action)
             } else viewModel.postMessage(getString(R.string.premium_needed))
         }
+
+        // typing a magnet or a link with a remote is the worst TV interaction in the app: on TV
+        // the field offers a QR code icon that starts a temporary local server so the link can be
+        // sent from another device, e.g. the user's phone. It only fills the field, exactly as if
+        // it had been typed: the user still presses the download or upload button themselves
+        binding.tfLink.enablePhoneInput(
+            scope = viewLifecycleOwner.lifecycleScope,
+            fieldLabel = getString(R.string.link_or_magnet),
+            errorMessage = getString(R.string.invalid_url),
+            // same checks used by the paste button
+            isValueValid = { value ->
+                value.isWebUrl() ||
+                    value.isSimpleWebUrl() ||
+                    value.isMagnet() ||
+                    value.isTorrent() ||
+                    value.split("\n").firstOrNull()?.trim()?.isWebUrl() == true
+            },
+            onValueReceived = { link ->
+                _binding?.tiLink?.setText(link, TextView.BufferType.EDITABLE)
+            },
+        )
 
         binding.bPasteLink.setOnClickListener {
             val pasteText = getClipboardText().trim()

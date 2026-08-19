@@ -207,6 +207,9 @@ dependencies {
 
     implementation(libs.jsoup)
 
+    // qr code generation for the login on TV
+    implementation(libs.zxing.core)
+
     implementation(libs.android.work)
 
     implementation(libs.countly)

@@ -8,15 +8,18 @@ import android.view.ViewGroup
 import android.widget.Button
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.repository.viewmodel.InvalidLinkReason
 import com.github.livingwithhippos.unchained.repository.viewmodel.PluginRepositoryEvent
 import com.github.livingwithhippos.unchained.repository.viewmodel.RepositoryViewModel
 import com.github.livingwithhippos.unchained.utilities.extension.isWebUrl
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
+import com.github.livingwithhippos.unchained.utilities.tv.enablePhoneInput
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -38,6 +41,17 @@ class AddRepositoryDialogFragment : DialogFragment() {
             val view = inflater.inflate(R.layout.dialog_add_repository, null)
 
             progressBar = view.findViewById(R.id.progressBar)
+
+            // typing a repository URL with a remote is painful: on TV offer a QR code icon that
+            // starts a temporary local server so the URL can be sent from another device
+            view
+                .findViewById<TextInputLayout>(R.id.tfAdd)
+                .enablePhoneInput(
+                    scope = lifecycleScope,
+                    fieldLabel = getString(R.string.link),
+                    errorMessage = getString(R.string.invalid_url),
+                    isValueValid = { it.isWebUrl() },
+                )
 
             view.findViewById<Button>(R.id.bTestRepoLink).setOnClickListener {
                 progressBar.isIndeterminate = true

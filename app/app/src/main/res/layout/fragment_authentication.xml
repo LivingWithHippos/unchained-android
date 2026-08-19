@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.core.widget.NestedScrollView
+<com.github.livingwithhippos.unchained.utilities.NonFocusableNestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -83,6 +83,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:gravity="center_vertical"
             android:visibility="visible"
             app:layout_constraintTop_toBottomOf="@+id/cbSecret"
             app:layout_constraintStart_toStartOf="@+id/cbLink"
@@ -107,12 +108,24 @@
                 android:enabled="false"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="30dp"
+                android:layout_marginEnd="10dp"
                 android:text="@string/copy_string"
                 />
 
-        </LinearLayout>
+            <!-- only shown on Android TV, where the authentication link cannot be opened;
+                 opens a dialog with the QR code instead of showing it inline -->
+            <Button
+                android:id="@+id/bShowLoginQrCode"
+                style="@style/Widget.Unchained.Button.Text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="20dp"
+                android:contentDescription="@string/show_login_qr_code"
+                android:visibility="gone"
+                app:icon="@drawable/icon_qr_code"
+                />
 
+        </LinearLayout>
 
         <CheckBox
             android:id="@+id/cbToken"
@@ -200,11 +213,10 @@
             android:nextFocusLeft="@id/tfPrivateCode"
             android:nextFocusUp="@id/tfPrivateCode"
             android:text="@string/save"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tfPrivateCode" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</androidx.core.widget.NestedScrollView>
+</com.github.livingwithhippos.unchained.utilities.NonFocusableNestedScrollView>
