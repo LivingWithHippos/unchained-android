@@ -107,7 +107,7 @@
                 android:textAppearance="?attr/textAppearanceTitleMedium" />
 
             <!-- todo: decide max height, change to fill available height on horizontal. Also decide max width for sheet -->
-            <androidx.core.widget.NestedScrollView
+            <com.github.livingwithhippos.unchained.utilities.NonFocusableNestedScrollView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
@@ -120,13 +120,13 @@
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/allPluginsChip"
-                        style="@style/Widget.Material3.Chip.Filter.Elevated"
+                        style="@style/Widget.Unchained.Chip.FilterElevated"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:checked="false"
                         android:text="@string/all" />
                 </com.google.android.material.chip.ChipGroup>
-            </androidx.core.widget.NestedScrollView>
+            </com.github.livingwithhippos.unchained.utilities.NonFocusableNestedScrollView>
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 </LinearLayout>

@@ -434,6 +434,7 @@
     <string name="previous">Önceki</string>
     <string name="ready">Hazır</string>
     <string name="select_files">Dosyaları seç</string>
+    <string name="filter_files_hint">Adlara göre filtrele, * işareti kullanılabilir</string>
     <string name="total_files">Toplam dosya</string>
     <string name="total_size">Toplam boyut</string>
     <string name="loading_torrent_info">Torrent dosyaları yükleniyor. Tüm içeriği indirmek istiyorsanız alttaki tümünü indir düğmesini kullanın.</string>
@@ -481,6 +482,7 @@
     <string name="kodi_picker">Hedef sunucuyu seç</string>
     <string name="kodi_picker_description">Kodi\'ye bağlantı gönderirken bir seçim menüsü göster</string>
     <string name="themes">Temalar</string>
+    <string name="custom_theme">Özel Tema</string>
     <string name="select">Seç</string>
     <string name="selected_theme">Seçilen tema</string>
     <string name="apply">Uygula</string>

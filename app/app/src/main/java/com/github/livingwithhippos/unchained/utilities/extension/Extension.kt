@@ -41,6 +41,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.AttrRes
 import androidx.annotation.DrawableRes
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import androidx.core.content.res.ResourcesCompat
@@ -50,7 +51,10 @@ import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import com.github.livingwithhippos.unchained.R
-import com.github.livingwithhippos.unchained.settings.view.CUSTOM_THEME_KEY
+import com.github.livingwithhippos.unchained.base.ThemingCallback.Companion.CUSTOM_THEME_KEY
+import com.github.livingwithhippos.unchained.base.ThemingCallback.Companion.DEFAULT_THEME_KEY
+import com.github.livingwithhippos.unchained.base.ThemingCallback.Companion.DYNAMIC_WALLPAPER_KEY
+import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Companion.KEY_NEW_THEME
 import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Companion.THEME_AUTO
 import com.github.livingwithhippos.unchained.settings.view.SettingsFragment.Companion.THEME_DAY
 import com.github.livingwithhippos.unchained.settings.view.ThemeItem
@@ -165,6 +169,7 @@ fun Context.getThemeList(): List<ThemeItem> {
  * color system instead of a fixed palette, so its preview swatch is only a best-effort
  * approximation of the current wallpaper colors, not the exact colors DynamicColors will apply
  */
+@RequiresApi(Build.VERSION_CODES.S)
 private fun Context.getDynamicWallpaperThemeItem(): ThemeItem {
     val isNight =
         resources.configuration.uiMode.and(Configuration.UI_MODE_NIGHT_MASK) ==
@@ -175,7 +180,7 @@ private fun Context.getDynamicWallpaperThemeItem(): ThemeItem {
     val containerTone = if (isNight) android.R.color.system_accent2_700 else android.R.color.system_accent2_100
     return ThemeItem(
         name = "Material You",
-        key = "dynamic_wallpaper",
+        key = DYNAMIC_WALLPAPER_KEY,
         nightMode = THEME_AUTO,
         themeID = R.style.Theme_Unchained_Material3_Dynamic,
         primaryColorID = ResourcesCompat.getColor(resources, primaryTone, null),
@@ -208,6 +213,14 @@ private fun Context.getCustomThemeItem(): ThemeItem {
         primaryContainerColorID = ColorUtils.blendARGB(seedColor, Color.WHITE, 0.7f),
         isDynamic = true,
     )
+}
+
+fun Context.getThemeItem(): ThemeItem {
+    val themes = this.getThemeList()
+    val preferences = PreferenceManager.getDefaultSharedPreferences(this)
+    val themeKey = preferences.getString(KEY_NEW_THEME, DEFAULT_THEME_KEY)
+    val theme = themes.find { it.key == themeKey } ?: themes[6]
+    return theme
 }
 
 /**
@@ -379,6 +392,9 @@ fun Uri.getFileName(context: Context): String {
     }
     return fileName
 }
+
+/** True on Android TV, where several controls need d-pad-specific handling. */
+fun Context.isTv(): Boolean = packageManager.hasSystemFeature(PackageManager.FEATURE_LEANBACK)
 
 /**
  * Open an url from available apps

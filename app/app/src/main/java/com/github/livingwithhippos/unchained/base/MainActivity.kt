@@ -18,6 +18,8 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.view.View
+import android.view.ViewParent
 import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.activity.result.contract.ActivityResultContracts
@@ -36,6 +38,8 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
 import com.github.livingwithhippos.unchained.BuildConfig
 import com.github.livingwithhippos.unchained.R
 import com.github.livingwithhippos.unchained.data.model.UserAction
@@ -59,6 +63,7 @@ import com.github.livingwithhippos.unchained.utilities.SCHEME_MAGNET
 import com.github.livingwithhippos.unchained.utilities.SIGNATURE
 import com.github.livingwithhippos.unchained.utilities.TelemetryManager
 import com.github.livingwithhippos.unchained.utilities.extension.downloadFileInStandardFolder
+import com.github.livingwithhippos.unchained.utilities.extension.isTv
 import com.github.livingwithhippos.unchained.utilities.extension.openExternalWebPage
 import com.github.livingwithhippos.unchained.utilities.extension.parcelable
 import com.github.livingwithhippos.unchained.utilities.extension.showToast
@@ -220,6 +225,10 @@ class MainActivity : AppCompatActivity() {
         setupBottomNavigationBar(binding)
 
         setupBackPressedHandling()
+
+        setupTvBackFocusHandling()
+
+        setupTvInitialFocusHandling()
 
         addMenuProvider(
             object : MenuProvider {
@@ -936,6 +945,50 @@ class MainActivity : AppCompatActivity() {
 
             exitCallback.isEnabled = onExitingFragment && backWouldExit
         }
+    }
+
+    /** On TV, a back press while focus is inside a long/endless list moves it to the bottom nav
+     * instead of navigating, since there is no other way to reach the nav bar from deep in a
+     * list (see issue #376). */
+    private fun setupTvBackFocusHandling() {
+        if (!isTv()) return
+
+        onBackPressedDispatcher.addCallback(this) {
+            val focusRescued =
+                currentFocus?.isInsideScrollableList() == true &&
+                    binding.bottomNavView.requestFocus()
+            if (!focusRescued) {
+                // let the other callbacks or the default handling manage this back press
+                isEnabled = false
+                onBackPressedDispatcher.onBackPressed()
+                isEnabled = true
+            }
+        }
+    }
+
+    /** On TV, the toolbar's overflow button is first in layout order and silently grabs default
+     * focus on every new destination. Rescue focus onto the bottom nav when that happens, without
+     * touching focus a fragment or back navigation already placed deliberately. */
+    private fun setupTvInitialFocusHandling() {
+        if (!isTv()) return
+
+        navController.addOnDestinationChangedListener { _, _, _ ->
+            binding.root.post {
+                if (binding.appBarLayout.findFocus() != null) {
+                    binding.bottomNavView.requestFocus()
+                }
+            }
+        }
+    }
+
+    /** True if inside a scrollable list, ignoring the RecyclerView ViewPager2 uses internally. */
+    private fun View.isInsideScrollableList(): Boolean {
+        var current: ViewParent? = parent
+        while (current != null) {
+            if (current is RecyclerView && current.parent !is ViewPager2) return true
+            current = current.parent
+        }
+        return false
     }
 
     private fun showUpdateDialog(description: String, link: String) {

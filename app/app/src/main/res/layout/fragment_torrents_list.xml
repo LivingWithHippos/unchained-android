@@ -25,6 +25,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked="false"
+            android:nextFocusDown="@id/rvTorrentList"
             android:text="0"
             android:tooltipText="@string/select_deselect_all" />
 
@@ -34,6 +35,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/delete"
+            android:nextFocusDown="@id/rvTorrentList"
             android:tooltipText="@string/delete_selected"
             app:icon="@drawable/icon_delete"
             app:iconSize="25dp" />
@@ -44,6 +46,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/download"
+            android:nextFocusDown="@id/rvTorrentList"
             android:tooltipText="@string/download_selected"
             app:icon="@drawable/icon_download"
             app:iconSize="25dp" />
@@ -54,8 +57,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/torrent_details"
+            android:nextFocusRight="@id/bRefresh"
+            android:nextFocusDown="@id/rvTorrentList"
             android:tooltipText="@string/torrent_details"
             app:icon="@drawable/icon_info"
+            app:iconSize="25dp" />
+
+        <Button
+            android:id="@+id/bRefresh"
+            style="?attr/materialIconButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/refresh"
+            android:nextFocusRight="@id/rvTorrentList"
+            android:nextFocusDown="@id/rvTorrentList"
+            android:tooltipText="@string/refresh"
+            app:icon="@drawable/icon_reload"
             app:iconSize="25dp" />
 
     </LinearLayout>
@@ -74,6 +91,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
+            android:nextFocusUp="@id/cbSelectAll"
             android:scrollbars="vertical"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintTop_toBottomOf="@id/llMultiSelection"
